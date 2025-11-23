@@ -114,7 +114,7 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
   if (pwr == 0)
     return TopLoc_Location();
   if (pwr == 2)
-    return Squared();  // Fast path for most common case
+    return Squared(); // Fast path for most common case
 
   // optimisation when just one element
   if (myItems.Tail().IsEmpty())

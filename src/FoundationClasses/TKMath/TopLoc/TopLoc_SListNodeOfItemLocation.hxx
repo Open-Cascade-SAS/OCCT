@@ -33,10 +33,10 @@ public:
   TopLoc_SListNodeOfItemLocation(const TopLoc_ItemLocation&        I,
                                  const TopLoc_SListOfItemLocation& aTail);
 
-  TopLoc_SListOfItemLocation& Tail();
+  TopLoc_SListOfItemLocation&       Tail();
   const TopLoc_SListOfItemLocation& Tail() const;
 
-  TopLoc_ItemLocation& Value();
+  TopLoc_ItemLocation&       Value();
   const TopLoc_ItemLocation& Value() const;
 
   DEFINE_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation, Standard_Transient)

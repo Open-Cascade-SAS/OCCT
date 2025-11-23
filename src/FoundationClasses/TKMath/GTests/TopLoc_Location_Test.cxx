@@ -99,12 +99,10 @@ TEST(TopLoc_Location_Test, DefaultConstructor_CreatesIdentity)
   // Test that default constructor creates identity location
   TopLoc_Location aLoc;
 
-  EXPECT_TRUE(aLoc.IsIdentity())
-    << "Default constructed location should be identity";
+  EXPECT_TRUE(aLoc.IsIdentity()) << "Default constructed location should be identity";
 
   const gp_Trsf& aTrsf = aLoc.Transformation();
-  EXPECT_EQ(aTrsf.Form(), gp_Identity)
-    << "Default location should return identity transformation";
+  EXPECT_EQ(aTrsf.Form(), gp_Identity) << "Default location should return identity transformation";
 }
 
 TEST(TopLoc_Location_Test, IdentityTransformation_ReturnsSameInstance)
@@ -117,8 +115,7 @@ TEST(TopLoc_Location_Test, IdentityTransformation_ReturnsSameInstance)
   const gp_Trsf& aTrsf2 = aLoc2.Transformation();
 
   // Both should return reference to the same identity transformation
-  EXPECT_EQ(&aTrsf1, &aTrsf2)
-    << "Identity locations should share the same transformation instance";
+  EXPECT_EQ(&aTrsf1, &aTrsf2) << "Identity locations should share the same transformation instance";
 }
 
 TEST(TopLoc_Location_Test, Squared_EqualsMultipliedBySelf)
@@ -128,16 +125,15 @@ TEST(TopLoc_Location_Test, Squared_EqualsMultipliedBySelf)
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
   TopLoc_Location aLoc(aTrsf);
 
-  TopLoc_Location aSquared = aLoc.Squared();
+  TopLoc_Location aSquared    = aLoc.Squared();
   TopLoc_Location aMultiplied = aLoc.Multiplied(aLoc);
 
-  EXPECT_EQ(aSquared, aMultiplied)
-    << "Squared() should equal Multiplied(self)";
+  EXPECT_EQ(aSquared, aMultiplied) << "Squared() should equal Multiplied(self)";
 
   // Verify the transformation is actually squared
   gp_Pnt anOrigin(0, 0, 0);
   gp_Pnt aTransformed = anOrigin.Transformed(aSquared.Transformation());
-  gp_Pnt anExpected(2.0, 4.0, 6.0);  // Double translation
+  gp_Pnt anExpected(2.0, 4.0, 6.0); // Double translation
 
   EXPECT_NEAR(aTransformed.X(), anExpected.X(), 1e-10);
   EXPECT_NEAR(aTransformed.Y(), anExpected.Y(), 1e-10);
@@ -154,8 +150,7 @@ TEST(TopLoc_Location_Test, Powered2_UsesSquaredFastPath)
   TopLoc_Location aPowered = aLoc.Powered(2);
   TopLoc_Location aSquared = aLoc.Squared();
 
-  EXPECT_EQ(aPowered, aSquared)
-    << "Powered(2) should equal Squared()";
+  EXPECT_EQ(aPowered, aSquared) << "Powered(2) should equal Squared()";
 }
 
 TEST(TopLoc_Location_Test, Powered_VariousPowers)
@@ -167,32 +162,27 @@ TEST(TopLoc_Location_Test, Powered_VariousPowers)
 
   // Power 0 should return identity
   TopLoc_Location aPow0 = aLoc.Powered(0);
-  EXPECT_TRUE(aPow0.IsIdentity())
-    << "Powered(0) should return identity";
+  EXPECT_TRUE(aPow0.IsIdentity()) << "Powered(0) should return identity";
 
   // Power 1 should return self
   TopLoc_Location aPow1 = aLoc.Powered(1);
-  EXPECT_EQ(aPow1, aLoc)
-    << "Powered(1) should return self";
+  EXPECT_EQ(aPow1, aLoc) << "Powered(1) should return self";
 
   // Power 2 should be double translation
   TopLoc_Location aPow2 = aLoc.Powered(2);
-  gp_Pnt anOrigin(0, 0, 0);
-  gp_Pnt aResult = anOrigin.Transformed(aPow2.Transformation());
-  EXPECT_NEAR(aResult.X(), 2.0, 1e-10)
-    << "Powered(2) should double the translation";
+  gp_Pnt          anOrigin(0, 0, 0);
+  gp_Pnt          aResult = anOrigin.Transformed(aPow2.Transformation());
+  EXPECT_NEAR(aResult.X(), 2.0, 1e-10) << "Powered(2) should double the translation";
 
   // Power 3
   TopLoc_Location aPow3 = aLoc.Powered(3);
-  aResult = anOrigin.Transformed(aPow3.Transformation());
-  EXPECT_NEAR(aResult.X(), 3.0, 1e-10)
-    << "Powered(3) should triple the translation";
+  aResult               = anOrigin.Transformed(aPow3.Transformation());
+  EXPECT_NEAR(aResult.X(), 3.0, 1e-10) << "Powered(3) should triple the translation";
 
   // Negative power (inverse)
-  TopLoc_Location aPowNeg1 = aLoc.Powered(-1);
+  TopLoc_Location aPowNeg1   = aLoc.Powered(-1);
   TopLoc_Location anInverted = aLoc.Inverted();
-  EXPECT_EQ(aPowNeg1, anInverted)
-    << "Powered(-1) should equal Inverted()";
+  EXPECT_EQ(aPowNeg1, anInverted) << "Powered(-1) should equal Inverted()";
 }
 
 TEST(TopLoc_Location_Test, SharesNode_DetectsSharedStructure)
@@ -205,15 +195,13 @@ TEST(TopLoc_Location_Test, SharesNode_DetectsSharedStructure)
   // Copy constructor should share the same nodes
   TopLoc_Location aLoc2 = aLoc1;
 
-  EXPECT_EQ(aLoc1, aLoc2)
-    << "Copied location should equal original";
+  EXPECT_EQ(aLoc1, aLoc2) << "Copied location should equal original";
 
   // Assignment should also share nodes
   TopLoc_Location aLoc3;
   aLoc3 = aLoc1;
 
-  EXPECT_EQ(aLoc3, aLoc1)
-    << "Assigned location should equal original";
+  EXPECT_EQ(aLoc3, aLoc1) << "Assigned location should equal original";
 }
 
 TEST(TopLoc_Location_Test, Equality_DifferentTransformations)
@@ -227,8 +215,7 @@ TEST(TopLoc_Location_Test, Equality_DifferentTransformations)
   aTrsf2.SetTranslation(gp_Vec(0.0, 1.0, 0.0));
   TopLoc_Location aLoc2(aTrsf2);
 
-  EXPECT_NE(aLoc1, aLoc2)
-    << "Different transformations should not be equal";
+  EXPECT_NE(aLoc1, aLoc2) << "Different transformations should not be equal";
   EXPECT_TRUE(aLoc1.IsDifferent(aLoc2))
     << "IsDifferent should return true for different transformations";
 }
@@ -262,16 +249,14 @@ TEST(TopLoc_Location_Test, Inverted_ProducesInverse)
   aTrsf.SetTranslation(gp_Vec(5.0, -3.0, 2.0));
   TopLoc_Location aLoc(aTrsf);
 
-  TopLoc_Location anInv = aLoc.Inverted();
+  TopLoc_Location anInv      = aLoc.Inverted();
   TopLoc_Location anIdentity = aLoc * anInv;
 
-  EXPECT_TRUE(anIdentity.IsIdentity())
-    << "Location * Inverted() should produce identity";
+  EXPECT_TRUE(anIdentity.IsIdentity()) << "Location * Inverted() should produce identity";
 
   // Also test in reverse order
   TopLoc_Location anIdentity2 = anInv * aLoc;
-  EXPECT_TRUE(anIdentity2.IsIdentity())
-    << "Inverted() * Location should also produce identity";
+  EXPECT_TRUE(anIdentity2.IsIdentity()) << "Inverted() * Location should also produce identity";
 }
 
 TEST(TopLoc_Location_Test, Divided_EqualsMultipliedByInverse)
@@ -285,11 +270,10 @@ TEST(TopLoc_Location_Test, Divided_EqualsMultipliedByInverse)
   aTrsf2.SetTranslation(gp_Vec(1.0, 1.0, 1.0));
   TopLoc_Location aLoc2(aTrsf2);
 
-  TopLoc_Location aDivided = aLoc1 / aLoc2;
+  TopLoc_Location aDivided    = aLoc1 / aLoc2;
   TopLoc_Location aMultiplied = aLoc1 * aLoc2.Inverted();
 
-  EXPECT_EQ(aDivided, aMultiplied)
-    << "Divided should equal Multiplied by Inverted";
+  EXPECT_EQ(aDivided, aMultiplied) << "Divided should equal Multiplied by Inverted";
 }
 
 TEST(TopLoc_Location_Test, Predivided_EqualsInverseMultiplied)
@@ -304,10 +288,9 @@ TEST(TopLoc_Location_Test, Predivided_EqualsInverseMultiplied)
   TopLoc_Location aLoc2(aTrsf2);
 
   TopLoc_Location aPredivided = aLoc1.Predivided(aLoc2);
-  TopLoc_Location anExpected = aLoc2.Inverted() * aLoc1;
+  TopLoc_Location anExpected  = aLoc2.Inverted() * aLoc1;
 
-  EXPECT_EQ(aPredivided, anExpected)
-    << "Predivided should equal Other.Inverted() * this";
+  EXPECT_EQ(aPredivided, anExpected) << "Predivided should equal Other.Inverted() * this";
 }
 
 TEST(TopLoc_Location_Test, HashCode_ConsistentForEqualLocations)
@@ -328,8 +311,7 @@ TEST(TopLoc_Location_Test, HashCode_ConsistentForEqualLocations)
   TopLoc_Location anId2;
   EXPECT_EQ(anId1.HashCode(), anId2.HashCode())
     << "Identity locations should have the same hash code";
-  EXPECT_EQ(anId1.HashCode(), static_cast<size_t>(0))
-    << "Identity location hash should be 0";
+  EXPECT_EQ(anId1.HashCode(), static_cast<size_t>(0)) << "Identity location hash should be 0";
 }
 
 TEST(TopLoc_Location_Test, HashCode_DifferentForDifferentLocations)
@@ -363,7 +345,7 @@ TEST(TopLoc_Location_Test, ConstCorrectness_TransformationAccess)
 
   // Test identity case
   const TopLoc_Location anIdLoc;
-  const gp_Trsf& anIdTrsf = anIdLoc.Transformation();
+  const gp_Trsf&        anIdTrsf = anIdLoc.Transformation();
 
   EXPECT_EQ(anIdTrsf.Form(), gp_Identity);
 }
@@ -372,8 +354,8 @@ TEST(TopLoc_Location_Test, Rotation_Composition)
 {
   // Test rotation transformations
   gp_Trsf aRot;
-  gp_Ax1 anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  aRot.SetRotation(anAxis, M_PI / 2.0);  // 90 degrees around Z
+  gp_Ax1  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  aRot.SetRotation(anAxis, M_PI / 2.0); // 90 degrees around Z
 
   TopLoc_Location aLoc(aRot);
   TopLoc_Location aSquared = aLoc.Squared();
@@ -394,13 +376,11 @@ TEST(TopLoc_Location_Test, Clear_ResetsToIdentity)
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
   TopLoc_Location aLoc(aTrsf);
 
-  EXPECT_FALSE(aLoc.IsIdentity())
-    << "Location should not be identity before Clear()";
+  EXPECT_FALSE(aLoc.IsIdentity()) << "Location should not be identity before Clear()";
 
   aLoc.Clear();
 
-  EXPECT_TRUE(aLoc.IsIdentity())
-    << "Location should be identity after Clear()";
+  EXPECT_TRUE(aLoc.IsIdentity()) << "Location should be identity after Clear()";
 }
 
 TEST(TopLoc_Location_Test, Identity_Method)
@@ -414,8 +394,7 @@ TEST(TopLoc_Location_Test, Identity_Method)
 
   aLoc.Identity();
 
-  EXPECT_TRUE(aLoc.IsIdentity())
-    << "Identity() should reset location to identity";
+  EXPECT_TRUE(aLoc.IsIdentity()) << "Identity() should reset location to identity";
 }
 
 //=================================================================================================
@@ -509,8 +488,8 @@ TEST(TopLoc_Location_Test, ComplexTransformation_TranslationAndRotation)
   aTrans.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
 
   gp_Trsf aRot;
-  gp_Ax1 anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  aRot.SetRotation(anAxis, M_PI);  // 180 degrees
+  gp_Ax1  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  aRot.SetRotation(anAxis, M_PI); // 180 degrees
 
   TopLoc_Location aLocTrans(aTrans);
   TopLoc_Location aLocRot(aRot);
@@ -540,8 +519,7 @@ TEST(TopLoc_Location_Test, PoweredWithLargePower)
   gp_Pnt anOrigin(0, 0, 0);
   gp_Pnt aResult = anOrigin.Transformed(aPow10.Transformation());
 
-  EXPECT_NEAR(aResult.X(), 10.0, 1e-9)
-    << "Powered(10) should translate 10 units";
+  EXPECT_NEAR(aResult.X(), 10.0, 1e-9) << "Powered(10) should translate 10 units";
 }
 
 TEST(TopLoc_Location_Test, SelfMultiplication_MultipleIterations)
@@ -576,11 +554,11 @@ TEST(TopLoc_Location_Test, AssociativityOfMultiplication)
   TopLoc_Location aLocB(aTrsf2);
   TopLoc_Location aLocC(aTrsf3);
 
-  TopLoc_Location aLeft = (aLocA * aLocB) * aLocC;
+  TopLoc_Location aLeft  = (aLocA * aLocB) * aLocC;
   TopLoc_Location aRight = aLocA * (aLocB * aLocC);
 
   gp_Pnt anOrigin(0, 0, 0);
-  gp_Pnt aResultLeft = anOrigin.Transformed(aLeft.Transformation());
+  gp_Pnt aResultLeft  = anOrigin.Transformed(aLeft.Transformation());
   gp_Pnt aResultRight = anOrigin.Transformed(aRight.Transformation());
 
   EXPECT_NEAR(aResultLeft.X(), aResultRight.X(), 1e-10);
@@ -620,18 +598,18 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_PowerOf2)
 
   // Test power of 4 (2^2)
   TopLoc_Location aPow4 = aLoc.Powered(4);
-  gp_Pnt anOrigin(0, 0, 0);
-  gp_Pnt aResult = anOrigin.Transformed(aPow4.Transformation());
+  gp_Pnt          anOrigin(0, 0, 0);
+  gp_Pnt          aResult = anOrigin.Transformed(aPow4.Transformation());
   EXPECT_NEAR(aResult.X(), 4.0, 1e-9) << "Powered(4) should translate 4 units";
 
   // Test power of 8 (2^3)
   TopLoc_Location aPow8 = aLoc.Powered(8);
-  aResult = anOrigin.Transformed(aPow8.Transformation());
+  aResult               = anOrigin.Transformed(aPow8.Transformation());
   EXPECT_NEAR(aResult.X(), 8.0, 1e-9) << "Powered(8) should translate 8 units";
 
   // Test power of 16 (2^4)
   TopLoc_Location aPow16 = aLoc.Powered(16);
-  aResult = anOrigin.Transformed(aPow16.Transformation());
+  aResult                = anOrigin.Transformed(aPow16.Transformation());
   EXPECT_NEAR(aResult.X(), 16.0, 1e-9) << "Powered(16) should translate 16 units";
 }
 
@@ -645,18 +623,18 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_OddPowers)
   gp_Pnt anOrigin(0, 0, 0);
 
   // Test power of 5
-  TopLoc_Location aPow5 = aLoc.Powered(5);
-  gp_Pnt aResult = anOrigin.Transformed(aPow5.Transformation());
+  TopLoc_Location aPow5   = aLoc.Powered(5);
+  gp_Pnt          aResult = anOrigin.Transformed(aPow5.Transformation());
   EXPECT_NEAR(aResult.X(), 5.0, 1e-9) << "Powered(5) should translate 5 units";
 
   // Test power of 7
   TopLoc_Location aPow7 = aLoc.Powered(7);
-  aResult = anOrigin.Transformed(aPow7.Transformation());
+  aResult               = anOrigin.Transformed(aPow7.Transformation());
   EXPECT_NEAR(aResult.X(), 7.0, 1e-9) << "Powered(7) should translate 7 units";
 
   // Test power of 9
   TopLoc_Location aPow9 = aLoc.Powered(9);
-  aResult = anOrigin.Transformed(aPow9.Transformation());
+  aResult               = anOrigin.Transformed(aPow9.Transformation());
   EXPECT_NEAR(aResult.X(), 9.0, 1e-9) << "Powered(9) should translate 9 units";
 }
 
@@ -686,11 +664,10 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_NegativePowers)
 
   // Test power of -4 (should be inverse of power 4)
   TopLoc_Location aPowNeg4 = aLoc.Powered(-4);
-  TopLoc_Location aPow4 = aLoc.Powered(4);
+  TopLoc_Location aPow4    = aLoc.Powered(4);
 
   TopLoc_Location aIdentity = aPowNeg4 * aPow4;
-  EXPECT_TRUE(aIdentity.IsIdentity())
-    << "L^(-4) * L^4 should produce identity";
+  EXPECT_TRUE(aIdentity.IsIdentity()) << "L^(-4) * L^4 should produce identity";
 
   // Verify the transformation
   gp_Pnt anOrigin(0, 0, 0);
@@ -703,11 +680,11 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_RotationPowers)
   // Test binary exponentiation with rotation transformations
   // 45° rotation, power of 8 should equal 360° (identity)
   gp_Trsf aRot;
-  gp_Ax1 anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  aRot.SetRotation(anAxis, M_PI / 4.0);  // 45 degrees
+  gp_Ax1  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  aRot.SetRotation(anAxis, M_PI / 4.0); // 45 degrees
 
   TopLoc_Location aLoc(aRot);
-  TopLoc_Location aPow8 = aLoc.Powered(8);  // 8 * 45° = 360°
+  TopLoc_Location aPow8 = aLoc.Powered(8); // 8 * 45° = 360°
 
   // Should be close to identity (full rotation)
   gp_Pnt aPnt(1, 0, 0);
@@ -728,17 +705,17 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_MixedEvenOdd)
   gp_Pnt anOrigin(0, 0, 0);
 
   // Test 6 (even)
-  TopLoc_Location aPow6 = aLoc.Powered(6);
-  gp_Pnt aResult = anOrigin.Transformed(aPow6.Transformation());
+  TopLoc_Location aPow6   = aLoc.Powered(6);
+  gp_Pnt          aResult = anOrigin.Transformed(aPow6.Transformation());
   EXPECT_NEAR(aResult.X(), 12.0, 1e-9);
 
   // Test 11 (odd)
   TopLoc_Location aPow11 = aLoc.Powered(11);
-  aResult = anOrigin.Transformed(aPow11.Transformation());
+  aResult                = anOrigin.Transformed(aPow11.Transformation());
   EXPECT_NEAR(aResult.X(), 22.0, 1e-9);
 
   // Test 15 (odd)
   TopLoc_Location aPow15 = aLoc.Powered(15);
-  aResult = anOrigin.Transformed(aPow15.Transformation());
+  aResult                = anOrigin.Transformed(aPow15.Transformation());
   EXPECT_NEAR(aResult.X(), 30.0, 1e-9);
 }
