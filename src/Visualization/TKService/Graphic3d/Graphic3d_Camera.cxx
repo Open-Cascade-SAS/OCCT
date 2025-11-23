@@ -1387,7 +1387,8 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
     aFitDistance[1] *= std::sqrt(1 + aTanValue * aTanValue);
   }
   {
-    const Standard_Real aTanValue = std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
+    const Standard_Real aTanValue =
+      std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
     aFitDistance[2] *= std::sqrt(1 + aTanValue * aTanValue);
   }
   {
