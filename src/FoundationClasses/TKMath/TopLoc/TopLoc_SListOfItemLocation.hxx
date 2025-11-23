@@ -82,10 +82,10 @@ public:
   }
 
   //! Return true if this list is empty
-  Standard_Boolean IsEmpty() const { return myNode.IsNull(); }
+  Standard_Boolean IsEmpty() const noexcept { return myNode.IsNull(); }
 
   //! Sets the list to be empty.
-  void Clear() { myNode.Nullify(); }
+  void Clear() noexcept { myNode.Nullify(); }
 
   //! Destructor
   ~TopLoc_SListOfItemLocation() { Clear(); }
@@ -110,7 +110,7 @@ public:
 
   //! Returns True if the iterator has a current value.
   //! This is !IsEmpty()
-  Standard_Boolean More() const { return !IsEmpty(); }
+  Standard_Boolean More() const noexcept { return !IsEmpty(); }
 
   //! Moves the iterator to the next object in the list.
   //! If the iterator is empty it will stay empty. This is ToTail()

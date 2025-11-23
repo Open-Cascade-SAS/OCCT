@@ -103,26 +103,6 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   return result;
 }
 
-//=======================================================================
-// function : Divided
-// purpose  : operator /   this*Other.Inverted()
-//=======================================================================
-
-TopLoc_Location TopLoc_Location::Divided(const TopLoc_Location& Other) const
-{
-  return Multiplied(Other.Inverted());
-}
-
-//=======================================================================
-// function : Predivided
-// purpose  : return Other.Inverted() * this
-//=======================================================================
-
-TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
-{
-  return Other.Inverted().Multiplied(*this);
-}
-
 //=================================================================================================
 
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const

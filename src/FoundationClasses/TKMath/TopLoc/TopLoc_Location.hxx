@@ -98,7 +98,10 @@ public:
   }
 
   //! Returns <me> / <Other>.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Divided(const TopLoc_Location& Other) const;
+  Standard_NODISCARD TopLoc_Location Divided(const TopLoc_Location& Other) const
+  {
+    return Multiplied(Other.Inverted());
+  }
 
   Standard_NODISCARD TopLoc_Location operator/(const TopLoc_Location& Other) const
   {
@@ -106,7 +109,10 @@ public:
   }
 
   //! Returns <Other>.Inverted() * <me>.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Predivided(const TopLoc_Location& Other) const;
+  Standard_NODISCARD TopLoc_Location Predivided(const TopLoc_Location& Other) const
+  {
+    return Other.Inverted().Multiplied(*this);
+  }
 
   //! Returns me at the power <pwr>. If <pwr> is zero
   //! returns Identity. <pwr> can be lower than zero
