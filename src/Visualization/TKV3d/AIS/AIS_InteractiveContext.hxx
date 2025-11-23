@@ -1351,7 +1351,6 @@ public:
   //! those selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   Standard_Boolean IsCurrent(const Handle(AIS_InteractiveObject)& theObject) const
   {
     return IsSelected(theObject);
@@ -1369,7 +1368,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   Standard_Boolean MoreCurrent() const { return MoreSelected(); }
 
   //! Continues the scan to the next object in the list of current objects.
@@ -1384,12 +1382,10 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   Handle(AIS_InteractiveObject) Current() const { return SelectedInteractive(); }
 
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   Standard_Integer NbCurrents() { return NbSelected(); }
 
   //! Highlights current objects.

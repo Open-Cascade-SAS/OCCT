@@ -31,7 +31,6 @@ public:
 
   Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::CurrentGroup() should be "
                       "called instead")
-
   static Handle(Graphic3d_Group) CurrentGroup(const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->CurrentGroup();
@@ -39,7 +38,6 @@ public:
 
   Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::NewGroup() should be called "
                       "instead")
-
   static Handle(Graphic3d_Group) NewGroup(const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->NewGroup();

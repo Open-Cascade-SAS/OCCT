@@ -90,7 +90,7 @@ runs:
         $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
         $files | ForEach-Object {
           $content = Get-Content $_ -Raw
-          $pattern = '(Standard_DEPRECATED\("[a-z0-9\.,;\s\(\)_-]+"(?:[\s\n]+"[a-z0-9\.,;\s\(\)_-]+")?\)\n)\n+'
+          $pattern = '(Standard_DEPRECATED\s*\(\s*"[^"]*"(?:\s*"[^"]*")*\s*\)\n)\n+'
           $newContent = $content -replace $pattern, '$1'
           if ($content -ne $newContent) {
             Set-Content -Path $_ -Value $newContent -NoNewline

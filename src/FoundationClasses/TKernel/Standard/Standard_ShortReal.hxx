@@ -32,8 +32,7 @@
 //! Equivalent to std::abs.
 Standard_DEPRECATED("This function duplicates std::abs and will be removed in future releases. "
                     "Use std::abs instead.")
-
-[[nodiscard]] inline float Abs(const float theValue)
+inline float Abs(const float theValue)
 {
   return std::abs(theValue);
 }
@@ -96,8 +95,7 @@ Standard_DEPRECATED("This function duplicates std::abs and will be removed in fu
 //! Equivalent to std::max.
 Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
                     "Use std::max instead.")
-
-[[nodiscard]] constexpr float Max(const float theValue1, const float theValue2)
+constexpr float Max(const float theValue1, const float theValue2)
 {
   return (std::max)(theValue1, theValue2);
 }
@@ -106,8 +104,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
 //! Equivalent to std::min.
 Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
                     "Use std::min instead.")
-
-[[nodiscard]] constexpr float Min(const float theValue1, const float theValue2)
+constexpr float Min(const float theValue1, const float theValue2)
 {
   return (std::min)(theValue1, theValue2);
 }

@@ -131,7 +131,6 @@ public:
   //! Returns the text attributes for rendering labels.
   Standard_DEPRECATED(
     "This method is deprecated - TextAspect() with axis parameter should be called instead")
-
   const Handle(Prs3d_TextAspect)& TextAspect() const
   {
     return myTextAspects[Prs3d_DatumParts_XAxis];
