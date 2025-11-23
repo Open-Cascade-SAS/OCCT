@@ -157,9 +157,6 @@ public:
 
 protected:
 private:
-  //! Returns the shared identity transformation
-  static const gp_Trsf& IdentityTransformation();
-
   TopLoc_SListOfItemLocation myItems;
 };
 

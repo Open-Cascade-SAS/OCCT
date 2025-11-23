@@ -41,8 +41,9 @@ TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 
 const gp_Trsf& TopLoc_Location::Transformation() const
 {
+  static const gp_Trsf THE_IDENTITY_TRSF;
   if (IsIdentity())
-    return IdentityTransformation();
+    return THE_IDENTITY_TRSF;
   else
     return myItems.Value().myTrsf;
 }

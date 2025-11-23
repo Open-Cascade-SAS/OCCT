@@ -14,7 +14,6 @@ set(OCCT_TopLoc_FILES
   TopLoc_MapOfLocation.hxx
   TopLoc_SListNodeOfItemLocation.cxx
   TopLoc_SListNodeOfItemLocation.hxx
-  TopLoc_SListNodeOfItemLocation.lxx
   TopLoc_SListOfItemLocation.cxx
   TopLoc_SListOfItemLocation.hxx
 )
