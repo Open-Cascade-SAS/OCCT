@@ -361,7 +361,7 @@ TEST(TopLoc_Location_Test, Rotation_Composition)
   TopLoc_Location aLoc(aRot);
   TopLoc_Location aSquared = aLoc.Squared();
 
-  // Point at (1,0,0) rotated 90° twice should be at (-1,0,0)
+  // Point at (1,0,0) rotated 90 degrees twice should be at (-1,0,0)
   gp_Pnt aPnt(1, 0, 0);
   gp_Pnt aResult = aPnt.Transformed(aSquared.Transformation());
 
@@ -498,7 +498,7 @@ TEST(TopLoc_Location_Test, ComplexTransformation_TranslationAndRotation)
   // Translate then rotate
   TopLoc_Location aComposed = aLocRot * aLocTrans;
 
-  // Point at origin, translate to (10,0,0), then rotate 180° → (-10,0,0)
+  // Point at origin, translate to (10,0,0), then rotate 180 degrees -> (-10,0,0)
   gp_Pnt anOrigin(0, 0, 0);
   gp_Pnt aResult = anOrigin.Transformed(aComposed.Transformation());
 
@@ -679,13 +679,13 @@ TEST(TopLoc_Location_Test, BinaryExponentiation_NegativePowers)
 TEST(TopLoc_Location_Test, BinaryExponentiation_RotationPowers)
 {
   // Test binary exponentiation with rotation transformations
-  // 45° rotation, power of 8 should equal 360° (identity)
+  // 45 degrees rotation, power of 8 should equal 360 degrees (identity)
   gp_Trsf aRot;
   gp_Ax1  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   aRot.SetRotation(anAxis, M_PI / 4.0); // 45 degrees
 
   TopLoc_Location aLoc(aRot);
-  TopLoc_Location aPow8 = aLoc.Powered(8); // 8 * 45° = 360°
+  TopLoc_Location aPow8 = aLoc.Powered(8); // 8 * 45 degrees = 360 degrees
 
   // Should be close to identity (full rotation)
   gp_Pnt aPnt(1, 0, 0);
