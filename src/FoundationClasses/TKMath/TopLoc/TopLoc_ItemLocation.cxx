@@ -24,8 +24,10 @@
 TopLoc_ItemLocation::TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const Standard_Integer P)
     : myDatum(D),
       myPower(P),
-      myTrsf(D->Transformation().Powered(P))
+      myTrsf(P == 1 ? D->Transformation() : D->Transformation().Powered(P))
 {
+  // Optimization: Avoid Powered() call for the most common case (P=1)
+  // This is used in Location(gp_Trsf&) and Location(Datum3D&) constructors
 }
 
 //=================================================================================================

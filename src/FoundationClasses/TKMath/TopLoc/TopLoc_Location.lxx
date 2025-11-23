@@ -21,14 +21,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean TopLoc_Location::IsIdentity() const
+inline Standard_Boolean TopLoc_Location::IsIdentity() const noexcept
 {
   return myItems.IsEmpty();
 }
 
 //=================================================================================================
 
-inline void TopLoc_Location::Identity()
+inline void TopLoc_Location::Identity() noexcept
 {
   myItems.Clear();
 }

@@ -125,13 +125,6 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 
 //=================================================================================================
 
-TopLoc_Location TopLoc_Location::Squared() const
-{
-  return Multiplied(*this);
-}
-
-//=================================================================================================
-
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 {
   if (IsIdentity())

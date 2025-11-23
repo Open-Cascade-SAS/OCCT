@@ -52,10 +52,10 @@ public:
   Standard_EXPORT TopLoc_Location(const Handle(TopLoc_Datum3D)& D);
 
   //! Returns true if this location is equal to the Identity transformation.
-  Standard_Boolean IsIdentity() const;
+  Standard_Boolean IsIdentity() const noexcept;
 
   //! Resets this location to the Identity transformation.
-  void Identity();
+  void Identity() noexcept;
 
   //! Returns the first elementary datum of the
   //! Location. Use the NextLocation function recursively to access
@@ -115,7 +115,7 @@ public:
 
   //! Returns the square of this location (optimized version of Powered(2)).
   //! This is the most common power operation in actual usage.
-  Standard_NODISCARD Standard_EXPORT TopLoc_Location Squared() const;
+  Standard_NODISCARD TopLoc_Location Squared() const { return Multiplied(*this); }
 
   //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
   //! to store and retrieve the object easily
@@ -145,9 +145,9 @@ public:
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear() { myItems.Clear(); }
+  void Clear() noexcept { myItems.Clear(); }
 
-  static Standard_Real ScalePrec() { return 1.e-14; }
+  static constexpr Standard_Real ScalePrec() { return 1.e-14; }
 
 protected:
 private:
