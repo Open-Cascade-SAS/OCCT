@@ -582,7 +582,6 @@ protected:
   //! Recomputes all presentations of the object.
   Standard_DEPRECATED("This method is deprecated - SetToUpdate() + UpdatePresentations() should be "
                       "called instead")
-
   void Update(Standard_Boolean theToIncludeHidden = Standard_False)
   {
     SetToUpdate();

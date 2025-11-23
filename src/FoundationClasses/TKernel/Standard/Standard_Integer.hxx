@@ -45,8 +45,7 @@
 //! Equivalent to std::max.
 Standard_DEPRECATED("This function duplicates std::max and will be removed in future releases. "
                     "Use std::max instead.")
-
-[[nodiscard]] constexpr int Max(const int theValue1, const int theValue2)
+constexpr int Max(const int theValue1, const int theValue2)
 {
   return (std::max)(theValue1, theValue2);
 }
@@ -55,8 +54,7 @@ Standard_DEPRECATED("This function duplicates std::max and will be removed in fu
 //! Equivalent to std::min.
 Standard_DEPRECATED("This function duplicates std::min and will be removed in future releases. "
                     "Use std::min instead.")
-
-[[nodiscard]] constexpr int Min(const int theValue1, const int theValue2)
+constexpr int Min(const int theValue1, const int theValue2)
 {
   return (std::min)(theValue1, theValue2);
 }

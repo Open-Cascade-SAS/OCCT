@@ -227,7 +227,6 @@ public:
 public:
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used "
                       "instead")
-
   static bool GetDataFormat(const Handle(OpenGl_Context)& theCtx,
                             const Image_Format            theFormat,
                             Standard_Integer&             theTextFormat,
@@ -243,7 +242,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used "
                       "instead")
-
   static bool GetDataFormat(const Handle(OpenGl_Context)& theCtx,
                             const Image_PixMap&           theData,
                             Standard_Integer&             theTextFormat,
