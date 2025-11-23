@@ -1371,7 +1371,7 @@ void V3d_View::SetZSize(const Standard_Real theSize)
   // ShortReal precision factor used to add meaningful tolerance to
   // ZNear, ZFar values in order to avoid equality after type conversion
   // to ShortReal matrices type.
-  const static Standard_Real aPrecision = 1.0 / std::pow(10.0, ShortRealDigits() - 1);
+  static const Standard_Real aPrecision = 1.0 / std::pow(10.0, ShortRealDigits() - 1);
 
   Standard_Real aZFar  = Zmax + aDistance * 2.0;
   Standard_Real aZNear = -Zmax + aDistance;
