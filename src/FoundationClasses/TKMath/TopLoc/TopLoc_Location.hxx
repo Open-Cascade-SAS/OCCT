@@ -39,7 +39,7 @@ public:
 
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
-  Standard_EXPORT TopLoc_Location();
+  TopLoc_Location() noexcept = default;
 
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
@@ -113,6 +113,10 @@ public:
   //! (usual meaning for powers).
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Powered(const Standard_Integer pwr) const;
 
+  //! Returns the square of this location (optimized version of Powered(2)).
+  //! This is the most common power operation in actual usage.
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Squared() const;
+
   //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
   //! to store and retrieve the object easily
   //! @return a computed hash code
@@ -147,6 +151,9 @@ public:
 
 protected:
 private:
+  //! Returns the shared identity transformation
+  static const gp_Trsf& IdentityTransformation();
+
   TopLoc_SListOfItemLocation myItems;
 };
 

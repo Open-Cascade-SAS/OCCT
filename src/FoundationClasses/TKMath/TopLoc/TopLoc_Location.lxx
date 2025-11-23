@@ -51,7 +51,9 @@ inline Standard_Integer TopLoc_Location::FirstPower() const
 
 inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 {
-  return (*(TopLoc_Location*)&(myItems.Tail()));
+  // This relies on TopLoc_Location having exactly one member (myItems) with same layout
+  // as TopLoc_SListOfItemLocation. This is safe because of the class design.
+  return reinterpret_cast<const TopLoc_Location&>(myItems.Tail());
 }
 
 //=================================================================================================
@@ -83,6 +85,17 @@ inline void ShallowDump(const TopLoc_Location& me, Standard_OStream& S)
 {
   me.ShallowDump(S);
 }
+
+//=================================================================================================
+
+inline const gp_Trsf& TopLoc_Location::IdentityTransformation()
+{
+  // C++17: Function-local static with guaranteed thread-safe initialization
+  static const gp_Trsf THE_IDENTITY{};
+  return THE_IDENTITY;
+}
+
+//=================================================================================================
 
 namespace std
 {

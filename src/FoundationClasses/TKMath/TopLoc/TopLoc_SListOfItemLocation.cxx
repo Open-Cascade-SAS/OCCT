@@ -62,3 +62,11 @@ const TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Tail() const
   else
     return *this;
 }
+
+//=================================================================================================
+
+Standard_Boolean TopLoc_SListOfItemLocation::SharesNode(
+  const TopLoc_SListOfItemLocation& Other) const
+{
+  return myNode == Other.myNode;
+}

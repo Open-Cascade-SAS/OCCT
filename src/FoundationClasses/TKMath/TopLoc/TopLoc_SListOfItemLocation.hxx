@@ -116,6 +116,9 @@ public:
   //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
 
+  //! Returns true if this list and Other share the same node (structural equality)
+  Standard_EXPORT Standard_Boolean SharesNode(const TopLoc_SListOfItemLocation& Other) const;
+
 private:
   Handle(TopLoc_SListNodeOfItemLocation) myNode;
 };

@@ -24,10 +24,6 @@
 
 //=================================================================================================
 
-TopLoc_Location::TopLoc_Location() {}
-
-//=================================================================================================
-
 TopLoc_Location::TopLoc_Location(const Handle(TopLoc_Datum3D)& D)
 {
   myItems.Construct(TopLoc_ItemLocation(D, 1));
@@ -45,9 +41,8 @@ TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 
 const gp_Trsf& TopLoc_Location::Transformation() const
 {
-  static const gp_Trsf THE_IDENTITY_TRSF;
   if (IsIdentity())
-    return THE_IDENTITY_TRSF;
+    return IdentityTransformation();
   else
     return myItems.Value().myTrsf;
 }
@@ -130,6 +125,13 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 
 //=================================================================================================
 
+TopLoc_Location TopLoc_Location::Squared() const
+{
+  return Multiplied(*this);
+}
+
+//=================================================================================================
+
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 {
   if (IsIdentity())
@@ -138,6 +140,8 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
     return *this;
   if (pwr == 0)
     return TopLoc_Location();
+  if (pwr == 2)
+    return Squared();  // Fast path for most common case
 
   // optimisation when just one element
   if (myItems.Tail().IsEmpty())
@@ -160,9 +164,8 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 
 Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 {
-  const void** p = (const void**)&myItems;
-  const void** q = (const void**)&Other.myItems;
-  if (*p == *q)
+  // Fast path: if both locations share the same underlying list node, they're equal
+  if (myItems.SharesNode(Other.myItems))
   {
     return Standard_True;
   }

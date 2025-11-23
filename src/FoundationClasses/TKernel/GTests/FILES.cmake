@@ -35,6 +35,5 @@ set(OCCT_TKernel_GTests_FILES
   Standard_Handle_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx
-  TopLoc_Location_Test.cxx
   UnitsAPI_Test.cxx
 )

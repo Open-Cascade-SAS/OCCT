@@ -22,12 +22,22 @@ inline TopLoc_SListNodeOfItemLocation::TopLoc_SListNodeOfItemLocation(
 {
 }
 
-inline TopLoc_SListOfItemLocation& TopLoc_SListNodeOfItemLocation::Tail() const
+inline TopLoc_SListOfItemLocation& TopLoc_SListNodeOfItemLocation::Tail()
 {
-  return (TopLoc_SListOfItemLocation&)myTail;
+  return myTail;
 }
 
-inline TopLoc_ItemLocation& TopLoc_SListNodeOfItemLocation::Value() const
+inline const TopLoc_SListOfItemLocation& TopLoc_SListNodeOfItemLocation::Tail() const
 {
-  return (TopLoc_ItemLocation&)myValue;
+  return myTail;
+}
+
+inline TopLoc_ItemLocation& TopLoc_SListNodeOfItemLocation::Value()
+{
+  return myValue;
+}
+
+inline const TopLoc_ItemLocation& TopLoc_SListNodeOfItemLocation::Value() const
+{
+  return myValue;
 }
