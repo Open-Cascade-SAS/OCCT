@@ -605,3 +605,140 @@ TEST(TopLoc_Location_Test, InversionIdempotence)
   EXPECT_NEAR(aResult1.Y(), aResult2.Y(), 1e-10);
   EXPECT_NEAR(aResult1.Z(), aResult2.Z(), 1e-10);
 }
+
+//=================================================================================================
+// Tests for Phase 3: Binary Exponentiation Optimization
+//=================================================================================================
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_PowerOf2)
+{
+  // Test binary exponentiation for powers of 2 (4, 8, 16)
+  // These should be most efficient: L^8 requires only 3 squarings instead of 7 multiplications
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
+  TopLoc_Location aLoc(aTrsf);
+
+  // Test power of 4 (2^2)
+  TopLoc_Location aPow4 = aLoc.Powered(4);
+  gp_Pnt anOrigin(0, 0, 0);
+  gp_Pnt aResult = anOrigin.Transformed(aPow4.Transformation());
+  EXPECT_NEAR(aResult.X(), 4.0, 1e-9) << "Powered(4) should translate 4 units";
+
+  // Test power of 8 (2^3)
+  TopLoc_Location aPow8 = aLoc.Powered(8);
+  aResult = anOrigin.Transformed(aPow8.Transformation());
+  EXPECT_NEAR(aResult.X(), 8.0, 1e-9) << "Powered(8) should translate 8 units";
+
+  // Test power of 16 (2^4)
+  TopLoc_Location aPow16 = aLoc.Powered(16);
+  aResult = anOrigin.Transformed(aPow16.Transformation());
+  EXPECT_NEAR(aResult.X(), 16.0, 1e-9) << "Powered(16) should translate 16 units";
+}
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_OddPowers)
+{
+  // Test binary exponentiation for odd powers (5, 7, 9)
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
+  TopLoc_Location aLoc(aTrsf);
+
+  gp_Pnt anOrigin(0, 0, 0);
+
+  // Test power of 5
+  TopLoc_Location aPow5 = aLoc.Powered(5);
+  gp_Pnt aResult = anOrigin.Transformed(aPow5.Transformation());
+  EXPECT_NEAR(aResult.X(), 5.0, 1e-9) << "Powered(5) should translate 5 units";
+
+  // Test power of 7
+  TopLoc_Location aPow7 = aLoc.Powered(7);
+  aResult = anOrigin.Transformed(aPow7.Transformation());
+  EXPECT_NEAR(aResult.X(), 7.0, 1e-9) << "Powered(7) should translate 7 units";
+
+  // Test power of 9
+  TopLoc_Location aPow9 = aLoc.Powered(9);
+  aResult = anOrigin.Transformed(aPow9.Transformation());
+  EXPECT_NEAR(aResult.X(), 9.0, 1e-9) << "Powered(9) should translate 9 units";
+}
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_VeryLargePower)
+{
+  // Test with very large power to verify efficiency improvement
+  // L^64 with binary exponentiation: only 6 squarings
+  // L^64 with naive: 63 multiplications
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(0.5, 0.0, 0.0));
+  TopLoc_Location aLoc(aTrsf);
+
+  TopLoc_Location aPow64 = aLoc.Powered(64);
+
+  gp_Pnt anOrigin(0, 0, 0);
+  gp_Pnt aResult = anOrigin.Transformed(aPow64.Transformation());
+
+  EXPECT_NEAR(aResult.X(), 32.0, 1e-8) << "Powered(64) should translate 32 units (64 * 0.5)";
+}
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_NegativePowers)
+{
+  // Test binary exponentiation for negative powers
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
+  TopLoc_Location aLoc(aTrsf);
+
+  // Test power of -4 (should be inverse of power 4)
+  TopLoc_Location aPowNeg4 = aLoc.Powered(-4);
+  TopLoc_Location aPow4 = aLoc.Powered(4);
+
+  TopLoc_Location aIdentity = aPowNeg4 * aPow4;
+  EXPECT_TRUE(aIdentity.IsIdentity())
+    << "L^(-4) * L^4 should produce identity";
+
+  // Verify the transformation
+  gp_Pnt anOrigin(0, 0, 0);
+  gp_Pnt aResult = anOrigin.Transformed(aPowNeg4.Transformation());
+  EXPECT_NEAR(aResult.X(), -4.0, 1e-9) << "Powered(-4) should translate -4 units";
+}
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_RotationPowers)
+{
+  // Test binary exponentiation with rotation transformations
+  // 45° rotation, power of 8 should equal 360° (identity)
+  gp_Trsf aRot;
+  gp_Ax1 anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  aRot.SetRotation(anAxis, M_PI / 4.0);  // 45 degrees
+
+  TopLoc_Location aLoc(aRot);
+  TopLoc_Location aPow8 = aLoc.Powered(8);  // 8 * 45° = 360°
+
+  // Should be close to identity (full rotation)
+  gp_Pnt aPnt(1, 0, 0);
+  gp_Pnt aResult = aPnt.Transformed(aPow8.Transformation());
+
+  EXPECT_NEAR(aResult.X(), 1.0, 1e-8);
+  EXPECT_NEAR(aResult.Y(), 0.0, 1e-8);
+  EXPECT_NEAR(aResult.Z(), 0.0, 1e-8);
+}
+
+TEST(TopLoc_Location_Test, BinaryExponentiation_MixedEvenOdd)
+{
+  // Test a mix of even and odd powers to verify the algorithm handles both cases
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(2.0, 0.0, 0.0));
+  TopLoc_Location aLoc(aTrsf);
+
+  gp_Pnt anOrigin(0, 0, 0);
+
+  // Test 6 (even)
+  TopLoc_Location aPow6 = aLoc.Powered(6);
+  gp_Pnt aResult = anOrigin.Transformed(aPow6.Transformation());
+  EXPECT_NEAR(aResult.X(), 12.0, 1e-9);
+
+  // Test 11 (odd)
+  TopLoc_Location aPow11 = aLoc.Powered(11);
+  aResult = anOrigin.Transformed(aPow11.Transformation());
+  EXPECT_NEAR(aResult.X(), 22.0, 1e-9);
+
+  // Test 15 (odd)
+  TopLoc_Location aPow15 = aLoc.Powered(15);
+  aResult = anOrigin.Transformed(aPow15.Transformation());
+  EXPECT_NEAR(aResult.X(), 30.0, 1e-9);
+}

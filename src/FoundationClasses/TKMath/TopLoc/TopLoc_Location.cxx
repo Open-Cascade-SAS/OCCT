@@ -151,10 +151,24 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
     return result;
   }
 
+  // Binary exponentiation for efficient computation: O(log n) instead of O(n)
   if (pwr > 0)
-    return Multiplied(Powered(pwr - 1));
+  {
+    if (pwr % 2 == 0)
+    {
+      // Even power: L^n = (L^(n/2))^2
+      return Powered(pwr / 2).Squared();
+    }
+    else
+    {
+      // Odd power: L^n = L * L^(n-1)
+      return Multiplied(Powered(pwr - 1));
+    }
+  }
   else
+  {
     return Inverted().Powered(-pwr);
+  }
 }
 
 //=================================================================================================
