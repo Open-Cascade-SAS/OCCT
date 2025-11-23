@@ -152,8 +152,9 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 
 Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 {
-  // Fast path: if both locations share the same underlying list node, they're equal
-  if (myItems.SharesNode(Other.myItems))
+  const void** p = (const void**)&myItems;
+  const void** q = (const void**)&Other.myItems;
+  if (*p == *q || myItems == Other.myItems)
   {
     return Standard_True;
   }

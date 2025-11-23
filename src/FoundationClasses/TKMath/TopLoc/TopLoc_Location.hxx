@@ -155,7 +155,6 @@ public:
 
   static constexpr Standard_Real ScalePrec() { return 1.e-14; }
 
-protected:
 private:
   TopLoc_SListOfItemLocation myItems;
 };

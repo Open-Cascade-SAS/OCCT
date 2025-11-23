@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty List.
-  TopLoc_SListOfItemLocation() {}
+  TopLoc_SListOfItemLocation() = default;
 
   //! Creates a List with <anItem> as value and <aTail> as tail.
   Standard_EXPORT TopLoc_SListOfItemLocation(const TopLoc_ItemLocation&        anItem,
@@ -116,8 +116,12 @@ public:
   //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
 
-  //! Returns true if this list and Other share the same node (structural equality)
-  Standard_EXPORT Standard_Boolean SharesNode(const TopLoc_SListOfItemLocation& Other) const;
+  //! Compares two lists for sharing the same nodes.
+  //! @returns true if the lists share the same nodes, false otherwise.
+  bool operator==(const TopLoc_SListOfItemLocation& Other) const noexcept
+  {
+    return myNode == Other.myNode;
+  }
 
 private:
   Handle(TopLoc_SListNodeOfItemLocation) myNode;
