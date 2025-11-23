@@ -449,7 +449,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     af = parameter * 1000. / aCascadeUnit;
 #endif
     areaDone   = Standard_True;
-    areaFactor = pow(af, 2);
+    areaFactor = af * af;
   }
   else if (aUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndVolumeUnit))
            || aUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndVolumeUnit)))
@@ -461,7 +461,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     af = parameter * 1000. / aCascadeUnit;
 #endif
     volumeDone   = Standard_True;
-    volumeFactor = pow(af, 3);
+    volumeFactor = af * af * af;
   }
   return status;
 }

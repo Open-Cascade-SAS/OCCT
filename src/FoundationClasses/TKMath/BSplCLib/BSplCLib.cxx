@@ -3778,9 +3778,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
       Contraintes(1, ipos) = EvalBS(ipos);
       Contraintes(2, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
+        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * C1Coefficient * C1Coefficient;
       if (Continuity >= 3)
-        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
+        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * C1Coefficient * C1Coefficient * C1Coefficient;
       Contraintes(Continuity + 2, ipos) = ConstraintPoint(ipos);
     }
   }
@@ -3794,9 +3794,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
       if (Continuity >= 1)
         Contraintes(3, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
+        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * C1Coefficient * C1Coefficient;
       if (Continuity >= 3)
-        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
+        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * C1Coefficient * C1Coefficient * C1Coefficient;
     }
   }
 

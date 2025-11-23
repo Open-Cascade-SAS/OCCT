@@ -98,7 +98,7 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
   }
   Difference = NormeCPrim - MyLengthSliding;
 
-  FTension(FTension.Lower()) = Hauteur * pow(Difference, 2) / MyLengthSliding;
+  FTension(FTension.Lower()) = Hauteur * Difference * Difference / MyLengthSliding;
 
   if (MyDerivativeOrder >= 1)
   {
@@ -125,7 +125,8 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
     if (MyNbValAux == 1)
     {
       LastGradientIndex                      = FTension.Lower() + 2 * MyPoles->Length() + 1;
-      GradDifference(GradDifference.Upper()) = (1 - pow(NormeCPrim / MyLengthSliding, 2));
+      const Standard_Real aRatio             = NormeCPrim / MyLengthSliding;
+      GradDifference(GradDifference.Upper()) = (1 - aRatio * aRatio);
       FTension(LastGradientIndex)            = Hauteur * GradDifference(GradDifference.Upper());
     }
 
@@ -139,8 +140,8 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      Standard_Real    FacteurX  = Difference * (1 - pow(Xaux, 2)) / NormeCPrim;
-      Standard_Real    FacteurY  = Difference * (1 - pow(Yaux, 2)) / NormeCPrim;
+      Standard_Real    FacteurX  = Difference * (1 - Xaux * Xaux) / NormeCPrim;
+      Standard_Real    FacteurY  = Difference * (1 - Yaux * Yaux) / NormeCPrim;
       Standard_Real    FacteurXY = -Difference * Xaux * Yaux / NormeCPrim;
       Standard_Real    Produit;
       Standard_Integer k1, k2;
@@ -192,8 +193,9 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
       }
       if (MyNbValAux == 1)
       {
-        FacteurX = -2 * CPrim.X() * Hauteur / pow(MyLengthSliding, 2);
-        FacteurY = -2 * CPrim.Y() * Hauteur / pow(MyLengthSliding, 2);
+        const Standard_Real aLengthSlidingSquare = MyLengthSliding * MyLengthSliding;
+        FacteurX                                 = -2 * CPrim.X() * Hauteur / aLengthSlidingSquare;
+        FacteurY                                 = -2 * CPrim.Y() * Hauteur / aLengthSlidingSquare;
 
         ii = LastGradientIndex - FTension.Lower();
         kk = LastGradientIndex + (ii - 1) * ii / 2 + FirstNonZero;
@@ -204,8 +206,8 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
           FTension(kk) = FacteurY * Base(2, ii);
           kk++;
         }
-        FTension(FTension.Upper()) =
-          2 * Hauteur * pow(NormeCPrim / MyLengthSliding, 2) / MyLengthSliding;
+        const Standard_Real aRatio = NormeCPrim / MyLengthSliding;
+        FTension(FTension.Upper()) = 2 * Hauteur * aRatio * aRatio / MyLengthSliding;
       }
     }
   }

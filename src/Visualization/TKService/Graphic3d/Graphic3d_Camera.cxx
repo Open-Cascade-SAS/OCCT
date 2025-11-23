@@ -1382,18 +1382,30 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
   //                            \//
   //                            //
   //                      (frustum plane)
-  aFitDistance[1] *=
-    std::sqrt(1 + std::pow(std::tan(aCamSide.Angle(aFrustumPlane[1].Axis().Direction())), 2.0));
-  aFitDistance[2] *=
-    std::sqrt(1 + std::pow(std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction())), 2.0));
-  aFitDistance[3] *=
-    std::sqrt(1 + std::pow(std::tan(aCamUp.Angle(aFrustumPlane[3].Axis().Direction())), 2.0));
-  aFitDistance[4] *=
-    std::sqrt(1 + std::pow(std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction())), 2.0));
-  aFitDistance[5] *=
-    std::sqrt(1 + std::pow(std::tan(aCamDir.Angle(aFrustumPlane[5].Axis().Direction())), 2.0));
-  aFitDistance[6] *=
-    std::sqrt(1 + std::pow(std::tan((-aCamDir).Angle(aFrustumPlane[6].Axis().Direction())), 2.0));
+  {
+    const Standard_Real aTanValue = std::tan(aCamSide.Angle(aFrustumPlane[1].Axis().Direction()));
+    aFitDistance[1] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
+  {
+    const Standard_Real aTanValue = std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
+    aFitDistance[2] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
+  {
+    const Standard_Real aTanValue = std::tan(aCamUp.Angle(aFrustumPlane[3].Axis().Direction()));
+    aFitDistance[3] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
+  {
+    const Standard_Real aTanValue = std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction()));
+    aFitDistance[4] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
+  {
+    const Standard_Real aTanValue = std::tan(aCamDir.Angle(aFrustumPlane[5].Axis().Direction()));
+    aFitDistance[5] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
+  {
+    const Standard_Real aTanValue = std::tan((-aCamDir).Angle(aFrustumPlane[6].Axis().Direction()));
+    aFitDistance[6] *= std::sqrt(1 + aTanValue * aTanValue);
+  }
 
   Standard_Real aViewSizeXv = aFitDistance[1] + aFitDistance[2];
   Standard_Real aViewSizeYv = aFitDistance[3] + aFitDistance[4];

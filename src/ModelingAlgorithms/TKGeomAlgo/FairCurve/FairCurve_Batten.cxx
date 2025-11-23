@@ -352,7 +352,8 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
   math_Vector              VInit(1, EBatten.NbVariables());
 
   // The valeur below is the smallest value of the criterion of flexion.
-  Standard_Real VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
+  const Standard_Real aRatio  = NewHeight / SlidingLength;
+  Standard_Real       VConvex = 0.01 * aRatio * aRatio * aRatio;
   if (VConvex < 1.e-12)
   {
     VConvex = 1.e-12;
@@ -522,8 +523,10 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
   // case of angle of opposite sign
   else
   {
-    Standard_Real Ratio       = a1 / (a1 + a2);
-    Standard_Real AngleMilieu = pow(1 - Ratio, 2) * a1 + pow(Ratio, 2) * a2;
+    Standard_Real       Ratio              = a1 / (a1 + a2);
+    const Standard_Real aRatio1MinusSquare = (1 - Ratio) * (1 - Ratio);
+    const Standard_Real aRatioSquare       = Ratio * Ratio;
+    Standard_Real       AngleMilieu        = aRatio1MinusSquare * a1 + aRatioSquare * a2;
     if (AngleMilieu > M_PI / 2)
       AngleMilieu = M_PI / 2;
 

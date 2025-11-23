@@ -628,7 +628,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(
 // =======================================================================
 static inline double CIELab_f(double theValue) noexcept
 {
-  return theValue > CIELAB_EPSILON ? std::pow(theValue, 1. / 3.)
+  return theValue > CIELAB_EPSILON ? std::cbrt(theValue)
                                    : (CIELAB_KAPPA * theValue) + CIELAB_OFFSET;
 }
 

@@ -483,11 +483,11 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
     U     = sqrt(Discr) + std::abs(Q / 2.0);
     if (U >= 0.0)
     {
-      U = pow(U, 1.0 / 3.0);
+      U = std::cbrt(U);
     }
     else
     {
-      U = -pow(std::abs(U), 1.0 / 3.0);
+      U = -std::cbrt(std::abs(U));
     }
     if (P >= 0.0)
     {

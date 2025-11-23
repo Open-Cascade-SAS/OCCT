@@ -91,9 +91,9 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
   if (!Ok)
     return Ok;
 
-  Mesure             = pow(Hauteur, 3) / 12;
+  Mesure             = Hauteur * Hauteur * Hauteur / 12;
   WVal               = Numerateur / Denominateur;
-  Jerk(Jerk.Lower()) = Mesure * pow(WVal, 2);
+  Jerk(Jerk.Lower()) = Mesure * WVal * WVal;
 
   if (MyDerivativeOrder >= 1)
   {
