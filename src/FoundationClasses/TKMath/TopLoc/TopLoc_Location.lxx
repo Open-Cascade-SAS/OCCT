@@ -63,18 +63,11 @@ inline size_t TopLoc_Location::HashCode() const
   {
     return 0;
   }
-  size_t                     aHash = opencascade::MurmurHash::optimalSeed<size_t>();
-  TopLoc_SListOfItemLocation items = myItems;
-  size_t                     aCombined[3];
-  while (items.More())
-  {
-    aCombined[0] = std::hash<Handle(TopLoc_Datum3D)>{}(items.Value().myDatum);
-    aCombined[1] = opencascade::hash(items.Value().myPower);
-    aCombined[2] = aHash;
-    aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
-    items.Next();
-  }
-  return aHash;
+  const size_t aCombined[2] = {
+    std::hash<Handle(TopLoc_Datum3D)>{}(myItems.Value().myDatum),
+    static_cast<size_t>(myItems.Value().myPower),
+  };
+  return opencascade::hashBytes(aCombined, sizeof(aCombined));
 }
 
 //=================================================================================================
