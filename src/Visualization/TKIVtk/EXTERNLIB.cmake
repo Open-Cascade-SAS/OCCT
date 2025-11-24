@@ -18,5 +18,6 @@ set(OCCT_TKIVtk_EXTERNAL_LIBS
   vtkRenderingFreeType
   vtkRenderingFreeTypeOpenGL
   vtkFiltersGeneral
+  vtkFiltersGeometry
   vtkInteractionStyle
 )
