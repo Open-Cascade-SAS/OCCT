@@ -22,6 +22,7 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <ElSLib.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -58,51 +59,40 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-
-#include <array>
 
 #define BVH_PRIMITIVE_LIMIT 800000
 
 namespace
 {
-//=======================================================================
-// function : getCylinderCircles
-// purpose  : Extracts up to two circular edges from a hollow cylinder face
-//=======================================================================
-std::array<gp_Circ, 2> getCylinderCircles(const TopoDS_Face& theHollowCylinder,
-                                          Standard_Size&     theNumCircles)
+// Check if face represents a full cylinder or cone surface
+// (single wire with 4 edges: 2 seam edges and 2 circular edges)
+static Standard_Boolean isCylinderOrCone(const TopoDS_Face& theFace)
 {
-  std::array<gp_Circ, 2> aCircles; // Array to store up to two circles
-  theNumCircles             = 0;   // Initialize the number of circles found
-  Standard_Integer aLinesNb = 0;   // Counter for the number of edges processed
+  if (theFace.NbChildren() != 1)
+    return false;
 
-  for (TopExp_Explorer anEdgeExp(theHollowCylinder, TopAbs_EDGE); anEdgeExp.More();
-       anEdgeExp.Next())
+  const TopoDS_Iterator aWireIt(theFace);
+  const TopoDS_Shape&   aWire = aWireIt.Value();
+  if (aWire.ShapeType() != TopAbs_WIRE || aWire.NbChildren() != 4)
+    return false;
+
+  int aNbSeams = 0, aNbCirles = 0;
+  for (TopoDS_Iterator anEdgeIt(aWire); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
-    BRepAdaptor_Curve  anAdaptor(anEdge);
-    aLinesNb++;
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
+    if (BRep_Tool::IsClosed(anEdge, theFace))
+      ++aNbSeams;
 
-    if (anAdaptor.GetType() == GeomAbs_Circle && BRep_Tool::IsClosed(anEdge))
-    {
-      theNumCircles++;
-      aCircles[theNumCircles - 1] = anAdaptor.Circle();
-    }
-    else if (anAdaptor.GetType() != GeomAbs_Line || aLinesNb > 4)
-    {
-      theNumCircles = 0;
-      return std::array<gp_Circ, 2>();
-    }
-    if (theNumCircles == 2)
-    {
-      break;
-    }
+    BRepAdaptor_Curve anAdaptor(anEdge);
+    if (anAdaptor.GetType() == GeomAbs_Circle)
+      ++aNbCirles;
   }
-
-  return aCircles;
+  return aNbSeams == 2 && aNbCirles == 2;
 }
 } // namespace
 
@@ -653,119 +643,127 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(
   const Standard_Real    theMaxParam,
   const Standard_Boolean theInteriorFlag)
 {
+  TopLoc_Location             aLocSurf;
+  const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theFace, aLocSurf);
+  if (Handle(Geom_SphericalSurface) aGeomSphere = Handle(Geom_SphericalSurface)::DownCast(aSurf))
+  {
+    bool isFullSphere = theFace.NbChildren() == 0;
+    if (theFace.NbChildren() == 1)
+    {
+      const TopoDS_Iterator aWireIter(theFace);
+      const TopoDS_Wire&    aWire = TopoDS::Wire(aWireIter.Value());
+      if (aWire.NbChildren() == 4)
+      {
+        Standard_Integer aNbSeamEdges = 0, aNbDegenEdges = 0;
+        for (TopoDS_Iterator anEdgeIter(aWire); anEdgeIter.More(); anEdgeIter.Next())
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIter.Value());
+          aNbSeamEdges += BRep_Tool::IsClosed(anEdge, theFace);
+          aNbDegenEdges += BRep_Tool::Degenerated(anEdge);
+        }
+        isFullSphere = aNbSeamEdges == 2 && aNbDegenEdges == 2;
+      }
+    }
+    if (isFullSphere)
+    {
+      gp_Sphere                        aSphere = BRepAdaptor_Surface(theFace).Sphere();
+      Handle(Select3D_SensitiveSphere) aSensSphere =
+        new Select3D_SensitiveSphere(theOwner,
+                                     aSphere.Position().Axis().Location(),
+                                     aSphere.Radius());
+      theSensitiveList.Append(aSensSphere);
+      return Standard_True;
+    }
+  }
+  else if (Handle(Geom_ConicalSurface) aGeomCone = Handle(Geom_ConicalSurface)::DownCast(aSurf))
+  {
+    if (isCylinderOrCone(theFace))
+    {
+      double aURange[2] = {}, aVRange[2] = {};
+      BRepTools::UVBounds(theFace, aURange[0], aURange[1], aVRange[0], aVRange[1]);
+
+      const gp_Circ aCirc1  = ElSLib::ConeVIso(aGeomCone->Position(),
+                                              aGeomCone->RefRadius(),
+                                              aGeomCone->SemiAngle(),
+                                              aVRange[0]);
+      const gp_Circ aCirc2  = ElSLib::ConeVIso(aGeomCone->Position(),
+                                              aGeomCone->RefRadius(),
+                                              aGeomCone->SemiAngle(),
+                                              aVRange[1]);
+      const double  aHeight = aCirc1.Location().Distance(aCirc2.Location());
+
+      gp_Ax3 aPos = aGeomCone->Position();
+      aPos.SetLocation(aCirc1.Location());
+      gp_Trsf aLocTrsf;
+      aLocTrsf.SetTransformation(aPos, gp::XOY());
+
+      gp_Trsf      aTrsf  = aLocSurf * aLocTrsf;
+      const double aScale = aTrsf.ScaleFactor();
+      aTrsf.SetScaleFactor(1.0);
+
+      Handle(Select3D_SensitiveCylinder) aSensSCyl =
+        new Select3D_SensitiveCylinder(theOwner,
+                                       aCirc1.Radius() * aScale,
+                                       aCirc2.Radius() * aScale,
+                                       aHeight * aScale,
+                                       aTrsf,
+                                       true);
+      theSensitiveList.Append(aSensSCyl);
+      return Standard_True;
+    }
+  }
+  else if (Handle(Geom_CylindricalSurface) aGeomCyl =
+             Handle(Geom_CylindricalSurface)::DownCast(aSurf))
+  {
+    if (isCylinderOrCone(theFace))
+    {
+      double aURange[2] = {}, aVRange[2] = {};
+      BRepTools::UVBounds(theFace, aURange[0], aURange[1], aVRange[0], aVRange[1]);
+
+      const double aRad    = aGeomCyl->Radius();
+      const double aHeight = aVRange[1] - aVRange[0];
+
+      gp_Ax3 aPos = aGeomCyl->Position();
+      aPos.SetLocation(aGeomCyl->Location().XYZ() + aPos.Direction().XYZ() * aVRange[0]);
+      gp_Trsf aLocTrsf;
+      aLocTrsf.SetTransformation(aPos, gp::XOY());
+
+      gp_Trsf      aTrsf  = aLocSurf * aLocTrsf;
+      const double aScale = aTrsf.ScaleFactor();
+      aTrsf.SetScaleFactor(1.0);
+
+      Handle(Select3D_SensitiveCylinder) aSensSCyl =
+        new Select3D_SensitiveCylinder(theOwner,
+                                       aRad * aScale,
+                                       aRad * aScale,
+                                       aHeight * aScale,
+                                       aTrsf,
+                                       true);
+      theSensitiveList.Append(aSensSCyl);
+      return Standard_True;
+    }
+  }
+  else if (Handle(Geom_Plane) aGeomPlane = Handle(Geom_Plane)::DownCast(aSurf))
+  {
+    TopTools_IndexedMapOfShape aSubfacesMap;
+    TopExp::MapShapes(theFace, TopAbs_EDGE, aSubfacesMap);
+    if (aSubfacesMap.Extent() == 1)
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aSubfacesMap.FindKey(1));
+      BRepAdaptor_Curve  anAdaptor(anEdge);
+      if (anAdaptor.GetType() == GeomAbs_Circle && BRep_Tool::IsClosed(anEdge))
+      {
+        Handle(Select3D_SensitiveCircle) aSensSCyl =
+          new Select3D_SensitiveCircle(theOwner, anAdaptor.Circle(), theInteriorFlag);
+        theSensitiveList.Append(aSensSCyl);
+        return Standard_True;
+      }
+    }
+  }
+
   TopLoc_Location aLoc;
   if (Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace, aLoc))
   {
-    TopLoc_Location             aLocSurf;
-    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theFace, aLocSurf);
-    if (Handle(Geom_SphericalSurface) aGeomSphere = Handle(Geom_SphericalSurface)::DownCast(aSurf))
-    {
-      bool isFullSphere = theFace.NbChildren() == 0;
-      if (theFace.NbChildren() == 1)
-      {
-        const TopoDS_Iterator aWireIter(theFace);
-        const TopoDS_Wire&    aWire = TopoDS::Wire(aWireIter.Value());
-        if (aWire.NbChildren() == 4)
-        {
-          Standard_Integer aNbSeamEdges = 0, aNbDegenEdges = 0;
-          for (TopoDS_Iterator anEdgeIter(aWire); anEdgeIter.More(); anEdgeIter.Next())
-          {
-            const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIter.Value());
-            aNbSeamEdges += BRep_Tool::IsClosed(anEdge, theFace);
-            aNbDegenEdges += BRep_Tool::Degenerated(anEdge);
-          }
-          isFullSphere = aNbSeamEdges == 2 && aNbDegenEdges == 2;
-        }
-      }
-      if (isFullSphere)
-      {
-        gp_Sphere                        aSphere = BRepAdaptor_Surface(theFace).Sphere();
-        Handle(Select3D_SensitiveSphere) aSensSphere =
-          new Select3D_SensitiveSphere(theOwner,
-                                       aSphere.Position().Axis().Location(),
-                                       aSphere.Radius());
-        theSensitiveList.Append(aSensSphere);
-        return Standard_True;
-      }
-    }
-    else if (Handle(Geom_ConicalSurface) aGeomCone = Handle(Geom_ConicalSurface)::DownCast(aSurf))
-    {
-      Standard_Size                aNumCircles;
-      const std::array<gp_Circ, 2> aCircles = getCylinderCircles(theFace, aNumCircles);
-
-      if (aNumCircles > 0 && aNumCircles < 3)
-      {
-        const gp_Cone aCone = BRepAdaptor_Surface(theFace).Cone();
-
-        gp_Trsf       aTrsf;
-        Standard_Real aRad1, aRad2, aHeight;
-        if (aNumCircles == 1)
-        {
-          aRad1   = 0.0;
-          aRad2   = aCircles[0].Radius();
-          aHeight = aRad2 * std::tan(aCone.SemiAngle());
-          aTrsf.SetTransformation(aCone.Position(), gp::XOY());
-        }
-        else
-        {
-          aRad1   = aCircles[0].Radius();
-          aRad2   = aCircles[1].Radius();
-          aHeight = aCircles[0].Location().Distance(aCircles[1].Location());
-
-          const gp_Pnt aPos = aCircles[0].Location();
-          const gp_Dir aDirection(aCircles[1].Location().XYZ() - aPos.XYZ());
-
-          aTrsf.SetTransformation(gp_Ax3(aPos, aDirection), gp::XOY());
-        }
-
-        Handle(Select3D_SensitiveCylinder) aSensSCyl =
-          new Select3D_SensitiveCylinder(theOwner, aRad1, aRad2, aHeight, aTrsf, true);
-        theSensitiveList.Append(aSensSCyl);
-        return Standard_True;
-      }
-    }
-    else if (Handle(Geom_CylindricalSurface) aGeomCyl =
-               Handle(Geom_CylindricalSurface)::DownCast(aSurf))
-    {
-      Standard_Size                aNumCircles;
-      const std::array<gp_Circ, 2> aCircles = getCylinderCircles(theFace, aNumCircles);
-
-      if (aNumCircles == 2)
-      {
-        const gp_Cylinder aCyl = BRepAdaptor_Surface(theFace).Cylinder();
-
-        const Standard_Real aRad = aCyl.Radius();
-        const gp_Pnt        aPos = aCircles[0].Location();
-        const gp_Dir        aDirection(aCircles[1].Location().XYZ() - aPos.XYZ());
-        const Standard_Real aHeight = aPos.Distance(aCircles[1].Location());
-
-        gp_Trsf aTrsf;
-        aTrsf.SetTransformation(gp_Ax3(aPos, aDirection), gp::XOY());
-
-        Handle(Select3D_SensitiveCylinder) aSensSCyl =
-          new Select3D_SensitiveCylinder(theOwner, aRad, aRad, aHeight, aTrsf, true);
-        theSensitiveList.Append(aSensSCyl);
-        return Standard_True;
-      }
-    }
-    else if (Handle(Geom_Plane) aGeomPlane = Handle(Geom_Plane)::DownCast(aSurf))
-    {
-      TopTools_IndexedMapOfShape aSubfacesMap;
-      TopExp::MapShapes(theFace, TopAbs_EDGE, aSubfacesMap);
-      if (aSubfacesMap.Extent() == 1)
-      {
-        const TopoDS_Edge& anEdge = TopoDS::Edge(aSubfacesMap.FindKey(1));
-        BRepAdaptor_Curve  anAdaptor(anEdge);
-        if (anAdaptor.GetType() == GeomAbs_Circle && BRep_Tool::IsClosed(anEdge))
-        {
-          Handle(Select3D_SensitiveCircle) aSensSCyl =
-            new Select3D_SensitiveCircle(theOwner, anAdaptor.Circle(), theInteriorFlag);
-          theSensitiveList.Append(aSensSCyl);
-          return Standard_True;
-        }
-      }
-    }
-
     Handle(Select3D_SensitiveTriangulation) STG =
       new Select3D_SensitiveTriangulation(theOwner, aTriangulation, aLoc, theInteriorFlag);
     theSensitiveList.Append(STG);
