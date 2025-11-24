@@ -20,6 +20,7 @@
 #include <Standard_Dump.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopLoc_SListNodeOfItemLocation.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
 //=================================================================================================
@@ -154,7 +155,7 @@ Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 {
   const void** p = (const void**)&myItems;
   const void** q = (const void**)&Other.myItems;
-  if (*p == *q || myItems == Other.myItems)
+  if (*p == *q || myItems.myNode == Other.myItems.myNode)
   {
     return Standard_True;
   }

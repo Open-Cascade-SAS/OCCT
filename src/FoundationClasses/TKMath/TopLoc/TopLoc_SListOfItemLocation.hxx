@@ -116,12 +116,7 @@ public:
   //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
 
-  //! Compares two lists for sharing the same nodes.
-  //! @returns true if the lists share the same nodes, false otherwise.
-  bool operator==(const TopLoc_SListOfItemLocation& Other) const noexcept
-  {
-    return myNode == Other.myNode;
-  }
+  friend class TopLoc_Location;
 
 private:
   Handle(TopLoc_SListNodeOfItemLocation) myNode;
