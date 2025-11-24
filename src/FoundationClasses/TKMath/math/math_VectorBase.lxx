@@ -77,6 +77,23 @@ math_VectorBase<TheItemType>::math_VectorBase(const math_VectorBase<TheItemType>
 }
 
 template <typename TheItemType>
+math_VectorBase<TheItemType>::math_VectorBase(math_VectorBase<TheItemType>&& theOther) noexcept
+    : myBuffer{},
+      Array(theOther.Array.IsDeletable()
+              ? std::move(theOther.Array)
+              : (theOther.Length() <= math_VectorBase::THE_BUFFER_SIZE
+                   ? NCollection_Array1<TheItemType>(*myBuffer.data(),
+                                                     theOther.Lower(),
+                                                     theOther.Upper())
+                   : NCollection_Array1<TheItemType>(theOther.Lower(), theOther.Upper())))
+{
+  if (!theOther.Array.IsEmpty())
+  {
+    Array.Assign(theOther.Array);
+  }
+}
+
+template <typename TheItemType>
 void math_VectorBase<TheItemType>::SetLower(const Standard_Integer theLower)
 {
   Array.UpdateLowerBound(theLower);
@@ -540,6 +557,27 @@ math_VectorBase<TheItemType>& math_VectorBase<TheItemType>::Initialized(
     Length() != theOther.Length(),
     "math_VectorBase::Initialized() - input vector has wrong dimensions");
   memmove(&Array.ChangeFirst(), &theOther.Array.First(), sizeof(TheItemType) * Array.Length());
+  return *this;
+}
+
+template <typename TheItemType>
+math_VectorBase<TheItemType>& math_VectorBase<TheItemType>::operator=(
+  math_VectorBase<TheItemType>&& theOther)
+{
+  if (this == &theOther)
+  {
+    return *this;
+  }
+
+  if (Array.IsDeletable() && theOther.Array.IsDeletable() && Lower() == theOther.Lower()
+      && Length() == theOther.Length())
+  {
+    Array.Move(theOther.Array);
+  }
+  else
+  {
+    Initialized(theOther);
+  }
   return *this;
 }
 

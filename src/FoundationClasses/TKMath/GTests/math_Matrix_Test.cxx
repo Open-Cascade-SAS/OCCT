@@ -594,3 +594,56 @@ TEST(MathMatrixTest, InPlaceMatrixMultiplication)
   EXPECT_NEAR(aMatrixACopy(2, 1), aExpectedAB(2, 1), Precision::Confusion());
   EXPECT_NEAR(aMatrixACopy(2, 2), aExpectedAB(2, 2), Precision::Confusion());
 }
+
+// Tests for Move Semantics
+TEST(MathMatrixTest, MoveSemantics)
+{
+  // --- Move Constructor ---
+
+  // Large matrix (heap allocated)
+  Standard_Integer aRows = 10;
+  Standard_Integer aCols = 10;
+  math_Matrix      aMat1(1, aRows, 1, aCols);
+  aMat1.Init(1.0);
+  aMat1(1, 1) = 2.0;
+
+  // Move aMat1 to aMat2
+  math_Matrix aMat2(std::move(aMat1));
+
+  EXPECT_EQ(aMat2.RowNumber(), aRows);
+  EXPECT_EQ(aMat2.ColNumber(), aCols);
+  EXPECT_EQ(aMat2(1, 1), 2.0);
+
+  // Verify source state (should be empty after move)
+  EXPECT_EQ(aMat1.RowNumber(), 0);
+
+  // Small matrix (buffer allocated)
+  Standard_Integer aSmallRows = 4;
+  Standard_Integer aSmallCols = 4;
+  math_Matrix      aSmallMat1(1, aSmallRows, 1, aSmallCols);
+  aSmallMat1.Init(1.0);
+
+  // Move aSmallMat1 to aSmallMat2 (should copy because of buffer)
+  math_Matrix aSmallMat2(std::move(aSmallMat1));
+
+  EXPECT_EQ(aSmallMat2.RowNumber(), aSmallRows);
+  EXPECT_EQ(aSmallMat2(1, 1), 1.0);
+
+  // Source remains valid for buffer-based matrix
+  EXPECT_EQ(aSmallMat1.RowNumber(), aSmallRows);
+  EXPECT_EQ(aSmallMat1(1, 1), 1.0);
+
+  // --- Move Assignment ---
+
+  // Large matrix move assignment
+  math_Matrix aMatAssign1(1, aRows, 1, aCols);
+  aMatAssign1.Init(5.0);
+
+  math_Matrix aMatAssign2(1, aRows, 1, aCols);
+  aMatAssign2.Init(0.0);
+
+  aMatAssign2 = std::move(aMatAssign1);
+
+  EXPECT_EQ(aMatAssign2(1, 1), 5.0);
+  EXPECT_EQ(aMatAssign1.RowNumber(), 0);
+}

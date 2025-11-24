@@ -26,6 +26,7 @@
 #include <Standard_Boolean.hxx>
 
 #include <array>
+#include <utility>
 
 class math_DoubleTab
 {
@@ -77,8 +78,33 @@ public:
   {
   }
 
+  //! Move constructor
+  math_DoubleTab(math_DoubleTab&& theOther) noexcept
+      : myBuffer{},
+        myArray(theOther.myArray.IsDeletable()
+                  ? std::move(theOther.myArray)
+                  : (theOther.NbRows() * theOther.NbColumns() <= THE_BUFFER_SIZE
+                       ? NCollection_Array2<Standard_Real>(*myBuffer.data(),
+                                                           theOther.LowerRow(),
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())
+                       : NCollection_Array2<Standard_Real>(theOther.LowerRow(),
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())))
+  {
+    if (!theOther.myArray.IsEmpty())
+    {
+      myArray.Assign(theOther.myArray);
+    }
+  }
+
   //! Copy data to theOther
   void Copy(math_DoubleTab& theOther) const { theOther.myArray.Assign(myArray); }
+
+  //! Returns true if the internal array is deletable (heap-allocated)
+  Standard_Boolean IsDeletable() const { return myArray.IsDeletable(); }
 
   //! Set lower row index
   void SetLowerRow(const Standard_Integer theLowerRow) { myArray.UpdateLowerRow(theLowerRow); }
@@ -128,6 +154,39 @@ public:
   Standard_Real& operator()(const Standard_Integer theRowIndex, const Standard_Integer theColIndex)
   {
     return Value(theRowIndex, theColIndex);
+  }
+
+  //! Assignment operator
+  math_DoubleTab& operator=(const math_DoubleTab& theOther)
+  {
+    if (this != &theOther)
+    {
+      myArray = theOther.myArray;
+    }
+    return *this;
+  }
+
+  //! Move assignment operator
+  math_DoubleTab& operator=(math_DoubleTab&& theOther) noexcept
+  {
+    if (this == &theOther)
+    {
+      return *this;
+    }
+
+    if (myArray.IsDeletable() && theOther.myArray.IsDeletable()
+        && myArray.NbRows() == theOther.myArray.NbRows()
+        && myArray.NbColumns() == theOther.myArray.NbColumns()
+        && myArray.LowerRow() == theOther.myArray.LowerRow()
+        && myArray.LowerCol() == theOther.myArray.LowerCol())
+    {
+      myArray.Move(theOther.myArray);
+    }
+    else
+    {
+      myArray = theOther.myArray;
+    }
+    return *this;
   }
 
   //! Destructor

@@ -639,3 +639,65 @@ TEST(MathVectorTest, EdgeCases)
   EXPECT_EQ(aNegVec.Max(), 1);
   EXPECT_EQ(aNegVec.Min(), -2);
 }
+
+// Tests for Move Semantics
+TEST(MathVectorTest, MoveSemantics)
+{
+  // --- Move Constructor ---
+
+  // Large vector (heap allocated)
+  Standard_Integer aLen = 100;
+  math_Vector      aVec1(1, aLen);
+  for (Standard_Integer i = 1; i <= aLen; ++i)
+  {
+    aVec1(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Move aVec1 to aVec2
+  math_Vector aVec2(std::move(aVec1));
+
+  EXPECT_EQ(aVec2.Length(), aLen);
+  EXPECT_EQ(aVec2(1), 1.0);
+  EXPECT_EQ(aVec2(aLen), static_cast<Standard_Real>(aLen));
+
+  // Verify source state (length should be 0 after move for NCollection_Array1)
+  // Note: calling Length() is safe as it just returns size.
+  EXPECT_EQ(aVec1.Length(), 0);
+
+  // Small vector (buffer allocated)
+  Standard_Integer aSmallLen = 10;
+  math_Vector      aSmallVec1(1, aSmallLen);
+  for (Standard_Integer i = 1; i <= aSmallLen; ++i)
+  {
+    aSmallVec1(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Move aSmallVec1 to aSmallVec2 (should copy because of buffer)
+  math_Vector aSmallVec2(std::move(aSmallVec1));
+
+  EXPECT_EQ(aSmallVec2.Length(), aSmallLen);
+  EXPECT_EQ(aSmallVec2(1), 1.0);
+
+  // Source remains valid for buffer-based vector
+  EXPECT_EQ(aSmallVec1.Length(), aSmallLen);
+  EXPECT_EQ(aSmallVec1(1), 1.0);
+
+  // --- Move Assignment ---
+
+  // Large vector move assignment
+  math_Vector aVecAssign1(1, aLen);
+  for (Standard_Integer i = 1; i <= aLen; ++i)
+  {
+    aVecAssign1(i) = static_cast<Standard_Real>(i);
+  }
+
+  math_Vector aVecAssign2(1, aLen);
+  aVecAssign2.Init(0.0);
+
+  aVecAssign2 = std::move(aVecAssign1);
+
+  EXPECT_EQ(aVecAssign2.Length(), aLen);
+  EXPECT_EQ(aVecAssign2(1), 1.0);
+
+  EXPECT_EQ(aVecAssign1.Length(), 0);
+}
