@@ -368,7 +368,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
 
   Standard_Real    Beta, Gamma, Del, P1, P2, P, Ep, Q1, Q2, Q3, Q, Eq, A1, A2, Discr;
   Standard_Real    Sigma, Psi, D1, D2, Sb, Omega, Sp3, Y1, Dbg, Sdbg, Den1, Den2;
-  Standard_Real    U, H, Sq;
+  Standard_Real    H, Sq;
   Standard_Integer Exp;
 
   Beta  = B / A;
@@ -480,8 +480,16 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   else if (Discr > 0.0)
   {
     NbSol = 1;
-    U     = sqrt(Discr) + std::abs(Q / 2.0);
-    U     = std::cbrt(U);
+    // const double U = std::cbrt(sqrt(Discr) + std::abs(Q / 2.0));
+    double U = sqrt(Discr) + std::abs(Q / 2.0);
+    if (U >= 0.0)
+    {
+      U = pow(U, 1.0 / 3.0);
+    }
+    else
+    {
+      U = -pow(std::abs(U), 1.0 / 3.0);
+    }
     if (P >= 0.0)
     {
       H = U * U + P / 3.0 + (P / U) * (P / U) / 9.0;
