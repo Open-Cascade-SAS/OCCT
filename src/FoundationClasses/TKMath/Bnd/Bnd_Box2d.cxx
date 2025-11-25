@@ -15,12 +15,24 @@
 // commercial license or contractual agreement.
 
 #include <Bnd_Box2d.hxx>
+
 #include <gp_Dir2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Stream.hxx>
 
-//-- #include <Precision.hxx> Precision::Infinite() -> 1e+100
+namespace
+{
+// Precision constant for infinite bounds
+constexpr Standard_Real THE_BND_PRECISION_INFINITE = 1e+100;
+
+// Precomputed unit direction vectors for bounding box transformations
+constexpr gp_Dir2d THE_DIR_XMIN{gp_Dir2d::D::NX};
+constexpr gp_Dir2d THE_DIR_XMAX{gp_Dir2d::D::X};
+constexpr gp_Dir2d THE_DIR_YMIN{gp_Dir2d::D::NY};
+constexpr gp_Dir2d THE_DIR_YMAX{gp_Dir2d::D::Y};
+} // anonymous namespace
+
 //=================================================================================================
 
 void Bnd_Box2d::Update(const Standard_Real x,
@@ -38,14 +50,14 @@ void Bnd_Box2d::Update(const Standard_Real x,
   }
   else
   {
-    if (!(Flags & XminMask) && (x < Xmin))
-      Xmin = x;
-    if (!(Flags & XmaxMask) && (X > Xmax))
-      Xmax = X;
-    if (!(Flags & YminMask) && (y < Ymin))
-      Ymin = y;
-    if (!(Flags & YmaxMask) && (Y > Ymax))
-      Ymax = Y;
+    if (!(Flags & XminMask))
+      Xmin = std::min(Xmin, x);
+    if (!(Flags & XmaxMask))
+      Xmax = std::max(Xmax, X);
+    if (!(Flags & YminMask))
+      Ymin = std::min(Ymin, y);
+    if (!(Flags & YmaxMask))
+      Ymax = std::max(Ymax, Y);
   }
 }
 
@@ -63,14 +75,14 @@ void Bnd_Box2d::Update(const Standard_Real X, const Standard_Real Y)
   }
   else
   {
-    if (!(Flags & XminMask) && (X < Xmin))
-      Xmin = X;
-    else if (!(Flags & XmaxMask) && (X > Xmax))
-      Xmax = X;
-    if (!(Flags & YminMask) && (Y < Ymin))
-      Ymin = Y;
-    else if (!(Flags & YmaxMask) && (Y > Ymax))
-      Ymax = Y;
+    if (!(Flags & XminMask))
+      Xmin = std::min(Xmin, X);
+    if (!(Flags & XmaxMask))
+      Xmax = std::max(Xmax, X);
+    if (!(Flags & YminMask))
+      Ymin = std::min(Ymin, Y);
+    if (!(Flags & YmaxMask))
+      Ymax = std::max(Ymax, Y);
   }
 }
 
@@ -80,122 +92,139 @@ void Bnd_Box2d::Get(Standard_Real& x, Standard_Real& y, Standard_Real& Xm, Stand
 {
   if (Flags & VoidMask)
     throw Standard_ConstructionError("Bnd_Box is void");
-  Standard_Real pinf = 1e+100; //-- Precision::Infinite();
-  if (Flags & XminMask)
-    x = -pinf;
-  else
-    x = Xmin - Gap;
-  if (Flags & XmaxMask)
-    Xm = pinf;
-  else
-    Xm = Xmax + Gap;
-  if (Flags & YminMask)
-    y = -pinf;
-  else
-    y = Ymin - Gap;
-  if (Flags & YmaxMask)
-    Ym = pinf;
-  else
-    Ym = Ymax + Gap;
+
+  x  = GetXMin();
+  Xm = GetXMax();
+  y  = GetYMin();
+  Ym = GetYMax();
+}
+
+//=================================================================================================
+
+Bnd_Box2d::Limits Bnd_Box2d::Get() const
+{
+  return {GetXMin(), GetXMax(), GetYMin(), GetYMax()};
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetXMin() const
+{
+  return (Flags & XminMask) ? -THE_BND_PRECISION_INFINITE : Xmin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetXMax() const
+{
+  return (Flags & XmaxMask) ? THE_BND_PRECISION_INFINITE : Xmax + Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetYMin() const
+{
+  return (Flags & YminMask) ? -THE_BND_PRECISION_INFINITE : Ymin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetYMax() const
+{
+  return (Flags & YmaxMask) ? THE_BND_PRECISION_INFINITE : Ymax + Gap;
 }
 
 //=================================================================================================
 
 Bnd_Box2d Bnd_Box2d::Transformed(const gp_Trsf2d& T) const
 {
-  gp_TrsfForm F = T.Form();
-  Bnd_Box2d   newb(*this);
+  const gp_TrsfForm aF = T.Form();
+  Bnd_Box2d         aNewBox(*this);
   if (IsVoid())
-    return newb;
+    return aNewBox;
 
-  if (F == gp_Identity)
+  if (aF == gp_Identity)
   {
   }
-  else if (F == gp_Translation)
+  else if (aF == gp_Translation)
   {
-    Standard_Real DX, DY;
-    (T.TranslationPart()).Coord(DX, DY);
+    Standard_Real aDX, aDY;
+    (T.TranslationPart()).Coord(aDX, aDY);
     if (!(Flags & XminMask))
-      newb.Xmin += DX;
+      aNewBox.Xmin += aDX;
     if (!(Flags & XmaxMask))
-      newb.Xmax += DX;
+      aNewBox.Xmax += aDX;
     if (!(Flags & YminMask))
-      newb.Ymin += DY;
+      aNewBox.Ymin += aDY;
     if (!(Flags & YmaxMask))
-      newb.Ymax += DY;
+      aNewBox.Ymax += aDY;
   }
   else
   {
-    gp_Pnt2d         P[4];
-    Standard_Boolean Vertex[4];
-    Standard_Integer i;
-    Vertex[0] = Standard_True;
-    Vertex[1] = Standard_True;
-    Vertex[2] = Standard_True;
-    Vertex[3] = Standard_True;
-    gp_Dir2d D[6];
-    //    Standard_Integer vertices = 0;
-    Standard_Integer directions = 0;
+    gp_Pnt2d         aP[4];
+    Standard_Boolean aVertex[4];
+    aVertex[0] = Standard_True;
+    aVertex[1] = Standard_True;
+    aVertex[2] = Standard_True;
+    aVertex[3] = Standard_True;
+    gp_Dir2d         aD[6];
+    Standard_Integer aNbDirs = 0;
 
     if (Flags & XminMask)
     {
-      D[directions].SetCoord(-1., 0.);
-      directions++;
-      Vertex[0] = Vertex[2] = Standard_False;
+      aD[aNbDirs++] = THE_DIR_XMIN;
+      aVertex[0] = aVertex[2] = Standard_False;
     }
     if (Flags & XmaxMask)
     {
-      D[directions].SetCoord(1., 0.);
-      directions++;
-      Vertex[1] = Vertex[3] = Standard_False;
+      aD[aNbDirs++] = THE_DIR_XMAX;
+      aVertex[1] = aVertex[3] = Standard_False;
     }
     if (Flags & YminMask)
     {
-      D[directions].SetCoord(0., -1.);
-      directions++;
-      Vertex[0] = Vertex[1] = Standard_False;
+      aD[aNbDirs++] = THE_DIR_YMIN;
+      aVertex[0] = aVertex[1] = Standard_False;
     }
     if (Flags & YmaxMask)
     {
-      D[directions].SetCoord(0., 1.);
-      directions++;
-      Vertex[2] = Vertex[3] = Standard_False;
+      aD[aNbDirs++] = THE_DIR_YMAX;
+      aVertex[2] = aVertex[3] = Standard_False;
     }
 
-    newb.SetVoid();
+    aNewBox.SetVoid();
 
-    for (i = 0; i < directions; i++)
+    for (Standard_Integer i = 0; i < aNbDirs; i++)
     {
-      D[i].Transform(T);
-      newb.Add(D[i]);
+      aD[i].Transform(T);
+      aNewBox.Add(aD[i]);
     }
-    P[0].SetCoord(Xmin, Ymin);
-    P[1].SetCoord(Xmax, Ymin);
-    P[2].SetCoord(Xmin, Ymax);
-    P[3].SetCoord(Xmax, Ymax);
-    if (Vertex[0])
+    aP[0].SetCoord(Xmin, Ymin);
+    aP[1].SetCoord(Xmax, Ymin);
+    aP[2].SetCoord(Xmin, Ymax);
+    aP[3].SetCoord(Xmax, Ymax);
+    if (aVertex[0])
     {
-      P[0].Transform(T);
-      newb.Add(P[0]);
+      aP[0].Transform(T);
+      aNewBox.Add(aP[0]);
     }
-    if (Vertex[1])
+    if (aVertex[1])
     {
-      P[1].Transform(T);
-      newb.Add(P[1]);
+      aP[1].Transform(T);
+      aNewBox.Add(aP[1]);
     }
-    if (Vertex[2])
+    if (aVertex[2])
     {
-      P[2].Transform(T);
-      newb.Add(P[2]);
+      aP[2].Transform(T);
+      aNewBox.Add(aP[2]);
     }
-    if (Vertex[3])
+    if (aVertex[3])
     {
-      P[3].Transform(T);
-      newb.Add(P[3]);
+      aP[3].Transform(T);
+      aNewBox.Add(aP[3]);
     }
-    newb.Gap = Gap;
+    aNewBox.Gap = Gap;
   }
-  return newb;
+  return aNewBox;
 }
 
 //=================================================================================================

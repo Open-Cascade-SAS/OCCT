@@ -205,9 +205,9 @@ TEST(Bnd_BoxTest, CornerMethodsVoidBox)
 {
   Bnd_Box aBox; // void box
 
-  EXPECT_THROW(aBox.CornerMin(), Standard_ConstructionError)
+  EXPECT_THROW((void)aBox.CornerMin(), Standard_ConstructionError)
     << "CornerMin should throw for void box";
-  EXPECT_THROW(aBox.CornerMax(), Standard_ConstructionError)
+  EXPECT_THROW((void)aBox.CornerMax(), Standard_ConstructionError)
     << "CornerMax should throw for void box";
 }
 
