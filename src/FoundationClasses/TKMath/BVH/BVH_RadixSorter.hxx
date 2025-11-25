@@ -262,13 +262,12 @@ void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
 
     // Compute voxel coordinates clamped to valid range
     const Standard_Integer aVoxelX =
-      (std::max)(0, (std::min)(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 0)), aDimension - 1));
+      std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 0)), 0, aDimension - 1);
     const Standard_Integer aVoxelY =
-      (std::max)(0, (std::min)(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 1)), aDimension - 1));
+      std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 1)), 0, aDimension - 1);
     const Standard_Integer aVoxelZ =
       (aNbEffComp > 2)
-        ? (std::max)(0,
-                     (std::min)(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 2)), aDimension - 1))
+        ? std::clamp(BVH::IntFloor(BVH::VecComp<T, N>::Get(aVoxelF, 2)), 0, aDimension - 1)
         : 0;
 
     // Use LUT-based Morton code encoding for better performance
