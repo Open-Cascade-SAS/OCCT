@@ -290,18 +290,18 @@ Standard_EXPORT bool MethodName(const InputType& theInputParam,
 ### Source Files (.cxx) - Method Separators
 
 Each method **MUST** be preceded by:
-1. A separator line of exactly 100 characters: `//` followed by 97 `=` signs
+1. A separator line of exactly 100 characters: `//` followed by 98 `=` signs
 2. An empty line after the separator
 
 ```cpp
-//=================================================================================================
+//==================================================================================================
 
 void MyClass::MyMethod(const TopoDS_Shape& theShape)
 {
   // Implementation
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool MyClass::AnotherMethod()
 {
@@ -312,10 +312,10 @@ bool MyClass::AnotherMethod()
 **DO NOT use old-style function guards:**
 ```cpp
 // WRONG - Do not use this style:
-//=================================================================================================
+//==================================================================================================
 // purpose: Description of what the method does
 // function: MyClass::MyMethod
-//=================================================================================================
+//==================================================================================================
 ```
 
 ### Technical Comments
@@ -325,7 +325,7 @@ Place implementation notes inside the method body:
 - Inline where specific logic needs explanation
 
 ```cpp
-//=================================================================================================
+//==================================================================================================
 
 void MyClass::ComplexMethod(const TopoDS_Shape& theShape)
 {
