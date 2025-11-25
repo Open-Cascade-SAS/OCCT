@@ -480,16 +480,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real A,
   else if (Discr > 0.0)
   {
     NbSol = 1;
-    // const double U = std::cbrt(sqrt(Discr) + std::abs(Q / 2.0));
-    double U = sqrt(Discr) + std::abs(Q / 2.0);
-    if (U >= 0.0)
-    {
-      U = pow(U, 1.0 / 3.0);
-    }
-    else
-    {
-      U = -pow(std::abs(U), 1.0 / 3.0);
-    }
+    const double U = std::cbrt(sqrt(Discr) + std::abs(Q / 2.0));
     if (P >= 0.0)
     {
       H = U * U + P / 3.0 + (P / U) * (P / U) / 9.0;

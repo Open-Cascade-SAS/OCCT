@@ -162,7 +162,10 @@ void gp_GTrsf::SetForm()
   if (std::abs(s) < gp::Resolution())
     throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
 
-  s = std::cbrt(s);
+  if (s > 0)
+    s = std::cbrt(s);
+  else
+    s = -std::cbrt(-s);
   M.Divide(s);
 
   // check if the matrix is an uniform matrix

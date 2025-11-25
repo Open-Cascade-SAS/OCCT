@@ -361,7 +361,10 @@ void gp_Trsf::SetValues(const Standard_Real a11,
     As = -As;
   Standard_ConstructionError_Raise_if(As < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
-  s = std::cbrt(s);
+  if (s > 0)
+    s = std::cbrt(s);
+  else
+    s = -std::cbrt(-s);
   M.Divide(s);
 
   scale = s;
