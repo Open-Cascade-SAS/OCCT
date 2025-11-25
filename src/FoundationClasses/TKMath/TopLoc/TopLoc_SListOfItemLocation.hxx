@@ -102,6 +102,10 @@ public:
   //! For an empty list, returns 0.
   Standard_EXPORT size_t HashCode() const noexcept;
 
+  //! Returns the underlying node handle.
+  //! Used for fast identity comparison between lists.
+  const Handle(TopLoc_SListNodeOfItemLocation)& Node() const noexcept { return myNode; }
+
   //! Replaces the list by a list with <anItem> as Value
   //! and the list <me> as tail.
   void Construct(const TopLoc_ItemLocation& anItem)
@@ -119,8 +123,6 @@ public:
   //! Moves the iterator to the next object in the list.
   //! If the iterator is empty it will stay empty. This is ToTail()
   void Next() { ToTail(); }
-
-  friend class TopLoc_Location;
 
 private:
   Handle(TopLoc_SListNodeOfItemLocation) myNode;

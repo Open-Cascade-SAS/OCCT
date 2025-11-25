@@ -153,7 +153,7 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
 {
   // Fast path: same node means equal (handles identity == identity case too)
-  if (myItems.myNode == theOther.myItems.myNode)
+  if (myItems.Node() == theOther.myItems.Node())
   {
     return Standard_True;
   }
@@ -167,7 +167,7 @@ Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
   TopLoc_SListOfItemLocation anIt2 = theOther.myItems;
   while (anIt1.More() && anIt2.More())
   {
-    if (anIt1.myNode == anIt2.myNode)
+    if (anIt1.Node() == anIt2.Node())
     {
       return Standard_True; // Shared tail
     }
