@@ -31,11 +31,23 @@ class TopLoc_SListNodeOfItemLocation : public Standard_Transient
 
 public:
   TopLoc_SListNodeOfItemLocation(const TopLoc_ItemLocation&        I,
-                                 const TopLoc_SListOfItemLocation& aTail);
+                                 const TopLoc_SListOfItemLocation& aTail,
+                                 size_t                            theHash)
+      : myTail(aTail),
+        myValue(I),
+        myHash(theHash)
+  {
+  }
 
-  TopLoc_SListOfItemLocation& Tail() const;
+  TopLoc_SListOfItemLocation& Tail() { return myTail; }
 
-  TopLoc_ItemLocation& Value() const;
+  const TopLoc_SListOfItemLocation& Tail() const { return myTail; }
+
+  TopLoc_ItemLocation& Value() { return myValue; }
+
+  const TopLoc_ItemLocation& Value() const { return myValue; }
+
+  size_t HashCode() const noexcept { return myHash; }
 
   DEFINE_STANDARD_RTTIEXT(TopLoc_SListNodeOfItemLocation, Standard_Transient)
 
@@ -43,8 +55,7 @@ protected:
 private:
   TopLoc_SListOfItemLocation myTail;
   TopLoc_ItemLocation        myValue;
+  size_t                     myHash;
 };
-
-#include <TopLoc_SListNodeOfItemLocation.lxx>
 
 #endif // _TopLoc_SListNodeOfItemLocation_HeaderFile

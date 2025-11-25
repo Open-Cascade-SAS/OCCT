@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty List.
-  TopLoc_SListOfItemLocation() {}
+  TopLoc_SListOfItemLocation() = default;
 
   //! Creates a List with <anItem> as value and <aTail> as tail.
   Standard_EXPORT TopLoc_SListOfItemLocation(const TopLoc_ItemLocation&        anItem,
@@ -82,10 +82,10 @@ public:
   }
 
   //! Return true if this list is empty
-  Standard_Boolean IsEmpty() const { return myNode.IsNull(); }
+  Standard_Boolean IsEmpty() const noexcept { return myNode.IsNull(); }
 
   //! Sets the list to be empty.
-  void Clear() { myNode.Nullify(); }
+  void Clear() noexcept { myNode.Nullify(); }
 
   //! Destructor
   ~TopLoc_SListOfItemLocation() { Clear(); }
@@ -97,6 +97,14 @@ public:
   //! Returns the current tail of the list. On an empty
   //! list the tail is the list itself.
   Standard_EXPORT const TopLoc_SListOfItemLocation& Tail() const;
+
+  //! Returns the cached hash of this list.
+  //! For an empty list, returns 0.
+  Standard_EXPORT size_t HashCode() const noexcept;
+
+  //! Returns the underlying node handle.
+  //! Used for fast identity comparison between lists.
+  const Handle(TopLoc_SListNodeOfItemLocation)& Node() const noexcept { return myNode; }
 
   //! Replaces the list by a list with <anItem> as Value
   //! and the list <me> as tail.
@@ -110,7 +118,7 @@ public:
 
   //! Returns True if the iterator has a current value.
   //! This is !IsEmpty()
-  Standard_Boolean More() const { return !IsEmpty(); }
+  Standard_Boolean More() const noexcept { return !IsEmpty(); }
 
   //! Moves the iterator to the next object in the list.
   //! If the iterator is empty it will stay empty. This is ToTail()

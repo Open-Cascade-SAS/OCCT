@@ -45,4 +45,5 @@ set(OCCT_TKMath_GTests_FILES
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx
+  TopLoc_Location_Test.cxx
 )
