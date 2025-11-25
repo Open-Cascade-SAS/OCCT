@@ -100,7 +100,7 @@ public:
 
   //! Returns the cached hash of this list.
   //! For an empty list, returns 0.
-  size_t HashCode() const noexcept;
+  Standard_EXPORT size_t HashCode() const noexcept;
 
   //! Replaces the list by a list with <anItem> as Value
   //! and the list <me> as tail.
