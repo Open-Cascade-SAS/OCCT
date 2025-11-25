@@ -126,13 +126,13 @@ public:
   //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
   //! to store and retrieve the object easily
   //! @return a computed hash code
-  size_t HashCode() const;
+  size_t HashCode() const noexcept;
 
   //! Returns true if this location and the location Other
   //! have the same elementary data, i.e. contain the same
   //! series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator ==.
-  Standard_EXPORT Standard_Boolean IsEqual(const TopLoc_Location& Other) const;
+  Standard_EXPORT Standard_Boolean IsEqual(const TopLoc_Location& Other) const noexcept;
 
   Standard_Boolean operator==(const TopLoc_Location& Other) const { return IsEqual(Other); }
 

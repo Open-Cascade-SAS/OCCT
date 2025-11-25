@@ -98,6 +98,10 @@ public:
   //! list the tail is the list itself.
   Standard_EXPORT const TopLoc_SListOfItemLocation& Tail() const;
 
+  //! Returns the cached hash of this list.
+  //! For an empty list, returns 0.
+  size_t HashCode() const noexcept;
+
   //! Replaces the list by a list with <anItem> as Value
   //! and the list <me> as tail.
   void Construct(const TopLoc_ItemLocation& anItem)

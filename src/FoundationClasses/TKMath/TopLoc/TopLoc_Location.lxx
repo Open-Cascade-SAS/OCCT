@@ -56,18 +56,10 @@ inline const TopLoc_Location& TopLoc_Location::NextLocation() const
 
 //=================================================================================================
 
-inline size_t TopLoc_Location::HashCode() const
+inline size_t TopLoc_Location::HashCode() const noexcept
 {
-  // Hashing base on IsEqual function
-  if (myItems.IsEmpty())
-  {
-    return 0;
-  }
-  const size_t aCombined[2] = {
-    std::hash<Handle(TopLoc_Datum3D)>{}(myItems.Value().myDatum),
-    static_cast<size_t>(myItems.Value().myPower),
-  };
-  return opencascade::hashBytes(aCombined, sizeof(aCombined));
+  // Use cached hash from the list node
+  return myItems.HashCode();
 }
 
 //=================================================================================================

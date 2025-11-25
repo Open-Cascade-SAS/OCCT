@@ -148,33 +148,40 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 
 //=================================================================================================
 
-// two locations are Equal if the Items have the same LocalValues and Powers
-// this is a recursive function to test it
+// Two locations are Equal if the Items have the same LocalValues and Powers
 
-Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
+Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
 {
-  const void** p = (const void**)&myItems;
-  const void** q = (const void**)&Other.myItems;
-  if (*p == *q || myItems.myNode == Other.myItems.myNode)
+  // Fast path: same node means equal (handles identity == identity case too)
+  if (myItems.myNode == theOther.myItems.myNode)
   {
     return Standard_True;
   }
-  if (IsIdentity() || Other.IsIdentity())
+  // Fast rejection: different cached hashes means not equal
+  if (myItems.HashCode() != theOther.myItems.HashCode())
   {
     return Standard_False;
   }
-  if (FirstDatum() != Other.FirstDatum())
+  // Hash collision: need element-by-element comparison
+  TopLoc_SListOfItemLocation anIt1 = myItems;
+  TopLoc_SListOfItemLocation anIt2 = theOther.myItems;
+  while (anIt1.More() && anIt2.More())
   {
-    return Standard_False;
+    if (anIt1.myNode == anIt2.myNode)
+    {
+      return Standard_True; // Shared tail
+    }
+    const TopLoc_ItemLocation& aItem1 = anIt1.Value();
+    const TopLoc_ItemLocation& aItem2 = anIt2.Value();
+    if (aItem1.myDatum != aItem2.myDatum || aItem1.myPower != aItem2.myPower)
+    {
+      return Standard_False;
+    }
+    anIt1.Next();
+    anIt2.Next();
   }
-  if (FirstPower() != Other.FirstPower())
-  {
-    return Standard_False;
-  }
-  else
-  {
-    return NextLocation() == Other.NextLocation();
-  }
+  // Equal only if both exhausted
+  return !anIt1.More() && !anIt2.More();
 }
 
 //=================================================================================================
