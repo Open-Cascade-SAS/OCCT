@@ -1,10 +1,10 @@
-# OCCT Copilot Instructions
+# OCCT AI Assistant Guidelines
 
-This file provides the comprehensive guidance for AI assistants working with the Open CASCADE Technology (OCCT) C++17+ 3D CAD/CAM/CAE library.
+This document provides comprehensive guidance for AI assistants (GitHub Copilot, Claude, ChatGPT, and others) working with the Open CASCADE Technology (OCCT) C++17+ 3D CAD/CAM/CAE library.
 
 ---
 
-## 1. Core Directives for AI Assistant
+## 1. Core Directives
 
 > **IMPORTANT:** These are the most critical rules. Follow them strictly.
 
@@ -19,20 +19,22 @@ This file provides the comprehensive guidance for AI assistants working with the
     - **Correct:**
       ```cpp
       BRepAlgoAPI_Fuse aFuser(theShape1, theShape2);
-      if (aFuser.IsDone()) {
-          auto aResult = aFuser.Shape();
-      } else {
-          // Handle error
+      if (aFuser.IsDone())
+      {
+        const TopoDS_Shape& aResult = aFuser.Shape();
+      }
+      else
+      {
+        // Handle error
       }
       ```
 
 3.  **Strict Naming and File Conventions:**
     - Adhere to the strict `Package_ClassName` convention.
     - Place new files in the correct directory: `src/Module/Toolkit/Package/`.
-    - After adding a file, **ALWAYS** update the corresponding `src/Module/Toolkit/FILES.cmake` file.
+    - After adding a file, **ALWAYS** update the corresponding `src/Module/Toolkit/Package/FILES.cmake` file.
 
 4.  **Use Modern C++ Idioms:**
-    - Prefer `auto` for variable declarations where the type is clear, especially with iterators.
     - Use range-based `for` loops and structured bindings where applicable.
     - Use the modern `TopExp_Explorer` constructor style.
     - **Correct:** `for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next()) { ... }`
@@ -40,26 +42,27 @@ This file provides the comprehensive guidance for AI assistants working with the
 
 5.  **Safe Type Casting:**
     - When downcasting topological shapes, **ALWAYS** use the `TopoDS` helper functions to avoid errors.
-    - **Correct:** `auto aFace = TopoDS::Face(anExp.Current());`
-    - **Wrong:** `auto aFace = (const TopoDS_Face&)anExp.Current();`
+    - **Correct:** `const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());`
+    - **Wrong:** `const TopoDS_Face& aFace = (const TopoDS_Face&)anExp.Current();`
 
 6.  **Handle Downcasting:**
     - Use `Handle(DerivedClass)::DownCast(BaseHandle)` to safely downcast handles.
     - **Correct:**
       ```cpp
-      Handle(Geom_Circle) circ = Handle(Geom_Circle)::DownCast(someCurveHandle);
+      const Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurveHandle);
       ```
     - **Wrong:**
       ```cpp
       // Do not use C-style casts on handles
-      Geom_Circle* circ = (Geom_Circle*)someHandle.Get();
+      Geom_Circle* aCircle = (Geom_Circle*)aHandle.Get();
       ```
 
 7.  **Validate Handles for Null Safety:**
     - **ALWAYS** check that a `Handle(ClassName)` is not null before dereferencing it:
       ```cpp
-      if (!theHandle.IsNull()) {
-          // use theHandle
+      if (!theHandle.IsNull())
+      {
+        // use theHandle
       }
       ```
 
@@ -73,7 +76,7 @@ Open CASCADE Technology (OCCT) is a comprehensive C++ software development platf
 
 - **`src/`**: Source code, organized by a `Module/Toolkit/Package` hierarchy.
 - **`tests/`**: Draw Harness test files, organized by functionality.
-- **`adm/`**: Administrative and build configuration files (CMake).
+- **`adm/`**: Administrative and build configuration files.
 - **`samples/`**: Example applications.
 
 ---
@@ -82,103 +85,160 @@ Open CASCADE Technology (OCCT) is a comprehensive C++ software development platf
 
 ### Naming Patterns
 
-| Element Type                | Pattern                      | Example                          |
-| --------------------------- | ---------------------------- | -------------------------------- |
-| **Classes**                 | `Package_ClassName`          | `TopoDS_Shape`, `BRep_Builder`   |
-| **Public Methods**          | `MethodName`                 | `IsDone()`, `Shape()`            |
-| **Private Methods**         | `methodName`                 | `myInternalMethod()`             |
-| **Method Parameters**       | `theParameterName`           | `theShape`, `theTolerance`       |
-| **Local Variables**         | `aVariableName`              | `aBox`, `anExplorer`             |
-| **Class Member Fields**     | `myFieldName`                | `myShape`, `myIsDone`            |
-| **Struct Member Fields**    | `FieldVariableName`          | `Point`, `Value`                 |
-| **Global Variables**        | `THE_GLOBAL_VARIABLE`        | `THE_DEFAULT_PRECISION`          |
+| Element Type             | Pattern               | Example                        |
+| ------------------------ | --------------------- | ------------------------------ |
+| **Classes**              | `Package_ClassName`   | `TopoDS_Shape`, `BRep_Builder` |
+| **Public Methods**       | `MethodName`          | `IsDone()`, `Shape()`          |
+| **Private Methods**      | `methodName`          | `myInternalMethod()`           |
+| **Method Parameters**    | `theParameterName`    | `theShape`, `theTolerance`     |
+| **Local Variables**      | `aVariableName`       | `aBox`, `anExplorer`           |
+| **Class Member Fields**  | `myFieldName`         | `myShape`, `myIsDone`          |
+| **Struct Member Fields** | `FieldVariableName`   | `Point`, `Value`               |
+| **Global Variables**     | `THE_GLOBAL_VARIABLE` | `THE_DEFAULT_PRECISION`        |
 
-### Type Mappings
+### Primitive Types
 
-| OCCT Type           | C++ Equivalent | Notes                               |
-| ------------------- | -------------- | ----------------------------------- |
-| `Standard_Real`     | `double`       | Use for all floating-point numbers. |
-| `Standard_Integer`  | `int`          | Use for all integer values.         |
-| `Standard_Boolean`  | `bool`         | Use for `true`/`false` values.      |
+Use standard C++ primitive types in new code:
 
-### Modern C++ Encouraged
-This is a C++17+ codebase. Proactively use modern features to improve code quality:
-- `auto`
+| Type     | Usage                        |
+| -------- | ---------------------------- |
+| `int`    | Integer values               |
+| `double` | Floating-point numbers       |
+| `bool`   | Boolean values (true/false)  |
+| `float`  | Single-precision when needed |
+
+> **Note:** Legacy code uses `Standard_Integer`, `Standard_Real`, `Standard_Boolean`. These are typedefs to the native types above. In new code, prefer native types directly.
+
+### Strings and Collections
+
+**ALWAYS** use OCCT collection classes instead of STL containers:
+
+| OCCT Type                         | Instead of                | Description                |
+| --------------------------------- | ------------------------- | -------------------------- |
+| `TCollection_AsciiString`         | `std::string`             | ASCII string               |
+| `TCollection_ExtendedString`      | `std::wstring`            | Unicode string             |
+| `NCollection_Array1<T>`           | `std::vector<T>`          | Fixed-size array (1-based) |
+| `NCollection_Vector<T>`           | `std::vector<T>`          | Dynamic array              |
+| `NCollection_List<T>`             | `std::list<T>`            | Doubly-linked list         |
+| `NCollection_Sequence<T>`         | `std::deque<T>`           | Indexed sequence           |
+| `NCollection_Map<K>`              | `std::unordered_set<K>`   | Hash set                   |
+| `NCollection_DataMap<K,V>`        | `std::unordered_map<K,V>` | Hash map                   |
+| `NCollection_IndexedMap<K>`       | -                         | Indexed hash set           |
+| `NCollection_IndexedDataMap<K,V>` | -                         | Indexed hash map           |
+
+**If STL containers are absolutely necessary**, use OCCT's allocators:
+
+```cpp
+#include <NCollection_Allocator.hxx>
+#include <NCollection_OccAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
+
+// Option 1: NCollection_Allocator - uses standard OCCT memory allocation
+std::vector<gp_Pnt, NCollection_Allocator<gp_Pnt>> aPoints;
+std::list<TopoDS_Shape, NCollection_Allocator<TopoDS_Shape>> aShapes;
+
+// Option 2: NCollection_OccAllocator - with custom memory pool (preferred for performance)
+Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+NCollection_OccAllocator<gp_Pnt> anAllocator(anIncAlloc);
+std::vector<gp_Pnt, NCollection_OccAllocator<gp_Pnt>> aPooledPoints(anAllocator);
+```
+
+### Modern C++ Features
+
+This is a C++17+ codebase. Use modern features where appropriate:
 - Range-based `for` loops
-- Structured bindings: `for (const auto& [key, value] : aMap)`
-- `std::optional` for optional return values where appropriate.
-- `if constexpr` for compile-time conditions.
+- Structured bindings: `for (const auto& [aKey, aValue] : aMap)`
+- `std::optional` for optional return values
+- `if constexpr` for compile-time conditions
+- `[[nodiscard]]`, `[[maybe_unused]]` attributes where appropriate
+
+### Use of `auto` Keyword
+
+Use `auto` **only** in the following cases:
+- Where syntax requires it (templates, structured bindings, lambdas)
+- To omit the type of object in range-based `for` loops
+- To omit the type of container iterators: `auto anIter = aContainer.begin()`
+
+**Avoid** `auto` in these cases:
+- To omit long type names (use type aliases instead)
+- To omit "obvious" return types
+- Simply to avoid typing the actual type
+
+Readability is more important than brevity. Always prefer explicit types.
+
+### Const Correctness
+
+Use `const` for variables that will not be modified after initialization:
+
+```cpp
+const double aTolerance = 0.001;
+const TopoDS_Shape aShape = aBuilder.Shape();
+```
+
+Use `constexpr` for values that can be computed at compile time:
+
+```cpp
+constexpr int THE_MAX_ITERATIONS = 100;
+constexpr double THE_PI = 3.14159265358979323846;
+```
+
+Prefer `const` references to avoid unnecessary copies:
+
+```cpp
+void ProcessShape(const TopoDS_Shape& theShape);
+
+for (const TopoDS_Face& aFace : aFaces)
+{
+  // ...
+}
+```
 
 ---
 
-## 4. Step-by-Step Workflow Example: Adding a New Class and Test
+## 4. Step-by-Step Workflow: Adding a New Class
 
-This example demonstrates the end-to-end process for adding a new class `BRepTest_MyNewClass` to the `TKTopAlgo` toolkit and creating a corresponding GTest.
+This example demonstrates adding a new class `BRepLib_MyNewClass` to the `BRepLib` package in the `TKTopAlgo` toolkit.
 
 **1. Create Header and Source Files:**
-Navigate to the correct package directory and create the files.
 ```bash
-# Navigate to the BRepTest package in the ModelingAlgorithms module
-cd src/ModelingAlgorithms/TKTopAlgo/BRepTest
-touch BRepTest_MyNewClass.hxx BRepTest_MyNewClass.cxx
+cd src/ModelingAlgorithms/TKTopAlgo/BRepLib
+touch BRepLib_MyNewClass.hxx BRepLib_MyNewClass.cxx
 ```
 
 **2. Implement the Class:**
-Add content to `BRepTest_MyNewClass.hxx` and `.cxx`, following all code conventions.
+Add content following all code conventions (see sections 3 and 7).
 
-**3. Add Files to CMake:**
-Edit the toolkit's `FILES.cmake` to register the new files.
-```bash
-# Edit the CMake file for TKTopAlgo
-vim src/ModelingAlgorithms/TKTopAlgo/FILES.cmake
-```
-Add the new files to the `OCCT_<PackageName>_FILES` list:
+**3. Add Files to Package CMake:**
+Edit `src/ModelingAlgorithms/TKTopAlgo/BRepLib/FILES.cmake`:
 ```cmake
-# In FILES.cmake
-...
-set (OCCT_BRepTest_FILES
-    ...
-    BRepTest_MyNewClass.hxx
-    BRepTest_MyNewClass.cxx
-    ...
+set(OCCT_BRepLib_FILES
+  ...
+  BRepLib_MyNewClass.hxx
+  BRepLib_MyNewClass.cxx
 )
 ```
 
 **4. Create a GTest:**
-Navigate to the GTest directory for the toolkit and create a test file.
 ```bash
-# Navigate to the GTest directory for TKTopAlgo
 cd src/ModelingAlgorithms/TKTopAlgo/GTests
-touch BRepTest_MyNewClass_Test.cxx
+touch BRepLib_MyNewClass_Test.cxx
 ```
-Write the test implementation in the new file.
 
 **5. Add GTest to CMake:**
-Edit the same `FILES.cmake` to add the test file.
+Edit `src/ModelingAlgorithms/TKTopAlgo/GTests/FILES.cmake`:
 ```cmake
-# In FILES.cmake
-...
-set (OCCT_TKTopAlgo_GTests_FILES
-    ...
-    GTests/BRepTest_MyNewClass_Test.cxx
-    ...
+set(OCCT_TKTopAlgo_GTests_FILES
+  ...
+  BRepLib_MyNewClass_Test.cxx
 )
 ```
 
-**6. Build and Run Test:**
-From the `build` directory, build the project and run the tests.
+**6. Build and Run:**
 ```bash
-# Navigate to build directory
 cd build
-
-# Re-run CMake to pick up new files (usually not needed, but good practice)
 cmake .. -DBUILD_GTEST=ON
-
-# Build the project
 cmake --build . --config Release
-
-# Run the tests
-./bin/OpenCascadeGTest --gtest_filter=*MyNewClass*
+./bin/OpenCascadeGTest --gtest_filter="*MyNewClass*"
 ```
 
 ---
@@ -186,19 +246,21 @@ cmake --build . --config Release
 ## 5. Build and Test System
 
 ### Build System (CMake)
-- **Primary build system:** CMake 3.16+ recommended.
-- **Build Directory:** Always build in a separate directory (e.g., `build/`).
+- **Primary build system:** CMake 3.16+
+- **Build Directory:** Always build out-of-source (e.g., `build/`)
 - **Quick Build:**
   ```bash
   mkdir -p build && cd build
   cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_GTEST=ON
   cmake --build . --config Release --parallel
   ```
-- **Environment:** Before running any OCCT executable (including tests), you **must** source the environment script: `source build/env.sh` (or `build\env.bat` on Windows).
+- **Environment:** Before running OCCT executables, source the environment:
+  - Linux/macOS: `source build/env.sh`
+  - Windows: `build\env.bat`
 
 ### Testing Frameworks
-- **Draw Harness:** Tcl-based framework for interactive testing. Located in `tests/`. Run with `build/DRAWEXE`.
-- **GTest:** C++ unit testing framework. Tests are located in `src/.../GTests/`. Enable with `-DBUILD_GTEST=ON`.
+- **Draw Harness:** Tcl-based interactive testing in `tests/`. Run with `DRAWEXE`.
+- **GTest:** C++ unit tests in `src/.../GTests/`. Enable with `-DBUILD_GTEST=ON`.
 
 ---
 
@@ -206,42 +268,209 @@ cmake --build . --config Release
 
 ### Common Operations
 
-- **Shape Creation:** Use `BRepPrimAPI_` classes (`MakeBox`, `MakeCylinder`).
-- **Boolean Operations:** Use `BRepAlgoAPI_` classes (`Fuse`, `Cut`, `Common`).
-- **Shape Exploration:** Use `TopExp_Explorer`.
-- **Transformations:** Use `gp_Trsf` and `BRepBuilderAPI_Transform`.
+- **Shape Creation:** `BRepPrimAPI_MakeBox`, `BRepPrimAPI_MakeCylinder`
+- **Boolean Operations:** `BRepAlgoAPI_Fuse`, `BRepAlgoAPI_Cut`, `BRepAlgoAPI_Common`
+- **Shape Exploration:** `TopExp_Explorer`
+- **Transformations:** `gp_Trsf` with `BRepBuilderAPI_Transform`
 
 ### Key Packages
 
-| Package     | Purpose                               | Module                |
-| ----------- | ------------------------------------- | --------------------- |
-| `gp`        | Geometric Primitives (Points, Vecs)   | FoundationClasses     |
-| `Geom`      | Geometric entities (Curves, Surfaces) | ModelingData          |
-| `TopoDS`    | Topological Data Structures (Shapes)  | ModelingData          |
-| `TopExp`    | Exploring topological shapes          | ModelingData          |
-| `BRepAlgoAPI` | High-level modeling algorithms      | ModelingAlgorithms    |
-| `BRepPrimAPI` | Geometric primitives creation       | ModelingAlgorithms    |
-| `AIS`       | Application Interactive Services      | Visualization         |
+| Package       | Purpose                               | Module             |
+| ------------- | ------------------------------------- | ------------------ |
+| `gp`          | Geometric Primitives (Points, Vecs)   | FoundationClasses  |
+| `Geom`        | Geometric entities (Curves, Surfaces) | ModelingData       |
+| `TopoDS`      | Topological Data Structures           | ModelingData       |
+| `TopExp`      | Exploring topological shapes          | ModelingData       |
+| `BRepAlgoAPI` | High-level modeling algorithms        | ModelingAlgorithms |
+| `BRepPrimAPI` | Geometric primitives creation         | ModelingAlgorithms |
+| `AIS`         | Application Interactive Services      | Visualization      |
 
 ### Common Headers
 ```cpp
-#include <Standard_Failure.hxx>
-#include <Handle_Geom_Circle.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
+#include <Geom_Circle.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <Standard_Failure.hxx>
 ```
 
 ---
 
-## 7. Key Files & Platform Notes
+## 7. Code Documentation Style
 
-- **`adm/MODULES`**: Defines all modules and toolkits.
-- **`src/*/FILES.cmake`**: Lists all source/header files for a toolkit. **You must edit this when adding/removing files.**
-- **`build/env.sh/bat`**: The crucial environment script.
+### Header Files (.hxx) - Method Documentation
+
+Use Doxygen-style comments with `//!` prefix:
+
+```cpp
+//! Brief description of the method functionality.
+//! Additional details if needed.
+//! @param[in] theInputParam description of input parameter
+//! @param[out] theOutputParam description of output parameter
+//! @param[in,out] theInOutParam description of in/out parameter
+//! @return description of return value
+Standard_EXPORT bool MethodName(const InputType& theInputParam,
+                                OutputType&      theOutputParam);
+```
+
+**Rules:**
+- `@param[in]` for input parameters
+- `@param[out]` for output parameters
+- `@param[in,out]` for bidirectional parameters
+- `@return` for return value description
+
+### Source Files (.cxx) - Method Separators
+
+Each method **MUST** be preceded by:
+1. A separator line of exactly 100 characters: `//` followed by 98 `=` signs
+2. An empty line after the separator
+
+```cpp
+//==================================================================================================
+
+void MyClass::MyMethod(const TopoDS_Shape& theShape)
+{
+  // Implementation
+}
+
+//==================================================================================================
+
+bool MyClass::AnotherMethod()
+{
+  // Implementation
+}
+```
+
+**DO NOT use old-style function guards:**
+```cpp
+// WRONG - Do not use this style:
+//==================================================================================================
+// purpose: Description of what the method does
+// function: MyClass::MyMethod
+//==================================================================================================
+```
+
+### Technical Comments
+
+Place implementation notes inside the method body:
+- At the beginning for overall approach
+- Inline where specific logic needs explanation
+
+```cpp
+//==================================================================================================
+
+void MyClass::ComplexMethod(const TopoDS_Shape& theShape)
+{
+  // Using iterative approach for better performance with large shape hierarchies.
+  for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    // Handle degenerate faces separately
+    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+    // ...
+  }
+}
+```
+
+---
+
+## 8. GTest Guidelines
+
+### Test Location and Naming
+
+- Location: `src/Module/Toolkit/GTests/`
+- File naming: `ClassName_Test.cxx` or `PackageName_Test.cxx`
+
+### Test Structure
+
+```cpp
+#include <gtest/gtest.h>
+
+#include <MyClass.hxx>
+
+// Test fixture (optional)
+class MyClassTest : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    // Setup code
+  }
+};
+
+// Test with fixture
+TEST_F(MyClassTest, MethodName_Scenario)
+{
+  // Arrange
+  MyClass anObject;
+
+  // Act
+  const bool isSuccess = anObject.SomeMethod();
+
+  // Assert
+  EXPECT_TRUE(isSuccess);
+}
+
+// Standalone test
+TEST(MyClassTest, BasicFunctionality)
+{
+  // Test implementation
+}
+```
+
+### Naming Convention
+
+Pattern: `TestFixture.MethodOrFeature_Scenario_ExpectedBehavior`
+
+Examples:
+- `DE_WrapperTest.Read_ValidSTEPFile_ReturnsTrue`
+- `BRepAlgoAPI_FuseTest.TwoBoxes_ProducesValidShape`
+- `gp_PntTest.Distance_SamePoint_ReturnsZero`
+
+### Assertions
+
+- `EXPECT_*` - non-fatal (test continues)
+- `ASSERT_*` - fatal (test stops)
+
+Common assertions:
+- `EXPECT_TRUE(condition)` / `EXPECT_FALSE(condition)`
+- `EXPECT_EQ(actual, expected)` / `EXPECT_NE(actual, expected)`
+- `EXPECT_NEAR(actual, expected, tolerance)` - for floating-point
+- `EXPECT_THROW(statement, exception_type)` - for exceptions
+
+### Running Tests
+
+```bash
+# Build
+cmake .. -DBUILD_GTEST=ON
+cmake --build . --config Release
+
+# Run all
+./bin/OpenCascadeGTest
+
+# Run filtered
+./bin/OpenCascadeGTest --gtest_filter="*MyClass*"
+
+# List tests
+./bin/OpenCascadeGTest --gtest_list_tests
+```
+
+---
+
+## 9. Key Project Files
+
+| File                                        | Purpose                                                |
+| ------------------------------------------- | ------------------------------------------------------ |
+| `src/MODULES.cmake`                         | Defines all modules                                    |
+| `src/Module/TOOLKITS.cmake`                 | Defines toolkits within a module                       |
+| `src/Module/Toolkit/PACKAGES.cmake`         | Defines packages within a toolkit                      |
+| `src/Module/Toolkit/Package/FILES.cmake`    | Lists source/header files (**edit when adding files**) |
+| `src/Module/Toolkit/GTests/FILES.cmake`     | Lists GTest source files                               |
+| `src/Module/Toolkit/EXTERNLIB.cmake`        | External library dependencies                          |
+| `build/env.sh` / `build/env.bat`            | Environment setup script                               |
