@@ -114,18 +114,18 @@ Use standard C++ primitive types in new code:
 
 **ALWAYS** use OCCT collection classes instead of STL containers:
 
-| OCCT Type                    | Instead of             | Description                    |
-| ---------------------------- | ---------------------- | ------------------------------ |
-| `TCollection_AsciiString`    | `std::string`          | ASCII string                   |
-| `TCollection_ExtendedString` | `std::wstring`         | Unicode string                 |
-| `NCollection_Array1<T>`      | `std::vector<T>`       | Fixed-size array (1-based)     |
-| `NCollection_Vector<T>`      | `std::vector<T>`       | Dynamic array                  |
-| `NCollection_List<T>`        | `std::list<T>`         | Doubly-linked list             |
-| `NCollection_Sequence<T>`    | `std::deque<T>`        | Indexed sequence               |
-| `NCollection_Map<K>`         | `std::unordered_set<K>`| Hash set                       |
-| `NCollection_DataMap<K,V>`   | `std::unordered_map<K,V>` | Hash map                    |
-| `NCollection_IndexedMap<K>`  | -                      | Indexed hash set               |
-| `NCollection_IndexedDataMap<K,V>` | -                 | Indexed hash map               |
+| OCCT Type                         | Instead of                | Description                |
+| --------------------------------- | ------------------------- | -------------------------- |
+| `TCollection_AsciiString`         | `std::string`             | ASCII string               |
+| `TCollection_ExtendedString`      | `std::wstring`            | Unicode string             |
+| `NCollection_Array1<T>`           | `std::vector<T>`          | Fixed-size array (1-based) |
+| `NCollection_Vector<T>`           | `std::vector<T>`          | Dynamic array              |
+| `NCollection_List<T>`             | `std::list<T>`            | Doubly-linked list         |
+| `NCollection_Sequence<T>`         | `std::deque<T>`           | Indexed sequence           |
+| `NCollection_Map<K>`              | `std::unordered_set<K>`   | Hash set                   |
+| `NCollection_DataMap<K,V>`        | `std::unordered_map<K,V>` | Hash map                   |
+| `NCollection_IndexedMap<K>`       | -                         | Indexed hash set           |
+| `NCollection_IndexedDataMap<K,V>` | -                         | Indexed hash map           |
 
 **If STL containers are absolutely necessary**, use OCCT's allocators:
 
@@ -236,15 +236,15 @@ cmake --build . --config Release
 
 ### Key Packages
 
-| Package       | Purpose                             | Module             |
-| ------------- | ----------------------------------- | ------------------ |
-| `gp`          | Geometric Primitives (Points, Vecs) | FoundationClasses  |
-| `Geom`        | Geometric entities (Curves, Surfaces) | ModelingData     |
-| `TopoDS`      | Topological Data Structures         | ModelingData       |
-| `TopExp`      | Exploring topological shapes        | ModelingData       |
-| `BRepAlgoAPI` | High-level modeling algorithms      | ModelingAlgorithms |
-| `BRepPrimAPI` | Geometric primitives creation       | ModelingAlgorithms |
-| `AIS`         | Application Interactive Services    | Visualization      |
+| Package       | Purpose                               | Module             |
+| ------------- | ------------------------------------- | ------------------ |
+| `gp`          | Geometric Primitives (Points, Vecs)   | FoundationClasses  |
+| `Geom`        | Geometric entities (Curves, Surfaces) | ModelingData       |
+| `TopoDS`      | Topological Data Structures           | ModelingData       |
+| `TopExp`      | Exploring topological shapes          | ModelingData       |
+| `BRepAlgoAPI` | High-level modeling algorithms        | ModelingAlgorithms |
+| `BRepPrimAPI` | Geometric primitives creation         | ModelingAlgorithms |
+| `AIS`         | Application Interactive Services      | Visualization      |
 
 ### Common Headers
 ```cpp
