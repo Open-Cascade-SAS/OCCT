@@ -101,7 +101,7 @@ TEST(BVH_TriangulationTest, BoxForDegenerateTriangle)
   EXPECT_NEAR(aBox.CornerMin().y(), 1.0, 1e-10);
   EXPECT_NEAR(aBox.CornerMin().z(), 1.0, 1e-10);
   EXPECT_NEAR(aBox.CornerMax().x(), 1.0, 1e-10);
-  EXPECT_NEAR(aBox.CornerMax().y(), 1.0, 1.0);
+  EXPECT_NEAR(aBox.CornerMax().y(), 1.0, 1e-10);
   EXPECT_NEAR(aBox.CornerMax().z(), 1.0, 1e-10);
 }
 
