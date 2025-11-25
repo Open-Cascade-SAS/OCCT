@@ -21,7 +21,7 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
       BRepAlgoAPI_Fuse aFuser(theShape1, theShape2);
       if (aFuser.IsDone())
       {
-        auto aResult = aFuser.Shape();
+        const TopoDS_Shape& aResult = aFuser.Shape();
       }
       else
       {
@@ -35,7 +35,6 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
     - After adding a file, **ALWAYS** update the corresponding `src/Module/Toolkit/Package/FILES.cmake` file.
 
 4.  **Use Modern C++ Idioms:**
-    - Prefer `auto` for variable declarations where the type is clear, especially with iterators.
     - Use range-based `for` loops and structured bindings where applicable.
     - Use the modern `TopExp_Explorer` constructor style.
     - **Correct:** `for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next()) { ... }`
@@ -43,14 +42,14 @@ This document provides comprehensive guidance for AI assistants (GitHub Copilot,
 
 5.  **Safe Type Casting:**
     - When downcasting topological shapes, **ALWAYS** use the `TopoDS` helper functions to avoid errors.
-    - **Correct:** `auto aFace = TopoDS::Face(anExp.Current());`
-    - **Wrong:** `auto aFace = (const TopoDS_Face&)anExp.Current();`
+    - **Correct:** `const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());`
+    - **Wrong:** `const TopoDS_Face& aFace = (const TopoDS_Face&)anExp.Current();`
 
 6.  **Handle Downcasting:**
     - Use `Handle(DerivedClass)::DownCast(BaseHandle)` to safely downcast handles.
     - **Correct:**
       ```cpp
-      Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurveHandle);
+      const Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurveHandle);
       ```
     - **Wrong:**
       ```cpp
@@ -146,13 +145,53 @@ std::vector<gp_Pnt, NCollection_OccAllocator<gp_Pnt>> aPooledPoints(anAllocator)
 
 ### Modern C++ Features
 
-This is a C++17+ codebase. Use modern features:
-- `auto` for type inference
+This is a C++17+ codebase. Use modern features where appropriate:
 - Range-based `for` loops
 - Structured bindings: `for (const auto& [aKey, aValue] : aMap)`
 - `std::optional` for optional return values
 - `if constexpr` for compile-time conditions
 - `[[nodiscard]]`, `[[maybe_unused]]` attributes where appropriate
+
+### Use of `auto` Keyword
+
+Use `auto` **only** in the following cases:
+- Where syntax requires it (templates, structured bindings, lambdas)
+- To omit the type of object in range-based `for` loops
+- To omit the type of container iterators: `auto anIter = aContainer.begin()`
+
+**Avoid** `auto` in these cases:
+- To omit long type names (use type aliases instead)
+- To omit "obvious" return types
+- Simply to avoid typing the actual type
+
+Readability is more important than brevity. Always prefer explicit types.
+
+### Const Correctness
+
+Use `const` for variables that will not be modified after initialization:
+
+```cpp
+const double aTolerance = 0.001;
+const TopoDS_Shape aShape = aBuilder.Shape();
+```
+
+Use `constexpr` for values that can be computed at compile time:
+
+```cpp
+constexpr int THE_MAX_ITERATIONS = 100;
+constexpr double THE_PI = 3.14159265358979323846;
+```
+
+Prefer `const` references to avoid unnecessary copies:
+
+```cpp
+void ProcessShape(const TopoDS_Shape& theShape);
+
+for (const TopoDS_Face& aFace : aFaces)
+{
+  // ...
+}
+```
 
 ---
 
@@ -333,15 +372,11 @@ void MyClass::ComplexMethod(const TopoDS_Shape& theShape)
   for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     // Handle degenerate faces separately
-    auto aFace = TopoDS::Face(anExp.Current());
+    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
     // ...
   }
 }
 ```
-
-### Reference Example
-
-See `src/DataExchange/TKDE/DE/DE_Wrapper.hxx` and `DE_Wrapper.cxx` for proper documentation style.
 
 ---
 
@@ -376,10 +411,10 @@ TEST_F(MyClassTest, MethodName_Scenario)
   MyClass anObject;
 
   // Act
-  auto aResult = anObject.SomeMethod();
+  const bool isSuccess = anObject.SomeMethod();
 
   // Assert
-  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_TRUE(isSuccess);
 }
 
 // Standalone test
