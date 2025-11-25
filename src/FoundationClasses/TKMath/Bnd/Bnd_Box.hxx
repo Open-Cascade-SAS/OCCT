@@ -65,6 +65,18 @@ class Bnd_Box
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Structure containing the box limits (Xmin, Xmax, Ymin, Ymax, Zmin, Zmax).
+  //! The values include the gap and account for open directions.
+  struct Limits
+  {
+    double Xmin; //!< Minimum X coordinate
+    double Xmax; //!< Maximum X coordinate
+    double Ymin; //!< Minimum Y coordinate
+    double Ymax; //!< Maximum Y coordinate
+    double Zmin; //!< Minimum Z coordinate
+    double Zmax; //!< Maximum Z coordinate
+  };
+
   //! Creates an empty Box.
   //! The constructed box is qualified Void. Its gap is null.
   constexpr Bnd_Box()
@@ -163,6 +175,34 @@ public:
                            Standard_Real& theXmax,
                            Standard_Real& theYmax,
                            Standard_Real& theZmax) const;
+
+  //! Returns the bounds of this bounding box as a Limits structure.
+  //! The gap is included. If this bounding box is infinite (i.e. "open"),
+  //! returned values may be equal to +/- Precision::Infinite().
+  //! If the box is void, returns raw internal values.
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   auto [xmin, xmax, ymin, ymax, zmin, zmax] = aBox.Get();
+  //! @endcode
+  [[nodiscard]] Standard_EXPORT Limits Get() const;
+
+  //! Returns the Xmin value (IsOpenXmin() ? -Precision::Infinite() : Xmin - GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetXMin() const;
+
+  //! Returns the Xmax value (IsOpenXmax() ? Precision::Infinite() : Xmax + GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetXMax() const;
+
+  //! Returns the Ymin value (IsOpenYmin() ? -Precision::Infinite() : Ymin - GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetYMin() const;
+
+  //! Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetYMax() const;
+
+  //! Returns the Zmin value (IsOpenZmin() ? -Precision::Infinite() : Zmin - GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetZMin() const;
+
+  //! Returns the Zmax value (IsOpenZmax() ? Precision::Infinite() : Zmax + GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetZMax() const;
 
   //! Returns the lower corner of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values

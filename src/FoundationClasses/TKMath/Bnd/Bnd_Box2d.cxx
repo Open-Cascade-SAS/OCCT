@@ -92,22 +92,46 @@ void Bnd_Box2d::Get(Standard_Real& x, Standard_Real& y, Standard_Real& Xm, Stand
 {
   if (Flags & VoidMask)
     throw Standard_ConstructionError("Bnd_Box is void");
-  if (Flags & XminMask)
-    x = -THE_BND_PRECISION_INFINITE;
-  else
-    x = Xmin - Gap;
-  if (Flags & XmaxMask)
-    Xm = THE_BND_PRECISION_INFINITE;
-  else
-    Xm = Xmax + Gap;
-  if (Flags & YminMask)
-    y = -THE_BND_PRECISION_INFINITE;
-  else
-    y = Ymin - Gap;
-  if (Flags & YmaxMask)
-    Ym = THE_BND_PRECISION_INFINITE;
-  else
-    Ym = Ymax + Gap;
+
+  x  = GetXMin();
+  Xm = GetXMax();
+  y  = GetYMin();
+  Ym = GetYMax();
+}
+
+//=================================================================================================
+
+Bnd_Box2d::Limits Bnd_Box2d::Get() const
+{
+  return {GetXMin(), GetXMax(), GetYMin(), GetYMax()};
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetXMin() const
+{
+  return (Flags & XminMask) ? -THE_BND_PRECISION_INFINITE : Xmin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetXMax() const
+{
+  return (Flags & XmaxMask) ? THE_BND_PRECISION_INFINITE : Xmax + Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetYMin() const
+{
+  return (Flags & YminMask) ? -THE_BND_PRECISION_INFINITE : Ymin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box2d::GetYMax() const
+{
+  return (Flags & YmaxMask) ? THE_BND_PRECISION_INFINITE : Ymax + Gap;
 }
 
 //=================================================================================================

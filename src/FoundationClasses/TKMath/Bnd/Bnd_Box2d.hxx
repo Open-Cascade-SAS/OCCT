@@ -57,6 +57,16 @@ class Bnd_Box2d
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Structure containing the 2D box limits (Xmin, Xmax, Ymin, Ymax).
+  //! The values include the gap and account for open directions.
+  struct Limits
+  {
+    double Xmin; //!< Minimum X coordinate
+    double Xmax; //!< Maximum X coordinate
+    double Ymin; //!< Minimum Y coordinate
+    double Ymax; //!< Maximum Y coordinate
+  };
+
   //! Creates an empty 2D bounding box.
   //! The constructed box is qualified Void. Its gap is null.
   constexpr Bnd_Box2d()
@@ -139,6 +149,28 @@ public:
                            Standard_Real& aYmin,
                            Standard_Real& aXmax,
                            Standard_Real& aYmax) const;
+
+  //! Returns the bounds of this 2D bounding box as a Limits structure.
+  //! The gap is included. If this bounding box is infinite (i.e. "open"),
+  //! returned values may be equal to +/- Precision::Infinite().
+  //! If the box is void, returns raw internal values.
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   auto [xmin, xmax, ymin, ymax] = aBox.Get();
+  //! @endcode
+  [[nodiscard]] Standard_EXPORT Limits Get() const;
+
+  //! Returns the Xmin value (IsOpenXmin() ? -Precision::Infinite() : Xmin - GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetXMin() const;
+
+  //! Returns the Xmax value (IsOpenXmax() ? Precision::Infinite() : Xmax + GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetXMax() const;
+
+  //! Returns the Ymin value (IsOpenYmin() ? -Precision::Infinite() : Ymin - GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetYMin() const;
+
+  //! Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
+  [[nodiscard]] Standard_EXPORT Standard_Real GetYMax() const;
 
   //! The Box will be infinitely long in the Xmin direction.
   void OpenXmin() noexcept { Flags |= XminMask; }

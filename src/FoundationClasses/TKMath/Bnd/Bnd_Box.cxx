@@ -201,30 +201,61 @@ void Bnd_Box::Get(Standard_Real& theXmin,
     throw Standard_ConstructionError("Bnd_Box is void");
   }
 
-  if (IsOpenXmin())
-    theXmin = -THE_BND_PRECISION_INFINITE;
-  else
-    theXmin = Xmin - Gap;
-  if (IsOpenXmax())
-    theXmax = THE_BND_PRECISION_INFINITE;
-  else
-    theXmax = Xmax + Gap;
-  if (IsOpenYmin())
-    theYmin = -THE_BND_PRECISION_INFINITE;
-  else
-    theYmin = Ymin - Gap;
-  if (IsOpenYmax())
-    theYmax = THE_BND_PRECISION_INFINITE;
-  else
-    theYmax = Ymax + Gap;
-  if (IsOpenZmin())
-    theZmin = -THE_BND_PRECISION_INFINITE;
-  else
-    theZmin = Zmin - Gap;
-  if (IsOpenZmax())
-    theZmax = THE_BND_PRECISION_INFINITE;
-  else
-    theZmax = Zmax + Gap;
+  theXmin = GetXMin();
+  theXmax = GetXMax();
+  theYmin = GetYMin();
+  theYmax = GetYMax();
+  theZmin = GetZMin();
+  theZmax = GetZMax();
+}
+
+//=================================================================================================
+
+Bnd_Box::Limits Bnd_Box::Get() const
+{
+  return {GetXMin(), GetXMax(), GetYMin(), GetYMax(), GetZMin(), GetZMax()};
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetXMin() const
+{
+  return IsOpenXmin() ? -THE_BND_PRECISION_INFINITE : Xmin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetXMax() const
+{
+  return IsOpenXmax() ? THE_BND_PRECISION_INFINITE : Xmax + Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetYMin() const
+{
+  return IsOpenYmin() ? -THE_BND_PRECISION_INFINITE : Ymin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetYMax() const
+{
+  return IsOpenYmax() ? THE_BND_PRECISION_INFINITE : Ymax + Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetZMin() const
+{
+  return IsOpenZmin() ? -THE_BND_PRECISION_INFINITE : Zmin - Gap;
+}
+
+//=================================================================================================
+
+Standard_Real Bnd_Box::GetZMax() const
+{
+  return IsOpenZmax() ? THE_BND_PRECISION_INFINITE : Zmax + Gap;
 }
 
 //=================================================================================================
