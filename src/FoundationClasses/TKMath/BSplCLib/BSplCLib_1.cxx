@@ -30,7 +30,7 @@
 
 void BSplCLib::Reverse(TColgp_Array1OfPnt2d& Poles, const Standard_Integer L)
 {
-  BSplCLib_Reverse<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Poles, L);
+  BSplCLib_Reverse(Poles, L);
 }
 
 //==================================================================================================
