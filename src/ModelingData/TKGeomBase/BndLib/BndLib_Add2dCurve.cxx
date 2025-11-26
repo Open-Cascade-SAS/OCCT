@@ -143,7 +143,7 @@ public:
   Standard_Integer NbVariables() const { return 1; }
 
 private:
-  Curv2dMaxMinCoordMVar& operator=(const Curv2dMaxMinCoordMVar& theOther);
+  Curv2dMaxMinCoordMVar& operator=(const Curv2dMaxMinCoordMVar&) = delete;
 
   Standard_Boolean CheckInputData(Standard_Real theParam)
   {
@@ -190,7 +190,7 @@ public:
   }
 
 private:
-  Curv2dMaxMinCoord& operator=(const Curv2dMaxMinCoord& theOther);
+  Curv2dMaxMinCoord& operator=(const Curv2dMaxMinCoord&) = delete;
 
   Standard_Boolean CheckInputData(Standard_Real theParam)
   {
@@ -418,7 +418,8 @@ void BndLib_Box2dCurve::PerformBezier()
     aTb[1] = aT2;
   }
   //
-  if (!(aT1 == aTb[0] && aT2 == aTb[1]))
+  constexpr Standard_Real anEps = Precision::PConfusion();
+  if (std::abs(aT1 - aTb[0]) > anEps || std::abs(aT2 - aTb[1]) > anEps)
   {
     aG = aCBz->Copy();
     //
@@ -477,7 +478,7 @@ void BndLib_Box2dCurve::PerformBSpline()
 
   //
   constexpr Standard_Real eps = Precision::PConfusion();
-  if (fabs(aT1 - aTb[0]) > eps || fabs(aT2 - aTb[1]) > eps)
+  if (std::abs(aT1 - aTb[0]) > eps || std::abs(aT2 - aTb[1]) > eps)
   {
     aG = aCBS->Copy();
     //
@@ -738,7 +739,7 @@ void BndLib_Box2dCurve::D0(const Standard_Real aU, gp_Pnt2d& aP2D)
     //
     aA = aV1.Y();
     aB = -aV1.X();
-    aR = sqrt(aA * aA + aB * aB);
+    aR = std::sqrt(aA * aA + aB * aB);
     if (aR <= aRes)
     {
       myErrorStatus = 13;
@@ -948,18 +949,18 @@ void BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D,
   }
   //
   // aType==GeomAbs_Circle ||  aType==GeomAbs_Ellipse
-  aEps   = 1.e-14;
+  aEps   = Precision::Angular();
   aTwoPI = 2. * M_PI;
   dT     = aT2 - aT1;
   //
   Standard_Real aT1z = AdjustToPeriod(aT1, aTwoPI);
-  if (fabs(aT1z) < aEps)
+  if (std::abs(aT1z) < aEps)
   {
     aT1z = 0.;
   }
   //
   Standard_Real aT2z = aT1z + dT;
-  if (fabs(aT2z - aTwoPI) < aEps)
+  if (std::abs(aT2z - aTwoPI) < aEps)
   {
     aT2z = aTwoPI;
   }
@@ -1033,12 +1034,12 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
       aLy = (!i) ? 1. : 0.;
       aBx = aLx * aA21 - aLy * aA11;
       aBy = aLx * aA22 - aLy * aA12;
-      aB  = sqrt(aBx * aBx + aBy * aBy);
+      aB  = std::sqrt(aBx * aBx + aBy * aBy);
       //
       aCosFi = aBx / aB;
       aSinFi = aBy / aB;
       //
-      aFi = acos(aCosFi);
+      aFi = std::acos(aCosFi);
       if (aSinFi < 0.)
       {
         aFi = aTwoPI - aFi;
@@ -1060,7 +1061,7 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
     Standard_Real           aA1, aA2;
     Handle(Geom2d_Parabola) aPR2D;
     //
-    aEps = 1.e-12;
+    aEps = Precision::Angular();
     //
     aPR2D = Handle(Geom2d_Parabola)::DownCast(aConic2D);
     aFc   = aPR2D->Focal();
@@ -1072,7 +1073,7 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
       aLy = (!i) ? 1. : 0.;
       //
       aA2 = aLx * aSinBt - aLy * aCosBt;
-      if (fabs(aA2) < aEps)
+      if (std::abs(aA2) < aEps)
       {
         continue;
       }
@@ -1092,7 +1093,7 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
     Standard_Real            aEps, aB1, aB2, aB12, aB22, aZ, aD;
     Handle(Geom2d_Hyperbola) aHP2D;
     //
-    aEps = 1.e-12;
+    aEps = Precision::Angular();
     //
     aHP2D = Handle(Geom2d_Hyperbola)::DownCast(aConic2D);
     aR1   = aHP2D->MajorRadius();
@@ -1107,12 +1108,12 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
       aB1 = aR1 * (aLx * aSinBt - aLy * aCosBt);
       aB2 = aR2 * (aLx * aSinGm - aLy * aCosGm);
       //
-      if (fabs(aB1) < aEps)
+      if (std::abs(aB1) < aEps)
       {
         continue;
       }
       //
-      if (fabs(aB2) < aEps)
+      if (std::abs(aB2) < aEps)
       {
         pT[j] = 0.;
         ++j;
@@ -1126,14 +1127,14 @@ Standard_Integer BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D
           continue;
         }
         //
-        aD = sqrt(aB12 - aB22);
+        aD = std::sqrt(aB12 - aB22);
         //-------------
         for (k = -1; k < 2; k += 2)
         {
           aZ = (aB1 + k * aD) / aB2;
-          if (fabs(aZ) < 1.)
+          if (std::abs(aZ) < 1.)
           {
-            pT[j] = -log((1. + aZ) / (1. - aZ));
+            pT[j] = -std::log((1. + aZ) / (1. - aZ));
             ++j;
           }
         }
@@ -1155,12 +1156,12 @@ Standard_Real BndLib_Box2dCurve::AdjustToPeriod(const Standard_Real aT, const St
   aTRet = aT;
   if (aT < 0.)
   {
-    k     = 1 + (Standard_Integer)(-aT / aPeriod);
+    k     = 1 + static_cast<Standard_Integer>(-aT / aPeriod);
     aTRet = aT + k * aPeriod;
   }
   else if (aT > aPeriod)
   {
-    k     = (Standard_Integer)(aT / aPeriod);
+    k     = static_cast<Standard_Integer>(aT / aPeriod);
     aTRet = aT - k * aPeriod;
   }
   if (aTRet == aPeriod)
@@ -1197,8 +1198,7 @@ void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC,
                             const Standard_Real      aTol,
                             Bnd_Box2d&               aBox2D)
 {
-  Adaptor2d_Curve2d*   pC = (Adaptor2d_Curve2d*)&aC;
-  Geom2dAdaptor_Curve* pA = dynamic_cast<Geom2dAdaptor_Curve*>(pC);
+  const Geom2dAdaptor_Curve* pA = dynamic_cast<const Geom2dAdaptor_Curve*>(&aC);
   if (!pA)
   {
     Standard_Real    U, DU;

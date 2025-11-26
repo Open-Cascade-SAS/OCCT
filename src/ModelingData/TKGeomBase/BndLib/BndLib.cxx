@@ -42,6 +42,12 @@ static Standard_Integer ComputeBox(const gp_Hypr&      aHypr,
 
 namespace
 {
+//! Cosine of M_PI/8 (22.5 degrees) - used for 8-point polygon approximation.
+constexpr Standard_Real THE_COS_PI8 = 0.92387953251128674;
+
+//! Cosine (and sine) of M_PI/4 (45 degrees) - used for diagonal points.
+constexpr Standard_Real THE_COS_PI4 = 0.70710678118654746;
+
 //! Compute method
 template <class PointType, class BndBoxType>
 void Compute(const Standard_Real theP1,
@@ -74,19 +80,11 @@ void Compute(const Standard_Real theP1,
   }
   else
   {
+    // Normalize aTeta1 to [0, 2*PI) range
+    aTeta1 = std::fmod(aTeta1, 2. * M_PI);
     if (aTeta1 < 0.)
     {
-      do
-      {
-        aTeta1 += 2. * M_PI;
-      } while (aTeta1 < 0.);
-    }
-    else if (aTeta1 > 2. * M_PI)
-    {
-      do
-      {
-        aTeta1 -= 2. * M_PI;
-      } while (aTeta1 > 2. * M_PI);
+      aTeta1 += 2. * M_PI;
     }
     aTeta2 = aTeta1 + aDelta;
   }
@@ -104,149 +102,76 @@ void Compute(const Standard_Real theP1,
   if (aDelta > M_PI / 8.)
   {
     // Main radiuses to take into account only 8 points (/cos(Pi/8.))
-    aRam = theRa / 0.92387953251128674;
-    aRbm = theRb / 0.92387953251128674;
+    aRam = theRa / THE_COS_PI8;
+    aRbm = theRb / THE_COS_PI8;
   }
   else
   {
     // Main radiuses to take into account the arrow
-    Standard_Real aTc = cos(aDelta / 2);
+    Standard_Real aTc = std::cos(aDelta / 2);
     aRam              = theRa / aTc;
     aRbm              = theRb / aTc;
   }
   theB.Add(PointType(theO.Coord() + aRam * aCn1 * theXd.Coord() + aRbm * aSn1 * theYd.Coord()));
   theB.Add(PointType(theO.Coord() + aRam * aCn2 * theXd.Coord() + aRbm * aSn2 * theYd.Coord()));
 
-// cos or sin M_PI/4.
-#define PI4 0.70710678118654746
+  // X and Y multipliers for 8 polygon points at 45-degree intervals (0, 45, 90, ..., 315 degrees).
+  // Point i corresponds to angle i * 45 degrees.
+  constexpr Standard_Real aXMult[8] =
+    {1., THE_COS_PI4, 0., -THE_COS_PI4, -1., -THE_COS_PI4, 0., THE_COS_PI4};
+  constexpr Standard_Real aYMult[8] =
+    {0., THE_COS_PI4, 1., THE_COS_PI4, 0., -THE_COS_PI4, -1., -THE_COS_PI4};
 
-// 8 points of the polygon
-#define addPoint0 theB.Add(PointType(theO.Coord() + aRam * theXd.Coord()))
-#define addPoint1                                                                                  \
-  theB.Add(PointType(theO.Coord() + aRam * PI4 * theXd.Coord() + aRbm * PI4 * theYd.Coord()))
-#define addPoint2 theB.Add(PointType(theO.Coord() + aRbm * theYd.Coord()))
-#define addPoint3                                                                                  \
-  theB.Add(PointType(theO.Coord() - aRam * PI4 * theXd.Coord() + aRbm * PI4 * theYd.Coord()))
-#define addPoint4 theB.Add(PointType(theO.Coord() - aRam * theXd.Coord()))
-#define addPoint5                                                                                  \
-  theB.Add(PointType(theO.Coord() - aRam * PI4 * theXd.Coord() - aRbm * PI4 * theYd.Coord()))
-#define addPoint6 theB.Add(PointType(theO.Coord() - aRbm * theYd.Coord()))
-#define addPoint7                                                                                  \
-  theB.Add(PointType(theO.Coord() + aRam * PI4 * theXd.Coord() - aRbm * PI4 * theYd.Coord()))
+  // Lambda to add polygon point by index (0-7).
+  const auto addPoint = [&](Standard_Integer theIdx) {
+    theB.Add(PointType(theO.Coord() + aRam * aXMult[theIdx] * theXd.Coord()
+                       + aRbm * aYMult[theIdx] * theYd.Coord()));
+  };
 
-  Standard_Integer aDeb = (Standard_Integer)(aTeta1 / (M_PI / 4.));
-  Standard_Integer aFin = (Standard_Integer)(aTeta2 / (M_PI / 4.));
+  Standard_Integer aDeb = static_cast<Standard_Integer>(aTeta1 / (M_PI / 4.));
+  Standard_Integer aFin = static_cast<Standard_Integer>(aTeta2 / (M_PI / 4.));
   aDeb++;
 
   if (aDeb > aFin)
-    return;
-
-  switch (aDeb)
   {
-    case 1: {
-      addPoint1;
-      if (aFin <= 1)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 2: {
-      addPoint2;
-      if (aFin <= 2)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 3: {
-      addPoint3;
-      if (aFin <= 3)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 4: {
-      addPoint4;
-      if (aFin <= 4)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 5: {
-      addPoint5;
-      if (aFin <= 5)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 6: {
-      addPoint6;
-      if (aFin <= 6)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 7: {
-      addPoint7;
-      if (aFin <= 7)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 8: {
-      addPoint0;
-      if (aFin <= 8)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 9: {
-      addPoint1;
-      if (aFin <= 9)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 10: {
-      addPoint2;
-      if (aFin <= 10)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 11: {
-      addPoint3;
-      if (aFin <= 11)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 12: {
-      addPoint4;
-      if (aFin <= 12)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 13: {
-      addPoint5;
-      if (aFin <= 13)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 14: {
-      addPoint6;
-      if (aFin <= 14)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 15: {
-      addPoint7;
-      if (aFin <= 15)
-        break;
-    }
+    return;
+  }
+
+  // Add polygon points from aDeb to aFin, wrapping around using modulo 8.
+  for (Standard_Integer i = aDeb; i <= aFin; ++i)
+  {
+    addPoint(i % 8);
   }
 }
 } // end namespace
 
 static void OpenMin(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(gp_Dir::D::X);
-  gp_Dir OY(gp_Dir::D::Y);
-  gp_Dir OZ(gp_Dir::D::Z);
-  if (V.IsParallel(OX, Precision::Angular()))
-    B.OpenXmin();
-  else if (V.IsParallel(OY, Precision::Angular()))
-    B.OpenYmin();
-  else if (V.IsParallel(OZ, Precision::Angular()))
-    B.OpenZmin();
+  // OpenMin opens the box in the direction of decreasing parameter.
+  // For a line P(t) = Origin + t*V, as t -> -Inf:
+  //   - If V.X() > 0, x-coordinate -> -Inf, so open Xmin
+  //   - If V.X() < 0, x-coordinate -> +Inf, so open Xmax
+  if (V.IsParallel(gp::DX(), Precision::Angular()))
+  {
+    if (V.X() > 0.)
+      B.OpenXmin();
+    else
+      B.OpenXmax();
+  }
+  else if (V.IsParallel(gp::DY(), Precision::Angular()))
+  {
+    if (V.Y() > 0.)
+      B.OpenYmin();
+    else
+      B.OpenYmax();
+  }
+  else if (V.IsParallel(gp::DZ(), Precision::Angular()))
+  {
+    if (V.Z() > 0.)
+      B.OpenZmin();
+    else
+      B.OpenZmax();
+  }
   else
   {
     B.OpenXmin();
@@ -257,15 +182,31 @@ static void OpenMin(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMax(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(gp_Dir::D::X);
-  gp_Dir OY(gp_Dir::D::Y);
-  gp_Dir OZ(gp_Dir::D::Z);
-  if (V.IsParallel(OX, Precision::Angular()))
-    B.OpenXmax();
-  else if (V.IsParallel(OY, Precision::Angular()))
-    B.OpenYmax();
-  else if (V.IsParallel(OZ, Precision::Angular()))
-    B.OpenZmax();
+  // OpenMax opens the box in the direction of increasing parameter.
+  // For a line P(t) = Origin + t*V, as t -> +Inf:
+  //   - If V.X() > 0, x-coordinate -> +Inf, so open Xmax
+  //   - If V.X() < 0, x-coordinate -> -Inf, so open Xmin
+  if (V.IsParallel(gp::DX(), Precision::Angular()))
+  {
+    if (V.X() > 0.)
+      B.OpenXmax();
+    else
+      B.OpenXmin();
+  }
+  else if (V.IsParallel(gp::DY(), Precision::Angular()))
+  {
+    if (V.Y() > 0.)
+      B.OpenYmax();
+    else
+      B.OpenYmin();
+  }
+  else if (V.IsParallel(gp::DZ(), Precision::Angular()))
+  {
+    if (V.Z() > 0.)
+      B.OpenZmax();
+    else
+      B.OpenZmin();
+  }
   else
   {
     B.OpenXmax();
@@ -276,20 +217,17 @@ static void OpenMax(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMinMax(const gp_Dir& V, Bnd_Box& B)
 {
-  gp_Dir OX(gp_Dir::D::X);
-  gp_Dir OY(gp_Dir::D::Y);
-  gp_Dir OZ(gp_Dir::D::Z);
-  if (V.IsParallel(OX, Precision::Angular()))
+  if (V.IsParallel(gp::DX(), Precision::Angular()))
   {
     B.OpenXmax();
     B.OpenXmin();
   }
-  else if (V.IsParallel(OY, Precision::Angular()))
+  else if (V.IsParallel(gp::DY(), Precision::Angular()))
   {
     B.OpenYmax();
     B.OpenYmin();
   }
-  else if (V.IsParallel(OZ, Precision::Angular()))
+  else if (V.IsParallel(gp::DZ(), Precision::Angular()))
   {
     B.OpenZmax();
     B.OpenZmin();
@@ -307,12 +245,24 @@ static void OpenMinMax(const gp_Dir& V, Bnd_Box& B)
 
 static void OpenMin(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(gp_Dir2d::D::X);
-  gp_Dir2d OY(gp_Dir2d::D::Y);
-  if (V.IsParallel(OX, Precision::Angular()))
-    B.OpenXmin();
-  else if (V.IsParallel(OY, Precision::Angular()))
-    B.OpenYmin();
+  // OpenMin opens the box in the direction of decreasing parameter.
+  // For a line P(t) = Origin + t*V, as t -> -Inf:
+  //   - If V.X() > 0, x-coordinate -> -Inf, so open Xmin
+  //   - If V.X() < 0, x-coordinate -> +Inf, so open Xmax
+  if (V.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    if (V.X() > 0.)
+      B.OpenXmin();
+    else
+      B.OpenXmax();
+  }
+  else if (V.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    if (V.Y() > 0.)
+      B.OpenYmin();
+    else
+      B.OpenYmax();
+  }
   else
   {
     B.OpenXmin();
@@ -322,12 +272,24 @@ static void OpenMin(const gp_Dir2d& V, Bnd_Box2d& B)
 
 static void OpenMax(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(gp_Dir2d::D::X);
-  gp_Dir2d OY(gp_Dir2d::D::Y);
-  if (V.IsParallel(OX, Precision::Angular()))
-    B.OpenXmax();
-  else if (V.IsParallel(OY, Precision::Angular()))
-    B.OpenYmax();
+  // OpenMax opens the box in the direction of increasing parameter.
+  // For a line P(t) = Origin + t*V, as t -> +Inf:
+  //   - If V.X() > 0, x-coordinate -> +Inf, so open Xmax
+  //   - If V.X() < 0, x-coordinate -> -Inf, so open Xmin
+  if (V.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    if (V.X() > 0.)
+      B.OpenXmax();
+    else
+      B.OpenXmin();
+  }
+  else if (V.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    if (V.Y() > 0.)
+      B.OpenYmax();
+    else
+      B.OpenYmin();
+  }
   else
   {
     B.OpenXmax();
@@ -337,14 +299,12 @@ static void OpenMax(const gp_Dir2d& V, Bnd_Box2d& B)
 
 static void OpenMinMax(const gp_Dir2d& V, Bnd_Box2d& B)
 {
-  gp_Dir2d OX(gp_Dir2d::D::X);
-  gp_Dir2d OY(gp_Dir2d::D::Y);
-  if (V.IsParallel(OX, Precision::Angular()))
+  if (V.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     B.OpenXmax();
     B.OpenXmin();
   }
-  else if (V.IsParallel(OY, Precision::Angular()))
+  else if (V.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     B.OpenYmax();
     B.OpenYmin();
@@ -1162,6 +1122,9 @@ void BndLib::Add(const gp_Cylinder&  S,
                  const Standard_Real Tol,
                  Bnd_Box&            B)
 {
+  // Cache axis direction for infinite cases.
+  const gp_Dir& aDir = S.Axis().Direction();
+
   if (Precision::IsNegativeInfinite(VMin))
   {
     if (Precision::IsNegativeInfinite(VMax))
@@ -1170,19 +1133,19 @@ void BndLib::Add(const gp_Cylinder&  S,
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
-      OpenMinMax(S.Axis().Direction(), B);
+      OpenMinMax(aDir, B);
     }
     else
     {
       ComputeCyl(S, UMin, UMax, 0., VMax, B);
-      OpenMin(S.Axis().Direction(), B);
+      OpenMin(aDir, B);
     }
   }
   else if (Precision::IsPositiveInfinite(VMin))
   {
     if (Precision::IsNegativeInfinite(VMax))
     {
-      OpenMinMax(S.Axis().Direction(), B);
+      OpenMinMax(aDir, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
@@ -1191,7 +1154,7 @@ void BndLib::Add(const gp_Cylinder&  S,
     else
     {
       ComputeCyl(S, UMin, UMax, 0., VMax, B);
-      OpenMax(S.Axis().Direction(), B);
+      OpenMax(aDir, B);
     }
   }
   else
@@ -1199,12 +1162,12 @@ void BndLib::Add(const gp_Cylinder&  S,
     if (Precision::IsNegativeInfinite(VMax))
     {
       ComputeCyl(S, UMin, UMax, VMin, 0., B);
-      OpenMin(S.Axis().Direction(), B);
+      OpenMin(aDir, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
       ComputeCyl(S, UMin, UMax, VMin, 0., B);
-      OpenMax(S.Axis().Direction(), B);
+      OpenMax(aDir, B);
     }
     else
     {
@@ -1264,8 +1227,9 @@ void BndLib::Add(const gp_Cone&      S,
                  const Standard_Real Tol,
                  Bnd_Box&            B)
 {
+  // Cache axis direction for infinite cases.
+  const gp_Dir& aD = S.Axis().Direction();
 
-  Standard_Real A = S.SemiAngle();
   if (Precision::IsNegativeInfinite(VMin))
   {
     if (Precision::IsNegativeInfinite(VMax))
@@ -1274,22 +1238,19 @@ void BndLib::Add(const gp_Cone&      S,
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMinMax(D, B);
+      OpenMinMax(aD, B);
     }
     else
     {
       ComputeCone(S, UMin, UMax, 0., VMax, B);
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMin(D, B);
+      OpenMin(aD, B);
     }
   }
   else if (Precision::IsPositiveInfinite(VMin))
   {
     if (Precision::IsNegativeInfinite(VMax))
     {
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMinMax(D, B);
+      OpenMinMax(aD, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
@@ -1298,8 +1259,7 @@ void BndLib::Add(const gp_Cone&      S,
     else
     {
       ComputeCone(S, UMin, UMax, 0., VMax, B);
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMax(D, B);
+      OpenMax(aD, B);
     }
   }
   else
@@ -1307,14 +1267,12 @@ void BndLib::Add(const gp_Cone&      S,
     if (Precision::IsNegativeInfinite(VMax))
     {
       ComputeCone(S, UMin, UMax, VMin, 0., B);
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMin(D, B);
+      OpenMin(aD, B);
     }
     else if (Precision::IsPositiveInfinite(VMax))
     {
       ComputeCone(S, UMin, UMax, VMin, 0., B);
-      gp_Dir D(std::cos(A) * S.Axis().Direction());
-      OpenMax(D, B);
+      OpenMax(aD, B);
     }
     else
     {
@@ -1570,18 +1528,18 @@ void BndLib::Add(const gp_Torus&     S,
   Standard_Integer Fi2;
   if (VMax < VMin)
   {
-    Fi1 = (Standard_Integer)(VMax / (M_PI / 4.));
-    Fi2 = (Standard_Integer)(VMin / (M_PI / 4.));
+    Fi1 = static_cast<Standard_Integer>(VMax / (M_PI / 4.));
+    Fi2 = static_cast<Standard_Integer>(VMin / (M_PI / 4.));
   }
   else
   {
-    Fi1 = (Standard_Integer)(VMin / (M_PI / 4.));
-    Fi2 = (Standard_Integer)(VMax / (M_PI / 4.));
+    Fi1 = static_cast<Standard_Integer>(VMin / (M_PI / 4.));
+    Fi2 = static_cast<Standard_Integer>(VMax / (M_PI / 4.));
   }
   Fi2++;
 
-  Standard_Real Ra = S.MajorRadius();
-  Standard_Real Ri = S.MinorRadius();
+  const Standard_Real Ra = S.MajorRadius();
+  const Standard_Real Ri = S.MinorRadius();
 
   if (Fi2 < Fi1)
     return;
@@ -1593,181 +1551,61 @@ void BndLib::Add(const gp_Torus&     S,
     return;
   }
 
-#define SC 0.71
-#define addP0                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra + Ri,                                                                                \
-           Ra + Ri,                                                                                \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           S.Location(),                                                                           \
-           B))
-#define addP1                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra + Ri * SC,                                                                           \
-           Ra + Ri * SC,                                                                           \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() + (Ri * SC) * S.Axis().Direction().XYZ()),                    \
-           B))
-#define addP2                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra,                                                                                     \
-           Ra,                                                                                     \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() + Ri * S.Axis().Direction().XYZ()),                           \
-           B))
-#define addP3                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra - Ri * SC,                                                                           \
-           Ra - Ri * SC,                                                                           \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() + (Ri * SC) * S.Axis().Direction().XYZ()),                    \
-           B))
-#define addP4                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra - Ri,                                                                                \
-           Ra - Ri,                                                                                \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           S.Location(),                                                                           \
-           B))
-#define addP5                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra - Ri * SC,                                                                           \
-           Ra - Ri * SC,                                                                           \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() - (Ri * SC) * S.Axis().Direction().XYZ()),                    \
-           B))
-#define addP6                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra,                                                                                     \
-           Ra,                                                                                     \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() - Ri * S.Axis().Direction().XYZ()),                           \
-           B))
-#define addP7                                                                                      \
-  (Compute(UMin,                                                                                   \
-           UMax,                                                                                   \
-           Ra + Ri * SC,                                                                           \
-           Ra + Ri * SC,                                                                           \
-           gp_Pnt(S.XAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.YAxis().Direction().XYZ()),                                                    \
-           gp_Pnt(S.Location().XYZ() - (Ri * SC) * S.Axis().Direction().XYZ()),                    \
-           B))
+  // Cache direction vectors.
+  const gp_XYZ aZDir   = S.Axis().Direction().XYZ();
+  const gp_XYZ aLocXYZ = S.Location().XYZ();
+  const gp_Pnt aXd(S.XAxis().Direction().XYZ());
+  const gp_Pnt aYd(S.YAxis().Direction().XYZ());
 
-  switch (Fi1)
+  // Multipliers for torus cross-section points at 45-degree intervals.
+  // radiusMult[i]: multiplier for Ri in radius calculation (Ra + Ri * radiusMult[i])
+  // zMult[i]: multiplier for Ri in Z offset calculation (Ri * zMult[i])
+  // THE_COS_PI4 = cos(45 deg) = sin(45 deg) = 0.707...
+  constexpr Standard_Real aRadiusMult[8] =
+    {1., THE_COS_PI4, 0., -THE_COS_PI4, -1., -THE_COS_PI4, 0., THE_COS_PI4};
+  constexpr Standard_Real aZMult[8] =
+    {0., THE_COS_PI4, 1., THE_COS_PI4, 0., -THE_COS_PI4, -1., -THE_COS_PI4};
+
+  // Lambda to add torus cross-section point by index (0-7).
+  const auto addTorusPoint = [&](Standard_Integer theIdx) {
+    const Standard_Real aRadius = Ra + Ri * aRadiusMult[theIdx];
+    const gp_Pnt        aCenter(aLocXYZ + (Ri * aZMult[theIdx]) * aZDir);
+    Compute(UMin, UMax, aRadius, aRadius, aXd, aYd, aCenter, B);
+  };
+
+  // Add points from Fi1 to Fi2, handling wrap-around for indices.
+  // Use ((i % 8) + 8) % 8 to handle negative indices correctly
+  // (C++ modulo can return negative values for negative dividends).
+  for (Standard_Integer i = Fi1; i <= Fi2; ++i)
   {
-    case 0: {
-      addP0;
-      if (Fi2 <= 0)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 1: {
-      addP1;
-      if (Fi2 <= 1)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 2: {
-      addP2;
-      if (Fi2 <= 2)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 3: {
-      addP3;
-      if (Fi2 <= 3)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 4: {
-      addP4;
-      if (Fi2 <= 4)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 5: {
-      addP5;
-      if (Fi2 <= 5)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 6: {
-      addP6;
-      if (Fi2 <= 6)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 7: {
-      addP7;
-      if (Fi2 <= 7)
-        break;
-    }
-      Standard_FALLTHROUGH
-    case 8:
-    default: {
-      addP0;
-      switch (Fi2)
-      {
-        case 15:
-          addP7;
-          Standard_FALLTHROUGH
-        case 14:
-          addP6;
-          Standard_FALLTHROUGH
-        case 13:
-          addP5;
-          Standard_FALLTHROUGH
-        case 12:
-          addP4;
-          Standard_FALLTHROUGH
-        case 11:
-          addP3;
-          Standard_FALLTHROUGH
-        case 10:
-          addP2;
-          Standard_FALLTHROUGH
-        case 9:
-          addP1;
-          Standard_FALLTHROUGH
-        case 8:
-          break;
-      }
-    }
+    addTorusPoint(((i % 8) + 8) % 8);
   }
+
   B.Enlarge(Tol);
 }
 
 void BndLib::Add(const gp_Torus& S, const Standard_Real Tol, Bnd_Box& B)
 {
-
-  Standard_Real RMa = S.MajorRadius();
-  Standard_Real Rmi = S.MinorRadius();
-  gp_XYZ        O   = S.Location().XYZ();
-  gp_XYZ        Xd  = S.XAxis().Direction().XYZ();
-  gp_XYZ        Yd  = S.YAxis().Direction().XYZ();
-  gp_XYZ        Zd  = S.Axis().Direction().XYZ();
-  B.Add(gp_Pnt(O - (RMa + Rmi) * Xd - (RMa + Rmi) * Yd + Rmi * Zd));
-  B.Add(gp_Pnt(O - (RMa + Rmi) * Xd - (RMa + Rmi) * Yd - Rmi * Zd));
-  B.Add(gp_Pnt(O + (RMa + Rmi) * Xd - (RMa + Rmi) * Yd + Rmi * Zd));
-  B.Add(gp_Pnt(O + (RMa + Rmi) * Xd - (RMa + Rmi) * Yd - Rmi * Zd));
-  B.Add(gp_Pnt(O - (RMa + Rmi) * Xd + (RMa + Rmi) * Yd + Rmi * Zd));
-  B.Add(gp_Pnt(O - (RMa + Rmi) * Xd + (RMa + Rmi) * Yd - Rmi * Zd));
-  B.Add(gp_Pnt(O + (RMa + Rmi) * Xd + (RMa + Rmi) * Yd + Rmi * Zd));
-  B.Add(gp_Pnt(O + (RMa + Rmi) * Xd + (RMa + Rmi) * Yd - Rmi * Zd));
+  const Standard_Real aRMa = S.MajorRadius();
+  const Standard_Real aRmi = S.MinorRadius();
+  const Standard_Real aR   = aRMa + aRmi;
+  const gp_XYZ        aO   = S.Location().XYZ();
+  const gp_XYZ        aXd  = S.XAxis().Direction().XYZ();
+  const gp_XYZ        aYd  = S.YAxis().Direction().XYZ();
+  const gp_XYZ        aZd  = S.Axis().Direction().XYZ();
+  // Precompute scaled direction vectors.
+  const gp_XYZ aRXd  = aR * aXd;
+  const gp_XYZ aRYd  = aR * aYd;
+  const gp_XYZ aRiZd = aRmi * aZd;
+  // Add 8 corner points of torus bounding box.
+  B.Add(gp_Pnt(aO - aRXd - aRYd + aRiZd));
+  B.Add(gp_Pnt(aO - aRXd - aRYd - aRiZd));
+  B.Add(gp_Pnt(aO + aRXd - aRYd + aRiZd));
+  B.Add(gp_Pnt(aO + aRXd - aRYd - aRiZd));
+  B.Add(gp_Pnt(aO - aRXd + aRYd + aRiZd));
+  B.Add(gp_Pnt(aO - aRXd + aRYd - aRiZd));
+  B.Add(gp_Pnt(aO + aRXd + aRYd + aRiZd));
+  B.Add(gp_Pnt(aO + aRXd + aRYd - aRiZd));
   B.Enlarge(Tol);
 }
 
@@ -1804,7 +1642,8 @@ Standard_Integer ComputeBox(const gp_Hypr&      aHypr,
   aRmaj               = aHypr.MajorRadius();
   aRmin               = aHypr.MinorRadius();
   //
-  aT3 = 0;
+  // Find extrema for each coordinate (X, Y, Z) independently.
+  // Each coordinate can have its extremum at a different parameter value.
   for (i = 1; i <= 3; ++i)
   {
     aA = aRmin * aYDir.Coord(i);
@@ -1813,8 +1652,8 @@ Standard_Integer ComputeBox(const gp_Hypr&      aHypr,
     aABP = aA + aB;
     aBAM = aB - aA;
     //
-    aABP = fabs(aABP);
-    aBAM = fabs(aBAM);
+    aABP = std::abs(aABP);
+    aBAM = std::abs(aBAM);
     //
     if (aABP < aEps || aBAM < aEps)
     {
@@ -1822,23 +1661,17 @@ Standard_Integer ComputeBox(const gp_Hypr&      aHypr,
     }
     //
     aCf = aBAM / aABP;
-    aT3 = log(sqrt(aCf));
+    aT3 = 0.5 * std::log(aCf);
     //
     if (aT3 < aT1 || aT3 > aT2)
     {
       continue;
     }
+    // Add extremum point for this coordinate.
+    aP3 = ElCLib::Value(aT3, aHypr);
+    aBox.Add(aP3);
     iErr = 0;
-    break;
   }
-  //
-  if (iErr)
-  {
-    return iErr;
-  }
-  //
-  aP3 = ElCLib::Value(aT3, aHypr);
-  aBox.Add(aP3);
   //
   return iErr;
 }
