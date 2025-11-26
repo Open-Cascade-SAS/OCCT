@@ -83,9 +83,9 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
   if (!Ok)
     return Ok;
 
-  Mesure                   = pow(Hauteur, 3) / 12;
+  Mesure                   = Hauteur * Hauteur * Hauteur / 12;
   WVal                     = Numerateur / Denominateur;
-  Flexion(Flexion.Lower()) = Mesure * pow(WVal, 2);
+  Flexion(Flexion.Lower()) = Mesure * WVal * WVal;
 
   if (MyDerivativeOrder >= 1)
   {

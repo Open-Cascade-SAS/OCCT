@@ -174,14 +174,16 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
 {
 
   Standard_Integer ii, jj, kk, Vk;
-  Standard_Integer Vdeb = 3 + 2 * MyContrOrder1,
-                   Vfin = 2 * MyPoles->Length() - 2 * (MyContrOrder2 + 1),
-                   Vup  = 2 * MyPoles->Length() + MyWithAuxValue;
-  Standard_Integer DebH = 1 + MyContrOrder1, FinH = MyNbVar - MyWithAuxValue - MyContrOrder2;
-  Standard_Real    Cos0 = pow(MyLinearForm(0).X(), 2), Sin0 = pow(MyLinearForm(0).Y(), 2),
-                CosSin0 = 2 * MyLinearForm(0).X() * MyLinearForm(0).Y(),
-                Cos1 = pow(MyLinearForm(1).X(), 2), Sin1 = pow(MyLinearForm(1).Y(), 2),
-                CosSin1 = 2 * MyLinearForm(1).X() * MyLinearForm(1).Y();
+  Standard_Integer Vdeb    = 3 + 2 * MyContrOrder1,
+                   Vfin    = 2 * MyPoles->Length() - 2 * (MyContrOrder2 + 1),
+                   Vup     = 2 * MyPoles->Length() + MyWithAuxValue;
+  Standard_Integer    DebH = 1 + MyContrOrder1, FinH = MyNbVar - MyWithAuxValue - MyContrOrder2;
+  const Standard_Real aLF0_X = MyLinearForm(0).X();
+  const Standard_Real aLF0_Y = MyLinearForm(0).Y();
+  const Standard_Real aLF1_X = MyLinearForm(1).X();
+  const Standard_Real aLF1_Y = MyLinearForm(1).Y();
+  Standard_Real       Cos0 = aLF0_X * aLF0_X, Sin0 = aLF0_Y * aLF0_Y, CosSin0 = 2 * aLF0_X * aLF0_Y,
+                Cos1 = aLF1_X * aLF1_X, Sin1 = aLF1_Y * aLF1_Y, CosSin1 = 2 * aLF1_X * aLF1_Y;
   Standard_Real Lambda0 = 0, Lambda1 = 0;
 
   if (MyContrOrder1 >= 1)

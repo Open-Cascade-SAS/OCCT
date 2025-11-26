@@ -657,7 +657,7 @@ struct CDelaBella : IDelaBella
 
               // ab: given face adjacency [index][],
               // it provides [][2] vertex indices on shared edge (CCW order)
-              const static int ab[3][2] = {{1, 2}, {2, 0}, {0, 1}};
+              static const int ab[3][2] = {{1, 2}, {2, 0}, {0, 1}};
 
               Vert* a = fv[ab[e][0]];
               Vert* b = fv[ab[e][1]];

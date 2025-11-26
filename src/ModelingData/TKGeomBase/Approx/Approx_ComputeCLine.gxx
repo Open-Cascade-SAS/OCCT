@@ -23,7 +23,10 @@
 #include <Approx_Status.hxx>
 #include <Precision.hxx>
 
-const static Standard_Integer MAXSEGM = 1000;
+namespace
+{
+constexpr Standard_Integer MAXSEGM = 1000;
+}
 
 //=======================================================================
 // function : Approx_ComputeCLine

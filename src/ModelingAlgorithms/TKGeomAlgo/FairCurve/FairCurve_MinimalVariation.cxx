@@ -209,8 +209,9 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
       // rotation of the second derivative + adding
       gp_Vec2d OldSeconde(Poles->Value(Poles->Lower()).XY() + Poles->Value(Poles->Lower() + 2).XY()
                           - 2 * Poles->Value(Poles->Lower() + 1).XY());
-      OldSeconde *= Degree * (Degree - 1)
-                    / pow(Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower()), 2);
+      const Standard_Real aDeltaKnot =
+        Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower());
+      OldSeconde *= Degree * (Degree - 1) / (aDeltaKnot * aDeltaKnot);
       Standard_Real CPrim = OldDerive.Magnitude();
       ADelta(kk)          = (OldSeconde.Rotated(DAngle1) - OldSeconde
                     + DeltaCurvature1 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle1))
@@ -231,8 +232,9 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
       // rotation of the second derivative + adding
       gp_Vec2d OldSeconde(Poles->Value(Poles->Upper()).XY() + Poles->Value(Poles->Upper() - 2).XY()
                           - 2 * Poles->Value(Poles->Upper() - 1).XY());
-      OldSeconde *= Degree * (Degree - 1)
-                    / pow(Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1), 2);
+      const Standard_Real aDeltaKnot =
+        Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1);
+      OldSeconde *= Degree * (Degree - 1) / (aDeltaKnot * aDeltaKnot);
       Standard_Real CPrim = OldDerive.Magnitude();
       ADelta(kk)          = (OldSeconde.Rotated(DAngle2) - OldSeconde
                     + DeltaCurvature2 * CPrim * OldDerive.Rotated(M_PI / 2 + DAngle2))
@@ -324,7 +326,8 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d&         Del
   math_Vector           VInit(1, EMVC.NbVariables());
 
   // The value below gives an idea about the smallest value of the criterion of flexion.
-  Standard_Real VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
+  const Standard_Real aRatio  = NewHeight / SlidingLength;
+  Standard_Real       VConvex = 0.01 * aRatio * aRatio * aRatio;
   if (VConvex < 1.e-12)
   {
     VConvex = 1.e-12;

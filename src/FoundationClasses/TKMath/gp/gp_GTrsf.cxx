@@ -163,9 +163,9 @@ void gp_GTrsf::SetForm()
     throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
 
   if (s > 0)
-    s = std::pow(s, 1. / 3.);
+    s = std::cbrt(s);
   else
-    s = -std::pow(-s, 1. / 3.);
+    s = -std::cbrt(-s);
   M.Divide(s);
 
   // check if the matrix is an uniform matrix

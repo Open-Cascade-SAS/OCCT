@@ -127,7 +127,7 @@ static Standard_Real ScaleFactor(const NCollection_Mat4<T>& theMatrix)
 {
   // The determinant of the matrix should give the scale factor (cubed).
   const T aDeterminant = theMatrix.DeterminantMat3();
-  return std::pow(static_cast<Standard_Real>(aDeterminant), 1.0 / 3.0);
+  return std::cbrt(static_cast<Standard_Real>(aDeterminant));
 }
 } // namespace Graphic3d_TransformUtils
 
