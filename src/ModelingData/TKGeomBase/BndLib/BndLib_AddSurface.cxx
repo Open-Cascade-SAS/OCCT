@@ -445,15 +445,12 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       Standard_Integer Nu = NbUSamples(S);
       Standard_Integer Nv = NbVSamples(S);
       gp_Pnt           P;
-      // Precompute step sizes to avoid division in inner loop.
-      const Standard_Real dU = (UMax - UMin) / (Nu - 1);
-      const Standard_Real dV = (VMax - VMin) / (Nv - 1);
-      Standard_Real       U  = UMin;
-      for (Standard_Integer i = 1; i <= Nu; i++, U += dU)
+      for (Standard_Integer i = 1; i <= Nu; i++)
       {
-        Standard_Real V = VMin;
-        for (Standard_Integer j = 1; j <= Nv; j++, V += dV)
+        const Standard_Real U = UMin + ((UMax - UMin) * (i - 1) / (Nu - 1));
+        for (Standard_Integer j = 1; j <= Nv; j++)
         {
+          const Standard_Real V = VMin + ((VMax - VMin) * (j - 1) / (Nv - 1));
           S.D0(U, V, P);
           B.Add(P);
         }

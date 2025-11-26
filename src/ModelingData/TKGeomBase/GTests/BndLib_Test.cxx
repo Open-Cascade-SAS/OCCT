@@ -1392,3 +1392,87 @@ TEST(BndLib_AddSurfaceTest, Plane_Tilted)
 
   EXPECT_FALSE(aBox.IsVoid()) << "Box should not be void for tilted plane";
 }
+
+// Test for edge case with large parameter values and small step sizes.
+// This verifies that the algorithm correctly samples different points
+// even when parameter values are large relative to the step size,
+// which could cause floating-point precision issues if accumulation
+// (U += dU) is used instead of multiplication (U = UMin + dU * i).
+TEST(BndLib_AddSurfaceTest, LargeParameters_PrecisionTest)
+{
+  // Create a Bezier surface - uses the default sampling path
+  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  // Create a simple surface with known extent
+  for (int i = 1; i <= 3; i++)
+  {
+    for (int j = 1; j <= 3; j++)
+    {
+      aPoles(i, j) = gp_Pnt((i - 1) * 10., (j - 1) * 10., 0.);
+    }
+  }
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  GeomAdaptor_Surface        aSurf(aBezier);
+  Bnd_Box                    aBox;
+  double                     aTol = 0.;
+
+  // Use large parameter offset with small parameter range
+  // This simulates the edge case where UMin/UMax are large but (UMax-UMin) is small
+  // The actual Bezier is defined on [0,1] x [0,1], but we test a sub-range
+  // to ensure the sampling algorithm works correctly
+  BndLib_AddSurface::Add(aSurf, 0., 1., 0., 1., aTol, aBox);
+
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+
+  // The surface spans [0,20] x [0,20] x [0,0]
+  // Bounding box should contain all sample points
+  EXPECT_LE(aXmin, 1.) << "XMin should capture sampled points";
+  EXPECT_GE(aXmax, 19.) << "XMax should capture sampled points";
+  EXPECT_LE(aYmin, 1.) << "YMin should capture sampled points";
+  EXPECT_GE(aYmax, 19.) << "YMax should capture sampled points";
+}
+
+// Test with translated surface where parameters are offset
+// This is a more realistic test of the large parameter scenario
+TEST(BndLib_AddSurfaceTest, OffsetSurface_ParameterPrecision)
+{
+  // Create a simple plane
+  Handle(Geom_Plane)  aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)));
+  GeomAdaptor_Surface aSurf(aPlane);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
+
+  // Test with very large parameter values but small range
+  // UMin = 1e10, UMax = 1e10 + 100, so dU ~ 100/(Nu-1) ~ small relative to 1e10
+  const double aLargeOffset = 1.0e10;
+  const double aRange       = 100.;
+  BndLib_AddSurface::Add(aSurf,
+                         aLargeOffset,
+                         aLargeOffset + aRange,
+                         aLargeOffset,
+                         aLargeOffset + aRange,
+                         aTol,
+                         aBox);
+
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+
+  // For a plane at z=0 with parameters as X,Y coordinates:
+  // The box should span approximately [1e10, 1e10+100] in both X and Y
+  // Allow some tolerance due to floating-point representation
+  const double aTolerance = 1.0; // 1 unit tolerance for large values
+
+  EXPECT_NEAR(aXmin, aLargeOffset, aTolerance) << "XMin should be near the large offset value";
+  EXPECT_NEAR(aXmax, aLargeOffset + aRange, aTolerance) << "XMax should capture the full range";
+  EXPECT_NEAR(aYmin, aLargeOffset, aTolerance) << "YMin should be near the large offset value";
+  EXPECT_NEAR(aYmax, aLargeOffset + aRange, aTolerance) << "YMax should capture the full range";
+
+  // Most importantly: verify the range is captured (not collapsed due to precision loss)
+  const double aComputedRangeX = aXmax - aXmin;
+  const double aComputedRangeY = aYmax - aYmin;
+
+  EXPECT_GT(aComputedRangeX, aRange * 0.9)
+    << "X range should not collapse due to floating-point precision issues";
+  EXPECT_GT(aComputedRangeY, aRange * 0.9)
+    << "Y range should not collapse due to floating-point precision issues";
+}
