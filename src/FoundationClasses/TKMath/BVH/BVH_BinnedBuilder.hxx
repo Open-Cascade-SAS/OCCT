@@ -218,7 +218,8 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
 {
   const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive(theNode);
   const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive(theNode);
-  if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
+  const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives(theNode);
+  if (aNodeNbPrimitives <= BVH_Builder<T, N>::myLeafNodeSize)
   {
     // clang-format off
     return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // node does not require partitioning
@@ -270,14 +271,16 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
     }
 
     // Choose the best split (with minimum SAH cost)
+    const Standard_Real aParentArea = static_cast<Standard_Real>(anAABB.Area());
     for (Standard_Integer aSplit = 1; aSplit < Bins; ++aSplit)
     {
-      // Simple SAH evaluation
-      Standard_Real aCost =
-        (static_cast<Standard_Real>(aSplitPlanes[aSplit].LftVoxel.Box.Area()) /* / S(N) */)
-          * aSplitPlanes[aSplit].LftVoxel.Count
-        + (static_cast<Standard_Real>(aSplitPlanes[aSplit].RghVoxel.Box.Area()) /* / S(N) */)
-            * aSplitPlanes[aSplit].RghVoxel.Count;
+      // SAH evaluation with proper normalization by parent surface area
+      const Standard_Real aLftArea =
+        static_cast<Standard_Real>(aSplitPlanes[aSplit].LftVoxel.Box.Area());
+      const Standard_Real aRghArea =
+        static_cast<Standard_Real>(aSplitPlanes[aSplit].RghVoxel.Box.Area());
+      Standard_Real aCost = (aLftArea / aParentArea) * aSplitPlanes[aSplit].LftVoxel.Count
+                            + (aRghArea / aParentArea) * aSplitPlanes[aSplit].RghVoxel.Count;
 
       if (aCost <= aMinSplitCost)
       {

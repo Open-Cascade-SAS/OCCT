@@ -17,9 +17,14 @@
 #define _BVH_QuickSorter_Header
 
 #include <BVH_Sorter.hxx>
+#include <NCollection_Allocator.hxx>
+
+#include <algorithm>
+#include <vector>
 
 //! Performs centroid-based sorting of abstract set along
-//! the given axis (X - 0, Y - 1, Z - 2) using quick sort.
+//! the given axis (X - 0, Y - 1, Z - 2) using std::sort.
+//! Uses introsort algorithm which guarantees O(n log n) complexity.
 template <class T, int N>
 class BVH_QuickSorter : public BVH_Sorter<T, N>
 {
@@ -41,41 +46,44 @@ public:
                        const Standard_Integer theStart,
                        const Standard_Integer theFinal) Standard_OVERRIDE
   {
-    Standard_Integer aLft = theStart;
-    Standard_Integer aRgh = theFinal;
-
-    T aPivot = theSet->Center((aRgh + aLft) / 2, myAxis);
-    while (aLft < aRgh)
+    const Standard_Integer aSize = theFinal - theStart + 1;
+    if (aSize <= 1)
     {
-      while (theSet->Center(aLft, myAxis) < aPivot && aLft < theFinal)
-      {
-        ++aLft;
-      }
-
-      while (theSet->Center(aRgh, myAxis) > aPivot && aRgh > theStart)
-      {
-        --aRgh;
-      }
-
-      if (aLft <= aRgh)
-      {
-        if (aLft != aRgh)
-        {
-          theSet->Swap(aLft, aRgh);
-        }
-        ++aLft;
-        --aRgh;
-      }
+      return;
     }
 
-    if (aRgh > theStart)
+    // Create index array for sorting with OCCT allocator
+    std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>> anIndices(aSize);
+    for (Standard_Integer i = 0; i < aSize; ++i)
     {
-      Perform(theSet, theStart, aRgh);
+      anIndices[i] = i;
     }
 
-    if (aLft < theFinal)
+    // Sort indices by center value using std::sort (introsort - O(n log n) guaranteed)
+    const Standard_Integer anAxis = myAxis;
+    std::sort(anIndices.begin(),
+              anIndices.end(),
+              [theSet, theStart, anAxis](Standard_Integer a, Standard_Integer b) {
+                return theSet->Center(theStart + a, anAxis) < theSet->Center(theStart + b, anAxis);
+              });
+
+    // Compute inverse permutation: invPerm[i] = where element i should go
+    std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>> anInvPerm(aSize);
+    for (Standard_Integer i = 0; i < aSize; ++i)
     {
-      Perform(theSet, aLft, theFinal);
+      anInvPerm[anIndices[i]] = i;
+    }
+
+    // Apply permutation using cycle-based algorithm - O(n) swaps total
+    for (Standard_Integer i = 0; i < aSize; ++i)
+    {
+      // Follow the cycle starting at position i
+      while (anInvPerm[i] != i)
+      {
+        Standard_Integer j = anInvPerm[i];
+        theSet->Swap(theStart + i, theStart + j);
+        std::swap(anInvPerm[i], anInvPerm[j]);
+      }
     }
   }
 

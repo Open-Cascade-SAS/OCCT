@@ -48,7 +48,7 @@ public:
   }
 
   //! Releases resources of transformation properties.
-  virtual ~BVH_Transform() {}
+  virtual ~BVH_Transform() = default;
 
   //! Returns transformation matrix.
   const BVH_MatNt& Transform() const { return myTransform; }

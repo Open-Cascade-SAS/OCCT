@@ -20,6 +20,7 @@
 
 #include <NCollection_Sequence.hxx>
 
+#include <atomic>
 #include <mutex>
 
 //! Command-queue for parallel building of BVH nodes.
@@ -31,40 +32,82 @@ class BVH_BuildQueue
 public:
   //! Creates new BVH build queue.
   BVH_BuildQueue()
-      : myNbThreads(0)
+      : myNbThreads(0),
+        mySize(0)
   {
-    //
   }
 
   //! Releases resources of BVH build queue.
-  ~BVH_BuildQueue()
-  {
-    //
-  }
+  ~BVH_BuildQueue() = default;
 
 public:
   //! Returns current size of BVH build queue.
-  Standard_EXPORT Standard_Integer Size();
+  //! Uses acquire semantics to synchronize with enqueue/dequeue operations.
+  Standard_Integer Size() const { return mySize.load(std::memory_order_acquire); }
 
   //! Enqueues new work-item onto BVH build queue.
-  Standard_EXPORT void Enqueue(const Standard_Integer& theNode);
+  void Enqueue(const Standard_Integer theWorkItem)
+  {
+    std::lock_guard<std::mutex> aLock(myMutex);
+    myQueue.Append(theWorkItem);
+    mySize.fetch_add(1, std::memory_order_release);
+  }
 
   //! Fetches first work-item from BVH build queue.
-  Standard_EXPORT Standard_Integer Fetch(Standard_Boolean& wasBusy);
+  Standard_Integer Fetch(Standard_Boolean& wasBusy)
+  {
+    Standard_Integer aQuery = -1;
+
+    // Fetch item from queue under lock
+    {
+      std::lock_guard<std::mutex> aLock(myMutex);
+      if (!myQueue.IsEmpty())
+      {
+        aQuery = myQueue.First();
+        myQueue.Remove(1);
+        mySize.fetch_sub(1, std::memory_order_release);
+      }
+    }
+
+    // Update thread counter atomically with release/acquire semantics
+    // to ensure proper synchronization with HasBusyThreads()
+    if (aQuery != -1)
+    {
+      if (!wasBusy)
+      {
+        myNbThreads.fetch_add(1, std::memory_order_release);
+      }
+    }
+    else if (wasBusy)
+    {
+      myNbThreads.fetch_sub(1, std::memory_order_release);
+    }
+
+    wasBusy = (aQuery != -1);
+    return aQuery;
+  }
 
   //! Checks if there are active build threads.
-  Standard_Boolean HasBusyThreads() { return myNbThreads != 0; }
+  //! Uses acquire semantics to ensure visibility of thread counter updates.
+  //! This is critical for termination detection: threads check this after
+  //! finding an empty queue to determine if they should exit or wait.
+  Standard_Boolean HasBusyThreads() const
+  {
+    return myNbThreads.load(std::memory_order_acquire) != 0;
+  }
 
-protected:
+private:
   //! Queue of BVH nodes to build.
   NCollection_Sequence<Standard_Integer> myQueue;
 
-protected:
-  //! Manages access serialization of working threads.
+  //! Manages access serialization for queue operations.
   std::mutex myMutex;
 
-  //! Number of active build threads.
-  Standard_Integer myNbThreads;
+  //! Number of active build threads (atomic for lock-free reads).
+  std::atomic<Standard_Integer> myNbThreads;
+
+  //! Current queue size (atomic for lock-free reads).
+  std::atomic<Standard_Integer> mySize;
 };
 
 #endif // _BVH_BuildQueue_Header

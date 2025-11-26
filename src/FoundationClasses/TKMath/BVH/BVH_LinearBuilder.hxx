@@ -17,6 +17,7 @@
 #define _BVH_LinearBuilder_Header
 
 #include <BVH_RadixSorter.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_Assert.hxx>
 
 //! Performs fast BVH construction using LBVH building approach.
@@ -246,8 +247,7 @@ public:
       const Standard_Integer aLftChild = theData.myBVH->NodeInfoBuffer()[theData.myNode].y();
       const Standard_Integer aRghChild = theData.myBVH->NodeInfoBuffer()[theData.myNode].z();
 
-      std::vector<BoundData<T, N>> aList;
-      aList.reserve(2);
+      NCollection_Vector<BoundData<T, N>> aList(2);
       if (!theData.myBVH->IsOuter(aLftChild))
       {
         BoundData<T, N> aBoundData = {theData.mySet,
@@ -255,7 +255,7 @@ public:
                                       aLftChild,
                                       theData.myLevel + 1,
                                       &aLftHeight};
-        aList.push_back(aBoundData);
+        aList.Append(aBoundData);
       }
       else
       {
@@ -269,14 +269,14 @@ public:
                                       aRghChild,
                                       theData.myLevel + 1,
                                       &aRghHeight};
-        aList.push_back(aBoundData);
+        aList.Append(aBoundData);
       }
       else
       {
         aRghHeight = BVH::UpdateBounds(theData.mySet, theData.myBVH, aRghChild);
       }
 
-      if (!aList.empty())
+      if (aList.Size() > 0)
       {
         OSD_Parallel::ForEach(aList.begin(),
                               aList.end(),
