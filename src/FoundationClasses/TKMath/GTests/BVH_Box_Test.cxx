@@ -1043,3 +1043,93 @@ TEST(BVH_BoxTest, Constexpr_DefaultInvalid)
 
   static_assert(!aBox.IsValid(), "Default constexpr box should be invalid");
 }
+
+// =======================================================================================
+// Tests for Transform/Transformed with float precision
+// =======================================================================================
+
+TEST(BVH_BoxTest, Transform_Float_Identity)
+{
+  BVH_Box<Standard_ShortReal, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
+
+  NCollection_Mat4<Standard_ShortReal> aIdentity;
+  aIdentity.InitIdentity();
+
+  aBox.Transform(aIdentity);
+
+  EXPECT_NEAR(aBox.CornerMin().x(), 0.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().x(), 1.0f, 1e-5f);
+}
+
+TEST(BVH_BoxTest, Transform_Float_Translation)
+{
+  BVH_Box<Standard_ShortReal, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
+
+  NCollection_Mat4<Standard_ShortReal> aTransform;
+  aTransform.InitIdentity();
+  aTransform.SetColumn(3, NCollection_Vec3<Standard_ShortReal>(5.0f, 10.0f, 15.0f));
+
+  aBox.Transform(aTransform);
+
+  EXPECT_NEAR(aBox.CornerMin().x(), 5.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMin().y(), 10.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMin().z(), 15.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().x(), 6.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().y(), 11.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().z(), 16.0f, 1e-5f);
+}
+
+TEST(BVH_BoxTest, Transform_Float_Scale)
+{
+  BVH_Box<Standard_ShortReal, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
+
+  NCollection_Mat4<Standard_ShortReal> aTransform;
+  aTransform.InitIdentity();
+  aTransform.SetValue(0, 0, 2.0f); // Scale X by 2
+  aTransform.SetValue(1, 1, 3.0f); // Scale Y by 3
+  aTransform.SetValue(2, 2, 4.0f); // Scale Z by 4
+
+  aBox.Transform(aTransform);
+
+  EXPECT_NEAR(aBox.CornerMin().x(), 0.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().x(), 2.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().y(), 3.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().z(), 4.0f, 1e-5f);
+}
+
+TEST(BVH_BoxTest, Transformed_Float_Translation)
+{
+  BVH_Box<Standard_ShortReal, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
+
+  NCollection_Mat4<Standard_ShortReal> aTransform;
+  aTransform.InitIdentity();
+  aTransform.SetColumn(3, NCollection_Vec3<Standard_ShortReal>(10.0f, 20.0f, 30.0f));
+
+  BVH_Box<Standard_ShortReal, 3> aTransformed = aBox.Transformed(aTransform);
+
+  // Original should be unchanged
+  EXPECT_NEAR(aBox.CornerMin().x(), 0.0f, 1e-5f);
+  EXPECT_NEAR(aBox.CornerMax().x(), 1.0f, 1e-5f);
+
+  // Transformed should be translated
+  EXPECT_NEAR(aTransformed.CornerMin().x(), 10.0f, 1e-5f);
+  EXPECT_NEAR(aTransformed.CornerMin().y(), 20.0f, 1e-5f);
+  EXPECT_NEAR(aTransformed.CornerMin().z(), 30.0f, 1e-5f);
+  EXPECT_NEAR(aTransformed.CornerMax().x(), 11.0f, 1e-5f);
+  EXPECT_NEAR(aTransformed.CornerMax().y(), 21.0f, 1e-5f);
+  EXPECT_NEAR(aTransformed.CornerMax().z(), 31.0f, 1e-5f);
+}
+
+TEST(BVH_BoxTest, Transform_Float_InvalidBox)
+{
+  BVH_Box<Standard_ShortReal, 3> aBox; // Invalid box
+
+  NCollection_Mat4<Standard_ShortReal> aTransform;
+  aTransform.InitIdentity();
+  aTransform.SetColumn(3, NCollection_Vec3<Standard_ShortReal>(10.0f, 20.0f, 30.0f));
+
+  aBox.Transform(aTransform);
+
+  // Should remain invalid
+  EXPECT_FALSE(aBox.IsValid());
+}

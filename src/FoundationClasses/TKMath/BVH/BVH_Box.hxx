@@ -21,8 +21,6 @@
 #include <Standard_Macro.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_ShortReal.hxx>
-#include <Graphic3d_Vec4.hxx>
-#include <Graphic3d_Vec3.hxx>
 
 #include <limits>
 
@@ -68,6 +66,8 @@ public:
   //! given transformation to this box.
   BVH_Box<T, 3> Transformed(const NCollection_Mat4<T>& theTransform) const
   {
+    using BVH_VecNt = typename BVH_Box<T, 3>::BVH_VecNt;
+
     const BVH_Box<T, 3>* aThis = static_cast<const BVH_Box<T, 3>*>(this);
     if (theTransform.IsIdentity())
     {
@@ -80,15 +80,13 @@ public:
     }
 
     // Untransformed AABB min and max points
-    Graphic3d_Vec3d anOldMinPnt = aThis->CornerMin();
-    Graphic3d_Vec3d anOldMaxPnt = aThis->CornerMax();
+    const BVH_VecNt& anOldMinPnt = aThis->CornerMin();
+    const BVH_VecNt& anOldMaxPnt = aThis->CornerMax();
 
     // Define an empty AABB located in the transformation translation point
-    Graphic3d_Vec4d aTranslation = theTransform.GetColumn(3);
-    Graphic3d_Vec3d aNewMinPnt =
-      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
-    Graphic3d_Vec3d aNewMaxPnt =
-      Graphic3d_Vec3d(aTranslation.x(), aTranslation.y(), aTranslation.z());
+    const typename BVH::VectorType<T, 4>::Type aTranslation = theTransform.GetColumn(3);
+    BVH_VecNt aNewMinPnt = BVH_VecNt(aTranslation.x(), aTranslation.y(), aTranslation.z());
+    BVH_VecNt aNewMaxPnt = BVH_VecNt(aTranslation.x(), aTranslation.y(), aTranslation.z());
 
     // This implements James Arvo's algorithm for transforming an axis-aligned bounding box (AABB)
     // under an affine transformation. For each row of the transformation matrix, we compute
@@ -96,21 +94,20 @@ public:
     // minimum and maximum values to form the new bounding box. This ensures that the transformed
     // box tightly encloses the original box after transformation, accounting for rotation and
     // scaling.
-    for (Standard_Integer aCol = 0; aCol < 3; ++aCol)
+    for (int aCol = 0; aCol < 3; ++aCol)
     {
-      for (Standard_Integer aRow = 0; aRow < 3; ++aRow)
+      for (int aRow = 0; aRow < 3; ++aRow)
       {
-        Standard_Real aMatValue = theTransform.GetValue(aRow, aCol);
-        Standard_Real anOffset1 = aMatValue * anOldMinPnt.GetData()[aCol];
-        Standard_Real anOffset2 = aMatValue * anOldMaxPnt.GetData()[aCol];
+        const T aMatValue = theTransform.GetValue(aRow, aCol);
+        const T anOffset1 = aMatValue * anOldMinPnt.GetData()[aCol];
+        const T anOffset2 = aMatValue * anOldMaxPnt.GetData()[aCol];
 
         aNewMinPnt.ChangeData()[aRow] += (std::min)(anOffset1, anOffset2);
         aNewMaxPnt.ChangeData()[aRow] += (std::max)(anOffset1, anOffset2);
       }
     }
 
-    BVH_Box<T, 3> aResultBox(aNewMinPnt, aNewMaxPnt);
-    return aResultBox;
+    return BVH_Box<T, 3>(aNewMinPnt, aNewMaxPnt);
   }
 };
 
