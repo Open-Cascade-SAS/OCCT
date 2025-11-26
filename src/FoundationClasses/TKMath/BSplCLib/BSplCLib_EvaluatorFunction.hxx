@@ -51,12 +51,9 @@ public:
     Evaluate(theDerivativeRequest, theStartEnd, theParameter, theResult, theErrorCode);
   }
 
-private:
-  //! Copy constructor is declared private to forbid copying
-  BSplCLib_EvaluatorFunction(const BSplCLib_EvaluatorFunction&) {}
-
-  //! Assignment operator is declared private to forbid copying
-  void operator=(const BSplCLib_EvaluatorFunction&) {}
+  // copying is prohibited
+  BSplCLib_EvaluatorFunction(const BSplCLib_EvaluatorFunction&)            = delete;
+  BSplCLib_EvaluatorFunction& operator=(const BSplCLib_EvaluatorFunction&) = delete;
 };
 
 #endif

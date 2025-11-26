@@ -15,7 +15,6 @@
 #define _BSplCLib_Cache_Headerfile
 
 #include <BSplCLib_CacheParams.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 
 //! \brief A cache class for Bezier and B-spline curves.
 //!
@@ -142,13 +141,16 @@ protected:
 
 private:
   // clang-format off
-  Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline curve
-  BSplCLib_CacheParams myParams;                //!< cache parameters
-  Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
-                                                // the array has following structure:
-                                                //       x1 y1 [z1] [w1]
-                                                //       x2 y2 [z2] [w2] etc
-                                                // for 2D-curves there is no z conponent, for non-rational curves there is no weight
+  Standard_Boolean myIsRational;           //!< identifies the rationality of Bezier/B-spline curve
+  BSplCLib_CacheParams myParams;           //!< cache parameters
+  Standard_Integer myRowLength;            //!< number of columns in the cache array
+  Standard_Real myPolesWeightsBuffer[128]; //!< stack buffer for poles/weights cache
+                                           //!< 128 elements covers degree 31 for 3D rational (32*4)
+                                           //!< Array structure:
+                                           //!<   x1 y1 [z1] [w1]
+                                           //!<   x2 y2 [z2] [w2] etc
+                                           //!< For 2D-curves: no z component
+                                           //!< For non-rational curves: no weight
   // clang-format on
 };
 

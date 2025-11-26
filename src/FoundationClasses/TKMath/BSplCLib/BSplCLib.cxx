@@ -35,7 +35,10 @@
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <BSplCLib_CurveComputation.pxx>
 #include <math_Vector.hxx>
+
+#include <algorithm>
 
 typedef gp_Pnt                  Pnt;
 typedef gp_Vec                  Vec;
@@ -159,11 +162,7 @@ Standard_Integer BSplCLib::FlatIndex(const Standard_Integer         Degree,
   return index;
 }
 
-//=======================================================================
-// function : LocateParameter
-// purpose  : Processing of nodes with multiplicities
-// pmn  28-01-97 -> compute eventual of the period.
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::LocateParameter(const Standard_Integer, // Degree,
                                const Array1OfReal& Knots,
@@ -184,12 +183,7 @@ void BSplCLib::LocateParameter(const Standard_Integer, // Degree,
   BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, uf, ul);
 }
 
-//=======================================================================
-// function : LocateParameter
-// purpose  : For plane nodes
-//   pmn  28-01-97 -> There is a need of the degre to calculate
-//   the eventual period
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::LocateParameter(const Standard_Integer Degree,
                                const Array1OfReal&    Knots,
@@ -214,12 +208,7 @@ void BSplCLib::LocateParameter(const Standard_Integer Degree,
     BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, 0., 1.);
 }
 
-//=======================================================================
-// function : LocateParameter
-// purpose  : Effective computation
-// pmn 28-01-97 : Add limits of the period as input argument,
-//                as it is impossible to produce them at this level.
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::LocateParameter(const TColStd_Array1OfReal& Knots,
                                const Standard_Real         U,
@@ -306,11 +295,7 @@ void BSplCLib::LocateParameter(const TColStd_Array1OfReal& Knots,
   }
 }
 
-//=======================================================================
-// function : LocateParameter
-// purpose  : the index is recomputed only if out of range
-// pmn  28-01-97 -> eventual computation of the period.
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::LocateParameter(const Standard_Integer         Degree,
                                const TColStd_Array1OfReal&    Knots,
@@ -359,17 +344,12 @@ Standard_Integer BSplCLib::MaxKnotMult(const Array1OfInteger& Mults,
                                        const Standard_Integer FromK1,
                                        const Standard_Integer ToK2)
 {
-  Standard_Integer        MLower = Mults.Lower();
-  const Standard_Integer* pmu    = &Mults(MLower);
-  pmu -= MLower;
-  Standard_Integer MaxMult = pmu[FromK1];
-
-  for (Standard_Integer i = FromK1; i <= ToK2; i++)
+  int aMaxMult = Mults(FromK1);
+  for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
   {
-    if (MaxMult < pmu[i])
-      MaxMult = pmu[i];
+    aMaxMult = std::max(aMaxMult, Mults(anIndex));
   }
-  return MaxMult;
+  return aMaxMult;
 }
 
 //=================================================================================================
@@ -378,17 +358,12 @@ Standard_Integer BSplCLib::MinKnotMult(const Array1OfInteger& Mults,
                                        const Standard_Integer FromK1,
                                        const Standard_Integer ToK2)
 {
-  Standard_Integer        MLower = Mults.Lower();
-  const Standard_Integer* pmu    = &Mults(MLower);
-  pmu -= MLower;
-  Standard_Integer MinMult = pmu[FromK1];
-
-  for (Standard_Integer i = FromK1; i <= ToK2; i++)
+  int aMinMult = Mults(FromK1);
+  for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
   {
-    if (MinMult > pmu[i])
-      MinMult = pmu[i];
+    aMinMult = std::min(aMinMult, Mults(anIndex));
   }
-  return MinMult;
+  return aMinMult;
 }
 
 //=================================================================================================
@@ -588,47 +563,32 @@ BSplCLib_KnotDistribution BSplCLib::KnotForm(const Array1OfReal&    Knots,
                                              const Standard_Integer FromK1,
                                              const Standard_Integer ToK2)
 {
-  Standard_Real             DU0, DU1, Ui, Uj, Eps0, val;
-  BSplCLib_KnotDistribution KForm = BSplCLib_Uniform;
-
   if (FromK1 + 1 > Knots.Upper())
   {
     return BSplCLib_Uniform;
   }
 
-  Ui = Knots(FromK1);
-  if (Ui < 0)
-    Ui = -Ui;
-  Uj = Knots(FromK1 + 1);
-  if (Uj < 0)
-    Uj = -Uj;
-  DU0 = Uj - Ui;
-  if (DU0 < 0)
-    DU0 = -DU0;
-  Eps0               = Epsilon(Ui) + Epsilon(Uj) + Epsilon(DU0);
-  Standard_Integer i = FromK1 + 1;
+  double aUi   = std::abs(Knots(FromK1));
+  double aUj   = std::abs(Knots(FromK1 + 1));
+  double aDU0  = std::abs(aUj - aUi);
+  double anEps = Epsilon(aUi) + Epsilon(aUj) + Epsilon(aDU0);
 
-  while (KForm != BSplCLib_NonUniform && i < ToK2)
+  for (int i = FromK1 + 1; i < ToK2; i++)
   {
-    Ui = Knots(i);
-    if (Ui < 0)
-      Ui = -Ui;
-    i++;
-    Uj = Knots(i);
-    if (Uj < 0)
-      Uj = -Uj;
-    DU1 = Uj - Ui;
-    if (DU1 < 0)
-      DU1 = -DU1;
-    val = DU1 - DU0;
-    if (val < 0)
-      val = -val;
-    if (val > Eps0)
-      KForm = BSplCLib_NonUniform;
-    DU0  = DU1;
-    Eps0 = Epsilon(Ui) + Epsilon(Uj) + Epsilon(DU0);
+    aUi               = std::abs(Knots(i));
+    aUj               = std::abs(Knots(i + 1));
+    const double aDU1 = std::abs(aUj - aUi);
+
+    if (std::abs(aDU1 - aDU0) > anEps)
+    {
+      return BSplCLib_NonUniform;
+    }
+
+    aDU0  = aDU1;
+    anEps = Epsilon(aUi) + Epsilon(aUj) + Epsilon(aDU0);
   }
-  return KForm;
+
+  return BSplCLib_Uniform;
 }
 
 //=================================================================================================
@@ -637,57 +597,54 @@ BSplCLib_MultDistribution BSplCLib::MultForm(const Array1OfInteger& Mults,
                                              const Standard_Integer FromK1,
                                              const Standard_Integer ToK2)
 {
-  Standard_Integer First, Last;
-  if (FromK1 < ToK2)
-  {
-    First = FromK1;
-    Last  = ToK2;
-  }
-  else
-  {
-    First = ToK2;
-    Last  = FromK1;
-  }
-  if (First + 1 > Mults.Upper())
+  const auto [aFirst, aLast] = std::minmax(FromK1, ToK2);
+
+  if (aFirst + 1 > Mults.Upper())
   {
     return BSplCLib_Constant;
   }
 
-  Standard_Integer          FirstMult = Mults(First);
-  BSplCLib_MultDistribution MForm     = BSplCLib_Constant;
-  Standard_Integer          i         = First + 1;
-  Standard_Integer          Mult      = Mults(i);
+  const int                 aFirstMult = Mults(aFirst);
+  BSplCLib_MultDistribution aForm      = BSplCLib_Constant;
+  int                       aMult      = Mults(aFirst + 1);
 
-  //  while (MForm != BSplCLib_NonUniform && i <= Last) { ???????????JR????????
-  while (MForm != BSplCLib_NonConstant && i <= Last)
+  for (int i = aFirst + 1; i <= aLast && aForm != BSplCLib_NonConstant; i++)
   {
-    if (i == First + 1)
+    if (i == aFirst + 1)
     {
-      if (Mult != FirstMult)
-        MForm = BSplCLib_QuasiConstant;
-    }
-    else if (i == Last)
-    {
-      if (MForm == BSplCLib_QuasiConstant)
+      if (aMult != aFirstMult)
       {
-        if (FirstMult != Mults(i))
-          MForm = BSplCLib_NonConstant;
+        aForm = BSplCLib_QuasiConstant;
+      }
+    }
+    else if (i == aLast)
+    {
+      if (aForm == BSplCLib_QuasiConstant)
+      {
+        if (aFirstMult != Mults(i))
+        {
+          aForm = BSplCLib_NonConstant;
+        }
       }
       else
       {
-        if (Mult != Mults(i))
-          MForm = BSplCLib_NonConstant;
+        if (aMult != Mults(i))
+        {
+          aForm = BSplCLib_NonConstant;
+        }
       }
     }
     else
     {
-      if (Mult != Mults(i))
-        MForm = BSplCLib_NonConstant;
-      Mult = Mults(i);
+      if (aMult != Mults(i))
+      {
+        aForm = BSplCLib_NonConstant;
+      }
+      aMult = Mults(i);
     }
-    i++;
   }
-  return MForm;
+
+  return aForm;
 }
 
 //=================================================================================================
@@ -822,37 +779,14 @@ void BSplCLib::Reverse(TColStd_Array1OfReal& Knots)
 
 void BSplCLib::Reverse(TColStd_Array1OfInteger& Mults)
 {
-  Standard_Integer first = Mults.Lower();
-  Standard_Integer last  = Mults.Upper();
-  Standard_Integer temp;
-
-  while (first < last)
-  {
-    temp         = Mults(first);
-    Mults(first) = Mults(last);
-    Mults(last)  = temp;
-    first++;
-    last--;
-  }
+  std::reverse(&Mults(Mults.Lower()), &Mults(Mults.Upper()) + 1);
 }
 
 //=================================================================================================
 
 void BSplCLib::Reverse(TColStd_Array1OfReal& Weights, const Standard_Integer L)
 {
-  Standard_Integer i, l = L;
-  l = Weights.Lower() + (l - Weights.Lower()) % (Weights.Upper() - Weights.Lower() + 1);
-
-  TColStd_Array1OfReal temp(0, Weights.Length() - 1);
-
-  for (i = Weights.Lower(); i <= l; i++)
-    temp(l - i) = Weights(i);
-
-  for (i = l + 1; i <= Weights.Upper(); i++)
-    temp(l - Weights.Lower() + Weights.Upper() - i + 1) = Weights(i);
-
-  for (i = Weights.Lower(); i <= Weights.Upper(); i++)
-    Weights(i) = temp(i - Weights.Lower());
+  BSplCLib_Reverse(Weights, L);
 }
 
 //=================================================================================================
@@ -876,10 +810,7 @@ Standard_Boolean BSplCLib::IsRational(const TColStd_Array1OfReal& Weights,
   return Standard_False;
 }
 
-//=======================================================================
-// function : Eval
-// purpose  : evaluate point and derivatives
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::Eval(const Standard_Real    U,
                     const Standard_Integer Degree,
@@ -1775,10 +1706,7 @@ Standard_Integer BSplCLib::PoleIndex(const Standard_Integer         Degree,
   return pindex;
 }
 
-//=======================================================================
-// function : BuildBoor
-// purpose  : builds the local array for boor
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::BuildBoor(const Standard_Integer      Index,
                          const Standard_Integer      Length,
@@ -1880,7 +1808,7 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
   {
     // gka for case when segments was produced on full period only one knot
     // was added in the end of curve
-    if (fabs(adeltaK1) <= gp::Resolution() && fabs(adeltaK2) <= gp::Resolution())
+    if (std::abs(adeltaK1) <= gp::Resolution() && std::abs(adeltaK2) <= gp::Resolution())
       ak++;
   }
 
@@ -1995,18 +1923,7 @@ Standard_Boolean BSplCLib::PrepareInsertKnots(const Standard_Integer         Deg
   return Standard_True;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  : copy reals from an array to an other
-//
-//   NbValues are copied from OldPoles(OldFirst)
-//                 to    NewPoles(NewFirst)
-//
-//   Periodicity is handled.
-//   OldFirst and NewFirst are updated
-//   to the position after the last copied pole.
-//
-//=======================================================================
+//=================================================================================================
 
 static void Copy(const Standard_Integer      NbPoles,
                  Standard_Integer&           OldFirst,
@@ -2037,10 +1954,7 @@ static void Copy(const Standard_Integer      NbPoles,
   }
 }
 
-//=======================================================================
-// function : InsertKnots
-// purpose  : insert an array of knots and multiplicities
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::InsertKnots(const Standard_Integer         Degree,
                            const Standard_Boolean         Periodic,
@@ -2068,9 +1982,9 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
   // -------------------
   // create local arrays
   // -------------------
-
-  Standard_Real* knots = new Standard_Real[2 * Degree];
-  Standard_Real* poles = new Standard_Real[(2 * Degree + 1) * Dimension];
+  // Use stack-based allocation for small arrays (MaxDegree=25, typical Dimension=4)
+  NCollection_LocalArray<Standard_Real, 64>  knots(2 * Degree);
+  NCollection_LocalArray<Standard_Real, 256> poles((2 * Degree + 1) * Dimension);
 
   //----------------------------
   // loop on the knots to insert
@@ -2306,9 +2220,6 @@ void BSplCLib::InsertKnots(const Standard_Integer         Degree,
       NewMults(NewMults.Upper()) += depth;
     }
   }
-  // free local arrays
-  delete[] knots;
-  delete[] poles;
 }
 
 //=================================================================================================
@@ -2356,9 +2267,9 @@ Standard_Boolean BSplCLib::RemoveKnot(const Standard_Integer         Index,
   // -------------------
   // create local arrays
   // -------------------
-
-  Standard_Real* knots = new Standard_Real[4 * Degree];
-  Standard_Real* poles = new Standard_Real[(2 * Degree + 1) * Dimension];
+  // Use stack-based allocation for small arrays (MaxDegree=25, typical Dimension=4)
+  NCollection_LocalArray<Standard_Real, 128> knots(4 * Degree);
+  NCollection_LocalArray<Standard_Real, 256> poles((2 * Degree + 1) * Dimension);
 
   // ------------------------------------
   // build the knots for anti Boor Scheme
@@ -2480,10 +2391,6 @@ Standard_Boolean BSplCLib::RemoveKnot(const Standard_Integer         Index,
       }
     }
   }
-
-  // free local arrays
-  delete[] knots;
-  delete[] poles;
 
   return result;
 }
@@ -2674,10 +2581,11 @@ void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
   // Declare the temporary arrays used in degree incrementation
   //-----------------------------------------------------------
 
-  Standard_Integer nbwp = nbwpoles + (nbwknots - 1) * (NewDegree - Degree);
+  // Maximum number of poles after all degree elevations
+  const Standard_Integer nbwpMax = nbwpoles + (nbwknots - 1) * (NewDegree - Degree);
   // Arrays for storing the temporary curves
-  TColStd_Array1OfReal tempc1(1, nbwp * Dimension);
-  TColStd_Array1OfReal tempc2(1, nbwp * Dimension);
+  TColStd_Array1OfReal tempc1(1, nbwpMax * Dimension);
+  TColStd_Array1OfReal tempc2(1, nbwpMax * Dimension);
 
   // Array for storing the knots to insert
   TColStd_Array1OfReal iknots(1, nbwknots);
@@ -2685,13 +2593,16 @@ void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
   // Arrays for receiving the knots after insertion
   TColStd_Array1OfReal nknots(1, nbwknots);
 
+  // Pre-allocate nwpoles with maximum size to avoid repeated heap allocations in loop
+  TColStd_Array1OfReal nwpoles(1, nbwpMax * Dimension);
+
   //------------------------------
   // Loop on degree incrementation
   //------------------------------
 
   Standard_Integer step, curDeg;
-  Standard_Integer nbp = nbwpoles;
-  nbwp                 = nbp;
+  Standard_Integer nbp  = nbwpoles;
+  Standard_Integer nbwp = nbp;
 
   for (curDeg = Degree; curDeg < NewDegree; curDeg++)
   {
@@ -2699,9 +2610,9 @@ void BSplCLib::IncreaseDegree(const Standard_Integer         Degree,
     nbp  = nbwp;               // current number of poles
     nbwp = nbp + nbwknots - 1; // new number of poles
 
-    // For the averaging
-    TColStd_Array1OfReal nwpoles(1, nbwp * Dimension);
-    nwpoles.Init(0.0e0);
+    // Initialize the portion of nwpoles that will be used this iteration
+    for (Standard_Integer idx = 1; idx <= nbwp * Dimension; idx++)
+      nwpoles(idx) = 0.0;
 
     for (step = 0; step <= curDeg; step++)
     {
@@ -3095,25 +3006,21 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
                                              const Standard_Integer ArrayDimension,
                                              Standard_Real&         Array)
 {
-  Standard_Integer ii, jj, kk, MinIndex, MaxIndex, ReturnCode = 0;
-
-  Standard_Real* PolesArray = &Array;
-  Standard_Real  Inverse;
-
   if (Matrix.LowerCol() != 1 || Matrix.UpperCol() != UpperBandWidth + LowerBandWidth + 1)
   {
-    ReturnCode = 1;
-    goto FINISH;
+    return 1;
   }
 
-  for (ii = Matrix.LowerRow() + 1; ii <= Matrix.UpperRow(); ii++)
+  Standard_Real* PolesArray = &Array;
+
+  for (int ii = Matrix.LowerRow() + 1; ii <= Matrix.UpperRow(); ii++)
   {
-    MinIndex = (ii - LowerBandWidth >= Matrix.LowerRow() ? ii - LowerBandWidth : Matrix.LowerRow());
+    const int aMinIndex =
+      (ii - LowerBandWidth >= Matrix.LowerRow() ? ii - LowerBandWidth : Matrix.LowerRow());
 
-    for (jj = MinIndex; jj < ii; jj++)
+    for (int jj = aMinIndex; jj < ii; jj++)
     {
-
-      for (kk = 0; kk < ArrayDimension; kk++)
+      for (int kk = 0; kk < ArrayDimension; kk++)
       {
         PolesArray[(ii - 1) * ArrayDimension + kk] +=
           PolesArray[(jj - 1) * ArrayDimension + kk] * Matrix(ii, jj - ii + LowerBandWidth + 1);
@@ -3121,39 +3028,36 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
     }
   }
 
-  for (ii = Matrix.UpperRow(); ii >= Matrix.LowerRow(); ii--)
+  for (int ii = Matrix.UpperRow(); ii >= Matrix.LowerRow(); ii--)
   {
-    MaxIndex = (ii + UpperBandWidth <= Matrix.UpperRow() ? ii + UpperBandWidth : Matrix.UpperRow());
+    const int aMaxIndex =
+      (ii + UpperBandWidth <= Matrix.UpperRow() ? ii + UpperBandWidth : Matrix.UpperRow());
 
-    for (jj = MaxIndex; jj > ii; jj--)
+    for (int jj = aMaxIndex; jj > ii; jj--)
     {
-
-      for (kk = 0; kk < ArrayDimension; kk++)
+      for (int kk = 0; kk < ArrayDimension; kk++)
       {
         PolesArray[(ii - 1) * ArrayDimension + kk] -=
           PolesArray[(jj - 1) * ArrayDimension + kk] * Matrix(ii, jj - ii + LowerBandWidth + 1);
       }
     }
 
-    // fixing a bug PRO18577 to avoid divizion by zero
-
-    Standard_Real divizor = Matrix(ii, LowerBandWidth + 1);
-    Standard_Real Toler   = 1.0e-16;
-    if (std::abs(divizor) > Toler)
-      Inverse = 1.0e0 / divizor;
-    else
+    // Fixing a bug PRO18577 to avoid division by zero
+    const double     aDivisor      = Matrix(ii, LowerBandWidth + 1);
+    constexpr double THE_TOLERANCE = 1.0e-16;
+    if (std::abs(aDivisor) <= THE_TOLERANCE)
     {
-      ReturnCode = 1;
-      goto FINISH;
+      return 1;
     }
+    const double anInverse = 1.0 / aDivisor;
 
-    for (kk = 0; kk < ArrayDimension; kk++)
+    for (int kk = 0; kk < ArrayDimension; kk++)
     {
-      PolesArray[(ii - 1) * ArrayDimension + kk] *= Inverse;
+      PolesArray[(ii - 1) * ArrayDimension + kk] *= anInverse;
     }
   }
-FINISH:
-  return (ReturnCode);
+
+  return 0;
 }
 
 //=================================================================================================
@@ -3166,55 +3070,52 @@ Standard_Integer BSplCLib::SolveBandedSystem(const math_Matrix&     Matrix,
                                              Standard_Real&         Poles,
                                              Standard_Real&         Weights)
 {
-  Standard_Integer ii, kk, ErrorCode = 0, ReturnCode = 0;
-
-  Standard_Real Inverse, *PolesArray = &Poles, *WeightsArray = &Weights;
-
   if (Matrix.LowerCol() != 1 || Matrix.UpperCol() != UpperBandWidth + LowerBandWidth + 1)
   {
-    ReturnCode = 1;
-    goto FINISH;
+    return 1;
   }
-  if (HomogeneousFlag == Standard_False)
+
+  double*   aPolesArray   = &Poles;
+  double*   aWeightsArray = &Weights;
+  const int aNumRows      = Matrix.UpperRow() - Matrix.LowerRow() + 1;
+
+  if (!HomogeneousFlag)
   {
-
-    for (ii = 0; ii < Matrix.UpperRow() - Matrix.LowerRow() + 1; ii++)
+    for (int ii = 0; ii < aNumRows; ii++)
     {
-
-      for (kk = 0; kk < ArrayDimension; kk++)
+      for (int kk = 0; kk < ArrayDimension; kk++)
       {
-        PolesArray[ii * ArrayDimension + kk] *= WeightsArray[ii];
+        aPolesArray[ii * ArrayDimension + kk] *= aWeightsArray[ii];
       }
     }
   }
-  ErrorCode =
+
+  int anErrorCode =
     BSplCLib::SolveBandedSystem(Matrix, UpperBandWidth, LowerBandWidth, ArrayDimension, Poles);
-  if (ErrorCode != 0)
+  if (anErrorCode != 0)
   {
-    ReturnCode = 2;
-    goto FINISH;
+    return 2;
   }
-  ErrorCode = BSplCLib::SolveBandedSystem(Matrix, UpperBandWidth, LowerBandWidth, 1, Weights);
-  if (ErrorCode != 0)
-  {
-    ReturnCode = 3;
-    goto FINISH;
-  }
-  if (HomogeneousFlag == Standard_False)
-  {
 
-    for (ii = 0; ii < Matrix.UpperRow() - Matrix.LowerRow() + 1; ii++)
+  anErrorCode = BSplCLib::SolveBandedSystem(Matrix, UpperBandWidth, LowerBandWidth, 1, Weights);
+  if (anErrorCode != 0)
+  {
+    return 3;
+  }
+
+  if (!HomogeneousFlag)
+  {
+    for (int ii = 0; ii < aNumRows; ii++)
     {
-      Inverse = 1.0e0 / WeightsArray[ii];
-
-      for (kk = 0; kk < ArrayDimension; kk++)
+      const double anInverse = 1.0 / aWeightsArray[ii];
+      for (int kk = 0; kk < ArrayDimension; kk++)
       {
-        PolesArray[ii * ArrayDimension + kk] *= Inverse;
+        aPolesArray[ii * ArrayDimension + kk] *= anInverse;
       }
     }
   }
-FINISH:
-  return (ReturnCode);
+
+  return 0;
 }
 
 //=================================================================================================
@@ -3320,14 +3221,7 @@ void BSplCLib::Interpolate(const Standard_Integer         Degree,
     throw Standard_OutOfRange("BSplCLib::Interpolate");
 }
 
-//=======================================================================
-// function : Evaluates a Bspline function : uses the ExtrapMode
-// purpose  : the function is extrapolated using the Taylor expansion
-//           of degree ExtrapMode[0] to the left and the Taylor
-//           expansion of degree ExtrapMode[1] to the right
-//  this evaluates the numerator by multiplying by the weights
-//  and evaluating it but does not call RationalDerivatives after
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::Eval(const Standard_Real         Parameter,
                     const Standard_Boolean      PeriodicFlag,
@@ -3407,7 +3301,7 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
                                          BsplineBasis);
   if (ErrorCode != 0)
   {
-    goto FINISH;
+    return;
   }
   if (ExtrapolatingFlag[0] == 0 && ExtrapolatingFlag[1] == 0)
   {
@@ -3503,24 +3397,15 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
         Index1 = Index1 % Modulus;
         Index1 += 1;
       }
-      LocalRealArray[Index + kk] *= Inverse;
+      LocalRealArray[Index] *= Inverse;
       Index += 1;
       Inverse /= (Standard_Real)ii;
     }
     PLib::EvalPolynomial(Delta, NewRequest, Degree, 1, LocalRealArray[0], WeightsResults);
   }
-FINISH:;
 }
 
-//=======================================================================
-// function : Evaluates a Bspline function : uses the ExtrapMode
-// purpose  : the function is extrapolated using the Taylor expansion
-//           of degree ExtrapMode[0] to the left and the Taylor
-//           expansion of degree ExtrapMode[1] to the right
-// WARNING : the array Results is supposed to have at least
-// (DerivativeRequest + 1) * ArrayDimension slots and the
-//
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::Eval(const Standard_Real         Parameter,
                     const Standard_Boolean      PeriodicFlag,
@@ -3599,7 +3484,7 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
                                          BsplineBasis);
   if (ErrorCode != 0)
   {
-    goto FINISH;
+    return;
   }
   if (ExtrapolatingFlag[0] == 0 && ExtrapolatingFlag[1] == 0)
   {
@@ -3673,16 +3558,9 @@ void BSplCLib::Eval(const Standard_Real         Parameter,
     }
     PLib::EvalPolynomial(Delta, NewRequest, Degree, ArrayDimension, LocalRealArray[0], Results);
   }
-FINISH:;
 }
 
-//=======================================================================
-// function : TangExtendToConstraint
-// purpose  : Extends a Bspline function using the tangency map
-// WARNING :
-//
-//
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
                                       const Standard_Real         C1Coefficient,
@@ -3747,8 +3625,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
   Standard_Boolean periodic_flag = Standard_False;
   Standard_Integer ipos, extrap_mode[2], derivative_request = std::max(Continuity, 1);
   extrap_mode[0] = extrap_mode[1] = CDegree;
-  TColStd_Array1OfReal EvalBS(1, CDimension * (derivative_request + 1));
-  Standard_Real*       Eadr = (Standard_Real*)&EvalBS(1);
+  // Use math_Vector for stack allocation
+  math_Vector    EvalBS(1, CDimension * (derivative_request + 1));
+  Standard_Real* Eadr = &EvalBS(1);
   BSplCLib::Eval(Tbord,
                  periodic_flag,
                  derivative_request,
@@ -3770,23 +3649,24 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
 
   //  matrix of constraints
   math_Matrix Contraintes(1, Csize, 1, CDimension);
+  // Precompute powers of C1Coefficient for efficiency (avoid std::pow overhead)
+  const Standard_Real C1Coeff2 = C1Coefficient * C1Coefficient;
+  const Standard_Real C1Coeff3 = C1Coeff2 * C1Coefficient;
   if (After)
   {
-
     for (ipos = 1; ipos <= CDimension; ipos++)
     {
       Contraintes(1, ipos) = EvalBS(ipos);
       Contraintes(2, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
+        Contraintes(3, ipos) = EvalBS(ipos + 2 * CDimension) * C1Coeff2;
       if (Continuity >= 3)
-        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
+        Contraintes(4, ipos) = EvalBS(ipos + 3 * CDimension) * C1Coeff3;
       Contraintes(Continuity + 2, ipos) = ConstraintPoint(ipos);
     }
   }
   else
   {
-
     for (ipos = 1; ipos <= CDimension; ipos++)
     {
       Contraintes(1, ipos) = ConstraintPoint(ipos);
@@ -3794,9 +3674,9 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
       if (Continuity >= 1)
         Contraintes(3, ipos) = C1Coefficient * EvalBS(ipos + CDimension);
       if (Continuity >= 2)
-        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * std::pow(C1Coefficient, 2);
+        Contraintes(4, ipos) = EvalBS(ipos + 2 * CDimension) * C1Coeff2;
       if (Continuity >= 3)
-        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * std::pow(C1Coefficient, 3);
+        Contraintes(5, ipos) = EvalBS(ipos + 3 * CDimension) * C1Coeff3;
     }
   }
 
@@ -4100,9 +3980,8 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
   }
 }
 
-//=======================================================================
-// function : Resolution
-// purpose  :
+//=================================================================================================
+// Mathematical basis:
 //                           d
 //  Let C(t) = SUM      Ci Bi(t)  a Bspline curve of degree d
 //	      i = 1,n
@@ -4175,7 +4054,7 @@ void BSplCLib::TangExtendToConstraint(const TColStd_Array1OfReal& FlatKnots,
 //              i =1,n
 //
 //
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::Resolution(Standard_Real&              Poles,
                           const Standard_Integer      ArrayDimension,

@@ -15,37 +15,18 @@
 // commercial license or contractual agreement.
 
 #include <BSplCLib.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+
+#include "BSplCLib_CurveComputation.pxx"
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
-
-//=======================================================================
-// struct : BSplCLib_BezierArrays
-// purpose: Auxiliary structure providing standard definitions of bspline
-//         knots for bezier (using stack allocation)
-//=======================================================================
-
-class BSplCLib_BezierArrays
-{
-public:
-  BSplCLib_BezierArrays(Standard_Integer Degree)
-      : aKnots{0., 1.},
-        aMults{Degree + 1, Degree + 1},
-        knots(aKnots[0], 1, 2),
-        mults(aMults[0], 1, 2)
-  {
-  }
-
-private:
-  Standard_Real    aKnots[2];
-  Standard_Integer aMults[2];
-
-public:
-  TColStd_Array1OfReal    knots;
-  TColStd_Array1OfInteger mults;
-};
 
 //=================================================================================================
 
@@ -55,19 +36,11 @@ void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
                               TColgp_Array1OfPnt&         NewPoles,
                               TColStd_Array1OfReal*       NewWeights)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::IncreaseDegree(deg,
-                           NewDegree,
-                           0,
-                           Poles,
-                           Weights,
-                           bzarr.knots,
-                           bzarr.mults,
-                           NewPoles,
-                           NewWeights,
-                           bzarr.knots,
-                           bzarr.mults);
+  BSplCLib_IncreaseDegree_Bezier<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(NewDegree,
+                                                                        Poles,
+                                                                        Weights,
+                                                                        NewPoles,
+                                                                        NewWeights);
 }
 
 //=================================================================================================
@@ -78,19 +51,11 @@ void BSplCLib::IncreaseDegree(const Standard_Integer      NewDegree,
                               TColgp_Array1OfPnt2d&       NewPoles,
                               TColStd_Array1OfReal*       NewWeights)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::IncreaseDegree(deg,
-                           NewDegree,
-                           0,
-                           Poles,
-                           Weights,
-                           bzarr.knots,
-                           bzarr.mults,
-                           NewPoles,
-                           NewWeights,
-                           bzarr.knots,
-                           bzarr.mults);
+  BSplCLib_IncreaseDegree_Bezier<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(NewDegree,
+                                                                              Poles,
+                                                                              Weights,
+                                                                              NewPoles,
+                                                                              NewWeights);
 }
 
 //=================================================================================================
@@ -100,9 +65,10 @@ void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt&   Poles,
                                  TColgp_Array1OfPnt&         CachePoles,
                                  TColStd_Array1OfReal*       CacheWeights)
 {
-  Standard_Integer     deg = Poles.Length() - 1;
-  TColStd_Array1OfReal bidflatknots(FlatBezierKnots(deg), 1, 2 * (deg + 1));
-  BSplCLib::BuildCache(0., 1., 0, deg, bidflatknots, Poles, Weights, CachePoles, CacheWeights);
+  BSplCLib_PolesCoefficients_Bezier<gp_Pnt, gp_Vec, TColgp_Array1OfPnt, 3>(Poles,
+                                                                           Weights,
+                                                                           CachePoles,
+                                                                           CacheWeights);
 }
 
 //=================================================================================================
@@ -112,9 +78,10 @@ void BSplCLib::PolesCoefficients(const TColgp_Array1OfPnt2d& Poles,
                                  TColgp_Array1OfPnt2d&       CachePoles,
                                  TColStd_Array1OfReal*       CacheWeights)
 {
-  Standard_Integer     deg = Poles.Length() - 1;
-  TColStd_Array1OfReal bidflatknots(FlatBezierKnots(deg), 1, 2 * (deg + 1));
-  BSplCLib::BuildCache(0., 1., 0, deg, bidflatknots, Poles, Weights, CachePoles, CacheWeights);
+  BSplCLib_PolesCoefficients_Bezier<gp_Pnt2d, gp_Vec2d, TColgp_Array1OfPnt2d, 2>(Poles,
+                                                                                 Weights,
+                                                                                 CachePoles,
+                                                                                 CacheWeights);
 }
 
 //=================================================================================================
@@ -124,9 +91,9 @@ void BSplCLib::D0(const Standard_Real         U,
                   const TColStd_Array1OfReal* Weights,
                   gp_Pnt&                     P)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D0(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
 }
 
 //=================================================================================================
@@ -136,9 +103,9 @@ void BSplCLib::D0(const Standard_Real         U,
                   const TColStd_Array1OfReal* Weights,
                   gp_Pnt2d&                   P)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D0(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D0(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P);
 }
 
 //=================================================================================================
@@ -149,9 +116,9 @@ void BSplCLib::D1(const Standard_Real         U,
                   gp_Pnt&                     P,
                   gp_Vec&                     V)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D1(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D1(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
 }
 
 //=================================================================================================
@@ -162,9 +129,9 @@ void BSplCLib::D1(const Standard_Real         U,
                   gp_Pnt2d&                   P,
                   gp_Vec2d&                   V)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D1(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D1(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V);
 }
 
 //=================================================================================================
@@ -176,9 +143,9 @@ void BSplCLib::D2(const Standard_Real         U,
                   gp_Vec&                     V1,
                   gp_Vec&                     V2)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D2(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D2(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
 }
 
 //=================================================================================================
@@ -190,9 +157,9 @@ void BSplCLib::D2(const Standard_Real         U,
                   gp_Vec2d&                   V1,
                   gp_Vec2d&                   V2)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D2(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D2(U, 1, aDegree, 0, Poles, Weights, aBezierKnots.Knot, &aBezierKnots.Mult, P, V1, V2);
 }
 
 //=================================================================================================
@@ -205,9 +172,20 @@ void BSplCLib::D3(const Standard_Real         U,
                   gp_Vec&                     V2,
                   gp_Vec&                     V3)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2, V3);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D3(U,
+               1,
+               aDegree,
+               0,
+               Poles,
+               Weights,
+               aBezierKnots.Knot,
+               &aBezierKnots.Mult,
+               P,
+               V1,
+               V2,
+               V3);
 }
 
 //=================================================================================================
@@ -220,7 +198,18 @@ void BSplCLib::D3(const Standard_Real         U,
                   gp_Vec2d&                   V2,
                   gp_Vec2d&                   V3)
 {
-  Standard_Integer      deg = Poles.Length() - 1;
-  BSplCLib_BezierArrays bzarr(deg);
-  BSplCLib::D3(U, 1, deg, 0, Poles, Weights, bzarr.knots, &bzarr.mults, P, V1, V2, V3);
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib::D3(U,
+               1,
+               aDegree,
+               0,
+               Poles,
+               Weights,
+               aBezierKnots.Knot,
+               &aBezierKnots.Mult,
+               P,
+               V1,
+               V2,
+               V3);
 }

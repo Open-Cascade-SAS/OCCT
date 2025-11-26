@@ -26,6 +26,9 @@
 #include <PLib.hxx>
 #include <math_Matrix.hxx>
 
+#include <algorithm>
+#include <utility>
+
 // Template traits for 2D/3D point and vector operations
 template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
 struct BSplCLib_CurveTraits
@@ -203,6 +206,44 @@ struct BSplCLib_CurveTraits
   }
 };
 
+//! Stack-allocated arrays for knot/multiplicity pairs.
+//! Size=1: single knot constructor (knotValue, multiplicity)
+//! Size=2: Bezier constructor (degree) with knots {0,1} and mults {degree+1, degree+1}
+//! @tparam Size number of knots in the array (1 or 2)
+template <int Size>
+struct BSplCLib_KnotArrays
+{
+  static_assert(Size == 1 || Size == 2, "BSplCLib_KnotArrays: Size must be 1 or 2");
+
+  //! Constructor for single knot (Size=1)
+  template <int N = Size, typename = typename std::enable_if<N == 1>::type>
+  BSplCLib_KnotArrays(double theKnotValue, int theMultiplicity)
+      : myKnotBuffer{theKnotValue},
+        myMultBuffer{theMultiplicity},
+        Knot(myKnotBuffer[0], 1, Size),
+        Mult(myMultBuffer[0], 1, Size)
+  {
+  }
+
+  //! Constructor for Bezier knots (Size=2)
+  template <int N = Size, typename = typename std::enable_if<N == 2>::type>
+  BSplCLib_KnotArrays(int theDegree)
+      : myKnotBuffer{0.0, 1.0},
+        myMultBuffer{theDegree + 1, theDegree + 1},
+        Knot(myKnotBuffer[0], 1, Size),
+        Mult(myMultBuffer[0], 1, Size)
+  {
+  }
+
+private:
+  double myKnotBuffer[Size];
+  int    myMultBuffer[Size];
+
+public:
+  TColStd_Array1OfReal    Knot;
+  TColStd_Array1OfInteger Mult;
+};
+
 // Auxiliary structure providing buffers for poles and knots used in evaluation of bspline
 // (allocated in the stack)
 template <Standard_Integer Dimension>
@@ -220,25 +261,19 @@ struct BSplCLib_DataContainer_T
   Standard_Real ders[Dimension * 4];
 };
 
-// Reverses the order of poles in the array
-// @param[in,out] Poles - array of poles to be reversed
-// @param[in] L - length parameter for reversal
-template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
-void BSplCLib_Reverse(Array1OfPoints& Poles, const Standard_Integer L)
+// Reverses the order of elements in the array using std::reverse.
+// Works with any NCollection_Array1-like container.
+// @param[in,out] theArray - array to be reversed
+// @param[in] theL - length parameter for reversal
+template <typename Array>
+void BSplCLib_Reverse(Array& theArray, const Standard_Integer theL)
 {
-  Standard_Integer i, l = L;
-  l = Poles.Lower() + (l - Poles.Lower()) % (Poles.Upper() - Poles.Lower() + 1);
+  const int aLower = theArray.Lower();
+  const int aUpper = theArray.Upper();
+  const int aL     = aLower + (theL - aLower) % theArray.Length();
 
-  Array1OfPoints temp(0, Poles.Length() - 1);
-
-  for (i = Poles.Lower(); i <= l; i++)
-    temp(l - i) = Poles(i);
-
-  for (i = l + 1; i <= Poles.Upper(); i++)
-    temp(l - Poles.Lower() + Poles.Upper() - i + 1) = Poles(i);
-
-  for (i = Poles.Lower(); i <= Poles.Upper(); i++)
-    Poles(i) = temp(i - Poles.Lower());
+  std::reverse(&theArray(aLower), &theArray(aL) + 1);
+  std::reverse(&theArray(aL + 1), &theArray(aUpper) + 1);
 }
 
 // Removes a knot from the B-spline curve
@@ -395,24 +430,21 @@ void BSplCLib_InsertKnot(const Standard_Integer,
                          Array1OfPoints&                NewPoles,
                          TColStd_Array1OfReal*          NewWeights)
 {
-  TColStd_Array1OfReal k(1, 1);
-  k(1) = U;
-  TColStd_Array1OfInteger m(1, 1);
-  m(1) = UMult;
-  TColStd_Array1OfReal    nk(1, Knots.Length() + 1);
-  TColStd_Array1OfInteger nm(1, Knots.Length() + 1);
+  BSplCLib_KnotArrays<1>  aSingleKnot(U, UMult);
+  TColStd_Array1OfReal    aNewKnots(1, Knots.Length() + 1);
+  TColStd_Array1OfInteger aNewMults(1, Knots.Length() + 1);
   BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
                                                                  Periodic,
                                                                  Poles,
                                                                  Weights,
                                                                  Knots,
                                                                  Mults,
-                                                                 k,
-                                                                 &m,
+                                                                 aSingleKnot.Knot,
+                                                                 &aSingleKnot.Mult,
                                                                  NewPoles,
                                                                  NewWeights,
-                                                                 nk,
-                                                                 nm,
+                                                                 aNewKnots,
+                                                                 aNewMults,
                                                                  Epsilon(U),
                                                                  Standard_True);
 }
@@ -440,25 +472,22 @@ void BSplCLib_RaiseMultiplicity(const Standard_Integer         KnotIndex,
                                 Array1OfPoints&                NewPoles,
                                 TColStd_Array1OfReal*          NewWeights)
 {
-  TColStd_Array1OfReal k(1, 1);
-  k(1) = Knots(KnotIndex);
-  TColStd_Array1OfInteger m(1, 1);
-  m(1) = Mult - Mults(KnotIndex);
-  TColStd_Array1OfReal    nk(1, Knots.Length());
-  TColStd_Array1OfInteger nm(1, Knots.Length());
+  BSplCLib_KnotArrays<1>  aSingleKnot(Knots(KnotIndex), Mult - Mults(KnotIndex));
+  TColStd_Array1OfReal    aNewKnots(1, Knots.Length());
+  TColStd_Array1OfInteger aNewMults(1, Knots.Length());
   BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
                                                                  Periodic,
                                                                  Poles,
                                                                  Weights,
                                                                  Knots,
                                                                  Mults,
-                                                                 k,
-                                                                 &m,
+                                                                 aSingleKnot.Knot,
+                                                                 &aSingleKnot.Mult,
                                                                  NewPoles,
                                                                  NewWeights,
-                                                                 nk,
-                                                                 nm,
-                                                                 Epsilon(k(1)),
+                                                                 aNewKnots,
+                                                                 aNewMults,
+                                                                 Epsilon(Knots(KnotIndex)),
                                                                  Standard_True);
 }
 
@@ -1908,6 +1937,60 @@ void BSplCLib_FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionP
                                    NewDegree,
                                    array_of_new_poles[0],
                                    theStatus);
+}
+
+// Computes coefficients of a Bezier curve from poles (Bezier syntax wrapper)
+// Uses stack-allocated flat knots for efficiency.
+// @param[in] Poles - Bezier poles array
+// @param[in] Weights - optional weights for rational curves
+// @param[out] CachePoles - cached poles array
+// @param[out] CacheWeights - cached weights array
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+void BSplCLib_PolesCoefficients_Bezier(const Array1OfPoints&       Poles,
+                                       const TColStd_Array1OfReal* Weights,
+                                       Array1OfPoints&             CachePoles,
+                                       TColStd_Array1OfReal*       CacheWeights)
+{
+  const int            aDegree = Poles.Length() - 1;
+  TColStd_Array1OfReal aBidFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
+  BSplCLib_BuildCache<Point, Vector, Array1OfPoints, Dimension>(0.,
+                                                                1.,
+                                                                Standard_False,
+                                                                aDegree,
+                                                                aBidFlatKnots,
+                                                                Poles,
+                                                                Weights,
+                                                                CachePoles,
+                                                                CacheWeights);
+}
+
+// Increases the degree of a Bezier curve (Bezier syntax wrapper)
+// Uses stack-allocated knot arrays for efficiency.
+// @param[in] NewDegree - new degree
+// @param[in] Poles - Bezier poles array
+// @param[in] Weights - optional weights for rational curves
+// @param[out] NewPoles - resulting poles array
+// @param[out] NewWeights - resulting weights array
+template <typename Point, typename Vector, typename Array1OfPoints, Standard_Integer Dimension>
+void BSplCLib_IncreaseDegree_Bezier(const Standard_Integer      NewDegree,
+                                    const Array1OfPoints&       Poles,
+                                    const TColStd_Array1OfReal* Weights,
+                                    Array1OfPoints&             NewPoles,
+                                    TColStd_Array1OfReal*       NewWeights)
+{
+  const int              aDegree = Poles.Length() - 1;
+  BSplCLib_KnotArrays<2> aBezierKnots(aDegree);
+  BSplCLib_IncreaseDegree<Point, Vector, Array1OfPoints, Dimension>(aDegree,
+                                                                    NewDegree,
+                                                                    Standard_False,
+                                                                    Poles,
+                                                                    Weights,
+                                                                    aBezierKnots.Knot,
+                                                                    aBezierKnots.Mult,
+                                                                    NewPoles,
+                                                                    NewWeights,
+                                                                    aBezierKnots.Knot,
+                                                                    aBezierKnots.Mult);
 }
 
 #endif // _BSplCLib_CurveComputation_pxx_HeaderFile

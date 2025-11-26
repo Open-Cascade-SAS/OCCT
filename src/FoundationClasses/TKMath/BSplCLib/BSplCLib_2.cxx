@@ -30,6 +30,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 
 #include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 
 #include "BSplCLib_CurveComputation.pxx"
 
@@ -38,10 +39,7 @@ using BSplCLib_DataContainer = BSplCLib_DataContainer_T<1>;
 
 // methods for 1 dimensional BSplines
 
-//=======================================================================
-// function : BuildEval
-// purpose  : builds the local array for evaluation
-//=======================================================================
+//=================================================================================================
 
 void BSplCLib::BuildEval(const Standard_Integer      Degree,
                          const Standard_Integer      Index,
@@ -81,11 +79,7 @@ void BSplCLib::BuildEval(const Standard_Integer      Degree,
   }
 }
 
-//=======================================================================
-// function : PrepareEval
-// purpose  : stores data for Eval in the local arrays
-//           dc.poles and dc.knots
-//=======================================================================
+//=================================================================================================
 
 static void PrepareEval(Standard_Real&                 u,
                         Standard_Integer&              index,
@@ -290,10 +284,7 @@ void BSplCLib::DN(const Standard_Real            U,
   }
 }
 
-//=======================================================================
-// function : Build BSpline Matrix
-// purpose  : Builds the Bspline Matrix
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer BSplCLib::BuildBSpMatrix(const TColStd_Array1OfReal&    Parameters,
                                           const TColStd_Array1OfInteger& ContactOrderArray,
@@ -303,109 +294,92 @@ Standard_Integer BSplCLib::BuildBSpMatrix(const TColStd_Array1OfReal&    Paramet
                                           Standard_Integer&              UpperBandWidth,
                                           Standard_Integer&              LowerBandWidth)
 {
-  Standard_Integer ii, jj, Index, ErrorCode, ReturnCode = 0, FirstNonZeroBsplineIndex, BandWidth,
-                                             MaxOrder = BSplCLib::MaxDegree() + 1, Order;
+  constexpr int aMaxOrder = BSplCLib::MaxDegree() + 1;
+  const int     anOrder   = Degree + 1;
+  UpperBandWidth          = Degree;
+  LowerBandWidth          = Degree;
+  const int aBandWidth    = UpperBandWidth + LowerBandWidth + 1;
 
-  math_Matrix BSplineBasis(1, MaxOrder, 1, MaxOrder);
-
-  Order          = Degree + 1;
-  UpperBandWidth = Degree;
-  LowerBandWidth = Degree;
-  BandWidth      = UpperBandWidth + LowerBandWidth + 1;
   if (Matrix.LowerRow() != Parameters.Lower() || Matrix.UpperRow() != Parameters.Upper()
-      || Matrix.LowerCol() != 1 || Matrix.UpperCol() != BandWidth)
+      || Matrix.LowerCol() != 1 || Matrix.UpperCol() != aBandWidth)
   {
-    ReturnCode = 1;
-    goto FINISH;
+    return 1;
   }
 
-  for (ii = Parameters.Lower(); ii <= Parameters.Upper(); ii++)
+  math_Matrix aBSplineBasis(1, aMaxOrder, 1, aMaxOrder);
+
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
   {
-    ErrorCode = BSplCLib::EvalBsplineBasis(ContactOrderArray(ii),
-                                           Order,
-                                           FlatKnots,
-                                           Parameters(ii),
-
-                                           FirstNonZeroBsplineIndex,
-                                           BSplineBasis);
-    if (ErrorCode != 0)
+    int       aFirstNonZeroIndex = 0;
+    const int anErrorCode        = BSplCLib::EvalBsplineBasis(ContactOrderArray(i),
+                                                       anOrder,
+                                                       FlatKnots,
+                                                       Parameters(i),
+                                                       aFirstNonZeroIndex,
+                                                       aBSplineBasis);
+    if (anErrorCode != 0)
     {
-      ReturnCode = 2;
-      goto FINISH;
-    }
-    Index = LowerBandWidth + 1 + FirstNonZeroBsplineIndex - ii;
-
-    for (jj = 1; jj < Index; jj++)
-    {
-      Matrix.Value(ii, jj) = 0.0e0;
+      return 2;
     }
 
-    for (jj = 1; jj <= Order; jj++)
+    int anIndex = LowerBandWidth + 1 + aFirstNonZeroIndex - i;
+    for (int j = 1; j < anIndex; j++)
     {
-      Matrix.Value(ii, Index) = BSplineBasis(ContactOrderArray(ii) + 1, jj);
-      Index += 1;
+      Matrix.Value(i, j) = 0.0;
     }
-
-    for (jj = Index; jj <= BandWidth; jj++)
+    for (int j = 1; j <= anOrder; j++)
     {
-      Matrix.Value(ii, jj) = 0.0e0;
+      Matrix.Value(i, anIndex) = aBSplineBasis(ContactOrderArray(i) + 1, j);
+      anIndex += 1;
+    }
+    for (int j = anIndex; j <= aBandWidth; j++)
+    {
+      Matrix.Value(i, j) = 0.0;
     }
   }
-FINISH:;
-  return (ReturnCode);
+
+  return 0;
 }
 
-//=======================================================================
-// function : Makes LU decompositiomn without Pivoting
-// purpose  : Builds the Bspline Matrix
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
                                               const Standard_Integer UpperBandWidth,
                                               const Standard_Integer LowerBandWidth,
                                               Standard_Integer&      PivotIndexProblem)
 {
-  Standard_Integer ii, jj, kk, Index, MinIndex, MaxIndex,
-    ReturnCode = 0, BandWidth = UpperBandWidth + LowerBandWidth + 1;
+  const int aBandWidth = UpperBandWidth + LowerBandWidth + 1;
+  PivotIndexProblem    = 0;
 
-  Standard_Real Inverse;
-  PivotIndexProblem = 0;
-
-  for (ii = Matrix.LowerRow() + 1; ii <= Matrix.UpperRow(); ii++)
+  for (int i = Matrix.LowerRow() + 1; i <= Matrix.UpperRow(); i++)
   {
-    MinIndex = (LowerBandWidth - ii + 2 >= 1 ? LowerBandWidth - ii + 2 : 1);
+    const int aMinIndex = (LowerBandWidth - i + 2 >= 1 ? LowerBandWidth - i + 2 : 1);
 
-    for (jj = MinIndex; jj <= LowerBandWidth; jj++)
+    for (int j = aMinIndex; j <= LowerBandWidth; j++)
     {
-      Index   = ii - LowerBandWidth + jj - 1;
-      Inverse = Matrix(Index, LowerBandWidth + 1);
-      if (std::abs(Inverse) > RealSmall())
+      const int    anIndex = i - LowerBandWidth + j - 1;
+      const double aPivot  = Matrix(anIndex, LowerBandWidth + 1);
+      if (std::abs(aPivot) <= RealSmall())
       {
-        Inverse = -1.0e0 / Inverse;
+        PivotIndexProblem = anIndex;
+        return 1;
       }
-      else
-      {
-        ReturnCode        = 1;
-        PivotIndexProblem = Index;
-        goto FINISH;
-      }
-      Matrix(ii, jj) = Matrix(ii, jj) * Inverse;
-      MaxIndex       = BandWidth + Index - ii;
 
-      for (kk = jj + 1; kk <= MaxIndex; kk++)
+      const double anInverse = -1.0 / aPivot;
+      Matrix(i, j)           = Matrix(i, j) * anInverse;
+      const int aMaxIndex    = aBandWidth + anIndex - i;
+
+      for (int k = j + 1; k <= aMaxIndex; k++)
       {
-        Matrix(ii, kk) += Matrix(ii, jj) * Matrix(Index, kk + ii - Index);
+        Matrix(i, k) += Matrix(i, j) * Matrix(anIndex, k + i - anIndex);
       }
     }
   }
-FINISH:
-  return (ReturnCode);
+
+  return 0;
 }
 
-//=======================================================================
-// function : Build BSpline Matrix
-// purpose  : Builds the Bspline Matrix
-//=======================================================================
+//=================================================================================================
 
 Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      DerivativeRequest,
                                             const Standard_Integer      Order,
@@ -437,109 +411,100 @@ Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      Derivati
   //   B (t)   B (t)                     B (t)
   //    i       i+1                       i+k-1
   //
-  Standard_Integer ReturnCode, ii, pp, qq, ss, NumPoles, LocalRequest;
-  //  ,Index ;
-
-  Standard_Real NewParameter, Inverse, Factor, LocalInverse, Saved;
-  // , *FlatKnotsArray ;
-
-  ReturnCode               = 0;
   FirstNonZeroBsplineIndex = 0;
-  LocalRequest             = DerivativeRequest;
+  int aLocalRequest        = DerivativeRequest;
   if (DerivativeRequest >= Order)
   {
-    LocalRequest = Order - 1;
+    aLocalRequest = Order - 1;
   }
 
   if (BsplineBasis.LowerCol() != 1 || BsplineBasis.UpperCol() < Order
-      || BsplineBasis.LowerRow() != 1 || BsplineBasis.UpperRow() <= LocalRequest)
+      || BsplineBasis.LowerRow() != 1 || BsplineBasis.UpperRow() <= aLocalRequest)
   {
-    ReturnCode = 1;
-    goto FINISH;
+    return 1;
   }
-  NumPoles = FlatKnots.Upper() - FlatKnots.Lower() + 1 - Order;
+
+  const int aNumPoles = FlatKnots.Upper() - FlatKnots.Lower() + 1 - Order;
+  int       ii        = 0;
+  double    aNewParam = 0.0;
   BSplCLib::LocateParameter(Order - 1,
                             FlatKnots,
                             Parameter,
                             isPeriodic,
                             Order,
-                            NumPoles + 1,
+                            aNumPoles + 1,
                             ii,
-                            NewParameter);
+                            aNewParam);
 
   FirstNonZeroBsplineIndex = ii - Order + 1;
 
-  BsplineBasis(1, 1) = 1.0e0;
-  LocalRequest       = DerivativeRequest;
+  BsplineBasis(1, 1) = 1.0;
+  aLocalRequest      = DerivativeRequest;
   if (DerivativeRequest >= Order)
   {
-    LocalRequest = Order - 1;
+    aLocalRequest = Order - 1;
   }
 
-  for (qq = 2; qq <= Order - LocalRequest; qq++)
+  for (int qq = 2; qq <= Order - aLocalRequest; qq++)
   {
-    BsplineBasis(1, qq) = 0.0e0;
+    BsplineBasis(1, qq) = 0.0;
 
-    for (pp = 1; pp <= qq - 1; pp++)
+    for (int pp = 1; pp <= qq - 1; pp++)
     {
-      //
-      // this should be always invertible if ii is correctly computed
-      //
-      const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
+      const double aScale = FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1);
       if (std::abs(aScale) < gp::Resolution())
       {
         return 2;
       }
 
-      Factor = (Parameter - FlatKnots(ii - qq + pp + 1)) / aScale;
-      Saved  = Factor * BsplineBasis(1, pp);
-      BsplineBasis(1, pp) *= (1.0e0 - Factor);
+      const double aFactor = (Parameter - FlatKnots(ii - qq + pp + 1)) / aScale;
+      const double aSaved  = aFactor * BsplineBasis(1, pp);
+      BsplineBasis(1, pp) *= (1.0 - aFactor);
       BsplineBasis(1, pp) += BsplineBasis(1, qq);
-      BsplineBasis(1, qq) = Saved;
+      BsplineBasis(1, qq) = aSaved;
     }
   }
 
-  for (qq = Order - LocalRequest + 1; qq <= Order; qq++)
+  for (int qq = Order - aLocalRequest + 1; qq <= Order; qq++)
   {
-
-    for (pp = 1; pp <= qq - 1; pp++)
+    for (int pp = 1; pp <= qq - 1; pp++)
     {
       BsplineBasis(Order - qq + 2, pp) = BsplineBasis(1, pp);
     }
-    BsplineBasis(1, qq) = 0.0e0;
+    BsplineBasis(1, qq) = 0.0;
 
-    for (ss = Order - LocalRequest + 1; ss <= qq; ss++)
+    for (int ss = Order - aLocalRequest + 1; ss <= qq; ss++)
     {
-      BsplineBasis(Order - ss + 2, qq) = 0.0e0;
+      BsplineBasis(Order - ss + 2, qq) = 0.0;
     }
 
-    for (pp = 1; pp <= qq - 1; pp++)
+    for (int pp = 1; pp <= qq - 1; pp++)
     {
-      const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
+      const double aScale = FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1);
       if (std::abs(aScale) < gp::Resolution())
       {
         return 2;
       }
 
-      Inverse = 1.0e0 / aScale;
-      Factor  = (Parameter - FlatKnots(ii - qq + pp + 1)) * Inverse;
-      Saved   = Factor * BsplineBasis(1, pp);
-      BsplineBasis(1, pp) *= (1.0e0 - Factor);
+      const double anInverse = 1.0 / aScale;
+      const double aFactor   = (Parameter - FlatKnots(ii - qq + pp + 1)) * anInverse;
+      double       aSaved    = aFactor * BsplineBasis(1, pp);
+      BsplineBasis(1, pp) *= (1.0 - aFactor);
       BsplineBasis(1, pp) += BsplineBasis(1, qq);
-      BsplineBasis(1, qq) = Saved;
-      LocalInverse        = (Standard_Real)(qq - 1) * Inverse;
+      BsplineBasis(1, qq)        = aSaved;
+      const double aLocalInverse = static_cast<double>(qq - 1) * anInverse;
 
-      for (ss = Order - LocalRequest + 1; ss <= qq; ss++)
+      for (int ss = Order - aLocalRequest + 1; ss <= qq; ss++)
       {
-        Saved = LocalInverse * BsplineBasis(Order - ss + 2, pp);
-        BsplineBasis(Order - ss + 2, pp) *= -LocalInverse;
+        aSaved = aLocalInverse * BsplineBasis(Order - ss + 2, pp);
+        BsplineBasis(Order - ss + 2, pp) *= -aLocalInverse;
         BsplineBasis(Order - ss + 2, pp) += BsplineBasis(Order - ss + 2, qq);
-        BsplineBasis(Order - ss + 2, qq) = Saved;
+        BsplineBasis(Order - ss + 2, qq) = aSaved;
       }
     }
   }
-FINISH:
-  return (ReturnCode);
+
+  return 0;
 }
 
 //=================================================================================================
@@ -816,8 +781,9 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
         }
       }
       a_matrix.Invert();
-      TColStd_Array1OfReal the_a_vector(0, ArrayDimension - 1);
-      TColStd_Array1OfReal the_b_vector(0, ArrayDimension - 1);
+      // Use math_Vector for stack allocation (ArrayDimension is typically 2-4)
+      math_Vector the_a_vector(0, ArrayDimension - 1);
+      math_Vector the_b_vector(0, ArrayDimension - 1);
 
       for (ii = 0; ii < ArrayDimension; ii++)
       {
@@ -863,74 +829,69 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                 Standard_Real&                    NewPoles,
                                 Standard_Integer&                 theStatus)
 {
-  Standard_Integer ii, jj, index;
-  Standard_Integer extrap_mode[2], error_code, num_new_poles, derivative_request = 0;
-  Standard_Boolean periodic_flag = Standard_False;
-  Standard_Real    result, start_end[2], *array_of_poles, *array_of_new_poles;
+  double*   anArrayOfPoles = &NewPoles;
+  const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
+  double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  array_of_poles = (Standard_Real*)&NewPoles;
-  extrap_mode[0] = extrap_mode[1] = BSplineDegree;
-  num_new_poles                   = FlatKnots.Length() - NewDegree - 1;
-  start_end[0]                    = FlatKnots(NewDegree + 1);
-  start_end[1]                    = FlatKnots(num_new_poles + 1);
-  TColStd_Array1OfReal    parameters(1, num_new_poles);
-  TColStd_Array1OfInteger contact_order_array(1, num_new_poles);
-  TColStd_Array1OfReal    new_poles_array(1, num_new_poles * PolesDimension);
+  TColStd_Array1OfReal    aParameters(1, aNumNewPoles);
+  TColStd_Array1OfInteger aContactOrderArray(1, aNumNewPoles);
+  TColStd_Array1OfReal    aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
-  array_of_new_poles = (Standard_Real*)&new_poles_array(1);
-  BuildSchoenbergPoints(NewDegree, FlatKnots, parameters);
-  //
-  // on recadre sur les bornes
-  //
-  if (parameters(1) < start_end[0])
+  double* anArrayOfNewPoles = &aNewPolesArray(1);
+  BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
+
+  if (aParameters(1) < aStartEnd[0])
   {
-    parameters(1) = start_end[0];
+    aParameters(1) = aStartEnd[0];
   }
-  if (parameters(num_new_poles) > start_end[1])
+  if (aParameters(aNumNewPoles) > aStartEnd[1])
   {
-    parameters(num_new_poles) = start_end[1];
+    aParameters(aNumNewPoles) = aStartEnd[1];
   }
-  index = 0;
 
-  for (ii = 1; ii <= num_new_poles; ii++)
+  int anExtrapMode = BSplineDegree;
+  int anIndex      = 0;
+  for (int i = 1; i <= aNumNewPoles; i++)
   {
-    contact_order_array(ii) = 0;
-    FunctionPtr.Evaluate(contact_order_array(ii), start_end, parameters(ii), result, error_code);
-    if (error_code)
+    aContactOrderArray(i) = 0;
+    double aResult        = 0.0;
+    int    anErrorCode    = 0;
+    FunctionPtr.Evaluate(aContactOrderArray(i), aStartEnd, aParameters(i), aResult, anErrorCode);
+    if (anErrorCode)
     {
       theStatus = 1;
-      goto FINISH;
+      return;
     }
 
-    Eval(parameters(ii),
-         periodic_flag,
-         derivative_request,
-         extrap_mode[0],
+    Eval(aParameters(i),
+         Standard_False,
+         0,
+         anExtrapMode,
          BSplineDegree,
          BSplineFlatKnots,
          PolesDimension,
          Poles,
-         array_of_new_poles[index]);
+         anArrayOfNewPoles[anIndex]);
 
-    for (jj = 0; jj < PolesDimension; jj++)
+    for (int j = 0; j < PolesDimension; j++)
     {
-      array_of_new_poles[index] *= result;
-      index += 1;
+      anArrayOfNewPoles[anIndex] *= aResult;
+      anIndex += 1;
     }
   }
+
   Interpolate(NewDegree,
               FlatKnots,
-              parameters,
-              contact_order_array,
+              aParameters,
+              aContactOrderArray,
               PolesDimension,
-              array_of_new_poles[0],
+              anArrayOfNewPoles[0],
               theStatus);
 
-  for (ii = 0; ii < num_new_poles * PolesDimension; ii++)
+  for (int i = 0; i < aNumNewPoles * PolesDimension; i++)
   {
-    array_of_poles[ii] = array_of_new_poles[ii];
+    anArrayOfPoles[i] = anArrayOfNewPoles[i];
   }
-FINISH:;
 }
 
 //=================================================================================================
@@ -945,60 +906,55 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
                                       Standard_Real&                    NewPoles,
                                       Standard_Integer&                 theStatus)
 {
-  Standard_Integer ii,
-    //  jj,
-    index;
-  Standard_Integer extrap_mode[2], error_code, num_new_poles, derivative_request = 0;
-  Standard_Boolean periodic_flag = Standard_False;
-  Standard_Real    result, start_end[2], *array_of_poles, *array_of_new_poles;
+  double*   anArrayOfPoles = &NewPoles;
+  const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
+  double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  array_of_poles = (Standard_Real*)&NewPoles;
-  extrap_mode[0] = extrap_mode[1] = BSplineDegree;
-  num_new_poles                   = FlatKnots.Length() - NewDegree - 1;
-  start_end[0]                    = FlatKnots(NewDegree + 1);
-  start_end[1]                    = FlatKnots(num_new_poles + 1);
-  TColStd_Array1OfReal    parameters(1, num_new_poles);
-  TColStd_Array1OfInteger contact_order_array(1, num_new_poles);
-  TColStd_Array1OfReal    new_poles_array(1, num_new_poles * PolesDimension);
+  TColStd_Array1OfReal    aParameters(1, aNumNewPoles);
+  TColStd_Array1OfInteger aContactOrderArray(1, aNumNewPoles);
+  TColStd_Array1OfReal    aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
-  array_of_new_poles = (Standard_Real*)&new_poles_array(1);
-  BuildSchoenbergPoints(NewDegree, FlatKnots, parameters);
-  index = 0;
+  double* anArrayOfNewPoles = &aNewPolesArray(1);
+  BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
 
-  for (ii = 1; ii <= num_new_poles; ii++)
+  int anExtrapMode = BSplineDegree;
+  int anIndex      = 0;
+  for (int i = 1; i <= aNumNewPoles; i++)
   {
-    contact_order_array(ii) = 0;
-    FunctionPtr.Evaluate(contact_order_array(ii), start_end, parameters(ii), result, error_code);
-    if (error_code)
+    aContactOrderArray(i) = 0;
+    double aResult        = 0.0;
+    int    anErrorCode    = 0;
+    FunctionPtr.Evaluate(aContactOrderArray(i), aStartEnd, aParameters(i), aResult, anErrorCode);
+    if (anErrorCode)
     {
       theStatus = 1;
-      goto FINISH;
+      return;
     }
 
-    Eval(result,
-         periodic_flag,
-         derivative_request,
-         extrap_mode[0],
+    Eval(aResult,
+         Standard_False,
+         0,
+         anExtrapMode,
          BSplineDegree,
          BSplineFlatKnots,
          PolesDimension,
          Poles,
-         array_of_new_poles[index]);
-    index += PolesDimension;
+         anArrayOfNewPoles[anIndex]);
+    anIndex += PolesDimension;
   }
+
   Interpolate(NewDegree,
               FlatKnots,
-              parameters,
-              contact_order_array,
+              aParameters,
+              aContactOrderArray,
               PolesDimension,
-              array_of_new_poles[0],
+              anArrayOfNewPoles[0],
               theStatus);
 
-  for (ii = 0; ii < num_new_poles * PolesDimension; ii++)
+  for (int i = 0; i < aNumNewPoles * PolesDimension; i++)
   {
-    array_of_poles[ii] = array_of_new_poles[ii];
+    anArrayOfPoles[i] = anArrayOfNewPoles[i];
   }
-FINISH:;
 }
 
 //=================================================================================================
