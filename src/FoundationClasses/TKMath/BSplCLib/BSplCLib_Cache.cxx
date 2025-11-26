@@ -60,7 +60,11 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
   myParams.LocateParameter(aNewParam, theFlatKnots);
 
   // Create array wrapper referencing the stack buffer
-  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0], 1, myParams.Degree + 1, 1, myRowLength);
+  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0],
+                                     1,
+                                     myParams.Degree + 1,
+                                     1,
+                                     myRowLength);
 
   // Calculate new cache data
   BSplCLib::BuildCache(myParams.SpanStart,
@@ -84,7 +88,11 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
   myParams.LocateParameter(aNewParam, theFlatKnots);
 
   // Create array wrapper referencing the stack buffer
-  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0], 1, myParams.Degree + 1, 1, myRowLength);
+  TColStd_Array2OfReal aPolesWeights(myPolesWeightsBuffer[0],
+                                     1,
+                                     myParams.Degree + 1,
+                                     1,
+                                     myRowLength);
 
   // Calculate new cache data
   BSplCLib::BuildCache(myParams.SpanStart,

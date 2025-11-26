@@ -344,13 +344,10 @@ Standard_Integer BSplCLib::MaxKnotMult(const Array1OfInteger& Mults,
                                        const Standard_Integer FromK1,
                                        const Standard_Integer ToK2)
 {
-  const int  aLower   = Mults.Lower();
-  const int* pmu      = &Mults(aLower) - aLower;
-  int        aMaxMult = pmu[FromK1];
-
-  for (int i = FromK1 + 1; i <= ToK2; i++)
+  int aMaxMult = Mults(FromK1);
+  for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
   {
-    aMaxMult = std::max(aMaxMult, pmu[i]);
+    aMaxMult = std::max(aMaxMult, Mults(anIndex));
   }
   return aMaxMult;
 }
@@ -361,13 +358,10 @@ Standard_Integer BSplCLib::MinKnotMult(const Array1OfInteger& Mults,
                                        const Standard_Integer FromK1,
                                        const Standard_Integer ToK2)
 {
-  const int  aLower   = Mults.Lower();
-  const int* pmu      = &Mults(aLower) - aLower;
-  int        aMinMult = pmu[FromK1];
-
-  for (int i = FromK1 + 1; i <= ToK2; i++)
+  int aMinMult = Mults(FromK1);
+  for (int anIndex = FromK1 + 1; anIndex <= ToK2; ++anIndex)
   {
-    aMinMult = std::min(aMinMult, pmu[i]);
+    aMinMult = std::min(aMinMult, Mults(anIndex));
   }
   return aMinMult;
 }
@@ -603,8 +597,7 @@ BSplCLib_MultDistribution BSplCLib::MultForm(const Array1OfInteger& Mults,
                                              const Standard_Integer FromK1,
                                              const Standard_Integer ToK2)
 {
-  const int aFirst = std::min(FromK1, ToK2);
-  const int aLast  = std::max(FromK1, ToK2);
+  const auto [aFirst, aLast] = std::minmax(FromK1, ToK2);
 
   if (aFirst + 1 > Mults.Upper())
   {
