@@ -61,10 +61,6 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <BRepLib_MakeEdge.hxx>
 
-#ifdef OCCT_DEBUG
-extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND();
-#endif
-
 static void ReorderFaces(TopoDS_Face&         theF1,
                          TopoDS_Face&         theF2,
                          const TopoDS_Face&   theFirstFace,
@@ -73,52 +69,48 @@ static void ReorderFaces(TopoDS_Face&         theF1,
                          const ChFiDS_Map&    theEFmap)
 {
   if (theF1.IsSame(theFirstFace))
+  {
     return;
+  }
   else if (theF2.IsSame(theFirstFace))
   {
-    TopoDS_Face TmpFace = theF1;
-    theF1               = theF2;
-    theF2               = TmpFace;
+    std::swap(theF1, theF2);
     return;
   }
 
   // Loop until find <theF1> or <theF2>
-  Standard_Boolean ToExchange = Standard_False;
-  TopoDS_Edge      PrevEdge   = thePrevEdge, CurEdge;
-  TopoDS_Face      PrevFace   = theFirstFace, CurFace;
+  TopoDS_Edge PrevEdge = thePrevEdge;
+  TopoDS_Edge CurEdge;
+  TopoDS_Face PrevFace = theFirstFace;
+  TopoDS_Face CurFace;
   for (;;)
   {
-    TopTools_IndexedDataMapOfShapeListOfShape VEmap;
-    TopExp::MapShapesAndAncestors(PrevFace, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
-    const TopTools_ListOfShape& Elist = VEmap.FindFromKey(theCommonVertex);
-    if (PrevEdge.IsSame(Elist.First()))
-      CurEdge = TopoDS::Edge(Elist.Last());
-    else
-      CurEdge = TopoDS::Edge(Elist.First());
-
-    const TopTools_ListOfShape& Flist = theEFmap.FindFromKey(CurEdge);
-    if (PrevFace.IsSame(Flist.First()))
-      CurFace = TopoDS::Face(Flist.Last());
-    else
-      CurFace = TopoDS::Face(Flist.First());
-
-    if (CurFace.IsSame(theF1))
-      break;
-    else if (CurFace.IsSame(theF2))
+    TopTools_IndexedDataMapOfShapeListOfShape aVertexEdgeMap;
+    TopExp::MapShapesAndAncestors(PrevFace, TopAbs_VERTEX, TopAbs_EDGE, aVertexEdgeMap);
+    for (const auto& anEdge : aVertexEdgeMap.FindFromKey(theCommonVertex))
     {
-      ToExchange = Standard_True;
-      break;
+      if (anEdge.IsSame(PrevEdge))
+      {
+        continue;
+      }
+
+      CurEdge                           = TopoDS::Edge(anEdge);
+      const TopTools_ListOfShape& Flist = theEFmap.FindFromKey(CurEdge);
+      CurFace = PrevFace.IsSame(TopoDS::Face(Flist.First())) ? TopoDS::Face(Flist.Last())
+                                                             : TopoDS::Face(Flist.First());
+      if (CurFace.IsSame(theF1))
+      {
+        return;
+      }
+      else if (CurFace.IsSame(theF2))
+      {
+        std::swap(theF1, theF2);
+        return;
+      }
     }
 
     PrevEdge = CurEdge;
     PrevFace = CurFace;
-  }
-
-  if (ToExchange)
-  {
-    TopoDS_Face TmpFace = theF1;
-    theF1               = theF2;
-    theF2               = TmpFace;
   }
 }
 
@@ -787,9 +779,6 @@ void ChFi3d_Builder::PerformExtremity(const Handle(ChFiDS_Spine)& Spine)
     if (nbf > 3)
     {
       Spine->SetFirstStatus(ChFiDS_BreakPoint);
-#ifdef OCCT_DEBUG
-      std::cout << "top has : " << nbf << " faces." << std::endl;
-#endif
     }
     nbf = 0, jf = 0;
     for (It.Initialize(myVFMap(Spine->LastVertex())); It.More(); It.Next())
@@ -809,9 +798,6 @@ void ChFi3d_Builder::PerformExtremity(const Handle(ChFiDS_Spine)& Spine)
     if (nbf > 3)
     {
       Spine->SetLastStatus(ChFiDS_BreakPoint);
-#ifdef OCCT_DEBUG
-      std::cout << "top has : " << nbf << " faces." << std::endl;
-#endif
     }
   }
 }
