@@ -447,10 +447,10 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       gp_Pnt           P;
       for (Standard_Integer i = 1; i <= Nu; i++)
       {
-        Standard_Real U = UMin + ((UMax - UMin) * (i - 1) / (Nu - 1));
+        const Standard_Real U = UMin + ((UMax - UMin) * (i - 1) / (Nu - 1));
         for (Standard_Integer j = 1; j <= Nv; j++)
         {
-          Standard_Real V = VMin + ((VMax - VMin) * (j - 1) / (Nv - 1));
+          const Standard_Real V = VMin + ((VMax - VMin) * (j - 1) / (Nv - 1));
           S.D0(U, V, P);
           B.Add(P);
         }
@@ -769,7 +769,7 @@ public:
   Standard_Integer NbVariables() const { return 2; }
 
 private:
-  SurfMaxMinCoord& operator=(const SurfMaxMinCoord& theOther);
+  SurfMaxMinCoord& operator=(const SurfMaxMinCoord&) = delete;
 
   Standard_Boolean CheckInputData(const math_Vector& theParams)
   {

@@ -48,53 +48,46 @@ static void reduceSplineBox(const Adaptor3d_Curve& theCurve,
                             const Bnd_Box&         theOrigBox,
                             Bnd_Box&               theReducedBox)
 {
-  // Guaranteed bounding box based on poles of bspline.
-  Bnd_Box       aPolesBox;
-  Standard_Real aPolesXMin, aPolesYMin, aPolesZMin, aPolesXMax, aPolesYMax, aPolesZMax;
+  // Guaranteed bounding box based on poles of bspline/bezier.
+  Bnd_Box aPolesBox;
 
   if (theCurve.GetType() == GeomAbs_BSplineCurve)
   {
     Handle(Geom_BSplineCurve) aC     = theCurve.BSpline();
     const TColgp_Array1OfPnt& aPoles = aC->Poles();
-
     for (Standard_Integer anIdx = aPoles.Lower(); anIdx <= aPoles.Upper(); ++anIdx)
     {
       aPolesBox.Add(aPoles.Value(anIdx));
     }
   }
-  if (theCurve.GetType() == GeomAbs_BezierCurve)
+  else if (theCurve.GetType() == GeomAbs_BezierCurve)
   {
     Handle(Geom_BezierCurve)  aC     = theCurve.Bezier();
     const TColgp_Array1OfPnt& aPoles = aC->Poles();
-
     for (Standard_Integer anIdx = aPoles.Lower(); anIdx <= aPoles.Upper(); ++anIdx)
     {
       aPolesBox.Add(aPoles.Value(anIdx));
     }
   }
 
-  aPolesBox.Get(aPolesXMin, aPolesYMin, aPolesZMin, aPolesXMax, aPolesYMax, aPolesZMax);
+  // Get original box limits using C++17 structured bindings.
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theOrigBox.Get();
 
-  Standard_Real x, y, z, X, Y, Z;
-  theOrigBox.Get(x, y, z, X, Y, Z);
-
-  // Left bound.
-  if (aPolesXMin > x)
-    x = aPolesXMin;
-  if (aPolesYMin > y)
-    y = aPolesYMin;
-  if (aPolesZMin > z)
-    z = aPolesZMin;
-
-  // Right bound.
-  if (aPolesXMax < X)
-    X = aPolesXMax;
-  if (aPolesYMax < Y)
-    Y = aPolesYMax;
-  if (aPolesZMax < Z)
-    Z = aPolesZMax;
-
-  theReducedBox.Update(x, y, z, X, Y, Z);
+  // If poles box is valid, intersect with original box.
+  if (!aPolesBox.IsVoid())
+  {
+    const auto [aPXMin, aPXMax, aPYMin, aPYMax, aPZMin, aPZMax] = aPolesBox.Get();
+    theReducedBox.Update(std::max(aXMin, aPXMin),
+                         std::max(aYMin, aPYMin),
+                         std::max(aZMin, aPZMin),
+                         std::min(aXMax, aPXMax),
+                         std::min(aYMax, aPYMax),
+                         std::min(aZMax, aPZMax));
+  }
+  else
+  {
+    theReducedBox.Update(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+  }
 }
 
 //=================================================================================================
@@ -152,8 +145,8 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
                             const Standard_Real    Tol,
                             Bnd_Box&               B)
 {
-  static Standard_Real weakness = 1.5; // OCC566(apo)
-  Standard_Real        tol      = 0.0;
+  constexpr Standard_Real weakness = 1.5; // OCC566(apo)
+  Standard_Real           tol      = 0.0;
   switch (C.GetType())
   {
 
@@ -270,9 +263,9 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
       break;
     }
     default: {
-      Bnd_Box                 B1;
-      static Standard_Integer N = 33;
-      tol                       = FillBox(B1, C, U1, U2, N);
+      Bnd_Box                    B1;
+      constexpr Standard_Integer N = 33;
+      tol                          = FillBox(B1, C, U1, U2, N);
       B1.Enlarge(weakness * tol);
       Standard_Real x, y, z, X, Y, Z;
       B1.Get(x, y, z, X, Y, Z);
@@ -464,7 +457,7 @@ public:
   Standard_Integer NbVariables() const { return 1; }
 
 private:
-  CurvMaxMinCoordMVar& operator=(const CurvMaxMinCoordMVar& theOther);
+  CurvMaxMinCoordMVar& operator=(const CurvMaxMinCoordMVar&) = delete;
 
   Standard_Boolean CheckInputData(Standard_Real theParam)
   {
@@ -511,7 +504,7 @@ public:
   }
 
 private:
-  CurvMaxMinCoord& operator=(const CurvMaxMinCoord& theOther);
+  CurvMaxMinCoord& operator=(const CurvMaxMinCoord&) = delete;
 
   Standard_Boolean CheckInputData(Standard_Real theParam)
   {
