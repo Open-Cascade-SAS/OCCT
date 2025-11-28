@@ -30,6 +30,26 @@
 
 namespace
 {
+//! Helper to create bit for a shape type
+constexpr unsigned int toBit(TopAbs_ShapeEnum theType)
+{
+  return 1u << static_cast<unsigned int>(theType);
+}
+
+//! Compatibility table: for each shape type, which parent types can contain it.
+//! Index = TopAbs_ShapeEnum value of CHILD, bits = allowed PARENT types.
+constexpr unsigned int THE_ADD_COMPATIBILITY[9] = {
+  toBit(TopAbs_COMPOUND),                                            // COMPOUND
+  toBit(TopAbs_COMPOUND),                                            // COMPSOLID
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_COMPSOLID),                  // SOLID
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_SOLID),                      // SHELL
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_SHELL),                      // FACE
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_FACE),                       // WIRE
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_SOLID) | toBit(TopAbs_WIRE), // EDGE
+  toBit(TopAbs_COMPOUND) | toBit(TopAbs_SOLID) | toBit(TopAbs_FACE) | toBit(TopAbs_EDGE), // VERTEX
+  0                                                                                       // SHAPE
+};
+
 //! Helper to add a child shape using type-switch with non-virtual storage access
 inline void addChildByType(TopoDS_TShape*      theTShape,
                            TopAbs_ShapeEnum    theShapeType,
@@ -167,40 +187,11 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   // but aShape will be frozen when the Exception is raised
   if (aShape.Free())
   {
-    // Compatibility table: what component types can be added to what shape types
-    static const unsigned int aTb[9] = {// COMPOUND can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
-                                        // COMPSOLID can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
-                                        // SOLID can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_COMPSOLID)),
-                                        // SHELL can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID)),
-                                        // FACE can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_SHELL)),
-                                        // WIRE can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_FACE)),
-                                        // EDGE can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID))
-                                          | (1 << static_cast<unsigned int>(TopAbs_WIRE)),
-                                        // VERTEX can be added to:
-                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID))
-                                          | (1 << static_cast<unsigned int>(TopAbs_FACE))
-                                          | (1 << static_cast<unsigned int>(TopAbs_EDGE)),
-                                        // SHAPE can be added to:
-                                        0};
+    const TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
+    const unsigned int     aComponentType = static_cast<unsigned int>(aComponent.ShapeType());
+    const unsigned int     aParentType    = static_cast<unsigned int>(aShapeType);
 
-    const TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
-    const unsigned int     iC         = static_cast<unsigned int>(aComponent.ShapeType());
-    const unsigned int     iS         = static_cast<unsigned int>(aShapeType);
-
-    if ((aTb[iC] & (1 << iS)) != 0)
+    if ((THE_ADD_COMPATIBILITY[aComponentType] & (1u << aParentType)) != 0)
     {
       // Prepare the component with relative orientation and location
       TopoDS_Shape aRelativeComponent = aComponent;
