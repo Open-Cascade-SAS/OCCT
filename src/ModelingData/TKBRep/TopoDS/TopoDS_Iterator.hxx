@@ -51,9 +51,7 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  TopoDS_Iterator(const TopoDS_Shape& S,
-                  bool                cumOri = true,
-                  bool                cumLoc = true)
+  TopoDS_Iterator(const TopoDS_Shape& S, bool cumOri = true, bool cumLoc = true)
       : myTShape(nullptr),
         myIndex(0),
         myNbChildren(0),

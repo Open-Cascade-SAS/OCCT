@@ -69,11 +69,15 @@ public:
   void RemoveChild(int theIndex) Standard_OVERRIDE { storageRemove(theIndex); }
 
   // Non-virtual direct storage access for performance-critical code (Iterator, Builder)
-  int                 storageSize() const { return mySolids.Size(); }
+  int storageSize() const { return mySolids.Size(); }
+
   const TopoDS_Shape& storageValue(int theIndex) const { return mySolids.Value(theIndex); }
-  TopoDS_Shape&       storageChangeValue(int theIndex) { return mySolids.ChangeValue(theIndex); }
-  void                storageAppend(const TopoDS_Shape& theShape) { mySolids.Append(theShape); }
-  void                storageRemove(int theIndex) { mySolids.Remove(theIndex); }
+
+  TopoDS_Shape& storageChangeValue(int theIndex) { return mySolids.ChangeValue(theIndex); }
+
+  void storageAppend(const TopoDS_Shape& theShape) { mySolids.Append(theShape); }
+
+  void storageRemove(int theIndex) { mySolids.Remove(theIndex); }
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
 

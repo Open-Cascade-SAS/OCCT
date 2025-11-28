@@ -168,38 +168,37 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   if (aShape.Free())
   {
     // Compatibility table: what component types can be added to what shape types
-    static const unsigned int aTb[9] = {
-      // COMPOUND can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
-      // COMPSOLID can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
-      // SOLID can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_COMPSOLID)),
-      // SHELL can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_SOLID)),
-      // FACE can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_SHELL)),
-      // WIRE can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_FACE)),
-      // EDGE can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_SOLID))
-        | (1 << static_cast<unsigned int>(TopAbs_WIRE)),
-      // VERTEX can be added to:
-      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
-        | (1 << static_cast<unsigned int>(TopAbs_SOLID))
-        | (1 << static_cast<unsigned int>(TopAbs_FACE))
-        | (1 << static_cast<unsigned int>(TopAbs_EDGE)),
-      // SHAPE can be added to:
-      0};
+    static const unsigned int aTb[9] = {// COMPOUND can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
+                                        // COMPSOLID can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
+                                        // SOLID can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_COMPSOLID)),
+                                        // SHELL can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID)),
+                                        // FACE can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_SHELL)),
+                                        // WIRE can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_FACE)),
+                                        // EDGE can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID))
+                                          | (1 << static_cast<unsigned int>(TopAbs_WIRE)),
+                                        // VERTEX can be added to:
+                                        (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+                                          | (1 << static_cast<unsigned int>(TopAbs_SOLID))
+                                          | (1 << static_cast<unsigned int>(TopAbs_FACE))
+                                          | (1 << static_cast<unsigned int>(TopAbs_EDGE)),
+                                        // SHAPE can be added to:
+                                        0};
 
-    const TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
-    const unsigned int     iC             = static_cast<unsigned int>(aComponent.ShapeType());
-    const unsigned int     iS             = static_cast<unsigned int>(aShapeType);
+    const TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
+    const unsigned int     iC         = static_cast<unsigned int>(aComponent.ShapeType());
+    const unsigned int     iS         = static_cast<unsigned int>(aShapeType);
 
     if ((aTb[iC] & (1 << iS)) != 0)
     {
@@ -253,9 +252,9 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
   aRelativeComponent.Location(aRelativeComponent.Location().Predivided(aShape.Location()), false);
 
   // Find and remove the matching child using type-switch (no virtual calls)
-  TopoDS_TShape*           aTShape     = aShape.TShape().get();
-  const TopAbs_ShapeEnum   aShapeType  = aTShape->ShapeType();
-  const int                aNbChildren = getNbChildrenByType(aTShape, aShapeType);
+  TopoDS_TShape*         aTShape     = aShape.TShape().get();
+  const TopAbs_ShapeEnum aShapeType  = aTShape->ShapeType();
+  const int              aNbChildren = getNbChildrenByType(aTShape, aShapeType);
 
   for (int i = 0; i < aNbChildren; ++i)
   {

@@ -183,8 +183,9 @@ private:
 template <size_t LocalCapacity, int BucketSize>
 class TopoDS_VariantShapeStorage
 {
-  static_assert(LocalCapacity > 0,
-                "LocalCapacity must be > 0. Use TopoDS_DynamicShapeStorage directly for 0 capacity.");
+  static_assert(
+    LocalCapacity > 0,
+    "LocalCapacity must be > 0. Use TopoDS_DynamicShapeStorage directly for 0 capacity.");
 
 public:
   using LocalStorage   = TopoDS_LocalShapeStorage<LocalCapacity>;
@@ -216,10 +217,11 @@ public:
   //! @param theIndex index of the shape (0 <= theIndex < Size())
   const TopoDS_Shape& Value(int theIndex) const
   {
-    return std::visit([theIndex](const auto& theStorage) -> const TopoDS_Shape& {
-      return theStorage.Value(theIndex);
-    },
-                      myStorage);
+    return std::visit(
+      [theIndex](const auto& theStorage) -> const TopoDS_Shape& {
+        return theStorage.Value(theIndex);
+      },
+      myStorage);
   }
 
   //! Returns the shape at index for modification
