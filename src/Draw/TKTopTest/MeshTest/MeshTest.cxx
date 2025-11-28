@@ -46,6 +46,7 @@
 #include <TopExp_Explorer.hxx>
 #include <BRep_TEdge.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_ListOfShape.hxx>
 
 #include <BRepMesh_Context.hxx>
 #include <BRepMesh_FaceDiscret.hxx>

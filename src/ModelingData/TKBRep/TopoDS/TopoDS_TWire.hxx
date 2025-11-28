@@ -20,28 +20,66 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_ShapeStorage.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TWire;
 DEFINE_STANDARD_HANDLE(TopoDS_TWire, TopoDS_TShape)
 
 //! A set of edges connected by their vertices.
+//!
+//! A wire can have many edges (commonly 3-100+).
+//! Uses dynamic array storage with bucket size 8.
 class TopoDS_TWire : public TopoDS_TShape
 {
 public:
+  //! Bucket size for dynamic array
+  static constexpr int BucketSize = 8;
+
   //! Creates an empty TWire.
   TopoDS_TWire()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_WIRE),
+        myEdges(BucketSize)
   {
   }
-
-  //! Returns WIRE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TWire.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
+  //! Returns the number of edge sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return storageSize(); }
+
+  //! Returns the edge at the given index (0-based).
+  //! @param theIndex index of the edge (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE
+  {
+    return storageValue(theIndex);
+  }
+
+  //! Returns the edge at the given index for modification.
+  //! @param theIndex index of the edge (0 <= theIndex < NbChildren())
+  TopoDS_Shape& ChangeChild(int theIndex) Standard_OVERRIDE { return storageChangeValue(theIndex); }
+
+  //! Adds an edge to this wire.
+  //! @param theShape the edge to add
+  void AddChild(const TopoDS_Shape& theShape) Standard_OVERRIDE { storageAppend(theShape); }
+
+  //! Removes the edge at the given index.
+  //! @param theIndex index of the edge to remove (0 <= theIndex < NbChildren())
+  void RemoveChild(int theIndex) Standard_OVERRIDE { storageRemove(theIndex); }
+
+  // Non-virtual direct storage access for performance-critical code (Iterator, Builder)
+  int                 storageSize() const { return myEdges.Size(); }
+  const TopoDS_Shape& storageValue(int theIndex) const { return myEdges.Value(theIndex); }
+  TopoDS_Shape&       storageChangeValue(int theIndex) { return myEdges.ChangeValue(theIndex); }
+  void                storageAppend(const TopoDS_Shape& theShape) { myEdges.Append(theShape); }
+  void                storageRemove(int theIndex) { myEdges.Remove(theIndex); }
+
   DEFINE_STANDARD_RTTIEXT(TopoDS_TWire, TopoDS_TShape)
+
+private:
+  //! Storage for edge sub-shapes using dynamic array.
+  TopoDS_DynamicShapeStorage<BucketSize> myEdges;
 };
 
 #endif // _TopoDS_TWire_HeaderFile

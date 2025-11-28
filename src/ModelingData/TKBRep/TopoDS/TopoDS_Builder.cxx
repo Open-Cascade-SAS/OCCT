@@ -17,16 +17,137 @@
 #include <Standard_NullObject.hxx>
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_FrozenShape.hxx>
-#include <TopoDS_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TEdge.hxx>
+#include <TopoDS_TFace.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_TShell.hxx>
+#include <TopoDS_TSolid.hxx>
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
 
-//=======================================================================
-// function : MakeShape
-// purpose  : Make a Shape from a TShape
-//=======================================================================
+namespace
+{
+//! Helper to add a child shape using type-switch with non-virtual storage access
+inline void addChildByType(TopoDS_TShape*      theTShape,
+                           TopAbs_ShapeEnum    theShapeType,
+                           const TopoDS_Shape& theChild)
+{
+  switch (theShapeType)
+  {
+    case TopAbs_EDGE:
+      static_cast<TopoDS_TEdge*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_WIRE:
+      static_cast<TopoDS_TWire*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_FACE:
+      static_cast<TopoDS_TFace*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_SHELL:
+      static_cast<TopoDS_TShell*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_SOLID:
+      static_cast<TopoDS_TSolid*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_COMPSOLID:
+      static_cast<TopoDS_TCompSolid*>(theTShape)->storageAppend(theChild);
+      break;
+    case TopAbs_COMPOUND:
+      static_cast<TopoDS_TCompound*>(theTShape)->storageAppend(theChild);
+      break;
+    default:
+      break; // VERTEX and SHAPE cannot have children
+  }
+}
+
+//! Helper to get number of children using type-switch with non-virtual storage access
+inline int getNbChildrenByType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType)
+{
+  switch (theShapeType)
+  {
+    case TopAbs_EDGE:
+      return static_cast<TopoDS_TEdge*>(theTShape)->storageSize();
+    case TopAbs_WIRE:
+      return static_cast<TopoDS_TWire*>(theTShape)->storageSize();
+    case TopAbs_FACE:
+      return static_cast<TopoDS_TFace*>(theTShape)->storageSize();
+    case TopAbs_SHELL:
+      return static_cast<TopoDS_TShell*>(theTShape)->storageSize();
+    case TopAbs_SOLID:
+      return static_cast<TopoDS_TSolid*>(theTShape)->storageSize();
+    case TopAbs_COMPSOLID:
+      return static_cast<TopoDS_TCompSolid*>(theTShape)->storageSize();
+    case TopAbs_COMPOUND:
+      return static_cast<TopoDS_TCompound*>(theTShape)->storageSize();
+    default:
+      return 0;
+  }
+}
+
+//! Helper to get a child shape using type-switch with non-virtual storage access
+inline const TopoDS_Shape& getChildByType(TopoDS_TShape*   theTShape,
+                                          TopAbs_ShapeEnum theShapeType,
+                                          int              theIndex)
+{
+  switch (theShapeType)
+  {
+    case TopAbs_EDGE:
+      return static_cast<TopoDS_TEdge*>(theTShape)->storageValue(theIndex);
+    case TopAbs_WIRE:
+      return static_cast<TopoDS_TWire*>(theTShape)->storageValue(theIndex);
+    case TopAbs_FACE:
+      return static_cast<TopoDS_TFace*>(theTShape)->storageValue(theIndex);
+    case TopAbs_SHELL:
+      return static_cast<TopoDS_TShell*>(theTShape)->storageValue(theIndex);
+    case TopAbs_SOLID:
+      return static_cast<TopoDS_TSolid*>(theTShape)->storageValue(theIndex);
+    case TopAbs_COMPSOLID:
+      return static_cast<TopoDS_TCompSolid*>(theTShape)->storageValue(theIndex);
+    case TopAbs_COMPOUND:
+      return static_cast<TopoDS_TCompound*>(theTShape)->storageValue(theIndex);
+    default:
+      static TopoDS_Shape aNullShape;
+      return aNullShape;
+  }
+}
+
+//! Helper to remove a child shape using type-switch with non-virtual storage access
+inline void removeChildByType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType, int theIndex)
+{
+  switch (theShapeType)
+  {
+    case TopAbs_EDGE:
+      static_cast<TopoDS_TEdge*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_WIRE:
+      static_cast<TopoDS_TWire*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_FACE:
+      static_cast<TopoDS_TFace*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_SHELL:
+      static_cast<TopoDS_TShell*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_SOLID:
+      static_cast<TopoDS_TSolid*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_COMPSOLID:
+      static_cast<TopoDS_TCompSolid*>(theTShape)->storageRemove(theIndex);
+      break;
+    case TopAbs_COMPOUND:
+      static_cast<TopoDS_TCompound*>(theTShape)->storageRemove(theIndex);
+      break;
+    default:
+      break;
+  }
+}
+} // namespace
+
+//==================================================================================================
+
 void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const Handle(TopoDS_TShape)& T) const
 {
   S.TShape(T);
@@ -34,63 +155,76 @@ void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const Handle(TopoDS_TShape)& T) 
   S.Orientation(TopAbs_FORWARD);
 }
 
-//=======================================================================
-// function : Add
-// purpose  : insert aComponent in aShape
-//=======================================================================
+//==================================================================================================
 
 void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
   // From now the Component cannot be edited
-  aComponent.TShape()->Free(Standard_False);
+  aComponent.TShape()->Free(false);
 
   // Note that freezing aComponent before testing if aShape is free
   // prevents from self-insertion
   // but aShape will be frozen when the Exception is raised
   if (aShape.Free())
   {
+    // Compatibility table: what component types can be added to what shape types
     static const unsigned int aTb[9] = {
-      // COMPOUND to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)),
-      // COMPSOLID to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)),
-      // SOLID to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_COMPSOLID)),
-      // SHELL to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID)),
-      // FACE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SHELL)),
-      // WIRE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_FACE)),
-      // EDGE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID))
-        | (1 << ((unsigned int)TopAbs_WIRE)),
-      // VERTEX to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID))
-        | (1 << ((unsigned int)TopAbs_FACE)) | (1 << ((unsigned int)TopAbs_EDGE)),
-      // SHAPE to:
+      // COMPOUND can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
+      // COMPSOLID can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND)),
+      // SOLID can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_COMPSOLID)),
+      // SHELL can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_SOLID)),
+      // FACE can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_SHELL)),
+      // WIRE can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_FACE)),
+      // EDGE can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_SOLID))
+        | (1 << static_cast<unsigned int>(TopAbs_WIRE)),
+      // VERTEX can be added to:
+      (1 << static_cast<unsigned int>(TopAbs_COMPOUND))
+        | (1 << static_cast<unsigned int>(TopAbs_SOLID))
+        | (1 << static_cast<unsigned int>(TopAbs_FACE))
+        | (1 << static_cast<unsigned int>(TopAbs_EDGE)),
+      // SHAPE can be added to:
       0};
-    //
-    const unsigned int iC = (unsigned int)aComponent.ShapeType();
-    const unsigned int iS = (unsigned int)aShape.ShapeType();
-    //
+
+    const TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
+    const unsigned int     iC             = static_cast<unsigned int>(aComponent.ShapeType());
+    const unsigned int     iS             = static_cast<unsigned int>(aShapeType);
+
     if ((aTb[iC] & (1 << iS)) != 0)
     {
-      TopoDS_ListOfShape& L = aShape.TShape()->myShapes;
-      L.Append(aComponent);
-      TopoDS_Shape& S = L.Last();
-      //
-      // compute the relative Orientation
+      // Prepare the component with relative orientation and location
+      TopoDS_Shape aRelativeComponent = aComponent;
+
+      // Compute the relative Orientation
       if (aShape.Orientation() == TopAbs_REVERSED)
-        S.Reverse();
-      //
-      // and the Relative Location
+      {
+        aRelativeComponent.Reverse();
+      }
+
+      // Compute the Relative Location
       const TopLoc_Location& aLoc = aShape.Location();
       if (!aLoc.IsIdentity())
-        S.Move(aLoc.Inverted(), Standard_False);
-      //
-      // Set the TShape as modified.
-      aShape.TShape()->Modified(Standard_True);
+      {
+        aRelativeComponent.Move(aLoc.Inverted(), false);
+      }
+
+      // Add child using type-switch (no virtual call)
+      TopoDS_TShape* aTShape = aShape.TShape().get();
+      addChildByType(aTShape, aShapeType, aRelativeComponent);
+
+      // Set the TShape as modified
+      aTShape->Modified(true);
     }
     else
     {
@@ -103,32 +237,33 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   }
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Remove a Shape from an other one
-//=======================================================================
+//==================================================================================================
 
 void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
-  // check  if aShape  is  not Frozen
+  // Check if aShape is not Frozen
   TopoDS_FrozenShape_Raise_if(!aShape.Free(), "TopoDS_Builder::Remove");
 
-  // compute the relative Orientation and Location of aComponent
-  TopoDS_Shape S = aComponent;
+  // Compute the relative Orientation and Location of aComponent
+  TopoDS_Shape aRelativeComponent = aComponent;
   if (aShape.Orientation() == TopAbs_REVERSED)
-    S.Reverse();
-  S.Location(S.Location().Predivided(aShape.Location()), Standard_False);
-
-  TopoDS_ListOfShape&              L = aShape.TShape()->myShapes;
-  TopoDS_ListIteratorOfListOfShape It(L);
-  while (It.More())
   {
-    if (It.Value() == S)
+    aRelativeComponent.Reverse();
+  }
+  aRelativeComponent.Location(aRelativeComponent.Location().Predivided(aShape.Location()), false);
+
+  // Find and remove the matching child using type-switch (no virtual calls)
+  TopoDS_TShape*           aTShape     = aShape.TShape().get();
+  const TopAbs_ShapeEnum   aShapeType  = aTShape->ShapeType();
+  const int                aNbChildren = getNbChildrenByType(aTShape, aShapeType);
+
+  for (int i = 0; i < aNbChildren; ++i)
+  {
+    if (getChildByType(aTShape, aShapeType, i) == aRelativeComponent)
     {
-      L.Remove(It);
-      aShape.TShape()->Modified(Standard_True);
+      removeChildByType(aTShape, aShapeType, i);
+      aTShape->Modified(true);
       break;
     }
-    It.Next();
   }
 }

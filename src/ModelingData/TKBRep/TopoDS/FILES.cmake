@@ -23,6 +23,7 @@ set(OCCT_TopoDS_FILES
   TopoDS_LockedShape.hxx
   TopoDS_Shape.cxx
   TopoDS_Shape.hxx
+  TopoDS_ShapeStorage.hxx
   TopoDS_Shell.hxx
   TopoDS_Solid.hxx
   TopoDS_TCompound.cxx
