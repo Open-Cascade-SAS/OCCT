@@ -677,20 +677,13 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   //
   //-----------------------------------------------------scope f
   //
-  TColStd_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
-  TColStd_MapOfInteger  aMVOnIn(100, aAllocator), aMVCommon(100, aAllocator),
-    aMVStick(100, aAllocator), aMVEF(100, aAllocator), aMI(100, aAllocator),
-    aMVBounds(100, aAllocator);
-  BOPDS_IndexedMapOfPaveBlock                   aMPBOnIn(100, aAllocator);
-  BOPDS_MapOfPaveBlock                          aMPBAdd(100, aAllocator), aMPBCommon;
-  BOPDS_ListOfPaveBlock                         aLPB(aAllocator);
+  TColStd_MapOfInteger                          aMVBounds(100, aAllocator);
+  BOPDS_MapOfPaveBlock                          aMPBAdd(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMSCPB(100, aAllocator);
   TopTools_DataMapOfShapeInteger                aMVI(100, aAllocator);
   BOPDS_DataMapOfPaveBlockListOfPaveBlock       aDMExEdges(100, aAllocator);
-  TColStd_DataMapOfIntegerReal                  aMVTol(100, aAllocator);
   TColStd_DataMapOfIntegerInteger               aDMNewSD(100, aAllocator);
   TColStd_DataMapOfIntegerListOfInteger         aDMVLV;
-  TColStd_DataMapOfIntegerListOfInteger         aDMBV(100, aAllocator);
   TColStd_DataMapIteratorOfDataMapOfIntegerReal aItMV;
   BOPDS_IndexedMapOfPaveBlock                   aMicroPB(100, aAllocator);
   TopTools_IndexedMapOfShape                    aVertsOnRejectedPB;
@@ -725,6 +718,21 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
       continue;
     }
     //
+    Handle(NCollection_BaseAllocator) aFFAllocator = new NCollection_IncAllocator;
+
+    TColStd_ListOfInteger                 aLSE(aFFAllocator);
+    TColStd_ListOfInteger                 aLBV(aFFAllocator);
+    TColStd_DataMapOfIntegerListOfInteger aDMBV(100, aFFAllocator);
+    TColStd_DataMapOfIntegerReal          aMVTol(100, aFFAllocator);
+    TColStd_MapOfInteger                  aMVOnIn(100, aFFAllocator);
+    TColStd_MapOfInteger                  aMVCommon(100, aFFAllocator);
+    TColStd_MapOfInteger                  aMVStick(100, aFFAllocator);
+    TColStd_MapOfInteger                  aMVEF(100, aFFAllocator);
+    TColStd_MapOfInteger                  aMI(100, aFFAllocator);
+    BOPDS_IndexedMapOfPaveBlock           aMPBOnIn(100, aFFAllocator);
+    BOPDS_MapOfPaveBlock                  aMPBCommon;
+    BOPDS_ListOfPaveBlock                 aLPB(aFFAllocator);
+    //
     const TopoDS_Face& aF1 = (*(TopoDS_Face*)(&myDS->Shape(nF1)));
     const TopoDS_Face& aF2 = (*(TopoDS_Face*)(&myDS->Shape(nF2)));
     //
@@ -732,15 +740,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     //
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
-    //
-    aMVOnIn.Clear();
-    aMVCommon.Clear();
-    aMPBOnIn.Clear();
-    aMPBCommon.Clear();
-    aDMBV.Clear();
-    aMVTol.Clear();
-    aLSE.Clear();
-    //
     myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMVCommon, aMPBOnIn, aMPBCommon);
     myDS->SharedEdges(nF1, nF2, aLSE, aAllocator);
     //
@@ -1100,12 +1099,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   PutSEInOtherFaces(aPSOuter.Next());
   //
   //-----------------------------------------------------scope t
-  aMVStick.Clear();
-  aMPBOnIn.Clear();
-  aMVOnIn.Clear();
-  aMVCommon.Clear();
   aDMExEdges.Clear();
-  aMI.Clear();
   aDMNewSD.Clear();
 }
 
