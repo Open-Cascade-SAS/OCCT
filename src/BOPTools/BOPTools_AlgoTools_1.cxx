@@ -678,10 +678,15 @@ void CorrectWires(const TopoDS_Face& aFx, const TopTools_IndexedMapOfShape& aMap
     aIt.Initialize(aLE);
     for (; aIt.More(); aIt.Next())
     {
-      const TopoDS_Edge&          aE       = *(TopoDS_Edge*)(&aIt.Value());
-      const Handle(Geom2d_Curve)& aC2D     = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
-      Standard_Real               aT       = BRep_Tool::Parameter(aV, aE);
-      Standard_Boolean            isClosed = Standard_False;
+      const TopoDS_Edge&          aE   = *(TopoDS_Edge*)(&aIt.Value());
+      const Handle(Geom2d_Curve)& aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
+      if (aC2D.IsNull())
+      {
+        continue;
+      }
+
+      Standard_Real    aT       = BRep_Tool::Parameter(aV, aE);
+      Standard_Boolean isClosed = Standard_False;
       {
         TopoDS_Vertex aV1, aV2;
         TopExp::Vertices(aE, aV1, aV2);
