@@ -53,6 +53,7 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: windows-2025
+    if: github.ref == 'refs/heads/master'
     needs:
       - clang-format
       - ascii-check
