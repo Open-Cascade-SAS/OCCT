@@ -27,6 +27,8 @@
 #include <TopoDS_TVertex.hxx>
 #include <TopoDS_TWire.hxx>
 
+#include <Standard_Assert.hxx>
+
 //==================================================================================================
 
 void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc)
@@ -51,18 +53,20 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc
 
   if (S.IsNull())
   {
-    myTShape    = nullptr;
-    myIndex     = 0;
-    myShapeType = TopAbs_SHAPE;
+    myTShape     = nullptr;
+    myIndex      = 0;
+    myNbChildren = 0;
+    myShapeType  = TopAbs_SHAPE;
   }
   else
   {
-    myTShape    = S.TShape().get();
-    myIndex     = 0;
-    myShapeType = myTShape->ShapeType();
+    myTShape     = S.TShape().get();
+    myIndex      = 0;
+    myShapeType  = myTShape->ShapeType();
+    myNbChildren = getCurrentNbChildren();
   }
 
-  if (More())
+  if (myIndex < myNbChildren)
   {
     updateCurrentShape();
   }
@@ -72,7 +76,22 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc
 
 bool TopoDS_Iterator::More() const
 {
-  return myIndex < getCurrentNbChildren();
+  if (myIndex < myNbChildren)
+  {
+    return true;
+  }
+  // Reached cached limit - check if more children were added
+  const int aCurrentNb = getCurrentNbChildren();
+#ifdef OCCT_DEBUG
+  Standard_ASSERT_RAISE(aCurrentNb >= myNbChildren,
+                        "TopoDS_Iterator: children were removed during iteration");
+#endif
+  if (aCurrentNb > myNbChildren)
+  {
+    myNbChildren = aCurrentNb;
+    return true;
+  }
+  return false;
 }
 
 //==================================================================================================

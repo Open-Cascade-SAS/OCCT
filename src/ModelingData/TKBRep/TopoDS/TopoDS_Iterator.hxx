@@ -38,6 +38,7 @@ public:
   TopoDS_Iterator()
       : myTShape(nullptr),
         myIndex(0),
+        myNbChildren(0),
         myShapeType(TopAbs_SHAPE),
         myOrientation(TopAbs_FORWARD)
   {
@@ -53,6 +54,7 @@ public:
   TopoDS_Iterator(const TopoDS_Shape& S, bool cumOri = true, bool cumLoc = true)
       : myTShape(nullptr),
         myIndex(0),
+        myNbChildren(0),
         myShapeType(TopAbs_SHAPE),
         myOrientation(TopAbs_FORWARD)
   {
@@ -88,6 +90,11 @@ public:
     return myShape;
   }
 
+  //! Refreshes the cached number of children.
+  //! Call this method if the shape was modified during iteration
+  //! and you want to continue iterating over newly added children.
+  void Refresh() { myNbChildren = getCurrentNbChildren(); }
+
 private:
   //! Updates myShape from current index
   void updateCurrentShape();
@@ -100,10 +107,11 @@ private:
   int getCurrentNbChildren() const;
 
 private:
-  TopoDS_Shape       myShape;       //!< Current composed sub-shape
-  TopoDS_TShape*     myTShape;      //!< Pointer to parent TShape (for child access)
-  int                myIndex;       //!< Current child index (0-based)
-  TopAbs_ShapeEnum   myShapeType;   //!< Shape type for type-switch optimization
+  TopoDS_Shape     myShape;      //!< Current composed sub-shape
+  TopoDS_TShape*   myTShape;     //!< Pointer to parent TShape (for child access)
+  int              myIndex;      //!< Current child index (0-based)
+  mutable int      myNbChildren; //!< Cached number of children (mutable for lazy refresh in More())
+  TopAbs_ShapeEnum myShapeType;  //!< Shape type for type-switch optimization
   TopAbs_Orientation myOrientation; //!< Cumulative orientation
   TopLoc_Location    myLocation;    //!< Cumulative location
 };

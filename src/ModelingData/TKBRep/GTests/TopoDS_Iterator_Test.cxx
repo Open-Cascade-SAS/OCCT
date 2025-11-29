@@ -2756,3 +2756,216 @@ TEST(TopoDS_Iterator_Test, IterationDoesNotModifyShapes)
     ++anOrigIt;
   }
 }
+
+//==================================================================================================
+// Dynamic growth tests - adding shapes during iteration
+//==================================================================================================
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_AddDuringIteration_Compound)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Start with one vertex
+  TopoDS_Vertex aVertex1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+  aBuilder.Add(aCompound, aVertex1);
+
+  // Create iterator
+  TopoDS_Iterator anIter(aCompound);
+  EXPECT_TRUE(anIter.More());
+
+  int aCount = 0;
+
+  // Iterate and add new shapes during iteration (like BOPAlgo_ShellSplitter pattern)
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+
+    // Add a new vertex after processing first one, but only once
+    if (aCount == 1)
+    {
+      TopoDS_Vertex aVertex2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 1, 1));
+      aBuilder.Add(aCompound, aVertex2);
+    }
+  }
+
+  // Should have iterated over both vertices
+  EXPECT_EQ(aCount, 2);
+}
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_AddMultipleDuringIteration_Compound)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Start with one vertex
+  TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+  aBuilder.Add(aCompound, aVertex);
+
+  TopoDS_Iterator anIter(aCompound);
+  int             aCount = 0;
+
+  // Add 4 more vertices during iteration (total 5)
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+
+    if (aCount < 5)
+    {
+      TopoDS_Vertex aNewVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(aCount, aCount, aCount));
+      aBuilder.Add(aCompound, aNewVertex);
+    }
+  }
+
+  EXPECT_EQ(aCount, 5);
+}
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_AddDuringIteration_Shell)
+{
+  BRep_Builder aBuilder;
+  TopoDS_Shell aShell;
+  aBuilder.MakeShell(aShell);
+
+  // Create faces from a box
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10, 10, 10).Shape();
+
+  // Collect faces
+  NCollection_List<TopoDS_Face> aFaces;
+  for (TopoDS_Iterator aBoxIter(TopoDS::Solid(aBox)); aBoxIter.More(); aBoxIter.Next())
+  {
+    for (TopoDS_Iterator aShellIter(aBoxIter.Value()); aShellIter.More(); aShellIter.Next())
+    {
+      aFaces.Append(TopoDS::Face(aShellIter.Value()));
+    }
+  }
+
+  // Add first face to shell
+  auto aFaceIt = aFaces.begin();
+  aBuilder.Add(aShell, *aFaceIt);
+  ++aFaceIt;
+
+  // Iterate shell and add remaining faces during iteration
+  TopoDS_Iterator anIter(aShell);
+  int             aCount = 0;
+
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+
+    // Add next face if available
+    if (aFaceIt != aFaces.end())
+    {
+      aBuilder.Add(aShell, *aFaceIt);
+      ++aFaceIt;
+    }
+  }
+
+  // Should have iterated over all 6 faces
+  EXPECT_EQ(aCount, 6);
+}
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_RefreshMethod)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Start with two vertices
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 1, 1)));
+
+  TopoDS_Iterator anIter(aCompound);
+
+  // Iterate to end
+  int aCount = 0;
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+  }
+  EXPECT_EQ(aCount, 2);
+  EXPECT_FALSE(anIter.More());
+
+  // Add more vertices
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(2, 2, 2)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(3, 3, 3)));
+
+  // Without Refresh, More() should detect new children via lazy refresh
+  EXPECT_TRUE(anIter.More());
+
+  // Continue iteration
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+  }
+
+  // Should have iterated over all 4 vertices total
+  EXPECT_EQ(aCount, 4);
+}
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_ExplicitRefresh)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Start with one vertex
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+
+  TopoDS_Iterator anIter(aCompound);
+
+  // Process first vertex
+  EXPECT_TRUE(anIter.More());
+  anIter.Next();
+  EXPECT_FALSE(anIter.More());
+
+  // Add more and explicitly refresh
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 1, 1)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(2, 2, 2)));
+
+  anIter.Refresh();
+
+  // Now More() should return true
+  EXPECT_TRUE(anIter.More());
+
+  int aCount = 1; // Already processed one
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+  }
+
+  EXPECT_EQ(aCount, 3);
+}
+
+TEST(TopoDS_Iterator_Test, DynamicGrowth_NoChangeIfNothingAdded)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 1, 1)));
+
+  TopoDS_Iterator anIter(aCompound);
+
+  int aCount = 0;
+  while (anIter.More())
+  {
+    ++aCount;
+    anIter.Next();
+  }
+
+  EXPECT_EQ(aCount, 2);
+  EXPECT_FALSE(anIter.More());
+
+  // Call More() again - should still be false
+  EXPECT_FALSE(anIter.More());
+  EXPECT_FALSE(anIter.More());
+}
