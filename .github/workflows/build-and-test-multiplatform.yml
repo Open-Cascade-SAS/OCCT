@@ -53,6 +53,22 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: windows-2025
+    needs:
+      - clang-format
+      - ascii-check
+      - build-inspector-windows
+      - build-inspector-linux
+      - build-csharp-windows
+      - build-mfc-windows
+      - build-qt-windows
+      - build-qt-linux
+      - retest-windows-x64
+      - retest-macos-x64
+      - retest-linux-clang-x64
+      - run-gtest-windows-x64
+      - run-gtest-macos-x64
+      - run-gtest-linux-clang-x64
+      - run-gtest-macos-clang-no-pch
 
     steps:
     - name: Checkout repository
@@ -111,6 +127,7 @@ jobs:
 
   prepare-and-build-macos-clang-no-pch:
     name: Prepare and Build on macOS with Clang (No PCH)
+    needs: prepare-and-build-macos-x64
     runs-on: macos-15
 
     steps:
@@ -377,6 +394,23 @@ jobs:
         compiler: clang
         install-artifact-name: install-linux-clang-x64
         artifact-suffix: x64
+
+  run-gtest-macos-clang-no-pch:
+    name: Run GTest on macOS with Clang (No PCH, Debug)
+    needs: prepare-and-build-macos-clang-no-pch
+    runs-on: macos-15
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Run GTests
+      uses: ./.github/actions/run-gtest
+      with:
+        platform: macos
+        compiler: clang
+        install-artifact-name: install-macos-clang-no-pch
+        artifact-suffix: no-pch
 
   test-summary:
     name: 'Summarize Test Results'
