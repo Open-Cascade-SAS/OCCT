@@ -666,31 +666,38 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     return;
   }
   //
-  Standard_Boolean                    bExist, bValid2D;
-  Standard_Integer                    i, nF1, nF2, aNbC, aNbP, j;
-  Standard_Integer                    nV1, nV2;
-  Standard_Real                       aT1, aT2;
-  Handle(NCollection_BaseAllocator)   aAllocator = new NCollection_IncAllocator;
+  Standard_Boolean                  bExist, bValid2D;
+  Standard_Integer                  i, nF1, nF2, aNbC, aNbP, j;
+  Standard_Integer                  nV1, nV2;
+  Standard_Real                     aT1, aT2;
+  Handle(NCollection_BaseAllocator) aAllocator = new NCollection_IncAllocator;
+  // Temporary allocator for per-iteration collections that are cleared each iteration.
+  // Using separate allocator allows to reclaim memory via Reset(false) at the start
+  // of each iteration, preventing memory accumulation in the main loop.
+  Handle(NCollection_IncAllocator)    aTmpAllocator = new NCollection_IncAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Edge                         aES;
   Handle(BOPDS_PaveBlock)             aPBOut;
   //
   //-----------------------------------------------------scope f
   //
-  TColStd_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
-  TColStd_MapOfInteger  aMVOnIn(100, aAllocator), aMVCommon(100, aAllocator),
-    aMVStick(100, aAllocator), aMVEF(100, aAllocator), aMI(100, aAllocator),
-    aMVBounds(100, aAllocator);
-  BOPDS_IndexedMapOfPaveBlock                   aMPBOnIn(100, aAllocator);
-  BOPDS_MapOfPaveBlock                          aMPBAdd(100, aAllocator), aMPBCommon;
+  // Per-iteration collections (use temporary allocator, reset each iteration)
+  TColStd_ListOfInteger aLSE(aTmpAllocator), aLBV(aTmpAllocator);
+  TColStd_MapOfInteger  aMVOnIn(100, aTmpAllocator), aMVCommon(100, aTmpAllocator),
+    aMVStick(100, aTmpAllocator), aMVEF(100, aTmpAllocator), aMVBounds(100, aTmpAllocator);
+  BOPDS_IndexedMapOfPaveBlock           aMPBOnIn(100, aTmpAllocator);
+  BOPDS_MapOfPaveBlock                  aMPBCommon;
+  TColStd_DataMapOfIntegerReal          aMVTol(100, aTmpAllocator);
+  TColStd_DataMapOfIntegerListOfInteger aDMBV(100, aTmpAllocator);
+  // Cross-iteration collections (use main allocator, persist through entire loop)
+  TColStd_MapOfInteger                          aMI(100, aAllocator);
+  BOPDS_MapOfPaveBlock                          aMPBAdd(100, aAllocator);
   BOPDS_ListOfPaveBlock                         aLPB(aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMSCPB(100, aAllocator);
   TopTools_DataMapOfShapeInteger                aMVI(100, aAllocator);
   BOPDS_DataMapOfPaveBlockListOfPaveBlock       aDMExEdges(100, aAllocator);
-  TColStd_DataMapOfIntegerReal                  aMVTol(100, aAllocator);
   TColStd_DataMapOfIntegerInteger               aDMNewSD(100, aAllocator);
   TColStd_DataMapOfIntegerListOfInteger         aDMVLV;
-  TColStd_DataMapOfIntegerListOfInteger         aDMBV(100, aAllocator);
   TColStd_DataMapIteratorOfDataMapOfIntegerReal aItMV;
   BOPDS_IndexedMapOfPaveBlock                   aMicroPB(100, aAllocator);
   TopTools_IndexedMapOfShape                    aVertsOnRejectedPB;
@@ -733,6 +740,10 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
+    // Reset temporary allocator to reclaim memory from previous iteration.
+    // This prevents memory accumulation when processing many Face-Face pairs.
+    // All per-iteration collections must be cleared after Reset to invalidate old pointers.
+    aTmpAllocator->Reset(false);
     aMVOnIn.Clear();
     aMVCommon.Clear();
     aMPBOnIn.Clear();
@@ -740,9 +751,13 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aDMBV.Clear();
     aMVTol.Clear();
     aLSE.Clear();
+    aLBV.Clear();
+    aMVStick.Clear();
+    aMVEF.Clear();
+    aMVBounds.Clear();
     //
     myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMVCommon, aMPBOnIn, aMPBCommon);
-    myDS->SharedEdges(nF1, nF2, aLSE, aAllocator);
+    myDS->SharedEdges(nF1, nF2, aLSE, aTmpAllocator);
     //
     // 1. Treat Points
     for (j = 0; j < aNbP; ++j)
@@ -765,8 +780,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     }
     //
     // 2. Treat Curves
-    aMVStick.Clear();
-    aMVEF.Clear();
     GetStickVertices(nF1, nF2, aMVStick, aMVEF, aMI);
     //
     for (j = 0; j < aNbC; ++j)
