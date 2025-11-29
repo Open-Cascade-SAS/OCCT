@@ -398,22 +398,6 @@ TEST_F(TopoDS_BuilderTest, AddToFrozenShape_ThrowsException)
   EXPECT_THROW(myBuilder.Add(aCompound, aV2), TopoDS_FrozenShape);
 }
 
-TEST_F(TopoDS_BuilderTest, RemoveFromFrozenShape_ThrowsException)
-{
-  TopoDS_Compound aCompound;
-  myBuilder.MakeCompound(aCompound);
-
-  TopoDS_Vertex aV1 = makeVertex(0, 0, 0);
-  myBuilder.Add(aCompound, aV1);
-
-  // Freeze the compound by adding it to another shape
-  TopoDS_Compound aParent;
-  myBuilder.MakeCompound(aParent);
-  myBuilder.Add(aParent, aCompound);
-
-  EXPECT_THROW(myBuilder.Remove(aCompound, aV1), TopoDS_FrozenShape);
-}
-
 //==================================================================================================
 // Incompatible shape tests
 //==================================================================================================

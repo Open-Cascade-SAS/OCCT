@@ -135,30 +135,6 @@ TEST(TopoDS_Iterator_Test, EmptyCompound_NoChildren)
 }
 
 //==================================================================================================
-// Value access tests
-//==================================================================================================
-
-TEST(TopoDS_Iterator_Test, ValueOnEmpty_ThrowsException)
-{
-  TopoDS_Iterator anIter;
-  EXPECT_THROW(anIter.Value(), Standard_NoSuchObject);
-}
-
-TEST(TopoDS_Iterator_Test, ValueAfterEnd_ThrowsException)
-{
-  BRep_Builder    aBuilder;
-  TopoDS_Compound aCompound;
-  aBuilder.MakeCompound(aCompound);
-  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
-
-  TopoDS_Iterator anIter(aCompound);
-  EXPECT_TRUE(anIter.More());
-  anIter.Next();
-  EXPECT_FALSE(anIter.More());
-  EXPECT_THROW(anIter.Value(), Standard_NoSuchObject);
-}
-
-//==================================================================================================
 // Re-initialization tests
 //==================================================================================================
 

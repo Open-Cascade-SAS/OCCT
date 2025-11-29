@@ -51,54 +51,28 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc
 
   if (S.IsNull())
   {
-    myTShape     = nullptr;
-    myIndex      = 0;
-    myNbChildren = 0;
-    myShapeType  = TopAbs_SHAPE;
+    myTShape    = nullptr;
+    myIndex     = 0;
+    myShapeType = TopAbs_SHAPE;
   }
   else
   {
     myTShape    = S.TShape().get();
     myIndex     = 0;
     myShapeType = myTShape->ShapeType();
-
-    // Get NbChildren using type-switch for direct storage access (no virtual call)
-    switch (myShapeType)
-    {
-      case TopAbs_VERTEX:
-        myNbChildren = 0; // Vertices have no children
-        break;
-      case TopAbs_EDGE:
-        myNbChildren = static_cast<TopoDS_TEdge*>(myTShape)->storageSize();
-        break;
-      case TopAbs_WIRE:
-        myNbChildren = static_cast<TopoDS_TWire*>(myTShape)->storageSize();
-        break;
-      case TopAbs_FACE:
-        myNbChildren = static_cast<TopoDS_TFace*>(myTShape)->storageSize();
-        break;
-      case TopAbs_SHELL:
-        myNbChildren = static_cast<TopoDS_TShell*>(myTShape)->storageSize();
-        break;
-      case TopAbs_SOLID:
-        myNbChildren = static_cast<TopoDS_TSolid*>(myTShape)->storageSize();
-        break;
-      case TopAbs_COMPSOLID:
-        myNbChildren = static_cast<TopoDS_TCompSolid*>(myTShape)->storageSize();
-        break;
-      case TopAbs_COMPOUND:
-        myNbChildren = static_cast<TopoDS_TCompound*>(myTShape)->storageSize();
-        break;
-      default:
-        myNbChildren = 0;
-        break;
-    }
   }
 
   if (More())
   {
     updateCurrentShape();
   }
+}
+
+//==================================================================================================
+
+bool TopoDS_Iterator::More() const
+{
+  return myIndex < getCurrentNbChildren();
 }
 
 //==================================================================================================
@@ -153,5 +127,38 @@ void TopoDS_Iterator::updateCurrentShape()
   if (!myLocation.IsIdentity())
   {
     myShape.Move(myLocation, false);
+  }
+}
+
+//==================================================================================================
+
+int TopoDS_Iterator::getCurrentNbChildren() const
+{
+  if (myTShape == nullptr)
+  {
+    return 0;
+  }
+
+  // Type-switch for direct storage access (no virtual call)
+  switch (myShapeType)
+  {
+    case TopAbs_VERTEX:
+      return 0; // Vertices have no children
+    case TopAbs_EDGE:
+      return static_cast<const TopoDS_TEdge*>(myTShape)->storageSize();
+    case TopAbs_WIRE:
+      return static_cast<const TopoDS_TWire*>(myTShape)->storageSize();
+    case TopAbs_FACE:
+      return static_cast<const TopoDS_TFace*>(myTShape)->storageSize();
+    case TopAbs_SHELL:
+      return static_cast<const TopoDS_TShell*>(myTShape)->storageSize();
+    case TopAbs_SOLID:
+      return static_cast<const TopoDS_TSolid*>(myTShape)->storageSize();
+    case TopAbs_COMPSOLID:
+      return static_cast<const TopoDS_TCompSolid*>(myTShape)->storageSize();
+    case TopAbs_COMPOUND:
+      return static_cast<const TopoDS_TCompound*>(myTShape)->storageSize();
+    default:
+      return 0;
   }
 }

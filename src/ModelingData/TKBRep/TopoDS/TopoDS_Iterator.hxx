@@ -38,7 +38,6 @@ public:
   TopoDS_Iterator()
       : myTShape(nullptr),
         myIndex(0),
-        myNbChildren(0),
         myShapeType(TopAbs_SHAPE),
         myOrientation(TopAbs_FORWARD)
   {
@@ -54,7 +53,6 @@ public:
   TopoDS_Iterator(const TopoDS_Shape& S, bool cumOri = true, bool cumLoc = true)
       : myTShape(nullptr),
         myIndex(0),
-        myNbChildren(0),
         myShapeType(TopAbs_SHAPE),
         myOrientation(TopAbs_FORWARD)
   {
@@ -72,7 +70,7 @@ public:
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  bool More() const { return myIndex < myNbChildren; }
+  Standard_EXPORT bool More() const;
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -98,11 +96,13 @@ private:
   //! Gets child shape at current index using type-switch for direct access (no virtual call)
   const TopoDS_Shape& getChildByType() const;
 
+  //! Gets current number of children using type-switch for direct access (no virtual call)
+  int getCurrentNbChildren() const;
+
 private:
   TopoDS_Shape       myShape;       //!< Current composed sub-shape
   TopoDS_TShape*     myTShape;      //!< Pointer to parent TShape (for child access)
   int                myIndex;       //!< Current child index (0-based)
-  int                myNbChildren;  //!< Total number of children
   TopAbs_ShapeEnum   myShapeType;   //!< Shape type for type-switch optimization
   TopAbs_Orientation myOrientation; //!< Cumulative orientation
   TopLoc_Location    myLocation;    //!< Cumulative location
