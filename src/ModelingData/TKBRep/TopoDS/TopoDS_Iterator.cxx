@@ -74,6 +74,13 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc
 
 //==================================================================================================
 
+void TopoDS_Iterator::Refresh()
+{
+  myNbChildren = getCurrentNbChildren();
+}
+
+//==================================================================================================
+
 bool TopoDS_Iterator::More() const
 {
   if (myIndex < myNbChildren)

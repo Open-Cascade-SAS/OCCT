@@ -93,7 +93,7 @@ public:
   //! Refreshes the cached number of children.
   //! Call this method if the shape was modified during iteration
   //! and you want to continue iterating over newly added children.
-  void Refresh() { myNbChildren = getCurrentNbChildren(); }
+  Standard_EXPORT void Refresh();
 
 private:
   //! Updates myShape from current index
