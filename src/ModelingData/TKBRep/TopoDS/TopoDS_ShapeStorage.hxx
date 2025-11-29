@@ -70,10 +70,10 @@ public:
   //! @param theIndex index of the shape to remove (0 <= theIndex < Size())
   void Remove(int theIndex)
   {
-    // Shift remaining elements left
+    // Shift remaining elements left using move semantics
     for (int i = theIndex; i < myCount - 1; ++i)
     {
-      myShapes[i] = myShapes[i + 1];
+      myShapes[i] = std::move(myShapes[i + 1]);
     }
     // Clear the last slot
     myShapes[myCount - 1].Nullify();
@@ -144,10 +144,10 @@ public:
   //! @param theIndex index of the shape to remove (0 <= theIndex < Size())
   void Remove(int theIndex)
   {
-    // Shift remaining elements left
+    // Shift remaining elements left using move semantics
     for (int i = theIndex; i < myShapes.Size() - 1; ++i)
     {
-      myShapes.ChangeValue(i) = myShapes.Value(i + 1);
+      myShapes.ChangeValue(i) = std::move(myShapes.ChangeValue(i + 1));
     }
     myShapes.EraseLast();
   }
@@ -162,7 +162,7 @@ public:
   {
     for (int i = 0; i < theLocal.Size(); ++i)
     {
-      myShapes.Append(theLocal.Value(i));
+      myShapes.Append(std::move(theLocal.ChangeValue(i)));
     }
     theLocal.Clear();
   }

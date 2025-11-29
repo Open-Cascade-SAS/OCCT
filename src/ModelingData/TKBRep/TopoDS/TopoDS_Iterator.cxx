@@ -134,9 +134,8 @@ const TopoDS_Shape& TopoDS_Iterator::getChildByType() const
     case TopAbs_COMPOUND:
       return static_cast<TopoDS_TCompound*>(myTShape)->storageValue(myIndex);
     default:
-      // TopAbs_VERTEX and TopAbs_SHAPE have no children - should never reach here
-      static TopoDS_Shape aNullShape;
-      return aNullShape;
+      // TopAbs_VERTEX and TopAbs_SHAPE have no children - this is a programming error
+      throw Standard_NoSuchObject("TopoDS_Iterator::getChildByType - shape type has no children");
   }
 }
 

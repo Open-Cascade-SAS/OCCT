@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_FrozenShape.hxx>
 #include <TopoDS_Shape.hxx>
@@ -129,8 +130,8 @@ inline const TopoDS_Shape& getChildByType(TopoDS_TShape*   theTShape,
     case TopAbs_COMPOUND:
       return static_cast<TopoDS_TCompound*>(theTShape)->storageValue(theIndex);
     default:
-      static TopoDS_Shape aNullShape;
-      return aNullShape;
+      // TopAbs_VERTEX and TopAbs_SHAPE have no children - this is a programming error
+      throw Standard_OutOfRange("TopoDS_Builder::getChildByType - shape type has no children");
   }
 }
 
