@@ -273,7 +273,10 @@ void BSplCLib_Reverse(Array& theArray, const Standard_Integer theL)
   const int aL     = aLower + (theL - aLower) % theArray.Length();
 
   std::reverse(&theArray(aLower), &theArray(aL) + 1);
-  std::reverse(&theArray(aL + 1), &theArray(aUpper) + 1);
+  if (aL < aUpper)
+  {
+    std::reverse(&theArray(aL + 1), &theArray(aUpper) + 1);
+  }
 }
 
 // Removes a knot from the B-spline curve
