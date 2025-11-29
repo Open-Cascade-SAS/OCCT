@@ -7,4 +7,5 @@ set(OCCT_TKBO_GTests_FILES
   BRepAlgoAPI_Fuse_Test.cxx
   BRepAlgoAPI_Common_Test.cxx
   BOPAlgo_BOP_Test.cxx
+  BOPAlgo_PaveFiller_Test.cxx
 )
