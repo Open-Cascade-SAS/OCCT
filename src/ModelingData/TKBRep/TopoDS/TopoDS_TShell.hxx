@@ -18,9 +18,9 @@
 #define _TopoDS_TShell_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_ShapeStorage.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TShell;
@@ -29,68 +29,38 @@ DEFINE_STANDARD_HANDLE(TopoDS_TShell, TopoDS_TShape)
 //! A set of faces connected by their edges.
 //!
 //! A shell can have many faces (tetrahedron=4, box=6, complex=many).
-//! Uses local storage for up to 4 faces, with dynamic overflow (bucket size 8).
+//! Uses dynamic array storage with bucket size 8.
 class TopoDS_TShell : public TopoDS_TShape
 {
 public:
-  //! Local storage capacity for faces (covers tetrahedron=4, prism base=5).
-  //! Box with 6 faces uses 4 local + 2 in first bucket (minor overhead).
-  //! Memory: 4×24=96 bytes vs 6×24=144 bytes saves 48 bytes per shell.
-  static constexpr size_t LocalCapacity = 4;
-
-  //! Bucket size for dynamic array overflow (shells grow moderately)
-  static constexpr int BucketSize = 8;
+  //! Bucket size for dynamic array (tetrahedron=4, box=6 needs 2 buckets)
+  static constexpr int BucketSize = 6;
 
   //! Creates an empty TShell.
   TopoDS_TShell()
       : TopoDS_TShape(TopAbs_SHELL),
-        myFaces()
+        mySubShapes(BucketSize)
   {
   }
 
   //! Returns an empty TShell.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
-  //! Returns the number of face sub-shapes.
-  int NbChildren() const Standard_OVERRIDE { return storageSize(); }
+  //! Returns the number of sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return mySubShapes.Size(); }
 
-  //! Returns the face at the given index (0-based).
-  //! @param theIndex index of the face (0 <= theIndex < NbChildren())
-  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE
-  {
-    return storageValue(theIndex);
-  }
-
-  //! Returns the face at the given index for modification.
-  //! @param theIndex index of the face (0 <= theIndex < NbChildren())
-  TopoDS_Shape& ChangeChild(int theIndex) Standard_OVERRIDE { return storageChangeValue(theIndex); }
-
-  //! Adds a face to this shell.
-  //! @param theShape the face to add
-  void AddChild(const TopoDS_Shape& theShape) Standard_OVERRIDE { storageAppend(theShape); }
-
-  //! Removes the face at the given index.
-  //! @param theIndex index of the face to remove (0 <= theIndex < NbChildren())
-  void RemoveChild(int theIndex) Standard_OVERRIDE { storageRemove(theIndex); }
-
-  // Non-virtual direct storage access for performance-critical code (Iterator, Builder)
-  int storageSize() const { return myFaces.Size(); }
-
-  const TopoDS_Shape& storageValue(int theIndex) const { return myFaces.Value(theIndex); }
-
-  TopoDS_Shape& storageChangeValue(int theIndex) { return myFaces.ChangeValue(theIndex); }
-
-  void storageAppend(const TopoDS_Shape& theShape) { myFaces.Append(theShape); }
-
-  void storageRemove(int theIndex) { myFaces.Remove(theIndex); }
+  //! Returns the sub-shape at the given index (0-based).
+  //! @param theIndex index of the sub-shape (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE { return mySubShapes.Value(theIndex); }
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TShell, TopoDS_TShape)
 
 private:
-  //! Storage for face sub-shapes.
-  //! Uses local storage for up to 4 faces (tetrahedron, prism base),
-  //! switches to dynamic array for overflow.
-  TopoDS_VariantShapeStorage<LocalCapacity, BucketSize> myFaces;
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  //! Storage for sub-shapes.
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes;
 };
 
 #endif // _TopoDS_TShell_HeaderFile

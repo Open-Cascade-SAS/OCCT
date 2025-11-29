@@ -156,19 +156,6 @@ public:
   //! @return reference to the child shape
   virtual const TopoDS_Shape& GetChild(int theIndex) const = 0;
 
-  //! Returns the child shape at the given index (0-based) for modification.
-  //! @param theIndex index of the child shape (0 <= theIndex < NbChildren())
-  //! @return reference to the child shape
-  virtual TopoDS_Shape& ChangeChild(int theIndex) = 0;
-
-  //! Adds a child shape.
-  //! @param theShape the child shape to add
-  virtual void AddChild(const TopoDS_Shape& theShape) = 0;
-
-  //! Removes the child shape at the given index (0-based).
-  //! @param theIndex index of the child shape to remove
-  virtual void RemoveChild(int theIndex) = 0;
-
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
                                         Standard_Integer  theDepth = -1) const;

@@ -46,30 +46,6 @@ public:
     throw Standard_OutOfRange("TopoDS_TVertex::GetChild - vertex has no children");
   }
 
-  //! Throws Standard_OutOfRange - vertices have no children.
-  //! @param theIndex unused
-  TopoDS_Shape& ChangeChild(int theIndex) Standard_OVERRIDE
-  {
-    (void)theIndex;
-    throw Standard_OutOfRange("TopoDS_TVertex::ChangeChild - vertex has no children");
-  }
-
-  //! Throws Standard_OutOfRange - vertices cannot have children.
-  //! @param theShape unused
-  void AddChild(const TopoDS_Shape& theShape) Standard_OVERRIDE
-  {
-    (void)theShape;
-    throw Standard_OutOfRange("TopoDS_TVertex::AddChild - vertex cannot have children");
-  }
-
-  //! Throws Standard_OutOfRange - vertices have no children.
-  //! @param theIndex unused
-  void RemoveChild(int theIndex) Standard_OVERRIDE
-  {
-    (void)theIndex;
-    throw Standard_OutOfRange("TopoDS_TVertex::RemoveChild - vertex has no children");
-  }
-
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 
 protected:

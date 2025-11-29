@@ -120,19 +120,19 @@ const TopoDS_Shape& TopoDS_Iterator::getChildByType() const
   switch (myShapeType)
   {
     case TopAbs_EDGE:
-      return static_cast<TopoDS_TEdge*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TEdge*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_WIRE:
-      return static_cast<TopoDS_TWire*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TWire*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_FACE:
-      return static_cast<TopoDS_TFace*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TFace*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_SHELL:
-      return static_cast<TopoDS_TShell*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TShell*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_SOLID:
-      return static_cast<TopoDS_TSolid*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TSolid*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_COMPSOLID:
-      return static_cast<TopoDS_TCompSolid*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TCompSolid*>(myTShape)->mySubShapes.Value(myIndex);
     case TopAbs_COMPOUND:
-      return static_cast<TopoDS_TCompound*>(myTShape)->storageValue(myIndex);
+      return static_cast<TopoDS_TCompound*>(myTShape)->mySubShapes.Value(myIndex);
     default:
       // TopAbs_VERTEX and TopAbs_SHAPE have no children - this is a programming error
       throw Standard_NoSuchObject("TopoDS_Iterator::getChildByType - shape type has no children");
@@ -171,19 +171,19 @@ int TopoDS_Iterator::getCurrentNbChildren() const
     case TopAbs_VERTEX:
       return 0; // Vertices have no children
     case TopAbs_EDGE:
-      return static_cast<const TopoDS_TEdge*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TEdge*>(myTShape)->mySubShapes.Size();
     case TopAbs_WIRE:
-      return static_cast<const TopoDS_TWire*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TWire*>(myTShape)->mySubShapes.Size();
     case TopAbs_FACE:
-      return static_cast<const TopoDS_TFace*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TFace*>(myTShape)->mySubShapes.Size();
     case TopAbs_SHELL:
-      return static_cast<const TopoDS_TShell*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TShell*>(myTShape)->mySubShapes.Size();
     case TopAbs_SOLID:
-      return static_cast<const TopoDS_TSolid*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TSolid*>(myTShape)->mySubShapes.Size();
     case TopAbs_COMPSOLID:
-      return static_cast<const TopoDS_TCompSolid*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TCompSolid*>(myTShape)->mySubShapes.Size();
     case TopAbs_COMPOUND:
-      return static_cast<const TopoDS_TCompound*>(myTShape)->storageSize();
+      return static_cast<const TopoDS_TCompound*>(myTShape)->mySubShapes.Size();
     default:
       return 0;
   }

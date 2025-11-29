@@ -51,121 +51,146 @@ constexpr unsigned int THE_ADD_COMPATIBILITY[9] = {
   0                                                                                       // SHAPE
 };
 
-//! Helper to add a child shape using type-switch with non-virtual storage access
-inline void addChildByType(TopoDS_TShape*      theTShape,
-                           TopAbs_ShapeEnum    theShapeType,
-                           const TopoDS_Shape& theChild)
+} // namespace
+
+//==================================================================================================
+
+void TopoDS_Builder::addChildByType(TopoDS_TShape*      theTShape,
+                                    TopAbs_ShapeEnum    theShapeType,
+                                    const TopoDS_Shape& theChild)
 {
   switch (theShapeType)
   {
     case TopAbs_EDGE:
-      static_cast<TopoDS_TEdge*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TEdge*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_WIRE:
-      static_cast<TopoDS_TWire*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TWire*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_FACE:
-      static_cast<TopoDS_TFace*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TFace*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_SHELL:
-      static_cast<TopoDS_TShell*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TShell*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_SOLID:
-      static_cast<TopoDS_TSolid*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TSolid*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_COMPSOLID:
-      static_cast<TopoDS_TCompSolid*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TCompSolid*>(theTShape)->mySubShapes.Append(theChild);
       break;
     case TopAbs_COMPOUND:
-      static_cast<TopoDS_TCompound*>(theTShape)->storageAppend(theChild);
+      static_cast<TopoDS_TCompound*>(theTShape)->mySubShapes.Append(theChild);
       break;
     default:
       break; // VERTEX and SHAPE cannot have children
   }
 }
 
-//! Helper to get number of children using type-switch with non-virtual storage access
-inline int getNbChildrenByType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType)
+//==================================================================================================
+
+int TopoDS_Builder::getNbChildrenByType(const TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType)
 {
   switch (theShapeType)
   {
     case TopAbs_EDGE:
-      return static_cast<TopoDS_TEdge*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TEdge*>(theTShape)->mySubShapes.Size();
     case TopAbs_WIRE:
-      return static_cast<TopoDS_TWire*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TWire*>(theTShape)->mySubShapes.Size();
     case TopAbs_FACE:
-      return static_cast<TopoDS_TFace*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TFace*>(theTShape)->mySubShapes.Size();
     case TopAbs_SHELL:
-      return static_cast<TopoDS_TShell*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TShell*>(theTShape)->mySubShapes.Size();
     case TopAbs_SOLID:
-      return static_cast<TopoDS_TSolid*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TSolid*>(theTShape)->mySubShapes.Size();
     case TopAbs_COMPSOLID:
-      return static_cast<TopoDS_TCompSolid*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TCompSolid*>(theTShape)->mySubShapes.Size();
     case TopAbs_COMPOUND:
-      return static_cast<TopoDS_TCompound*>(theTShape)->storageSize();
+      return static_cast<const TopoDS_TCompound*>(theTShape)->mySubShapes.Size();
     default:
       return 0;
   }
 }
 
-//! Helper to get a child shape using type-switch with non-virtual storage access
-inline const TopoDS_Shape& getChildByType(TopoDS_TShape*   theTShape,
-                                          TopAbs_ShapeEnum theShapeType,
-                                          int              theIndex)
+//==================================================================================================
+
+const TopoDS_Shape& TopoDS_Builder::getChildByType(const TopoDS_TShape* theTShape,
+                                                   TopAbs_ShapeEnum     theShapeType,
+                                                   int                  theIndex)
 {
   switch (theShapeType)
   {
     case TopAbs_EDGE:
-      return static_cast<TopoDS_TEdge*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TEdge*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_WIRE:
-      return static_cast<TopoDS_TWire*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TWire*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_FACE:
-      return static_cast<TopoDS_TFace*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TFace*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_SHELL:
-      return static_cast<TopoDS_TShell*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TShell*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_SOLID:
-      return static_cast<TopoDS_TSolid*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TSolid*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_COMPSOLID:
-      return static_cast<TopoDS_TCompSolid*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TCompSolid*>(theTShape)->mySubShapes.Value(theIndex);
     case TopAbs_COMPOUND:
-      return static_cast<TopoDS_TCompound*>(theTShape)->storageValue(theIndex);
+      return static_cast<const TopoDS_TCompound*>(theTShape)->mySubShapes.Value(theIndex);
     default:
       // TopAbs_VERTEX and TopAbs_SHAPE have no children - this is a programming error
       throw Standard_OutOfRange("TopoDS_Builder::getChildByType - shape type has no children");
   }
 }
 
-//! Helper to remove a child shape using type-switch with non-virtual storage access
-inline void removeChildByType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType, int theIndex)
+//==================================================================================================
+
+namespace
+{
+//! Helper to remove element from dynamic array using swap-and-pop
+template <typename T>
+inline void swapAndPop(NCollection_DynamicArray<T>& theArray, int theIndex)
+{
+  const int aSize = theArray.Size();
+  if (theIndex < aSize - 1)
+  {
+    // Swap with last element
+    theArray.ChangeValue(theIndex) = std::move(theArray.ChangeValue(aSize - 1));
+  }
+  theArray.EraseLast();
+}
+} // namespace
+
+//==================================================================================================
+
+void TopoDS_Builder::removeChildByType(TopoDS_TShape*   theTShape,
+                                       TopAbs_ShapeEnum theShapeType,
+                                       int              theIndex)
 {
   switch (theShapeType)
   {
     case TopAbs_EDGE:
-      static_cast<TopoDS_TEdge*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TEdge*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_WIRE:
-      static_cast<TopoDS_TWire*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TWire*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_FACE:
-      static_cast<TopoDS_TFace*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TFace*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_SHELL:
-      static_cast<TopoDS_TShell*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TShell*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_SOLID:
-      static_cast<TopoDS_TSolid*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TSolid*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_COMPSOLID:
-      static_cast<TopoDS_TCompSolid*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TCompSolid*>(theTShape)->mySubShapes, theIndex);
       break;
     case TopAbs_COMPOUND:
-      static_cast<TopoDS_TCompound*>(theTShape)->storageRemove(theIndex);
+      swapAndPop(static_cast<TopoDS_TCompound*>(theTShape)->mySubShapes, theIndex);
       break;
     default:
       break;
   }
 }
-} // namespace
 
 //==================================================================================================
 
