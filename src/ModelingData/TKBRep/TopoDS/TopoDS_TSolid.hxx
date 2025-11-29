@@ -36,10 +36,10 @@ class TopoDS_TSolid : public TopoDS_TShape
 {
 public:
   //! Local storage capacity for shells (optimized for simple solids)
-  static constexpr size_t LocalCapacity = 1;
+  static constexpr size_t LocalCapacity = 2;
 
   //! Bucket size for dynamic array overflow
-  static constexpr int BucketSize = 4;
+  static constexpr int BucketSize = 8;
 
   //! Creates an empty TSolid.
   TopoDS_TSolid()

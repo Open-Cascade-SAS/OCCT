@@ -38,7 +38,7 @@ public:
   static constexpr size_t LocalCapacity = 2;
 
   //! Bucket size for dynamic array overflow
-  static constexpr int BucketSize = 4;
+  static constexpr int BucketSize = 8;
 
   //! Returns the number of vertex sub-shapes.
   int NbChildren() const Standard_OVERRIDE { return storageSize(); }

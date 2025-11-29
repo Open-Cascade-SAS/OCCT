@@ -28,18 +28,24 @@ DEFINE_STANDARD_HANDLE(TopoDS_TCompound, TopoDS_TShape)
 
 //! A TCompound is an all-purpose set of Shapes.
 //!
-//! A compound can contain any type of shape.
-//! Uses dynamic array storage with bucket size 8.
+//! A compound can contain any type of shape (assemblies, operation results, etc.).
+//! Uses local storage for up to 2 shapes, with dynamic overflow (bucket size 16).
 class TopoDS_TCompound : public TopoDS_TShape
 {
 public:
-  //! Bucket size for dynamic array
-  static constexpr int BucketSize = 8;
+  //! Local storage capacity for shapes.
+  //! Many compounds are small (1-2 shapes from boolean operations).
+  //! Memory: 2×24=48 bytes vs 4×24=96 bytes saves 48 bytes per compound.
+  static constexpr size_t LocalCapacity = 2;
+
+  //! Bucket size for dynamic array overflow.
+  //! Large assemblies will allocate multiple buckets anyway.
+  static constexpr int BucketSize = 16;
 
   //! Creates an empty TCompound.
   TopoDS_TCompound()
       : TopoDS_TShape(TopAbs_COMPOUND),
-        myShapes(BucketSize)
+        myShapes()
   {
     Orientable(false);
   }
@@ -83,8 +89,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompound, TopoDS_TShape)
 
 private:
-  //! Storage for all sub-shapes using dynamic array.
-  TopoDS_DynamicShapeStorage<BucketSize> myShapes;
+  //! Storage for all sub-shapes.
+  //! Uses local storage for up to 2 shapes (common case),
+  //! switches to dynamic array for overflow.
+  TopoDS_VariantShapeStorage<LocalCapacity, BucketSize> myShapes;
 };
 
 #endif // _TopoDS_TCompound_HeaderFile

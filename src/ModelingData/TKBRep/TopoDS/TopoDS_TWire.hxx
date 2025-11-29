@@ -29,17 +29,20 @@ DEFINE_STANDARD_HANDLE(TopoDS_TWire, TopoDS_TShape)
 //! A set of edges connected by their vertices.
 //!
 //! A wire can have many edges (commonly 3-100+).
-//! Uses dynamic array storage with bucket size 8.
+//! Uses local storage for up to 2 edges, with dynamic overflow (bucket size 8).
 class TopoDS_TWire : public TopoDS_TShape
 {
 public:
-  //! Bucket size for dynamic array
-  static constexpr int BucketSize = 8;
+  //! Local storage capacity for edges (covers simple polygons like rectangles)
+  static constexpr size_t LocalCapacity = 4;
+
+  //! Bucket size for dynamic array overflow (wires often have many edges)
+  static constexpr int BucketSize = 16;
 
   //! Creates an empty TWire.
   TopoDS_TWire()
       : TopoDS_TShape(TopAbs_WIRE),
-        myEdges(BucketSize)
+        myEdges()
   {
   }
 
@@ -82,8 +85,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopoDS_TWire, TopoDS_TShape)
 
 private:
-  //! Storage for edge sub-shapes using dynamic array.
-  TopoDS_DynamicShapeStorage<BucketSize> myEdges;
+  //! Storage for edge sub-shapes.
+  //! Uses local storage for up to 2 edges (common case),
+  //! switches to dynamic array for overflow.
+  TopoDS_VariantShapeStorage<LocalCapacity, BucketSize> myEdges;
 };
 
 #endif // _TopoDS_TWire_HeaderFile

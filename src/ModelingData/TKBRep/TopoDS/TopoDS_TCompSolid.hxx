@@ -29,17 +29,20 @@ DEFINE_STANDARD_HANDLE(TopoDS_TCompSolid, TopoDS_TShape)
 //! A set of solids connected by their faces.
 //!
 //! A compsolid contains multiple solids.
-//! Uses dynamic array storage with bucket size 4.
+//! Uses local storage for up to 2 solids, with dynamic overflow (bucket size 8).
 class TopoDS_TCompSolid : public TopoDS_TShape
 {
 public:
-  //! Bucket size for dynamic array
-  static constexpr int BucketSize = 4;
+  //! Local storage capacity for solids
+  static constexpr size_t LocalCapacity = 2;
+
+  //! Bucket size for dynamic array overflow
+  static constexpr int BucketSize = 8;
 
   //! Creates an empty TCompSolid.
   TopoDS_TCompSolid()
       : TopoDS_TShape(TopAbs_COMPSOLID),
-        mySolids(BucketSize)
+        mySolids()
   {
   }
 
@@ -82,8 +85,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
 
 private:
-  //! Storage for solid sub-shapes using dynamic array.
-  TopoDS_DynamicShapeStorage<BucketSize> mySolids;
+  //! Storage for solid sub-shapes.
+  //! Uses local storage for up to 2 solids (common case),
+  //! switches to dynamic array for overflow.
+  TopoDS_VariantShapeStorage<LocalCapacity, BucketSize> mySolids;
 };
 
 #endif // _TopoDS_TCompSolid_HeaderFile

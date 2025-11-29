@@ -28,18 +28,23 @@ DEFINE_STANDARD_HANDLE(TopoDS_TShell, TopoDS_TShape)
 
 //! A set of faces connected by their edges.
 //!
-//! A shell can have many faces (commonly 6+ for simple shapes).
-//! Uses dynamic array storage with bucket size 8.
+//! A shell can have many faces (tetrahedron=4, box=6, complex=many).
+//! Uses local storage for up to 4 faces, with dynamic overflow (bucket size 8).
 class TopoDS_TShell : public TopoDS_TShape
 {
 public:
-  //! Bucket size for dynamic array
+  //! Local storage capacity for faces (covers tetrahedron=4, prism base=5).
+  //! Box with 6 faces uses 4 local + 2 in first bucket (minor overhead).
+  //! Memory: 4×24=96 bytes vs 6×24=144 bytes saves 48 bytes per shell.
+  static constexpr size_t LocalCapacity = 4;
+
+  //! Bucket size for dynamic array overflow (shells grow moderately)
   static constexpr int BucketSize = 8;
 
   //! Creates an empty TShell.
   TopoDS_TShell()
       : TopoDS_TShape(TopAbs_SHELL),
-        myFaces(BucketSize)
+        myFaces()
   {
   }
 
@@ -82,8 +87,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopoDS_TShell, TopoDS_TShape)
 
 private:
-  //! Storage for face sub-shapes using dynamic array.
-  TopoDS_DynamicShapeStorage<BucketSize> myFaces;
+  //! Storage for face sub-shapes.
+  //! Uses local storage for up to 4 faces (tetrahedron, prism base),
+  //! switches to dynamic array for overflow.
+  TopoDS_VariantShapeStorage<LocalCapacity, BucketSize> myFaces;
 };
 
 #endif // _TopoDS_TShell_HeaderFile
