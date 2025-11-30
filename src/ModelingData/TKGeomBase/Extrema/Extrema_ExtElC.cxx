@@ -420,7 +420,63 @@ public:
   {
     const double aTolCoef = Precision::PConfusion();
 
-    // Working copies of coefficients that may be modified on retry.
+    // Check for infinite roots early: all coefficients near zero.
+    const double aSumCoef = std::abs(theCC) + std::abs(theSC) + std::abs(theC) + std::abs(theS);
+    if (aSumCoef < aTolCoef && std::abs(theCte) < aTolCoef)
+    {
+      myIsDone        = true;
+      myInfiniteRoots = true;
+      return;
+    }
+
+    // Check for no roots: only constant term is significant.
+    if (aSumCoef < aTolCoef && std::abs(theCte) >= aTolCoef)
+    {
+      myIsDone  = true;
+      myNbRoots = 0;
+      return;
+    }
+
+    // Try direct analytical solutions for simple cases.
+    if (std::abs(theCC) < aTolCoef && std::abs(theSC) < aTolCoef)
+    {
+      // Linear case: C*cos + S*sin + Cte = 0
+      // Rewrite as: A*cos(t - phi) = -Cte, where A = sqrt(C² + S²), phi = atan2(S, C)
+      const double aAmpl = std::sqrt(theC * theC + theS * theS);
+      if (aAmpl < aTolCoef)
+      {
+        // Degenerate: only constant term.
+        myIsDone        = (std::abs(theCte) < aTolCoef);
+        myInfiniteRoots = myIsDone;
+        return;
+      }
+
+      const double aRatio = -theCte / aAmpl;
+      if (std::abs(aRatio) > 1.0 + aTolCoef)
+      {
+        // No real roots: |Cte/A| > 1.
+        myIsDone  = true;
+        myNbRoots = 0;
+        return;
+      }
+
+      // Roots: t = phi ± acos(-Cte/A).
+      const double aPhi      = std::atan2(theS, theC);
+      const double aClampedR = std::clamp(aRatio, -1.0, 1.0);
+      const double aArcCos   = std::acos(aClampedR);
+
+      addRootInRange(aPhi + aArcCos, theBinf, theBsup);
+      if (std::abs(aArcCos) > aTolCoef && std::abs(aArcCos - M_PI) > aTolCoef)
+      {
+        addRootInRange(aPhi - aArcCos, theBinf, theBsup);
+      }
+
+      myIsDone = true;
+      sortRoots();
+      return;
+    }
+
+    // General case: use math_TrigonometricFunctionRoots with retry mechanism.
     double aCC  = theCC;
     double aSC  = theSC;
     double aC   = theC;
@@ -445,7 +501,7 @@ public:
       }
       else
       {
-        // Try to set very small coefficients to zero.
+        // Retry: set small coefficients to zero.
         if (std::abs(theCC) < aTolCoef)
         {
           aCC = 0.0;
@@ -526,6 +582,24 @@ public:
   }
 
 private:
+  //! Adds a root to the array if it falls within the specified range.
+  void addRootInRange(const double theRoot, const double theBinf, const double theBsup)
+  {
+    if (myNbRoots >= 4)
+    {
+      return;
+    }
+
+    const double aRoot = normalizeAngle(theRoot);
+    if (aRoot >= theBinf && aRoot <= theBsup)
+    {
+      myRoots[myNbRoots++] = aRoot;
+    }
+  }
+
+  //! Sorts the roots in ascending order.
+  void sortRoots() { std::sort(myRoots, myRoots + myNbRoots); }
+
   //! Processes roots from math_TrigonometricFunctionRoots solver.
   void processRoots(const math_TrigonometricFunctionRoots& theTrigRoots,
                     const double                           theCC,
@@ -537,18 +611,9 @@ private:
   {
     myNbRoots = theTrigRoots.NbSolutions();
 
-    // Normalize roots to [0, 2*PI] range.
     for (int i = 0; i < myNbRoots; ++i)
     {
-      myRoots[i] = theTrigRoots.Value(i + 1);
-      if (myRoots[i] < 0.0)
-      {
-        myRoots[i] += THE_TWO_PI;
-      }
-      if (myRoots[i] > THE_TWO_PI)
-      {
-        myRoots[i] -= THE_TWO_PI;
-      }
+      myRoots[i] = normalizeAngle(theTrigRoots.Value(i + 1));
     }
 
     // Calculate precision based on coefficient magnitudes.
@@ -556,22 +621,16 @@ private:
       {std::abs(theCC), std::abs(theSC), std::abs(theC), std::abs(theS), std::abs(theCte)});
     const double aPrecision = std::max(THE_TRIG_PRECISION_BASE, THE_TRIG_PRECISION_MULT * aMaxCoef);
 
-    // Validate roots and mark invalid ones.
-    const int aSvNbRoots = myNbRoots;
-    for (int i = 0; i < aSvNbRoots; ++i)
-    {
-      const double aCos = std::cos(myRoots[i]);
-      const double aSin = std::sin(myRoots[i]);
+    // Partition valid roots to the front using residual check.
+    auto aEnd = std::partition(myRoots, myRoots + myNbRoots, [&](double theRoot) {
+      const double aCos = std::cos(theRoot);
+      const double aSin = std::sin(theRoot);
       const double aY   = aCos * (theCC * aCos + 2.0 * theSC * aSin + theC) + theS * aSin + theCte;
-      if (std::abs(aY) > aPrecision)
-      {
-        --myNbRoots;
-        myRoots[i] = 1000.0; // Mark as invalid for sorting.
-      }
-    }
+      return std::abs(aY) <= aPrecision;
+    });
 
-    // Sort roots using std::sort.
-    std::sort(myRoots, myRoots + aSvNbRoots);
+    myNbRoots = static_cast<int>(aEnd - myRoots);
+    sortRoots();
 
     // Detect case when polynomial is essentially constant.
     myInfiniteRoots = false;

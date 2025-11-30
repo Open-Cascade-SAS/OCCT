@@ -18,7 +18,9 @@
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
+#include <Precision.hxx>
 
 // Test: Two coplanar circles in the XY plane - not touching
 TEST(Extrema_ExtElC_Test, CoplanarCircles_NotTouching)
@@ -710,10 +712,10 @@ TEST(Extrema_ExtElC_Test, CircleThroughCenter_Perpendicular)
   // and C1 has radius 10, so C2 can get as close as touching C1 at the origin...
   // Actually C2 passes through origin, but origin is inside C1, not on C1.
   // The closest point on C2 to C1 is where C2 intersects the XY plane: (5, 0, 0) and (-5, 0, 0)
-  // But wait, C2 at center (0,0,5) with radius 5 in XZ plane passes through (5,0,5), (-5,0,5), (0,0,10), (0,0,0)
-  // So C2 passes through origin (0,0,0) which is the center of C1
-  // The closest point on C1 to origin is any point on C1 (all at distance 10)
-  // The closest point on C2 to C1... let's compute
+  // But wait, C2 at center (0,0,5) with radius 5 in XZ plane passes through (5,0,5), (-5,0,5),
+  // (0,0,10), (0,0,0) So C2 passes through origin (0,0,0) which is the center of C1 The closest
+  // point on C1 to origin is any point on C1 (all at distance 10) The closest point on C2 to C1...
+  // let's compute
 
   if (anExtElC.NbExt() > 0)
   {
@@ -812,4 +814,196 @@ TEST(Extrema_ExtElC_Test, CircleThroughCenter_DifferentRadius)
   //   - At v=0: (0, 5, 0) -> distance to (0, 10, 0) on C1 = 5
   // Either way, minimum should be 5.0
   EXPECT_NEAR(sqrt(aMinSqDist), 5.0, 1e-6);
+}
+
+// ============================================================================
+// Tests for analytical/degenerate cases in trigonometric root solver
+// ============================================================================
+
+// Test: Line perpendicular to circle plane (linear trigonometric equation)
+// When line direction is parallel to circle normal, quadratic terms vanish.
+TEST(Extrema_ExtElC_Test, LinePerpendicularToCircle_LinearCase)
+{
+  // Circle in XY plane
+  gp_Ax2  aCircleAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aCircle(aCircleAxis, 5.0);
+
+  // Line perpendicular to circle (along Z axis), offset from center
+  gp_Lin aLine(gp_Pnt(3.0, 0.0, 10.0), gp_Dir(0.0, 0.0, 1.0));
+
+  Extrema_ExtElC anExtElC(aLine, aCircle, Precision::Confusion());
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  for (int i = 2; i <= anExtElC.NbExt(); ++i)
+  {
+    double aSqDist = anExtElC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+    {
+      aMinSqDist = aSqDist;
+    }
+  }
+
+  // Closest point on circle to line: (3, 0, 0) is at distance 2 from (5, 0, 0)
+  // But actual closest is (5, 0, 0) projected onto line at (3, 0, z)
+  // Distance = sqrt((5-3)^2 + 0 + 0) = 2
+  EXPECT_NEAR(sqrt(aMinSqDist), 2.0, 1e-6);
+}
+
+// Test: Line through circle center perpendicular to plane (degenerate)
+TEST(Extrema_ExtElC_Test, LineThroughCenter_PerpendicularToPlane)
+{
+  gp_Ax2  aCircleAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aCircle(aCircleAxis, 5.0);
+
+  // Line through circle center, perpendicular to plane
+  gp_Lin aLine(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+
+  Extrema_ExtElC anExtElC(aLine, aCircle, Precision::Confusion());
+
+  ASSERT_TRUE(anExtElC.IsDone());
+
+  // All points on circle are equidistant from line (distance = radius)
+  // This triggers the "infinite roots" or "parallel" case
+  if (anExtElC.NbExt() > 0)
+  {
+    double aMinSqDist = anExtElC.SquareDistance(1);
+    EXPECT_NEAR(sqrt(aMinSqDist), 5.0, 1e-6);
+  }
+}
+
+// Test: Line at 45 degrees to circle plane (mixed coefficients)
+TEST(Extrema_ExtElC_Test, LineAt45Degrees_MixedCoefficients)
+{
+  gp_Ax2  aCircleAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aCircle(aCircleAxis, 5.0);
+
+  // Line at 45 degrees in XZ plane (gp_Dir auto-normalizes)
+  constexpr double aInvSqrt2 = 0.7071067811865476;
+  gp_Lin           aLine(gp_Pnt(10.0, 0.0, 5.0), gp_Dir(aInvSqrt2, 0.0, aInvSqrt2));
+
+  Extrema_ExtElC anExtElC(aLine, aCircle, Precision::Confusion());
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  // Just verify it completes without error and finds extrema
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  EXPECT_GE(aMinSqDist, 0.0);
+}
+
+// Test: Two circles with same center but different planes (pure linear case)
+TEST(Extrema_ExtElC_Test, SameCenter_DifferentPlanes_LinearCase)
+{
+  // Circle in XY plane
+  gp_Ax2  anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aC1(anAxis1, 5.0);
+
+  // Circle in XZ plane with same center
+  gp_Ax2  anAxis2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  gp_Circ aC2(anAxis2, 5.0);
+
+  Extrema_ExtElC anExtElC(aC1, aC2);
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  for (int i = 2; i <= anExtElC.NbExt(); ++i)
+  {
+    double aSqDist = anExtElC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+    {
+      aMinSqDist = aSqDist;
+    }
+  }
+
+  // Circles intersect at (5, 0, 0) and (-5, 0, 0)
+  EXPECT_NEAR(sqrt(aMinSqDist), 0.0, 1e-6);
+}
+
+// Test: Circle with very small coefficients (near-degenerate)
+TEST(Extrema_ExtElC_Test, NearDegenerateCoefficients)
+{
+  // Two nearly parallel circles with tiny angle (gp_Dir auto-normalizes)
+  gp_Ax2 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2 anAxis2(gp_Pnt(10.0, 0.0, 0.0), gp_Dir(1e-10, 0.0, 1.0));
+
+  gp_Circ aC1(anAxis1, 5.0);
+  gp_Circ aC2(anAxis2, 5.0);
+
+  Extrema_ExtElC anExtElC(aC1, aC2);
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  for (int i = 2; i <= anExtElC.NbExt(); ++i)
+  {
+    double aSqDist = anExtElC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+    {
+      aMinSqDist = aSqDist;
+    }
+  }
+
+  // Distance should be approximately 0 (circles nearly touch)
+  EXPECT_NEAR(sqrt(aMinSqDist), 0.0, 1e-5);
+}
+
+// Test: Line in circle plane but not intersecting (linear in one variable)
+TEST(Extrema_ExtElC_Test, LineInPlane_NotIntersecting)
+{
+  gp_Ax2  aCircleAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aCircle(aCircleAxis, 5.0);
+
+  // Line in XY plane, parallel to X axis, at Y=10
+  gp_Lin aLine(gp_Pnt(0.0, 10.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+
+  Extrema_ExtElC anExtElC(aLine, aCircle, Precision::Confusion());
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  for (int i = 2; i <= anExtElC.NbExt(); ++i)
+  {
+    double aSqDist = anExtElC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+    {
+      aMinSqDist = aSqDist;
+    }
+  }
+
+  // Closest point on circle: (0, 5, 0), distance to line at Y=10 is 5
+  EXPECT_NEAR(sqrt(aMinSqDist), 5.0, 1e-6);
+}
+
+// Test: Line tangent to circle (zero minimum distance)
+TEST(Extrema_ExtElC_Test, LineTangentToCircle)
+{
+  gp_Ax2  aCircleAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Circ aCircle(aCircleAxis, 5.0);
+
+  // Line tangent to circle at (5, 0, 0)
+  gp_Lin aLine(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+
+  Extrema_ExtElC anExtElC(aLine, aCircle, Precision::Confusion());
+
+  ASSERT_TRUE(anExtElC.IsDone());
+  ASSERT_GT(anExtElC.NbExt(), 0);
+
+  double aMinSqDist = anExtElC.SquareDistance(1);
+  for (int i = 2; i <= anExtElC.NbExt(); ++i)
+  {
+    double aSqDist = anExtElC.SquareDistance(i);
+    if (aSqDist < aMinSqDist)
+    {
+      aMinSqDist = aSqDist;
+    }
+  }
+
+  EXPECT_NEAR(sqrt(aMinSqDist), 0.0, 1e-6);
 }
