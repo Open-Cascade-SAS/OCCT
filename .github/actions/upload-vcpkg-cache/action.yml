@@ -9,6 +9,10 @@ inputs:
     description: 'Build directory containing vcpkg_installed'
     required: false
     default: 'build'
+  include-debug:
+    description: 'Include debug libraries in the cache'
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
@@ -17,8 +21,12 @@ runs:
     - name: Create vcpkg tar archive
       run: |
         cd ${{ inputs.build-directory }}
+        EXCLUDE_DEBUG=""
+        if [ "${{ inputs.include-debug }}" != "true" ]; then
+          EXCLUDE_DEBUG="--exclude=vcpkg_installed/*/debug"
+        fi
         tar -czf vcpkg-dependencies.tar.gz \
-          --exclude='vcpkg_installed/*/debug' \
+          $EXCLUDE_DEBUG \
           --exclude='vcpkg_installed/**/*.pdb' \
           --exclude='vcpkg_installed/**/*.lib' \
           ./vcpkg_installed/

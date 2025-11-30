@@ -55,6 +55,7 @@ runs:
       with:
         artifact-name: ${{ inputs.artifact-name }}-cache
         build-directory: build
+        include-debug: ${{ inputs.cmake-build-type == 'Debug' && 'true' || 'false' }}
 
     - name: Build OCCT (Windows)
       if: ${{ inputs.platform == 'windows' }}

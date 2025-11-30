@@ -66,14 +66,19 @@ runs:
       run: |
         vcpkg_lib="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib"
         vcpkg_manual="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/lib/manual-link"
-        
+        vcpkg_debug_lib="${{ inputs.build-directory }}/vcpkg_installed/arm64-osx-dynamic/debug/lib"
+
         # Copy manual-link libraries to main lib directory for runtime access
         if [ -d "$vcpkg_manual" ]; then
           echo "Copying manual-link libraries to main lib directory"
           cp -f "$vcpkg_manual"/* "$vcpkg_lib/" 2>/dev/null || true
         fi
-        
-        # Set library search paths
-        echo "DYLD_FALLBACK_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
-        echo "DYLD_LIBRARY_PATH=$vcpkg_lib:$vcpkg_manual:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+
+        # Set library search paths (include debug paths if they exist)
+        LIB_PATHS="$vcpkg_lib:$vcpkg_manual"
+        if [ -d "$vcpkg_debug_lib" ]; then
+          LIB_PATHS="$vcpkg_debug_lib:$LIB_PATHS"
+        fi
+        echo "DYLD_FALLBACK_LIBRARY_PATH=$LIB_PATHS:$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "DYLD_LIBRARY_PATH=$LIB_PATHS:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
       shell: bash
