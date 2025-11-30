@@ -67,8 +67,8 @@ if (MSVC)
 
     # Aggressive inlining (Ob3 available in VS 2019 16.0+)
     if (MSVC_VERSION GREATER_EQUAL 1920)
-      set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ob3")
-      set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /Ob3")
+      string (REGEX REPLACE "/Ob[0-2]" "/Ob3" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+      string (REGEX REPLACE "/Ob[0-2]" "/Ob3" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
     endif()
 
     # Link-Time Code Generation (LTCG) is required for Whole Program Optimization (GL)
