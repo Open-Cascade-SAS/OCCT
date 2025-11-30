@@ -5,30 +5,23 @@ if(FLAGS_ALREADY_INCLUDED)
 endif()
 set(FLAGS_ALREADY_INCLUDED 1)
 
-# force option /fp:precise for Visual Studio projects.
+# Force option /fp:precise for Visual Studio projects.
 #
 # Note that while this option is default for MSVC compiler, Visual Studio
 # project can be switched later to use Intel Compiler (ICC).
-# Enforcing -fp:precise ensures that in such case ICC will use correct
-# option instead of its default -fp:fast which is harmful for OCCT.
+# Enforcing /fp:precise ensures that in such case ICC will use correct
+# option instead of its default /fp:fast which is harmful for OCCT.
 if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise")
   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /fp:precise")
-endif()
-
-# add SSE2 option for old MSVC compilers (VS 2005 - 2010, 32 bit only)
-if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-  if (MSVC AND ((MSVC_VERSION EQUAL 1400) OR (MSVC_VERSION EQUAL 1500) OR (MSVC_VERSION EQUAL 1600)))
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
-    set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /arch:SSE2")
-  endif()
-endif()
-
-if (MSVC)
-  # suppress C26812 on VS2019/C++20 (prefer 'enum class' over 'enum')
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise /wd26812")
-  # suppress warning on using portable non-secure functions in favor of non-portable secure ones
-  # prevent min() and max() macros from Windows.h
+  # Correct __cplusplus macro value for C++17 detection
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+  # Strict C++ conformance mode for better standards compliance
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+  # Suppress C26812 warning (prefer 'enum class' over 'enum')
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd26812")
+  # Suppress warnings on using portable non-secure functions in favor of non-portable secure ones
+  # Prevent min() and max() macros from Windows.h
   add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DNOMINMAX)
 else()
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -56,7 +49,7 @@ endif()
 
 if (MSVC)
   if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
-    # string pooling (GF), function-level linking (Gy)
+    # String pooling (GF), function-level linking (Gy)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GF /Gy")
     set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /GF /Gy")
 
@@ -64,15 +57,30 @@ if (MSVC)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ot /Oy")
     set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /Ot /Oy")
 
-    # Whole Program Optimisation (GL), Enable intrinsic functions (Oi)
+    # Whole Program Optimization (GL), Enable intrinsic functions (Oi)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL /Oi")
     set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /GL /Oi")
 
-    # Link-Time Code Generation(LTCG) is requared for Whole Program Optimisation(GL)
+    # Remove unreferenced COMDAT sections
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zc:inline")
+    set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /Zc:inline")
+
+    # Aggressive inlining (Ob3 available in VS 2019 16.0+)
+    if (MSVC_VERSION GREATER_EQUAL 1920)
+      string (REGEX REPLACE "/Ob[0-2]" "/Ob3" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+      string (REGEX REPLACE "/Ob[0-2]" "/Ob3" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+    endif()
+
+    # Link-Time Code Generation (LTCG) is required for Whole Program Optimization (GL)
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
     set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
     set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} /LTCG")
+
+    # Linker optimizations: eliminate unreferenced functions (OPT:REF), fold identical COMDATs (OPT:ICF)
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
+    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF")
   endif()
   if (BUILD_FORCE_RelWithDebInfo)
     # generate debug info (Zi), inline expansion level (Ob1)
@@ -123,8 +131,8 @@ if (IS_DEBUG_C)
   message (STATUS "Info: -DDEBUG has been removed from CMAKE_C_FLAGS_DEBUG")
   string (REGEX REPLACE "-DDEBUG" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 endif()
-# enable parallel compilation on MSVC 9 and above
-if (MSVC AND (MSVC_VERSION GREATER 1400))
+# enable parallel compilation on MSVC
+if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
@@ -143,39 +151,63 @@ if (MSVC)
   else()
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
-elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]"))
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
   if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
-    # /Ot (favor speed over size) is similar to -O2 or -O3 in GCC/Clang.
-    # /Oy (omit frame pointers) is similar to -fomit-frame-pointer in GCC/Clang.
-    # /GL (whole program optimization) is similar to -flto (Link Time Optimization) in GCC/Clang.
-    # /GF (eliminate duplicate strings) doesn't have a direct equivalent in GCC/Clang, but the compilers do string pooling automatically.
-    # /Gy (enable function-level linking) is similar to -ffunction-sections in GCC/Clang.
+    # Aggressive optimization level
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -fomit-frame-pointer")
-    
-    # Apply LTO optimization on all platforms
+
+    # Link-Time Optimization (LTO) for whole program optimization
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -flto")
-    
-    # Apply function sections only on non-macOS platforms
+
+    # Apply function/data sections only on non-macOS platforms for better dead code elimination
     if (NOT APPLE)
-      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffunction-sections")
-      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -ffunction-sections")
+      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffunction-sections -fdata-sections")
+      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -ffunction-sections -fdata-sections")
     endif()
 
-    # Link-Time Code Generation (LTCG) is required for Whole Program Optimization
+    # Avoid PLT indirection for faster function calls in shared libraries (non-Windows)
+    if (NOT WIN32)
+      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-plt")
+      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-plt")
+    endif()
+
+    # Better optimization for shared libraries by assuming no symbol interposition
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0)
+      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-semantic-interposition")
+      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-semantic-interposition")
+    endif()
+
+    # Link-Time Optimization for linker
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto")
     set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -flto")
-    set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} -flto")
     set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -flto")
-    
-    # Add garbage collection sections only on Linux (not on macOS or Windows)
+
+    # Linux-specific linker optimizations
     if (NOT WIN32 AND NOT APPLE)
+      # Dead code elimination
+      set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,--gc-sections")
       set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,--gc-sections")
-      set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} -Wl,--gc-sections")
       set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,--gc-sections")
+      # Only link actually needed libraries
+      set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
+      set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
+      set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
+      # Security hardening: Full RELRO
+      set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
+      set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
+      set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
+    endif()
+
+    # macOS-specific linker optimizations
+    if (APPLE)
+      # Dead code elimination and strip local symbols
+      set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-dead_strip")
+      set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-dead_strip,-x")
+      set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,-dead_strip,-x")
     endif()
   endif()
   if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
@@ -192,11 +224,11 @@ endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
   if (APPLE)
-    # CLang can be used with both libstdc++ and libc++, however on OS X libstdc++ is outdated.
+    # Clang can be used with both libstdc++ and libc++, however on macOS libstdc++ is outdated.
     set (CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
   endif()
-  if (NOT WIN32)
-    # Optimize size of binaries
+  if (NOT WIN32 AND NOT APPLE)
+    # Strip symbols to optimize size of binaries
     set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
   endif()
 endif()
@@ -209,8 +241,8 @@ if(MINGW)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wattributes")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wattributes")
 endif()
-if (CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
-  # Optimize size of binaries
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE)
+  # Optimize size of binaries by stripping symbols
   set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
   set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
 endif()
