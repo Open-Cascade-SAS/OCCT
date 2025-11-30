@@ -30,48 +30,468 @@
 #include <gp_Pnt.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <math_DirectPolynomialRoots.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_Matrix.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
+#include <math_Vector.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
+
+#include <algorithm>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-static void RefineDir(gp_Dir& aDir);
+namespace
+{
 
-//=======================================================================
-// class    : ExtremaExtElC_TrigonometricRoots
-// purpose  :
-//==  Classe Interne (Donne des racines classees d un polynome trigo)
-//==  Code duplique avec IntAna_IntQuadQuad.cxx (lbr le 26 mars 98)
-//==  Solution fiable aux problemes de coefficients proches de 0
-//==  avec essai de rattrapage si coeff<1.e-10 (jct le 27 avril 98)
-//=======================================================================
+//! Refines direction vector to align with coordinate axes when very close.
+void RefineDir(gp_Dir& theDir)
+{
+  Standard_Integer    i, j, k;
+  Standard_Real       aCx[3];
+  const Standard_Real aEps = RealEpsilon();
+
+  theDir.Coord(aCx[0], aCx[1], aCx[2]);
+
+  for (i = 0; i < 3; ++i)
+  {
+    const Standard_Real aOne = (aCx[i] > 0.) ? 1. : -1.;
+    const Standard_Real aX1  = aOne - aEps;
+    const Standard_Real aX2  = aOne + aEps;
+
+    if (aCx[i] > aX1 && aCx[i] < aX2)
+    {
+      j      = (i + 1) % 3;
+      k      = (i + 2) % 3;
+      aCx[i] = aOne;
+      aCx[j] = 0.;
+      aCx[k] = 0.;
+      theDir.SetCoord(aCx[0], aCx[1], aCx[2]);
+      return;
+    }
+  }
+}
+
+//! Function class for computing extrema between two circles.
+//! The extrema conditions are:
+//!   F1 = D · T1 = 0 (distance vector perpendicular to tangent of C1)
+//!   F2 = D · T2 = 0 (distance vector perpendicular to tangent of C2)
+//! where D = P2 - P1, and T1, T2 are tangent vectors.
+class Extrema_FuncExtCircCirc : public math_FunctionSetWithDerivatives
+{
+public:
+  //! Constructor with two circles.
+  Extrema_FuncExtCircCirc(const gp_Circ& theC1, const gp_Circ& theC2)
+      : myO1(theC1.Location()),
+        myO2(theC2.Location()),
+        myX1(theC1.XAxis().Direction()),
+        myY1(theC1.YAxis().Direction()),
+        myX2(theC2.XAxis().Direction()),
+        myY2(theC2.YAxis().Direction()),
+        myR1(theC1.Radius()),
+        myR2(theC2.Radius())
+  {
+    gp_Vec aV(myO1, myO2);
+    myVx1 = aV.Dot(myX1);
+    myVy1 = aV.Dot(myY1);
+    myVx2 = aV.Dot(myX2);
+    myVy2 = aV.Dot(myY2);
+    myA11 = myX1.Dot(myX2);
+    myA12 = myX1.Dot(myY2);
+    myA21 = myY1.Dot(myX2);
+    myA22 = myY1.Dot(myY2);
+  }
+
+  Standard_Integer NbVariables() const override { return 2; }
+
+  Standard_Integer NbEquations() const override { return 2; }
+
+  Standard_Boolean Value(const math_Vector& theUV, math_Vector& theF) override
+  {
+    const Standard_Real u    = theUV(1);
+    const Standard_Real v    = theUV(2);
+    const Standard_Real cosU = std::cos(u);
+    const Standard_Real sinU = std::sin(u);
+    const Standard_Real cosV = std::cos(v);
+    const Standard_Real sinV = std::sin(v);
+
+    const Standard_Real aVT1 = -sinU * myVx1 + cosU * myVy1;
+    const Standard_Real aP2T1 =
+      (cosV * myA11 + sinV * myA12) * (-sinU) + (cosV * myA21 + sinV * myA22) * cosU;
+    theF(1) = aVT1 + myR2 * aP2T1;
+
+    const Standard_Real aVT2 = -sinV * myVx2 + cosV * myVy2;
+    const Standard_Real aP1T2 =
+      (cosU * myA11 + sinU * myA21) * (-sinV) + (cosU * myA12 + sinU * myA22) * cosV;
+    theF(2) = aVT2 - myR1 * aP1T2;
+
+    return Standard_True;
+  }
+
+  Standard_Boolean Derivatives(const math_Vector& theUV, math_Matrix& theD) override
+  {
+    const Standard_Real u    = theUV(1);
+    const Standard_Real v    = theUV(2);
+    const Standard_Real cosU = std::cos(u);
+    const Standard_Real sinU = std::sin(u);
+    const Standard_Real cosV = std::cos(v);
+    const Standard_Real sinV = std::sin(v);
+
+    theD(1, 1) =
+      -cosU * myVx1 - sinU * myVy1
+      + myR2 * ((cosV * myA11 + sinV * myA12) * (-cosU) + (cosV * myA21 + sinV * myA22) * (-sinU));
+    theD(1, 2) =
+      myR2 * ((-sinV * myA11 + cosV * myA12) * (-sinU) + (-sinV * myA21 + cosV * myA22) * cosU);
+    theD(2, 1) =
+      -myR1 * ((-sinU * myA11 + cosU * myA21) * (-sinV) + (-sinU * myA12 + cosU * myA22) * cosV);
+    theD(2, 2) =
+      -cosV * myVx2 - sinV * myVy2
+      - myR1 * ((cosU * myA11 + sinU * myA21) * (-cosV) + (cosU * myA12 + sinU * myA22) * (-sinV));
+
+    return Standard_True;
+  }
+
+  Standard_Boolean Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theD) override
+  {
+    return Value(theUV, theF) && Derivatives(theUV, theD);
+  }
+
+  //! Compute points on circles at parameters u, v.
+  void Points(const Standard_Real theU,
+              const Standard_Real theV,
+              gp_Pnt&             theP1,
+              gp_Pnt&             theP2) const
+  {
+    const Standard_Real cosU = std::cos(theU);
+    const Standard_Real sinU = std::sin(theU);
+    const Standard_Real cosV = std::cos(theV);
+    const Standard_Real sinV = std::sin(theV);
+    theP1 = gp_Pnt(myO1.XYZ() + myR1 * cosU * myX1.XYZ() + myR1 * sinU * myY1.XYZ());
+    theP2 = gp_Pnt(myO2.XYZ() + myR2 * cosV * myX2.XYZ() + myR2 * sinV * myY2.XYZ());
+  }
+
+private:
+  gp_Pnt        myO1, myO2;
+  gp_Dir        myX1, myY1, myX2, myY2;
+  Standard_Real myR1, myR2;
+  Standard_Real myVx1, myVy1, myVx2, myVy2;
+  Standard_Real myA11, myA12, myA21, myA22;
+};
+
+//! Computes extrema between two non-coplanar circles using math_FunctionSetRoot.
+//! @param[in] theC1 First circle
+//! @param[in] theC2 Second circle
+//! @param[out] theNbExt Number of extrema found
+//! @param[out] theSqDist Array of squared distances
+//! @param[out] thePoints Array of extrema point pairs
+//! @return True if at least one extremum was found
+Standard_Boolean computeNonCoplanarCircleExtrema(const gp_Circ&    theC1,
+                                                 const gp_Circ&    theC2,
+                                                 Standard_Integer& theNbExt,
+                                                 Standard_Real*    theSqDist,
+                                                 Extrema_POnCurv   thePoints[][2])
+{
+  theNbExt = 0;
+
+  Extrema_FuncExtCircCirc aFunc(theC1, theC2);
+
+  math_Vector aTol(1, 2, Precision::PConfusion());
+  math_Vector aInfBound(1, 2, 0.0);
+  math_Vector aSupBound(1, 2, 2.0 * M_PI);
+
+  const Standard_Integer aNbSamples = 8;
+  const Standard_Real    aDelta     = 2.0 * M_PI / aNbSamples;
+
+  struct ExtremumCandidate
+  {
+    Standard_Real u;
+    Standard_Real v;
+    Standard_Real sqDist;
+  };
+
+  NCollection_Vector<ExtremumCandidate> aResults;
+
+  // Lambda to try a starting point and add result if valid
+  auto tryStartingPoint = [&](const Standard_Real theU, const Standard_Real theV) {
+    math_Vector aStart(1, 2);
+    aStart(1) = theU;
+    aStart(2) = theV;
+
+    math_FunctionSetRoot aSolver(aFunc, aTol, 30);
+    aSolver.Perform(aFunc, aStart, aInfBound, aSupBound);
+
+    if (aSolver.IsDone())
+    {
+      const math_Vector& aRoot = aSolver.Root();
+      Standard_Real      u     = aRoot(1);
+      Standard_Real      v     = aRoot(2);
+
+      while (u < 0.0)
+        u += 2.0 * M_PI;
+      while (u >= 2.0 * M_PI)
+        u -= 2.0 * M_PI;
+      while (v < 0.0)
+        v += 2.0 * M_PI;
+      while (v >= 2.0 * M_PI)
+        v -= 2.0 * M_PI;
+
+      gp_Pnt aP1, aP2;
+      aFunc.Points(u, v, aP1, aP2);
+      const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+
+      Standard_Boolean isDuplicate = Standard_False;
+      for (Standard_Integer k = 0; k < aResults.Size(); ++k)
+      {
+        const Standard_Real aDu         = std::abs(aResults(k).u - u);
+        const Standard_Real aDv         = std::abs(aResults(k).v - v);
+        const Standard_Real aDuPeriodic = std::min(aDu, 2.0 * M_PI - aDu);
+        const Standard_Real aDvPeriodic = std::min(aDv, 2.0 * M_PI - aDv);
+        if (aDuPeriodic < 0.01 && aDvPeriodic < 0.01)
+        {
+          isDuplicate = Standard_True;
+          break;
+        }
+      }
+
+      if (!isDuplicate)
+      {
+        ExtremumCandidate aCandidate;
+        aCandidate.u      = u;
+        aCandidate.v      = v;
+        aCandidate.sqDist = aSqDist;
+        aResults.Append(aCandidate);
+      }
+    }
+  };
+
+  // Grid sampling with centered starting points
+  for (Standard_Integer i = 0; i < aNbSamples; ++i)
+  {
+    for (Standard_Integer j = 0; j < aNbSamples; ++j)
+    {
+      tryStartingPoint((i + 0.5) * aDelta, (j + 0.5) * aDelta);
+    }
+  }
+
+  // Direct search for minimum at axis-aligned positions.
+  // This handles cases where Newton's method fails due to singular Jacobian
+  // (e.g., when circles share the same center in perpendicular planes).
+  // These positions often correspond to true extrema for many geometric configurations.
+  const Standard_Real aAxisValues[4] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
+  Standard_Real       aMinSqDist     = RealLast();
+  Standard_Real       aMinU = 0.0, aMinV = 0.0;
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int j = 0; j < 4; ++j)
+    {
+      gp_Pnt aP1, aP2;
+      aFunc.Points(aAxisValues[i], aAxisValues[j], aP1, aP2);
+      const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+      if (aSqDist < aMinSqDist)
+      {
+        aMinSqDist = aSqDist;
+        aMinU      = aAxisValues[i];
+        aMinV      = aAxisValues[j];
+      }
+    }
+  }
+
+  // Add the minimum found at axis positions (always add to ensure coverage)
+  {
+    // Check if not duplicate
+    Standard_Boolean isDuplicate = Standard_False;
+    for (Standard_Integer k = 0; k < aResults.Size(); ++k)
+    {
+      const Standard_Real aDu         = std::abs(aResults(k).u - aMinU);
+      const Standard_Real aDv         = std::abs(aResults(k).v - aMinV);
+      const Standard_Real aDuPeriodic = std::min(aDu, 2.0 * M_PI - aDu);
+      const Standard_Real aDvPeriodic = std::min(aDv, 2.0 * M_PI - aDv);
+      if (aDuPeriodic < 0.01 && aDvPeriodic < 0.01)
+      {
+        isDuplicate = Standard_True;
+        break;
+      }
+    }
+
+    if (!isDuplicate)
+    {
+      ExtremumCandidate aCandidate;
+      aCandidate.u      = aMinU;
+      aCandidate.v      = aMinV;
+      aCandidate.sqDist = aMinSqDist;
+      aResults.Append(aCandidate);
+    }
+  }
+
+  // Sort results by squared distance to ensure minimum is included in the first 6
+  std::sort(
+    aResults.begin(),
+    aResults.end(),
+    [](const ExtremumCandidate& a, const ExtremumCandidate& b) { return a.sqDist < b.sqDist; });
+
+  for (Standard_Integer i = 0; i < aResults.Size() && theNbExt < 6; ++i)
+  {
+    gp_Pnt aP1, aP2;
+    aFunc.Points(aResults(i).u, aResults(i).v, aP1, aP2);
+    theSqDist[theNbExt] = aResults(i).sqDist;
+    thePoints[theNbExt][0].SetValues(aResults(i).u, aP1);
+    thePoints[theNbExt][1].SetValues(aResults(i).v, aP2);
+    theNbExt++;
+  }
+
+  return theNbExt > 0;
+}
+
+//! Internal class for finding sorted roots of a trigonometric polynomial.
+//! Duplicated code with IntAna_IntQuadQuad.cxx (lbr, March 26 1998).
+//! Reliable solution for near-zero coefficient problems with retry
+//! if coefficient < Precision::PConfusion() (jct, April 27 1998).
 class ExtremaExtElC_TrigonometricRoots
 {
-private:
-  Standard_Real    Roots[4];
-  Standard_Boolean done;
-  Standard_Integer NbRoots;
-  Standard_Boolean infinite_roots;
-
 public:
+  //! Constructor that computes roots of the trigonometric equation:
+  //!   CC*cos^2 + 2*SC*cos*sin + C*cos + S*sin + Cte = 0
+  //! in the interval [Binf, Bsup].
   ExtremaExtElC_TrigonometricRoots(const Standard_Real CC,
                                    const Standard_Real SC,
                                    const Standard_Real C,
                                    const Standard_Real S,
                                    const Standard_Real Cte,
                                    const Standard_Real Binf,
-                                   const Standard_Real Bsup);
-
-  //
-  Standard_Boolean IsDone() { return done; }
-
-  //
-  Standard_Boolean IsARoot(Standard_Real u)
+                                   const Standard_Real Bsup)
+      : NbRoots(0),
+        done(Standard_False),
+        infinite_roots(Standard_False)
   {
-    Standard_Real PIpPI, aEps;
-    //
-    aEps  = RealEpsilon();
-    PIpPI = M_PI + M_PI;
+    Standard_Integer i, nbessai;
+    Standard_Real    cc, sc, c, s, cte;
+
+    nbessai = 1;
+    cc      = CC;
+    sc      = SC;
+    c       = C;
+    s       = S;
+    cte     = Cte;
+
+    const Standard_Real aTolCoef = Precision::PConfusion();
+
+    while (nbessai <= 2 && !done)
+    {
+      math_TrigonometricFunctionRoots MTFR(cc, sc, c, s, cte, Binf, Bsup);
+
+      if (MTFR.IsDone())
+      {
+        done = Standard_True;
+        if (MTFR.InfiniteRoots())
+        {
+          infinite_roots = Standard_True;
+        }
+        else
+        {
+          Standard_Boolean Triee;
+          Standard_Integer j, SvNbRoots;
+          Standard_Real    aTwoPI, aMaxCoef, aPrecision;
+
+          aTwoPI  = M_PI + M_PI;
+          NbRoots = MTFR.NbSolutions();
+          for (i = 0; i < NbRoots; ++i)
+          {
+            Roots[i] = MTFR.Value(i + 1);
+            if (Roots[i] < 0.)
+            {
+              Roots[i] = Roots[i] + aTwoPI;
+            }
+            if (Roots[i] > aTwoPI)
+            {
+              Roots[i] = Roots[i] - aTwoPI;
+            }
+          }
+
+          aMaxCoef   = std::max(CC, SC);
+          aMaxCoef   = std::max(aMaxCoef, C);
+          aMaxCoef   = std::max(aMaxCoef, S);
+          aMaxCoef   = std::max(aMaxCoef, Cte);
+          aPrecision = std::max(1.e-8, 1.e-12 * aMaxCoef);
+
+          SvNbRoots = NbRoots;
+          for (i = 0; i < SvNbRoots; ++i)
+          {
+            Standard_Real y;
+            Standard_Real co = cos(Roots[i]);
+            Standard_Real si = sin(Roots[i]);
+            y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
+            if (std::abs(y) > aPrecision)
+            {
+              NbRoots--;
+              Roots[i] = 1000.0;
+            }
+          }
+
+          do
+          {
+            Standard_Real t;
+            Triee = Standard_True;
+            for (i = 1, j = 0; i < SvNbRoots; ++i, ++j)
+            {
+              if (Roots[i] < Roots[j])
+              {
+                Triee    = Standard_False;
+                t        = Roots[i];
+                Roots[i] = Roots[j];
+                Roots[j] = t;
+              }
+            }
+          } while (!Triee);
+
+          infinite_roots = Standard_False;
+          if (NbRoots == 0)
+          {
+            // Detect case when polynomial is essentially constant
+            if ((std::abs(CC) + std::abs(SC) + std::abs(C) + std::abs(S)) < aTolCoef)
+            {
+              if (std::abs(Cte) < aTolCoef)
+              {
+                infinite_roots = Standard_True;
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        // Try to set very small coefficients to zero
+        if (std::abs(CC) < aTolCoef)
+        {
+          cc = 0.0;
+        }
+        if (std::abs(SC) < aTolCoef)
+        {
+          sc = 0.0;
+        }
+        if (std::abs(C) < aTolCoef)
+        {
+          c = 0.0;
+        }
+        if (std::abs(S) < aTolCoef)
+        {
+          s = 0.0;
+        }
+        if (std::abs(Cte) < aTolCoef)
+        {
+          cte = 0.0;
+        }
+        nbessai++;
+      }
+    }
+  }
+
+  Standard_Boolean IsDone() const { return done; }
+
+  Standard_Boolean IsARoot(Standard_Real u) const
+  {
+    const Standard_Real PIpPI = M_PI + M_PI;
+    const Standard_Real aEps  = RealEpsilon();
     for (Standard_Integer i = 0; i < NbRoots; i++)
     {
       if (std::abs(u - Roots[i]) <= aEps)
@@ -86,8 +506,7 @@ public:
     return Standard_False;
   }
 
-  //
-  Standard_Integer NbSolutions()
+  Standard_Integer NbSolutions() const
   {
     if (!done)
     {
@@ -96,8 +515,7 @@ public:
     return NbRoots;
   }
 
-  //
-  Standard_Boolean InfiniteRoots()
+  Standard_Boolean InfiniteRoots() const
   {
     if (!done)
     {
@@ -106,8 +524,7 @@ public:
     return infinite_roots;
   }
 
-  //
-  Standard_Real Value(const Standard_Integer& n)
+  Standard_Real Value(const Standard_Integer& n) const
   {
     if ((!done) || (n > NbRoots))
     {
@@ -115,142 +532,15 @@ public:
     }
     return Roots[n - 1];
   }
+
+private:
+  Standard_Real    Roots[4];
+  Standard_Integer NbRoots;
+  Standard_Boolean done;
+  Standard_Boolean infinite_roots;
 };
 
-//=================================================================================================
-
-ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const Standard_Real CC,
-                                                                   const Standard_Real SC,
-                                                                   const Standard_Real C,
-                                                                   const Standard_Real S,
-                                                                   const Standard_Real Cte,
-                                                                   const Standard_Real Binf,
-                                                                   const Standard_Real Bsup)
-    : NbRoots(0),
-      infinite_roots(Standard_False)
-{
-  Standard_Integer i, nbessai;
-  Standard_Real    cc, sc, c, s, cte;
-  //
-  nbessai = 1;
-  cc      = CC;
-  sc      = SC;
-  c       = C;
-  s       = S;
-  cte     = Cte;
-  done    = Standard_False;
-  while (nbessai <= 2 && !done)
-  {
-    //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
-    math_TrigonometricFunctionRoots MTFR(cc, sc, c, s, cte, Binf, Bsup);
-    //
-    if (MTFR.IsDone())
-    {
-      done = Standard_True;
-      if (MTFR.InfiniteRoots())
-      {
-        infinite_roots = Standard_True;
-      }
-      else
-      { // else #1
-        Standard_Boolean Triee;
-        Standard_Integer j, SvNbRoots;
-        Standard_Real    aTwoPI, aMaxCoef, aPrecision;
-        //
-        aTwoPI  = M_PI + M_PI;
-        NbRoots = MTFR.NbSolutions();
-        for (i = 0; i < NbRoots; ++i)
-        {
-          Roots[i] = MTFR.Value(i + 1);
-          if (Roots[i] < 0.)
-          {
-            Roots[i] = Roots[i] + aTwoPI;
-          }
-          if (Roots[i] > aTwoPI)
-          {
-            Roots[i] = Roots[i] - aTwoPI;
-          }
-        }
-        //
-        //-- La recherche directe donne n importe quoi.
-        aMaxCoef   = std::max(CC, SC);
-        aMaxCoef   = std::max(aMaxCoef, C);
-        aMaxCoef   = std::max(aMaxCoef, S);
-        aMaxCoef   = std::max(aMaxCoef, Cte);
-        aPrecision = std::max(1.e-8, 1.e-12 * aMaxCoef);
-
-        SvNbRoots = NbRoots;
-        for (i = 0; i < SvNbRoots; ++i)
-        {
-          Standard_Real y;
-          Standard_Real co = cos(Roots[i]);
-          Standard_Real si = sin(Roots[i]);
-          y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
-          // modified by OCC  Tue Oct  3 18:43:00 2006
-          if (std::abs(y) > aPrecision)
-          {
-            NbRoots--;
-            Roots[i] = 1000.0;
-          }
-        }
-        //
-        do
-        {
-          Standard_Real t;
-          //
-          Triee = Standard_True;
-          for (i = 1, j = 0; i < SvNbRoots; ++i, ++j)
-          {
-            if (Roots[i] < Roots[j])
-            {
-              Triee    = Standard_False;
-              t        = Roots[i];
-              Roots[i] = Roots[j];
-              Roots[j] = t;
-            }
-          }
-        } while (!Triee);
-        //
-        infinite_roots = Standard_False;
-        if (NbRoots == 0)
-        { //--!!!!! Detect case Pol = Cte ( 1e-50 ) !!!!
-          if ((std::abs(CC) + std::abs(SC) + std::abs(C) + std::abs(S)) < 1e-10)
-          {
-            if (std::abs(Cte) < 1e-10)
-            {
-              infinite_roots = Standard_True;
-            }
-          }
-        }
-      } // else #1
-    } // if(MTFR.IsDone()) {
-    else
-    {
-      // try to set very small coefficients to ZERO
-      if (std::abs(CC) < 1e-10)
-      {
-        cc = 0.0;
-      }
-      if (std::abs(SC) < 1e-10)
-      {
-        sc = 0.0;
-      }
-      if (std::abs(C) < 1e-10)
-      {
-        c = 0.0;
-      }
-      if (std::abs(S) < 1e-10)
-      {
-        s = 0.0;
-      }
-      if (std::abs(Cte) < 1e-10)
-      {
-        cte = 0.0;
-      }
-      nbessai++;
-    }
-  } // while (nbessai<=2 && !done) {
-}
+} // namespace
 
 //=================================================================================================
 
@@ -973,6 +1263,8 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
   bIsSamePlane = aDc1.IsParallel(aDc2, aTolA) && aD2 < aTolD2;
   if (!bIsSamePlane)
   {
+    // Non-coplanar circles: use numerical approach
+    myDone = computeNonCoplanarCircleExtrema(C1, C2, myNbExt, mySqDist, myPoint);
     return;
   }
 
@@ -1157,34 +1449,4 @@ void Extrema_ExtElC::Points(const Standard_Integer N,
 
   P1 = myPoint[N - 1][0];
   P2 = myPoint[N - 1][1];
-}
-
-//=================================================================================================
-
-void RefineDir(gp_Dir& aDir)
-{
-  Standard_Integer i, j, k, iK;
-  Standard_Real    aCx[3], aEps, aX1, aX2, aOne;
-  //
-  iK   = 3;
-  aEps = RealEpsilon();
-  aDir.Coord(aCx[0], aCx[1], aCx[2]);
-  //
-  for (i = 0; i < iK; ++i)
-  {
-    aOne = (aCx[i] > 0.) ? 1. : -1.;
-    aX1  = aOne - aEps;
-    aX2  = aOne + aEps;
-    //
-    if (aCx[i] > aX1 && aCx[i] < aX2)
-    {
-      j      = (i + 1) % iK;
-      k      = (i + 2) % iK;
-      aCx[i] = aOne;
-      aCx[j] = 0.;
-      aCx[k] = 0.;
-      aDir.SetCoord(aCx[0], aCx[1], aCx[2]);
-      return;
-    }
-  }
 }
