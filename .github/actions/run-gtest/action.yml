@@ -63,7 +63,7 @@ runs:
         type gtest_output.log
         exit /b 0
 
-    - name: Convert library paths to absolute on macOS
+    - name: Set library paths on macOS
       if: inputs.platform == 'macos'
       shell: bash
       run: |
@@ -76,10 +76,14 @@ runs:
           done
           echo "$result"
         }
-        [ -n "$DYLD_LIBRARY_PATH" ] && echo "DYLD_LIBRARY_PATH=$(convert_to_absolute "$DYLD_LIBRARY_PATH")" >> $GITHUB_ENV
-        [ -n "$DYLD_FALLBACK_LIBRARY_PATH" ] && echo "DYLD_FALLBACK_LIBRARY_PATH=$(convert_to_absolute "$DYLD_FALLBACK_LIBRARY_PATH")" >> $GITHUB_ENV
+        # OCCT libraries are in install/lib
+        OCCT_LIB="${GITHUB_WORKSPACE}/install/lib"
+        DYLD_PATHS="$OCCT_LIB"
+        [ -n "$DYLD_LIBRARY_PATH" ] && DYLD_PATHS="$DYLD_PATHS:$(convert_to_absolute "$DYLD_LIBRARY_PATH")"
+        echo "DYLD_LIBRARY_PATH=$DYLD_PATHS" >> $GITHUB_ENV
+        echo "DYLD_FALLBACK_LIBRARY_PATH=$DYLD_PATHS" >> $GITHUB_ENV
 
-    - name: Convert library paths to absolute on Linux
+    - name: Set library paths on Linux
       if: inputs.platform == 'linux'
       shell: bash
       run: |
@@ -92,7 +96,11 @@ runs:
           done
           echo "$result"
         }
-        [ -n "$LD_LIBRARY_PATH" ] && echo "LD_LIBRARY_PATH=$(convert_to_absolute "$LD_LIBRARY_PATH")" >> $GITHUB_ENV
+        # OCCT libraries are in install/lib
+        OCCT_LIB="${GITHUB_WORKSPACE}/install/lib"
+        LD_PATHS="$OCCT_LIB"
+        [ -n "$LD_LIBRARY_PATH" ] && LD_PATHS="$LD_PATHS:$(convert_to_absolute "$LD_LIBRARY_PATH")"
+        echo "LD_LIBRARY_PATH=$LD_PATHS" >> $GITHUB_ENV
 
     - name: Run OpenCascadeGTest on Unix platforms
       if: inputs.platform != 'windows'
