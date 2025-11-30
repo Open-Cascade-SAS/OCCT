@@ -37,37 +37,51 @@
 #include <math_Vector.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
-
-#include <algorithm>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
+
+#include <algorithm>
 
 namespace
 {
 
+// Global constants used throughout the file.
+constexpr double THE_TWO_PI              = 2.0 * M_PI;
+constexpr double THE_HALF_PI             = M_PI / 2.0;
+constexpr double THE_THREE_HALF_PI       = 3.0 * M_PI / 2.0;
+constexpr int    THE_NB_GRID_SAMPLES     = 8;
+constexpr int    THE_NB_AXIS_SAMPLES     = 4;
+constexpr int    THE_MAX_EXTREMA         = 6;
+constexpr int    THE_MAX_NEWTON_ITER     = 30;
+constexpr double THE_DUPLICATE_TOL       = 0.01;
+constexpr double THE_COEF_ZERO_TOL       = 1.0e-12;
+constexpr double THE_TRIG_PRECISION_BASE = 1.0e-8;
+constexpr double THE_TRIG_PRECISION_MULT = 1.0e-12;
+
+//! Axis-aligned sample values for direct search in non-coplanar circle extrema.
+constexpr double THE_AXIS_VALUES[THE_NB_AXIS_SAMPLES] = {0.0, THE_HALF_PI, M_PI, THE_THREE_HALF_PI};
+
 //! Refines direction vector to align with coordinate axes when very close.
+//! @param[in,out] theDir Direction to refine
 void RefineDir(gp_Dir& theDir)
 {
-  Standard_Integer    i, j, k;
-  Standard_Real       aCx[3];
-  const Standard_Real aEps = RealEpsilon();
+  constexpr double aEps    = RealEpsilon();
+  gp_XYZ           aCoords = theDir.XYZ();
 
-  theDir.Coord(aCx[0], aCx[1], aCx[2]);
-
-  for (i = 0; i < 3; ++i)
+  for (int i = 1; i <= 3; ++i)
   {
-    const Standard_Real aOne = (aCx[i] > 0.) ? 1. : -1.;
-    const Standard_Real aX1  = aOne - aEps;
-    const Standard_Real aX2  = aOne + aEps;
+    const double aSign    = (aCoords.Coord(i) > 0.0) ? 1.0 : -1.0;
+    const double aLowBnd  = aSign - aEps;
+    const double aHighBnd = aSign + aEps;
 
-    if (aCx[i] > aX1 && aCx[i] < aX2)
+    if (aCoords.Coord(i) > aLowBnd && aCoords.Coord(i) < aHighBnd)
     {
-      j      = (i + 1) % 3;
-      k      = (i + 2) % 3;
-      aCx[i] = aOne;
-      aCx[j] = 0.;
-      aCx[k] = 0.;
-      theDir.SetCoord(aCx[0], aCx[1], aCx[2]);
+      const int j            = (i % 3) + 1;
+      const int k            = ((i + 1) % 3) + 1;
+      aCoords.ChangeCoord(i) = aSign;
+      aCoords.ChangeCoord(j) = 0.0;
+      aCoords.ChangeCoord(k) = 0.0;
+      theDir.SetCoord(aCoords.X(), aCoords.Y(), aCoords.Z());
       return;
     }
   }
@@ -82,6 +96,8 @@ class Extrema_FuncExtCircCirc : public math_FunctionSetWithDerivatives
 {
 public:
   //! Constructor with two circles.
+  //! @param[in] theC1 First circle
+  //! @param[in] theC2 Second circle
   Extrema_FuncExtCircCirc(const gp_Circ& theC1, const gp_Circ& theC2)
       : myO1(theC1.Location()),
         myO2(theC2.Location()),
@@ -90,9 +106,17 @@ public:
         myX2(theC2.XAxis().Direction()),
         myY2(theC2.YAxis().Direction()),
         myR1(theC1.Radius()),
-        myR2(theC2.Radius())
+        myR2(theC2.Radius()),
+        myVx1(0.0),
+        myVy1(0.0),
+        myVx2(0.0),
+        myVy2(0.0),
+        myA11(0.0),
+        myA12(0.0),
+        myA21(0.0),
+        myA22(0.0)
   {
-    gp_Vec aV(myO1, myO2);
+    const gp_Vec aV(myO1, myO2);
     myVx1 = aV.Dot(myX1);
     myVy1 = aV.Dot(myY1);
     myVx2 = aV.Dot(myX2);
@@ -103,81 +127,165 @@ public:
     myA22 = myY1.Dot(myY2);
   }
 
-  Standard_Integer NbVariables() const override { return 2; }
+  //! Returns number of variables (2 for u, v parameters).
+  int NbVariables() const override { return 2; }
 
-  Standard_Integer NbEquations() const override { return 2; }
+  //! Returns number of equations (2 for extrema conditions).
+  int NbEquations() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theUV, math_Vector& theF) override
+  //! Computes function values at given parameters.
+  //! @param[in] theUV Parameter vector (u, v)
+  //! @param[out] theF Function values (F1, F2)
+  //! @return Always true
+  bool Value(const math_Vector& theUV, math_Vector& theF) override
   {
-    const Standard_Real u    = theUV(1);
-    const Standard_Real v    = theUV(2);
-    const Standard_Real cosU = std::cos(u);
-    const Standard_Real sinU = std::sin(u);
-    const Standard_Real cosV = std::cos(v);
-    const Standard_Real sinV = std::sin(v);
+    const double aU    = theUV(1);
+    const double aV    = theUV(2);
+    const double aCosU = std::cos(aU);
+    const double aSinU = std::sin(aU);
+    const double aCosV = std::cos(aV);
+    const double aSinV = std::sin(aV);
 
-    const Standard_Real aVT1 = -sinU * myVx1 + cosU * myVy1;
-    const Standard_Real aP2T1 =
-      (cosV * myA11 + sinV * myA12) * (-sinU) + (cosV * myA21 + sinV * myA22) * cosU;
+    // F1: (V + R2*P2).T1 = 0, where T1 = (-sinU, cosU) in local coords
+    const double aVT1 = -aSinU * myVx1 + aCosU * myVy1;
+    const double aP2T1 =
+      (aCosV * myA11 + aSinV * myA12) * (-aSinU) + (aCosV * myA21 + aSinV * myA22) * aCosU;
     theF(1) = aVT1 + myR2 * aP2T1;
 
-    const Standard_Real aVT2 = -sinV * myVx2 + cosV * myVy2;
-    const Standard_Real aP1T2 =
-      (cosU * myA11 + sinU * myA21) * (-sinV) + (cosU * myA12 + sinU * myA22) * cosV;
+    // F2: (V - R1*P1).T2 = 0, where T2 = (-sinV, cosV) in local coords
+    const double aVT2 = -aSinV * myVx2 + aCosV * myVy2;
+    const double aP1T2 =
+      (aCosU * myA11 + aSinU * myA21) * (-aSinV) + (aCosU * myA12 + aSinU * myA22) * aCosV;
     theF(2) = aVT2 - myR1 * aP1T2;
 
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivatives(const math_Vector& theUV, math_Matrix& theD) override
+  //! Computes Jacobian matrix at given parameters.
+  //! @param[in] theUV Parameter vector (u, v)
+  //! @param[out] theD Jacobian matrix
+  //! @return Always true
+  bool Derivatives(const math_Vector& theUV, math_Matrix& theD) override
   {
-    const Standard_Real u    = theUV(1);
-    const Standard_Real v    = theUV(2);
-    const Standard_Real cosU = std::cos(u);
-    const Standard_Real sinU = std::sin(u);
-    const Standard_Real cosV = std::cos(v);
-    const Standard_Real sinV = std::sin(v);
+    const double aU    = theUV(1);
+    const double aV    = theUV(2);
+    const double aCosU = std::cos(aU);
+    const double aSinU = std::sin(aU);
+    const double aCosV = std::cos(aV);
+    const double aSinV = std::sin(aV);
 
-    theD(1, 1) =
-      -cosU * myVx1 - sinU * myVy1
-      + myR2 * ((cosV * myA11 + sinV * myA12) * (-cosU) + (cosV * myA21 + sinV * myA22) * (-sinU));
+    // dF1/du
+    theD(1, 1) = -aCosU * myVx1 - aSinU * myVy1
+                 + myR2
+                     * ((aCosV * myA11 + aSinV * myA12) * (-aCosU)
+                        + (aCosV * myA21 + aSinV * myA22) * (-aSinU));
+    // dF1/dv
     theD(1, 2) =
-      myR2 * ((-sinV * myA11 + cosV * myA12) * (-sinU) + (-sinV * myA21 + cosV * myA22) * cosU);
+      myR2
+      * ((-aSinV * myA11 + aCosV * myA12) * (-aSinU) + (-aSinV * myA21 + aCosV * myA22) * aCosU);
+    // dF2/du
     theD(2, 1) =
-      -myR1 * ((-sinU * myA11 + cosU * myA21) * (-sinV) + (-sinU * myA12 + cosU * myA22) * cosV);
-    theD(2, 2) =
-      -cosV * myVx2 - sinV * myVy2
-      - myR1 * ((cosU * myA11 + sinU * myA21) * (-cosV) + (cosU * myA12 + sinU * myA22) * (-sinV));
+      -myR1
+      * ((-aSinU * myA11 + aCosU * myA21) * (-aSinV) + (-aSinU * myA12 + aCosU * myA22) * aCosV);
+    // dF2/dv
+    theD(2, 2) = -aCosV * myVx2 - aSinV * myVy2
+                 - myR1
+                     * ((aCosU * myA11 + aSinU * myA21) * (-aCosV)
+                        + (aCosU * myA12 + aSinU * myA22) * (-aSinV));
 
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theD) override
+  //! Computes both function values and Jacobian.
+  //! @param[in] theUV Parameter vector (u, v)
+  //! @param[out] theF Function values
+  //! @param[out] theD Jacobian matrix
+  //! @return True if both computations succeed
+  bool Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theD) override
   {
     return Value(theUV, theF) && Derivatives(theUV, theD);
   }
 
-  //! Compute points on circles at parameters u, v.
-  void Points(const Standard_Real theU,
-              const Standard_Real theV,
-              gp_Pnt&             theP1,
-              gp_Pnt&             theP2) const
+  //! Computes points on circles at given parameters.
+  //! @param[in] theU Parameter on first circle
+  //! @param[in] theV Parameter on second circle
+  //! @param[out] theP1 Point on first circle
+  //! @param[out] theP2 Point on second circle
+  void Points(const double theU, const double theV, gp_Pnt& theP1, gp_Pnt& theP2) const
   {
-    const Standard_Real cosU = std::cos(theU);
-    const Standard_Real sinU = std::sin(theU);
-    const Standard_Real cosV = std::cos(theV);
-    const Standard_Real sinV = std::sin(theV);
-    theP1 = gp_Pnt(myO1.XYZ() + myR1 * cosU * myX1.XYZ() + myR1 * sinU * myY1.XYZ());
-    theP2 = gp_Pnt(myO2.XYZ() + myR2 * cosV * myX2.XYZ() + myR2 * sinV * myY2.XYZ());
+    const double aCosU = std::cos(theU);
+    const double aSinU = std::sin(theU);
+    const double aCosV = std::cos(theV);
+    const double aSinV = std::sin(theV);
+    theP1              = gp_Pnt(myO1.XYZ() + myR1 * aCosU * myX1.XYZ() + myR1 * aSinU * myY1.XYZ());
+    theP2              = gp_Pnt(myO2.XYZ() + myR2 * aCosV * myX2.XYZ() + myR2 * aSinV * myY2.XYZ());
   }
 
 private:
-  gp_Pnt        myO1, myO2;
-  gp_Dir        myX1, myY1, myX2, myY2;
-  Standard_Real myR1, myR2;
-  Standard_Real myVx1, myVy1, myVx2, myVy2;
-  Standard_Real myA11, myA12, myA21, myA22;
+  gp_Pnt myO1;  //!< Center of first circle
+  gp_Pnt myO2;  //!< Center of second circle
+  gp_Dir myX1;  //!< X direction of first circle
+  gp_Dir myY1;  //!< Y direction of first circle
+  gp_Dir myX2;  //!< X direction of second circle
+  gp_Dir myY2;  //!< Y direction of second circle
+  double myR1;  //!< Radius of first circle
+  double myR2;  //!< Radius of second circle
+  double myVx1; //!< V.X1 component
+  double myVy1; //!< V.Y1 component
+  double myVx2; //!< V.X2 component
+  double myVy2; //!< V.Y2 component
+  double myA11; //!< X1.X2 dot product
+  double myA12; //!< X1.Y2 dot product
+  double myA21; //!< Y1.X2 dot product
+  double myA22; //!< Y1.Y2 dot product
 };
+
+//! Candidate for an extremum point between two circles.
+struct ExtremumCandidate
+{
+  double U;      //!< Parameter on first circle
+  double V;      //!< Parameter on second circle
+  double SqDist; //!< Squared distance between points
+};
+
+//! Normalizes angle to [0, 2*PI) range.
+//! @param[in] theAngle Angle to normalize
+//! @return Normalized angle
+inline double normalizeAngle(double theAngle)
+{
+  while (theAngle < 0.0)
+  {
+    theAngle += THE_TWO_PI;
+  }
+  while (theAngle >= THE_TWO_PI)
+  {
+    theAngle -= THE_TWO_PI;
+  }
+  return theAngle;
+}
+
+//! Checks if a candidate is duplicate of any existing result.
+//! @param[in] theResults Existing results
+//! @param[in] theU Parameter u to check
+//! @param[in] theV Parameter v to check
+//! @return True if duplicate
+bool isDuplicateCandidate(const NCollection_Vector<ExtremumCandidate>& theResults,
+                          const double                                 theU,
+                          const double                                 theV)
+{
+  for (int k = 0; k < theResults.Size(); ++k)
+  {
+    const double aDu         = std::abs(theResults(k).U - theU);
+    const double aDv         = std::abs(theResults(k).V - theV);
+    const double aDuPeriodic = std::min(aDu, THE_TWO_PI - aDu);
+    const double aDvPeriodic = std::min(aDv, THE_TWO_PI - aDv);
+    if (aDuPeriodic < THE_DUPLICATE_TOL && aDvPeriodic < THE_DUPLICATE_TOL)
+    {
+      return true;
+    }
+  }
+  return false;
+}
 
 //! Computes extrema between two non-coplanar circles using math_FunctionSetRoot.
 //! @param[in] theC1 First circle
@@ -186,158 +294,99 @@ private:
 //! @param[out] theSqDist Array of squared distances
 //! @param[out] thePoints Array of extrema point pairs
 //! @return True if at least one extremum was found
-Standard_Boolean computeNonCoplanarCircleExtrema(const gp_Circ&    theC1,
-                                                 const gp_Circ&    theC2,
-                                                 Standard_Integer& theNbExt,
-                                                 Standard_Real*    theSqDist,
-                                                 Extrema_POnCurv   thePoints[][2])
+bool computeNonCoplanarCircleExtrema(const gp_Circ&  theC1,
+                                     const gp_Circ&  theC2,
+                                     int&            theNbExt,
+                                     double*         theSqDist,
+                                     Extrema_POnCurv thePoints[][2])
 {
   theNbExt = 0;
 
   Extrema_FuncExtCircCirc aFunc(theC1, theC2);
 
-  math_Vector aTol(1, 2, Precision::PConfusion());
-  math_Vector aInfBound(1, 2, 0.0);
-  math_Vector aSupBound(1, 2, 2.0 * M_PI);
+  // Set up bounds and tolerances for the solver (static to avoid repeated construction).
+  static const math_Vector aTol(1, 2, Precision::PConfusion());
+  static const math_Vector aInfBound(1, 2, 0.0);
+  static const math_Vector aSupBound(1, 2, THE_TWO_PI);
 
-  const Standard_Integer aNbSamples = 8;
-  const Standard_Real    aDelta     = 2.0 * M_PI / aNbSamples;
-
-  struct ExtremumCandidate
-  {
-    Standard_Real u;
-    Standard_Real v;
-    Standard_Real sqDist;
-  };
+  constexpr double aDelta = THE_TWO_PI / THE_NB_GRID_SAMPLES;
 
   NCollection_Vector<ExtremumCandidate> aResults;
 
-  // Lambda to try a starting point and add result if valid
-  auto tryStartingPoint = [&](const Standard_Real theU, const Standard_Real theV) {
-    math_Vector aStart(1, 2);
-    aStart(1) = theU;
-    aStart(2) = theV;
-
-    math_FunctionSetRoot aSolver(aFunc, aTol, 30);
-    aSolver.Perform(aFunc, aStart, aInfBound, aSupBound);
-
-    if (aSolver.IsDone())
+  // Grid sampling with centered starting points.
+  for (int i = 0; i < THE_NB_GRID_SAMPLES; ++i)
+  {
+    for (int j = 0; j < THE_NB_GRID_SAMPLES; ++j)
     {
-      const math_Vector& aRoot = aSolver.Root();
-      Standard_Real      u     = aRoot(1);
-      Standard_Real      v     = aRoot(2);
+      math_Vector aStart(1, 2);
+      aStart(1) = (i + 0.5) * aDelta;
+      aStart(2) = (j + 0.5) * aDelta;
 
-      while (u < 0.0)
-        u += 2.0 * M_PI;
-      while (u >= 2.0 * M_PI)
-        u -= 2.0 * M_PI;
-      while (v < 0.0)
-        v += 2.0 * M_PI;
-      while (v >= 2.0 * M_PI)
-        v -= 2.0 * M_PI;
+      math_FunctionSetRoot aSolver(aFunc, aTol, THE_MAX_NEWTON_ITER);
+      aSolver.Perform(aFunc, aStart, aInfBound, aSupBound);
 
-      gp_Pnt aP1, aP2;
-      aFunc.Points(u, v, aP1, aP2);
-      const Standard_Real aSqDist = aP1.SquareDistance(aP2);
-
-      Standard_Boolean isDuplicate = Standard_False;
-      for (Standard_Integer k = 0; k < aResults.Size(); ++k)
+      if (aSolver.IsDone())
       {
-        const Standard_Real aDu         = std::abs(aResults(k).u - u);
-        const Standard_Real aDv         = std::abs(aResults(k).v - v);
-        const Standard_Real aDuPeriodic = std::min(aDu, 2.0 * M_PI - aDu);
-        const Standard_Real aDvPeriodic = std::min(aDv, 2.0 * M_PI - aDv);
-        if (aDuPeriodic < 0.01 && aDvPeriodic < 0.01)
+        const math_Vector& aRoot = aSolver.Root();
+        const double       aU    = normalizeAngle(aRoot(1));
+        const double       aV    = normalizeAngle(aRoot(2));
+
+        gp_Pnt aP1, aP2;
+        aFunc.Points(aU, aV, aP1, aP2);
+        const double aSqDist = aP1.SquareDistance(aP2);
+
+        if (!isDuplicateCandidate(aResults, aU, aV))
         {
-          isDuplicate = Standard_True;
-          break;
+          aResults.Append({aU, aV, aSqDist});
         }
       }
-
-      if (!isDuplicate)
-      {
-        ExtremumCandidate aCandidate;
-        aCandidate.u      = u;
-        aCandidate.v      = v;
-        aCandidate.sqDist = aSqDist;
-        aResults.Append(aCandidate);
-      }
-    }
-  };
-
-  // Grid sampling with centered starting points
-  for (Standard_Integer i = 0; i < aNbSamples; ++i)
-  {
-    for (Standard_Integer j = 0; j < aNbSamples; ++j)
-    {
-      tryStartingPoint((i + 0.5) * aDelta, (j + 0.5) * aDelta);
     }
   }
 
   // Direct search for minimum at axis-aligned positions.
   // This handles cases where Newton's method fails due to singular Jacobian
   // (e.g., when circles share the same center in perpendicular planes).
-  // These positions often correspond to true extrema for many geometric configurations.
-  const Standard_Real aAxisValues[4] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
-  Standard_Real       aMinSqDist     = RealLast();
-  Standard_Real       aMinU = 0.0, aMinV = 0.0;
-  for (int i = 0; i < 4; ++i)
+  double aMinSqDist = RealLast();
+  double aMinU = 0.0, aMinV = 0.0;
+
+  for (int i = 0; i < THE_NB_AXIS_SAMPLES; ++i)
   {
-    for (int j = 0; j < 4; ++j)
+    for (int j = 0; j < THE_NB_AXIS_SAMPLES; ++j)
     {
       gp_Pnt aP1, aP2;
-      aFunc.Points(aAxisValues[i], aAxisValues[j], aP1, aP2);
-      const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+      aFunc.Points(THE_AXIS_VALUES[i], THE_AXIS_VALUES[j], aP1, aP2);
+      const double aSqDist = aP1.SquareDistance(aP2);
       if (aSqDist < aMinSqDist)
       {
         aMinSqDist = aSqDist;
-        aMinU      = aAxisValues[i];
-        aMinV      = aAxisValues[j];
+        aMinU      = THE_AXIS_VALUES[i];
+        aMinV      = THE_AXIS_VALUES[j];
       }
     }
   }
 
-  // Add the minimum found at axis positions (always add to ensure coverage)
+  // Add the minimum found at axis positions if not duplicate.
+  if (!isDuplicateCandidate(aResults, aMinU, aMinV))
   {
-    // Check if not duplicate
-    Standard_Boolean isDuplicate = Standard_False;
-    for (Standard_Integer k = 0; k < aResults.Size(); ++k)
-    {
-      const Standard_Real aDu         = std::abs(aResults(k).u - aMinU);
-      const Standard_Real aDv         = std::abs(aResults(k).v - aMinV);
-      const Standard_Real aDuPeriodic = std::min(aDu, 2.0 * M_PI - aDu);
-      const Standard_Real aDvPeriodic = std::min(aDv, 2.0 * M_PI - aDv);
-      if (aDuPeriodic < 0.01 && aDvPeriodic < 0.01)
-      {
-        isDuplicate = Standard_True;
-        break;
-      }
-    }
-
-    if (!isDuplicate)
-    {
-      ExtremumCandidate aCandidate;
-      aCandidate.u      = aMinU;
-      aCandidate.v      = aMinV;
-      aCandidate.sqDist = aMinSqDist;
-      aResults.Append(aCandidate);
-    }
+    aResults.Append({aMinU, aMinV, aMinSqDist});
   }
 
-  // Sort results by squared distance to ensure minimum is included in the first 6
+  // Sort results by squared distance to ensure minimum is included in the first 6.
   std::sort(
     aResults.begin(),
     aResults.end(),
-    [](const ExtremumCandidate& a, const ExtremumCandidate& b) { return a.sqDist < b.sqDist; });
+    [](const ExtremumCandidate& a, const ExtremumCandidate& b) { return a.SqDist < b.SqDist; });
 
-  for (Standard_Integer i = 0; i < aResults.Size() && theNbExt < 6; ++i)
+  // Copy results to output arrays.
+  for (int i = 0; i < aResults.Size() && theNbExt < THE_MAX_EXTREMA; ++i)
   {
-    gp_Pnt aP1, aP2;
-    aFunc.Points(aResults(i).u, aResults(i).v, aP1, aP2);
-    theSqDist[theNbExt] = aResults(i).sqDist;
-    thePoints[theNbExt][0].SetValues(aResults(i).u, aP1);
-    thePoints[theNbExt][1].SetValues(aResults(i).v, aP2);
-    theNbExt++;
+    const ExtremumCandidate& aCandidate = aResults(i);
+    gp_Pnt                   aP1, aP2;
+    aFunc.Points(aCandidate.U, aCandidate.V, aP1, aP2);
+    theSqDist[theNbExt] = aCandidate.SqDist;
+    thePoints[theNbExt][0].SetValues(aCandidate.U, aP1);
+    thePoints[theNbExt][1].SetValues(aCandidate.V, aP2);
+    ++theNbExt;
   }
 
   return theNbExt > 0;
@@ -353,278 +402,303 @@ public:
   //! Constructor that computes roots of the trigonometric equation:
   //!   CC*cos^2 + 2*SC*cos*sin + C*cos + S*sin + Cte = 0
   //! in the interval [Binf, Bsup].
-  ExtremaExtElC_TrigonometricRoots(const Standard_Real CC,
-                                   const Standard_Real SC,
-                                   const Standard_Real C,
-                                   const Standard_Real S,
-                                   const Standard_Real Cte,
-                                   const Standard_Real Binf,
-                                   const Standard_Real Bsup)
-      : NbRoots(0),
-        done(Standard_False),
-        infinite_roots(Standard_False)
+  //! @param[in] theCC Coefficient of cos^2
+  //! @param[in] theSC Coefficient of cos*sin (half of actual)
+  //! @param[in] theC Coefficient of cos
+  //! @param[in] theS Coefficient of sin
+  //! @param[in] theCte Constant term
+  //! @param[in] theBinf Lower bound of interval
+  //! @param[in] theBsup Upper bound of interval
+  ExtremaExtElC_TrigonometricRoots(const double theCC,
+                                   const double theSC,
+                                   const double theC,
+                                   const double theS,
+                                   const double theCte,
+                                   const double theBinf,
+                                   const double theBsup)
+      : myRoots{0.0, 0.0, 0.0, 0.0},
+        myNbRoots(0),
+        myIsDone(false),
+        myInfiniteRoots(false)
   {
-    Standard_Integer i, nbessai;
-    Standard_Real    cc, sc, c, s, cte;
+    const double aTolCoef = Precision::PConfusion();
 
-    nbessai = 1;
-    cc      = CC;
-    sc      = SC;
-    c       = C;
-    s       = S;
-    cte     = Cte;
+    // Working copies of coefficients that may be modified on retry.
+    double aCC  = theCC;
+    double aSC  = theSC;
+    double aC   = theC;
+    double aS   = theS;
+    double aCte = theCte;
 
-    const Standard_Real aTolCoef = Precision::PConfusion();
-
-    while (nbessai <= 2 && !done)
+    for (int aNbTry = 1; aNbTry <= 2 && !myIsDone; ++aNbTry)
     {
-      math_TrigonometricFunctionRoots MTFR(cc, sc, c, s, cte, Binf, Bsup);
+      math_TrigonometricFunctionRoots aTrigRoots(aCC, aSC, aC, aS, aCte, theBinf, theBsup);
 
-      if (MTFR.IsDone())
+      if (aTrigRoots.IsDone())
       {
-        done = Standard_True;
-        if (MTFR.InfiniteRoots())
+        myIsDone = true;
+        if (aTrigRoots.InfiniteRoots())
         {
-          infinite_roots = Standard_True;
+          myInfiniteRoots = true;
         }
         else
         {
-          Standard_Boolean Triee;
-          Standard_Integer j, SvNbRoots;
-          Standard_Real    aTwoPI, aMaxCoef, aPrecision;
-
-          aTwoPI  = M_PI + M_PI;
-          NbRoots = MTFR.NbSolutions();
-          for (i = 0; i < NbRoots; ++i)
-          {
-            Roots[i] = MTFR.Value(i + 1);
-            if (Roots[i] < 0.)
-            {
-              Roots[i] = Roots[i] + aTwoPI;
-            }
-            if (Roots[i] > aTwoPI)
-            {
-              Roots[i] = Roots[i] - aTwoPI;
-            }
-          }
-
-          aMaxCoef   = std::max(CC, SC);
-          aMaxCoef   = std::max(aMaxCoef, C);
-          aMaxCoef   = std::max(aMaxCoef, S);
-          aMaxCoef   = std::max(aMaxCoef, Cte);
-          aPrecision = std::max(1.e-8, 1.e-12 * aMaxCoef);
-
-          SvNbRoots = NbRoots;
-          for (i = 0; i < SvNbRoots; ++i)
-          {
-            Standard_Real y;
-            Standard_Real co = cos(Roots[i]);
-            Standard_Real si = sin(Roots[i]);
-            y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
-            if (std::abs(y) > aPrecision)
-            {
-              NbRoots--;
-              Roots[i] = 1000.0;
-            }
-          }
-
-          do
-          {
-            Standard_Real t;
-            Triee = Standard_True;
-            for (i = 1, j = 0; i < SvNbRoots; ++i, ++j)
-            {
-              if (Roots[i] < Roots[j])
-              {
-                Triee    = Standard_False;
-                t        = Roots[i];
-                Roots[i] = Roots[j];
-                Roots[j] = t;
-              }
-            }
-          } while (!Triee);
-
-          infinite_roots = Standard_False;
-          if (NbRoots == 0)
-          {
-            // Detect case when polynomial is essentially constant
-            if ((std::abs(CC) + std::abs(SC) + std::abs(C) + std::abs(S)) < aTolCoef)
-            {
-              if (std::abs(Cte) < aTolCoef)
-              {
-                infinite_roots = Standard_True;
-              }
-            }
-          }
+          processRoots(aTrigRoots, theCC, theSC, theC, theS, theCte, aTolCoef);
         }
       }
       else
       {
-        // Try to set very small coefficients to zero
-        if (std::abs(CC) < aTolCoef)
+        // Try to set very small coefficients to zero.
+        if (std::abs(theCC) < aTolCoef)
         {
-          cc = 0.0;
+          aCC = 0.0;
         }
-        if (std::abs(SC) < aTolCoef)
+        if (std::abs(theSC) < aTolCoef)
         {
-          sc = 0.0;
+          aSC = 0.0;
         }
-        if (std::abs(C) < aTolCoef)
+        if (std::abs(theC) < aTolCoef)
         {
-          c = 0.0;
+          aC = 0.0;
         }
-        if (std::abs(S) < aTolCoef)
+        if (std::abs(theS) < aTolCoef)
         {
-          s = 0.0;
+          aS = 0.0;
         }
-        if (std::abs(Cte) < aTolCoef)
+        if (std::abs(theCte) < aTolCoef)
         {
-          cte = 0.0;
+          aCte = 0.0;
         }
-        nbessai++;
       }
     }
   }
 
-  Standard_Boolean IsDone() const { return done; }
+  //! Returns true if computation was successful.
+  bool IsDone() const { return myIsDone; }
 
-  Standard_Boolean IsARoot(Standard_Real u) const
+  //! Checks if given value is one of the roots.
+  //! @param[in] theU Value to check
+  //! @return True if theU is a root
+  bool IsARoot(const double theU) const
   {
-    const Standard_Real PIpPI = M_PI + M_PI;
-    const Standard_Real aEps  = RealEpsilon();
-    for (Standard_Integer i = 0; i < NbRoots; i++)
+    const double aEps = RealEpsilon();
+    for (int i = 0; i < myNbRoots; ++i)
     {
-      if (std::abs(u - Roots[i]) <= aEps)
+      if (std::abs(theU - myRoots[i]) <= aEps)
       {
-        return Standard_True;
+        return true;
       }
-      if (std::abs(u - Roots[i] - PIpPI) <= aEps)
+      if (std::abs(theU - myRoots[i] - THE_TWO_PI) <= aEps)
       {
-        return Standard_True;
+        return true;
       }
     }
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer NbSolutions() const
+  //! Returns number of solutions.
+  int NbSolutions() const
   {
-    if (!done)
+    if (!myIsDone)
     {
       throw StdFail_NotDone();
     }
-    return NbRoots;
+    return myNbRoots;
   }
 
-  Standard_Boolean InfiniteRoots() const
+  //! Returns true if equation has infinite roots.
+  bool InfiniteRoots() const
   {
-    if (!done)
+    if (!myIsDone)
     {
       throw StdFail_NotDone();
     }
-    return infinite_roots;
+    return myInfiniteRoots;
   }
 
-  Standard_Real Value(const Standard_Integer& n) const
+  //! Returns the n-th root (1-based index).
+  //! @param[in] theN Root index (1 to NbSolutions)
+  //! @return Root value
+  double Value(const int theN) const
   {
-    if ((!done) || (n > NbRoots))
+    if (!myIsDone || theN > myNbRoots)
     {
       throw StdFail_NotDone();
     }
-    return Roots[n - 1];
+    return myRoots[theN - 1];
   }
 
 private:
-  Standard_Real    Roots[4];
-  Standard_Integer NbRoots;
-  Standard_Boolean done;
-  Standard_Boolean infinite_roots;
+  //! Processes roots from math_TrigonometricFunctionRoots solver.
+  void processRoots(const math_TrigonometricFunctionRoots& theTrigRoots,
+                    const double                           theCC,
+                    const double                           theSC,
+                    const double                           theC,
+                    const double                           theS,
+                    const double                           theCte,
+                    const double                           theTolCoef)
+  {
+    myNbRoots = theTrigRoots.NbSolutions();
+
+    // Normalize roots to [0, 2*PI] range.
+    for (int i = 0; i < myNbRoots; ++i)
+    {
+      myRoots[i] = theTrigRoots.Value(i + 1);
+      if (myRoots[i] < 0.0)
+      {
+        myRoots[i] += THE_TWO_PI;
+      }
+      if (myRoots[i] > THE_TWO_PI)
+      {
+        myRoots[i] -= THE_TWO_PI;
+      }
+    }
+
+    // Calculate precision based on coefficient magnitudes.
+    const double aMaxCoef = std::max(
+      {std::abs(theCC), std::abs(theSC), std::abs(theC), std::abs(theS), std::abs(theCte)});
+    const double aPrecision = std::max(THE_TRIG_PRECISION_BASE, THE_TRIG_PRECISION_MULT * aMaxCoef);
+
+    // Validate roots and mark invalid ones.
+    const int aSvNbRoots = myNbRoots;
+    for (int i = 0; i < aSvNbRoots; ++i)
+    {
+      const double aCos = std::cos(myRoots[i]);
+      const double aSin = std::sin(myRoots[i]);
+      const double aY   = aCos * (theCC * aCos + 2.0 * theSC * aSin + theC) + theS * aSin + theCte;
+      if (std::abs(aY) > aPrecision)
+      {
+        --myNbRoots;
+        myRoots[i] = 1000.0; // Mark as invalid for sorting.
+      }
+    }
+
+    // Sort roots using std::sort.
+    std::sort(myRoots, myRoots + aSvNbRoots);
+
+    // Detect case when polynomial is essentially constant.
+    myInfiniteRoots = false;
+    if (myNbRoots == 0)
+    {
+      const double aSumCoef = std::abs(theCC) + std::abs(theSC) + std::abs(theC) + std::abs(theS);
+      if (aSumCoef < theTolCoef && std::abs(theCte) < theTolCoef)
+      {
+        myInfiniteRoots = true;
+      }
+    }
+  }
+
+  double myRoots[4];      //!< Array of root values
+  int    myNbRoots;       //!< Number of valid roots
+  bool   myIsDone;        //!< Computation status
+  bool   myInfiniteRoots; //!< True if infinite roots
 };
+
+//! Zeros a coefficient if its absolute value is below tolerance.
+//! @param[in,out] theCoef Coefficient to check and possibly zero
+//! @param[in] theTol Tolerance threshold (default THE_COEF_ZERO_TOL)
+inline void zeroSmallCoef(double& theCoef, const double theTol = THE_COEF_ZERO_TOL)
+{
+  if (std::abs(theCoef) <= theTol)
+  {
+    theCoef = 0.0;
+  }
+}
+
+//! Projects a direction onto a local coordinate system defined by X, Y, Z axes.
+//! @param[in] theDir Direction to project
+//! @param[in] theX X axis direction
+//! @param[in] theY Y axis direction
+//! @param[in] theZ Z axis direction
+//! @return Projected coordinates as gp_XYZ
+constexpr gp_XYZ projectOnAxes(const gp_Dir& theDir,
+                               const gp_Dir& theX,
+                               const gp_Dir& theY,
+                               const gp_Dir& theZ)
+{
+  return gp_XYZ(theDir.Dot(theX), theDir.Dot(theY), theDir.Dot(theZ));
+}
+
+//! Projects a vector onto a local coordinate system defined by X, Y, Z axes.
+//! @param[in] theVec Vector to project
+//! @param[in] theX X axis direction
+//! @param[in] theY Y axis direction
+//! @param[in] theZ Z axis direction
+//! @return Projected coordinates as gp_XYZ
+constexpr gp_XYZ projectOnAxes(const gp_Vec& theVec,
+                               const gp_Dir& theX,
+                               const gp_Dir& theY,
+                               const gp_Dir& theZ)
+{
+  return gp_XYZ(theVec.Dot(theX), theVec.Dot(theY), theVec.Dot(theZ));
+}
+
+//! Initializes the mySqDist array to RealLast().
+//! Template allows compiler to know array size at compile time for loop unrolling.
+//! @tparam N Array size (deduced from argument)
+//! @param[out] theSqDist Array to initialize
+template <size_t N>
+constexpr void initSqDistArray(double (&theSqDist)[N])
+{
+  for (size_t i = 0; i < N; ++i)
+  {
+    theSqDist[i] = RealLast();
+  }
+}
 
 } // namespace
 
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC()
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  myDone  = Standard_False;
-  myIsPar = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  initSqDistArray(mySqDist);
 }
+
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const Standard_Real)
-// Function:
-//   Find min distance between 2 straight lines.
-
-// Method:
-//   Let D1 and D2, be 2 directions of straight lines C1 and C2.
-//   2 cases are considered:
-//   1- if Angle(D1,D2) < AngTol, straight lines are parallel.
-//      The distance is the distance between a point of C1 and the straight line C2.
-//   2- if Angle(D1,D2) > AngTol:
-//      Let P1=C1(u1) and P2=C2(u2).
-//      Then we must find u1 and u2 such as the distance P1P2 is minimal.
-//      Target function is:
-//        F(u1, u2) = ((L1x+D1x*u1)-(L2x+D2x*u2))^2 +
-//                    ((L1y+D1y*u1)-(L2y+D2y*u2))^2 +
-//                    ((L1z+D1z*u1)-(L2z+D2z*u2))^2 --> min,
-//      where L1 and L2 are lines locations, D1 and D2 are lines directions.
-//    Let simplify the function F
-
-//      F(u1, u2) = (D1x*u1-D2x*u2-Lx)^2 + (D1y*u1-D2y*u2-Ly)^2 + (D1z*u1-D2z*u2-Lz)^2,
-//    where L is a vector L1L2.
-
-//    In point of minimum, the condition
-//      {dF/du1 = 0
-//      {dF/du2 = 0
-
-//    must be satisfied.
-
-//      dF/du1 = 2*D1x*(D1x*u1-D2x*u2-Lx) +
-//               2*D1y*(D1y*u1-D2y*u2-Ly) +
-//               2*D1z*(D1z*u1-D2z*u2-Lz) =
-//             = 2*((D1^2)*u1-(D1.D2)*u2-L.D1) =
-//             = 2*(u1-(D1.D2)*u2-L.D1)
-//      dF/du2 = -2*D2x*(D1x*u1-D2x*u2-Lx) -
-//                2*D2y*(D1y*u1-D2y*u2-Ly) -
-//                2*D2z*(D1z*u1-D2z*u2-Lz)=
-//             = -2*((D2.D1)*u1-(D2^2)*u2-(D2.L)) =
-//             = -2*((D2.D1)*u1-u2-(D2.L))
-
-//   Consequently, we have two-equation system with two variables:
-
-//     {u1 - (D1.D2)*u2 = L.D1
-//     {(D1.D2)*u1 - u2 = L.D2
-
-//   This system has one solution if (D1.D2)^2 != 1
-//   (if straight lines are not parallel).
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  myDone  = Standard_False;
-  myNbExt = 0;
-  myIsPar = Standard_False;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  // Find min distance between 2 straight lines.
+  //
+  // Method:
+  //   Let D1 and D2, be 2 directions of straight lines C1 and C2.
+  //   2 cases are considered:
+  //   1- if Angle(D1,D2) < AngTol, straight lines are parallel.
+  //      The distance is the distance between a point of C1 and the straight line C2.
+  //   2- if Angle(D1,D2) > AngTol:
+  //      Let P1=C1(u1) and P2=C2(u2).
+  //      Then we must find u1 and u2 such as the distance P1P2 is minimal.
+  //      The system of equations:
+  //        {u1 - (D1.D2)*u2 = L.D1
+  //        {(D1.D2)*u1 - u2 = L.D2
+  //      has one solution if (D1.D2)^2 != 1 (if straight lines are not parallel).
+  initSqDistArray(mySqDist);
 
-  const gp_Dir &      aD1 = theC1.Position().Direction(), &aD2 = theC2.Position().Direction();
-  const Standard_Real aCosA   = aD1.Dot(aD2);
-  const Standard_Real aSqSinA = 1.0 - aCosA * aCosA;
-  Standard_Real       aU1 = 0.0, aU2 = 0.0;
+  const gp_Dir& aD1     = theC1.Position().Direction();
+  const gp_Dir& aD2     = theC2.Position().Direction();
+  const double  aCosA   = aD1.Dot(aD2);
+  const double  aSqSinA = 1.0 - aCosA * aCosA;
+
+  double aU1 = 0.0, aU2 = 0.0;
+
   if (aSqSinA < gp::Resolution() || aD1.IsParallel(aD2, Precision::Angular()))
   {
-    myIsPar = Standard_True;
+    myIsPar = true;
   }
   else
   {
-    const gp_XYZ        aL1L2 = theC2.Location().XYZ() - theC1.Location().XYZ();
-    const Standard_Real aD1L = aD1.XYZ().Dot(aL1L2), aD2L = aD2.XYZ().Dot(aL1L2);
-    aU1 = (aD1L - aCosA * aD2L) / aSqSinA;
-    aU2 = (aCosA * aD1L - aD2L) / aSqSinA;
+    const gp_XYZ aL1L2 = theC2.Location().XYZ() - theC1.Location().XYZ();
+    const double aD1L  = aD1.XYZ().Dot(aL1L2);
+    const double aD2L  = aD2.XYZ().Dot(aL1L2);
+    aU1                = (aD1L - aCosA * aD2L) / aSqSinA;
+    aU2                = (aCosA * aD1L - aD2L) / aSqSinA;
 
     myIsPar = Precision::IsInfinite(aU1) || Precision::IsInfinite(aU2);
   }
@@ -633,18 +707,17 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const S
   {
     mySqDist[0] = theC2.SquareDistance(theC1.Location());
     myNbExt     = 1;
-    myDone      = Standard_True;
+    myDone      = true;
     return;
   }
 
-  // Here myIsPar == Standard_False;
-
-  const gp_Pnt aP1(ElCLib::Value(aU1, theC1)), aP2(ElCLib::Value(aU2, theC2));
+  const gp_Pnt aP1(ElCLib::Value(aU1, theC1));
+  const gp_Pnt aP2(ElCLib::Value(aU2, theC2));
   mySqDist[myNbExt]   = aP1.SquareDistance(aP2);
   myPoint[myNbExt][0] = Extrema_POnCurv(aU1, aP1);
   myPoint[myNbExt][1] = Extrema_POnCurv(aU2, aP2);
   myNbExt             = 1;
-  myDone              = Standard_True;
+  myDone              = true;
 }
 
 //=================================================================================================
@@ -726,662 +799,450 @@ Standard_Boolean Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin&  theLin,
   return Standard_True;
 }
 
-//=======================================================================
-// function : Extrema_ExtElC
-// purpose  :
-// Find extreme distances between straight line C1 and circle C2.
-//
-// Method:
-//   Let P1=C1(u1) and P2=C2(u2) be two solution points
-//        D the direction of straight line C1
-//	T tangent at point P2;
-//  Then, ( P1P2.D = 0. (1)
-//         ( P1P2.T = 0. (2)
-//  Let O1 and O2 be the origins of C1 and C2;
-//  Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
-//	     <=> u1 = O1P2.D                as D.D = 1.
-//         (2) <=> P1O2.T = 0.                as O2P2.T = 0.
-//             <=> ((P2O1.D)D+O1O2).T = 0.    as P1O1 = -u1*D = (P2O1.D)D
-//	     <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
-//	     <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
-//  We are in the reference of the circle; let:
-//         Cos = std::cos(u2) and Sin = std::sin(u2),
-//         P2 (R*Cos,R*Sin,0.),
-//         T (-R*Sin,R*Cos,0.),
-//	 D (Dx,Dy,Dz),
-//	 V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
-//  Then, the equation by Cos and Sin is as follows:
-//    -(2*R*R*Dx*Dy)   * Cos**2  +       A1
-//   R*R*(Dx**2-Dy**2) * Cos*Sin +    2* A2
-//         R*Vy        * Cos     +       A3
-//	-R*Vx        * Sin     +       A4
-//      R*R*Dx*Dy                = 0.    A5
-// Use the algorithm math_TrigonometricFunctionRoots to solve this equation.
-//=======================================================================
+//=================================================================================================
+
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const Standard_Real)
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  Standard_Real Dx, Dy, Dz, aRO2O1, aTolRO2O1;
-  Standard_Real R, A1, A2, A3, A4, A5, aTol;
-  gp_Dir        x2, y2, z2, D, D1;
-  //
-  myIsPar = Standard_False;
-  myDone  = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  // Find extreme distances between straight line C1 and circle C2.
+  // Uses trigonometric equation solver math_TrigonometricFunctionRoots.
+  initSqDistArray(mySqDist);
 
   if (PlanarLineCircleExtrema(C1, C2))
   {
     return;
   }
 
-  // Calculate T1 in the reference of the circle ...
-  D  = C1.Direction();
-  D1 = D;
-  x2 = C2.XAxis().Direction();
-  y2 = C2.YAxis().Direction();
-  z2 = C2.Axis().Direction();
-  Dx = D.Dot(x2);
-  Dy = D.Dot(y2);
-  Dz = D.Dot(z2);
-  //
-  D.SetCoord(Dx, Dy, Dz);
-  RefineDir(D);
-  D.Coord(Dx, Dy, Dz);
-  //
-  // Calcul de V dans le repere du cercle:
-  gp_Pnt O1 = C1.Location();
-  gp_Pnt O2 = C2.Location();
-  gp_Vec O2O1(O2, O1);
-  //
-  aTolRO2O1 = gp::Resolution();
-  aRO2O1    = O2O1.Magnitude();
+  // Calculate direction in the reference of the circle.
+  gp_Dir       aD  = C1.Direction();
+  const gp_Dir aD1 = aD;
+
+  const gp_Dir& aX2 = C2.XAxis().Direction();
+  const gp_Dir& aY2 = C2.YAxis().Direction();
+  const gp_Dir& aZ2 = C2.Axis().Direction();
+
+  double aDx = aD.Dot(aX2);
+  double aDy = aD.Dot(aY2);
+  double aDz = aD.Dot(aZ2);
+
+  aD.SetCoord(aDx, aDy, aDz);
+  RefineDir(aD);
+  aD.Coord(aDx, aDy, aDz);
+
+  // Calculate V in circle's reference frame.
+  const gp_Pnt aO1 = C1.Location();
+  const gp_Pnt aO2 = C2.Location();
+  gp_Vec       aO2O1(aO2, aO1);
+
+  const double aTolRO2O1 = gp::Resolution();
+  const double aRO2O1    = aO2O1.Magnitude();
+
   if (aRO2O1 > aTolRO2O1)
   {
+    aO2O1.Multiply(1.0 / aRO2O1);
     gp_Dir aDO2O1;
-    //
-    O2O1.Multiply(1. / aRO2O1);
-    aDO2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+    aDO2O1.SetCoord(aO2O1.Dot(aX2), aO2O1.Dot(aY2), aO2O1.Dot(aZ2));
     RefineDir(aDO2O1);
-    O2O1.SetXYZ(aRO2O1 * aDO2O1.XYZ());
+    aO2O1.SetXYZ(aRO2O1 * aDO2O1.XYZ());
   }
   else
   {
-    O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+    aO2O1.SetCoord(aO2O1.Dot(aX2), aO2O1.Dot(aY2), aO2O1.Dot(aZ2));
   }
-  //
-  gp_XYZ Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
-  //
-  // modified by NIZNHY-PKV Tue Mar 20 10:36:38 2012
-  /*
-  R = C2.Radius();
-  A5 = R*R*Dx*Dy;
-  A1 = -2.*A5;
-  A2 = R*R*(Dx*Dx-Dy*Dy)/2.;
-  A3 = R*Vxyz.Y();
-  A4 = -R*Vxyz.X();
-  //
-  aTol=1.e-12;
-  //
 
-  if(fabs(A5) <= aTol) {
-    A5 = 0.;
-  }
-  if(fabs(A1) <= aTol) {
-    A1 = 0.;
-  }
-  if(fabs(A2) <= aTol) {
-    A2 = 0.;
-  }
-  if(fabs(A3) <= aTol) {
-    A3 = 0.;
-  }
-  if(fabs(A4) <= aTol) {
-    A4 = 0.;
-  }
-  */
-  //
-  aTol = 1.e-12;
-  // Calculate the coefficients of the equation by Cos and Sin ...
-  // [divided by R]
-  R  = C2.Radius();
-  A5 = R * Dx * Dy;
-  A1 = -2. * A5;
-  A2 = 0.5 * R * (Dx * Dx - Dy * Dy); // /2.;
-  A3 = Vxyz.Y();
-  A4 = -Vxyz.X();
-  //
-  if (A1 >= -aTol && A1 <= aTol)
-  {
-    A1 = 0.;
-  }
-  if (A2 >= -aTol && A2 <= aTol)
-  {
-    A2 = 0.;
-  }
-  if (A3 >= -aTol && A3 <= aTol)
-  {
-    A3 = 0.;
-  }
-  if (A4 >= -aTol && A4 <= aTol)
-  {
-    A4 = 0.;
-  }
-  if (A5 >= -aTol && A5 <= aTol)
-  {
-    A5 = 0.;
-  }
-  // modified by NIZNHY-PKV Tue Mar 20 10:36:40 2012t
-  //
-  ExtremaExtElC_TrigonometricRoots Sol(A1, A2, A3, A4, A5, 0., M_PI + M_PI);
-  if (!Sol.IsDone())
+  const gp_XYZ aVxyz = (aD.XYZ() * aO2O1.Dot(aD)) - aO2O1.XYZ();
+
+  // Calculate the coefficients of the trigonometric equation (divided by R).
+  const double aR  = C2.Radius();
+  double       aA5 = aR * aDx * aDy;
+  double       aA1 = -2.0 * aA5;
+  double       aA2 = 0.5 * aR * (aDx * aDx - aDy * aDy);
+  double       aA3 = aVxyz.Y();
+  double       aA4 = -aVxyz.X();
+
+  // Zero small coefficients for numerical stability.
+  zeroSmallCoef(aA1);
+  zeroSmallCoef(aA2);
+  zeroSmallCoef(aA3);
+  zeroSmallCoef(aA4);
+  zeroSmallCoef(aA5);
+
+  ExtremaExtElC_TrigonometricRoots aSol(aA1, aA2, aA3, aA4, aA5, 0.0, THE_TWO_PI);
+  if (!aSol.IsDone())
   {
     return;
   }
-  if (Sol.InfiniteRoots())
+
+  if (aSol.InfiniteRoots())
   {
-    myIsPar     = Standard_True;
-    mySqDist[0] = R * R;
+    myIsPar     = true;
+    mySqDist[0] = aR * aR;
     myNbExt     = 1;
-    myDone      = Standard_True;
+    myDone      = true;
     return;
   }
-  // Storage of solutions ...
-  Standard_Integer NoSol, NbSol;
-  Standard_Real    U1, U2;
-  gp_Pnt           P1, P2;
-  //
-  NbSol = Sol.NbSolutions();
-  for (NoSol = 1; NoSol <= NbSol; ++NoSol)
+
+  // Store solutions.
+  const int aNbSol = aSol.NbSolutions();
+  for (int aNoSol = 1; aNoSol <= aNbSol; ++aNoSol)
   {
-    U2                = Sol.Value(NoSol);
-    P2                = ElCLib::Value(U2, C2);
-    U1                = (gp_Vec(O1, P2)).Dot(D1);
-    P1                = ElCLib::Value(U1, C1);
-    mySqDist[myNbExt] = P1.SquareDistance(P2);
-    // modified by NIZNHY-PKV Wed Mar 21 08:11:33 2012f
-    // myPoint[myNbExt][0] = Extrema_POnCurv(U1,P1);
-    // myPoint[myNbExt][1] = Extrema_POnCurv(U2,P2);
-    myPoint[myNbExt][0].SetValues(U1, P1);
-    myPoint[myNbExt][1].SetValues(U2, P2);
-    // modified by NIZNHY-PKV Wed Mar 21 08:11:36 2012t
-    myNbExt++;
+    const double aU2  = aSol.Value(aNoSol);
+    const gp_Pnt aP2  = ElCLib::Value(aU2, C2);
+    const double aU1  = gp_Vec(aO1, aP2).Dot(aD1);
+    const gp_Pnt aP1  = ElCLib::Value(aU1, C1);
+    mySqDist[myNbExt] = aP1.SquareDistance(aP2);
+    myPoint[myNbExt][0].SetValues(aU1, aP1);
+    myPoint[myNbExt][1].SetValues(aU2, aP2);
+    ++myNbExt;
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  /*-----------------------------------------------------------------------------
-  Function:
-    Find extreme distances between straight line C1 and ellipse C2.
+  // Find extreme distances between straight line C1 and ellipse C2.
+  // Uses trigonometric equation solver math_TrigonometricFunctionRoots.
+  initSqDistArray(mySqDist);
 
-  Method:
-    Let P1=C1(u1) and P2=C2(u2) two solution points
-          D the direction of straight line C1
-      T the tangent to point P2;
-    Then, ( P1P2.D = 0. (1)
-           ( P1P2.T = 0. (2)
-    Let O1 and O2 be the origins of C1 and C2;
-    Then, (1) <=> (O1P2-u1*D).D = 0.        as O1P1 = u1*D
-           <=> u1 = O1P2.D              as D.D = 1.
-           (2) <=> P1O2.T = 0.              as O2P2.T = 0.
-               <=> ((P2O1.D)D+O1O2).T = 0.  as P1O1 = -u1*D = (P2O1.D)D
-           <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
-           <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
-    We are in the reference of the ellipse; let:
-           Cos = std::cos(u2) and Sin = std::sin(u2),
-           P2 (MajR*Cos,MinR*Sin,0.),
-           T (-MajR*Sin,MinR*Cos,0.),
-       D (Dx,Dy,Dz),
-       V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
-    Then,  get the following equation by Cos and Sin:
-      -(2*MajR*MinR*Dx*Dy)             * Cos**2  +
-     (MajR*MajR*Dx**2-MinR*MinR*Dy**2) * Cos*Sin +
-           MinR*Vy                     * Cos     +
-         - MajR*Vx                     * Sin     +
-        MinR*MajR*Dx*Dy                = 0.
-    Use algorithm math_TrigonometricFunctionRoots to solve this equation.
-  -----------------------------------------------------------------------------*/
-  myIsPar = Standard_False;
-  myDone  = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  // Calculate direction in the reference of the ellipse.
+  const gp_Dir aD1 = C1.Direction();
 
-  // Calculate T1 the reference of the ellipse ...
-  gp_Dir D  = C1.Direction();
-  gp_Dir D1 = D;
-  gp_Dir x2, y2, z2;
-  x2               = C2.XAxis().Direction();
-  y2               = C2.YAxis().Direction();
-  z2               = C2.Axis().Direction();
-  Standard_Real Dx = D.Dot(x2);
-  Standard_Real Dy = D.Dot(y2);
-  Standard_Real Dz = D.Dot(z2);
-  D.SetCoord(Dx, Dy, Dz);
+  const gp_Dir& aX2 = C2.XAxis().Direction();
+  const gp_Dir& aY2 = C2.YAxis().Direction();
+  const gp_Dir& aZ2 = C2.Axis().Direction();
 
-  // Calculate V ...
-  gp_Pnt O1 = C1.Location();
-  gp_Pnt O2 = C2.Location();
-  gp_Vec O2O1(O2, O1);
-  O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
-  gp_XYZ Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
+  const gp_XYZ aDLocal = projectOnAxes(aD1, aX2, aY2, aZ2);
+  const double aDx     = aDLocal.X();
+  const double aDy     = aDLocal.Y();
 
-  // Calculate the coefficients of the equation by Cos and Sin ...
-  Standard_Real MajR = C2.MajorRadius();
-  Standard_Real MinR = C2.MinorRadius();
-  Standard_Real A5   = MajR * MinR * Dx * Dy;
-  Standard_Real A1   = -2. * A5;
-  Standard_Real R2   = MajR * MajR;
-  Standard_Real r2   = MinR * MinR;
-  Standard_Real A2   = (R2 * Dx * Dx - r2 * Dy * Dy - R2 + r2) / 2.0;
-  Standard_Real A3   = MinR * Vxyz.Y();
-  Standard_Real A4   = -MajR * Vxyz.X();
-  //
-  Standard_Real aEps = 1.e-12;
-  //
-  if (fabs(A5) <= aEps)
-    A5 = 0.;
-  if (fabs(A1) <= aEps)
-    A1 = 0.;
-  if (fabs(A2) <= aEps)
-    A2 = 0.;
-  if (fabs(A3) <= aEps)
-    A3 = 0.;
-  if (fabs(A4) <= aEps)
-    A4 = 0.;
-  //
-  ExtremaExtElC_TrigonometricRoots Sol(A1, A2, A3, A4, A5, 0., M_PI + M_PI);
-  if (!Sol.IsDone())
+  // Calculate V in ellipse's reference frame.
+  const gp_Pnt aO1   = C1.Location();
+  const gp_Pnt aO2   = C2.Location();
+  const gp_XYZ aO2O1 = projectOnAxes(gp_Vec(aO2, aO1), aX2, aY2, aZ2);
+  const gp_XYZ aVxyz = (aDLocal * gp_Vec(aO2O1).Dot(gp_Dir(aDLocal))) - aO2O1;
+
+  // Calculate the coefficients of the trigonometric equation.
+  const double aMajR = C2.MajorRadius();
+  const double aMinR = C2.MinorRadius();
+  const double aR2   = aMajR * aMajR;
+  const double ar2   = aMinR * aMinR;
+
+  double aA5 = aMajR * aMinR * aDx * aDy;
+  double aA1 = -2.0 * aA5;
+  double aA2 = (aR2 * aDx * aDx - ar2 * aDy * aDy - aR2 + ar2) / 2.0;
+  double aA3 = aMinR * aVxyz.Y();
+  double aA4 = -aMajR * aVxyz.X();
+
+  // Zero small coefficients for numerical stability.
+  zeroSmallCoef(aA1);
+  zeroSmallCoef(aA2);
+  zeroSmallCoef(aA3);
+  zeroSmallCoef(aA4);
+  zeroSmallCoef(aA5);
+
+  ExtremaExtElC_TrigonometricRoots aSol(aA1, aA2, aA3, aA4, aA5, 0.0, THE_TWO_PI);
+  if (!aSol.IsDone())
   {
     return;
   }
-  //
-  if (Sol.InfiniteRoots())
+
+  if (aSol.InfiniteRoots())
   {
-    myIsPar     = Standard_True;
-    gp_Pnt aP   = ElCLib::EllipseValue(0., C2.Position(), C2.MajorRadius(), C2.MinorRadius());
-    mySqDist[0] = C1.SquareDistance(aP);
-    myNbExt     = 1;
-    myDone      = Standard_True;
+    myIsPar         = true;
+    const gp_Pnt aP = ElCLib::EllipseValue(0.0, C2.Position(), C2.MajorRadius(), C2.MinorRadius());
+    mySqDist[0]     = C1.SquareDistance(aP);
+    myNbExt         = 1;
+    myDone          = true;
     return;
   }
 
-  // Storage of solutions ...
-  gp_Pnt           P1, P2;
-  Standard_Real    U1, U2;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++)
+  // Store solutions.
+  const int aNbSol = aSol.NbSolutions();
+  for (int aNoSol = 1; aNoSol <= aNbSol; ++aNoSol)
   {
-    U2                  = Sol.Value(NoSol);
-    P2                  = ElCLib::Value(U2, C2);
-    U1                  = (gp_Vec(O1, P2)).Dot(D1);
-    P1                  = ElCLib::Value(U1, C1);
-    mySqDist[myNbExt]   = P1.SquareDistance(P2);
-    myPoint[myNbExt][0] = Extrema_POnCurv(U1, P1);
-    myPoint[myNbExt][1] = Extrema_POnCurv(U2, P2);
-    myNbExt++;
+    const double aU2    = aSol.Value(aNoSol);
+    const gp_Pnt aP2    = ElCLib::Value(aU2, C2);
+    const double aU1    = gp_Vec(aO1, aP2).Dot(aD1);
+    const gp_Pnt aP1    = ElCLib::Value(aU1, C1);
+    mySqDist[myNbExt]   = aP1.SquareDistance(aP2);
+    myPoint[myNbExt][0] = Extrema_POnCurv(aU1, aP1);
+    myPoint[myNbExt][1] = Extrema_POnCurv(aU2, aP2);
+    ++myNbExt;
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  /*-----------------------------------------------------------------------------
-  Function:
-    Find extrema between straight line C1 and hyperbola C2.
+  // Find extrema between straight line C1 and hyperbola C2.
+  // Uses polynomial equation solver math_DirectPolynomialRoots.
+  initSqDistArray(mySqDist);
 
-  Method:
-    Let P1=C1(u1) and P2=C2(u2) be two solution points
-          D the direction of straight line C1
-      T the tangent at point P2;
-    Then, ( P1P2.D = 0. (1)
-          ( P1P2.T = 0. (2)
-    Let O1 and O2 be the origins of C1 and C2;
-    Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
-           <=> u1 = O1P2.D               as D.D = 1.
-           (2) <=> (P1O2 + O2P2).T= 0.
-               <=> ((P2O1.D)D+O1O2 + O2P2).T = 0.  as P1O1 = -u1*D = (P2O1.D)D
-           <=> (((P2O2+O2O1).D)D+O1O2 + O2P2).T = 0.
-           <=> (P2O2.D)(D.T)+((O2O1.D)D-O2O1).T + O2P2.T= 0.
-    We are in the reference of the hyperbola; let:
-           by writing P (R* Chu, r* Shu, 0.0)
-       and Chu = (v**2 + 1)/(2*v) ,
-           Shu = (V**2 - 1)/(2*v)
+  // Calculate direction in the reference of the hyperbola.
+  const gp_Dir aD1 = C1.Direction();
 
-       T(R*Shu, r*Chu)
-       D (Dx,Dy,Dz),
-       V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
+  const gp_Dir& aX2 = C2.XAxis().Direction();
+  const gp_Dir& aY2 = C2.YAxis().Direction();
+  const gp_Dir& aZ2 = C2.Axis().Direction();
 
-    Then we obtain the following equation by v:
-           (-2*R*r*Dx*Dy - R*R*Dx*Dx-r*r*Dy*Dy + R*R + r*r)     * v**4  +
-       (2*R*Vx + 2*r*Vy)                                    * v**3  +
-       (-2*R*Vx + 2*r*Vy)                                   * v     +
-       (-2*R*r*Dx*Dy - (R*R*Dx*Dx-r*r*Dy*Dy + R*R + r*r))  = 0
+  const gp_XYZ aDLocal = projectOnAxes(aD1, aX2, aY2, aZ2);
+  const double aDx     = aDLocal.X();
+  const double aDy     = aDLocal.Y();
 
+  // Calculate V in hyperbola's reference frame.
+  const gp_Pnt aO1   = C1.Location();
+  const gp_Pnt aO2   = C2.Location();
+  const gp_XYZ aO2O1 = projectOnAxes(gp_Vec(aO2, aO1), aX2, aY2, aZ2);
 
-    Use the algorithm math_DirectPolynomialRoots to solve this equation.
-  -----------------------------------------------------------------------------*/
-  myIsPar = Standard_False;
-  myDone  = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  const gp_XYZ aVxyz = (aDLocal * gp_Vec(aO2O1).Dot(gp_Dir(aDLocal))) - aO2O1;
+  const double aVx   = aVxyz.X();
+  const double aVy   = aVxyz.Y();
 
-  // Calculate T1 in the reference of the hyperbola...
-  gp_Dir D  = C1.Direction();
-  gp_Dir D1 = D;
-  gp_Dir x2, y2, z2;
-  x2               = C2.XAxis().Direction();
-  y2               = C2.YAxis().Direction();
-  z2               = C2.Axis().Direction();
-  Standard_Real Dx = D.Dot(x2);
-  Standard_Real Dy = D.Dot(y2);
-  Standard_Real Dz = D.Dot(z2);
-  D.SetCoord(Dx, Dy, Dz);
+  // Calculate coefficients of the polynomial equation.
+  const double aR  = C2.MajorRadius();
+  const double ar  = C2.MinorRadius();
+  const double aA  = -2.0 * aR * ar * aDx * aDy;
+  const double aB  = -aR * aR * aDx * aDx - ar * ar * aDy * aDy + aR * aR + ar * ar;
+  const double aA1 = aA + aB;
+  const double aA2 = 2.0 * aR * aVx + 2.0 * ar * aVy;
+  const double aA4 = -2.0 * aR * aVx + 2.0 * ar * aVy;
+  const double aA5 = aA - aB;
 
-  // Calculate V ...
-  gp_Pnt O1 = C1.Location();
-  gp_Pnt O2 = C2.Location();
-  gp_Vec O2O1(O2, O1);
-  O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
-  gp_XYZ        Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
-  Standard_Real Vx   = Vxyz.X();
-  Standard_Real Vy   = Vxyz.Y();
-
-  // Calculate coefficients of the equation by v
-  Standard_Real R  = C2.MajorRadius();
-  Standard_Real r  = C2.MinorRadius();
-  Standard_Real a  = -2 * R * r * Dx * Dy;
-  Standard_Real b  = -R * R * Dx * Dx - r * r * Dy * Dy + R * R + r * r;
-  Standard_Real A1 = a + b;
-  Standard_Real A2 = 2 * R * Vx + 2 * r * Vy;
-  Standard_Real A4 = -2 * R * Vx + 2 * r * Vy;
-  Standard_Real A5 = a - b;
-
-  math_DirectPolynomialRoots Sol(A1, A2, 0.0, A4, A5);
-  if (!Sol.IsDone())
+  math_DirectPolynomialRoots aSol(aA1, aA2, 0.0, aA4, aA5);
+  if (!aSol.IsDone())
   {
     return;
   }
 
-  // Store solutions ...
-  gp_Pnt           P1, P2;
-  Standard_Real    U1, U2, v;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++)
+  // Store solutions.
+  const int aNbSol = aSol.NbSolutions();
+  for (int aNoSol = 1; aNoSol <= aNbSol; ++aNoSol)
   {
-    v = Sol.Value(NoSol);
-    if (v > 0.0)
+    const double aV = aSol.Value(aNoSol);
+    if (aV > 0.0)
     {
-      U2                  = std::log(v);
-      P2                  = ElCLib::Value(U2, C2);
-      U1                  = (gp_Vec(O1, P2)).Dot(D1);
-      P1                  = ElCLib::Value(U1, C1);
-      mySqDist[myNbExt]   = P1.SquareDistance(P2);
-      myPoint[myNbExt][0] = Extrema_POnCurv(U1, P1);
-      myPoint[myNbExt][1] = Extrema_POnCurv(U2, P2);
-      myNbExt++;
+      const double aU2    = std::log(aV);
+      const gp_Pnt aP2    = ElCLib::Value(aU2, C2);
+      const double aU1    = gp_Vec(aO1, aP2).Dot(aD1);
+      const gp_Pnt aP1    = ElCLib::Value(aU1, C1);
+      mySqDist[myNbExt]   = aP1.SquareDistance(aP2);
+      myPoint[myNbExt][0] = Extrema_POnCurv(aU1, aP1);
+      myPoint[myNbExt][1] = Extrema_POnCurv(aU2, aP2);
+      ++myNbExt;
     }
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  /*-----------------------------------------------------------------------------
-  Function:
-    Find extreme distances between straight line C1 and parabole C2.
+  // Find extreme distances between straight line C1 and parabola C2.
+  // Uses polynomial equation solver math_DirectPolynomialRoots.
+  initSqDistArray(mySqDist);
 
-  Method:
-     Let P1=C1(u1) and P2=C2(u2) be two solution points
-          D the direction of straight line C1
-      T the tangent to point P2;
-    Then, ( P1P2.D = 0. (1)
-          ( P1P2.T = 0. (2)
-    Let O1 and O2 be the origins of C1 and C2;
-    Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
-           <=> u1 = O1P2.D               as D.D = 1.
-           (2) <=> (P1O2 + O2P2).T= 0.
-               <=> ((P2O1.D)D+O1O2 + O2P2).T = 0.  as P1O1 = -u1*D = (P2O1.D)D
-           <=> (((P2O2+O2O1).D)D+O1O2 + O2P2).T = 0.
-           <=> (P2O2.D)(D.T)+((O2O1.D)D-O2O1).T + O2P2.T = 0.
-    We are in the reference of the parabola; let:
-           P2 (y*y/(2*p), y, 0)
-           T (y/p, 1, 0)
-       D (Dx,Dy,Dz),
-       V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
+  // Calculate direction in the reference of the parabola.
+  const gp_Dir aD1 = C1.Direction();
 
-    Then, get the following equation by y:
-       ((1-Dx*Dx)/(2*p*p))            *  y*y*y  +        A1
-       (-3*Dx*Dy/(2*p))               *  y*y    +        A2
-       (1-Dy*Dy + Vx/p)               *  y      +        A3
-          Vy                          = 0.               A4
+  const gp_Dir& aX2 = C2.XAxis().Direction();
+  const gp_Dir& aY2 = C2.YAxis().Direction();
+  const gp_Dir& aZ2 = C2.Axis().Direction();
 
-    Use the algorithm math_DirectPolynomialRoots to solve this equation.
-  -----------------------------------------------------------------------------*/
-  myIsPar = Standard_False;
-  myDone  = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
+  const gp_XYZ aDLocal = projectOnAxes(aD1, aX2, aY2, aZ2);
+  const double aDx     = aDLocal.X();
+  const double aDy     = aDLocal.Y();
 
-  // Calculate T1 in the reference of the parabola...
-  gp_Dir D  = C1.Direction();
-  gp_Dir D1 = D;
-  gp_Dir x2, y2, z2;
-  x2               = C2.XAxis().Direction();
-  y2               = C2.YAxis().Direction();
-  z2               = C2.Axis().Direction();
-  Standard_Real Dx = D.Dot(x2);
-  Standard_Real Dy = D.Dot(y2);
-  Standard_Real Dz = D.Dot(z2);
-  D.SetCoord(Dx, Dy, Dz);
+  // Calculate V in parabola's reference frame.
+  const gp_Pnt aO1   = C1.Location();
+  const gp_Pnt aO2   = C2.Location();
+  const gp_XYZ aO2O1 = projectOnAxes(gp_Vec(aO2, aO1), aX2, aY2, aZ2);
+  const gp_XYZ aVxyz = (aDLocal * gp_Vec(aO2O1).Dot(gp_Dir(aDLocal))) - aO2O1;
 
-  // Calculate V ...
-  gp_Pnt O1 = C1.Location();
-  gp_Pnt O2 = C2.Location();
-  gp_Vec O2O1(O2, O1);
-  O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
-  gp_XYZ Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
+  // Calculate coefficients of the polynomial equation.
+  const double aP  = C2.Parameter();
+  const double aA1 = (1.0 - aDx * aDx) / (2.0 * aP * aP);
+  const double aA2 = -3.0 * aDx * aDy / (2.0 * aP);
+  const double aA3 = 1.0 - aDy * aDy + aVxyz.X() / aP;
+  const double aA4 = aVxyz.Y();
 
-  // Calculate coefficients of the equation by y
-  Standard_Real P  = C2.Parameter();
-  Standard_Real A1 = (1 - Dx * Dx) / (2.0 * P * P);
-  Standard_Real A2 = (-3.0 * Dx * Dy / (2.0 * P));
-  Standard_Real A3 = (1 - Dy * Dy + Vxyz.X() / P);
-  Standard_Real A4 = Vxyz.Y();
-
-  math_DirectPolynomialRoots Sol(A1, A2, A3, A4);
-  if (!Sol.IsDone())
+  math_DirectPolynomialRoots aSol(aA1, aA2, aA3, aA4);
+  if (!aSol.IsDone())
   {
     return;
   }
 
-  // Storage of solutions ...
-  gp_Pnt           P1, P2;
-  Standard_Real    U1, U2;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++)
+  // Store solutions.
+  const int aNbSol = aSol.NbSolutions();
+  for (int aNoSol = 1; aNoSol <= aNbSol; ++aNoSol)
   {
-    U2                  = Sol.Value(NoSol);
-    P2                  = ElCLib::Value(U2, C2);
-    U1                  = (gp_Vec(O1, P2)).Dot(D1);
-    P1                  = ElCLib::Value(U1, C1);
-    mySqDist[myNbExt]   = P1.SquareDistance(P2);
-    myPoint[myNbExt][0] = Extrema_POnCurv(U1, P1);
-    myPoint[myNbExt][1] = Extrema_POnCurv(U2, P2);
-    myNbExt++;
+    const double aU2    = aSol.Value(aNoSol);
+    const gp_Pnt aP2    = ElCLib::Value(aU2, C2);
+    const double aU1    = gp_Vec(aO1, aP2).Dot(aD1);
+    const gp_Pnt aP1    = ElCLib::Value(aU1, C1);
+    mySqDist[myNbExt]   = aP1.SquareDistance(aP2);
+    myPoint[myNbExt][0] = Extrema_POnCurv(aU1, aP1);
+    myPoint[myNbExt][1] = Extrema_POnCurv(aU2, aP2);
+    ++myNbExt;
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
+    : myDone(false),
+      myIsPar(false),
+      myNbExt(0)
 {
-  Standard_Boolean bIsSamePlane, bIsSameAxe;
-  Standard_Real    aTolD, aTolD2, aTolA, aD2, aDC2;
-  gp_Pnt           aPc1, aPc2;
-  gp_Dir           aDc1, aDc2;
-  //
-  myIsPar = Standard_False;
-  myDone  = Standard_False;
-  myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
-  {
-    mySqDist[anIdx] = RealLast();
-  }
-  //
-  aTolA  = Precision::Angular();
-  aTolD  = Precision::Confusion();
-  aTolD2 = aTolD * aTolD;
-  //
-  aPc1 = C1.Location();
-  aDc1 = C1.Axis().Direction();
+  // Find extreme distances between two circles C1 and C2.
+  // Handles coplanar and non-coplanar cases.
+  initSqDistArray(mySqDist);
 
-  aPc2 = C2.Location();
-  aDc2 = C2.Axis().Direction();
-  gp_Pln aPlc1(aPc1, aDc1);
-  //
-  aD2          = aPlc1.SquareDistance(aPc2);
-  bIsSamePlane = aDc1.IsParallel(aDc2, aTolA) && aD2 < aTolD2;
+  const double aTolA  = Precision::Angular();
+  const double aTolD  = Precision::Confusion();
+  const double aTolD2 = aTolD * aTolD;
+
+  const gp_Pnt  aPc1 = C1.Location();
+  const gp_Dir& aDc1 = C1.Axis().Direction();
+  const gp_Pnt  aPc2 = C2.Location();
+  const gp_Dir& aDc2 = C2.Axis().Direction();
+
+  const gp_Pln aPlc1(aPc1, aDc1);
+  const double aD2          = aPlc1.SquareDistance(aPc2);
+  const bool   bIsSamePlane = aDc1.IsParallel(aDc2, aTolA) && aD2 < aTolD2;
+
   if (!bIsSamePlane)
   {
-    // Non-coplanar circles: use numerical approach
+    // Non-coplanar circles: use numerical approach.
     myDone = computeNonCoplanarCircleExtrema(C1, C2, myNbExt, mySqDist, myPoint);
     return;
   }
 
   // Here, both circles are in the same plane.
+  const double aDC2       = aPc1.SquareDistance(aPc2);
+  const bool   bIsSameAxe = aDC2 < aTolD2;
 
-  //
-  aDC2       = aPc1.SquareDistance(aPc2);
-  bIsSameAxe = aDC2 < aTolD2;
-  //
   if (bIsSameAxe)
   {
-    myIsPar                 = Standard_True;
-    myNbExt                 = 1;
-    myDone                  = Standard_True;
-    const Standard_Real aDR = C1.Radius() - C2.Radius();
-    mySqDist[0]             = aDR * aDR;
+    // Concentric circles.
+    myIsPar          = true;
+    myNbExt          = 1;
+    myDone           = true;
+    const double aDR = C1.Radius() - C2.Radius();
+    mySqDist[0]      = aDR * aDR;
     return;
   }
 
-  Standard_Boolean bIn, bOut;
-  Standard_Integer j1, j2;
-  Standard_Real    aR1, aR2, aD12, aT11, aT12, aT21, aT22;
-  gp_Circ          aC1, aC2;
-  gp_Pnt           aP11, aP12, aP21, aP22;
-  //
-  myDone = Standard_True;
-  //
-  aR1 = C1.Radius();
-  aR2 = C2.Radius();
-  //
-  j1  = 0;
-  j2  = 1;
-  aC1 = C1;
-  aC2 = C2;
+  myDone = true;
+
+  // Ensure aC1 has the larger radius.
+  double  aR1 = C1.Radius();
+  double  aR2 = C2.Radius();
+  int     j1  = 0;
+  int     j2  = 1;
+  gp_Circ aC1 = C1;
+  gp_Circ aC2 = C2;
+
   if (aR2 > aR1)
   {
     j1  = 1;
     j2  = 0;
     aC1 = C2;
     aC2 = C1;
+    aR1 = aC1.Radius();
+    aR2 = aC2.Radius();
   }
-  //
-  aR1 = aC1.Radius(); // max radius
-  aR2 = aC2.Radius(); // min radius
-  //
-  aPc1 = aC1.Location();
-  aPc2 = aC2.Location();
-  //
-  aD12 = aPc1.Distance(aPc2);
-  gp_Vec aVec12(aPc1, aPc2);
-  gp_Dir aDir12(aVec12);
-  //
-  // 1. Four common solutions
+
+  const gp_Pnt aPc1L = aC1.Location();
+  const gp_Pnt aPc2L = aC2.Location();
+  const double aD12  = aPc1L.Distance(aPc2L);
+  const gp_Vec aVec12(aPc1L, aPc2L);
+  const gp_Dir aDir12(aVec12);
+
+  // Four common solutions along the line connecting centers.
   myNbExt = 4;
-  //
-  aP11.SetXYZ(aPc1.XYZ() - aR1 * aDir12.XYZ());
-  aP12.SetXYZ(aPc1.XYZ() + aR1 * aDir12.XYZ());
-  aP21.SetXYZ(aPc2.XYZ() - aR2 * aDir12.XYZ());
-  aP22.SetXYZ(aPc2.XYZ() + aR2 * aDir12.XYZ());
-  //
-  aT11 = ElCLib::Parameter(aC1, aP11);
-  aT12 = ElCLib::Parameter(aC1, aP12);
-  aT21 = ElCLib::Parameter(aC2, aP21);
-  aT22 = ElCLib::Parameter(aC2, aP22);
-  //
+
+  gp_Pnt aP11, aP12, aP21, aP22;
+  aP11.SetXYZ(aPc1L.XYZ() - aR1 * aDir12.XYZ());
+  aP12.SetXYZ(aPc1L.XYZ() + aR1 * aDir12.XYZ());
+  aP21.SetXYZ(aPc2L.XYZ() - aR2 * aDir12.XYZ());
+  aP22.SetXYZ(aPc2L.XYZ() + aR2 * aDir12.XYZ());
+
+  const double aT11 = ElCLib::Parameter(aC1, aP11);
+  const double aT12 = ElCLib::Parameter(aC1, aP12);
+  const double aT21 = ElCLib::Parameter(aC2, aP21);
+  const double aT22 = ElCLib::Parameter(aC2, aP22);
+
   // P11, P21
   myPoint[0][j1].SetValues(aT11, aP11);
   myPoint[0][j2].SetValues(aT21, aP21);
   mySqDist[0] = aP11.SquareDistance(aP21);
+
   // P11, P22
   myPoint[1][j1].SetValues(aT11, aP11);
   myPoint[1][j2].SetValues(aT22, aP22);
   mySqDist[1] = aP11.SquareDistance(aP22);
-  //
+
   // P12, P21
   myPoint[2][j1].SetValues(aT12, aP12);
   myPoint[2][j2].SetValues(aT21, aP21);
   mySqDist[2] = aP12.SquareDistance(aP21);
-  //
+
   // P12, P22
   myPoint[3][j1].SetValues(aT12, aP12);
   myPoint[3][j2].SetValues(aT22, aP22);
   mySqDist[3] = aP12.SquareDistance(aP22);
-  //
-  // 2. Check for intersections
-  bOut = aD12 > (aR1 + aR2 + aTolD);
-  bIn  = aD12 < (aR1 - aR2 - aTolD);
+
+  // Check for intersections.
+  const bool bOut = aD12 > (aR1 + aR2 + aTolD);
+  const bool bIn  = aD12 < (aR1 - aR2 - aTolD);
+
   if (!bOut && !bIn)
   {
-    Standard_Boolean bNbExt6;
-    Standard_Real    aAlpha, aBeta, aT[2], aVal, aDist2;
-    gp_Pnt           aPt, aPL1, aPL2;
-    gp_Dir           aDLt;
-    //
-    aAlpha = 0.5 * (aR1 * aR1 - aR2 * aR2 + aD12 * aD12) / aD12;
-    aVal   = aR1 * aR1 - aAlpha * aAlpha;
-    if (aVal < 0.)
-    { // see pkv/900/L4 for details
-      aVal = -aVal;
+    // Circles intersect - compute intersection points.
+    const double aAlpha = 0.5 * (aR1 * aR1 - aR2 * aR2 + aD12 * aD12) / aD12;
+    double       aVal   = aR1 * aR1 - aAlpha * aAlpha;
+    if (aVal < 0.0)
+    {
+      aVal = -aVal; // Handle numerical instability.
     }
-    aBeta = std::sqrt(aVal);
-    aPt.SetXYZ(aPc1.XYZ() + aAlpha * aDir12.XYZ());
-    //
-    aDLt = aDc1 ^ aDir12;
+    const double aBeta = std::sqrt(aVal);
+
+    gp_Pnt aPt;
+    aPt.SetXYZ(aPc1L.XYZ() + aAlpha * aDir12.XYZ());
+
+    const gp_Dir aDLt = aDc1 ^ aDir12;
+    gp_Pnt       aPL1, aPL2;
     aPL1.SetXYZ(aPt.XYZ() + aBeta * aDLt.XYZ());
     aPL2.SetXYZ(aPt.XYZ() - aBeta * aDLt.XYZ());
-    //
-    aDist2  = aPL1.SquareDistance(aPL2);
-    bNbExt6 = aDist2 > aTolD2;
-    //
-    myNbExt = 5; // just in case. see pkv/900/L4 for details
-    aT[j1]  = ElCLib::Parameter(aC1, aPL1);
-    aT[j2]  = ElCLib::Parameter(aC2, aPL1);
+
+    const double aDist2  = aPL1.SquareDistance(aPL2);
+    const bool   bNbExt6 = aDist2 > aTolD2;
+
+    myNbExt = 5;
+    double aT[2];
+    aT[j1] = ElCLib::Parameter(aC1, aPL1);
+    aT[j2] = ElCLib::Parameter(aC2, aPL1);
     myPoint[4][j1].SetValues(aT[j1], aPL1);
     myPoint[4][j2].SetValues(aT[j2], aPL1);
-    mySqDist[4] = 0.;
-    //
+    mySqDist[4] = 0.0;
+
     if (bNbExt6)
     {
       myNbExt = 6;
@@ -1389,10 +1250,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
       aT[j2]  = ElCLib::Parameter(aC2, aPL2);
       myPoint[5][j1].SetValues(aT[j1], aPL2);
       myPoint[5][j2].SetValues(aT[j2], aPL2);
-      mySqDist[5] = 0.;
+      mySqDist[5] = 0.0;
     }
-    //
-  } // if (!bOut || !bIn) {
+  }
 }
 
 //=================================================================================================
