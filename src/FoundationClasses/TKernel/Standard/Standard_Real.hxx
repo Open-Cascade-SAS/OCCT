@@ -41,7 +41,7 @@ inline double ACos(const double theValue)
 //! The max error is about 1 degree near Value=0.
 //! NOTE: Avoid using this function in new code, it presumably slower then std::acos.
 Standard_DEPRECATED("Deprecated, use std::acos instead")
-Standard_EXPORT [[nodiscard]] double ACosApprox(const double theValue);
+Standard_EXPORT double ACosApprox(const double theValue);
 
 //! Returns the value of the arc sine of a @p theValue.
 Standard_DEPRECATED("This function duplicates std::asin and will be removed in future releases. "
