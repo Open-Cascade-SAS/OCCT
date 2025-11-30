@@ -236,34 +236,33 @@ public:
   }
 
   //! ReSize
-  void ReSize(const Standard_Integer N)
+  void ReSize(const size_t theN)
   {
-    NCollection_ListNode** newdata = NULL;
-    NCollection_ListNode** dummy   = NULL;
-    Standard_Integer       newBuck;
-    if (BeginResize(N, newBuck, newdata, dummy))
+    NCollection_ListNode** newdata = nullptr;
+    NCollection_ListNode** dummy   = nullptr;
+    size_t                 newBuck = 0;
+    if (BeginResize(theN, newBuck, newdata, dummy))
     {
       if (myData1)
       {
         DataMapNode** olddata = (DataMapNode**)myData1;
-        DataMapNode * p, *q;
-        for (int i = 0; i <= NbBuckets(); i++)
+        for (size_t i = 0; i < NbBuckets(); ++i)
         {
           if (olddata[i])
           {
-            p = olddata[i];
+            DataMapNode* p = olddata[i];
             while (p)
             {
-              const size_t k = HashCode(p->Key(), newBuck);
-              q              = (DataMapNode*)p->Next();
-              p->Next()      = newdata[k];
-              newdata[k]     = p;
-              p              = q;
+              const size_t  k = HashCode(p->Key(), newBuck);
+              DataMapNode*  q = (DataMapNode*)p->Next();
+              p->Next()       = newdata[k];
+              newdata[k]      = p;
+              p               = q;
             }
           }
         }
       }
-      EndResize(N, newBuck, newdata, dummy);
+      EndResize(newBuck, newdata, dummy);
     }
   }
 
@@ -598,9 +597,9 @@ protected:
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const size_t theNbBuckets) const
   {
-    return myHasher(theKey) % theUpperBound + 1;
+    return myHasher(theKey) & (theNbBuckets - 1);
   }
 
 private:

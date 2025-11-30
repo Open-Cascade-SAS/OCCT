@@ -88,7 +88,7 @@ void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
 
 inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
   const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-  const int                                             theUpper)
+  const size_t                                          theNbBuckets)
 {
   // copied from NCollection_CellFilter
   constexpr uint64_t aShiftBits = (CHAR_BIT * sizeof(int64_t) - 1) / 3;
@@ -96,14 +96,14 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
   aHashCode                     = (aHashCode << aShiftBits) ^ theVec[0];
   aHashCode                     = (aHashCode << aShiftBits) ^ theVec[1];
   aHashCode                     = (aHashCode << aShiftBits) ^ theVec[2];
-  return aHashCode % theUpper + 1;
+  return aHashCode & (theNbBuckets - 1);
 }
 
 //=================================================================================================
 
 inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Vec3<float>& thePos,
                                                             const NCollection_Vec3<float>& theNorm,
-                                                            const int theUpper) const
+                                                            const size_t theNbBuckets) const
 {
   (void)theNorm;
   if (myInvTol <= 0.0f)
@@ -116,11 +116,11 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Ve
     {
       aHashCode = ((aHashCode << 5) + aHashCode) ^ (*c);
     }
-    return aHashCode % theUpper + 1;
+    return aHashCode & (theNbBuckets - 1);
   }
 
   const CellVec3i anIndex = vec3ToCell(thePos);
-  return vec3iHashCode(anIndex, theUpper);
+  return vec3iHashCode(anIndex, theNbBuckets);
 }
 
 //=================================================================================================
@@ -252,18 +252,18 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
 
 //=================================================================================================
 
-inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
+inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const size_t theSize)
 {
-  NCollection_ListNode** aNewData   = NULL;
-  NCollection_ListNode** aDummy     = NULL;
-  int                    aNbNewBuck = 0;
+  NCollection_ListNode** aNewData   = nullptr;
+  NCollection_ListNode** aDummy     = nullptr;
+  size_t                 aNbNewBuck = 0;
   if (BeginResize(theSize, aNbNewBuck, aNewData, aDummy))
   {
     if (DataMapNode** anOldData = (DataMapNode**)myData1)
     {
-      for (int anOldBuckIter = 0; anOldBuckIter <= NbBuckets(); ++anOldBuckIter)
+      for (size_t anOldBuckIter = 0; anOldBuckIter < NbBuckets(); ++anOldBuckIter)
       {
-        for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != NULL;)
+        for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != nullptr;)
         {
           const size_t aNewHash  = hashCode(anOldNodeIter->Key(), aNbNewBuck);
           DataMapNode* aNextNode = (DataMapNode*)anOldNodeIter->Next();
@@ -273,7 +273,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
         }
       }
     }
-    EndResize(theSize, aNbNewBuck, aNewData, aDummy);
+    EndResize(aNbNewBuck, aNewData, aDummy);
   }
 }
 

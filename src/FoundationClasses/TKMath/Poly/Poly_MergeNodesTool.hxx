@@ -267,7 +267,7 @@ private:
                               const NCollection_Vec3<float>& theNorm);
 
     //! ReSize the map.
-    Standard_EXPORT void ReSize(const int theSize);
+    Standard_EXPORT void ReSize(const size_t theSize);
 
   private:
     //! Return cell index for specified 3D point and inverted cell size.
@@ -279,17 +279,17 @@ private:
     //! Hash code for integer vec3.
     Standard_EXPORT static size_t vec3iHashCode(
       const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-      const int                                             theUpper);
+      const size_t                                          theNbBuckets);
 
     //! Compute hash code.
     Standard_EXPORT size_t hashCode(const NCollection_Vec3<float>& thePos,
                                     const NCollection_Vec3<float>& theNorm,
-                                    const int                      theUpper) const;
+                                    const size_t                   theNbBuckets) const;
 
     //! Compute hash code.
-    size_t hashCode(const Vec3AndNormal& theKey, const int theUpper) const
+    size_t hashCode(const Vec3AndNormal& theKey, const size_t theNbBuckets) const
     {
-      return hashCode(theKey.Pos, theKey.Norm, theUpper);
+      return hashCode(theKey.Pos, theKey.Norm, theNbBuckets);
     }
 
     //! Compare two vectors with inversed tolerance.

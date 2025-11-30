@@ -21,6 +21,8 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
+#include <cstddef>
+
 typedef void (*NCollection_DelMapNode)(NCollection_ListNode*,
                                        Handle(NCollection_BaseAllocator)& theAl);
 
@@ -47,7 +49,7 @@ public:
   {
   protected:
     //! Empty constructor
-    Iterator(void) noexcept
+    Iterator() noexcept
         : myNbBuckets(0),
           myBuckets(nullptr),
           myBucket(0),
@@ -59,19 +61,13 @@ public:
     Iterator(const NCollection_BaseMap& theMap) noexcept
         : myNbBuckets(theMap.myNbBuckets),
           myBuckets(theMap.myData1),
-          myBucket(-1),
+          myBucket(SIZE_MAX),
           myNode(nullptr)
     {
-      if (!myBuckets)
-        myNbBuckets = -1;
-      else
-        do
-        {
-          myBucket++;
-          if (myBucket > myNbBuckets)
-            return;
-          myNode = myBuckets[myBucket];
-        } while (!myNode);
+      if (myBuckets)
+      {
+        PNext();
+      }
     }
 
   public:
@@ -80,56 +76,63 @@ public:
     {
       myNbBuckets = theMap.myNbBuckets;
       myBuckets   = theMap.myData1;
-      myBucket    = -1;
+      myBucket    = SIZE_MAX;
       myNode      = nullptr;
-      if (!myBuckets)
-        myNbBuckets = -1;
-      PNext();
+      if (myBuckets)
+      {
+        PNext();
+      }
     }
 
     //! Reset
-    void Reset(void) noexcept
+    void Reset() noexcept
     {
-      myBucket = -1;
+      myBucket = SIZE_MAX;
       myNode   = nullptr;
-      PNext();
+      if (myBuckets)
+      {
+        PNext();
+      }
     }
 
     //! Performs comparison of two iterators.
-    Standard_Boolean IsEqual(const Iterator& theOther) const noexcept
+    bool IsEqual(const Iterator& theOther) const noexcept
     {
       return myBucket == theOther.myBucket && myNode == theOther.myNode;
     }
 
   protected:
     //! PMore
-    Standard_Boolean PMore(void) const noexcept { return (myNode != nullptr); }
+    bool PMore() const noexcept { return myNode != nullptr; }
 
     //! PNext
-    void PNext(void) noexcept
+    void PNext() noexcept
     {
-      if (!myBuckets)
-        return;
       if (myNode)
       {
         myNode = myNode->Next();
         if (myNode)
+        {
           return;
+        }
       }
-      while (!myNode)
+      ++myBucket;
+      while (myBucket < myNbBuckets)
       {
-        myBucket++;
-        if (myBucket > myNbBuckets)
-          return;
         myNode = myBuckets[myBucket];
+        if (myNode)
+        {
+          return;
+        }
+        ++myBucket;
       }
     }
 
   protected:
     // ---------- PRIVATE FIELDS ------------
-    Standard_Integer       myNbBuckets; //!< Total buckets in the map
+    size_t                 myNbBuckets; //!< Total buckets in the map
     NCollection_ListNode** myBuckets;   //!< Location in memory
-    Standard_Integer       myBucket;    //!< Current bucket
+    size_t                 myBucket;    //!< Current bucket
     NCollection_ListNode*  myNode;      //!< Current node
   };
 
@@ -137,13 +140,13 @@ public:
   // ---------- PUBLIC METHODS ------------
 
   //! NbBuckets
-  Standard_Integer NbBuckets() const noexcept { return myNbBuckets; }
+  Standard_Integer NbBuckets() const noexcept { return static_cast<Standard_Integer>(myNbBuckets); }
 
   //! Extent
-  Standard_Integer Extent() const noexcept { return mySize; }
+  Standard_Integer Extent() const noexcept { return static_cast<Standard_Integer>(mySize); }
 
   //! IsEmpty
-  Standard_Boolean IsEmpty() const noexcept { return mySize == 0; }
+  bool IsEmpty() const noexcept { return mySize == 0; }
 
   //! Statistics
   Standard_EXPORT void Statistics(Standard_OStream& S) const;
@@ -155,16 +158,16 @@ protected:
   // -------- PROTECTED METHODS -----------
 
   //! Constructor
-  NCollection_BaseMap(const Standard_Integer                   NbBuckets,
-                      const Standard_Boolean                   single,
+  NCollection_BaseMap(const size_t                             theNbBuckets,
+                      const bool                               theSingle,
                       const Handle(NCollection_BaseAllocator)& theAllocator)
       : myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator()
                                           : theAllocator),
         myData1(nullptr),
         myData2(nullptr),
-        myNbBuckets(NbBuckets),
+        myNbBuckets(theNbBuckets),
         mySize(0),
-        isDouble(!single)
+        myIsDouble(!theSingle)
   {
   }
 
@@ -175,7 +178,7 @@ protected:
         myData2(theOther.myData2),
         myNbBuckets(theOther.myNbBuckets),
         mySize(theOther.mySize),
-        isDouble(theOther.isDouble)
+        myIsDouble(theOther.myIsDouble)
   {
     theOther.myData1     = nullptr;
     theOther.myData2     = nullptr;
@@ -187,32 +190,30 @@ protected:
   virtual ~NCollection_BaseMap() {}
 
   //! BeginResize
-  Standard_EXPORT Standard_Boolean BeginResize(const Standard_Integer  NbBuckets,
-                                               Standard_Integer&       NewBuckets,
-                                               NCollection_ListNode**& data1,
-                                               NCollection_ListNode**& data2) const;
+  Standard_EXPORT bool BeginResize(const size_t            theNbBuckets,
+                                   size_t&                 theNewBuckets,
+                                   NCollection_ListNode**& theData1,
+                                   NCollection_ListNode**& theData2) const;
 
   //! EndResize
-  Standard_EXPORT void EndResize(const Standard_Integer NbBuckets,
-                                 const Standard_Integer NewBuckets,
-                                 NCollection_ListNode** data1,
-                                 NCollection_ListNode** data2) noexcept;
+  Standard_EXPORT void EndResize(const size_t           theNewBuckets,
+                                 NCollection_ListNode** theData1,
+                                 NCollection_ListNode** theData2) noexcept;
 
   //! Resizable
-  Standard_Boolean Resizable() const noexcept { return IsEmpty() || (mySize > myNbBuckets); }
+  bool Resizable() const noexcept { return IsEmpty() || (mySize > myNbBuckets); }
 
   //! Increment
-  Standard_Integer Increment() noexcept { return ++mySize; }
+  size_t Increment() noexcept { return ++mySize; }
 
   //! Decrement
-  Standard_Integer Decrement() noexcept { return --mySize; }
+  size_t Decrement() noexcept { return --mySize; }
 
   //! Destroy
-  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
-                               Standard_Boolean       doReleaseMemory = Standard_True);
+  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
 
   //! NextPrimeForMap
-  Standard_EXPORT Standard_Integer NextPrimeForMap(const Standard_Integer N) const noexcept;
+  Standard_EXPORT size_t NextPrimeForMap(const size_t theN) const noexcept;
 
   //! Exchange content of two maps without data copying
   void exchangeMapsData(NCollection_BaseMap& theOther) noexcept
@@ -241,9 +242,9 @@ protected:
 
 private:
   // ---------- PRIVATE FIELDS ------------
-  Standard_Integer       myNbBuckets;
-  Standard_Integer       mySize;
-  const Standard_Boolean isDouble;
+  size_t     myNbBuckets;
+  size_t     mySize;
+  const bool myIsDouble;
 
   // ---------- FRIEND CLASSES ------------
   friend class Iterator;

@@ -186,36 +186,35 @@ public:
   }
 
   //! ReSize
-  void ReSize(const Standard_Integer N)
+  void ReSize(const size_t theN)
   {
-    NCollection_ListNode** ppNewData1 = NULL;
-    NCollection_ListNode** ppNewData2 = NULL;
-    Standard_Integer       newBuck;
-    if (BeginResize(N, newBuck, ppNewData1, ppNewData2))
+    NCollection_ListNode** ppNewData1 = nullptr;
+    NCollection_ListNode** ppNewData2 = nullptr;
+    size_t                 newBuck    = 0;
+    if (BeginResize(theN, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
       {
-        DoubleMapNode *p, *q;
-        for (int i = 0; i <= NbBuckets(); i++)
+        for (size_t i = 0; i < NbBuckets(); ++i)
         {
           if (myData1[i])
           {
-            p = (DoubleMapNode*)myData1[i];
+            DoubleMapNode* p = (DoubleMapNode*)myData1[i];
             while (p)
             {
-              const size_t iK1 = HashCode1(p->Key1(), newBuck);
-              const size_t iK2 = HashCode2(p->Key2(), newBuck);
-              q                = (DoubleMapNode*)p->Next();
-              p->Next()        = ppNewData1[iK1];
-              p->Next2()       = (DoubleMapNode*)ppNewData2[iK2];
-              ppNewData1[iK1]  = p;
-              ppNewData2[iK2]  = p;
-              p                = q;
+              const size_t   iK1 = HashCode1(p->Key1(), newBuck);
+              const size_t   iK2 = HashCode2(p->Key2(), newBuck);
+              DoubleMapNode* q   = (DoubleMapNode*)p->Next();
+              p->Next()          = ppNewData1[iK1];
+              p->Next2()         = (DoubleMapNode*)ppNewData2[iK2];
+              ppNewData1[iK1]    = p;
+              ppNewData2[iK2]    = p;
+              p                  = q;
             }
           }
         }
       }
-      EndResize(N, newBuck, ppNewData1, ppNewData2);
+      EndResize(newBuck, ppNewData1, ppNewData2);
     }
   }
 
@@ -516,9 +515,9 @@ protected:
     return myHasher1(theKey1, theKey2);
   }
 
-  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const
+  size_t HashCode1(const TheKey1Type& theKey, const size_t theNbBuckets) const
   {
-    return myHasher1(theKey) % theUpperBound + 1;
+    return myHasher1(theKey) & (theNbBuckets - 1);
   }
 
   bool IsEqual2(const TheKey2Type& theKey1, const TheKey2Type& theKey2) const
@@ -526,9 +525,9 @@ protected:
     return myHasher2(theKey1, theKey2);
   }
 
-  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const
+  size_t HashCode2(const TheKey2Type& theKey, const size_t theNbBuckets) const
   {
-    return myHasher2(theKey) % theUpperBound + 1;
+    return myHasher2(theKey) & (theNbBuckets - 1);
   }
 
 protected:

@@ -215,16 +215,16 @@ public:
   }
 
   //! ReSize
-  void ReSize(const Standard_Integer theExtent)
+  void ReSize(const size_t theExtent)
   {
-    NCollection_ListNode** ppNewData1 = NULL;
-    NCollection_ListNode** ppNewData2 = NULL;
-    Standard_Integer       newBuck;
+    NCollection_ListNode** ppNewData1 = nullptr;
+    NCollection_ListNode** ppNewData2 = nullptr;
+    size_t                 newBuck    = 0;
     if (BeginResize(theExtent, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
       {
-        for (Standard_Integer aBucketIter = 0; aBucketIter <= NbBuckets(); ++aBucketIter)
+        for (size_t aBucketIter = 0; aBucketIter < NbBuckets(); ++aBucketIter)
         {
           if (myData1[aBucketIter])
           {
@@ -240,11 +240,10 @@ public:
           }
         }
       }
-      EndResize(theExtent,
-                newBuck,
+      EndResize(newBuck,
                 ppNewData1,
-                (NCollection_ListNode**)
-                  Standard::Reallocate(myData2, (newBuck + 1) * sizeof(NCollection_ListNode*)));
+                static_cast<NCollection_ListNode**>(
+                  Standard::Reallocate(myData2, newBuck * sizeof(NCollection_ListNode*))));
     }
   }
 
@@ -498,9 +497,9 @@ protected:
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const size_t theNbBuckets) const
   {
-    return myHasher(theKey) % theUpperBound + 1;
+    return myHasher(theKey) & (theNbBuckets - 1);
   }
 
 protected:

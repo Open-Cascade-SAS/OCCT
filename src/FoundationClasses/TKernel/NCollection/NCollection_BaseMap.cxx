@@ -16,59 +16,70 @@
 // Purpose:     Implementation of the BaseMap class
 
 #include <NCollection_BaseMap.hxx>
-#include <NCollection_Primes.hxx>
+
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-Standard_Boolean NCollection_BaseMap::BeginResize(const Standard_Integer  NbBuckets,
-                                                  Standard_Integer&       N,
-                                                  NCollection_ListNode**& data1,
-                                                  NCollection_ListNode**& data2) const
+bool NCollection_BaseMap::BeginResize(const size_t            theNbBuckets,
+                                      size_t&                 theNewBuckets,
+                                      NCollection_ListNode**& theData1,
+                                      NCollection_ListNode**& theData2) const
 {
   // get next size for the buckets array
-  N = NextPrimeForMap(NbBuckets);
-  if (N <= myNbBuckets)
+  theNewBuckets = NextPrimeForMap(theNbBuckets);
+  if (theNewBuckets <= myNbBuckets)
   {
     if (!myData1)
-      N = myNbBuckets;
+    {
+      theNewBuckets = myNbBuckets;
+    }
     else
-      return Standard_False;
+    {
+      return false;
+    }
   }
-  data1 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
-  if (isDouble)
+  theData1 =
+    static_cast<NCollection_ListNode**>(Standard::Allocate(theNewBuckets * sizeof(NCollection_ListNode*)));
+  if (myIsDouble)
   {
-    data2 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
+    theData2 =
+      static_cast<NCollection_ListNode**>(Standard::Allocate(theNewBuckets * sizeof(NCollection_ListNode*)));
   }
   else
-    data2 = nullptr;
-  return Standard_True;
+  {
+    theData2 = nullptr;
+  }
+  return true;
 }
 
 //=================================================================================================
 
-void NCollection_BaseMap::EndResize(const Standard_Integer theNbBuckets,
-                                    const Standard_Integer N,
-                                    NCollection_ListNode** data1,
-                                    NCollection_ListNode** data2) noexcept
+void NCollection_BaseMap::EndResize(const size_t           theNewBuckets,
+                                    NCollection_ListNode** theData1,
+                                    NCollection_ListNode** theData2) noexcept
 {
-  (void)theNbBuckets; // obsolete parameter
   if (myData1)
+  {
     Standard::Free(myData1);
-  if (myData2 && isDouble)
+  }
+  if (myData2 && myIsDouble)
+  {
     Standard::Free(myData2);
-  myNbBuckets = N;
-  myData1     = data1;
-  myData2     = data2;
+  }
+  myNbBuckets = theNewBuckets;
+  myData1     = theData1;
+  myData2     = theData2;
 }
 
 //=================================================================================================
 
-void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, Standard_Boolean doReleaseMemory)
+void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory)
 {
   if (!IsEmpty())
   {
-    const int aNbBuckets = NbBuckets();
-    for (int anInd = 0; anInd <= aNbBuckets; anInd++)
+    const size_t aNbBuckets = NbBuckets();
+    for (size_t anInd = 0; anInd < aNbBuckets; ++anInd)
     {
       if (myData1[anInd])
       {
@@ -84,16 +95,20 @@ void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, Standard_Boolean 
     }
     if (myData2)
     {
-      memset(myData2, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
+      memset(myData2, 0, aNbBuckets * sizeof(NCollection_ListNode*));
     }
     mySize = 0;
   }
   if (doReleaseMemory)
   {
     if (myData1)
+    {
       Standard::Free(myData1);
+    }
     if (myData2)
+    {
       Standard::Free(myData2);
+    }
     myData1 = myData2 = nullptr;
   }
 }
@@ -106,53 +121,73 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
   S << "This Map has " << myNbBuckets << " Buckets and " << mySize << " Keys\n\n";
 
   if (mySize == 0)
+  {
     return;
+  }
 
-  // compute statistics on 1
-  Standard_Integer*      sizes = new Standard_Integer[mySize + 1];
-  Standard_Integer       i, l, nb;
-  NCollection_ListNode*  p;
-  NCollection_ListNode** data;
+  // compute statistics on bucket chain lengths
+  NCollection_Array1<size_t> aSizes(0, static_cast<Standard_Integer>(mySize));
+  aSizes.Init(0);
 
   S << "\nStatistics for the first Key\n";
-  for (i = 0; i <= mySize; i++)
-    sizes[i] = 0;
-  data = (NCollection_ListNode**)myData1;
-  nb   = 0;
-  for (i = 0; i <= myNbBuckets; i++)
+  size_t aNbNonEmpty = 0;
+  for (size_t i = 0; i < myNbBuckets; ++i)
   {
-    l = 0;
-    p = data[i];
-    if (p)
-      nb++;
-    while (p)
+    size_t aLen = 0;
+    for (NCollection_ListNode* p = myData1[i]; p != nullptr; p = p->Next())
     {
-      l++;
-      p = p->Next();
+      ++aLen;
     }
-    sizes[l]++;
+    if (aLen > 0)
+    {
+      ++aNbNonEmpty;
+    }
+    ++aSizes[static_cast<Standard_Integer>(aLen)];
   }
 
   // display results
-  l = 0;
-  for (i = 0; i <= mySize; i++)
+  size_t aTotalLen = 0;
+  for (Standard_Integer i = 0; i <= static_cast<Standard_Integer>(mySize); ++i)
   {
-    if (sizes[i] > 0)
+    if (aSizes[i] > 0)
     {
-      l += sizes[i] * i;
-      S << std::setw(5) << sizes[i] << " buckets of size " << i << "\n";
+      aTotalLen += aSizes[i] * i;
+      S << std::setw(5) << aSizes[i] << " buckets of size " << i << "\n";
     }
   }
 
-  Standard_Real mean = ((Standard_Real)l) / ((Standard_Real)nb);
-  S << "\n\nMean of length : " << mean << "\n";
-
-  delete[] sizes;
+  const double aMean = aNbNonEmpty > 0 ? static_cast<double>(aTotalLen) / static_cast<double>(aNbNonEmpty) : 0.0;
+  S << "\n\nMean of length : " << aMean << "\n";
 }
 
 //=================================================================================================
 
-Standard_Integer NCollection_BaseMap::NextPrimeForMap(const Standard_Integer N) const noexcept
+size_t NCollection_BaseMap::NextPrimeForMap(const size_t theN) const noexcept
 {
-  return NCollection_Primes::NextPrimeForMap(N);
+  // Use power of 2 for bucket count to enable fast modulo via bitwise AND.
+  // Minimum bucket count is 128 to ensure reasonable initial capacity.
+  constexpr size_t THE_MIN_BUCKETS = 128;
+  if (theN < THE_MIN_BUCKETS)
+  {
+    return THE_MIN_BUCKETS;
+  }
+  // Round up to next power of 2.
+  // If theN is already a power of 2, return theN; otherwise return the next power of 2.
+  size_t aValue = theN;
+  // Check if already power of 2
+  if ((aValue & (aValue - 1)) == 0)
+  {
+    return aValue;
+  }
+  // Find next power of 2 by filling all bits below the highest set bit, then adding 1
+  aValue |= aValue >> 1;
+  aValue |= aValue >> 2;
+  aValue |= aValue >> 4;
+  aValue |= aValue >> 8;
+  aValue |= aValue >> 16;
+  if constexpr (sizeof(size_t) > 4)
+  {
+    aValue |= aValue >> 32;
+  }
+  return aValue + 1;
 }
