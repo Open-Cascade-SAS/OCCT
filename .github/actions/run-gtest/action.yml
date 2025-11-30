@@ -63,6 +63,45 @@ runs:
         type gtest_output.log
         exit /b 0
 
+    - name: Set library paths on macOS
+      if: inputs.platform == 'macos'
+      shell: bash
+      run: |
+        convert_to_absolute() {
+          local result=""
+          IFS=':' read -ra PATHS <<< "$1"
+          for p in "${PATHS[@]}"; do
+            [ -n "$p" ] && [ "${p:0:1}" != "/" ] && p="${GITHUB_WORKSPACE}/$p"
+            result="${result}${result:+:}$p"
+          done
+          echo "$result"
+        }
+        # OCCT libraries are in install/lib
+        OCCT_LIB="${GITHUB_WORKSPACE}/install/lib"
+        DYLD_PATHS="$OCCT_LIB"
+        [ -n "$DYLD_LIBRARY_PATH" ] && DYLD_PATHS="$DYLD_PATHS:$(convert_to_absolute "$DYLD_LIBRARY_PATH")"
+        echo "DYLD_LIBRARY_PATH=$DYLD_PATHS" >> $GITHUB_ENV
+        echo "DYLD_FALLBACK_LIBRARY_PATH=$DYLD_PATHS" >> $GITHUB_ENV
+
+    - name: Set library paths on Linux
+      if: inputs.platform == 'linux'
+      shell: bash
+      run: |
+        convert_to_absolute() {
+          local result=""
+          IFS=':' read -ra PATHS <<< "$1"
+          for p in "${PATHS[@]}"; do
+            [ -n "$p" ] && [ "${p:0:1}" != "/" ] && p="${GITHUB_WORKSPACE}/$p"
+            result="${result}${result:+:}$p"
+          done
+          echo "$result"
+        }
+        # OCCT libraries are in install/lib
+        OCCT_LIB="${GITHUB_WORKSPACE}/install/lib"
+        LD_PATHS="$OCCT_LIB"
+        [ -n "$LD_LIBRARY_PATH" ] && LD_PATHS="$LD_PATHS:$(convert_to_absolute "$LD_LIBRARY_PATH")"
+        echo "LD_LIBRARY_PATH=$LD_PATHS" >> $GITHUB_ENV
+
     - name: Run OpenCascadeGTest on Unix platforms
       if: inputs.platform != 'windows'
       id: run-gtest-unix
@@ -73,8 +112,16 @@ runs:
       run: |
         cd install/bin
         source env.sh
-        ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1 || true
+        EXIT_CODE=0
+        ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1 || EXIT_CODE=$?
         cat gtest_output.log
+        # Check for crashes (signals like SIGABRT=134, SIGSEGV=139, etc.)
+        if [ $EXIT_CODE -gt 128 ]; then
+          echo "::error::GTest crashed with signal $((EXIT_CODE - 128))"
+          echo "gtest_crashed=true" >> $GITHUB_OUTPUT
+        else
+          echo "gtest_crashed=false" >> $GITHUB_OUTPUT
+        fi
 
     - name: Upload GTest results
       uses: actions/upload-artifact@v4.6.2
@@ -120,13 +167,19 @@ runs:
       run: |
         if [ "${{ inputs.platform }}" == "windows" ]; then
           echo "has_failures=${{ steps.check-failures-windows.outputs.has_failures }}" >> $GITHUB_OUTPUT
+          echo "crashed=false" >> $GITHUB_OUTPUT
         else
           echo "has_failures=${{ steps.check-failures-unix.outputs.has_failures }}" >> $GITHUB_OUTPUT
+          echo "crashed=${{ steps.run-gtest-unix.outputs.gtest_crashed }}" >> $GITHUB_OUTPUT
         fi
 
-    - name: Fail job if tests failed
-      if: steps.check-failures.outputs.has_failures == 'true'
+    - name: Fail job if tests failed or crashed
+      if: steps.check-failures.outputs.has_failures == 'true' || steps.check-failures.outputs.crashed == 'true'
       shell: bash
       run: |
-        echo "::error::GTest failures detected"
+        if [ "${{ steps.check-failures.outputs.crashed }}" == "true" ]; then
+          echo "::error::GTest crashed during execution"
+        else
+          echo "::error::GTest failures detected"
+        fi
         exit 1
