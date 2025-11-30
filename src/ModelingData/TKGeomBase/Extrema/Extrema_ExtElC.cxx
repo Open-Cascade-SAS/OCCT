@@ -61,29 +61,26 @@ constexpr double THE_TRIG_PRECISION_MULT = 1.0e-12;
 //! Axis-aligned sample values for direct search in non-coplanar circle extrema.
 constexpr double THE_AXIS_VALUES[THE_NB_AXIS_SAMPLES] = {0.0, THE_HALF_PI, M_PI, THE_THREE_HALF_PI};
 
-//! Refines direction vector to align with coordinate axes when very close.
+//! Refines direction vector to align with coordinate axes when very close to ±1.
 //! @param[in,out] theDir Direction to refine
 void RefineDir(gp_Dir& theDir)
 {
-  constexpr double aEps    = RealEpsilon();
-  gp_XYZ           aCoords = theDir.XYZ();
+  constexpr double aEps = RealEpsilon();
+  const double     aX   = theDir.X();
+  const double     aY   = theDir.Y();
+  const double     aZ   = theDir.Z();
 
-  for (int i = 1; i <= 3; ++i)
+  if (std::abs(std::abs(aX) - 1.0) < aEps)
   {
-    const double aSign    = (aCoords.Coord(i) > 0.0) ? 1.0 : -1.0;
-    const double aLowBnd  = aSign - aEps;
-    const double aHighBnd = aSign + aEps;
-
-    if (aCoords.Coord(i) > aLowBnd && aCoords.Coord(i) < aHighBnd)
-    {
-      const int j            = (i % 3) + 1;
-      const int k            = ((i + 1) % 3) + 1;
-      aCoords.ChangeCoord(i) = aSign;
-      aCoords.ChangeCoord(j) = 0.0;
-      aCoords.ChangeCoord(k) = 0.0;
-      theDir.SetCoord(aCoords.X(), aCoords.Y(), aCoords.Z());
-      return;
-    }
+    theDir.SetCoord(aX > 0.0 ? 1.0 : -1.0, 0.0, 0.0);
+  }
+  else if (std::abs(std::abs(aY) - 1.0) < aEps)
+  {
+    theDir.SetCoord(0.0, aY > 0.0 ? 1.0 : -1.0, 0.0);
+  }
+  else if (std::abs(std::abs(aZ) - 1.0) < aEps)
+  {
+    theDir.SetCoord(0.0, 0.0, aZ > 0.0 ? 1.0 : -1.0);
   }
 }
 
