@@ -11,17 +11,17 @@ set(FLAGS_ALREADY_INCLUDED 1)
 # project can be switched later to use Intel Compiler (ICC).
 # Enforcing /fp:precise ensures that in such case ICC will use correct
 # option instead of its default /fp:fast which is harmful for OCCT.
-#
-# Also suppress C26812 warning (prefer 'enum class' over 'enum').
 if (MSVC)
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise /wd26812")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise")
   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /fp:precise")
   # Correct __cplusplus macro value for C++17 detection
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
   # Strict C++ conformance mode for better standards compliance
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
-  # suppress warning on using portable non-secure functions in favor of non-portable secure ones
-  # prevent min() and max() macros from Windows.h
+  # Suppress C26812 warning (prefer 'enum class' over 'enum')
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd26812")
+  # Suppress warnings on using portable non-secure functions in favor of non-portable secure ones
+  # Prevent min() and max() macros from Windows.h
   add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DNOMINMAX)
 else()
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -184,7 +184,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "[
     # Link-Time Optimization for linker
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto")
     set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -flto")
-    set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} -flto")
     set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -flto")
 
     # Linux-specific linker optimizations
@@ -197,10 +196,18 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "[
       set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
       set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
       set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,--as-needed")
-      # Security hardening: Full RELRO (Relocation Read-Only)
+      # Security hardening: Full RELRO
       set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
       set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
       set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,-z,relro,-z,now")
+    endif()
+
+    # macOS-specific linker optimizations
+    if (APPLE)
+      # Dead code elimination and strip local symbols
+      set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-dead_strip")
+      set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-dead_strip,-x")
+      set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} -Wl,-dead_strip,-x")
     endif()
   endif()
   if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
@@ -217,11 +224,11 @@ endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
   if (APPLE)
-    # CLang can be used with both libstdc++ and libc++, however on OS X libstdc++ is outdated.
+    # Clang can be used with both libstdc++ and libc++, however on macOS libstdc++ is outdated.
     set (CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
   endif()
-  if (NOT WIN32)
-    # Optimize size of binaries
+  if (NOT WIN32 AND NOT APPLE)
+    # Strip symbols to optimize size of binaries
     set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
   endif()
 endif()
