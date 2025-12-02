@@ -69,7 +69,7 @@ set (CMAKE_CONFIGURATION_TYPES Release Debug RelWithDebInfo CACHE INTERNAL "" FO
 
 # set using C++ standard
 set (BUILD_CPP_STANDARD "C++17" CACHE STRING "Select using c++ standard.")
-set_property(CACHE BUILD_CPP_STANDARD PROPERTY STRINGS "C++17" "C++20" "C++23" "C++26")
+set_property(CACHE BUILD_CPP_STANDARD PROPERTY STRINGS "C++17" "C++20" "C++23 C++26")
 
 # Set desired C++ standard
 if ("${BUILD_CPP_STANDARD}" STREQUAL "C++17")

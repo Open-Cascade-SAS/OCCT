@@ -61,7 +61,7 @@ macro (FIND_AND_WRAP_RESOURCE_FILE RESOURCE_FILE_NAME RCC_FILES)
     else()
       qt4_add_resources(RCC_FILES "${RESOURCE_FILE_NAME}")
       # suppress some GCC warnings coming from source files generated from .qrc resources
-      if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
       endif()
     endif()
