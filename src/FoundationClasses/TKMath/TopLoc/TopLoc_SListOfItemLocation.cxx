@@ -15,24 +15,16 @@
 // commercial license or contractual agreement.
 
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_HashUtils.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_SListNodeOfItemLocation.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
-#include <TopLoc_Datum3D.hxx>
 
 //=================================================================================================
 
 TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_ItemLocation&        anItem,
                                                        const TopLoc_SListOfItemLocation& aTail)
+    : myNode(new TopLoc_SListNodeOfItemLocation(anItem, aTail))
 {
-  // Compute hash combining item's datum, power, and tail's cached hash
-  const size_t aCombined[3] = {std::hash<Handle(TopLoc_Datum3D)>{}(anItem.myDatum),
-                               static_cast<size_t>(anItem.myPower),
-                               aTail.HashCode()};
-  const size_t aHash        = opencascade::hashBytes(aCombined, sizeof(aCombined));
-
-  myNode = new TopLoc_SListNodeOfItemLocation(anItem, aTail, aHash);
   if (!myNode->Tail().IsEmpty())
   {
     const gp_Trsf& aT = myNode->Tail().Value().myTrsf;
@@ -69,11 +61,4 @@ const TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Tail() const
     return myNode->Tail();
   else
     return *this;
-}
-
-//=================================================================================================
-
-size_t TopLoc_SListOfItemLocation::HashCode() const noexcept
-{
-  return myNode.IsNull() ? 0 : myNode->HashCode();
 }

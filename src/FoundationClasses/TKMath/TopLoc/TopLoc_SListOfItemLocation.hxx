@@ -98,10 +98,6 @@ public:
   //! list the tail is the list itself.
   Standard_EXPORT const TopLoc_SListOfItemLocation& Tail() const;
 
-  //! Returns the cached hash of this list.
-  //! For an empty list, returns 0.
-  Standard_EXPORT size_t HashCode() const noexcept;
-
   //! Returns the underlying node handle.
   //! Used for fast identity comparison between lists.
   const Handle(TopLoc_SListNodeOfItemLocation)& Node() const noexcept { return myNode; }

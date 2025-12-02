@@ -157,12 +157,17 @@ Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const
   {
     return Standard_True;
   }
-  // Fast rejection: different cached hashes means not equal
-  if (myItems.HashCode() != theOther.myItems.HashCode())
+  // One is identity, the other is not
+  if (IsIdentity() || theOther.IsIdentity())
   {
     return Standard_False;
   }
-  // Hash collision: need element-by-element comparison
+  // Fast check: compare first power
+  if (FirstPower() != theOther.FirstPower())
+  {
+    return Standard_False;
+  }
+  // Element-by-element comparison
   TopLoc_SListOfItemLocation anIt1 = myItems;
   TopLoc_SListOfItemLocation anIt2 = theOther.myItems;
   while (anIt1.More() && anIt2.More())
