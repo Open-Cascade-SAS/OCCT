@@ -20,8 +20,11 @@
 #include <Standard_Dump.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopLoc_SListNodeOfItemLocation.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
+
+//=================================================================================================
+
+TopLoc_Location::TopLoc_Location() {}
 
 //=================================================================================================
 
@@ -105,6 +108,26 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   return result;
 }
 
+//=======================================================================
+// function : Divided
+// purpose  : operator /   this*Other.Inverted()
+//=======================================================================
+
+TopLoc_Location TopLoc_Location::Divided(const TopLoc_Location& Other) const
+{
+  return Multiplied(Other.Inverted());
+}
+
+//=======================================================================
+// function : Predivided
+// purpose  : return Other.Inverted() * this
+//=======================================================================
+
+TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
+{
+  return Other.Inverted().Multiplied(*this);
+}
+
 //=================================================================================================
 
 TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
@@ -115,8 +138,6 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
     return *this;
   if (pwr == 0)
     return TopLoc_Location();
-  if (pwr == 2)
-    return Squared(); // Fast path for most common case
 
   // optimisation when just one element
   if (myItems.Tail().IsEmpty())
@@ -126,62 +147,41 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
     return result;
   }
 
-  // Binary exponentiation for efficient computation: O(log n) instead of O(n)
   if (pwr > 0)
-  {
-    if (pwr % 2 == 0)
-    {
-      // Even power: L^n = (L^(n/2))^2
-      return Powered(pwr / 2).Squared();
-    }
-    else
-    {
-      // Odd power: L^n = L * L^(n-1)
-      return Multiplied(Powered(pwr - 1));
-    }
-  }
+    return Multiplied(Powered(pwr - 1));
   else
-  {
     return Inverted().Powered(-pwr);
-  }
 }
 
 //=================================================================================================
 
-// Two locations are Equal if the Items have the same LocalValues and Powers
+// two locations are Equal if the Items have the same LocalValues and Powers
+// this is a recursive function to test it
 
-Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
+Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 {
-  // Fast path: same node means equal (handles identity == identity case too)
-  if (myItems.Node() == theOther.myItems.Node())
+  const void** p = (const void**)&myItems;
+  const void** q = (const void**)&Other.myItems;
+  if (*p == *q)
   {
     return Standard_True;
   }
-  // Fast rejection: different cached hashes means not equal
-  if (myItems.HashCode() != theOther.myItems.HashCode())
+  if (IsIdentity() || Other.IsIdentity())
   {
     return Standard_False;
   }
-  // Hash collision: need element-by-element comparison
-  TopLoc_SListOfItemLocation anIt1 = myItems;
-  TopLoc_SListOfItemLocation anIt2 = theOther.myItems;
-  while (anIt1.More() && anIt2.More())
+  if (FirstDatum() != Other.FirstDatum())
   {
-    if (anIt1.Node() == anIt2.Node())
-    {
-      return Standard_True; // Shared tail
-    }
-    const TopLoc_ItemLocation& aItem1 = anIt1.Value();
-    const TopLoc_ItemLocation& aItem2 = anIt2.Value();
-    if (aItem1.myDatum != aItem2.myDatum || aItem1.myPower != aItem2.myPower)
-    {
-      return Standard_False;
-    }
-    anIt1.Next();
-    anIt2.Next();
+    return Standard_False;
   }
-  // Equal only if both exhausted
-  return !anIt1.More() && !anIt2.More();
+  if (FirstPower() != Other.FirstPower())
+  {
+    return Standard_False;
+  }
+  else
+  {
+    return NextLocation() == Other.NextLocation();
+  }
 }
 
 //=================================================================================================

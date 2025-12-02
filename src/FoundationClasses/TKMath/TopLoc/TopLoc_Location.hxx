@@ -39,7 +39,7 @@ public:
 
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".
-  TopLoc_Location() noexcept = default;
+  Standard_EXPORT TopLoc_Location();
 
   //! Constructs the local coordinate system object defined
   //! by the transformation T. T invokes in turn, a TopLoc_Datum3D object.
@@ -52,10 +52,10 @@ public:
   Standard_EXPORT TopLoc_Location(const Handle(TopLoc_Datum3D)& D);
 
   //! Returns true if this location is equal to the Identity transformation.
-  Standard_Boolean IsIdentity() const noexcept;
+  Standard_Boolean IsIdentity() const;
 
   //! Resets this location to the Identity transformation.
-  void Identity() noexcept;
+  void Identity();
 
   //! Returns the first elementary datum of the
   //! Location. Use the NextLocation function recursively to access
@@ -98,10 +98,7 @@ public:
   }
 
   //! Returns <me> / <Other>.
-  Standard_NODISCARD TopLoc_Location Divided(const TopLoc_Location& Other) const
-  {
-    return Multiplied(Other.Inverted());
-  }
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Divided(const TopLoc_Location& Other) const;
 
   Standard_NODISCARD TopLoc_Location operator/(const TopLoc_Location& Other) const
   {
@@ -109,30 +106,23 @@ public:
   }
 
   //! Returns <Other>.Inverted() * <me>.
-  Standard_NODISCARD TopLoc_Location Predivided(const TopLoc_Location& Other) const
-  {
-    return Other.Inverted().Multiplied(*this);
-  }
+  Standard_NODISCARD Standard_EXPORT TopLoc_Location Predivided(const TopLoc_Location& Other) const;
 
   //! Returns me at the power <pwr>. If <pwr> is zero
   //! returns Identity. <pwr> can be lower than zero
   //! (usual meaning for powers).
   Standard_NODISCARD Standard_EXPORT TopLoc_Location Powered(const Standard_Integer pwr) const;
 
-  //! Returns the square of this location (optimized version of Powered(2)).
-  //! This is the most common power operation in actual usage.
-  Standard_NODISCARD TopLoc_Location Squared() const { return Multiplied(*this); }
-
   //! Returns a hashed value for this local coordinate system. This value is used, with map tables,
   //! to store and retrieve the object easily
   //! @return a computed hash code
-  size_t HashCode() const noexcept;
+  size_t HashCode() const;
 
   //! Returns true if this location and the location Other
   //! have the same elementary data, i.e. contain the same
   //! series of TopLoc_Datum3D and respective powers.
   //! This method is an alias for operator ==.
-  Standard_EXPORT Standard_Boolean IsEqual(const TopLoc_Location& Other) const noexcept;
+  Standard_EXPORT Standard_Boolean IsEqual(const TopLoc_Location& Other) const;
 
   Standard_Boolean operator==(const TopLoc_Location& Other) const { return IsEqual(Other); }
 
@@ -151,10 +141,11 @@ public:
   Standard_EXPORT void ShallowDump(Standard_OStream& S) const;
 
   //! Clear myItems
-  void Clear() noexcept { myItems.Clear(); }
+  void Clear() { myItems.Clear(); }
 
-  static constexpr Standard_Real ScalePrec() { return 1.e-14; }
+  static Standard_Real ScalePrec() { return 1.e-14; }
 
+protected:
 private:
   TopLoc_SListOfItemLocation myItems;
 };
