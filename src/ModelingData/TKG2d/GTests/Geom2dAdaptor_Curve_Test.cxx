@@ -39,7 +39,7 @@ protected:
     myLine = new Geom2d_Line(aLine);
 
     // Create a 2D circle for testing
-    gp_Pnt2d aCenter(5.0, 5.0);
+    gp_Pnt2d  aCenter(5.0, 5.0);
     gp_Circ2d aCirc(gp_Ax2d(aCenter, gp_Dir2d(1.0, 0.0)), 3.0);
     myCircle = new Geom2d_Circle(aCirc);
   }
@@ -192,7 +192,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
   EXPECT_NO_THROW(anAdaptor.Load(myCircle, aParam, aParam));
 
   // Verify the curve represents a single point
-  gp_Pnt2d aPoint = anAdaptor.Value(aParam);
+  gp_Pnt2d aPoint         = anAdaptor.Value(aParam);
   gp_Pnt2d aExpectedPoint = myCircle->Value(aParam);
 
   EXPECT_TRUE(aPoint.IsEqual(aExpectedPoint, Precision::Confusion()));
@@ -206,7 +206,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
   // Create a trimmed curve and test degenerated case
   Handle(Geom2d_TrimmedCurve) aTrimmedCurve = new Geom2d_TrimmedCurve(myLine, 0.0, 20.0);
 
-  const double aParam = 10.0;
+  const double        aParam = 10.0;
   Geom2dAdaptor_Curve anAdaptor;
   EXPECT_NO_THROW(anAdaptor.Load(aTrimmedCurve, aParam, aParam));
 

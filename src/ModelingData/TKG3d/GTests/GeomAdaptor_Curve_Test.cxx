@@ -191,7 +191,7 @@ TEST_F(GeomAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
   EXPECT_NO_THROW(anAdaptor.Load(myCircle, aParam, aParam));
 
   // Verify the curve represents a single point
-  gp_Pnt aPoint = anAdaptor.Value(aParam);
+  gp_Pnt aPoint         = anAdaptor.Value(aParam);
   gp_Pnt aExpectedPoint = myCircle->Value(aParam);
 
   EXPECT_TRUE(aPoint.IsEqual(aExpectedPoint, Precision::Confusion()));
@@ -205,7 +205,7 @@ TEST_F(GeomAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
   // Create a trimmed curve and test degenerated case
   Handle(Geom_TrimmedCurve) aTrimmedCurve = new Geom_TrimmedCurve(myLine, 0.0, 20.0);
 
-  const double aParam = 10.0;
+  const double      aParam = 10.0;
   GeomAdaptor_Curve anAdaptor;
   EXPECT_NO_THROW(anAdaptor.Load(aTrimmedCurve, aParam, aParam));
 
