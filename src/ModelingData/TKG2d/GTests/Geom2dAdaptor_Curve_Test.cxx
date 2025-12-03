@@ -34,7 +34,6 @@ protected:
   {
     // Create a simple 2D line for testing
     gp_Pnt2d aP1(0.0, 0.0);
-    gp_Pnt2d aP2(10.0, 10.0);
     gp_Lin2d aLine(aP1, gp_Dir2d(1.0, 1.0));
     myLine = new Geom2d_Line(aLine);
 
