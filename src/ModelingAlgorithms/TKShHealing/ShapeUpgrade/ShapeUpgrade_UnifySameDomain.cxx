@@ -332,9 +332,14 @@ static Standard_Real ComputeMinEdgeSize(const TopTools_SequenceOfShape& theEdges
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(anEdge, V1, V2);
     BRepAdaptor_Curve2d BAcurve2d(anEdge, theRefFace);
-    gp_Pnt2d            FirstP2d = BAcurve2d.Value(BAcurve2d.FirstParameter());
-    gp_Pnt2d            LastP2d  = BAcurve2d.Value(BAcurve2d.LastParameter());
-    Standard_Real       aSqDist;
+    if (BAcurve2d.Curve().IsNull())
+    {
+      continue;
+    }
+
+    const gp_Pnt2d FirstP2d = BAcurve2d.Value(BAcurve2d.FirstParameter());
+    const gp_Pnt2d LastP2d  = BAcurve2d.Value(BAcurve2d.LastParameter());
+    Standard_Real  aSqDist;
     if (V1.IsSame(V2) && !BRep_Tool::Degenerated(anEdge))
     {
       gp_Pnt2d MidP2d =
@@ -342,9 +347,11 @@ static Standard_Real ComputeMinEdgeSize(const TopTools_SequenceOfShape& theEdges
       aSqDist = FirstP2d.SquareDistance(MidP2d);
     }
     else
+    {
       aSqDist = FirstP2d.SquareDistance(LastP2d);
-    if (aSqDist < MinSize)
-      MinSize = aSqDist;
+    }
+
+    MinSize = std::min(MinSize, aSqDist);
   }
   MinSize = std::sqrt(MinSize);
   return MinSize;
@@ -3571,8 +3578,13 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
       {
         const TopoDS_Edge&  anEdge = TopoDS::Edge(edges(ii));
         BRepAdaptor_Curve2d aBAcurve(anEdge, F_RefFace);
-        gp_Pnt2d            aFirstPoint = aBAcurve.Value(aBAcurve.FirstParameter());
-        gp_Pnt2d            aLastPoint  = aBAcurve.Value(aBAcurve.LastParameter());
+        if (aBAcurve.Curve().IsNull())
+        {
+          continue;
+        }
+
+        gp_Pnt2d aFirstPoint = aBAcurve.Value(aBAcurve.FirstParameter());
+        gp_Pnt2d aLastPoint  = aBAcurve.Value(aBAcurve.LastParameter());
 
         if (aFirstPoint.X() < FaceUmin)
           FaceUmin = aFirstPoint.X();
@@ -3607,6 +3619,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
         Standard_Real        fpar, lpar;
         Handle(Geom2d_Curve) StartPCurve =
           BRep_Tool::CurveOnSurface(StartEdge, F_RefFace, fpar, lpar);
+        if (StartPCurve.IsNull())
+        {
+          edges.Remove(istart);
+          continue;
+        }
         TopoDS_Vertex StartVertex, CurVertex;
         TopExp::Vertices(StartEdge, StartVertex, CurVertex, Standard_True); // with orientation
         Standard_Real StartParam, CurParam;
