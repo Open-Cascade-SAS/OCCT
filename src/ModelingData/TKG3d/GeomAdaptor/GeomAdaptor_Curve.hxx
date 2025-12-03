@@ -80,7 +80,7 @@ public:
     {
       throw Standard_NullObject();
     }
-    if (theUFirst > theULast + Precision::PConfusion())
+    if (theUFirst > theULast + Precision::Confusion())
     {
       throw Standard_ConstructionError();
     }
