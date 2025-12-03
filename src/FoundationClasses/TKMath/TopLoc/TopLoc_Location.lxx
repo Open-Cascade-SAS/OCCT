@@ -65,8 +65,8 @@ inline size_t TopLoc_Location::HashCode() const noexcept
   // Hash using first element (datum + power)
   const TopLoc_ItemLocation& anItem = myItems.Value();
 
-  const size_t aCombined[2] = {std::hash<Handle(TopLoc_Datum3D)>{}(anItem.myDatum),
-                               opencascade::FNVHash::hash_combine(anItem.myPower)};
+  const size_t aCombined[2] = {opencascade::FNVHash::hash_combine(anItem.myPower),
+                               std::hash<Handle(TopLoc_Datum3D)>{}(anItem.myDatum)};
   return opencascade::hashBytes(aCombined, sizeof(aCombined));
 }
 
