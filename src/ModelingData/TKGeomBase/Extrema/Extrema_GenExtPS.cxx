@@ -996,25 +996,27 @@ void Extrema_GenExtPS::BuildBVH()
   if (myBVHSet.Size() > 0)
     return;
 
-  if (myS->GetType() == GeomAbs_BSplineSurface)
+  Standard_Boolean isBSpline = (myS->GetType() == GeomAbs_BSplineSurface);
+  Handle(Geom_BSplineSurface) aBspl;
+
+  if (isBSpline)
   {
-    Handle(Geom_BSplineSurface) aBspl   = myS->BSpline();
-    Standard_Integer            aUValue = aBspl->UDegree() * aBspl->NbUKnots();
-    Standard_Integer            aVValue = aBspl->VDegree() * aBspl->NbVKnots();
+    aBspl = myS->BSpline();
+    Standard_Integer aUValue = aBspl->UDegree() * aBspl->NbUKnots();
+    Standard_Integer aVValue = aBspl->VDegree() * aBspl->NbVKnots();
     // 300 is value, which is used for singular points (see Extrema_ExtPS.cxx::Initialize(...))
     if (aUValue > myusample)
       myusample = std::min(aUValue, 300);
     if (aVValue > myvsample)
       myvsample = std::min(aVValue, 300);
   }
-  //
+
   CorrectNbSamples(*myS, myumin, myusup, myusample, myvmin, myvsup, myvsample);
-  //
+
   Standard_Real PasU = myusup - myumin;
   Standard_Real PasV = myvsup - myvmin;
   Standard_Real U0   = PasU / myusample / 100.;
   Standard_Real V0   = PasV / myvsample / 100.;
-  gp_Pnt        P1;
   PasU = (PasU - U0) / (myusample - 1);
   PasV = (PasV - V0) / (myvsample - 1);
   U0   = U0 / 2. + myumin;
@@ -1023,29 +1025,83 @@ void Extrema_GenExtPS::BuildBVH()
   // build grid of parametric points
   myUParams = new TColStd_HArray1OfReal(1, myusample);
   myVParams = new TColStd_HArray1OfReal(1, myvsample);
-  Standard_Integer NoU, NoV;
-  Standard_Real    U = U0, V = V0;
-  for (NoU = 1; NoU <= myusample; NoU++, U += PasU)
-    myUParams->SetValue(NoU, U);
-  for (NoV = 1; NoV <= myvsample; NoV++, V += PasV)
-    myVParams->SetValue(NoV, V);
 
-  // Resize points array and build BVH
+  // Resize points array and prepare BVH
   myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
   myBVHSet.SetSize(static_cast<Standard_Size>(myusample * myvsample));
 
-  for (NoU = 1; NoU <= myusample; NoU++)
+  // Try optimized BSpline evaluation (pre-computed span indices avoid repeated binary search)
+  if (isBSpline && !aBspl.IsNull())
   {
-    for (NoV = 1; NoV <= myvsample; NoV++)
+    BSplSLib_GridEvaluator anEval;
+    const TColStd_Array2OfReal* aWeights = aBspl->Weights();
+    anEval.Initialize(aBspl->UDegree(),
+                      aBspl->VDegree(),
+                      aBspl->Poles(),
+                      aWeights,
+                      aBspl->UKnotSequence(),
+                      aBspl->VKnotSequence(),
+                      aBspl->IsURational(),
+                      aBspl->IsVRational(),
+                      aBspl->IsUPeriodic(),
+                      aBspl->IsVPeriodic());
+
+    if (anEval.IsInitialized())
     {
-      P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
+      anEval.PrepareUParams(U0, U0 + PasU * (myusample - 1), myusample);
+      anEval.PrepareVParams(V0, V0 + PasV * (myvsample - 1), myvsample);
+
+      if (anEval.NbUParams() >= 2 && anEval.NbVParams() >= 2)
+      {
+        // Fill parameter arrays from evaluator
+        for (Standard_Integer i = 1; i <= myusample; ++i)
+          myUParams->SetValue(i, anEval.UParam(i));
+        for (Standard_Integer i = 1; i <= myvsample; ++i)
+          myVParams->SetValue(i, anEval.VParam(i));
+
+        // Evaluate grid points and build BVH
+        for (Standard_Integer NoU = 1; NoU <= myusample; ++NoU)
+        {
+          for (Standard_Integer NoV = 1; NoV <= myvsample; ++NoV)
+          {
+            gp_Pnt P1;
+            anEval.D0(NoU, NoV, P1);
+
+            Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), P1);
+            aParam.SetElementType(Extrema_Node);
+            aParam.SetIndices(NoU, NoV);
+            myPoints.SetValue(NoU, NoV, aParam);
+
+            BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(P1.X(), P1.Y(), P1.Z()),
+                                           BVH_Vec3d(P1.X(), P1.Y(), P1.Z()));
+            myBVHSet.Add(std::make_pair(NoU, NoV), aBox);
+          }
+        }
+        myBVHSet.Build();
+        return;
+      }
+    }
+  }
+
+  // Fallback: standard evaluation for non-BSpline surfaces or failed BSpline initialization
+  Standard_Real U = U0;
+  for (Standard_Integer NoU = 1; NoU <= myusample; NoU++, U += PasU)
+    myUParams->SetValue(NoU, U);
+  Standard_Real V = V0;
+  for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++, V += PasV)
+    myVParams->SetValue(NoV, V);
+
+  for (Standard_Integer NoU = 1; NoU <= myusample; ++NoU)
+  {
+    for (Standard_Integer NoV = 1; NoV <= myvsample; ++NoV)
+    {
+      gp_Pnt P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
 
       Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), P1);
       aParam.SetElementType(Extrema_Node);
       aParam.SetIndices(NoU, NoV);
       myPoints.SetValue(NoU, NoV, aParam);
 
-      // Add point to BVH
       BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(P1.X(), P1.Y(), P1.Z()),
                                      BVH_Vec3d(P1.X(), P1.Y(), P1.Z()));
       myBVHSet.Add(std::make_pair(NoU, NoV), aBox);
