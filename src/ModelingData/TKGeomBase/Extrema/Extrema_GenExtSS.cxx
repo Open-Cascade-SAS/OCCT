@@ -333,9 +333,9 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   myv1sup = V1sup;
   mytol1  = Tol1;
 
-  Standard_Real    U1, V1, U2, V2;
+  Standard_Real    U1, V1;
   Standard_Integer NoU1, NoV1, NoU2, NoV2;
-  gp_Pnt           P1, P2;
+  gp_Pnt           P1;
 
   // Try optimized path for S1 if it's a BSpline surface
   Standard_Boolean isS1GridBuilt = Standard_False;
@@ -401,43 +401,38 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   UVsup(3) = myu2sup;
   UVsup(4) = myv2sup;
 
-  Standard_Real distmin = RealLast(), distmax = 0.0, TheDist;
+  Standard_Real distmin = RealLast(), distmax = 0.0;
 
   Standard_Integer N1Umin = 0, N1Vmin = 0, N2Umin = 0, N2Vmin = 0;
-  gp_Pnt           PP1min, PP2min;
   Standard_Integer N1Umax = 0, N1Vmax = 0, N2Umax = 0, N2Vmax = 0;
-  gp_Pnt           PP1max, PP2max;
 
-  for (NoU1 = 1, U1 = U10; NoU1 <= myusample; NoU1++, U1 += PasU1)
+  // Find grid points with minimum and maximum distance between surfaces
+  // Note: This is O(N^4) - consider using spatial acceleration for large grids
+  for (NoU1 = 1; NoU1 <= myusample; NoU1++)
   {
-    for (NoV1 = 1, V1 = V10; NoV1 <= myvsample; NoV1++, V1 += PasV1)
+    for (NoV1 = 1; NoV1 <= myvsample; NoV1++)
     {
-      P1 = mypoints1->Value(NoU1, NoV1);
-      for (NoU2 = 1, U2 = U20; NoU2 <= myusample; NoU2++, U2 += PasU2)
+      const gp_Pnt& aP1 = mypoints1->Value(NoU1, NoV1);
+      for (NoU2 = 1; NoU2 <= myusample; NoU2++)
       {
-        for (NoV2 = 1, V2 = V20; NoV2 <= myvsample; NoV2++, V2 += PasV2)
+        for (NoV2 = 1; NoV2 <= myvsample; NoV2++)
         {
-          P2      = mypoints2->Value(NoU2, NoV2);
-          TheDist = P1.SquareDistance(P2);
-          if (TheDist < distmin)
+          const Standard_Real aDist = aP1.SquareDistance(mypoints2->Value(NoU2, NoV2));
+          if (aDist < distmin)
           {
-            distmin = TheDist;
+            distmin = aDist;
             N1Umin  = NoU1;
             N1Vmin  = NoV1;
             N2Umin  = NoU2;
             N2Vmin  = NoV2;
-            PP1min  = P1;
-            PP2min  = P2;
           }
-          if (TheDist > distmax)
+          if (aDist > distmax)
           {
-            distmax = TheDist;
+            distmax = aDist;
             N1Umax  = NoU1;
             N1Vmax  = NoV1;
             N2Umax  = NoU2;
             N2Vmax  = NoV2;
-            PP1max  = P1;
-            PP2max  = P2;
           }
         }
       }
