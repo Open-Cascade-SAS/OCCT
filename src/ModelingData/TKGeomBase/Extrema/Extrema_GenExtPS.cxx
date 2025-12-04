@@ -722,22 +722,29 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
       }
     }
 
-    myFacePntParams.Resize(0, myusample, 0, myvsample, false);
-    myUEdgePntParams.Resize(1, myusample - 1, 1, myvsample, false);
-    myVEdgePntParams.Resize(1, myusample, 1, myvsample - 1, false);
+    // Allocate edge/face parameter arrays only when MIN is needed (lazy allocation)
+    if (myFlag == Extrema_ExtFlag_MIN || myFlag == Extrema_ExtFlag_MINMAX)
+    {
+      myFacePntParams.Resize(0, myusample, 0, myvsample, false);
+      myUEdgePntParams.Resize(1, myusample - 1, 1, myvsample, false);
+      myVEdgePntParams.Resize(1, myusample, 1, myvsample - 1, false);
+    }
 
     // Fill boundary with negative square distance.
     // It is used for computation of Maximum.
-    for (Standard_Integer NoV = 0; NoV <= myvsample + 1; NoV++)
+    if (myFlag == Extrema_ExtFlag_MAX || myFlag == Extrema_ExtFlag_MINMAX)
     {
-      myPoints.ChangeValue(0, NoV).SetSqrDistance(-1.);
-      myPoints.ChangeValue(myusample + 1, NoV).SetSqrDistance(-1.);
-    }
+      for (Standard_Integer NoV = 0; NoV <= myvsample + 1; NoV++)
+      {
+        myPoints.ChangeValue(0, NoV).SetSqrDistance(-1.);
+        myPoints.ChangeValue(myusample + 1, NoV).SetSqrDistance(-1.);
+      }
 
-    for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
-    {
-      myPoints.ChangeValue(NoU, 0).SetSqrDistance(-1.);
-      myPoints.ChangeValue(NoU, myvsample + 1).SetSqrDistance(-1.);
+      for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
+      {
+        myPoints.ChangeValue(NoU, 0).SetSqrDistance(-1.);
+        myPoints.ChangeValue(NoU, myvsample + 1).SetSqrDistance(-1.);
+      }
     }
 
     myInit = Standard_True;
