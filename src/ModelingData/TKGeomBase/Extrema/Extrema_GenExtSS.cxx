@@ -15,8 +15,11 @@
 // commercial license or contractual agreement.
 
 #include <Adaptor3d_Surface.hxx>
+#include <BSplSLib_GridEvaluator.hxx>
 #include <Extrema_GenExtSS.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <math_BFGS.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
@@ -89,6 +92,76 @@ private:
   const Adaptor3d_Surface* myS1;
   const Adaptor3d_Surface* myS2;
 };
+
+//! Helper function to build grid for BSpline surface using optimized evaluator.
+//! @param theSurf    BSpline surface
+//! @param thePoints  output array of grid points
+//! @param theUMin    minimum U parameter
+//! @param theUMax    maximum U parameter
+//! @param theVMin    minimum V parameter
+//! @param theVMax    maximum V parameter
+//! @param theNbU     number of U samples (updated on output)
+//! @param theNbV     number of V samples (updated on output)
+//! @return true if grid was built successfully
+static Standard_Boolean buildBSplineGridSS(const Handle(Geom_BSplineSurface)& theSurf,
+                                           Handle(TColgp_HArray2OfPnt)&       thePoints,
+                                           const Standard_Real                theUMin,
+                                           const Standard_Real                theUMax,
+                                           const Standard_Real                theVMin,
+                                           const Standard_Real                theVMax,
+                                           Standard_Integer&                  theNbU,
+                                           Standard_Integer&                  theNbV)
+{
+  if (theSurf.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline surface data
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(theSurf->UDegree(),
+                    theSurf->VDegree(),
+                    theSurf->Poles(),
+                    theSurf->Weights(),
+                    theSurf->UKnotSequence(),
+                    theSurf->VKnotSequence(),
+                    theSurf->IsURational(),
+                    theSurf->IsVRational(),
+                    theSurf->IsUPeriodic(),
+                    theSurf->IsVPeriodic());
+
+  if (!anEval.IsInitialized())
+  {
+    return Standard_False;
+  }
+
+  // Prepare parameters - use knot-aligned sampling for better accuracy
+  anEval.PrepareUParamsFromKnots(theUMin, theUMax, theNbU);
+  anEval.PrepareVParamsFromKnots(theVMin, theVMax, theNbV);
+
+  // Update sample counts based on actual grid size
+  theNbU = anEval.NbUParams();
+  theNbV = anEval.NbVParams();
+
+  if (theNbU < 2 || theNbV < 2)
+  {
+    return Standard_False;
+  }
+
+  // Allocate points array (0-based to match original code)
+  thePoints = new TColgp_HArray2OfPnt(0, theNbU + 1, 0, theNbV + 1);
+
+  // Evaluate grid points using pre-computed span indices
+  for (Standard_Integer iu = 1; iu <= theNbU; ++iu)
+  {
+    for (Standard_Integer iv = 1; iv <= theNbV; ++iv)
+    {
+      thePoints->SetValue(iu, iv, anEval.Value(iu, iv));
+    }
+  }
+
+  return Standard_True;
+}
 
 //=================================================================================================
 
@@ -180,8 +253,6 @@ void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
                                   const Standard_Real      Tol2)
 {
   myS2      = &S2;
-  mypoints1 = new TColgp_HArray2OfPnt(0, NbU + 1, 0, NbV + 1);
-  mypoints2 = new TColgp_HArray2OfPnt(0, NbU + 1, 0, NbV + 1);
   myusample = NbU;
   myvsample = NbV;
   myu2min   = U2min;
@@ -190,28 +261,50 @@ void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
   myv2sup   = V2sup;
   mytol2    = Tol2;
 
-  // Parametrage de l echantillon sur S2
-
-  Standard_Real PasU = myu2sup - myu2min;
-  Standard_Real PasV = myv2sup - myv2min;
-  Standard_Real U0   = PasU / myusample / 100.;
-  Standard_Real V0   = PasV / myvsample / 100.;
-  gp_Pnt        P1;
-  PasU = (PasU - U0) / (myusample - 1);
-  PasV = (PasV - V0) / (myvsample - 1);
-  U0   = myu2min + U0 / 2.;
-  V0   = myv2min + V0 / 2.;
-
-  // Calcul des distances
-
-  Standard_Integer NoU, NoV;
-  Standard_Real    U, V;
-  for (NoU = 1, U = U0; NoU <= myusample; NoU++, U += PasU)
+  // Try optimized path for BSpline surfaces
+  Standard_Boolean isGridBuilt = Standard_False;
+  if (S2.GetType() == GeomAbs_BSplineSurface)
   {
-    for (NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+    Handle(Geom_BSplineSurface) aBspl = S2.BSpline();
+    Standard_Integer            aNbU  = myusample;
+    Standard_Integer            aNbV  = myvsample;
+    isGridBuilt = buildBSplineGridSS(aBspl, mypoints2, myu2min, myu2sup, myv2min, myv2sup, aNbU, aNbV);
+    if (isGridBuilt)
     {
-      P1 = myS2->Value(U, V);
-      mypoints2->SetValue(NoU, NoV, P1);
+      myusample = aNbU;
+      myvsample = aNbV;
+    }
+  }
+
+  // Allocate points1 array with same dimensions
+  mypoints1 = new TColgp_HArray2OfPnt(0, myusample + 1, 0, myvsample + 1);
+
+  // Fall back to standard evaluation if optimization was not applied
+  if (!isGridBuilt)
+  {
+    mypoints2 = new TColgp_HArray2OfPnt(0, myusample + 1, 0, myvsample + 1);
+
+    // Parametrage de l echantillon sur S2
+    Standard_Real PasU = myu2sup - myu2min;
+    Standard_Real PasV = myv2sup - myv2min;
+    Standard_Real U0   = PasU / myusample / 100.;
+    Standard_Real V0   = PasV / myvsample / 100.;
+    gp_Pnt        P1;
+    PasU = (PasU - U0) / (myusample - 1);
+    PasV = (PasV - V0) / (myvsample - 1);
+    U0   = myu2min + U0 / 2.;
+    V0   = myv2min + V0 / 2.;
+
+    // Calcul des distances
+    Standard_Integer NoU, NoV;
+    Standard_Real    U, V;
+    for (NoU = 1, U = U0; NoU <= myusample; NoU++, U += PasU)
+    {
+      for (NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+      {
+        P1 = myS2->Value(U, V);
+        mypoints2->SetValue(NoU, NoV, P1);
+      }
     }
   }
 }
@@ -247,8 +340,18 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   Standard_Integer NoU1, NoV1, NoU2, NoV2;
   gp_Pnt           P1, P2;
 
-  // Parametrage de l echantillon sur S1
+  // Try optimized path for S1 if it's a BSpline surface
+  Standard_Boolean isS1GridBuilt = Standard_False;
+  if (S1.GetType() == GeomAbs_BSplineSurface)
+  {
+    Handle(Geom_BSplineSurface) aBspl = S1.BSpline();
+    Standard_Integer            aNbU  = myusample;
+    Standard_Integer            aNbV  = myvsample;
+    isS1GridBuilt = buildBSplineGridSS(aBspl, mypoints1, myu1min, myu1sup, myv1min, myv1sup, aNbU, aNbV);
+    // Note: We don't update myusample/myvsample here as they were set by Initialize
+  }
 
+  // Parametrage de l echantillon sur S1
   Standard_Real PasU1 = myu1sup - myu1min;
   Standard_Real PasV1 = myv1sup - myv1min;
   Standard_Real U10   = PasU1 / myusample / 100.;
@@ -267,14 +370,16 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   U20                 = myu2min + U20 / 2.;
   V20                 = myv2min + V20 / 2.;
 
-  // Calcul des distances
-
-  for (NoU1 = 1, U1 = U10; NoU1 <= myusample; NoU1++, U1 += PasU1)
+  // Fall back to standard evaluation for S1 if optimization was not applied
+  if (!isS1GridBuilt)
   {
-    for (NoV1 = 1, V1 = V10; NoV1 <= myvsample; NoV1++, V1 += PasV1)
+    for (NoU1 = 1, U1 = U10; NoU1 <= myusample; NoU1++, U1 += PasU1)
     {
-      P1 = S1.Value(U1, V1);
-      mypoints1->SetValue(NoU1, NoV1, P1);
+      for (NoV1 = 1, V1 = V10; NoV1 <= myvsample; NoV1++, V1 += PasV1)
+      {
+        P1 = S1.Value(U1, V1);
+        mypoints1->SetValue(NoU1, NoV1, P1);
+      }
     }
   }
 

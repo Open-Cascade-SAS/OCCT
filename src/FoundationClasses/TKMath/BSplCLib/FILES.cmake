@@ -14,6 +14,8 @@ set(OCCT_BSplCLib_FILES
   BSplCLib_CacheParams.hxx
   BSplCLib_CurveComputation.pxx
   BSplCLib_EvaluatorFunction.hxx
+  BSplCLib_GridEvaluator.cxx
+  BSplCLib_GridEvaluator.hxx
   BSplCLib_KnotDistribution.hxx
   BSplCLib_MultDistribution.hxx
 )

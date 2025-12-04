@@ -15,12 +15,15 @@
 // commercial license or contractual agreement.
 
 #include <Extrema_GenExtCS.hxx>
+#include <BSplSLib_GridEvaluator.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_GlobOptFuncConicS.hxx>
 #include <Extrema_GlobOptFuncCQuadric.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_PSO.hxx>
@@ -108,6 +111,72 @@ static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS,
   {
     GetSurfMaxParamVals(*theS.BasisSurface(), theUmax, theVmax);
   }
+}
+
+//! Helper function to build grid for BSpline surface using optimized evaluator.
+//! @param theSurf    BSpline surface
+//! @param thePoints  output array of grid points (0-based)
+//! @param theUMin    minimum U parameter
+//! @param theUMax    maximum U parameter
+//! @param theVMin    minimum V parameter
+//! @param theVMax    maximum V parameter
+//! @param theNbU     number of U samples
+//! @param theNbV     number of V samples
+//! @return true if grid was built successfully
+static Standard_Boolean buildBSplineGridCS(const Handle(Geom_BSplineSurface)& theSurf,
+                                           Handle(TColgp_HArray2OfPnt)&       thePoints,
+                                           const Standard_Real                theUMin,
+                                           const Standard_Real                theUMax,
+                                           const Standard_Real                theVMin,
+                                           const Standard_Real                theVMax,
+                                           const Standard_Integer             theNbU,
+                                           const Standard_Integer             theNbV)
+{
+  if (theSurf.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline surface data
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(theSurf->UDegree(),
+                    theSurf->VDegree(),
+                    theSurf->Poles(),
+                    theSurf->Weights(),
+                    theSurf->UKnotSequence(),
+                    theSurf->VKnotSequence(),
+                    theSurf->IsURational(),
+                    theSurf->IsVRational(),
+                    theSurf->IsUPeriodic(),
+                    theSurf->IsVPeriodic());
+
+  if (!anEval.IsInitialized())
+  {
+    return Standard_False;
+  }
+
+  // Prepare parameters with uniform distribution (to match the expected grid dimensions)
+  anEval.PrepareUParams(theUMin, theUMax, theNbU + 1);
+  anEval.PrepareVParams(theVMin, theVMax, theNbV + 1);
+
+  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
+  {
+    return Standard_False;
+  }
+
+  // Allocate points array (0-based to match original code)
+  thePoints = new TColgp_HArray2OfPnt(0, theNbU, 0, theNbV);
+
+  // Evaluate grid points using pre-computed span indices
+  for (Standard_Integer iu = 0; iu <= theNbU; ++iu)
+  {
+    for (Standard_Integer iv = 0; iv <= theNbV; ++iv)
+    {
+      thePoints->SetValue(iu, iv, anEval.Value(iu + 1, iv + 1));
+    }
+  }
+
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -231,18 +300,30 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
   const Standard_Real aMaxU = myusup - du;
   const Standard_Real aMaxV = myvsup - dv;
 
-  const Standard_Real aStepSU = (aMaxU - aMinU) / myusample;
-  const Standard_Real aStepSV = (aMaxV - aMinV) / myvsample;
-
-  mySurfPnts = new TColgp_HArray2OfPnt(0, myusample, 0, myvsample);
-
-  Standard_Real aSU = aMinU;
-  for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
+  // Try optimized path for BSpline surfaces
+  Standard_Boolean isGridBuilt = Standard_False;
+  if (S.GetType() == GeomAbs_BSplineSurface)
   {
-    Standard_Real aSV = aMinV;
-    for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+    Handle(Geom_BSplineSurface) aBspl = S.BSpline();
+    isGridBuilt = buildBSplineGridCS(aBspl, mySurfPnts, aMinU, aMaxU, aMinV, aMaxV, myusample, myvsample);
+  }
+
+  // Fall back to standard evaluation if optimization was not applied
+  if (!isGridBuilt)
+  {
+    const Standard_Real aStepSU = (aMaxU - aMinU) / myusample;
+    const Standard_Real aStepSV = (aMaxV - aMinV) / myvsample;
+
+    mySurfPnts = new TColgp_HArray2OfPnt(0, myusample, 0, myvsample);
+
+    Standard_Real aSU = aMinU;
+    for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
     {
-      mySurfPnts->ChangeValue(aSUI, aSVI) = myS->Value(aSU, aSV);
+      Standard_Real aSV = aMinV;
+      for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+      {
+        mySurfPnts->ChangeValue(aSUI, aSVI) = myS->Value(aSU, aSV);
+      }
     }
   }
 }
