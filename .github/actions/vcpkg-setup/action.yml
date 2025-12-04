@@ -5,7 +5,7 @@ inputs:
   vcpkg-tag:
     description: 'vcpkg tag to checkout'
     required: false
-    default: '2025.06.13'
+    default: '2025.10.17'
   github-token:
     description: 'GitHub token for NuGet package access'
     required: true
