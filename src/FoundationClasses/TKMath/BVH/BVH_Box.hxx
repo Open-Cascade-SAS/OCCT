@@ -397,65 +397,10 @@ namespace BVH
 template <class T, int N>
 struct CenterAxis
 {
-  // Not implemented
-};
-
-template <class T>
-struct CenterAxis<T, 2>
-{
-  static inline T Center(const BVH_Box<T, 2>& theBox, const Standard_Integer theAxis)
+  //! Returns the center of the box along the specified axis using array access.
+  static inline T Center(const BVH_Box<T, N>& theBox, const Standard_Integer theAxis)
   {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
-  }
-};
-
-template <class T>
-struct CenterAxis<T, 3>
-{
-  static inline T Center(const BVH_Box<T, 3>& theBox, const Standard_Integer theAxis)
-  {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 2)
-    {
-      return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
-  }
-};
-
-template <class T>
-struct CenterAxis<T, 4>
-{
-  static inline T Center(const BVH_Box<T, 4>& theBox, const Standard_Integer theAxis)
-  {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 2)
-    {
-      return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
+    return (theBox.CornerMin()[theAxis] + theBox.CornerMax()[theAxis]) * static_cast<T>(0.5);
   }
 };
 
