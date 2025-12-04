@@ -112,8 +112,6 @@ public:
 };
 
 //! Defines axis aligned bounding box (AABB) based on BVH vectors.
-//! Uses sentinel values instead of a separate validity flag for memory efficiency.
-//! An uninitialized box has myMinPoint > myMaxPoint (using numeric limits).
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
@@ -123,15 +121,14 @@ public:
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 private:
-  //! Returns the sentinel value for minimum point (max<T>).
+  //! Returns the minimum point sentinel value for invalid box.
   static constexpr T minSentinel() noexcept { return (std::numeric_limits<T>::max)(); }
 
-  //! Returns the sentinel value for maximum point (lowest<T>).
+  //! Returns the maximum point sentinel value for invalid box.
   static constexpr T maxSentinel() noexcept { return (std::numeric_limits<T>::lowest)(); }
 
 public:
   //! Creates uninitialized bounding box.
-  //! Uses sentinel values (min > max) to indicate invalid state.
   constexpr BVH_Box() noexcept
       : myMinPoint(BVH_VecNt(minSentinel())),
         myMaxPoint(BVH_VecNt(maxSentinel()))
@@ -153,7 +150,7 @@ public:
   }
 
 public:
-  //! Clears bounding box by resetting to sentinel values.
+  //! Clears bounding box.
   constexpr void Clear() noexcept
   {
     myMinPoint = BVH_VecNt(minSentinel());
@@ -161,11 +158,9 @@ public:
   }
 
   //! Is bounding box valid?
-  //! Returns true if min <= max (i.e., not in sentinel state).
   constexpr Standard_Boolean IsValid() const noexcept { return myMinPoint[0] <= myMaxPoint[0]; }
 
   //! Appends new point to the bounding box.
-  //! Uses in-place component-wise operations to avoid temporary vector creation.
   void Add(const BVH_VecNt& thePoint);
 
 
@@ -526,7 +521,6 @@ struct SurfaceCalculator<T, 4>
 };
 
 //! Tool class for computing component-wise vector minimum and maximum.
-//! Uses if constexpr for compile-time dimension handling without specializations.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
@@ -534,7 +528,7 @@ struct BoxMinMax
 {
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
-  //! Computes component-wise minimum in-place: theVec1 = min(theVec1, theVec2)
+  //! Computes component-wise minimum in-place.
   static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
     if constexpr (N >= 1)
@@ -555,7 +549,7 @@ struct BoxMinMax
     }
   }
 
-  //! Computes component-wise maximum in-place: theVec1 = max(theVec1, theVec2)
+  //! Computes component-wise maximum in-place.
   static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
     if constexpr (N >= 1)
@@ -583,8 +577,6 @@ struct BoxMinMax
 template <class T, int N>
 void BVH_Box<T, N>::Add(const BVH_VecNt& thePoint)
 {
-  // With sentinel values (min=max<T>, max=lowest<T>), CwiseMin/CwiseMax
-  // naturally handle the first point case: min(max<T>, p) = p, max(lowest<T>, p) = p
   BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, thePoint);
   BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, thePoint);
 }
@@ -596,8 +588,6 @@ void BVH_Box<T, N>::Combine(const BVH_Box& theBox)
 {
   if (theBox.IsValid())
   {
-    // With sentinel values, CwiseMin/CwiseMax naturally handle the
-    // case when this box is invalid: min(max<T>, x) = x, max(lowest<T>, x) = x
     BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, theBox.myMinPoint);
     BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, theBox.myMaxPoint);
   }

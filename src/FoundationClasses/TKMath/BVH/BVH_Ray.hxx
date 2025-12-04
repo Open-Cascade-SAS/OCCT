@@ -21,7 +21,6 @@
 #include <limits>
 
 //! Describes a ray based on BVH vectors.
-//! Stores precomputed reciprocal direction for optimized ray-box intersection.
 template <class T, int N>
 class BVH_Ray
 {
@@ -31,11 +30,10 @@ public:
 public:
   BVH_VecNt Origin;    //!< Ray origin point
   BVH_VecNt Direct;    //!< Ray direction vector
-  BVH_VecNt InvDirect; //!< Precomputed reciprocal of direction (1/Direct) for fast ray-box tests
+  BVH_VecNt InvDirect; //!< Reciprocal of direction (1/Direct)
 
 public:
   //! Creates ray with given origin and direction.
-  //! Precomputes reciprocal direction for optimized intersection tests.
   constexpr BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect) noexcept
       : Origin(theOrigin),
         Direct(theDirect),
@@ -52,14 +50,13 @@ public:
   }
 
 private:
-  //! Computes reciprocal of direction vector component.
-  //! For zero components, uses infinity to handle parallel rays correctly.
+  //! Computes reciprocal of direction component (returns infinity for zero).
   static constexpr T invComponent(T theDir) noexcept
   {
     return (theDir != T(0)) ? (T(1) / theDir) : std::numeric_limits<T>::infinity();
   }
 
-  //! Computes reciprocal of direction vector using if constexpr for compile-time evaluation.
+  //! Computes reciprocal of direction vector.
   static constexpr BVH_VecNt computeInvDirect(const BVH_VecNt& theDirect) noexcept
   {
     if constexpr (N == 1)
