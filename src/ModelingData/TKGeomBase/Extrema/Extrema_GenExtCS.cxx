@@ -162,18 +162,22 @@ static Standard_Boolean buildBSplineGridCS(const Handle(Geom_BSplineSurface)& th
   anEval.PrepareUParams(theUMin, theUMax, theNbU + 1);
   anEval.PrepareVParams(theVMin, theVMax, theNbV + 1);
 
-  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbU = anEval.NbUParams() - 1;  // -1 because we requested theNbU + 1
+  const Standard_Integer aNbV = anEval.NbVParams() - 1;
+
+  if (aNbU < 1 || aNbV < 1)
   {
     return Standard_False;
   }
 
   // Allocate points array (0-based to match original code)
-  thePoints = new TColgp_HArray2OfPnt(0, theNbU, 0, theNbV);
+  thePoints = new TColgp_HArray2OfPnt(0, aNbU, 0, aNbV);
 
   // Evaluate grid points using pre-computed span indices
-  for (Standard_Integer iu = 0; iu <= theNbU; ++iu)
+  for (Standard_Integer iu = 0; iu <= aNbU; ++iu)
   {
-    for (Standard_Integer iv = 0; iv <= theNbV; ++iv)
+    for (Standard_Integer iv = 0; iv <= aNbV; ++iv)
     {
       thePoints->SetValue(iu, iv, anEval.Value(iu + 1, iv + 1));
     }
@@ -184,16 +188,16 @@ static Standard_Boolean buildBSplineGridCS(const Handle(Geom_BSplineSurface)& th
 
 //! Helper function to build grid for BSpline curve using optimized evaluator.
 //! @param theCurve   BSpline curve
-//! @param thePoints  output array of grid points (0-based)
-//! @param theParamMin minimum parameter value
-//! @param theParamMax maximum parameter value
-//! @param theNbSamples number of samples
+//! @param thePoints    output array of grid points (0-based)
+//! @param theParamMin  minimum parameter value
+//! @param theParamMax  maximum parameter value
+//! @param theNbSamples input: requested number of samples, output: actual number of samples
 //! @return true if grid was built successfully
 static Standard_Boolean buildBSplineCurveGrid(const Handle(Geom_BSplineCurve)& theCurve,
                                               TColgp_Array1OfPnt&              thePoints,
                                               const Standard_Real              theParamMin,
                                               const Standard_Real              theParamMax,
-                                              const Standard_Integer           theNbSamples)
+                                              Standard_Integer&                theNbSamples)
 {
   if (theCurve.IsNull())
   {
@@ -222,11 +226,17 @@ static Standard_Boolean buildBSplineCurveGrid(const Handle(Geom_BSplineCurve)& t
     return Standard_False;
   }
 
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbActual = anEval.NbParams() - 1;
+
   // Evaluate grid points using pre-computed span indices
-  for (Standard_Integer i = 0; i <= theNbSamples; ++i)
+  for (Standard_Integer i = 0; i <= aNbActual; ++i)
   {
     thePoints.SetValue(i, anEval.Value(i + 1));
   }
+
+  // Update output count to reflect actual number of samples
+  theNbSamples = aNbActual;
 
   return Standard_True;
 }

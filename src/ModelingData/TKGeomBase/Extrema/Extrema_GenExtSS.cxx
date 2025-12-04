@@ -322,18 +322,26 @@ static Standard_Boolean buildBSplineGridSS(const Handle(Geom_BSplineSurface)& th
   anEval.PrepareUParams(theUMin, theUMax, theNbU);
   anEval.PrepareVParams(theVMin, theVMax, theNbV);
 
-  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbU = anEval.NbUParams();
+  const Standard_Integer aNbV = anEval.NbVParams();
+
+  if (aNbU < 2 || aNbV < 2)
   {
     return Standard_False;
   }
 
+  // Update output counts
+  theNbU = aNbU;
+  theNbV = aNbV;
+
   // Allocate points array (0-based to match original code)
-  thePoints = new TColgp_HArray2OfPnt(0, theNbU + 1, 0, theNbV + 1);
+  thePoints = new TColgp_HArray2OfPnt(0, aNbU + 1, 0, aNbV + 1);
 
   // Evaluate grid points using pre-computed span indices
-  for (Standard_Integer iu = 1; iu <= theNbU; ++iu)
+  for (Standard_Integer iu = 1; iu <= aNbU; ++iu)
   {
-    for (Standard_Integer iv = 1; iv <= theNbV; ++iv)
+    for (Standard_Integer iv = 1; iv <= aNbV; ++iv)
     {
       thePoints->SetValue(iu, iv, anEval.Value(iu, iv));
     }

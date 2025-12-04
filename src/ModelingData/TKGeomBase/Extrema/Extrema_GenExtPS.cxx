@@ -460,31 +460,39 @@ static Standard_Boolean buildBSplineGrid(const Handle(Geom_BSplineSurface)&  the
   anEval.PrepareUParams(theUMin, theUMax, theNbU);
   anEval.PrepareVParams(theVMin, theVMax, theNbV);
 
-  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbU = anEval.NbUParams();
+  const Standard_Integer aNbV = anEval.NbVParams();
+
+  if (aNbU < 2 || aNbV < 2)
   {
     return Standard_False;
   }
 
-  // Create parameter arrays
-  theUParams = new TColStd_HArray1OfReal(1, theNbU);
-  theVParams = new TColStd_HArray1OfReal(1, theNbV);
+  // Update output counts
+  theNbU = aNbU;
+  theNbV = aNbV;
 
-  for (Standard_Integer i = 1; i <= theNbU; ++i)
+  // Create parameter arrays
+  theUParams = new TColStd_HArray1OfReal(1, aNbU);
+  theVParams = new TColStd_HArray1OfReal(1, aNbV);
+
+  for (Standard_Integer i = 1; i <= aNbU; ++i)
   {
     theUParams->SetValue(i, anEval.UParam(i));
   }
-  for (Standard_Integer i = 1; i <= theNbV; ++i)
+  for (Standard_Integer i = 1; i <= aNbV; ++i)
   {
     theVParams->SetValue(i, anEval.VParam(i));
   }
 
   // Resize the points array
-  thePoints.Resize(0, theNbU + 1, 0, theNbV + 1, false);
+  thePoints.Resize(0, aNbU + 1, 0, aNbV + 1, false);
 
   // Evaluate all grid points using the optimized evaluator (no binary search per point)
-  for (Standard_Integer NoU = 1; NoU <= theNbU; ++NoU)
+  for (Standard_Integer NoU = 1; NoU <= aNbU; ++NoU)
   {
-    for (Standard_Integer NoV = 1; NoV <= theNbV; ++NoV)
+    for (Standard_Integer NoV = 1; NoV <= aNbV; ++NoV)
     {
       gp_Pnt aP1;
       anEval.D0(NoU, NoV, aP1);
@@ -1022,14 +1030,6 @@ void Extrema_GenExtPS::BuildBVH()
   U0   = U0 / 2. + myumin;
   V0   = V0 / 2. + myvmin;
 
-  // build grid of parametric points
-  myUParams = new TColStd_HArray1OfReal(1, myusample);
-  myVParams = new TColStd_HArray1OfReal(1, myvsample);
-
-  // Resize points array and prepare BVH
-  myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
-  myBVHSet.SetSize(static_cast<Standard_Size>(myusample * myvsample));
-
   // Try optimized BSpline evaluation (pre-computed span indices avoid repeated binary search)
   if (isBSpline && !aBspl.IsNull())
   {
@@ -1051,18 +1051,32 @@ void Extrema_GenExtPS::BuildBVH()
       anEval.PrepareUParams(U0, U0 + PasU * (myusample - 1), myusample);
       anEval.PrepareVParams(V0, V0 + PasV * (myvsample - 1), myvsample);
 
-      if (anEval.NbUParams() >= 2 && anEval.NbVParams() >= 2)
+      // Use actual parameter count from evaluator (may differ from requested)
+      const Standard_Integer aNbU = anEval.NbUParams();
+      const Standard_Integer aNbV = anEval.NbVParams();
+
+      if (aNbU >= 2 && aNbV >= 2)
       {
+        // Update sample counts with actual values
+        myusample = aNbU;
+        myvsample = aNbV;
+
+        // Allocate arrays with actual sizes
+        myUParams = new TColStd_HArray1OfReal(1, aNbU);
+        myVParams = new TColStd_HArray1OfReal(1, aNbV);
+        myPoints.Resize(0, aNbU + 1, 0, aNbV + 1, false);
+        myBVHSet.SetSize(static_cast<Standard_Size>(aNbU * aNbV));
+
         // Fill parameter arrays from evaluator
-        for (Standard_Integer i = 1; i <= myusample; ++i)
+        for (Standard_Integer i = 1; i <= aNbU; ++i)
           myUParams->SetValue(i, anEval.UParam(i));
-        for (Standard_Integer i = 1; i <= myvsample; ++i)
+        for (Standard_Integer i = 1; i <= aNbV; ++i)
           myVParams->SetValue(i, anEval.VParam(i));
 
         // Evaluate grid points and build BVH
-        for (Standard_Integer NoU = 1; NoU <= myusample; ++NoU)
+        for (Standard_Integer NoU = 1; NoU <= aNbU; ++NoU)
         {
-          for (Standard_Integer NoV = 1; NoV <= myvsample; ++NoV)
+          for (Standard_Integer NoV = 1; NoV <= aNbV; ++NoV)
           {
             gp_Pnt P1;
             anEval.D0(NoU, NoV, P1);
@@ -1084,6 +1098,12 @@ void Extrema_GenExtPS::BuildBVH()
   }
 
   // Fallback: standard evaluation for non-BSpline surfaces or failed BSpline initialization
+  // Allocate arrays with requested sizes
+  myUParams = new TColStd_HArray1OfReal(1, myusample);
+  myVParams = new TColStd_HArray1OfReal(1, myvsample);
+  myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
+  myBVHSet.SetSize(static_cast<Standard_Size>(myusample * myvsample));
+
   Standard_Real U = U0;
   for (Standard_Integer NoU = 1; NoU <= myusample; NoU++, U += PasU)
     myUParams->SetValue(NoU, U);
