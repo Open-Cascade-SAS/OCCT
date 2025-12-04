@@ -135,15 +135,12 @@ static Standard_Boolean buildBSplineGridSS(const Handle(Geom_BSplineSurface)& th
     return Standard_False;
   }
 
-  // Prepare parameters - use knot-aligned sampling for better accuracy
-  anEval.PrepareUParamsFromKnots(theUMin, theUMax, theNbU);
-  anEval.PrepareVParamsFromKnots(theVMin, theVMax, theNbV);
+  // Use uniform sampling with EXACTLY the same grid size as original code
+  // This ensures consistent behavior while benefiting from pre-computed span indices
+  anEval.PrepareUParams(theUMin, theUMax, theNbU);
+  anEval.PrepareVParams(theVMin, theVMax, theNbV);
 
-  // Update sample counts based on actual grid size
-  theNbU = anEval.NbUParams();
-  theNbV = anEval.NbVParams();
-
-  if (theNbU < 2 || theNbV < 2)
+  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
   {
     return Standard_False;
   }

@@ -16,7 +16,6 @@
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 
 //==================================================================================================
@@ -83,23 +82,20 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(const TColStd_Array1OfReal
                                                       int                                theMinSamples,
                                                       NCollection_Array1<ParamWithSpan>& theParams) const
 {
-  NCollection_Vector<ParamWithSpan> aTempParams;
-
   // First valid span index in flat knots
   const int aFirstSpan = theFlatKnots.Lower() + theDegree;
   // Last valid span index
   const int aLastSpan = theFlatKnots.Upper() - theDegree - 1;
 
+  // First pass: count the number of parameters to avoid dynamic allocations
+  int    aNbParams  = 1; // Start with theParamMin
   double aPrevParam = theParamMin;
-  aTempParams.Append({aPrevParam, locateSpan(theFlatKnots, theDegree, thePeriodic, aPrevParam)});
 
-  // Iterate through spans and generate samples within each span
   for (int aSpanIdx = aFirstSpan; aSpanIdx <= aLastSpan; ++aSpanIdx)
   {
     const double aSpanStart = theFlatKnots.Value(aSpanIdx);
     const double aSpanEnd   = theFlatKnots.Value(aSpanIdx + 1);
 
-    // Skip spans outside the parameter range
     if (aSpanEnd < theParamMin + Precision::PConfusion())
     {
       continue;
@@ -109,17 +105,13 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(const TColStd_Array1OfReal
       break;
     }
 
-    // Compute step within the span based on degree
     const double aSpanLength = aSpanEnd - aSpanStart;
     const int    aNbSteps    = std::max(theDegree, 2);
     const double aStep       = aSpanLength / aNbSteps;
 
-    // Generate samples within this span
     for (int k = 1; k <= aNbSteps; ++k)
     {
       double aParam = aSpanStart + k * aStep;
-
-      // Clamp to parameter range
       if (aParam > theParamMax - Precision::PConfusion())
       {
         break;
@@ -128,17 +120,71 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(const TColStd_Array1OfReal
       {
         continue;
       }
+      if (aParam > aPrevParam + Precision::PConfusion())
+      {
+        ++aNbParams;
+        aPrevParam = aParam;
+      }
+    }
+  }
 
-      // Avoid duplicate parameters
+  // Add one for theParamMax if needed
+  if (theParamMax > aPrevParam + Precision::PConfusion())
+  {
+    ++aNbParams;
+  }
+
+  // If we don't have enough samples, fall back to uniform distribution
+  if (aNbParams < theMinSamples)
+  {
+    computeUniformParams(theFlatKnots, theDegree, thePeriodic, theParamMin, theParamMax, theMinSamples, theParams);
+    return;
+  }
+
+  // Second pass: resize once and fill directly
+  theParams.Resize(1, aNbParams, false);
+
+  int aParamIdx = 1;
+  aPrevParam    = theParamMin;
+  theParams.SetValue(aParamIdx++, {aPrevParam, locateSpan(theFlatKnots, theDegree, thePeriodic, aPrevParam)});
+
+  for (int aSpanIdx = aFirstSpan; aSpanIdx <= aLastSpan; ++aSpanIdx)
+  {
+    const double aSpanStart = theFlatKnots.Value(aSpanIdx);
+    const double aSpanEnd   = theFlatKnots.Value(aSpanIdx + 1);
+
+    if (aSpanEnd < theParamMin + Precision::PConfusion())
+    {
+      continue;
+    }
+    if (aSpanStart > theParamMax - Precision::PConfusion())
+    {
+      break;
+    }
+
+    const double aSpanLength = aSpanEnd - aSpanStart;
+    const int    aNbSteps    = std::max(theDegree, 2);
+    const double aStep       = aSpanLength / aNbSteps;
+
+    for (int k = 1; k <= aNbSteps; ++k)
+    {
+      double aParam = aSpanStart + k * aStep;
+      if (aParam > theParamMax - Precision::PConfusion())
+      {
+        break;
+      }
+      if (aParam < theParamMin + Precision::PConfusion())
+      {
+        continue;
+      }
       if (aParam > aPrevParam + Precision::PConfusion())
       {
         int aEffectiveSpan = aSpanIdx;
         if (k == aNbSteps && aSpanIdx < aLastSpan)
         {
-          // At span boundary, use the next span
           aEffectiveSpan = aSpanIdx + 1;
         }
-        aTempParams.Append({aParam, aEffectiveSpan});
+        theParams.SetValue(aParamIdx++, {aParam, aEffectiveSpan});
         aPrevParam = aParam;
       }
     }
@@ -147,21 +193,7 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(const TColStd_Array1OfReal
   // Add the last parameter if not already added
   if (theParamMax > aPrevParam + Precision::PConfusion())
   {
-    aTempParams.Append({theParamMax, locateSpan(theFlatKnots, theDegree, thePeriodic, theParamMax)});
-  }
-
-  // If we don't have enough samples, fall back to uniform distribution
-  if (aTempParams.Length() < theMinSamples)
-  {
-    computeUniformParams(theFlatKnots, theDegree, thePeriodic, theParamMin, theParamMax, theMinSamples, theParams);
-    return;
-  }
-
-  // Copy to output array
-  theParams.Resize(1, aTempParams.Length(), false);
-  for (int i = 0; i < aTempParams.Length(); ++i)
-  {
-    theParams.SetValue(i + 1, aTempParams.Value(i));
+    theParams.SetValue(aParamIdx, {theParamMax, locateSpan(theFlatKnots, theDegree, thePeriodic, theParamMax)});
   }
 }
 

@@ -394,15 +394,12 @@ static Standard_Boolean buildBSplineGrid(const Handle(Geom_BSplineSurface)&  the
                     theSurf->IsUPeriodic(),
                     theSurf->IsVPeriodic());
 
-  // Prepare parameters aligned with knots for optimal performance
-  anEval.PrepareUParamsFromKnots(theUMin, theUMax, theNbU);
-  anEval.PrepareVParamsFromKnots(theVMin, theVMax, theNbV);
+  // Use uniform sampling with EXACTLY the same grid size as original code
+  // This ensures consistent behavior while benefiting from pre-computed span indices
+  anEval.PrepareUParams(theUMin, theUMax, theNbU);
+  anEval.PrepareVParams(theVMin, theVMax, theNbV);
 
-  // Update sample counts
-  theNbU = anEval.NbUParams();
-  theNbV = anEval.NbVParams();
-
-  if (theNbU < 2 || theNbV < 2)
+  if (anEval.NbUParams() < 2 || anEval.NbVParams() < 2)
   {
     return Standard_False;
   }
