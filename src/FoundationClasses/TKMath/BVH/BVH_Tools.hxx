@@ -397,6 +397,8 @@ public: //! @name Ray-Box Intersection
   }
 
   //! Computes hit time of ray-box intersection using precomputed reciprocal direction.
+  //! Handles parallel rays (infinite inverse direction) explicitly to avoid NaN from 0*inf
+  //! when ray origin is exactly on a slab boundary.
   //! @param[in] theRayOrigin ray origin point
   //! @param[in] theRayInvDirection reciprocal of ray direction (1/direction)
   //! @param[in] theBoxCMin minimum corner of the box
@@ -412,48 +414,24 @@ public: //! @name Ray-Box Intersection
                                              T&               theTimeLeave,
                                              const bool /*theUseInvDir*/)
   {
-    T aT1x = (theBoxCMin[0] - theRayOrigin[0]) * theRayInvDirection[0];
-    T aT2x = (theBoxCMax[0] - theRayOrigin[0]) * theRayInvDirection[0];
+    T aTimeEnter = (std::numeric_limits<T>::lowest)();
+    T aTimeLeave = (std::numeric_limits<T>::max)();
 
-    T aTimeEnter = (std::min)(aT1x, aT2x);
-    T aTimeLeave = (std::max)(aT1x, aT2x);
-
-    if constexpr (N >= 2)
+    for (int i = 0; i < N; ++i)
     {
-      T aT1y = (theBoxCMin[1] - theRayOrigin[1]) * theRayInvDirection[1];
-      T aT2y = (theBoxCMax[1] - theRayOrigin[1]) * theRayInvDirection[1];
-
-      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1y, aT2y));
-      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1y, aT2y));
-
-      if (aTimeEnter > aTimeLeave)
+      // Handle parallel rays (infinite inverse direction) to avoid NaN from 0*inf
+      if (std::isinf(theRayInvDirection[i]))
       {
-        return Standard_False;
+        if (theRayOrigin[i] < theBoxCMin[i] || theRayOrigin[i] > theBoxCMax[i])
+        {
+          return Standard_False;
+        }
+        continue;
       }
-    }
-
-    if constexpr (N >= 3)
-    {
-      T aT1z = (theBoxCMin[2] - theRayOrigin[2]) * theRayInvDirection[2];
-      T aT2z = (theBoxCMax[2] - theRayOrigin[2]) * theRayInvDirection[2];
-
-      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1z, aT2z));
-      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1z, aT2z));
-
-      if (aTimeEnter > aTimeLeave)
-      {
-        return Standard_False;
-      }
-    }
-
-    if constexpr (N >= 4)
-    {
-      T aT1w = (theBoxCMin[3] - theRayOrigin[3]) * theRayInvDirection[3];
-      T aT2w = (theBoxCMax[3] - theRayOrigin[3]) * theRayInvDirection[3];
-
-      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1w, aT2w));
-      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1w, aT2w));
-
+      T aT1      = (theBoxCMin[i] - theRayOrigin[i]) * theRayInvDirection[i];
+      T aT2      = (theBoxCMax[i] - theRayOrigin[i]) * theRayInvDirection[i];
+      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1, aT2));
+      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1, aT2));
       if (aTimeEnter > aTimeLeave)
       {
         return Standard_False;
