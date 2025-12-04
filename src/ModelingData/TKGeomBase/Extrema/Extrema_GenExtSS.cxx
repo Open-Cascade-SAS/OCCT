@@ -631,7 +631,9 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
       const gp_Pnt& aP1 = mypoints1->Value(NoU1, NoV1);
 
       // Find closest point on S2 using BVH
+      // Reset() is essential to clear stale pruning bounds from previous queries
       aMinSelector.SetQueryPoint(aP1);
+      aMinSelector.Reset();
       aMinSelector.Select();
       if (aMinSelector.MinSquareDistance() < distmin)
       {
@@ -643,7 +645,9 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
       }
 
       // Find farthest point on S2 using BVH
+      // Reset() is essential to clear stale pruning bounds from previous queries
       aMaxSelector.SetQueryPoint(aP1);
+      aMaxSelector.Reset();
       aMaxSelector.Select();
       if (aMaxSelector.MaxSquareDistance() > distmax)
       {

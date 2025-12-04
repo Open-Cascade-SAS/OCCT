@@ -17,6 +17,9 @@
 #include <Extrema_GenExtCS.hxx>
 #include <BSplCLib_GridEvaluator.hxx>
 #include <BSplSLib_GridEvaluator.hxx>
+#include <BVH_BoxSet.hxx>
+#include <BVH_Tools.hxx>
+#include <BVH_Traverse.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -115,6 +118,79 @@ static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS,
     GetSurfMaxParamVals(*theS.BasisSurface(), theUmax, theVmax);
   }
 }
+
+//! BVH traverser for finding the closest curve point to a given surface point.
+//! Uses BVH_Tools::PointBoxSquareDistance for efficient pruning.
+class Extrema_CSBVHMinDistanceSelector
+    : public BVH_Traverse<Standard_Real, 3, BVH_BoxSet<Standard_Real, 3, Standard_Integer>, Standard_Real>
+{
+public:
+  Extrema_CSBVHMinDistanceSelector(const TColgp_Array1OfPnt& theCurvePnts)
+      : myCurvePnts(&theCurvePnts),
+        myMinDistSq(std::numeric_limits<Standard_Real>::max()),
+        myClosestIndex(0)
+  {
+  }
+
+  void SetQueryPoint(const gp_Pnt& thePoint)
+  {
+    myQueryPoint = BVH_Vec3d(thePoint.X(), thePoint.Y(), thePoint.Z());
+  }
+
+  void Reset()
+  {
+    myMinDistSq   = std::numeric_limits<Standard_Real>::max();
+    myClosestIndex = 0;
+  }
+
+  Standard_Real MinSquareDistance() const { return myMinDistSq; }
+
+  Standard_Integer ClosestIndex() const { return myClosestIndex; }
+
+  //! Reject nodes whose bounding box is farther than current minimum
+  virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
+                                      const BVH_Vec3d& theCornerMax,
+                                      Standard_Real&   theMetric) const Standard_OVERRIDE
+  {
+    theMetric =
+      BVH_Tools<Standard_Real, 3>::PointBoxSquareDistance(myQueryPoint, theCornerMin, theCornerMax);
+    return theMetric >= myMinDistSq;
+  }
+
+  //! Accept a leaf element and update minimum if closer
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex,
+                                  const Standard_Real&) Standard_OVERRIDE
+  {
+    const Standard_Integer aCurveIdx = this->myBVHSet->Element(theIndex);
+    const gp_Pnt&          aPnt      = myCurvePnts->Value(aCurveIdx);
+    const Standard_Real    aDistSq   = (aPnt.X() - myQueryPoint.x()) * (aPnt.X() - myQueryPoint.x())
+                                     + (aPnt.Y() - myQueryPoint.y()) * (aPnt.Y() - myQueryPoint.y())
+                                     + (aPnt.Z() - myQueryPoint.z()) * (aPnt.Z() - myQueryPoint.z());
+    if (aDistSq < myMinDistSq)
+    {
+      myMinDistSq    = aDistSq;
+      myClosestIndex = aCurveIdx;
+    }
+    return Standard_True;
+  }
+
+  virtual Standard_Boolean IsMetricBetter(const Standard_Real& theLeft,
+                                          const Standard_Real& theRight) const Standard_OVERRIDE
+  {
+    return theLeft < theRight;
+  }
+
+  virtual Standard_Boolean RejectMetric(const Standard_Real& theMetric) const Standard_OVERRIDE
+  {
+    return theMetric >= myMinDistSq;
+  }
+
+private:
+  const TColgp_Array1OfPnt* myCurvePnts;
+  BVH_Vec3d                 myQueryPoint;
+  mutable Standard_Real     myMinDistSq;
+  mutable Standard_Integer  myClosestIndex;
+};
 
 //! Helper function to build grid for BSpline surface using optimized evaluator.
 //! @param theSurf    BSpline surface
@@ -591,34 +667,56 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
       aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
   }
 
+  // Build BVH for curve points to accelerate closest point queries
+  // This reduces complexity from O(NbU * NbV * NbT) to O(NbU * NbV * log(NbT))
+  BVH_BoxSet<Standard_Real, 3, Standard_Integer> aCurveBVH;
+  aCurveBVH.SetSize(static_cast<Standard_Size>(aNewCsample + 1));
+  for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; ++aCUI)
+  {
+    const gp_Pnt&             aPnt = aCurvPnts.Value(aCUI);
+    BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(aPnt.X(), aPnt.Y(), aPnt.Z()),
+                                   BVH_Vec3d(aPnt.X(), aPnt.Y(), aPnt.Z()));
+    aCurveBVH.Add(aCUI, aBox);
+  }
+  aCurveBVH.Build();
+
+  // Create BVH selector for closest curve point queries
+  Extrema_CSBVHMinDistanceSelector aSelector(aCurvPnts);
+  aSelector.SetBVHSet(&aCurveBVH);
+
   PSO_Particle* aParticle = aParticles.GetWorstParticle();
   // Select specified number of particles from pre-computed set of samples
+  // Using BVH for O(log N) curve point lookup instead of O(N) linear search
   Standard_Real aSU = aMinTUV(2);
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
   {
     Standard_Real aSV = aMinTUV(3);
     for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
     {
-      Standard_Real aCU2 = aMinTUV(1);
-      for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU2 += aStepCU)
+      // Use BVH to find closest curve point to this surface point
+      const gp_Pnt& aSurfPnt = mySurfPnts->Value(aSUI, aSVI);
+      aSelector.SetQueryPoint(aSurfPnt);
+      aSelector.Reset();
+      aSelector.Select();
+
+      const Standard_Real    aSqDist = aSelector.MinSquareDistance();
+      const Standard_Integer aCUI    = aSelector.ClosestIndex();
+      const Standard_Real    aCU2    = aMinTUV(1) + aCUI * aStepCU;
+
+      if (aSqDist < aParticle->Distance)
       {
-        Standard_Real aSqDist = mySurfPnts->Value(aSUI, aSVI).SquareDistance(aCurvPnts.Value(aCUI));
+        aParticle->Position[0] = aCU2;
+        aParticle->Position[1] = aSU;
+        aParticle->Position[2] = aSV;
 
-        if (aSqDist < aParticle->Distance)
-        {
-          aParticle->Position[0] = aCU2;
-          aParticle->Position[1] = aSU;
-          aParticle->Position[2] = aSV;
+        aParticle->BestPosition[0] = aCU2;
+        aParticle->BestPosition[1] = aSU;
+        aParticle->BestPosition[2] = aSV;
 
-          aParticle->BestPosition[0] = aCU2;
-          aParticle->BestPosition[1] = aSU;
-          aParticle->BestPosition[2] = aSV;
+        aParticle->Distance     = aSqDist;
+        aParticle->BestDistance = aSqDist;
 
-          aParticle->Distance     = aSqDist;
-          aParticle->BestDistance = aSqDist;
-
-          aParticle = aParticles.GetWorstParticle();
-        }
+        aParticle = aParticles.GetWorstParticle();
       }
     }
   }
