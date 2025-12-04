@@ -15,8 +15,11 @@
 // commercial license or contractual agreement.
 
 #include <Extrema_GenExtCS.hxx>
+#include <BSplCLib_GridEvaluator.hxx>
 #include <BSplSLib_GridEvaluator.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_GlobOptFuncConicS.hxx>
@@ -179,6 +182,55 @@ static Standard_Boolean buildBSplineGridCS(const Handle(Geom_BSplineSurface)& th
   return Standard_True;
 }
 
+//! Helper function to build grid for BSpline curve using optimized evaluator.
+//! @param theCurve   BSpline curve
+//! @param thePoints  output array of grid points (0-based)
+//! @param theParamMin minimum parameter value
+//! @param theParamMax maximum parameter value
+//! @param theNbSamples number of samples
+//! @return true if grid was built successfully
+static Standard_Boolean buildBSplineCurveGrid(const Handle(Geom_BSplineCurve)& theCurve,
+                                              TColgp_Array1OfPnt&              thePoints,
+                                              const Standard_Real              theParamMin,
+                                              const Standard_Real              theParamMax,
+                                              const Standard_Integer           theNbSamples)
+{
+  if (theCurve.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline curve data
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(theCurve->Degree(),
+                    theCurve->Poles(),
+                    theCurve->Weights(),
+                    theCurve->KnotSequence(),
+                    theCurve->IsRational(),
+                    theCurve->IsPeriodic());
+
+  if (!anEval.IsInitialized())
+  {
+    return Standard_False;
+  }
+
+  // Prepare parameters with uniform distribution
+  anEval.PrepareParams(theParamMin, theParamMax, theNbSamples + 1);
+
+  if (anEval.NbParams() < 2)
+  {
+    return Standard_False;
+  }
+
+  // Evaluate grid points using pre-computed span indices
+  for (Standard_Integer i = 0; i <= theNbSamples; ++i)
+  {
+    thePoints.SetValue(i, anEval.Value(i + 1));
+  }
+
+  return Standard_True;
+}
+
 //=================================================================================================
 
 Extrema_GenExtCS::Extrema_GenExtCS()
@@ -305,7 +357,8 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
   if (S.GetType() == GeomAbs_BSplineSurface)
   {
     Handle(Geom_BSplineSurface) aBspl = S.BSpline();
-    isGridBuilt = buildBSplineGridCS(aBspl, mySurfPnts, aMinU, aMaxU, aMinV, aMaxV, myusample, myvsample);
+    isGridBuilt =
+      buildBSplineGridCS(aBspl, mySurfPnts, aMinU, aMaxU, aMinV, aMaxV, myusample, myvsample);
   }
 
   // Fall back to standard evaluation if optimization was not applied
@@ -512,9 +565,21 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
   // Pre-compute curve sample points.
   TColgp_Array1OfPnt aCurvPnts(0, aNewCsample);
 
-  Standard_Real aCU1 = aMinTUV(1);
-  for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU1 += aStepCU)
-    aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
+  // Try optimized evaluation for BSpline curves
+  Standard_Boolean isCurveGridBuilt = Standard_False;
+  if (theC.GetType() == GeomAbs_BSplineCurve)
+  {
+    isCurveGridBuilt =
+      buildBSplineCurveGrid(theC.BSpline(), aCurvPnts, aMinTUV(1), aMaxTUV(1), aNewCsample);
+  }
+
+  if (!isCurveGridBuilt)
+  {
+    // Fallback to standard evaluation
+    Standard_Real aCU1 = aMinTUV(1);
+    for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU1 += aStepCU)
+      aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
+  }
 
   PSO_Particle* aParticle = aParticles.GetWorstParticle();
   // Select specified number of particles from pre-computed set of samples
