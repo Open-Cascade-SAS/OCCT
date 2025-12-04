@@ -35,7 +35,7 @@ class TopLoc_Datum3D;
 class TopLoc_Location
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Constructs an empty local coordinate system object.
   //! Note: A Location constructed from a default datum is said to be "empty".

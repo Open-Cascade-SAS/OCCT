@@ -30,7 +30,7 @@
 class Poly_Triangle
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Constructs a triangle and sets all indices to zero.
   Poly_Triangle() { myNodes[0] = myNodes[1] = myNodes[2] = 0; }

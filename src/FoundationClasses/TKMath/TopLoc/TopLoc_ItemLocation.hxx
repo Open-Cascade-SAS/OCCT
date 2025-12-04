@@ -36,7 +36,7 @@ class TopLoc_Datum3D;
 class TopLoc_ItemLocation
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Sets the elementary Datum to <D>
   //! Sets the exponent to <P>

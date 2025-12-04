@@ -30,7 +30,7 @@
 class TopoDS_Edge : public TopoDS_Shape
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Undefined Edge.
   TopoDS_Edge() {}

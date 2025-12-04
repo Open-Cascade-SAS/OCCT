@@ -30,7 +30,7 @@
 class TopoDS_Solid : public TopoDS_Shape
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Constructs an Undefined Solid.
   TopoDS_Solid() {}

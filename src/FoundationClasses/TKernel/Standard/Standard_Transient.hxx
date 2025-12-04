@@ -36,7 +36,7 @@ class Standard_Transient
 {
 public:
   // Standard OCCT memory allocation stuff
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
 public:
   //! Empty constructor

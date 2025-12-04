@@ -31,7 +31,7 @@
 class TopoDS_Iterator
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Creates an empty Iterator.
   TopoDS_Iterator()

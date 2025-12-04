@@ -31,7 +31,7 @@
 class TopoDS_CompSolid : public TopoDS_Shape
 {
 public:
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_OPT_ALLOC
 
   //! Constructs an Undefined CompSolid.
   TopoDS_CompSolid() {}
