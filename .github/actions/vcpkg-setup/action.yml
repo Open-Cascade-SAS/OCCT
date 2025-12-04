@@ -67,8 +67,9 @@ runs:
         brew install mono || true
         brew install openexr || true
         brew install --cask xquartz || true
+        brew install autoconf-archive || true
+        brew install libtool || true
       shell: bash
-
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
