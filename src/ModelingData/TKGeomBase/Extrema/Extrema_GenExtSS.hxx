@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <BVH_BoxSet.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <Extrema_FuncExtSS.hxx>
 
@@ -121,30 +122,35 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT const Extrema_POnSurf& PointOnS2(const Standard_Integer N) const;
 
+public:
+  //! UV index pair for BVH element identification.
+  using UVIndex = std::pair<Standard_Integer, Standard_Integer>;
+
 private:
   // disallow copies
   Extrema_GenExtSS(const Extrema_GenExtSS&) Standard_DELETE;
   Extrema_GenExtSS& operator=(const Extrema_GenExtSS&) Standard_DELETE;
 
 private:
-  Standard_Boolean            myDone;
-  Standard_Boolean            myInit;
-  Standard_Real               myu1min;
-  Standard_Real               myu1sup;
-  Standard_Real               myv1min;
-  Standard_Real               myv1sup;
-  Standard_Real               myu2min;
-  Standard_Real               myu2sup;
-  Standard_Real               myv2min;
-  Standard_Real               myv2sup;
-  Standard_Integer            myusample;
-  Standard_Integer            myvsample;
-  Handle(TColgp_HArray2OfPnt) mypoints1;
-  Handle(TColgp_HArray2OfPnt) mypoints2;
-  Standard_Real               mytol1;
-  Standard_Real               mytol2;
-  Extrema_FuncExtSS           myF;
-  const Adaptor3d_Surface*    myS2;
+  Standard_Boolean                      myDone;
+  Standard_Boolean                      myInit;
+  Standard_Real                         myu1min;
+  Standard_Real                         myu1sup;
+  Standard_Real                         myv1min;
+  Standard_Real                         myv1sup;
+  Standard_Real                         myu2min;
+  Standard_Real                         myu2sup;
+  Standard_Real                         myv2min;
+  Standard_Real                         myv2sup;
+  Standard_Integer                      myusample;
+  Standard_Integer                      myvsample;
+  Handle(TColgp_HArray2OfPnt)           mypoints1;
+  Handle(TColgp_HArray2OfPnt)           mypoints2;
+  BVH_BoxSet<Standard_Real, 3, UVIndex> myBVHSet2; //!< BVH for S2 points
+  Standard_Real                         mytol1;
+  Standard_Real                         mytol2;
+  Extrema_FuncExtSS                     myF;
+  const Adaptor3d_Surface*              myS2;
 };
 
 #endif // _Extrema_GenExtSS_HeaderFile
