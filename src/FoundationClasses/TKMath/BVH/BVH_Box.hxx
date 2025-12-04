@@ -163,7 +163,6 @@ public:
   //! Appends new point to the bounding box.
   void Add(const BVH_VecNt& thePoint);
 
-
   //! Combines bounding box with another one.
   void Combine(const BVH_Box& theBox);
 
@@ -232,7 +231,7 @@ public:
   {
     Standard_Integer aPos = theStreamPos;
 
-    Standard_Integer        anIsValid = 0;
+    Standard_Integer        anIsValid  = 0;
     TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
     OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsValid);
@@ -544,7 +543,7 @@ template <class T, int N>
 T BVH_Box<T, N>::Area() const
 {
   return !IsValid() ? static_cast<T>(0.0)
-                     : BVH::SurfaceCalculator<T, N>::Area(myMaxPoint - myMinPoint);
+                    : BVH::SurfaceCalculator<T, N>::Area(myMaxPoint - myMinPoint);
 }
 
 //=================================================================================================
