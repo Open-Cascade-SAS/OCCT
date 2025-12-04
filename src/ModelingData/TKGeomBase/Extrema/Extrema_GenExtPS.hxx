@@ -17,10 +17,9 @@
 #ifndef _Extrema_GenExtPS_HeaderFile
 #define _Extrema_GenExtPS_HeaderFile
 
-#include <Bnd_HArray1OfSphere.hxx>
+#include <BVH_BoxSet.hxx>
 #include <Extrema_Array2OfPOnSurfParams.hxx>
 #include <Extrema_POnSurfParams.hxx>
-#include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
@@ -125,8 +124,13 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
 
+public:
+  //! UV index pair for BVH element identification.
+  using UVIndex = std::pair<Standard_Integer, Standard_Integer>;
+
 private:
-  Standard_EXPORT void BuildTree();
+  //! Build BVH for tree algorithm (called from Initialize).
+  Standard_EXPORT void BuildBVH();
 
   Standard_EXPORT void FindSolution(const gp_Pnt& P, const Extrema_POnSurfParams& theParams);
 
@@ -161,19 +165,18 @@ private:
   Standard_Real    mytolu;
   Standard_Real    mytolv;
 
-  Extrema_Array2OfPOnSurfParams myPoints;
-  Extrema_HUBTreeOfSphere       mySphereUBTree;
-  Handle(Bnd_HArray1OfSphere)   mySphereArray;
-  Extrema_FuncPSNorm            myF;
-  const Adaptor3d_Surface*      myS;
-  Extrema_ExtFlag               myFlag;
-  Extrema_ExtAlgo               myAlgo;
-  Handle(TColStd_HArray1OfReal) myUParams;
-  Handle(TColStd_HArray1OfReal) myVParams;
-  Extrema_Array2OfPOnSurfParams myFacePntParams;
-  Extrema_Array2OfPOnSurfParams myUEdgePntParams;
-  Extrema_Array2OfPOnSurfParams myVEdgePntParams;
-  Extrema_POnSurfParams         myGridParam;
+  Extrema_Array2OfPOnSurfParams         myPoints;
+  BVH_BoxSet<Standard_Real, 3, UVIndex> myBVHSet;  //!< BVH for surface points (tree algorithm)
+  Extrema_FuncPSNorm                    myF;
+  const Adaptor3d_Surface*              myS;
+  Extrema_ExtFlag                       myFlag;
+  Extrema_ExtAlgo                       myAlgo;
+  Handle(TColStd_HArray1OfReal)         myUParams;
+  Handle(TColStd_HArray1OfReal)         myVParams;
+  Extrema_Array2OfPOnSurfParams         myFacePntParams;
+  Extrema_Array2OfPOnSurfParams         myUEdgePntParams;
+  Extrema_Array2OfPOnSurfParams         myVEdgePntParams;
+  Extrema_POnSurfParams                 myGridParam;
 };
 
 #endif // _Extrema_GenExtPS_HeaderFile

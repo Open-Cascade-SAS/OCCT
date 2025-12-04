@@ -152,6 +152,8 @@
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
+#include <random>
+
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern Standard_Boolean                VDisplayAISObject(const TCollection_AsciiString&       theName,
                                                          const Handle(AIS_InteractiveObject)& theAISObj,

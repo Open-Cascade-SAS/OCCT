@@ -18,11 +18,10 @@
 
 #include <Extrema_GenExtPS.hxx>
 
-#include <Bnd_HArray1OfSphere.hxx>
-#include <Bnd_Sphere.hxx>
 #include <BSplSLib_GridEvaluator.hxx>
+#include <BVH_Tools.hxx>
+#include <BVH_Traverse.hxx>
 #include <Extrema_ExtFlag.hxx>
-#include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Extrema_POnSurfParams.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -39,121 +38,183 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array2OfInteger.hxx>
 
-// IMPLEMENT_HARRAY1(Extrema_HArray1OfSphere)
-class Bnd_SphereUBTreeSelector : public Extrema_UBTreeOfSphere::Selector
+//! BVH traverser for finding the closest point to a given point.
+//! Uses BVH_Tools::PointBoxSquareDistance for efficient pruning.
+class Extrema_PSBVHMinDistanceSelector
+    : public BVH_Traverse<Standard_Real,
+                          3,
+                          BVH_BoxSet<Standard_Real, 3, Extrema_GenExtPS::UVIndex>,
+                          Standard_Real>
 {
 public:
-  Bnd_SphereUBTreeSelector(const Handle(Bnd_HArray1OfSphere)& theSphereArray, Bnd_Sphere& theSol)
-      : myXYZ(0, 0, 0),
-        mySphereArray(theSphereArray),
-        mySol(theSol)
+  Extrema_PSBVHMinDistanceSelector(const Extrema_Array2OfPOnSurfParams& thePoints)
+      : myPoints(&thePoints),
+        myMinDistSq(std::numeric_limits<Standard_Real>::max()),
+        myClosestU(0),
+        myClosestV(0)
   {
   }
 
-  void DefineCheckPoint(const gp_Pnt& theXYZ) { myXYZ = theXYZ; }
-
-  Bnd_Sphere& Sphere() const { return mySol; }
-
-  virtual Standard_Boolean Reject(const Bnd_Sphere& theBnd) const = 0;
-
-  virtual Standard_Boolean Accept(const Standard_Integer& theObj) = 0;
-
-protected:
-  gp_Pnt                             myXYZ;
-  const Handle(Bnd_HArray1OfSphere)& mySphereArray;
-  Bnd_Sphere&                        mySol;
-
-private:
-  void operator=(const Bnd_SphereUBTreeSelector&);
-};
-
-class Bnd_SphereUBTreeSelectorMin : public Bnd_SphereUBTreeSelector
-{
-public:
-  Bnd_SphereUBTreeSelectorMin(const Handle(Bnd_HArray1OfSphere)& theSphereArray, Bnd_Sphere& theSol)
-      : Bnd_SphereUBTreeSelector(theSphereArray, theSol),
-        myMinDist(RealLast())
+  void SetQueryPoint(const gp_Pnt& thePoint)
   {
+    myQueryPoint = BVH_Vec3d(thePoint.X(), thePoint.Y(), thePoint.Z());
   }
 
-  void SetMinDist(const Standard_Real theMinDist) { myMinDist = theMinDist; }
-
-  Standard_Real MinDist() const { return myMinDist; }
-
-  Standard_Boolean Reject(const Bnd_Sphere& theBnd) const
+  void Reset()
   {
-    Bnd_SphereUBTreeSelectorMin* me = const_cast<Bnd_SphereUBTreeSelectorMin*>(this);
-    // myMinDist is decreased each time a nearer object is found
-    return theBnd.IsOut(myXYZ.XYZ(), me->myMinDist);
+    myMinDistSq = std::numeric_limits<Standard_Real>::max();
+    myClosestU  = 0;
+    myClosestV  = 0;
   }
 
-  Standard_Boolean Accept(const Standard_Integer&);
+  Standard_Real MinSquareDistance() const { return myMinDistSq; }
 
-private:
-  Standard_Real myMinDist;
-};
+  Standard_Integer ClosestU() const { return myClosestU; }
 
-Standard_Boolean Bnd_SphereUBTreeSelectorMin::Accept(const Standard_Integer& theInd)
-{
-  const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
-  Standard_Real     aCurDist;
+  Standard_Integer ClosestV() const { return myClosestV; }
 
-  //    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) < mySol.SquareDistance(myXYZ.XYZ()) )
-  if ((aCurDist = aSph.Distance(myXYZ.XYZ())) < mySol.Distance(myXYZ.XYZ()))
+  //! Reject nodes whose bounding box is farther than current minimum
+  virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
+                                      const BVH_Vec3d& theCornerMax,
+                                      Standard_Real&   theMetric) const Standard_OVERRIDE
   {
-    mySol = aSph;
-    if (aCurDist < myMinDist)
-      myMinDist = aCurDist;
+    theMetric =
+      BVH_Tools<Standard_Real, 3>::PointBoxSquareDistance(myQueryPoint, theCornerMin, theCornerMax);
+    return theMetric >= myMinDistSq;
+  }
 
+  //! Accept a leaf element and update minimum if closer
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex,
+                                  const Standard_Real&) Standard_OVERRIDE
+  {
+    const Extrema_GenExtPS::UVIndex& anIdx = this->myBVHSet->Element(theIndex);
+    const gp_Pnt& aPnt = myPoints->Value(anIdx.first, anIdx.second).Value();
+    const Standard_Real aDistSq = (aPnt.X() - myQueryPoint.x()) * (aPnt.X() - myQueryPoint.x())
+                                  + (aPnt.Y() - myQueryPoint.y()) * (aPnt.Y() - myQueryPoint.y())
+                                  + (aPnt.Z() - myQueryPoint.z()) * (aPnt.Z() - myQueryPoint.z());
+    if (aDistSq < myMinDistSq)
+    {
+      myMinDistSq = aDistSq;
+      myClosestU  = anIdx.first;
+      myClosestV  = anIdx.second;
+    }
     return Standard_True;
   }
 
-  return Standard_False;
-}
-
-class Bnd_SphereUBTreeSelectorMax : public Bnd_SphereUBTreeSelector
-{
-public:
-  Bnd_SphereUBTreeSelectorMax(const Handle(Bnd_HArray1OfSphere)& theSphereArray, Bnd_Sphere& theSol)
-      : Bnd_SphereUBTreeSelector(theSphereArray, theSol),
-        myMaxDist(0)
+  virtual Standard_Boolean IsMetricBetter(const Standard_Real& theLeft,
+                                          const Standard_Real& theRight) const Standard_OVERRIDE
   {
+    return theLeft < theRight;
   }
 
-  void SetMaxDist(const Standard_Real theMaxDist) { myMaxDist = theMaxDist; }
-
-  Standard_Real MaxDist() const { return myMaxDist; }
-
-  Standard_Boolean Reject(const Bnd_Sphere& theBnd) const
+  virtual Standard_Boolean RejectMetric(const Standard_Real& theMetric) const Standard_OVERRIDE
   {
-    Bnd_SphereUBTreeSelectorMax* me = const_cast<Bnd_SphereUBTreeSelectorMax*>(this);
-    // myMaxDist is decreased each time a nearer object is found
-    return theBnd.IsOut(myXYZ.XYZ(), me->myMaxDist);
+    return theMetric >= myMinDistSq;
   }
-
-  Standard_Boolean Accept(const Standard_Integer&);
 
 private:
-  Standard_Real myMaxDist;
+  const Extrema_Array2OfPOnSurfParams* myPoints;
+  BVH_Vec3d                            myQueryPoint;
+  mutable Standard_Real                myMinDistSq;
+  mutable Standard_Integer             myClosestU;
+  mutable Standard_Integer             myClosestV;
 };
 
-Standard_Boolean Bnd_SphereUBTreeSelectorMax::Accept(const Standard_Integer& theInd)
+//! BVH traverser for finding the farthest point from a given point.
+class Extrema_PSBVHMaxDistanceSelector
+    : public BVH_Traverse<Standard_Real,
+                          3,
+                          BVH_BoxSet<Standard_Real, 3, Extrema_GenExtPS::UVIndex>,
+                          Standard_Real>
 {
-  const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
-  Standard_Real     aCurDist;
-
-  //    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) > mySol.SquareDistance(myXYZ.XYZ()) )
-  if ((aCurDist = aSph.Distance(myXYZ.XYZ())) > mySol.Distance(myXYZ.XYZ()))
+public:
+  Extrema_PSBVHMaxDistanceSelector(const Extrema_Array2OfPOnSurfParams& thePoints)
+      : myPoints(&thePoints),
+        myMaxDistSq(0.0),
+        myFarthestU(0),
+        myFarthestV(0)
   {
-    mySol = aSph;
-    if (aCurDist > myMaxDist)
-      myMaxDist = aCurDist;
+  }
 
+  void SetQueryPoint(const gp_Pnt& thePoint)
+  {
+    myQueryPoint = BVH_Vec3d(thePoint.X(), thePoint.Y(), thePoint.Z());
+  }
+
+  void Reset()
+  {
+    myMaxDistSq = 0.0;
+    myFarthestU = 0;
+    myFarthestV = 0;
+  }
+
+  Standard_Real MaxSquareDistance() const { return myMaxDistSq; }
+
+  Standard_Integer FarthestU() const { return myFarthestU; }
+
+  Standard_Integer FarthestV() const { return myFarthestV; }
+
+  //! Compute maximum possible distance to box (distance to farthest corner)
+  static Standard_Real MaxPointBoxSquareDistance(const BVH_Vec3d& thePoint,
+                                                 const BVH_Vec3d& theCornerMin,
+                                                 const BVH_Vec3d& theCornerMax)
+  {
+    Standard_Real aDistSq = 0.0;
+    for (int i = 0; i < 3; ++i)
+    {
+      const Standard_Real aDist =
+        std::max(std::abs(thePoint[i] - theCornerMin[i]), std::abs(thePoint[i] - theCornerMax[i]));
+      aDistSq += aDist * aDist;
+    }
+    return aDistSq;
+  }
+
+  //! Reject nodes whose maximum possible distance is less than current maximum
+  virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
+                                      const BVH_Vec3d& theCornerMax,
+                                      Standard_Real&   theMetric) const Standard_OVERRIDE
+  {
+    theMetric = MaxPointBoxSquareDistance(myQueryPoint, theCornerMin, theCornerMax);
+    return theMetric <= myMaxDistSq;
+  }
+
+  //! Accept a leaf element and update maximum if farther
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex,
+                                  const Standard_Real&) Standard_OVERRIDE
+  {
+    const Extrema_GenExtPS::UVIndex& anIdx = this->myBVHSet->Element(theIndex);
+    const gp_Pnt& aPnt = myPoints->Value(anIdx.first, anIdx.second).Value();
+    const Standard_Real aDistSq = (aPnt.X() - myQueryPoint.x()) * (aPnt.X() - myQueryPoint.x())
+                                  + (aPnt.Y() - myQueryPoint.y()) * (aPnt.Y() - myQueryPoint.y())
+                                  + (aPnt.Z() - myQueryPoint.z()) * (aPnt.Z() - myQueryPoint.z());
+    if (aDistSq > myMaxDistSq)
+    {
+      myMaxDistSq = aDistSq;
+      myFarthestU = anIdx.first;
+      myFarthestV = anIdx.second;
+    }
     return Standard_True;
   }
 
-  return Standard_False;
-}
+  //! For max distance, larger metrics are better
+  virtual Standard_Boolean IsMetricBetter(const Standard_Real& theLeft,
+                                          const Standard_Real& theRight) const Standard_OVERRIDE
+  {
+    return theLeft > theRight;
+  }
+
+  virtual Standard_Boolean RejectMetric(const Standard_Real& theMetric) const Standard_OVERRIDE
+  {
+    return theMetric <= myMaxDistSq;
+  }
+
+private:
+  const Extrema_Array2OfPOnSurfParams* myPoints;
+  BVH_Vec3d                            myQueryPoint;
+  mutable Standard_Real                myMaxDistSq;
+  mutable Standard_Integer             myFarthestU;
+  mutable Standard_Integer             myFarthestV;
+};
 
 //=============================================================================
 
@@ -302,7 +363,7 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
 
   myF.Initialize(S);
 
-  mySphereUBTree.Nullify();
+  myBVHSet.Clear();
   myUParams.Nullify();
   myVParams.Nullify();
   myInit = Standard_False;
@@ -922,10 +983,10 @@ static void CorrectNbSamples(const Adaptor3d_Surface& theS,
   }
 }
 
-void Extrema_GenExtPS::BuildTree()
+void Extrema_GenExtPS::BuildBVH()
 {
-  // if tree already exists, assume it is already correctly filled
-  if (!mySphereUBTree.IsNull())
+  // if BVH already exists, assume it is already correctly filled
+  if (myBVHSet.Size() > 0)
     return;
 
   if (myS->GetType() == GeomAbs_BSplineSurface)
@@ -962,25 +1023,28 @@ void Extrema_GenExtPS::BuildTree()
   for (NoV = 1; NoV <= myvsample; NoV++, V += PasV)
     myVParams->SetValue(NoV, V);
 
-  // Calculation of distances
-  mySphereUBTree = new Extrema_UBTreeOfSphere;
-  Extrema_UBTreeFillerOfSphere aFiller(*mySphereUBTree);
-  Standard_Integer             i = 0;
-
-  mySphereArray = new Bnd_HArray1OfSphere(0, myusample * myvsample);
+  // Resize points array and build BVH
+  myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
+  myBVHSet.SetSize(static_cast<Standard_Size>(myusample * myvsample));
 
   for (NoU = 1; NoU <= myusample; NoU++)
   {
     for (NoV = 1; NoV <= myvsample; NoV++)
     {
       P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
-      Bnd_Sphere aSph(P1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
-      aFiller.Add(i, aSph);
-      mySphereArray->SetValue(i, aSph);
-      i++;
+
+      Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), P1);
+      aParam.SetElementType(Extrema_Node);
+      aParam.SetIndices(NoU, NoV);
+      myPoints.SetValue(NoU, NoV, aParam);
+
+      // Add point to BVH
+      BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(P1.X(), P1.Y(), P1.Z()),
+                                     BVH_Vec3d(P1.X(), P1.Y(), P1.Z()));
+      myBVHSet.Add(std::make_pair(NoU, NoV), aBox);
     }
   }
-  aFiller.Fill();
+  myBVHSet.Build();
 }
 
 void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/, const Extrema_POnSurfParams& theParams)
@@ -1163,40 +1227,43 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
   }
   else
   {
-    BuildTree();
+    BuildBVH();
+
+    // Create BVH traversers
+    Extrema_PSBVHMinDistanceSelector aMinSelector(myPoints);
+    Extrema_PSBVHMaxDistanceSelector aMaxSelector(myPoints);
+    aMinSelector.SetBVHSet(&myBVHSet);
+    aMaxSelector.SetBVHSet(&myBVHSet);
+
     if (myFlag == Extrema_ExtFlag_MIN || myFlag == Extrema_ExtFlag_MINMAX)
     {
-      Bnd_Sphere                  aSol = mySphereArray->Value(0);
-      Bnd_SphereUBTreeSelectorMin aSelector(mySphereArray, aSol);
-      // aSelector.SetMaxDist( RealLast() );
-      aSelector.DefineCheckPoint(P);
-      mySphereUBTree->Select(aSelector);
-      // TODO: check if no solution in binary tree
-      Bnd_Sphere&           aSph = aSelector.Sphere();
-      Standard_Real         aU   = myUParams->Value(aSph.U());
-      Standard_Real         aV   = myVParams->Value(aSph.V());
-      Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
+      aMinSelector.SetQueryPoint(P);
+      aMinSelector.Select();
 
-      aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
-      aParams.SetIndices(aSph.U(), aSph.V());
-      FindSolution(P, aParams);
+      if (aMinSelector.ClosestU() > 0 && aMinSelector.ClosestV() > 0)
+      {
+        Standard_Real         aU = myUParams->Value(aMinSelector.ClosestU());
+        Standard_Real         aV = myVParams->Value(aMinSelector.ClosestV());
+        Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
+        aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
+        aParams.SetIndices(aMinSelector.ClosestU(), aMinSelector.ClosestV());
+        FindSolution(P, aParams);
+      }
     }
     if (myFlag == Extrema_ExtFlag_MAX || myFlag == Extrema_ExtFlag_MINMAX)
     {
-      Bnd_Sphere                  aSol = mySphereArray->Value(0);
-      Bnd_SphereUBTreeSelectorMax aSelector(mySphereArray, aSol);
-      // aSelector.SetMaxDist( RealLast() );
-      aSelector.DefineCheckPoint(P);
-      mySphereUBTree->Select(aSelector);
-      // TODO: check if no solution in binary tree
-      Bnd_Sphere&           aSph = aSelector.Sphere();
-      Standard_Real         aU   = myUParams->Value(aSph.U());
-      Standard_Real         aV   = myVParams->Value(aSph.V());
-      Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
-      aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
-      aParams.SetIndices(aSph.U(), aSph.V());
+      aMaxSelector.SetQueryPoint(P);
+      aMaxSelector.Select();
 
-      FindSolution(P, aParams);
+      if (aMaxSelector.FarthestU() > 0 && aMaxSelector.FarthestV() > 0)
+      {
+        Standard_Real         aU = myUParams->Value(aMaxSelector.FarthestU());
+        Standard_Real         aV = myVParams->Value(aMaxSelector.FarthestV());
+        Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
+        aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
+        aParams.SetIndices(aMaxSelector.FarthestU(), aMaxSelector.FarthestV());
+        FindSolution(P, aParams);
+      }
     }
   }
 }

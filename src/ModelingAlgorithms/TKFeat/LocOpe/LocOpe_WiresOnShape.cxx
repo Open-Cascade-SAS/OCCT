@@ -36,6 +36,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <LocOpe_WiresOnShape.hxx>
+#include <NCollection_Handle.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
