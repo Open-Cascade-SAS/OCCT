@@ -1266,6 +1266,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
             }
             constexpr Standard_Real Tol = Precision::PConfusion();
             myExtPS.SetFlag(Extrema_ExtFlag_MIN);
+            myExtPS.SetAlgo(Extrema_ExtAlgo_Tree);
             myExtPS.Initialize(SurfAdapt, uf - du, ul + du, vf - dv, vl + dv, Tol, Tol);
             myExtOK = Standard_True;
           }
