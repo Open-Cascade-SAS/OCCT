@@ -120,7 +120,6 @@ static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS,
 }
 
 //! BVH traverser for finding the closest curve point to a given surface point.
-//! Uses BVH_Tools::PointBoxSquareDistance for efficient pruning.
 class Extrema_CSBVHMinDistanceSelector
     : public BVH_Traverse<Standard_Real, 3, BVH_BoxSet<Standard_Real, 3, Standard_Integer>, Standard_Real>
 {
@@ -667,8 +666,7 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
       aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
   }
 
-  // Build BVH for curve points to accelerate closest point queries
-  // This reduces complexity from O(NbU * NbV * NbT) to O(NbU * NbV * log(NbT))
+  // Build BVH for curve points to accelerate closest point queries.
   BVH_BoxSet<Standard_Real, 3, Standard_Integer> aCurveBVH;
   aCurveBVH.SetSize(static_cast<Standard_Size>(aNewCsample + 1));
   for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; ++aCUI)
@@ -680,20 +678,17 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
   }
   aCurveBVH.Build();
 
-  // Create BVH selector for closest curve point queries
   Extrema_CSBVHMinDistanceSelector aSelector(aCurvPnts);
   aSelector.SetBVHSet(&aCurveBVH);
 
   PSO_Particle* aParticle = aParticles.GetWorstParticle();
-  // Select specified number of particles from pre-computed set of samples
-  // Using BVH for O(log N) curve point lookup instead of O(N) linear search
+  // Select specified number of particles from pre-computed set of samples.
   Standard_Real aSU = aMinTUV(2);
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
   {
     Standard_Real aSV = aMinTUV(3);
     for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
     {
-      // Use BVH to find closest curve point to this surface point
       const gp_Pnt& aSurfPnt = mySurfPnts->Value(aSUI, aSVI);
       aSelector.SetQueryPoint(aSurfPnt);
       aSelector.Reset();

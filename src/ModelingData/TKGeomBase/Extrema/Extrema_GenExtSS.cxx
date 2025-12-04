@@ -622,16 +622,14 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   aMinSelector.SetBVHSet(&myBVHSet2);
   aMaxSelector.SetBVHSet(&myBVHSet2);
 
-  // Find grid points with minimum and maximum distance using BVH traversal
-  // Complexity: O(N² log N) instead of O(N⁴)
+  // Find grid points with minimum and maximum distance using BVH traversal.
   for (NoU1 = 1; NoU1 <= myusample; ++NoU1)
   {
     for (NoV1 = 1; NoV1 <= myvsample; ++NoV1)
     {
       const gp_Pnt& aP1 = mypoints1->Value(NoU1, NoV1);
 
-      // Find closest point on S2 using BVH
-      // Reset() is essential to clear stale pruning bounds from previous queries
+      // Find closest point on S2.
       aMinSelector.SetQueryPoint(aP1);
       aMinSelector.Reset();
       aMinSelector.Select();
@@ -644,8 +642,7 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
         N2Vmin  = aMinSelector.ClosestV();
       }
 
-      // Find farthest point on S2 using BVH
-      // Reset() is essential to clear stale pruning bounds from previous queries
+      // Find farthest point on S2.
       aMaxSelector.SetQueryPoint(aP1);
       aMaxSelector.Reset();
       aMaxSelector.Select();
