@@ -5,7 +5,7 @@ inputs:
   vcpkg-tag:
     description: 'vcpkg tag to checkout'
     required: false
-    default: '2025.06.13'
+    default: '2025.10.17'
   github-token:
     description: 'GitHub token for NuGet package access'
     required: true
@@ -22,6 +22,7 @@ runs:
         echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $GITHUB_ENV
         echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $GITHUB_ENV
         echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $GITHUB_ENV
+        echo "VCPKG_INSTALL_OPTIONS=--x-abi-tools-use-exact-versions;--clean-after-build" >> $GITHUB_ENV
       shell: bash
       if: runner.os != 'Windows'
 
@@ -34,6 +35,7 @@ runs:
         echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $env:GITHUB_ENV
         echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $env:GITHUB_ENV
         echo "VCPKG_DISABLE_COMPILER_TRACKING=1" >> $env:GITHUB_ENV
+        echo "VCPKG_INSTALL_OPTIONS=--x-abi-tools-use-exact-versions;--clean-after-build" >> $env:GITHUB_ENV
       shell: pwsh
       if: runner.os == 'Windows'
 
@@ -65,8 +67,9 @@ runs:
         brew install mono || true
         brew install openexr || true
         brew install --cask xquartz || true
+        brew install autoconf-archive || true
+        brew install libtool || true
       shell: bash
-
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
