@@ -20,6 +20,7 @@
 
 #include <Bnd_HArray1OfSphere.hxx>
 #include <Bnd_Sphere.hxx>
+#include <BSplSLib_GridEvaluator.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -27,6 +28,7 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
@@ -348,6 +350,97 @@ inline static void fillParams(const TColStd_Array1OfReal&    theKnots,
     theParams->SetValue(i + 1, aParams(i));
 }
 
+//! Helper function to build grid points for BSpline surface using optimized evaluator.
+//! This avoids repeated span lookups (LocateParameter) by pre-computing span indices.
+//! @param theSurf       the BSpline surface
+//! @param theUParams    output array of U parameters
+//! @param theVParams    output array of V parameters
+//! @param thePoints     output 2D array of surface points with parameters
+//! @param theUMin       minimum U parameter
+//! @param theUMax       maximum U parameter
+//! @param theVMin       minimum V parameter
+//! @param theVMax       maximum V parameter
+//! @param theNbU        number of U samples (may be updated)
+//! @param theNbV        number of V samples (may be updated)
+//! @return true if optimization was applied, false otherwise
+static Standard_Boolean buildBSplineGrid(const Handle(Geom_BSplineSurface)&  theSurf,
+                                         Handle(TColStd_HArray1OfReal)&      theUParams,
+                                         Handle(TColStd_HArray1OfReal)&      theVParams,
+                                         Extrema_Array2OfPOnSurfParams&      thePoints,
+                                         const Standard_Real                 theUMin,
+                                         const Standard_Real                 theUMax,
+                                         const Standard_Real                 theVMin,
+                                         const Standard_Real                 theVMax,
+                                         Standard_Integer&                   theNbU,
+                                         Standard_Integer&                   theNbV)
+{
+  if (theSurf.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline surface data
+  BSplSLib_GridEvaluator anEval;
+  // Weights() returns a pointer (nullptr for non-rational surfaces)
+  const TColStd_Array2OfReal* aWeights = theSurf->Weights();
+  anEval.Initialize(theSurf->UDegree(),
+                    theSurf->VDegree(),
+                    theSurf->Poles(),
+                    aWeights,
+                    theSurf->UKnotSequence(),
+                    theSurf->VKnotSequence(),
+                    theSurf->IsURational(),
+                    theSurf->IsVRational(),
+                    theSurf->IsUPeriodic(),
+                    theSurf->IsVPeriodic());
+
+  // Prepare parameters aligned with knots for optimal performance
+  anEval.PrepareUParamsFromKnots(theUMin, theUMax, theNbU);
+  anEval.PrepareVParamsFromKnots(theVMin, theVMax, theNbV);
+
+  // Update sample counts
+  theNbU = anEval.NbUParams();
+  theNbV = anEval.NbVParams();
+
+  if (theNbU < 2 || theNbV < 2)
+  {
+    return Standard_False;
+  }
+
+  // Create parameter arrays
+  theUParams = new TColStd_HArray1OfReal(1, theNbU);
+  theVParams = new TColStd_HArray1OfReal(1, theNbV);
+
+  for (Standard_Integer i = 1; i <= theNbU; ++i)
+  {
+    theUParams->SetValue(i, anEval.UParam(i));
+  }
+  for (Standard_Integer i = 1; i <= theNbV; ++i)
+  {
+    theVParams->SetValue(i, anEval.VParam(i));
+  }
+
+  // Resize the points array
+  thePoints.Resize(0, theNbU + 1, 0, theNbV + 1, false);
+
+  // Evaluate all grid points using the optimized evaluator (no binary search per point)
+  for (Standard_Integer NoU = 1; NoU <= theNbU; ++NoU)
+  {
+    for (Standard_Integer NoV = 1; NoV <= theNbV; ++NoV)
+    {
+      gp_Pnt aP1;
+      anEval.D0(NoU, NoV, aP1);
+
+      Extrema_POnSurfParams aParam(theUParams->Value(NoU), theVParams->Value(NoV), aP1);
+      aParam.SetElementType(Extrema_Node);
+      aParam.SetIndices(NoU, NoV);
+      thePoints.SetValue(NoU, NoV, aParam);
+    }
+  }
+
+  return Standard_True;
+}
+
 void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
 {
   // creation parametric points for BSpline and Bezier surfaces
@@ -502,49 +595,72 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
   // if grid was already built skip its creation
   if (!myInit)
   {
-    // build parametric grid in case of a complex surface geometry (BSpline and Bezier surfaces)
-    GetGridPoints(*myS);
+    Standard_Boolean isGridBuilt = Standard_False;
 
-    // build grid in other cases
-    if (myUParams.IsNull())
+    // Try optimized BSpline grid evaluation (avoids repeated span lookups)
+    if (myS->GetType() == GeomAbs_BSplineSurface)
     {
-      Standard_Real PasU = myusup - myumin;
-      Standard_Real U0   = PasU / myusample / 100.;
-      PasU               = (PasU - U0) / (myusample - 1);
-      U0                 = U0 / 2. + myumin;
-      myUParams          = new TColStd_HArray1OfReal(1, myusample);
-      Standard_Real U    = U0;
-      for (Standard_Integer NoU = 1; NoU <= myusample; NoU++, U += PasU)
-        myUParams->SetValue(NoU, U);
+      Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
+      isGridBuilt = buildBSplineGrid(aBspl,
+                                     myUParams,
+                                     myVParams,
+                                     myPoints,
+                                     myumin,
+                                     myusup,
+                                     myvmin,
+                                     myvsup,
+                                     myusample,
+                                     myvsample);
     }
 
-    if (myVParams.IsNull())
+    if (!isGridBuilt)
     {
-      Standard_Real PasV = myvsup - myvmin;
-      Standard_Real V0   = PasV / myvsample / 100.;
-      PasV               = (PasV - V0) / (myvsample - 1);
-      V0                 = V0 / 2. + myvmin;
+      // Fallback to standard grid building for non-BSpline or failed BSpline cases
 
-      myVParams       = new TColStd_HArray1OfReal(1, myvsample);
-      Standard_Real V = V0;
-      for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++, V += PasV)
-        myVParams->SetValue(NoV, V);
-    }
+      // build parametric grid in case of a complex surface geometry (BSpline and Bezier surfaces)
+      GetGridPoints(*myS);
 
-    // If flag was changed and extrema not reinitialized Extrema would fail
-    myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
-    // Calculation of distances
-
-    for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
-    {
-      for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
+      // build grid in other cases
+      if (myUParams.IsNull())
       {
-        gp_Pnt                aP1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
-        Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), aP1);
+        Standard_Real PasU = myusup - myumin;
+        Standard_Real U0   = PasU / myusample / 100.;
+        PasU               = (PasU - U0) / (myusample - 1);
+        U0                 = U0 / 2. + myumin;
+        myUParams          = new TColStd_HArray1OfReal(1, myusample);
+        Standard_Real U    = U0;
+        for (Standard_Integer NoU = 1; NoU <= myusample; NoU++, U += PasU)
+          myUParams->SetValue(NoU, U);
+      }
 
-        aParam.SetElementType(Extrema_Node);
-        aParam.SetIndices(NoU, NoV);
-        myPoints.SetValue(NoU, NoV, aParam);
+      if (myVParams.IsNull())
+      {
+        Standard_Real PasV = myvsup - myvmin;
+        Standard_Real V0   = PasV / myvsample / 100.;
+        PasV               = (PasV - V0) / (myvsample - 1);
+        V0                 = V0 / 2. + myvmin;
+
+        myVParams       = new TColStd_HArray1OfReal(1, myvsample);
+        Standard_Real V = V0;
+        for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++, V += PasV)
+          myVParams->SetValue(NoV, V);
+      }
+
+      // If flag was changed and extrema not reinitialized Extrema would fail
+      myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
+      // Calculation of distances
+
+      for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
+      {
+        for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
+        {
+          gp_Pnt                aP1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
+          Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), aP1);
+
+          aParam.SetElementType(Extrema_Node);
+          aParam.SetIndices(NoU, NoV);
+          myPoints.SetValue(NoU, NoV, aParam);
+        }
       }
     }
 
