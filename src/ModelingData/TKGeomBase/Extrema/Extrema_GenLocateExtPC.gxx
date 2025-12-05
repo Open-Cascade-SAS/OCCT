@@ -1,0 +1,149 @@
+// Created on: 1995-07-18
+// Created by: Modelistation
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <StdFail_NotDone.hxx>
+#include <Standard_DomainError.hxx>
+#include <math_FunctionRoot.hxx>
+
+//=================================================================================================
+
+Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
+    : myDone(Standard_False),
+      mytolU(0.0),
+      myumin(0.0),
+      myusup(0.0)
+{
+}
+
+//=================================================================================================
+
+Extrema_GenLocateExtPC::Extrema_GenLocateExtPC(const Pnt&          P,
+                                               const Curve&        C,
+                                               const Standard_Real U0,
+                                               const Standard_Real TolU)
+{
+  Initialize(C, Tool::FirstParameter(C), Tool::LastParameter(C), TolU);
+  Perform(P, U0);
+}
+
+//=================================================================================================
+
+Extrema_GenLocateExtPC::Extrema_GenLocateExtPC(const Pnt&          P,
+                                               const Curve&        C,
+                                               const Standard_Real U0,
+                                               const Standard_Real Umin,
+                                               const Standard_Real Usup,
+                                               const Standard_Real TolU)
+{
+  Initialize(C, Umin, Usup, TolU);
+  Perform(P, U0);
+}
+
+//=================================================================================================
+
+void Extrema_GenLocateExtPC::Initialize(const Curve&        C,
+                                        const Standard_Real Umin,
+                                        const Standard_Real Usup,
+                                        const Standard_Real TolU)
+{
+  myDone = Standard_False;
+  myF.Initialize(C);
+  myumin = Umin;
+  myusup = Usup;
+  mytolU = TolU;
+}
+
+//=================================================================================================
+
+void Extrema_GenLocateExtPC::Perform(const Pnt& P, const Standard_Real U0)
+
+/*-----------------------------------------------------------------------------
+Fonction:
+  Recherche de la valeur de parametre U telle que:
+  - dist(P,C(u)) passe par un extremum,
+  - U soit la solution la plus proche de U0.
+
+Methode:
+  Si U est solution, alors F(U)=(C(U)-P).C'(U) = 0.
+  Le probleme consiste a rechercher, dans l'intervalle de definition
+  de la courbe, la racine de F la plus proche de U0.
+  On utilise la classe math_FunctionRoot avec les arguments de
+  construction suivants:
+  - F: Extrema_FuncExtPC cree a partir de P et C,
+  - U0,
+  - TolU,
+  - Uinf: borne inferieure de l'intervalle de definition,
+  - Ulast: borne superieure de l'intervalle de definition,
+  - 100. .
+-----------------------------------------------------------------------------*/
+{
+  myF.SetPoint(P);
+  math_FunctionRoot S(myF, U0, mytolU, myumin, myusup);
+  myDone = S.IsDone();
+  if (myDone)
+  {
+    Standard_Real uu, ff;
+    POnC          PP = Point();
+    uu               = PP.Parameter();
+    if (myF.Value(uu, ff))
+    {
+      if (std::abs(ff) >= 1.e-07)
+        myDone = Standard_False;
+    }
+    else
+      myDone = Standard_False;
+  }
+}
+
+//=================================================================================================
+
+Standard_Boolean Extrema_GenLocateExtPC::IsDone() const
+{
+  return myDone;
+}
+
+//=================================================================================================
+
+Standard_Real Extrema_GenLocateExtPC::SquareDistance() const
+{
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+  return myF.SquareDistance(1);
+}
+
+//=================================================================================================
+
+Standard_Boolean Extrema_GenLocateExtPC::IsMin() const
+{
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+  return myF.IsMin(1);
+}
+
+//=================================================================================================
+
+const POnC& Extrema_GenLocateExtPC::Point() const
+{
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+  return myF.Point(1);
+}

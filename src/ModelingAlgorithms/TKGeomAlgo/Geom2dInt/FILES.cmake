@@ -25,8 +25,8 @@ set(OCCT_Geom2dInt_FILES
   Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter_0.cxx
   Geom2dInt_TheIntPCurvePCurveOfGInter.hxx
   Geom2dInt_TheIntPCurvePCurveOfGInter_0.cxx
-  Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.cxx
   Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx
+  Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter_0.cxx
   Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter.hxx
   Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter_0.cxx
   Geom2dInt_TheProjPCurOfGInter.hxx

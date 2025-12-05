@@ -20,23 +20,23 @@ set(OCCT_Extrema_FILES
   Extrema_CurveTool.cxx
   Extrema_CurveTool.hxx
   Extrema_CurveTool.lxx
-  Extrema_ECC.cxx
   Extrema_ECC.hxx
-  Extrema_ECC2d.cxx
   Extrema_ECC2d.hxx
+  Extrema_ECC2d_0.cxx
+  Extrema_ECC_0.cxx
   Extrema_ElementType.hxx
   Extrema_ELPCOfLocateExtPC.hxx
   Extrema_ELPCOfLocateExtPC2d.hxx
   Extrema_ELPCOfLocateExtPC2d_0.cxx
   Extrema_ELPCOfLocateExtPC_0.cxx
-  Extrema_EPCOfELPCOfLocateExtPC.cxx
   Extrema_EPCOfELPCOfLocateExtPC.hxx
-  Extrema_EPCOfELPCOfLocateExtPC2d.cxx
   Extrema_EPCOfELPCOfLocateExtPC2d.hxx
-  Extrema_EPCOfExtPC.cxx
+  Extrema_EPCOfELPCOfLocateExtPC2d_0.cxx
+  Extrema_EPCOfELPCOfLocateExtPC_0.cxx
   Extrema_EPCOfExtPC.hxx
-  Extrema_EPCOfExtPC2d.cxx
   Extrema_EPCOfExtPC2d.hxx
+  Extrema_EPCOfExtPC2d_0.cxx
+  Extrema_EPCOfExtPC_0.cxx
   Extrema_ExtAlgo.hxx
   Extrema_ExtCC.cxx
   Extrema_ExtCC.hxx
@@ -82,15 +82,18 @@ set(OCCT_Extrema_FILES
   Extrema_FuncPSDist.hxx
   Extrema_FuncExtSS.cxx
   Extrema_FuncExtSS.hxx
-  Extrema_GenExtCC.pxx
+  Extrema_GenExtCC.gxx
   Extrema_GenExtCS.cxx
   Extrema_GenExtCS.hxx
+  Extrema_GenExtPC.gxx
   Extrema_GenExtPS.cxx
   Extrema_GenExtPS.hxx
   Extrema_GenExtSS.cxx
   Extrema_GenExtSS.hxx
+  Extrema_GenLocateExtCC.gxx
   Extrema_GenLocateExtCS.cxx
   Extrema_GenLocateExtCS.hxx
+  Extrema_GenLocateExtPC.gxx
   Extrema_GenLocateExtPS.cxx
   Extrema_GenLocateExtPS.hxx
   Extrema_GenLocateExtSS.cxx
@@ -120,14 +123,14 @@ set(OCCT_Extrema_FILES
   Extrema_LocateExtPC2d.hxx
   Extrema_LocateExtPC2d_0.cxx
   Extrema_LocateExtPC_0.cxx
-  Extrema_LocECC.cxx
   Extrema_LocECC.hxx
-  Extrema_LocECC2d.cxx
   Extrema_LocECC2d.hxx
-  Extrema_LocEPCOfLocateExtPC.cxx
+  Extrema_LocECC2d_0.cxx
+  Extrema_LocECC_0.cxx
   Extrema_LocEPCOfLocateExtPC.hxx
-  Extrema_LocEPCOfLocateExtPC2d.cxx
   Extrema_LocEPCOfLocateExtPC2d.hxx
+  Extrema_LocEPCOfLocateExtPC2d_0.cxx
+  Extrema_LocEPCOfLocateExtPC_0.cxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC2d.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_0.cxx
