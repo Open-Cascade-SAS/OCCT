@@ -273,13 +273,11 @@ int CSLib_Class2d::InternalSiDans(const double thePx, const double thePy) const
 int CSLib_Class2d::InternalSiDansOuOn(const double thePx, const double thePy) const
 {
   // Ray-casting algorithm with ON detection.
-  int    aNbCrossings = 0;
-  double aYmin        = 0.0;
+  int aNbCrossings = 0;
 
-  double aX  = myPnts2dX->Value(0) - thePx;
-  double aY  = myPnts2dY->Value(0) - thePy;
-  aYmin      = aY;
-  int aSH    = (aY < 0.0) ? -1 : 1;
+  double aX = myPnts2dX->Value(0) - thePx;
+  double aY = myPnts2dY->Value(0) - thePy;
+  int    aSH = (aY < 0.0) ? -1 : 1;
 
   for (int i = 0, ip1 = 1; i < myN; ++i, ++ip1)
   {
@@ -323,14 +321,6 @@ int CSLib_Class2d::InternalSiDansOuOn(const double thePx, const double thePy) co
         }
       }
       aSH = aNH;
-    }
-    else
-    {
-      // Track minimum Y for degenerate cases.
-      if (aNy < aYmin)
-      {
-        aYmin = aNy;
-      }
     }
 
     aX = aNx;

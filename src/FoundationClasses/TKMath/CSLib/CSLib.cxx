@@ -210,6 +210,7 @@ void CSLib::Normal(const int                 theMaxOrder,
   // Vk0 is the first non-null derivative of N: the reference vector.
   if (!aFound)
   {
+    theStatus = CSLib_Singular;
     return;
   }
 
@@ -343,7 +344,7 @@ void CSLib::Normal(const int                 theMaxOrder,
         }
         else
         {
-          aChangesSign = (aVprec * aVsuiv) < 0.0;
+          aChangesSign = aChangesSign || (aVprec * aVsuiv) < 0.0;
           aVprec       = aVsuiv;
         }
       }
