@@ -580,8 +580,8 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       if (shape == gp_Translation)
       {
-        Standard_Integer Npower = std::abs(N) - 1;
-        gp_XYZ Temploc = loc;
+        Standard_Integer Npower  = std::abs(N) - 1;
+        gp_XYZ           Temploc = loc;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -594,9 +594,9 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else if (shape == gp_Scale)
       {
-        Standard_Integer Npower = std::abs(N) - 1;
-        gp_XYZ        Temploc   = loc;
-        Standard_Real Tempscale = scale;
+        Standard_Integer Npower    = std::abs(N) - 1;
+        gp_XYZ           Temploc   = loc;
+        Standard_Real    Tempscale = scale;
         for (;;)
         {
           if (IsOdd(Npower))
@@ -614,7 +614,7 @@ void gp_Trsf::Power(const Standard_Integer N)
       else if (shape == gp_Rotation)
       {
         Standard_Integer Npower = std::abs(N) - 1;
-        gp_Mat Tempmatrix(matrix);
+        gp_Mat           Tempmatrix(matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0 && loc.Z() == 0.0)
         {
           for (;;)
@@ -659,11 +659,11 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else
       {
-        shape                    = gp_CompoundTrsf;
-        Standard_Integer Npower  = std::abs(N) - 1;
-        gp_XYZ           Temploc = loc;
-        Standard_Real Tempscale = scale;
-        gp_Mat        Tempmatrix(matrix);
+        shape                      = gp_CompoundTrsf;
+        Standard_Integer Npower    = std::abs(N) - 1;
+        gp_XYZ           Temploc   = loc;
+        Standard_Real    Tempscale = scale;
+        gp_Mat           Tempmatrix(matrix);
         for (;;)
         {
           if (IsOdd(Npower))

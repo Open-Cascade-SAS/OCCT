@@ -35,7 +35,7 @@ gp_Ax3::gp_Ax3(const gp_Pnt& P, const gp_Dir& V)
   const Standard_Real Aabs = std::abs(A);
   const Standard_Real Babs = std::abs(B);
   const Standard_Real Cabs = std::abs(C);
-  gp_Dir D;
+  gp_Dir              D;
 
   //  pour determiner l axe X :
   //  on dit que le produit scalaire Vx.V = 0.

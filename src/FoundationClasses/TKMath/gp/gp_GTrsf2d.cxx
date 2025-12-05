@@ -113,7 +113,7 @@ void gp_GTrsf2d::Power(const Standard_Integer N)
     }
     if (shape == gp_Other)
     {
-      Standard_Integer Npower = std::abs(N) - 1;
+      Standard_Integer Npower  = std::abs(N) - 1;
       gp_XY            Temploc = loc;
       //      Standard_Real Tempscale = scale;
       gp_Mat2d Tempmatrix(matrix);
