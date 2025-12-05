@@ -26,9 +26,9 @@ protected:
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(Standard_ShortReal theValue1,
-              Standard_ShortReal theValue2,
-              Standard_ShortReal theTolerance = 0.001f) const
+  bool IsNear(Standard_Real theValue1,
+              Standard_Real theValue2,
+              Standard_Real theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }

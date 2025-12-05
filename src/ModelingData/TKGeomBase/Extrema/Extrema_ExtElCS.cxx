@@ -90,7 +90,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Cylinder& S)
   }
   else
   {
-    Standard_Integer i, aStartIdx = 0;
+    Standard_Integer i;
 
     Extrema_POnCurv myPOnC1, myPOnC2;
     Extrem.Points(1, myPOnC1, myPOnC2);
@@ -108,8 +108,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Cylinder& S)
       }
       else if (Inters.IsDone())
       {
-        myNbExt   = Inters.NbPoints();
-        aStartIdx = myNbExt;
+        myNbExt = Inters.NbPoints();
         if (myNbExt > 0)
         {
           // Not more than 2 additional points from perpendiculars.
@@ -137,22 +136,16 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Cylinder& S)
       Extrema_ExtPElS ExPS(PC, S, Precision::Confusion());
       if (ExPS.IsDone())
       {
-        if (aStartIdx == 0)
-        {
-          myNbExt  = ExPS.NbExt();
-          mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-          myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-          myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
-        }
-        else
-          myNbExt += ExPS.NbExt();
+        myNbExt  = ExPS.NbExt();
+        mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+        myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+        myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
 
-        for (i = aStartIdx + 1; i <= myNbExt; i++)
+        for (i = 1; i <= myNbExt; i++)
         {
           myPoint1->SetValue(i, myPOnC2);
-          myPoint2->SetValue(i, ExPS.Point(i - aStartIdx));
-          mySqDist->SetValue(i,
-                             (myPOnC2.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
+          myPoint2->SetValue(i, ExPS.Point(i));
+          mySqDist->SetValue(i, (myPOnC2.Value()).SquareDistance(ExPS.Point(i).Value()));
         }
       }
     }
