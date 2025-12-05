@@ -30,7 +30,6 @@ class Standard_ConstructionError;
 class HLRBRep_CurveTool;
 class HLRBRep_TheProjPCurOfCInter;
 class HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter;
-class HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter;
 class HLRBRep_TheIntConicCurveOfCInter;
 class HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter;
 class HLRBRep_IntConicCurveOfCInter;

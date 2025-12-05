@@ -23,8 +23,6 @@
 class Adaptor2d_Curve2d;
 class Geom2dInt_Geom2dCurveTool;
 class Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter;
-class Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter;
-class Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter;
 class gp_Pnt2d;
 
 class Geom2dInt_TheProjPCurOfGInter

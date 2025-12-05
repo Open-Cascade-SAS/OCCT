@@ -114,7 +114,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_TheIntPCurvePCurveOfCInter.hxx
   HLRBRep_TheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx
-  HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter_0.cxx
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_ThePolygonOfInterCSurf.hxx

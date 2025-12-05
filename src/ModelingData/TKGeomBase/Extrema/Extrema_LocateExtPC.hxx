@@ -34,9 +34,6 @@ class gp_Vec;
 class Extrema_POnCurv;
 class Extrema_ELPCOfLocateExtPC;
 class Extrema_EPCOfELPCOfLocateExtPC;
-class Extrema_LocEPCOfLocateExtPC;
-class Extrema_PCLocFOfLocEPCOfLocateExtPC;
-
 class Extrema_LocateExtPC
 {
 public:

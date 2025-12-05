@@ -24,8 +24,6 @@
 #include <Standard_Real.hxx>
 class HLRBRep_CurveTool;
 class HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter;
-class HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter;
-class HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter;
 class gp_Pnt2d;
 
 class HLRBRep_TheProjPCurOfCInter
