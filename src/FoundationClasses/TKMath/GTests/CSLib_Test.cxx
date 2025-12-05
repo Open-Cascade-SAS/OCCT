@@ -303,10 +303,9 @@ TEST_F(CSLibClass2dTest, InternalSiDans_NormalizedCoordinates)
 
   CSLib_Class2d aClassifier(aPnts, 0.1, 0.1, 0.0, 0.0, 10.0, 10.0);
 
-  // Test internal classification with normalized coordinates
-  // Point at (0.5, 0.5) in normalized space corresponds to (5, 5) in original
-  EXPECT_EQ(aClassifier.InternalSiDans(0.5, 0.5), 1);
-  EXPECT_EQ(aClassifier.InternalSiDans(1.5, 1.5), 0); // Outside
+  // Test classification with actual coordinates
+  EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(5.0, 5.0)), CSLib_Class2d::Result_Inside);
+  EXPECT_EQ(aClassifier.SiDans(gp_Pnt2d(15.0, 15.0)), CSLib_Class2d::Result_Outside);
 }
 
 // Test SiDans_OnMode
