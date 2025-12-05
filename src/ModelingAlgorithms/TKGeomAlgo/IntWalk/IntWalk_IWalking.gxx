@@ -1549,10 +1549,11 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
         PasC = pas * std::min((UM - Um) / d2dx, (VM - Vm) / d2dy);
       }
 
-      Arrive          = Standard_False;
-      ArretAjout      = Standard_False;
-      NbDivision      = 0;
-      StatusPrecedent = IntWalk_OK;
+      Arrive           = Standard_False;
+      ArretAjout       = Standard_False;
+      NbDivision       = 0;
+      StatusPrecedent  = IntWalk_OK;
+      double aPrevPasC = PasC; // For infinite loop prevention only.
       // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
       Standard_Integer IndexOfPathPointDoNotCheck = 0;
       Standard_Integer aNbIter                    = 10;
@@ -1582,6 +1583,18 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
         {
           if (std::abs(Func.Root()) > Func.Tolerance())
           {
+            // This if/else block was added to avoid infinite loops
+            // when root is not found even for very small steps.
+            if (aPrevPasC == PasC)
+            {
+              Arrive = Standard_False;
+              break;
+            }
+            else
+            {
+              aPrevPasC = PasC;
+            }
+
             PasC  = PasC / 2.0;
             PasCu = std::abs(PasC * previousd2d.X());
             PasCv = std::abs(PasC * previousd2d.Y());
