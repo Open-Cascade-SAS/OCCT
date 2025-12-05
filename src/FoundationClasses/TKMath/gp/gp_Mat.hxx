@@ -192,7 +192,8 @@ public:
   constexpr Standard_Boolean IsSingular() const noexcept
   {
     // Pour etre sur que Gauss va fonctionner, il faut faire Gauss ...
-    return std::abs(Determinant()) <= gp::Resolution();
+    const Standard_Real aDet = Determinant();
+    return (aDet < 0.0 ? -aDet : aDet) <= gp::Resolution();
   }
 
   constexpr void Add(const gp_Mat& theOther) noexcept;
