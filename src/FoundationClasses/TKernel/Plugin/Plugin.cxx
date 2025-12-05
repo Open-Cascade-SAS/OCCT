@@ -99,8 +99,10 @@ Handle(Standard_Transient) Plugin::Load(const Standard_GUID&   aGUID,
   else
     f = theMapOfFunctions(pid);
 
-  Standard_Transient* (*fp)(const Standard_GUID&) = NULL;
-  fp                                           = (Standard_Transient * (*)(const Standard_GUID&)) f;
+  // Cast through void* to avoid -Wcast-function-type-mismatch warning.
+  // This is safe for dynamically loaded plugin symbols.
+  Standard_Transient* (*fp)(const Standard_GUID&) =
+    reinterpret_cast<Standard_Transient* (*)(const Standard_GUID&)>(reinterpret_cast<void*>(f));
   Handle(Standard_Transient) theServiceFactory = (*fp)(aGUID);
   return theServiceFactory;
 }
