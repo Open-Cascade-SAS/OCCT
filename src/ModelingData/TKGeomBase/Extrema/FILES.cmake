@@ -20,10 +20,10 @@ set(OCCT_Extrema_FILES
   Extrema_CurveTool.cxx
   Extrema_CurveTool.hxx
   Extrema_CurveTool.lxx
+  Extrema_ECC.cxx
   Extrema_ECC.hxx
+  Extrema_ECC2d.cxx
   Extrema_ECC2d.hxx
-  Extrema_ECC2d_0.cxx
-  Extrema_ECC_0.cxx
   Extrema_ElementType.hxx
   Extrema_ELPCOfLocateExtPC.hxx
   Extrema_ELPCOfLocateExtPC2d.hxx
@@ -82,7 +82,7 @@ set(OCCT_Extrema_FILES
   Extrema_FuncPSDist.hxx
   Extrema_FuncExtSS.cxx
   Extrema_FuncExtSS.hxx
-  Extrema_GenExtCC.gxx
+  Extrema_GenExtCC.pxx
   Extrema_GenExtCS.cxx
   Extrema_GenExtCS.hxx
   Extrema_GenExtPC.gxx

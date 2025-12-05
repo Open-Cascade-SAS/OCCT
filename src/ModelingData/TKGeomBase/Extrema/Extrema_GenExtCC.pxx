@@ -1,0 +1,561 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// This is a private header file with template implementations for Extrema_GenExtCC.
+// It replaces the deprecated .gxx macro-based approach with modern C++ templates.
+
+#ifndef _Extrema_GenExtCC_pxx_HeaderFile
+#define _Extrema_GenExtCC_pxx_HeaderFile
+
+#include <algorithm>
+
+#include <Extrema_GlobOptFuncCC.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <math_GlobOptMin.hxx>
+#include <NCollection_CellFilter.hxx>
+#include <NCollection_Vector.hxx>
+#include <Precision.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_ListOfInteger.hxx>
+
+#ifndef M_SQRT2
+  #define M_SQRT2 1.41421356237309504880168872420969808
+#endif
+
+namespace Extrema_GenExtCC_Impl
+{
+
+//! Comparator for gp_XY pairs, used in std::sort.
+//! Sorts lexicographically by X, then by Y.
+inline bool CompareXY(const gp_XY& theA, const gp_XY& theB)
+{
+  if (theA.X() < theB.X())
+  {
+    return true;
+  }
+  if (theA.X() == theB.X())
+  {
+    if (theA.Y() < theB.Y())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//! Modifies interval array to have the specified number of intervals.
+//! Redistributes intervals to maintain good coverage.
+inline void ChangeIntervals(Handle(TColStd_HArray1OfReal)& theInts, const int theNbInts)
+{
+  int                           aNbInts  = theInts->Length() - 1;
+  int                           aNbAdd   = theNbInts - aNbInts;
+  Handle(TColStd_HArray1OfReal) aNewInts = new TColStd_HArray1OfReal(1, theNbInts + 1);
+  int                           aNbLast  = theInts->Length();
+
+  if (aNbInts == 1)
+  {
+    aNewInts->SetValue(1, theInts->First());
+    aNewInts->SetValue(theNbInts + 1, theInts->Last());
+    double dt = (theInts->Last() - theInts->First()) / theNbInts;
+    double t  = theInts->First() + dt;
+    for (int i = 2; i <= theNbInts; ++i, t += dt)
+    {
+      aNewInts->SetValue(i, t);
+    }
+    theInts = aNewInts;
+    return;
+  }
+
+  for (int i = 1; i <= aNbLast; ++i)
+  {
+    aNewInts->SetValue(i, theInts->Value(i));
+  }
+
+  while (aNbAdd > 0)
+  {
+    double anLIntMax = -1.;
+    int    aMaxInd   = -1;
+    for (int i = 1; i < aNbLast; ++i)
+    {
+      double anL = aNewInts->Value(i + 1) - aNewInts->Value(i);
+      if (anL > anLIntMax)
+      {
+        anLIntMax = anL;
+        aMaxInd   = i;
+      }
+    }
+
+    double t = (aNewInts->Value(aMaxInd + 1) + aNewInts->Value(aMaxInd)) / 2.;
+    for (int i = aNbLast; i > aMaxInd; --i)
+    {
+      aNewInts->SetValue(i + 1, aNewInts->Value(i));
+    }
+    aNbLast++;
+    aNbAdd--;
+    aNewInts->SetValue(aMaxInd + 1, t);
+  }
+  theInts = aNewInts;
+}
+
+//! Inspector for filtering duplicate solution points using cell filter.
+class CCPointsInspector : public NCollection_CellFilter_InspectorXY
+{
+public:
+  typedef gp_XY Target;
+
+  //! Constructor; remembers the tolerance squared.
+  CCPointsInspector(const double theTol)
+      : myTol(theTol * theTol),
+        myIsFind(false)
+  {
+  }
+
+  void ClearFind() { myIsFind = false; }
+
+  bool isFind() const { return myIsFind; }
+
+  //! Set current point to search for coincidence.
+  void SetCurrent(const gp_XY& theCurPnt) { myCurrent = theCurPnt; }
+
+  //! Implementation of inspection method.
+  NCollection_CellFilter_Action Inspect(const Target& theObject)
+  {
+    gp_XY        aPt     = myCurrent.Subtracted(theObject);
+    const double aSQDist = aPt.SquareModulus();
+    if (aSQDist < myTol)
+    {
+      myIsFind = true;
+    }
+    return CellFilter_Keep;
+  }
+
+private:
+  double myTol;
+  gp_XY  myCurrent;
+  bool   myIsFind;
+};
+
+//! Projects a point onto a curve and returns the minimal squared distance.
+//! @tparam PointType The point type (gp_Pnt or gp_Pnt2d)
+//! @tparam ExtPCType The extrema point-curve type (Extrema_ExtPC or Extrema_ExtPC2d)
+template <typename PointType, typename ExtPCType>
+double ProjPOnC(const PointType& theP, ExtPCType& theProjTool)
+{
+  double aDist = RealLast();
+  theProjTool.Perform(theP);
+  if (theProjTool.IsDone() && theProjTool.NbExt())
+  {
+    for (int i = 1; i <= theProjTool.NbExt(); ++i)
+    {
+      double aD = theProjTool.SquareDistance(i);
+      if (aD < aDist)
+      {
+        aDist = aD;
+      }
+    }
+  }
+  return aDist;
+}
+
+//! Performs the global optimization to find curve-curve extrema.
+//! @tparam CurveType The curve adaptor type
+//! @tparam CurveTool The curve tool type for accessing curve properties
+//! @tparam PointType The point type (gp_Pnt or gp_Pnt2d)
+//! @tparam POnCurvType The point-on-curve result type
+//! @tparam ExtPCType The extrema point-curve type
+//! @tparam FuncCCType The global optimization function type
+template <typename CurveType,
+          typename CurveTool,
+          typename PointType,
+          typename POnCurvType,
+          typename ExtPCType,
+          typename FuncCCType>
+void PerformGenExtCC(const CurveType&        theC1,
+                     const CurveType&        theC2,
+                     const math_Vector&      theLowBorder,
+                     const math_Vector&      theUppBorder,
+                     const double            theCurveMinTol,
+                     const bool              theIsFindSingleSolution,
+                     bool&                   theDone,
+                     bool&                   theParallel,
+                     TColStd_SequenceOfReal& thePoints1,
+                     TColStd_SequenceOfReal& thePoints2)
+{
+  theDone     = false;
+  theParallel = false;
+
+  int           aNbInter[2];
+  GeomAbs_Shape aContinuity = GeomAbs_C2;
+  aNbInter[0]               = theC1.NbIntervals(aContinuity);
+  aNbInter[1]               = theC2.NbIntervals(aContinuity);
+
+  if (aNbInter[0] * aNbInter[1] > 100)
+  {
+    aContinuity = GeomAbs_C1;
+    aNbInter[0] = theC1.NbIntervals(aContinuity);
+    aNbInter[1] = theC2.NbIntervals(aContinuity);
+  }
+
+  double       anL[2];
+  int          indmax = -1, indmin = -1;
+  const double mult = 20.;
+  if (!(Precision::IsInfinite(theC1.FirstParameter())
+        || Precision::IsInfinite(theC1.LastParameter())
+        || Precision::IsInfinite(theC2.FirstParameter())
+        || Precision::IsInfinite(theC2.LastParameter())))
+  {
+    anL[0] = GCPnts_AbscissaPoint::Length(theC1);
+    anL[1] = GCPnts_AbscissaPoint::Length(theC2);
+    if (anL[0] / aNbInter[0] > mult * anL[1] / aNbInter[1])
+    {
+      indmax = 0;
+      indmin = 1;
+    }
+    else if (anL[1] / aNbInter[1] > mult * anL[0] / aNbInter[0])
+    {
+      indmax = 1;
+      indmin = 0;
+    }
+  }
+
+  int aNbIntOpt = 0;
+  if (indmax >= 0)
+  {
+    aNbIntOpt = RealToInt(anL[indmax] * aNbInter[indmin] / anL[indmin] / (mult / 4.)) + 1;
+    if (aNbIntOpt > 100 || aNbIntOpt < aNbInter[indmax])
+    {
+      indmax = -1;
+    }
+    else
+    {
+      if (aNbIntOpt * aNbInter[indmin] > 100)
+      {
+        aNbIntOpt = 100 / aNbInter[indmin];
+        if (aNbIntOpt < aNbInter[indmax])
+        {
+          indmax = -1;
+        }
+      }
+    }
+  }
+
+  Handle(TColStd_HArray1OfReal) anIntervals1 = new TColStd_HArray1OfReal(1, aNbInter[0] + 1);
+  Handle(TColStd_HArray1OfReal) anIntervals2 = new TColStd_HArray1OfReal(1, aNbInter[1] + 1);
+  theC1.Intervals(anIntervals1->ChangeArray1(), aContinuity);
+  theC2.Intervals(anIntervals2->ChangeArray1(), aContinuity);
+
+  if (indmax >= 0)
+  {
+    if (indmax == 0)
+    {
+      ChangeIntervals(anIntervals1, aNbIntOpt);
+      aNbInter[0] = anIntervals1->Length() - 1;
+    }
+    else
+    {
+      ChangeIntervals(anIntervals2, aNbIntOpt);
+      aNbInter[1] = anIntervals2->Length() - 1;
+    }
+  }
+
+  if (theC1.IsClosed() && aNbInter[0] == 1)
+  {
+    ChangeIntervals(anIntervals1, 3);
+    aNbInter[0] = anIntervals1->Length() - 1;
+  }
+  if (theC2.IsClosed() && aNbInter[1] == 1)
+  {
+    ChangeIntervals(anIntervals2, 3);
+    aNbInter[1] = anIntervals2->Length() - 1;
+  }
+
+  // Lipschitz constant computation.
+  const double aMaxLC   = 10000.;
+  double       aLC      = 100.0;
+  const double aMaxDer1 = 1.0 / theC1.Resolution(1.0);
+  const double aMaxDer2 = 1.0 / theC2.Resolution(1.0);
+  double       aMaxDer  = std::max(aMaxDer1, aMaxDer2) * M_SQRT2;
+  if (aLC > aMaxDer)
+  {
+    aLC = aMaxDer;
+  }
+
+  // Change constant value according to the concrete curve types.
+  bool isConstLockedFlag = false;
+  // To prevent LipConst to became too small
+  const double aCR = 0.001;
+  if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
+  {
+    isConstLockedFlag = true;
+  }
+  if (aMaxDer > aMaxLC)
+  {
+    aLC               = aMaxLC;
+    isConstLockedFlag = true;
+  }
+  if (theC1.GetType() == GeomAbs_Line)
+  {
+    aMaxDer = 1.0 / theC2.Resolution(1.0);
+    if (aLC > aMaxDer)
+    {
+      isConstLockedFlag = true;
+      aLC               = aMaxDer;
+    }
+  }
+  if (theC2.GetType() == GeomAbs_Line)
+  {
+    aMaxDer = 1.0 / theC1.Resolution(1.0);
+    if (aLC > aMaxDer)
+    {
+      isConstLockedFlag = true;
+      aLC               = aMaxDer;
+    }
+  }
+
+  FuncCCType aFunc(theC1, theC2);
+  if (aLC < aMaxLC || aMaxDer > aMaxLC)
+  {
+    // Estimation of Lipschitz constant by gradient of optimization function
+    // using sampling in parameter space.
+    math_Vector aT(1, 2), aG(1, 2);
+    double      aF, aMaxG = 0.;
+    double      t1, t2, dt1, dt2;
+    int         n1 = 21, n2 = 21, i1, i2;
+    dt1 = (theC1.LastParameter() - theC1.FirstParameter()) / (n1 - 1);
+    dt2 = (theC2.LastParameter() - theC2.FirstParameter()) / (n2 - 1);
+    for (i1 = 1, t1 = theC1.FirstParameter(); i1 <= n1; ++i1, t1 += dt1)
+    {
+      aT(1) = t1;
+      for (i2 = 1, t2 = theC2.FirstParameter(); i2 <= n2; ++i2, t2 += dt2)
+      {
+        aT(2) = t2;
+        aFunc.Values(aT, aF, aG);
+        double aMod = aG(1) * aG(1) + aG(2) * aG(2);
+        aMaxG       = std::max(aMaxG, aMod);
+      }
+    }
+    aMaxG = std::sqrt(aMaxG);
+    if (aMaxG > aMaxDer)
+    {
+      aLC               = std::min(aMaxG, aMaxLC);
+      isConstLockedFlag = true;
+    }
+    if (aMaxG > 100. * aMaxLC)
+    {
+      aLC               = 100. * aMaxLC;
+      isConstLockedFlag = true;
+    }
+    else if (aMaxG < 0.1 * aMaxDer)
+    {
+      isConstLockedFlag = true;
+    }
+  }
+
+  math_GlobOptMin aFinder(&aFunc, theLowBorder, theUppBorder, aLC);
+  aFinder.SetLipConstState(isConstLockedFlag);
+  aFinder.SetContinuity(aContinuity == GeomAbs_C2 ? 2 : 1);
+  double aDiscTol  = 1.0e-2;
+  double aValueTol = 1.0e-2;
+  double aSameTol  = theCurveMinTol / (aDiscTol);
+  aFinder.SetTol(aDiscTol, aSameTol);
+  aFinder.SetFunctionalMinimalValue(0.0);
+
+  // Size computed to have cell index inside of int32 value.
+  const double      aCellSize = std::max(std::max(anIntervals1->Last() - anIntervals1->First(),
+                                             anIntervals2->Last() - anIntervals2->First())
+                                      * Precision::PConfusion() / (2.0 * M_SQRT2),
+                                    Precision::PConfusion());
+  CCPointsInspector anInspector(aCellSize);
+  NCollection_CellFilter<CCPointsInspector> aFilter(aCellSize);
+  NCollection_Vector<gp_XY>                 aPnts;
+
+  math_Vector aFirstBorderInterval(1, 2);
+  math_Vector aSecondBorderInterval(1, 2);
+  double      aF     = RealLast();
+  double      aCurrF = RealLast();
+
+  for (int i = 1; i <= aNbInter[0]; i++)
+  {
+    for (int j = 1; j <= aNbInter[1]; j++)
+    {
+      aFirstBorderInterval(1)  = anIntervals1->Value(i);
+      aFirstBorderInterval(2)  = anIntervals2->Value(j);
+      aSecondBorderInterval(1) = anIntervals1->Value(i + 1);
+      aSecondBorderInterval(2) = anIntervals2->Value(j + 1);
+
+      aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
+      aFinder.Perform(theIsFindSingleSolution);
+
+      aCurrF = aFinder.GetF();
+      if (aCurrF >= aF + aSameTol * aValueTol)
+      {
+        continue;
+      }
+
+      if (aCurrF > aF - aSameTol * aValueTol)
+      {
+        if (aCurrF < aF)
+        {
+          aF = aCurrF;
+        }
+      }
+      else
+      {
+        aF = aCurrF;
+        aFilter.Reset(aCellSize);
+        aPnts.Clear();
+      }
+
+      math_Vector sol(1, 2);
+      for (int k = 1; k <= aFinder.NbExtrema(); k++)
+      {
+        aFinder.Points(k, sol);
+        gp_XY aPnt2d(sol(1), sol(2));
+
+        gp_XY aXYmin = anInspector.Shift(aPnt2d, -aCellSize);
+        gp_XY aXYmax = anInspector.Shift(aPnt2d, aCellSize);
+
+        anInspector.ClearFind();
+        anInspector.SetCurrent(aPnt2d);
+        aFilter.Inspect(aXYmin, aXYmax, anInspector);
+        if (!anInspector.isFind())
+        {
+          aFilter.Add(aPnt2d, aPnt2d);
+          aPnts.Append(gp_XY(sol(1), sol(2)));
+        }
+      }
+    }
+  }
+
+  const int aNbSol = aPnts.Length();
+  if (aNbSol == 0)
+  {
+    theDone = false;
+    return;
+  }
+
+  theDone = true;
+
+  if (aNbSol == 1)
+  {
+    const gp_XY& aSol = aPnts.First();
+    thePoints1.Append(aSol.X());
+    thePoints2.Append(aSol.Y());
+    return;
+  }
+
+  // More than one solution is found.
+  // Check for infinity solutions case.
+  std::sort(aPnts.begin(), aPnts.end(), CompareXY);
+
+  TColStd_ListOfInteger aSolutions;
+  bool                  bSaveSolution       = true;
+  bool                  bDirsCoinside       = true;
+  bool                  bDifferentSolutions = false;
+  bool                  isParallel          = true;
+  double                aVal                = 0.0;
+  math_Vector           aVec(1, 2, 0.0);
+
+  for (int anIdx = 0; anIdx < aNbSol - 1; anIdx++)
+  {
+    const gp_XY& aCurrent = aPnts(anIdx);
+    const gp_XY& aNext    = aPnts(anIdx + 1);
+
+    aVec(1) = (aCurrent.X() + aNext.X()) * 0.5;
+    aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
+
+    aFunc.Value(aVec, aVal);
+    if (std::abs(aVal - aF) < Precision::Confusion())
+    {
+      if (bSaveSolution)
+      {
+        aSolutions.Append(anIdx);
+        bSaveSolution = false;
+      }
+    }
+    else
+    {
+      isParallel = false;
+      aSolutions.Append(anIdx);
+      bSaveSolution = true;
+    }
+
+    if (!bDifferentSolutions)
+    {
+      if (aNext.X() > aCurrent.X())
+      {
+        if (aNext.Y() > aCurrent.Y())
+        {
+          bDifferentSolutions = true;
+          bDirsCoinside       = true;
+        }
+        else if (aNext.Y() < aCurrent.Y())
+        {
+          bDifferentSolutions = true;
+          bDirsCoinside       = false;
+        }
+      }
+    }
+  }
+  aSolutions.Append(aNbSol - 1);
+
+  if (!bDifferentSolutions)
+  {
+    isParallel = false;
+  }
+
+  if (isParallel)
+  {
+    // Check if the ends of the curves do not diverge.
+    double aT1[2] = {theLowBorder(1), theUppBorder(1)};
+    double aT2[2] = {bDirsCoinside ? theLowBorder(2) : theUppBorder(2),
+                     bDirsCoinside ? theUppBorder(2) : theLowBorder(2)};
+
+    ExtPCType anExtPC1, anExtPC2;
+    anExtPC1.Initialize(theC1, theLowBorder(1), theUppBorder(1));
+    anExtPC2.Initialize(theC2, theLowBorder(2), theUppBorder(2));
+
+    for (int iT = 0; isParallel && (iT < 2); ++iT)
+    {
+      double aDist1 = ProjPOnC<PointType, ExtPCType>(CurveTool::Value(theC1, aT1[iT]), anExtPC2);
+      double aDist2 = ProjPOnC<PointType, ExtPCType>(CurveTool::Value(theC2, aT2[iT]), anExtPC1);
+      isParallel    = (std::abs(std::min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
+    }
+  }
+
+  if (isParallel)
+  {
+    const gp_XY& aSol = aPnts.First();
+    thePoints1.Append(aSol.X());
+    thePoints2.Append(aSol.Y());
+    theParallel = true;
+  }
+  else
+  {
+    TColStd_ListIteratorOfListOfInteger aItSol(aSolutions);
+    for (; aItSol.More(); aItSol.Next())
+    {
+      const gp_XY& aSol = aPnts(aItSol.Value());
+      thePoints1.Append(aSol.X());
+      thePoints2.Append(aSol.Y());
+    }
+  }
+}
+
+} // namespace Extrema_GenExtCC_Impl
+
+#endif // _Extrema_GenExtCC_pxx_HeaderFile
