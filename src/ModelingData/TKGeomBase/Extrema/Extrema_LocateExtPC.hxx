@@ -17,95 +17,22 @@
 #ifndef _Extrema_LocateExtPC_HeaderFile
 #define _Extrema_LocateExtPC_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
-#include <Extrema_LocEPCOfLocateExtPC.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Extrema_CurveTool.hxx>
 #include <Extrema_ELPCOfLocateExtPC.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Standard_Integer.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
-class Adaptor3d_Curve;
-class Extrema_CurveTool;
-class Extrema_ExtPElC;
-class gp_Pnt;
-class gp_Vec;
-class Extrema_POnCurv;
-class Extrema_ELPCOfLocateExtPC;
-class Extrema_EPCOfELPCOfLocateExtPC;
-class Extrema_LocateExtPC
-{
-public:
-  DEFINE_STANDARD_ALLOC
+#include <Extrema_GLocateExtPC.hxx>
+#include <Extrema_LocEPCOfLocateExtPC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
-  Standard_EXPORT Extrema_LocateExtPC();
-
-  //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searches a zero
-  //! near the close point.
-  //! TolF is used to decide to stop the iterations.
-  //! At the nth iteration, the criteria is:
-  //! abs(Un - Un-1) < TolF.
-  Standard_EXPORT Extrema_LocateExtPC(const gp_Pnt&          P,
-                                      const Adaptor3d_Curve& C,
-                                      const Standard_Real    U0,
-                                      const Standard_Real    TolF);
-
-  //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searches a zero
-  //! near the close point.
-  //! Zeros are searched between Umin et Usup.
-  //! TolF is used to decide to stop the iterations.
-  //! At the nth iteration, the criteria is:
-  //! abs(Un - Un-1) < TolF.
-  Standard_EXPORT Extrema_LocateExtPC(const gp_Pnt&          P,
-                                      const Adaptor3d_Curve& C,
-                                      const Standard_Real    U0,
-                                      const Standard_Real    Umin,
-                                      const Standard_Real    Usup,
-                                      const Standard_Real    TolF);
-
-  //! sets the fields of the algorithm.
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& C,
-                                  const Standard_Real    Umin,
-                                  const Standard_Real    Usup,
-                                  const Standard_Real    TolF);
-
-  Standard_EXPORT void Perform(const gp_Pnt& P, const Standard_Real U0);
-
-  //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
-
-  //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
-
-  //! Returns True if the extremum distance is a minimum.
-  Standard_EXPORT Standard_Boolean IsMin() const;
-
-  //! Returns the point of the extremum distance.
-  Standard_EXPORT const Extrema_POnCurv& Point() const;
-
-protected:
-private:
-  Extrema_POnCurv             mypp;
-  Standard_Address            myC;
-  Standard_Real               mydist2;
-  Standard_Boolean            myismin;
-  Standard_Boolean            myDone;
-  Standard_Real               myumin;
-  Standard_Real               myusup;
-  Standard_Real               mytol;
-  Extrema_LocEPCOfLocateExtPC myLocExtPC;
-  Extrema_ELPCOfLocateExtPC   myExtremPC;
-  GeomAbs_CurveType           type;
-  Standard_Integer            numberext;
-};
+//! Type alias for 3D curve extremum locator.
+using Extrema_LocateExtPC = Extrema_GLocateExtPC<Adaptor3d_Curve,
+                                                  Extrema_CurveTool,
+                                                  gp_Pnt,
+                                                  gp_Vec,
+                                                  Extrema_POnCurv,
+                                                  Extrema_ELPCOfLocateExtPC,
+                                                  Extrema_LocEPCOfLocateExtPC>;
 
 #endif // _Extrema_LocateExtPC_HeaderFile

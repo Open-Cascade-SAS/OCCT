@@ -90,7 +90,7 @@ set(OCCT_Extrema_FILES
   Extrema_GenExtPS.hxx
   Extrema_GenExtSS.cxx
   Extrema_GenExtSS.hxx
-  Extrema_GenLocateExtCC.gxx
+  Extrema_GenLocateExtCC.hxx
   Extrema_GenLocateExtCS.cxx
   Extrema_GenLocateExtCS.hxx
   Extrema_GenLocateExtPC.hxx
@@ -107,7 +107,7 @@ set(OCCT_Extrema_FILES
   Extrema_GlobOptFuncConicS.hxx
   Extrema_GlobOptFuncCQuadric.cxx
   Extrema_GlobOptFuncCQuadric.hxx
-  Extrema_GLocateExtPC.gxx
+  Extrema_GLocateExtPC.hxx
   Extrema_HArray1OfPOnCurv.hxx
   Extrema_HArray1OfPOnCurv2d.hxx
   Extrema_HArray1OfPOnSurf.hxx
@@ -121,12 +121,8 @@ set(OCCT_Extrema_FILES
   Extrema_LocateExtCC2d.hxx
   Extrema_LocateExtPC.hxx
   Extrema_LocateExtPC2d.hxx
-  Extrema_LocateExtPC2d_0.cxx
-  Extrema_LocateExtPC_0.cxx
   Extrema_LocECC.hxx
   Extrema_LocECC2d.hxx
-  Extrema_LocECC2d_0.cxx
-  Extrema_LocECC_0.cxx
   Extrema_LocEPCOfLocateExtPC.hxx
   Extrema_LocEPCOfLocateExtPC2d.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC.hxx
