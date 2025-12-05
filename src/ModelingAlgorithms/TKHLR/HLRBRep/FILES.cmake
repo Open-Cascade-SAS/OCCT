@@ -75,7 +75,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter_0.cxx
   HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx
-  HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter_0.cxx
   HLRBRep_PolyAlgo.cxx
   HLRBRep_PolyAlgo.hxx
   HLRBRep_PolyHLRToShape.cxx

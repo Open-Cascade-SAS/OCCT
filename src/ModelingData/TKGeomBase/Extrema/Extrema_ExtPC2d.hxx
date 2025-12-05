@@ -37,7 +37,6 @@ class gp_Pnt2d;
 class gp_Vec2d;
 class Extrema_POnCurv2d;
 class Extrema_EPCOfExtPC2d;
-class Extrema_PCFOfEPCOfExtPC2d;
 
 class Extrema_ExtPC2d
 {

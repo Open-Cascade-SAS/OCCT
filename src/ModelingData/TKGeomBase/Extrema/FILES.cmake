@@ -75,7 +75,7 @@ set(OCCT_Extrema_FILES
   Extrema_FuncExtCC.lxx
   Extrema_FuncExtCS.cxx
   Extrema_FuncExtCS.hxx
-  Extrema_FuncExtPC.gxx
+  Extrema_GFuncExtPC.hxx
   Extrema_FuncPSNorm.cxx
   Extrema_FuncPSNorm.hxx
   Extrema_FuncPSDist.cxx
@@ -127,16 +127,10 @@ set(OCCT_Extrema_FILES
   Extrema_LocEPCOfLocateExtPC2d.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC2d.hxx
-  Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_0.cxx
-  Extrema_PCFOfEPCOfELPCOfLocateExtPC_0.cxx
   Extrema_PCFOfEPCOfExtPC.hxx
   Extrema_PCFOfEPCOfExtPC2d.hxx
-  Extrema_PCFOfEPCOfExtPC2d_0.cxx
-  Extrema_PCFOfEPCOfExtPC_0.cxx
   Extrema_PCLocFOfLocEPCOfLocateExtPC.hxx
   Extrema_PCLocFOfLocEPCOfLocateExtPC2d.hxx
-  Extrema_PCLocFOfLocEPCOfLocateExtPC2d_0.cxx
-  Extrema_PCLocFOfLocEPCOfLocateExtPC_0.cxx
   Extrema_POnCurv.hxx
   Extrema_POnCurv2d.hxx
   Extrema_POnCurv2d_0.cxx
