@@ -17,7 +17,6 @@
 #ifndef _CSLib_Class2d_HeaderFile
 #define _CSLib_Class2d_HeaderFile
 
-#include <NCollection_Handle.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -39,6 +38,14 @@ class gp_Pnt2d;
 class CSLib_Class2d
 {
 public:
+  //! Classification result for point-in-polygon tests.
+  enum Result
+  {
+    Result_Inside    = 1,  //!< Point is strictly inside the polygon
+    Result_Outside   = -1, //!< Point is strictly outside the polygon
+    Result_Uncertain = 0   //!< Point is on boundary or classification is uncertain
+  };
+
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a 2D classifier from an array of polygon vertices.
@@ -83,11 +90,8 @@ public:
   //! Classifies a point relative to the polygon.
   //!
   //! @param[in] thePoint The 2D point to classify
-  //! @return Classification result:
-  //!         -  1: Point is inside the polygon
-  //!         - -1: Point is outside the polygon
-  //!         -  0: Point is on the boundary (within tolerance) or classification is uncertain
-  Standard_EXPORT int SiDans(const gp_Pnt2d& thePoint) const;
+  //! @return Classification result
+  Standard_EXPORT Result SiDans(const gp_Pnt2d& thePoint) const;
 
   //! Classifies a point with explicit ON tolerance.
   //!
@@ -96,9 +100,10 @@ public:
   //!
   //! @param[in] thePoint The 2D point to classify
   //! @param[in] theTol   Tolerance for boundary detection
-  //! @return Classification result (same as SiDans())
-  Standard_EXPORT int SiDans_OnMode(const gp_Pnt2d& thePoint, double theTol) const;
+  //! @return Classification result
+  Standard_EXPORT Result SiDans_OnMode(const gp_Pnt2d& thePoint, double theTol) const;
 
+private:
   //! Internal classification in normalized coordinates.
   //!
   //! Performs point-in-polygon test using ray-casting algorithm.
@@ -106,19 +111,18 @@ public:
   //!
   //! @param[in] theX X coordinate in normalized space
   //! @param[in] theY Y coordinate in normalized space
-  //! @return 1 if inside, 0 if outside
-  Standard_EXPORT int InternalSiDans(double theX, double theY) const;
+  //! @return true if inside, false if outside
+  bool internalSiDans(double theX, double theY) const;
 
   //! Internal classification with ON detection.
   //!
-  //! Same as InternalSiDans() but also detects if the point lies on the boundary.
+  //! Same as internalSiDans() but also detects if the point lies on the boundary.
   //!
   //! @param[in] theX X coordinate in normalized space
   //! @param[in] theY Y coordinate in normalized space
-  //! @return 1 if inside, 0 if outside, -1 if on boundary
-  Standard_EXPORT int InternalSiDansOuOn(double theX, double theY) const;
+  //! @return Classification result
+  Result internalSiDansOuOn(double theX, double theY) const;
 
-private:
   //! Initializes the classifier with polygon data.
   //! @tparam TCol_Containers2d Container type (Array1 or Sequence)
   template <class TCol_Containers2d>
@@ -134,15 +138,15 @@ private:
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dX;    //!< X coordinates (normalized)
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dY;    //!< Y coordinates (normalized)
-  double                                   myTolU = 0.0; //!< Tolerance in U direction (normalized)
-  double                                   myTolV = 0.0; //!< Tolerance in V direction (normalized)
-  int                                      myN    = 0;   //!< Number of polygon vertices
-  double                                   myUMin = 0.0; //!< Original minimum U bound
-  double                                   myVMin = 0.0; //!< Original minimum V bound
-  double                                   myUMax = 0.0; //!< Original maximum U bound
-  double                                   myVMax = 0.0; //!< Original maximum V bound
+  TColStd_Array1OfReal myPnts2dX;           //!< X coordinates (normalized)
+  TColStd_Array1OfReal myPnts2dY;           //!< Y coordinates (normalized)
+  double               myTolU        = 0.0; //!< Tolerance in U direction (normalized)
+  double               myTolV        = 0.0; //!< Tolerance in V direction (normalized)
+  int                  myPointsCount = 0;   //!< Number of polygon vertices
+  double               myUMin        = 0.0; //!< Original minimum U bound
+  double               myVMin        = 0.0; //!< Original minimum V bound
+  double               myUMax        = 0.0; //!< Original maximum U bound
+  double               myVMax        = 0.0; //!< Original maximum V bound
 };
 
 #endif // _CSLib_Class2d_HeaderFile

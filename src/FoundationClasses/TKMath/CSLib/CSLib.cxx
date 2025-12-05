@@ -29,6 +29,18 @@
 #include <algorithm>
 #include <cmath>
 
+namespace
+{
+//! Angular tolerance for parallel/opposite vector detection (radians).
+constexpr double THE_PARALLEL_ANGULAR_TOL = 1e-6;
+
+//! Maximum number of iterations for root finding algorithm.
+constexpr int THE_MAX_ROOT_ITERATIONS = 200;
+
+//! Tolerance for root finding algorithm.
+constexpr double THE_ROOT_FINDING_TOL = 1e-5;
+} // namespace
+
 //=================================================================================================
 
 void CSLib::Normal(const gp_Vec&           theD1U,
@@ -183,28 +195,28 @@ void CSLib::Normal(const int                 theMaxOrder,
                    int&                      theOrderU,
                    int&                      theOrderV)
 {
-  int    anOrder = -1;
-  int    i       = 0;
-  bool   aFound  = false;
-  double aNorme  = 0.0;
+  int    anOrder    = -1;
+  int    aFoundUIdx = 0;
+  bool   aFound     = false;
+  double aNorme     = 0.0;
   gp_Vec aD;
 
   // Find k0 such that all derivatives N = dS/du ^ dS/dv are null till order k0-1.
   while (!aFound && anOrder < theMaxOrder)
   {
     ++anOrder;
-    i = anOrder;
-    while (i >= 0 && !aFound)
+    aFoundUIdx = anOrder;
+    while (aFoundUIdx >= 0 && !aFound)
     {
-      const int j = anOrder - i;
-      aD          = theDerNUV(i, j);
-      aNorme      = aD.Magnitude();
-      aFound      = (aNorme >= theSinTol);
-      --i;
+      const int aVIdx = anOrder - aFoundUIdx;
+      aD              = theDerNUV(aFoundUIdx, aVIdx);
+      aNorme          = aD.Magnitude();
+      aFound          = (aNorme >= theSinTol);
+      --aFoundUIdx;
     }
   }
 
-  theOrderU = i + 1;
+  theOrderU = aFoundUIdx + 1;
   theOrderV = anOrder - theOrderU;
 
   // Vk0 is the first non-null derivative of N: the reference vector.
@@ -225,29 +237,29 @@ void CSLib::Normal(const int                 theMaxOrder,
   TColStd_Array1OfReal aRatio(0, anOrder);
 
   // Calculate lambda_i ratios for each derivative at this order.
-  i              = 0;
+  int  aRatioIdx = 0;
   bool isDefined = false;
-  while (i <= anOrder && !isDefined)
+  while (aRatioIdx <= anOrder && !isDefined)
   {
-    const gp_Vec& aDerVec = theDerNUV(i, anOrder - i);
+    const gp_Vec& aDerVec = theDerNUV(aRatioIdx, anOrder - aRatioIdx);
     if (aDerVec.Magnitude() <= theSinTol)
     {
-      aRatio(i) = 0.0;
+      aRatio(aRatioIdx) = 0.0;
     }
-    else if (aDerVec.IsParallel(aVk0, 1e-6))
+    else if (aDerVec.IsParallel(aVk0, THE_PARALLEL_ANGULAR_TOL))
     {
-      double r = aDerVec.Magnitude() / aVk0.Magnitude();
-      if (aDerVec.IsOpposite(aVk0, 1e-6))
+      double aMagnitudeRatio = aDerVec.Magnitude() / aVk0.Magnitude();
+      if (aDerVec.IsOpposite(aVk0, THE_PARALLEL_ANGULAR_TOL))
       {
-        r = -r;
+        aMagnitudeRatio = -aMagnitudeRatio;
       }
-      aRatio(i) = r;
+      aRatio(aRatioIdx) = aMagnitudeRatio;
     }
     else
     {
       isDefined = true;
     }
-    ++i;
+    ++aRatioIdx;
   }
 
   if (isDefined)
@@ -310,8 +322,13 @@ void CSLib::Normal(const int                 theMaxOrder,
 
   // Create polynomial and find its roots.
   CSLib_NormalPolyDef aPoly(anOrder, aRatio);
-  math_FunctionRoots
-    aFindRoots(aPoly, aInf, aSup, 200, 1e-5, Precision::Confusion(), Precision::Confusion());
+  math_FunctionRoots  aFindRoots(aPoly,
+                                aInf,
+                                aSup,
+                                THE_MAX_ROOT_ITERATIONS,
+                                THE_ROOT_FINDING_TOL,
+                                Precision::Confusion(),
+                                Precision::Confusion());
 
   if (aFindRoots.IsDone() && aFindRoots.NbSolutions() > 0)
   {
@@ -319,9 +336,9 @@ void CSLib::Normal(const int                 theMaxOrder,
     const int            aNbSol = aFindRoots.NbSolutions();
     TColStd_Array1OfReal aSol(0, aNbSol + 1);
 
-    for (int n = 1; n <= aNbSol; ++n)
+    for (int aRootIdx = 1; aRootIdx <= aNbSol; ++aRootIdx)
     {
-      aSol(n) = aFindRoots.Value(n);
+      aSol(aRootIdx) = aFindRoots.Value(aRootIdx);
     }
     std::sort(&aSol(1), &aSol(aNbSol) + 1);
 
@@ -331,14 +348,14 @@ void CSLib::Normal(const int                 theMaxOrder,
 
     // Check for sign changes between consecutive roots.
     int aFirst = 0;
-    for (i = 0; i <= aNbSol; ++i)
+    for (int aIntervalIdx = 0; aIntervalIdx <= aNbSol; ++aIntervalIdx)
     {
-      if (std::abs(aSol(i + 1) - aSol(i)) > Precision::PConfusion())
+      if (std::abs(aSol(aIntervalIdx + 1) - aSol(aIntervalIdx)) > Precision::PConfusion())
       {
-        aPoly.Value((aSol(i) + aSol(i + 1)) / 2.0, aVsuiv);
+        aPoly.Value((aSol(aIntervalIdx) + aSol(aIntervalIdx + 1)) / 2.0, aVsuiv);
         if (aFirst == 0)
         {
-          aFirst       = i;
+          aFirst       = aIntervalIdx;
           aChangesSign = false;
           aVprec       = aVsuiv;
         }
