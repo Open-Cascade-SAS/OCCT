@@ -144,6 +144,10 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
 
 LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
 {
+  if (this == &anOther)
+  {
+    return *this;
+  }
   if (myType == LDOM_AsciiFree && myVal.ptr)
     delete[] (char*)myVal.ptr;
   myType = anOther.Type();
