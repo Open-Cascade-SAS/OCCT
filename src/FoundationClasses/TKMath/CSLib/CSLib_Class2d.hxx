@@ -134,8 +134,8 @@ private:
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dX; //!< X coordinates of polygon vertices (normalized)
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dY; //!< Y coordinates of polygon vertices (normalized)
+  NCollection_Handle<TColStd_Array1OfReal> myPnts2dX; //!< X coordinates (normalized)
+  NCollection_Handle<TColStd_Array1OfReal> myPnts2dY; //!< Y coordinates (normalized)
   double myTolU = 0.0;  //!< Tolerance in U direction (normalized)
   double myTolV = 0.0;  //!< Tolerance in V direction (normalized)
   int    myN    = 0;    //!< Number of polygon vertices

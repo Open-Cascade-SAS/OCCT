@@ -104,8 +104,8 @@ bool CSLib_NormalPolyDef::Values(const double theX, double& theF, double& theD)
     const double aLiCoeff  = myTABli(i);
 
     theF += aBinCoeff * std::pow(aCos, i) * std::pow(aSin, myK0 - i) * aLiCoeff;
-    theD += aBinCoeff * std::pow(aCos, i - 1) * std::pow(aSin, myK0 - i - 1) * (myK0 * aCos * aCos - i)
-            * aLiCoeff;
+    theD += aBinCoeff * std::pow(aCos, i - 1) * std::pow(aSin, myK0 - i - 1)
+            * (myK0 * aCos * aCos - i) * aLiCoeff;
   }
 
   return true;
