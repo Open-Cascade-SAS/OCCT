@@ -36,7 +36,6 @@ class Extrema_ExtPElC;
 class gp_Pnt;
 class gp_Vec;
 class Extrema_POnCurv;
-class Extrema_EPCOfExtPC;
 
 class Extrema_ExtPC
 {
