@@ -21,74 +21,92 @@
 
 //=================================================================================================
 
-CSLib_NormalPolyDef::CSLib_NormalPolyDef(const Standard_Integer k0, const TColStd_Array1OfReal& li)
-    : myK0(k0),
-      myTABli(0, k0)
+CSLib_NormalPolyDef::CSLib_NormalPolyDef(const int theK0, const TColStd_Array1OfReal& theLi)
+    : myK0(theK0),
+      myTABli(0, theK0)
 {
-  for (Standard_Integer i = 0; i <= k0; i++)
+  for (int i = 0; i <= theK0; ++i)
   {
-    myTABli(i) = li(i);
+    myTABli(i) = theLi(i);
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean CSLib_NormalPolyDef::Value(const Standard_Real X, Standard_Real& F)
+bool CSLib_NormalPolyDef::Value(const double theX, double& theF)
 {
-  F                      = 0.0;
-  const Standard_Real co = std::cos(X);
-  const Standard_Real si = std::sin(X);
+  theF = 0.0;
 
-  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
+  const double aCos = std::cos(theX);
+  const double aSin = std::sin(theX);
+
+  // At singular points (cos or sin near zero), return zero to avoid numerical instability.
+  if (std::abs(aCos) <= RealSmall() || std::abs(aSin) <= RealSmall())
   {
-    return Standard_True;
+    return true;
   }
-  for (Standard_Integer i = 0; i <= myK0; i++)
+
+  // Evaluate the polynomial: F(X) = Sum_{i=0}^{k0} C(k0,i) * cos^i(X) * sin^(k0-i)(X) * li(i)
+  for (int i = 0; i <= myK0; ++i)
   {
-    F += PLib::Bin(myK0, i) * std::pow(co, i) * std::pow(si, myK0 - i) * myTABli(i);
+    theF += PLib::Bin(myK0, i) * std::pow(aCos, i) * std::pow(aSin, myK0 - i) * myTABli(i);
   }
-  return Standard_True;
+
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean CSLib_NormalPolyDef::Derivative(const Standard_Real X, Standard_Real& D)
+bool CSLib_NormalPolyDef::Derivative(const double theX, double& theD)
 {
-  D                      = 0.0;
-  const Standard_Real co = std::cos(X);
-  const Standard_Real si = std::sin(X);
-  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
+  theD = 0.0;
+
+  const double aCos = std::cos(theX);
+  const double aSin = std::sin(theX);
+
+  // At singular points, return zero derivative.
+  if (std::abs(aCos) <= RealSmall() || std::abs(aSin) <= RealSmall())
   {
-    return Standard_True;
+    return true;
   }
-  for (Standard_Integer i = 0; i <= myK0; i++)
+
+  // Evaluate the derivative using the chain rule.
+  // dF/dX = Sum_{i=0}^{k0} C(k0,i) * cos^(i-1)(X) * sin^(k0-i-1)(X) * (k0*cos^2(X) - i) * li(i)
+  for (int i = 0; i <= myK0; ++i)
   {
-    D += PLib::Bin(myK0, i) * std::pow(co, i - 1) * std::pow(si, myK0 - i - 1)
-         * (myK0 * co * co - i) * myTABli(i);
+    theD += PLib::Bin(myK0, i) * std::pow(aCos, i - 1) * std::pow(aSin, myK0 - i - 1)
+            * (myK0 * aCos * aCos - i) * myTABli(i);
   }
-  return Standard_True;
+
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean CSLib_NormalPolyDef::Values(const Standard_Real X,
-                                             Standard_Real&      F,
-                                             Standard_Real&      D)
+bool CSLib_NormalPolyDef::Values(const double theX, double& theF, double& theD)
 {
-  F                      = 0.0;
-  D                      = 0.0;
-  const Standard_Real co = std::cos(X);
-  const Standard_Real si = std::sin(X);
-  if (std::abs(co) <= RealSmall() || std::abs(si) <= RealSmall())
+  theF = 0.0;
+  theD = 0.0;
+
+  const double aCos = std::cos(theX);
+  const double aSin = std::sin(theX);
+
+  // At singular points, return zeros.
+  if (std::abs(aCos) <= RealSmall() || std::abs(aSin) <= RealSmall())
   {
-    return Standard_True;
+    return true;
   }
-  for (Standard_Integer i = 0; i <= myK0; i++)
+
+  // Compute both function value and derivative in a single loop for efficiency.
+  for (int i = 0; i <= myK0; ++i)
   {
-    const Standard_Real aBin   = PLib::Bin(myK0, i);
-    const Standard_Real aCoeff = myTABli(i);
-    F += aBin * std::pow(co, i) * std::pow(si, myK0 - i) * aCoeff;
-    D += aBin * std::pow(co, i - 1) * std::pow(si, myK0 - i - 1) * (myK0 * co * co - i) * aCoeff;
+    const double aBinCoeff = PLib::Bin(myK0, i);
+    const double aLiCoeff  = myTABli(i);
+
+    theF += aBinCoeff * std::pow(aCos, i) * std::pow(aSin, myK0 - i) * aLiCoeff;
+    theD += aBinCoeff * std::pow(aCos, i - 1) * std::pow(aSin, myK0 - i - 1) * (myK0 * aCos * aCos - i)
+            * aLiCoeff;
   }
-  return Standard_True;
+
+  return true;
 }
