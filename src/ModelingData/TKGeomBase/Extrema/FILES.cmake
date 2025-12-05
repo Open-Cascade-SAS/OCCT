@@ -14,7 +14,6 @@ set(OCCT_Extrema_FILES
   Extrema_Curve2dTool.cxx
   Extrema_Curve2dTool.hxx
   Extrema_Curve2dTool.lxx
-  Extrema_CurveLocator.gxx
   Extrema_CurveTool.cxx
   Extrema_CurveTool.hxx
   Extrema_CurveTool.lxx
@@ -69,6 +68,7 @@ set(OCCT_Extrema_FILES
   Extrema_FuncPSDist.hxx
   Extrema_FuncExtSS.cxx
   Extrema_FuncExtSS.hxx
+  Extrema_GCurveLocator.hxx
   Extrema_GGenExtCC.hxx
   Extrema_GenExtCS.cxx
   Extrema_GenExtCS.hxx

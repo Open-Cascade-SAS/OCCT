@@ -17,13 +17,13 @@
 #ifndef _HLRBRep_TheProjPCurOfCInter_HeaderFile
 #define _HLRBRep_TheProjPCurOfCInter_HeaderFile
 
+#include <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
 class HLRBRep_CurveTool;
-class HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter;
 class gp_Pnt2d;
 
 class HLRBRep_TheProjPCurOfCInter

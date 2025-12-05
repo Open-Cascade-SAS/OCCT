@@ -15,7 +15,6 @@ set(OCCT_Geom2dInt_FILES
   Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter_0.cxx
   Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx
   Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx
-  Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter_0.cxx
   Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter.hxx
   Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter_0.cxx
   Geom2dInt_TheIntConicCurveOfGInter.hxx

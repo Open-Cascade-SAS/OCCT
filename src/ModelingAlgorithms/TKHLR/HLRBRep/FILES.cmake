@@ -99,7 +99,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_TheCSFunctionOfInterCSurf.hxx
   HLRBRep_TheCSFunctionOfInterCSurf_0.cxx
   HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx
-  HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter_0.cxx
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_TheExactInterCSurf.hxx
