@@ -139,7 +139,7 @@ public:
 
   static int Degree(const Adaptor2d_Curve2d& theC) { return theC.Degree(); }
 
-  static bool IsRational(const Adaptor2d_Curve2d& theC) { return theC.Degree() != 0; }
+  static bool IsRational(const Adaptor2d_Curve2d& theC) { return theC.IsRational(); }
 
   static int NbPoles(const Adaptor2d_Curve2d& theC) { return theC.NbPoles(); }
 
