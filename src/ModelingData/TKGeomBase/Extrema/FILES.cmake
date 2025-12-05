@@ -11,8 +11,6 @@ set(OCCT_Extrema_FILES
   Extrema_Array2OfPOnSurfParams.hxx
   Extrema_CCLocFOfLocECC.hxx
   Extrema_CCLocFOfLocECC2d.hxx
-  Extrema_CCLocFOfLocECC2d_0.cxx
-  Extrema_CCLocFOfLocECC_0.cxx
   Extrema_Curve2dTool.cxx
   Extrema_Curve2dTool.hxx
   Extrema_Curve2dTool.lxx
@@ -63,10 +61,9 @@ set(OCCT_Extrema_FILES
   Extrema_ExtPS.hxx
   Extrema_ExtSS.cxx
   Extrema_ExtSS.hxx
-  Extrema_FuncExtCC.gxx
-  Extrema_FuncExtCC.lxx
   Extrema_FuncExtCS.cxx
   Extrema_FuncExtCS.hxx
+  Extrema_GFuncExtCC.hxx
   Extrema_GFuncExtPC.hxx
   Extrema_FuncPSNorm.cxx
   Extrema_FuncPSNorm.hxx
