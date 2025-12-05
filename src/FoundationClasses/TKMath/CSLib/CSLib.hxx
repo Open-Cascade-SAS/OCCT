@@ -142,9 +142,7 @@ public:
   //! @param[in] theDerSurf Surface derivatives array where theDerSurf(i,j) = d^(i+j)S/(du^i * dv^j)
   //!                       for i = 0..theNu+1, j = 0..theNv+1
   //! @return The derivative vector d^(Nu+Nv)N / (du^Nu * dv^Nv)
-  Standard_EXPORT static gp_Vec DNNUV(int                       theNu,
-                                      int                       theNv,
-                                      const TColgp_Array2OfVec& theDerSurf);
+  Standard_EXPORT static gp_Vec DNNUV(int theNu, int theNv, const TColgp_Array2OfVec& theDerSurf);
 
   //! Computes the derivative of the non-normalized vector N = dS1/du ^ dS2/dv.
   //!

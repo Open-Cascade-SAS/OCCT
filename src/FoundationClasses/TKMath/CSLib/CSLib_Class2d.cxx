@@ -27,9 +27,7 @@ namespace
 //! @param[in] theUMin    Minimum bound of original range
 //! @param[in] theURange  Range of original domain (theUMax - theUMin)
 //! @return Normalized coordinate in [0,1], or original value if range is too small
-inline double transformToNormalized(const double theU,
-                                    const double theUMin,
-                                    const double theURange)
+inline double transformToNormalized(const double theU, const double theUMin, const double theURange)
 {
   constexpr double THE_MIN_RANGE = 1e-10;
   if (theURange > THE_MIN_RANGE)
@@ -146,8 +144,8 @@ int CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   // Quick rejection test for points clearly outside the bounding box.
   if (myUMin < myUMax && myVMin < myVMax)
   {
-    if (aX < (myUMin - aTolU) || aX > (myUMax + aTolU) ||
-        aY < (myVMin - aTolV) || aY > (myVMax + aTolV))
+    if (aX < (myUMin - aTolU) || aX > (myUMax + aTolU) || aY < (myVMin - aTolV)
+        || aY > (myVMax + aTolV))
     {
       return -1;
     }
@@ -167,10 +165,10 @@ int CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   // Check corner points with tolerance for boundary detection.
   if (myTolU > 0.0 || myTolV > 0.0)
   {
-    if (aResult != InternalSiDans(aX - myTolU, aY - myTolV) ||
-        aResult != InternalSiDans(aX + myTolU, aY - myTolV) ||
-        aResult != InternalSiDans(aX - myTolU, aY + myTolV) ||
-        aResult != InternalSiDans(aX + myTolU, aY + myTolV))
+    if (aResult != InternalSiDans(aX - myTolU, aY - myTolV)
+        || aResult != InternalSiDans(aX + myTolU, aY - myTolV)
+        || aResult != InternalSiDans(aX - myTolU, aY + myTolV)
+        || aResult != InternalSiDans(aX + myTolU, aY + myTolV))
     {
       return 0; // Uncertain (near boundary)
     }
@@ -194,8 +192,8 @@ int CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint, const double theTol) 
   // Quick rejection test.
   if (myUMin < myUMax && myVMin < myVMax)
   {
-    if (aX < (myUMin - theTol) || aX > (myUMax + theTol) ||
-        aY < (myVMin - theTol) || aY > (myVMax + theTol))
+    if (aX < (myUMin - theTol) || aX > (myUMax + theTol) || aY < (myVMin - theTol)
+        || aY > (myVMax + theTol))
     {
       return -1;
     }
@@ -211,10 +209,10 @@ int CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint, const double theTol) 
   // Check corner points with tolerance.
   if (theTol > 0.0)
   {
-    if (aResult != InternalSiDans(aX - theTol, aY - theTol) ||
-        aResult != InternalSiDans(aX + theTol, aY - theTol) ||
-        aResult != InternalSiDans(aX - theTol, aY + theTol) ||
-        aResult != InternalSiDans(aX + theTol, aY + theTol))
+    if (aResult != InternalSiDans(aX - theTol, aY - theTol)
+        || aResult != InternalSiDans(aX + theTol, aY - theTol)
+        || aResult != InternalSiDans(aX - theTol, aY + theTol)
+        || aResult != InternalSiDans(aX + theTol, aY + theTol))
     {
       return 0;
     }
@@ -275,8 +273,8 @@ int CSLib_Class2d::InternalSiDansOuOn(const double thePx, const double thePy) co
   // Ray-casting algorithm with ON detection.
   int aNbCrossings = 0;
 
-  double aX = myPnts2dX->Value(0) - thePx;
-  double aY = myPnts2dY->Value(0) - thePy;
+  double aX  = myPnts2dX->Value(0) - thePx;
+  double aY  = myPnts2dY->Value(0) - thePy;
   int    aSH = (aY < 0.0) ? -1 : 1;
 
   for (int i = 0, ip1 = 1; i < myN; ++i, ++ip1)

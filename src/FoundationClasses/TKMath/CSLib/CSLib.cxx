@@ -101,15 +101,15 @@ void CSLib::Normal(const gp_Vec&       theD1U,
   }
   else if (aLD1Nu < RealEpsilon())
   {
-    theStatus  = CSLib_D1NuIsNull;
-    theDone    = true;
-    theNormal  = gp_Dir(aD1Nv);
+    theStatus = CSLib_D1NuIsNull;
+    theDone   = true;
+    theNormal = gp_Dir(aD1Nv);
   }
   else if (aLD1Nv < RealEpsilon())
   {
-    theStatus  = CSLib_D1NvIsNull;
-    theDone    = true;
-    theNormal  = gp_Dir(aD1Nu);
+    theStatus = CSLib_D1NvIsNull;
+    theDone   = true;
+    theNormal = gp_Dir(aD1Nu);
   }
   else if ((aLD1Nv / aLD1Nu) <= RealEpsilon())
   {
@@ -128,9 +128,9 @@ void CSLib::Normal(const gp_Vec&       theD1U,
 
     if (aSin2 < theSinTol * theSinTol)
     {
-      theStatus  = CSLib_D1NuIsParallelD1Nv;
-      theDone    = true;
-      theNormal  = gp_Dir(aD1Nu);
+      theStatus = CSLib_D1NuIsParallelD1Nv;
+      theDone   = true;
+      theNormal = gp_Dir(aD1Nu);
     }
     else
     {
@@ -162,8 +162,8 @@ void CSLib::Normal(const gp_Vec&       theD1U,
     // Normalize tangent vectors first for better numerical stability.
     const gp_Dir aD1UDir(theD1U);
     const gp_Dir aD1VDir(theD1V);
-    theNormal  = gp_Dir(aD1UDir.Crossed(aD1VDir));
-    theStatus  = CSLib_Defined;
+    theNormal = gp_Dir(aD1UDir.Crossed(aD1VDir));
+    theStatus = CSLib_Defined;
   }
 }
 
@@ -216,17 +216,17 @@ void CSLib::Normal(const int                 theMaxOrder,
 
   if (anOrder == 0)
   {
-    theStatus  = CSLib_Defined;
-    theNormal  = aD.Normalized();
+    theStatus = CSLib_Defined;
+    theNormal = aD.Normalized();
     return;
   }
 
-  const gp_Vec aVk0 = theDerNUV(theOrderU, theOrderV);
+  const gp_Vec         aVk0 = theDerNUV(theOrderU, theOrderV);
   TColStd_Array1OfReal aRatio(0, anOrder);
 
   // Calculate lambda_i ratios for each derivative at this order.
-  i               = 0;
-  bool isDefined  = false;
+  i              = 0;
+  bool isDefined = false;
   while (i <= anOrder && !isDefined)
   {
     const gp_Vec& aDerVec = theDerNUV(i, anOrder - i);
@@ -252,8 +252,8 @@ void CSLib::Normal(const int                 theMaxOrder,
 
   if (isDefined)
   {
-    theStatus  = CSLib_Defined;
-    theNormal  = aD.Normalized();
+    theStatus = CSLib_Defined;
+    theNormal = aD.Normalized();
     return;
   }
 
@@ -310,13 +310,13 @@ void CSLib::Normal(const int                 theMaxOrder,
 
   // Create polynomial and find its roots.
   CSLib_NormalPolyDef aPoly(anOrder, aRatio);
-  math_FunctionRoots  aFindRoots(aPoly, aInf, aSup, 200, 1e-5,
-                                 Precision::Confusion(), Precision::Confusion());
+  math_FunctionRoots
+    aFindRoots(aPoly, aInf, aSup, 200, 1e-5, Precision::Confusion(), Precision::Confusion());
 
   if (aFindRoots.IsDone() && aFindRoots.NbSolutions() > 0)
   {
     // Sort roots in ascending order.
-    const int aNbSol = aFindRoots.NbSolutions();
+    const int            aNbSol = aFindRoots.NbSolutions();
     TColStd_Array1OfReal aSol(0, aNbSol + 1);
 
     for (int n = 1; n <= aNbSol; ++n)
@@ -364,17 +364,15 @@ void CSLib::Normal(const int                 theMaxOrder,
   }
   else
   {
-    theStatus  = CSLib_Defined;
+    theStatus       = CSLib_Defined;
     const int aSign = (aVsuiv > 0.0) ? 1 : -1;
-    theNormal  = aSign * aVk0.Normalized();
+    theNormal       = aSign * aVk0.Normalized();
   }
 }
 
 //=================================================================================================
 
-gp_Vec CSLib::DNNUV(const int                 theNu,
-                    const int                 theNv,
-                    const TColgp_Array2OfVec& theDerSurf)
+gp_Vec CSLib::DNNUV(const int theNu, const int theNv, const TColgp_Array2OfVec& theDerSurf)
 {
   gp_Vec aResult(0.0, 0.0, 0.0);
 
@@ -501,8 +499,8 @@ gp_Vec CSLib::DNNormal(const int                 theNu,
       aTabScal.SetValue(aPderiv, aQderiv, aScal / 2.0);
 
       // Compute the derivative (n,p) of NUV Length.
-      double aDnorm = theDerNUV.Value(aPderiv + theIduref, aQderiv + theIdvref)
-                        .Dot(aDerVecNor.Value(0, 0));
+      double aDnorm =
+        theDerNUV.Value(aPderiv + theIduref, aQderiv + theIdvref).Dot(aDerVecNor.Value(0, 0));
 
       for (int aJderiv = 0; aJderiv < aQderiv; ++aJderiv)
       {

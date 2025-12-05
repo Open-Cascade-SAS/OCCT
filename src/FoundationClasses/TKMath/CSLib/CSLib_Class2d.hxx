@@ -134,15 +134,15 @@ private:
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dX; //!< X coordinates (normalized)
-  NCollection_Handle<TColStd_Array1OfReal> myPnts2dY; //!< Y coordinates (normalized)
-  double myTolU = 0.0;  //!< Tolerance in U direction (normalized)
-  double myTolV = 0.0;  //!< Tolerance in V direction (normalized)
-  int    myN    = 0;    //!< Number of polygon vertices
-  double myUMin = 0.0;  //!< Original minimum U bound
-  double myVMin = 0.0;  //!< Original minimum V bound
-  double myUMax = 0.0;  //!< Original maximum U bound
-  double myVMax = 0.0;  //!< Original maximum V bound
+  NCollection_Handle<TColStd_Array1OfReal> myPnts2dX;    //!< X coordinates (normalized)
+  NCollection_Handle<TColStd_Array1OfReal> myPnts2dY;    //!< Y coordinates (normalized)
+  double                                   myTolU = 0.0; //!< Tolerance in U direction (normalized)
+  double                                   myTolV = 0.0; //!< Tolerance in V direction (normalized)
+  int                                      myN    = 0;   //!< Number of polygon vertices
+  double                                   myUMin = 0.0; //!< Original minimum U bound
+  double                                   myVMin = 0.0; //!< Original minimum V bound
+  double                                   myUMax = 0.0; //!< Original maximum U bound
+  double                                   myVMax = 0.0; //!< Original maximum V bound
 };
 
 #endif // _CSLib_Class2d_HeaderFile
