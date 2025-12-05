@@ -18,6 +18,9 @@
 
 #include <CSLib_Class2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+
+#include <cmath>
 
 static inline Standard_Real Transform2d(const Standard_Real u,
                                         const Standard_Real umin,
@@ -270,19 +273,19 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
       iRet = -1;
       return iRet;
     }
-    // find Y coordinate of polyline for current X gka
-    // in order to detect possible status ON
-    Standard_Real aDx = (MyPnts2dX->Value(ip1) - MyPnts2dX->Value(ip1 - 1));
-    if ((MyPnts2dX->Value(ip1 - 1) - Px) * nx < 0.)
+    // Find Y coordinate of polyline for current X
+    // in order to detect possible status ON.
+    // Skip interpolation for nearly vertical edges (aDx ~ 0) to avoid division instability.
+    // For vertical edges, the ON detection is handled by the tolerance check on (nx, ny) above.
+    const Standard_Real aDx = MyPnts2dX->Value(ip1) - MyPnts2dX->Value(ip1 - 1);
+    if ((MyPnts2dX->Value(ip1 - 1) - Px) * nx < 0. && std::abs(aDx) > Precision::PConfusion())
     {
-
-      Standard_Real aCurPY =
+      const Standard_Real aCurPY =
         MyPnts2dY->Value(ip1) - (MyPnts2dY->Value(ip1) - MyPnts2dY->Value(ip1 - 1)) / aDx * nx;
-      Standard_Real aDeltaY = aCurPY - Py;
+      const Standard_Real aDeltaY = aCurPY - Py;
       if (aDeltaY >= -Tolv && aDeltaY <= Tolv)
       {
-        iRet = -1;
-        return iRet;
+        return -1;
       }
     }
     //

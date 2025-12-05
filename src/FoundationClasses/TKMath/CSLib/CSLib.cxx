@@ -26,15 +26,14 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-void CSLib::Normal(
+//=================================================================================================
 
-  const gp_Vec&           D1U,
-  const gp_Vec&           D1V,
-  const Standard_Real     SinTol,
-  CSLib_DerivativeStatus& theStatus,
-  gp_Dir&                 Normal)
+void CSLib::Normal(const gp_Vec&           D1U,
+                   const gp_Vec&           D1V,
+                   const Standard_Real     SinTol,
+                   CSLib_DerivativeStatus& theStatus,
+                   gp_Dir&                 Normal)
 {
-
   // Function: Calculation of the normal from tangents by u and by v.
 
   Standard_Real D1UMag  = D1U.SquareMagnitude();
@@ -67,20 +66,19 @@ void CSLib::Normal(
   }
 }
 
-void CSLib::Normal(
+//=================================================================================================
 
-  const gp_Vec&       D1U,
-  const gp_Vec&       D1V,
-  const gp_Vec&       D2U,
-  const gp_Vec&       D2V,
-  const gp_Vec&       DUV,
-  const Standard_Real SinTol,
-  Standard_Boolean&   Done,
-  CSLib_NormalStatus& theStatus,
-  gp_Dir&             Normal)
+void CSLib::Normal(const gp_Vec&       D1U,
+                   const gp_Vec&       D1V,
+                   const gp_Vec&       D2U,
+                   const gp_Vec&       D2V,
+                   const gp_Vec&       DUV,
+                   const Standard_Real SinTol,
+                   Standard_Boolean&   Done,
+                   CSLib_NormalStatus& theStatus,
+                   gp_Dir&             Normal)
 {
-
-  //  Calculation of an approximate normale in case of a null normal.
+  // Calculation of an approximate normale in case of a null normal.
   //  Use limited development of the normal of order 1:
   //     N(u0+du,v0+dv) = N0 + dN/du(u0,v0) * du + dN/dv(u0,v0) * dv + epsilon
   //  -> N ~ dN/du + dN/dv.
@@ -140,13 +138,13 @@ void CSLib::Normal(
   }
 }
 
-void CSLib::Normal(
+//=================================================================================================
 
-  const gp_Vec&       D1U,
-  const gp_Vec&       D1V,
-  const Standard_Real MagTol,
-  CSLib_NormalStatus& theStatus,
-  gp_Dir&             Normal)
+void CSLib::Normal(const gp_Vec&       D1U,
+                   const gp_Vec&       D1V,
+                   const Standard_Real MagTol,
+                   CSLib_NormalStatus& theStatus,
+                   gp_Dir&             Normal)
 {
   // Function: Calculate the normal from tangents by u and by v.
 
@@ -171,8 +169,10 @@ void CSLib::Normal(
   }
 }
 
-// Calculate normal vector in singular cases
-//
+//=================================================================================================
+// Calculate normal vector in singular cases.
+//=================================================================================================
+
 void CSLib::Normal(const Standard_Integer    MaxOrder,
                    const TColgp_Array2OfVec& DerNUV,
                    const Standard_Real       SinTol,
@@ -299,7 +299,7 @@ void CSLib::Normal(const Standard_Integer    MaxOrder,
           inf = 0;
           sup = M_PI;
         }
-        Standard_Boolean CS    = 0;
+        Standard_Boolean CS    = Standard_False;
         Standard_Real    Vprec = 0., Vsuiv = 0.;
         // Creation of the polynom
         CSLib_NormalPolyDef Poly(Order, Ratio);
@@ -385,9 +385,10 @@ void CSLib::Normal(const Standard_Integer    MaxOrder,
   }
 }
 
-//
-// Calculate the derivative of the non-normed normal vector
-//
+//=================================================================================================
+// Calculate the derivative of the non-normed normal vector.
+//=================================================================================================
+
 gp_Vec CSLib::DNNUV(const Standard_Integer    Nu,
                     const Standard_Integer    Nv,
                     const TColgp_Array2OfVec& DerSurf)
@@ -425,10 +426,11 @@ gp_Vec CSLib::DNNUV(const Standard_Integer    Nu,
   return D;
 }
 
-//
-// Calculate the derivatives of the normed normal vector depending on the  derivatives
-// of the non-normed normal vector
-//
+//=================================================================================================
+// Calculate the derivatives of the normed normal vector depending on the derivatives
+// of the non-normed normal vector.
+//=================================================================================================
+
 gp_Vec CSLib::DNNormal(const Standard_Integer    Nu,
                        const Standard_Integer    Nv,
                        const TColgp_Array2OfVec& DerNUV,
