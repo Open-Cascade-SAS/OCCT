@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_DomainError.hxx>
+#include <Extrema_LocEPCOfLocateExtPC2d.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Extrema_Curve2dTool.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <math_FunctionRoot.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=================================================================================================
 
-Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
+Extrema_LocEPCOfLocateExtPC2d::Extrema_LocEPCOfLocateExtPC2d()
     : myDone(Standard_False),
       mytolU(0.0),
       myumin(0.0),
@@ -30,23 +35,26 @@ Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
 
 //=================================================================================================
 
-Extrema_GenLocateExtPC::Extrema_GenLocateExtPC(const Pnt&          P,
-                                               const Curve&        C,
-                                               const Standard_Real U0,
-                                               const Standard_Real TolU)
+Extrema_LocEPCOfLocateExtPC2d::Extrema_LocEPCOfLocateExtPC2d(const gp_Pnt2d&          P,
+                                                             const Adaptor2d_Curve2d& C,
+                                                             const Standard_Real      U0,
+                                                             const Standard_Real      TolU)
 {
-  Initialize(C, Tool::FirstParameter(C), Tool::LastParameter(C), TolU);
+  Initialize(C,
+             Extrema_Curve2dTool::FirstParameter(C),
+             Extrema_Curve2dTool::LastParameter(C),
+             TolU);
   Perform(P, U0);
 }
 
 //=================================================================================================
 
-Extrema_GenLocateExtPC::Extrema_GenLocateExtPC(const Pnt&          P,
-                                               const Curve&        C,
-                                               const Standard_Real U0,
-                                               const Standard_Real Umin,
-                                               const Standard_Real Usup,
-                                               const Standard_Real TolU)
+Extrema_LocEPCOfLocateExtPC2d::Extrema_LocEPCOfLocateExtPC2d(const gp_Pnt2d&          P,
+                                                             const Adaptor2d_Curve2d& C,
+                                                             const Standard_Real      U0,
+                                                             const Standard_Real      Umin,
+                                                             const Standard_Real      Usup,
+                                                             const Standard_Real      TolU)
 {
   Initialize(C, Umin, Usup, TolU);
   Perform(P, U0);
@@ -54,10 +62,10 @@ Extrema_GenLocateExtPC::Extrema_GenLocateExtPC(const Pnt&          P,
 
 //=================================================================================================
 
-void Extrema_GenLocateExtPC::Initialize(const Curve&        C,
-                                        const Standard_Real Umin,
-                                        const Standard_Real Usup,
-                                        const Standard_Real TolU)
+void Extrema_LocEPCOfLocateExtPC2d::Initialize(const Adaptor2d_Curve2d& C,
+                                               const Standard_Real      Umin,
+                                               const Standard_Real      Usup,
+                                               const Standard_Real      TolU)
 {
   myDone = Standard_False;
   myF.Initialize(C);
@@ -68,36 +76,16 @@ void Extrema_GenLocateExtPC::Initialize(const Curve&        C,
 
 //=================================================================================================
 
-void Extrema_GenLocateExtPC::Perform(const Pnt& P, const Standard_Real U0)
-
-/*-----------------------------------------------------------------------------
-Fonction:
-  Recherche de la valeur de parametre U telle que:
-  - dist(P,C(u)) passe par un extremum,
-  - U soit la solution la plus proche de U0.
-
-Methode:
-  Si U est solution, alors F(U)=(C(U)-P).C'(U) = 0.
-  Le probleme consiste a rechercher, dans l'intervalle de definition
-  de la courbe, la racine de F la plus proche de U0.
-  On utilise la classe math_FunctionRoot avec les arguments de
-  construction suivants:
-  - F: Extrema_FuncExtPC cree a partir de P et C,
-  - U0,
-  - TolU,
-  - Uinf: borne inferieure de l'intervalle de definition,
-  - Ulast: borne superieure de l'intervalle de definition,
-  - 100. .
------------------------------------------------------------------------------*/
+void Extrema_LocEPCOfLocateExtPC2d::Perform(const gp_Pnt2d& P, const Standard_Real U0)
 {
   myF.SetPoint(P);
   math_FunctionRoot S(myF, U0, mytolU, myumin, myusup);
   myDone = S.IsDone();
   if (myDone)
   {
-    Standard_Real uu, ff;
-    POnC          PP = Point();
-    uu               = PP.Parameter();
+    Standard_Real          uu, ff;
+    const Extrema_POnCurv2d& PP = Point();
+    uu                        = PP.Parameter();
     if (myF.Value(uu, ff))
     {
       if (std::abs(ff) >= 1.e-07)
@@ -110,14 +98,14 @@ Methode:
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenLocateExtPC::IsDone() const
+Standard_Boolean Extrema_LocEPCOfLocateExtPC2d::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Real Extrema_GenLocateExtPC::SquareDistance() const
+Standard_Real Extrema_LocEPCOfLocateExtPC2d::SquareDistance() const
 {
   if (!IsDone())
   {
@@ -128,7 +116,7 @@ Standard_Real Extrema_GenLocateExtPC::SquareDistance() const
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenLocateExtPC::IsMin() const
+Standard_Boolean Extrema_LocEPCOfLocateExtPC2d::IsMin() const
 {
   if (!IsDone())
   {
@@ -139,7 +127,7 @@ Standard_Boolean Extrema_GenLocateExtPC::IsMin() const
 
 //=================================================================================================
 
-const POnC& Extrema_GenLocateExtPC::Point() const
+const Extrema_POnCurv2d& Extrema_LocEPCOfLocateExtPC2d::Point() const
 {
   if (!IsDone())
   {
