@@ -27,10 +27,10 @@
 
 //! Type alias for 2D point-curve extremum function (for LocateExtPC2d).
 using Extrema_PCFOfEPCOfELPCOfLocateExtPC2d = Extrema_GFuncExtPC<Adaptor2d_Curve2d,
-                                                                  Extrema_Curve2dTool,
-                                                                  Extrema_POnCurv2d,
-                                                                  gp_Pnt2d,
-                                                                  gp_Vec2d,
-                                                                  Extrema_SequenceOfPOnCurv2d>;
+                                                                 Extrema_Curve2dTool,
+                                                                 Extrema_POnCurv2d,
+                                                                 gp_Pnt2d,
+                                                                 gp_Vec2d,
+                                                                 Extrema_SequenceOfPOnCurv2d>;
 
 #endif // _Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_HeaderFile

@@ -63,7 +63,8 @@ public:
 
   //! Returns the parameters bounding the intervals of subdivision of curve
   //! according to Curvature deflection. Value of deflection is defined in method.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(const Adaptor3d_Curve& theC);
+  Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(
+    const Adaptor3d_Curve& theC);
 
   Standard_EXPORT static bool IsPeriodic(const Adaptor3d_Curve& theC);
 
@@ -88,8 +89,11 @@ public:
     theC.D1(theU, theP, theV);
   }
 
-  static void
-  D2(const Adaptor3d_Curve& theC, const double theU, gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2)
+  static void D2(const Adaptor3d_Curve& theC,
+                 const double           theU,
+                 gp_Pnt&                theP,
+                 gp_Vec&                theV1,
+                 gp_Vec&                theV2)
   {
     theC.D2(theU, theP, theV1, theV2);
   }

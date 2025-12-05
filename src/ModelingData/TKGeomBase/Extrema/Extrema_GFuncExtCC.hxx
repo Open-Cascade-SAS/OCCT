@@ -94,8 +94,8 @@ public:
   //! Returns a pointer to the curve specified in the constructor or in SetCurve() method.
   Standard_Address CurvePtr(const int theRank) const
   {
-    Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_GFuncExtCC::CurvePtr()")
-      return (theRank == 1 ? myC1 : myC2);
+    Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_GFuncExtCC::CurvePtr()");
+    return (theRank == 1 ? myC1 : myC2);
   }
 
   //! Returns a tolerance specified in the constructor or in SetTolerance() method.
@@ -108,30 +108,30 @@ public:
   double SearchOfTolerance(const Standard_Address theC);
 
 private:
-  static constexpr double   THE_MIN_TOL    = 1.e-20;
-  static constexpr double   THE_TOL_FACTOR = 1.e-12;
-  static constexpr double   THE_MIN_STEP   = 1e-7;
-  static constexpr int      THE_MAX_ORDER  = 3;
+  static constexpr double THE_MIN_TOL    = 1.e-20;
+  static constexpr double THE_TOL_FACTOR = 1.e-12;
+  static constexpr double THE_MIN_STEP   = 1e-7;
+  static constexpr int    THE_MAX_ORDER  = 3;
 
-  Standard_Address     myC1;
-  Standard_Address     myC2;
-  double               myTol;
-  double               myU;
-  double               myV;
-  ThePoint             myP1;
-  ThePoint             myP2;
-  TheVector            myDu;
-  TheVector            myDv;
+  Standard_Address       myC1;
+  Standard_Address       myC2;
+  double                 myTol;
+  double                 myU;
+  double                 myV;
+  ThePoint               myP1;
+  ThePoint               myP2;
+  TheVector              myDu;
+  TheVector              myDv;
   TColStd_SequenceOfReal mySqDist;
-  TheSequenceOfPOnC    myPoints;
-  double               myTolC1;
-  double               myTolC2;
-  int                  myMaxDerivOrderC1;
-  int                  myMaxDerivOrderC2;
-  double               myUinfium;
-  double               myUsupremum;
-  double               myVinfium;
-  double               myVsupremum;
+  TheSequenceOfPOnC      myPoints;
+  double                 myTolC1;
+  double                 myTolC2;
+  int                    myMaxDerivOrderC1;
+  int                    myMaxDerivOrderC2;
+  double                 myUinfium;
+  double                 myUsupremum;
+  double                 myVinfium;
+  double                 myVsupremum;
 };
 
 //==================================================================================================
@@ -157,8 +157,8 @@ double Extrema_GFuncExtCC<TheCurve1,
                           TheVector,
                           TheSequenceOfPOnC>::SearchOfTolerance(const Standard_Address theC)
 {
-  const int    NPoint = 10;
-  double       aStartParam, anEndParam;
+  const int NPoint = 10;
+  double    aStartParam, anEndParam;
 
   if (theC == myC1)
   {
@@ -362,15 +362,15 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheVector,
           typename TheSequenceOfPOnC>
-Standard_Boolean
-Extrema_GFuncExtCC<TheCurve1,
-                   TheCurveTool1,
-                   TheCurve2,
-                   TheCurveTool2,
-                   ThePOnC,
-                   ThePoint,
-                   TheVector,
-                   TheSequenceOfPOnC>::Value(const math_Vector& theUV, math_Vector& theF)
+Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
+                                    TheCurveTool1,
+                                    TheCurve2,
+                                    TheCurveTool2,
+                                    ThePOnC,
+                                    ThePoint,
+                                    TheVector,
+                                    TheSequenceOfPOnC>::Value(const math_Vector& theUV,
+                                                              math_Vector&       theF)
 {
   myU = theUV(1);
   myV = theUV(2);
@@ -394,8 +394,8 @@ Extrema_GFuncExtCC<TheCurve1,
 
       const double aDelta = std::max(du * DivisionFactor, THE_MIN_STEP);
 
-      int          n = 1;
-      TheVector    V;
+      int              n = 1;
+      TheVector        V;
       Standard_Boolean IsDeriveFound;
 
       do
@@ -478,8 +478,8 @@ Extrema_GFuncExtCC<TheCurve1,
 
       const double aDelta = std::max(dv * DivisionFactor, THE_MIN_STEP);
 
-      int          n = 1;
-      TheVector    V;
+      int              n = 1;
+      TheVector        V;
       Standard_Boolean IsDeriveFound;
 
       do
@@ -563,15 +563,15 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheVector,
           typename TheSequenceOfPOnC>
-Standard_Boolean
-Extrema_GFuncExtCC<TheCurve1,
-                   TheCurveTool1,
-                   TheCurve2,
-                   TheCurveTool2,
-                   ThePOnC,
-                   ThePoint,
-                   TheVector,
-                   TheSequenceOfPOnC>::Derivatives(const math_Vector& theUV, math_Matrix& theDF)
+Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
+                                    TheCurveTool1,
+                                    TheCurve2,
+                                    TheCurveTool2,
+                                    ThePOnC,
+                                    ThePoint,
+                                    TheVector,
+                                    TheSequenceOfPOnC>::Derivatives(const math_Vector& theUV,
+                                                                    math_Matrix&       theDF)
 {
   math_Vector F(1, 2);
   return Values(theUV, F, theDF);
@@ -610,7 +610,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
   TheCurveTool1::D2(*((TheCurve1*)myC1), myU, myP1, Du, Duu);
   TheCurveTool2::D2(*((TheCurve2*)myC2), myV, myP2, Dv, Dvv);
 
-  const double    myU_old  = myU, myV_old = myV;
+  const double    myU_old = myU, myV_old = myV;
   const ThePoint  myP1_old = myP1, myP2_old = myP2;
   const TheVector myDu_old = myDu, myDv_old = myDv;
 

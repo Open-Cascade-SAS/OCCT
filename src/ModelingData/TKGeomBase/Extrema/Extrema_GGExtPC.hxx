@@ -83,11 +83,11 @@ public:
   //! @param theUinf Lower bound of parameter range
   //! @param theUsup Upper bound of parameter range
   //! @param theTolF Tolerance on function value (default 1.0e-10)
-  Extrema_GGExtPC(const ThePoint&  theP,
-                  const TheCurve&  theC,
-                  const double     theUinf,
-                  const double     theUsup,
-                  const double     theTolF = 1.0e-10)
+  Extrema_GGExtPC(const ThePoint& theP,
+                  const TheCurve& theC,
+                  const double    theUinf,
+                  const double    theUsup,
+                  const double    theTolF = 1.0e-10)
   {
     Initialize(theC, theUinf, theUsup, theTolF);
     Perform(theP);
@@ -100,7 +100,10 @@ public:
   //! @param theTolF Tolerance on function value (default 1.0e-10)
   Extrema_GGExtPC(const ThePoint& theP, const TheCurve& theC, const double theTolF = 1.0e-10)
   {
-    Initialize(theC, TheCurveTool::FirstParameter(theC), TheCurveTool::LastParameter(theC), theTolF);
+    Initialize(theC,
+               TheCurveTool::FirstParameter(theC),
+               TheCurveTool::LastParameter(theC),
+               theTolF);
     Perform(theP);
   }
 
@@ -192,8 +195,8 @@ public:
         TColStd_Array1OfReal aKnots(aFirstIdx, aLastIdx);
         TheCurveTool::BSpline(aCurve)->Knots(aKnots);
 
-        double aPeriodJump   = 0.0;
-        const double aTolCoeff = (myusup - myuinf) * Precision::PConfusion();
+        double       aPeriodJump = 0.0;
+        const double aTolCoeff   = (myusup - myuinf) * Precision::PConfusion();
         if (TheCurveTool::IsPeriodic(aCurve))
         {
           int aPeriodShift = int((myuinf - aKnots(aFirstIdx)) / TheCurveTool::Period(aCurve));
@@ -263,9 +266,9 @@ public:
                 aPmin   = aP1;
               }
             }
-            aMin2              = theP.SquareDistance(aP2);
-            double aMinSqDist  = std::min(aMin1, aMin2);
-            double aMinDer     = std::min(std::abs(aVal1), std::abs(aVal2));
+            aMin2             = theP.SquareDistance(aP2);
+            double aMinSqDist = std::min(aMin1, aMin2);
+            double aMinDer    = std::min(std::abs(aVal1), std::abs(aVal2));
             if (!(Precision::IsInfinite(aVal1) || Precision::IsInfinite(aVal2)))
             {
               if (aVal1 * aVal2 <= 0.0 || aMinSqDist < 100. * Precision::SquareConfusion()
@@ -297,9 +300,9 @@ public:
         }
         else
         {
-          int                           aValIdx = 1;
-          NCollection_Array1<double>    aVal(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
-          NCollection_Array1<double>    aParam(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
+          int                        aValIdx = 1;
+          NCollection_Array1<double> aVal(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
+          NCollection_Array1<double> aParam(1, (mysample) * (aLastUsedKnot - aFirstUsedKnot) + 1);
           for (anIdx = aFirstUsedKnot; anIdx < aLastUsedKnot; anIdx++)
           {
             double aF = aKnots(anIdx) + aPeriodJump, aL = aKnots(anIdx + 1) + aPeriodJump;
@@ -313,8 +316,8 @@ public:
             for (int aPntIdx = 0; aPntIdx < mysample; aPntIdx++)
             {
               double aCurrentParam = aF + aStep * aPntIdx;
-              aVal(aValIdx)        = TheCurveTool::Value(aCurve, aCurrentParam).SquareDistance(theP);
-              aParam(aValIdx)      = aCurrentParam;
+              aVal(aValIdx)   = TheCurveTool::Value(aCurve, aCurrentParam).SquareDistance(theP);
+              aParam(aValIdx) = aCurrentParam;
               aValIdx++;
             }
           }
@@ -387,10 +390,10 @@ public:
         break;
       }
       default: {
-        constexpr int                  aMaxSample   = 17;
-        bool                           IntExtIsDone = false;
-        bool                           IntIsNotValid;
-        Handle(TColStd_HArray1OfReal)  theHInter;
+        constexpr int                 aMaxSample   = 17;
+        bool                          IntExtIsDone = false;
+        bool                          IntIsNotValid;
+        Handle(TColStd_HArray1OfReal) theHInter;
         n = TheCurveTool::NbIntervals(aCurve, GeomAbs_C2);
         if (n > 1)
         {
@@ -402,8 +405,8 @@ public:
           theHInter = TheCurveTool::DeflCurvIntervals(aCurve);
           n         = theHInter->Length() - 1;
         }
-        mysample       = std::max(mysample / n, aMaxSample);
-        double maxint  = 0.;
+        mysample      = std::max(mysample / n, aMaxSample);
+        double maxint = 0.;
         for (i = 1; i <= n; ++i)
         {
           double dt = theHInter->Value(i + 1) - theHInter->Value(i);
@@ -631,23 +634,23 @@ protected:
   }
 
 private:
-  TheCurve*               myC;
-  ThePoint                Pf;
-  ThePoint                Pl;
-  TheExtPElC              myExtPElC;
-  TheSequenceOfPOnC       mypoint;
-  bool                    mydone;
-  double                  mydist1;
-  double                  mydist2;
-  TheEPC                  myExtPC;
-  double                  mytolu;
-  double                  mytolf;
-  int                     mysample;
-  double                  myintuinf;
-  double                  myintusup;
-  double                  myuinf;
-  double                  myusup;
-  GeomAbs_CurveType       type;
+  TheCurve*                 myC;
+  ThePoint                  Pf;
+  ThePoint                  Pl;
+  TheExtPElC                myExtPElC;
+  TheSequenceOfPOnC         mypoint;
+  bool                      mydone;
+  double                    mydist1;
+  double                    mydist2;
+  TheEPC                    myExtPC;
+  double                    mytolu;
+  double                    mytolf;
+  int                       mysample;
+  double                    myintuinf;
+  double                    myintusup;
+  double                    myuinf;
+  double                    myusup;
+  GeomAbs_CurveType         type;
   TColStd_SequenceOfBoolean myismin;
   TColStd_SequenceOfReal    mySqDist;
 };

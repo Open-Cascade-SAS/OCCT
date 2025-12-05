@@ -27,10 +27,10 @@
 
 //! Type alias for 3D local point-curve extremum function.
 using Extrema_PCLocFOfLocEPCOfLocateExtPC = Extrema_GFuncExtPC<Adaptor3d_Curve,
-                                                                Extrema_CurveTool,
-                                                                Extrema_POnCurv,
-                                                                gp_Pnt,
-                                                                gp_Vec,
-                                                                Extrema_SequenceOfPOnCurv>;
+                                                               Extrema_CurveTool,
+                                                               Extrema_POnCurv,
+                                                               gp_Pnt,
+                                                               gp_Vec,
+                                                               Extrema_SequenceOfPOnCurv>;
 
 #endif // _Extrema_PCLocFOfLocEPCOfLocateExtPC_HeaderFile

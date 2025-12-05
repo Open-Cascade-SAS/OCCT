@@ -25,9 +25,6 @@
 
 //! Type alias for curve locator using HLRBRep_CurveTool.
 using HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter =
-  Extrema_GCurveLocator<Standard_Address,
-                        HLRBRep_CurveTool,
-                        Extrema_POnCurv2d,
-                        gp_Pnt2d>;
+  Extrema_GCurveLocator<Standard_Address, HLRBRep_CurveTool, Extrema_POnCurv2d, gp_Pnt2d>;
 
 #endif // _HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter_HeaderFile

@@ -70,12 +70,15 @@ public:
   //! The close point is defined by the parameter value U0.
   //! TolF is used to decide to stop the iterations.
   //! At the nth iteration, the criteria is: abs(Un - Un-1) < TolF.
-  Extrema_GLocateExtPC(const ThePoint&  theP,
-                       const TheCurve&  theC,
-                       const double     theU0,
-                       const double     theTolF)
+  Extrema_GLocateExtPC(const ThePoint& theP,
+                       const TheCurve& theC,
+                       const double    theU0,
+                       const double    theTolF)
   {
-    Initialize(theC, TheCurveTool::FirstParameter(theC), TheCurveTool::LastParameter(theC), theTolF);
+    Initialize(theC,
+               TheCurveTool::FirstParameter(theC),
+               TheCurveTool::LastParameter(theC),
+               theTolF);
     Perform(theP, theU0);
   }
 
@@ -84,28 +87,28 @@ public:
   //! Zeros are searched between Umin and Usup.
   //! TolF is used to decide to stop the iterations.
   //! At the nth iteration, the criteria is: abs(Un - Un-1) < TolF.
-  Extrema_GLocateExtPC(const ThePoint&  theP,
-                       const TheCurve&  theC,
-                       const double     theU0,
-                       const double     theUmin,
-                       const double     theUsup,
-                       const double     theTolF)
+  Extrema_GLocateExtPC(const ThePoint& theP,
+                       const TheCurve& theC,
+                       const double    theU0,
+                       const double    theUmin,
+                       const double    theUsup,
+                       const double    theTolF)
   {
     Initialize(theC, theUmin, theUsup, theTolF);
     Perform(theP, theU0);
   }
 
   //! Sets the fields of the algorithm.
-  void Initialize(const TheCurve&  theC,
-                  const double     theUmin,
-                  const double     theUsup,
-                  const double     theTolF)
+  void Initialize(const TheCurve& theC,
+                  const double    theUmin,
+                  const double    theUsup,
+                  const double    theTolF)
   {
-    myC    = const_cast<TheCurve*>(&theC);
-    mytol  = theTolF;
-    myumin = theUmin;
-    myusup = theUsup;
-    type   = TheCurveTool::GetType(theC);
+    myC         = const_cast<TheCurve*>(&theC);
+    mytol       = theTolF;
+    myumin      = theUmin;
+    myusup      = theUsup;
+    type        = TheCurveTool::GetType(theC);
     double tolu = TheCurveTool::Resolution(theC, Precision::Confusion());
     if ((type == GeomAbs_BSplineCurve) || (type == GeomAbs_BezierCurve)
         || (type == GeomAbs_OffsetCurve) || (type == GeomAbs_OtherCurve))
@@ -176,8 +179,8 @@ public:
           // Try on neighboring intervals:
           i1 = inter;
           i2 = inter;
-          double   s1inf, s2inf, s1sup, s2sup;
-          ThePoint P1;
+          double    s1inf, s2inf, s1sup, s2sup;
+          ThePoint  P1;
           TheVector V1;
           TheCurveTool::D1(*myC, myintuinf, P1, V1);
           s2inf = (TheVector(theP, P1) * V1);
@@ -379,18 +382,18 @@ public:
   }
 
 private:
-  ThePOnC         mypp;
-  TheCurve*       myC;
-  double          mydist2;
-  bool            myismin;
-  bool            myDone;
-  double          myumin;
-  double          myusup;
-  double          mytol;
-  TheLocEPC       myLocExtPC;
-  TheELPC         myExtremPC;
+  ThePOnC           mypp;
+  TheCurve*         myC;
+  double            mydist2;
+  bool              myismin;
+  bool              myDone;
+  double            myumin;
+  double            myusup;
+  double            mytol;
+  TheLocEPC         myLocExtPC;
+  TheELPC           myExtremPC;
   GeomAbs_CurveType type;
-  int             numberext;
+  int               numberext;
 };
 
 #endif // _Extrema_GLocateExtPC_HeaderFile

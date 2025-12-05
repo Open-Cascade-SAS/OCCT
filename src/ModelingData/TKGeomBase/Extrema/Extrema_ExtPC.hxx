@@ -29,12 +29,12 @@
 
 //! Type alias for 3D point-to-curve extremum computation.
 using Extrema_ExtPC = Extrema_GGExtPC<Adaptor3d_Curve,
-                                       Extrema_CurveTool,
-                                       Extrema_ExtPElC,
-                                       gp_Pnt,
-                                       gp_Vec,
-                                       Extrema_POnCurv,
-                                       Extrema_SequenceOfPOnCurv,
-                                       Extrema_EPCOfExtPC>;
+                                      Extrema_CurveTool,
+                                      Extrema_ExtPElC,
+                                      gp_Pnt,
+                                      gp_Vec,
+                                      Extrema_POnCurv,
+                                      Extrema_SequenceOfPOnCurv,
+                                      Extrema_EPCOfExtPC>;
 
 #endif // _Extrema_ExtPC_HeaderFile

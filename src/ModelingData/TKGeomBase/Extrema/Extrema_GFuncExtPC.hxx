@@ -310,9 +310,9 @@ public:
 
       if (myU - myUinfium < 2 * aDelta)
       {
-        F1               = theF;
-        const double U2  = myU + aDelta;
-        const double U3  = myU + aDelta * 2.0;
+        F1              = theF;
+        const double U2 = myU + aDelta;
+        const double U3 = myU + aDelta * 2.0;
 
         if (!((Value(U2, F2)) && (Value(U3, F3))))
         {
@@ -324,9 +324,9 @@ public:
       }
       else
       {
-        F3               = theF;
-        const double U1  = myU - aDelta * 2.0;
-        const double U2  = myU - aDelta;
+        F3              = theF;
+        const double U1 = myU - aDelta * 2.0;
+        const double U2 = myU - aDelta;
 
         if (!((Value(U2, F2)) && (Value(U1, F1))))
         {

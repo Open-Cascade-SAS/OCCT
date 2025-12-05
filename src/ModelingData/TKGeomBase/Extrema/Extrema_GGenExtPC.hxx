@@ -58,11 +58,11 @@ public:
   //! @param theNbSample Number of sample points for root finding
   //! @param theTolU    Tolerance on parameter u
   //! @param theTolF    Tolerance on function value
-  Extrema_GGenExtPC(const ThePoint&  theP,
-                    const TheCurve&  theC,
-                    const int        theNbSample,
-                    const double     theTolU,
-                    const double     theTolF)
+  Extrema_GGenExtPC(const ThePoint& theP,
+                    const TheCurve& theC,
+                    const int       theNbSample,
+                    const double    theTolU,
+                    const double    theTolF)
       : myF(theP, theC)
   {
     Initialize(theC, theNbSample, theTolU, theTolF);
@@ -77,13 +77,13 @@ public:
   //! @param theUsup    Upper bound of parameter range
   //! @param theTolU    Tolerance on parameter u
   //! @param theTolF    Tolerance on function value
-  Extrema_GGenExtPC(const ThePoint&  theP,
-                    const TheCurve&  theC,
-                    const int        theNbSample,
-                    const double     theUmin,
-                    const double     theUsup,
-                    const double     theTolU,
-                    const double     theTolF)
+  Extrema_GGenExtPC(const ThePoint& theP,
+                    const TheCurve& theC,
+                    const int       theNbSample,
+                    const double    theUmin,
+                    const double    theUsup,
+                    const double    theTolU,
+                    const double    theTolF)
       : myF(theP, theC)
   {
     Initialize(theC, theNbSample, theUmin, theUsup, theTolU, theTolF);

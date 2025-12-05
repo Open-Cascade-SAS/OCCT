@@ -34,7 +34,11 @@
 //! @tparam ThePOnC    Point on curve type (e.g., Extrema_POnCurv, Extrema_POnCurv2d)
 //! @tparam ThePnt     Point type (e.g., gp_Pnt, gp_Pnt2d)
 //! @tparam ThePCLocF  Function type for root finding
-template <typename TheCurve, typename TheTool, typename ThePOnC, typename ThePnt, typename ThePCLocF>
+template <typename TheCurve,
+          typename TheTool,
+          typename ThePOnC,
+          typename ThePnt,
+          typename ThePCLocF>
 class Extrema_GenLocateExtPC
 {
 public:
@@ -108,7 +112,7 @@ public:
     myDone = S.IsDone();
     if (myDone)
     {
-      double        uu, ff;
+      double         uu, ff;
       const ThePOnC& PP = Point();
       uu                = PP.Parameter();
       if (myF.Value(uu, ff))

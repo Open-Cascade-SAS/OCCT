@@ -27,11 +27,11 @@
 
 //! Type alias for 2D curve extremum function using HLRBRep_CurveTool.
 using HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter =
-    Extrema_GFuncExtPC<Standard_Address,
-                       HLRBRep_CurveTool,
-                       Extrema_POnCurv2d,
-                       gp_Pnt2d,
-                       gp_Vec2d,
-                       Extrema_SequenceOfPOnCurv2d>;
+  Extrema_GFuncExtPC<Standard_Address,
+                     HLRBRep_CurveTool,
+                     Extrema_POnCurv2d,
+                     gp_Pnt2d,
+                     gp_Vec2d,
+                     Extrema_SequenceOfPOnCurv2d>;
 
 #endif // _HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter_HeaderFile

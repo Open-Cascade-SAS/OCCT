@@ -54,16 +54,17 @@ public:
   }
 
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
-  static void
-  Intervals(const Adaptor2d_Curve2d& theC, TColStd_Array1OfReal& theT, const GeomAbs_Shape theS)
+  static void Intervals(const Adaptor2d_Curve2d& theC,
+                        TColStd_Array1OfReal&    theT,
+                        const GeomAbs_Shape      theS)
   {
     theC.Intervals(theT, theS);
   }
 
   //! Returns the parameters bounding the intervals of subdivision of curve
   //! according to Curvature deflection. Value of deflection is defined in method.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal)
-    DeflCurvIntervals(const Adaptor2d_Curve2d& theC);
+  Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(
+    const Adaptor2d_Curve2d& theC);
 
   static bool IsClosed(const Adaptor2d_Curve2d& theC) { return theC.IsClosed(); }
 

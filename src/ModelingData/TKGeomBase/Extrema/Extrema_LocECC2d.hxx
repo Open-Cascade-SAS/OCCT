@@ -25,8 +25,8 @@
 
 //! Type alias for 2D curve-curve local extremum locator.
 using Extrema_LocECC2d = Extrema_GenLocateExtCC<Adaptor2d_Curve2d,
-                                                 Extrema_Curve2dTool,
-                                                 Extrema_POnCurv2d,
-                                                 Extrema_CCLocFOfLocECC2d>;
+                                                Extrema_Curve2dTool,
+                                                Extrema_POnCurv2d,
+                                                Extrema_CCLocFOfLocECC2d>;
 
 #endif // _Extrema_LocECC2d_HeaderFile

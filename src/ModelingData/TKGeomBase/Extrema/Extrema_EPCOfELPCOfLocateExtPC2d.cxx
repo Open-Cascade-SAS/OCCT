@@ -42,9 +42,9 @@ Extrema_EPCOfELPCOfLocateExtPC2d::Extrema_EPCOfELPCOfLocateExtPC2d()
 
 Extrema_EPCOfELPCOfLocateExtPC2d::Extrema_EPCOfELPCOfLocateExtPC2d(const gp_Pnt2d&          P,
                                                                    const Adaptor2d_Curve2d& C,
-                                                                   const Standard_Integer   NbSample,
-                                                                   const Standard_Real      TolU,
-                                                                   const Standard_Real      TolF)
+                                                                   const Standard_Integer NbSample,
+                                                                   const Standard_Real    TolU,
+                                                                   const Standard_Real    TolF)
     : myF(P, C)
 {
   Initialize(C, NbSample, TolU, TolF);
@@ -55,11 +55,11 @@ Extrema_EPCOfELPCOfLocateExtPC2d::Extrema_EPCOfELPCOfLocateExtPC2d(const gp_Pnt2
 
 Extrema_EPCOfELPCOfLocateExtPC2d::Extrema_EPCOfELPCOfLocateExtPC2d(const gp_Pnt2d&          P,
                                                                    const Adaptor2d_Curve2d& C,
-                                                                   const Standard_Integer   NbSample,
-                                                                   const Standard_Real      Umin,
-                                                                   const Standard_Real      Usup,
-                                                                   const Standard_Real      TolU,
-                                                                   const Standard_Real      TolF)
+                                                                   const Standard_Integer NbSample,
+                                                                   const Standard_Real    Umin,
+                                                                   const Standard_Real    Usup,
+                                                                   const Standard_Real    TolU,
+                                                                   const Standard_Real    TolF)
     : myF(P, C)
 {
   Initialize(C, NbSample, Umin, Usup, TolU, TolF);

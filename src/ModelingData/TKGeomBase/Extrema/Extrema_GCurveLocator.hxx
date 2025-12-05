@@ -41,28 +41,25 @@ public:
   //! @param theC the curve to sample
   //! @param theNbU the number of sample points
   //! @param thePapp the result point on curve
-  static void Locate(const ThePoint&  theP,
-                     const TheCurve&  theC,
-                     const int        theNbU,
-                     ThePOnC&         thePapp)
+  static void Locate(const ThePoint& theP, const TheCurve& theC, const int theNbU, ThePOnC& thePapp)
   {
     if (theNbU < 2)
     {
       throw Standard_OutOfRange();
     }
 
-    double      aU        = TheCurveTool::FirstParameter(theC);
-    double      aPasU     = (TheCurveTool::LastParameter(theC) - aU) / (theNbU - 1);
-    double      aDist2Min = RealLast();
-    double      aUMin     = 0;
-    ThePoint    aPntMin;
-    double      aDist2;
-    ThePoint    aPt;
+    double   aU        = TheCurveTool::FirstParameter(theC);
+    double   aPasU     = (TheCurveTool::LastParameter(theC) - aU) / (theNbU - 1);
+    double   aDist2Min = RealLast();
+    double   aUMin     = 0;
+    ThePoint aPntMin;
+    double   aDist2;
+    ThePoint aPt;
 
     for (int aNoSample = 1; aNoSample < theNbU; aNoSample++, aU += aPasU)
     {
-      aPt     = TheCurveTool::Value(theC, aU);
-      aDist2  = aPt.SquareDistance(theP);
+      aPt    = TheCurveTool::Value(theC, aU);
+      aDist2 = aPt.SquareDistance(theP);
       if (aDist2 < aDist2Min)
       {
         aDist2Min = aDist2;
@@ -83,12 +80,12 @@ public:
   //! @param theUmin the minimum parameter value
   //! @param theUsup the maximum parameter value
   //! @param thePapp the result point on curve
-  static void Locate(const ThePoint&  theP,
-                     const TheCurve&  theC,
-                     const int        theNbU,
-                     const double     theUmin,
-                     const double     theUsup,
-                     ThePOnC&         thePapp)
+  static void Locate(const ThePoint& theP,
+                     const TheCurve& theC,
+                     const int       theNbU,
+                     const double    theUmin,
+                     const double    theUsup,
+                     ThePOnC&        thePapp)
   {
     if (theNbU < 2)
     {
@@ -108,18 +105,18 @@ public:
     if (aU12 > aU2 + RealEpsilon())
       aU12 = aU2;
 
-    double      aU        = aU11;
-    double      aPasU     = (aU12 - aU) / (theNbU - 1);
-    double      aDist2Min = RealLast();
-    double      aUMin     = 0;
-    ThePoint    aPntMin;
-    double      aDist2;
-    ThePoint    aPt;
+    double   aU        = aU11;
+    double   aPasU     = (aU12 - aU) / (theNbU - 1);
+    double   aDist2Min = RealLast();
+    double   aUMin     = 0;
+    ThePoint aPntMin;
+    double   aDist2;
+    ThePoint aPt;
 
     for (int aNoSample = 1; aNoSample < theNbU; aNoSample++, aU += aPasU)
     {
-      aPt     = TheCurveTool::Value(theC, aU);
-      aDist2  = aPt.SquareDistance(theP);
+      aPt    = TheCurveTool::Value(theC, aU);
+      aDist2 = aPt.SquareDistance(theP);
       if (aDist2 < aDist2Min)
       {
         aDist2Min = aDist2;

@@ -27,12 +27,12 @@
 
 //! Type alias for 2D curve-curve extremum function.
 using Extrema_CCLocFOfLocECC2d = Extrema_GFuncExtCC<Adaptor2d_Curve2d,
-                                                     Extrema_Curve2dTool,
-                                                     Adaptor2d_Curve2d,
-                                                     Extrema_Curve2dTool,
-                                                     Extrema_POnCurv2d,
-                                                     gp_Pnt2d,
-                                                     gp_Vec2d,
-                                                     Extrema_SequenceOfPOnCurv2d>;
+                                                    Extrema_Curve2dTool,
+                                                    Adaptor2d_Curve2d,
+                                                    Extrema_Curve2dTool,
+                                                    Extrema_POnCurv2d,
+                                                    gp_Pnt2d,
+                                                    gp_Vec2d,
+                                                    Extrema_SequenceOfPOnCurv2d>;
 
 #endif // _Extrema_CCLocFOfLocECC2d_HeaderFile

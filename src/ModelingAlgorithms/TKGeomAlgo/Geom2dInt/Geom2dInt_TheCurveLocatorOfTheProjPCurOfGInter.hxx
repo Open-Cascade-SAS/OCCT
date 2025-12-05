@@ -25,9 +25,6 @@
 
 //! Type alias for 2D curve locator using Geom2dInt_Geom2dCurveTool.
 using Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter =
-  Extrema_GCurveLocator<Adaptor2d_Curve2d,
-                        Geom2dInt_Geom2dCurveTool,
-                        Extrema_POnCurv2d,
-                        gp_Pnt2d>;
+  Extrema_GCurveLocator<Adaptor2d_Curve2d, Geom2dInt_Geom2dCurveTool, Extrema_POnCurv2d, gp_Pnt2d>;
 
 #endif // _Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter_HeaderFile

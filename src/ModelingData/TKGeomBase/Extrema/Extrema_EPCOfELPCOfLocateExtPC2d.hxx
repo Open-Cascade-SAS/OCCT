@@ -26,9 +26,9 @@
 
 //! Type alias for 2D curve extremum point search for LocateExtPC.
 using Extrema_EPCOfELPCOfLocateExtPC2d = Extrema_GGenExtPC<Adaptor2d_Curve2d,
-                                                            Extrema_Curve2dTool,
-                                                            Extrema_POnCurv2d,
-                                                            gp_Pnt2d,
-                                                            Extrema_PCFOfEPCOfELPCOfLocateExtPC2d>;
+                                                           Extrema_Curve2dTool,
+                                                           Extrema_POnCurv2d,
+                                                           gp_Pnt2d,
+                                                           Extrema_PCFOfEPCOfELPCOfLocateExtPC2d>;
 
 #endif // _Extrema_EPCOfELPCOfLocateExtPC2d_HeaderFile

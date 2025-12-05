@@ -26,11 +26,11 @@
 
 //! Type alias for 2D curve-curve extremum computation.
 using Extrema_ECC2d = Extrema_GGenExtCC<Adaptor2d_Curve2d,
-                                         Extrema_Curve2dTool,
-                                         Adaptor2d_Curve2d,
-                                         Extrema_Curve2dTool,
-                                         Extrema_POnCurv2d,
-                                         gp_Pnt2d,
-                                         Extrema_ExtPC2d>;
+                                        Extrema_Curve2dTool,
+                                        Adaptor2d_Curve2d,
+                                        Extrema_Curve2dTool,
+                                        Extrema_POnCurv2d,
+                                        gp_Pnt2d,
+                                        Extrema_ExtPC2d>;
 
 #endif // _Extrema_ECC2d_HeaderFile
