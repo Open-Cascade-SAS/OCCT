@@ -158,11 +158,8 @@ void gp_Mat2d::Power(const Standard_Integer theN)
   {
     if (theN < 0)
       Invert();
-    Standard_Integer Npower = theN;
-    if (Npower < 0)
-      Npower = -Npower;
-    Npower--;
-    gp_Mat2d aTemp = *this;
+    Standard_Integer Npower = std::abs(theN) - 1;
+    gp_Mat2d         aTemp  = *this;
     for (;;)
     {
       if (IsOdd(Npower))

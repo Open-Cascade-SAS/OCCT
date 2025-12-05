@@ -881,7 +881,8 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U, const Standard_Real Tol
     }
     UpdateKnots();
   }
-  if (std::abs(U - uf) < Tol)
+  // For periodic curve, uf and ul represent the same point
+  if (std::abs(U - uf) < Tol || std::abs(U - ul) < Tol)
     return;
 
   TColStd_Array1OfReal& kn = knots->ChangeArray1();

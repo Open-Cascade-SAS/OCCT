@@ -31,18 +31,12 @@
 gp_Ax2::gp_Ax2(const gp_Pnt& P, const gp_Dir& V)
     : axis(P, V)
 {
-  Standard_Real A    = V.X();
-  Standard_Real B    = V.Y();
-  Standard_Real C    = V.Z();
-  Standard_Real Aabs = A;
-  if (Aabs < 0)
-    Aabs = -Aabs;
-  Standard_Real Babs = B;
-  if (Babs < 0)
-    Babs = -Babs;
-  Standard_Real Cabs = C;
-  if (Cabs < 0)
-    Cabs = -Cabs;
+  const Standard_Real A    = V.X();
+  const Standard_Real B    = V.Y();
+  const Standard_Real C    = V.Z();
+  const Standard_Real Aabs = std::abs(A);
+  const Standard_Real Babs = std::abs(B);
+  const Standard_Real Cabs = std::abs(C);
   gp_Dir D;
 
   //  pour determiner l axe X :

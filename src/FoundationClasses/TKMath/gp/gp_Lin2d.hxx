@@ -225,12 +225,7 @@ inline Standard_Real gp_Lin2d::Distance(const gp_Pnt2d& theP) const noexcept
 {
   gp_XY aCoord = theP.XY();
   aCoord.Subtract((pos.Location()).XY());
-  Standard_Real aVal = aCoord.Crossed(pos.Direction().XY());
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  return aVal;
+  return std::abs(aCoord.Crossed(pos.Direction().XY()));
 }
 
 //=================================================================================================

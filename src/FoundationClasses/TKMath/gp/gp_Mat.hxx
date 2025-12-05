@@ -192,12 +192,7 @@ public:
   constexpr Standard_Boolean IsSingular() const noexcept
   {
     // Pour etre sur que Gauss va fonctionner, il faut faire Gauss ...
-    Standard_Real aVal = Determinant();
-    if (aVal < 0)
-    {
-      aVal = -aVal;
-    }
-    return aVal <= gp::Resolution();
+    return std::abs(Determinant()) <= gp::Resolution();
   }
 
   constexpr void Add(const gp_Mat& theOther) noexcept;
@@ -363,12 +358,8 @@ inline constexpr gp_Mat gp_Mat::Added(const gp_Mat& theOther) const noexcept
 
 inline constexpr void gp_Mat::Divide(const Standard_Real theScalar)
 {
-  Standard_Real aVal = theScalar;
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  Standard_ConstructionError_Raise_if(aVal <= gp::Resolution(), "gp_Mat : Divide by 0");
+  Standard_ConstructionError_Raise_if(std::abs(theScalar) <= gp::Resolution(),
+                                      "gp_Mat : Divide by 0");
   const Standard_Real anUnSurScalar = 1.0 / theScalar;
   myMat[0][0] *= anUnSurScalar;
   myMat[0][1] *= anUnSurScalar;

@@ -139,30 +139,15 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::vec3AreEqual(
   // const CellVec3i anIndex2 = vec3ToCell (theKey2);
   // return anIndex1.IsEqual (anIndex2);
 
-  float aVal = theKey1.x() - theKey2.x();
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  if (aVal > myTolerance)
+  if (std::abs(theKey1.x() - theKey2.x()) > myTolerance)
   {
     return false;
   }
-  aVal = theKey1.y() - theKey2.y();
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  if (aVal > myTolerance)
+  if (std::abs(theKey1.y() - theKey2.y()) > myTolerance)
   {
     return false;
   }
-  aVal = theKey1.z() - theKey2.z();
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  if (aVal > myTolerance)
+  if (std::abs(theKey1.z() - theKey2.z()) > myTolerance)
   {
     return false;
   }

@@ -70,7 +70,8 @@ int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
   }
 #else
   NCollection_Utf8String aString(theName.ToExtString());
-  aFileDesc = open(aString.ToCString(), aFlags);
+  // Mode 0666 is used when O_CREAT is set; actual permissions are masked by umask
+  aFileDesc = open(aString.ToCString(), aFlags, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 #endif
   return aFileDesc;
 }

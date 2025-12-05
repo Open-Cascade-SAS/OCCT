@@ -158,13 +158,11 @@ void gp_Trsf::SetRotationPart(const gp_Quaternion& theR)
 
 void gp_Trsf::SetScale(const gp_Pnt& P, const Standard_Real S)
 {
-  shape            = gp_Scale;
-  scale            = S;
-  loc              = P.XYZ();
-  Standard_Real As = scale;
-  if (As < 0)
-    As = -As;
-  Standard_ConstructionError_Raise_if(As <= gp::Resolution(), "gp_Trsf::SetScaleFactor");
+  shape = gp_Scale;
+  scale = S;
+  loc   = P.XYZ();
+  Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
+                                      "gp_Trsf::SetScaleFactor");
   matrix.SetIdentity();
   loc.Multiply(1 - S);
 }
@@ -281,19 +279,10 @@ void gp_Trsf::SetTranslationPart(const gp_Vec& V) noexcept
 
 void gp_Trsf::SetScaleFactor(const Standard_Real S)
 {
-  Standard_Real As = S;
-  if (As < 0)
-    As = -As;
-  Standard_ConstructionError_Raise_if(As <= gp::Resolution(), "gp_Trsf::SetScaleFactor");
-  scale = S;
-  As    = scale - 1.;
-  if (As < 0)
-    As = -As;
-  Standard_Boolean unit = As <= gp::Resolution(); // = (scale == 1)
-  As                    = scale + 1.;
-  if (As < 0)
-    As = -As;
-  Standard_Boolean munit = As <= gp::Resolution(); // = (scale == -1)
+  Standard_ConstructionError_Raise_if(std::abs(S) <= gp::Resolution(), "gp_Trsf::SetScaleFactor");
+  scale                        = S;
+  const Standard_Boolean unit  = std::abs(scale - 1.) <= gp::Resolution(); // = (scale == 1)
+  const Standard_Boolean munit = std::abs(scale + 1.) <= gp::Resolution(); // = (scale == -1)
 
   switch (shape)
   {
@@ -355,11 +344,8 @@ void gp_Trsf::SetValues(const Standard_Real a11,
   gp_XYZ col4(a14, a24, a34);
   // compute the determinant
   gp_Mat        M(col1, col2, col3);
-  Standard_Real s  = M.Determinant();
-  Standard_Real As = s;
-  if (As < 0)
-    As = -As;
-  Standard_ConstructionError_Raise_if(As < gp::Resolution(),
+  Standard_Real s = M.Determinant();
+  Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf::SetValues, null determinant");
   if (s > 0)
     s = std::pow(s, 1. / 3.);
@@ -594,10 +580,7 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       if (shape == gp_Translation)
       {
-        Standard_Integer Npower = N;
-        if (Npower < 0)
-          Npower = -Npower;
-        Npower--;
+        Standard_Integer Npower = std::abs(N) - 1;
         gp_XYZ Temploc = loc;
         for (;;)
         {
@@ -611,10 +594,7 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else if (shape == gp_Scale)
       {
-        Standard_Integer Npower = N;
-        if (Npower < 0)
-          Npower = -Npower;
-        Npower--;
+        Standard_Integer Npower = std::abs(N) - 1;
         gp_XYZ        Temploc   = loc;
         Standard_Real Tempscale = scale;
         for (;;)
@@ -633,10 +613,7 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else if (shape == gp_Rotation)
       {
-        Standard_Integer Npower = N;
-        if (Npower < 0)
-          Npower = -Npower;
-        Npower--;
+        Standard_Integer Npower = std::abs(N) - 1;
         gp_Mat Tempmatrix(matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0 && loc.Z() == 0.0)
         {
@@ -682,12 +659,9 @@ void gp_Trsf::Power(const Standard_Integer N)
       }
       else
       {
-        shape                   = gp_CompoundTrsf;
-        Standard_Integer Npower = N;
-        if (Npower < 0)
-          Npower = -Npower;
-        Npower--;
-        gp_XYZ        Temploc   = loc;
+        shape                    = gp_CompoundTrsf;
+        Standard_Integer Npower  = std::abs(N) - 1;
+        gp_XYZ           Temploc = loc;
         Standard_Real Tempscale = scale;
         gp_Mat        Tempmatrix(matrix);
         for (;;)
