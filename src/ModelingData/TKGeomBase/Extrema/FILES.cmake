@@ -27,8 +27,6 @@ set(OCCT_Extrema_FILES
   Extrema_ElementType.hxx
   Extrema_ELPCOfLocateExtPC.hxx
   Extrema_ELPCOfLocateExtPC2d.hxx
-  Extrema_ELPCOfLocateExtPC2d_0.cxx
-  Extrema_ELPCOfLocateExtPC_0.cxx
   Extrema_EPCOfELPCOfLocateExtPC.hxx
   Extrema_EPCOfELPCOfLocateExtPC2d.hxx
   Extrema_EPCOfExtPC.hxx
@@ -51,8 +49,6 @@ set(OCCT_Extrema_FILES
   Extrema_ExtFlag.hxx
   Extrema_ExtPC.hxx
   Extrema_ExtPC2d.hxx
-  Extrema_ExtPC2d_0.cxx
-  Extrema_ExtPC_0.cxx
   Extrema_ExtPElC.cxx
   Extrema_ExtPElC.hxx
   Extrema_ExtPElC2d.cxx
@@ -94,7 +90,7 @@ set(OCCT_Extrema_FILES
   Extrema_GenLocateExtPS.hxx
   Extrema_GenLocateExtSS.cxx
   Extrema_GenLocateExtSS.hxx
-  Extrema_GExtPC.gxx
+  Extrema_GGExtPC.hxx
   Extrema_GlobOptFuncCC.cxx
   Extrema_GlobOptFuncCC.hxx
   Extrema_GlobOptFuncCS.cxx
