@@ -29,14 +29,14 @@ set(OCCT_Extrema_FILES
   Extrema_ELPCOfLocateExtPC2d.hxx
   Extrema_ELPCOfLocateExtPC2d_0.cxx
   Extrema_ELPCOfLocateExtPC_0.cxx
+  Extrema_EPCOfELPCOfLocateExtPC.cxx
   Extrema_EPCOfELPCOfLocateExtPC.hxx
+  Extrema_EPCOfELPCOfLocateExtPC2d.cxx
   Extrema_EPCOfELPCOfLocateExtPC2d.hxx
-  Extrema_EPCOfELPCOfLocateExtPC2d_0.cxx
-  Extrema_EPCOfELPCOfLocateExtPC_0.cxx
+  Extrema_EPCOfExtPC.cxx
   Extrema_EPCOfExtPC.hxx
+  Extrema_EPCOfExtPC2d.cxx
   Extrema_EPCOfExtPC2d.hxx
-  Extrema_EPCOfExtPC2d_0.cxx
-  Extrema_EPCOfExtPC_0.cxx
   Extrema_ExtAlgo.hxx
   Extrema_ExtCC.cxx
   Extrema_ExtCC.hxx
@@ -85,7 +85,6 @@ set(OCCT_Extrema_FILES
   Extrema_GenExtCC.pxx
   Extrema_GenExtCS.cxx
   Extrema_GenExtCS.hxx
-  Extrema_GenExtPC.gxx
   Extrema_GenExtPS.cxx
   Extrema_GenExtPS.hxx
   Extrema_GenExtSS.cxx

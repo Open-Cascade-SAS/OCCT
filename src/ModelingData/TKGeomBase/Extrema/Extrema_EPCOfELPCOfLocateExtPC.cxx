@@ -1,6 +1,6 @@
-// Created on: 1995-07-18
-// Created by: Modelistation
-// Copyright (c) 1995-1999 Matra Datavision
+// Created on: 1991-02-26
+// Created by: Isabelle GRIGNON
+// Copyright (c) 1991-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdFail_NotDone.hxx>
-#include <math_DirectPolynomialRoots.hxx>
+#include <Extrema_EPCOfELPCOfLocateExtPC.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Extrema_CurveTool.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <math_FunctionRoots.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=================================================================================================
 
-Extrema_GenExtPC::Extrema_GenExtPC()
+Extrema_EPCOfELPCOfLocateExtPC::Extrema_EPCOfELPCOfLocateExtPC()
     : myDone(Standard_False),
       myInit(Standard_False),
       mynbsample(0),
@@ -35,11 +40,11 @@ Extrema_GenExtPC::Extrema_GenExtPC()
 
 //=================================================================================================
 
-Extrema_GenExtPC::Extrema_GenExtPC(const Pnt&             P,
-                                   const Curve&           C,
-                                   const Standard_Integer NbSample,
-                                   const Standard_Real    TolU,
-                                   const Standard_Real    TolF)
+Extrema_EPCOfELPCOfLocateExtPC::Extrema_EPCOfELPCOfLocateExtPC(const gp_Pnt&          P,
+                                                               const Adaptor3d_Curve& C,
+                                                               const Standard_Integer NbSample,
+                                                               const Standard_Real    TolU,
+                                                               const Standard_Real    TolF)
     : myF(P, C)
 {
   Initialize(C, NbSample, TolU, TolF);
@@ -48,13 +53,13 @@ Extrema_GenExtPC::Extrema_GenExtPC(const Pnt&             P,
 
 //=================================================================================================
 
-Extrema_GenExtPC::Extrema_GenExtPC(const Pnt&             P,
-                                   const Curve&           C,
-                                   const Standard_Integer NbSample,
-                                   const Standard_Real    Umin,
-                                   const Standard_Real    Usup,
-                                   const Standard_Real    TolU,
-                                   const Standard_Real    TolF)
+Extrema_EPCOfELPCOfLocateExtPC::Extrema_EPCOfELPCOfLocateExtPC(const gp_Pnt&          P,
+                                                               const Adaptor3d_Curve& C,
+                                                               const Standard_Integer NbSample,
+                                                               const Standard_Real    Umin,
+                                                               const Standard_Real    Usup,
+                                                               const Standard_Real    TolU,
+                                                               const Standard_Real    TolF)
     : myF(P, C)
 {
   Initialize(C, NbSample, Umin, Usup, TolU, TolF);
@@ -63,28 +68,28 @@ Extrema_GenExtPC::Extrema_GenExtPC(const Pnt&             P,
 
 //=================================================================================================
 
-void Extrema_GenExtPC::Initialize(const Curve&           C,
-                                  const Standard_Integer NbU,
-                                  const Standard_Real    TolU,
-                                  const Standard_Real    TolF)
+void Extrema_EPCOfELPCOfLocateExtPC::Initialize(const Adaptor3d_Curve& C,
+                                                const Standard_Integer NbU,
+                                                const Standard_Real    TolU,
+                                                const Standard_Real    TolF)
 {
   myInit     = Standard_True;
   mynbsample = NbU;
   mytolu     = TolU;
   mytolF     = TolF;
   myF.Initialize(C);
-  myumin = Tool::FirstParameter(C);
-  myusup = Tool::LastParameter(C);
+  myumin = Extrema_CurveTool::FirstParameter(C);
+  myusup = Extrema_CurveTool::LastParameter(C);
 }
 
 //=================================================================================================
 
-void Extrema_GenExtPC::Initialize(const Curve&           C,
-                                  const Standard_Integer NbU,
-                                  const Standard_Real    Umin,
-                                  const Standard_Real    Usup,
-                                  const Standard_Real    TolU,
-                                  const Standard_Real    TolF)
+void Extrema_EPCOfELPCOfLocateExtPC::Initialize(const Adaptor3d_Curve& C,
+                                                const Standard_Integer NbU,
+                                                const Standard_Real    Umin,
+                                                const Standard_Real    Usup,
+                                                const Standard_Real    TolU,
+                                                const Standard_Real    TolF)
 {
   myInit     = Standard_True;
   mynbsample = NbU;
@@ -97,11 +102,11 @@ void Extrema_GenExtPC::Initialize(const Curve&           C,
 
 //=================================================================================================
 
-void Extrema_GenExtPC::Initialize(const Standard_Integer NbU,
-                                  const Standard_Real    Umin,
-                                  const Standard_Real    Usup,
-                                  const Standard_Real    TolU,
-                                  const Standard_Real    TolF)
+void Extrema_EPCOfELPCOfLocateExtPC::Initialize(const Standard_Integer NbU,
+                                                const Standard_Real    Umin,
+                                                const Standard_Real    Usup,
+                                                const Standard_Real    TolU,
+                                                const Standard_Real    TolF)
 {
   mynbsample = NbU;
   mytolu     = TolU;
@@ -112,33 +117,14 @@ void Extrema_GenExtPC::Initialize(const Standard_Integer NbU,
 
 //=================================================================================================
 
-void Extrema_GenExtPC::Initialize(const Curve& C)
+void Extrema_EPCOfELPCOfLocateExtPC::Initialize(const Adaptor3d_Curve& C)
 {
   myF.Initialize(C);
 }
 
 //=================================================================================================
 
-void Extrema_GenExtPC::Perform(const Pnt& P)
-/*-----------------------------------------------------------------------------
-Fonction:
-  Recherche des valeurs de parametre u telle que dist(P,C(u)) passe
-  par un extremum.
-
-Methode:
-  Si U est solution, alors (C(U)-P).C'(U) = 0.
-  Le probleme consiste a rechercher les racines de cette fonction
-  dans l'intervalle de definition de la courbe.
-  On utilise la classe math_FunctionRoots avec les arguments de
-  construction suivant:
-  - F: Extrema_FuncExtPC cree a partir de P et C,
-  - Uinf: borne inferieure de l'intervalle de definition,
-  - Usup: borne superieure de l'intervalle de definition,
-  - NbSample,
-  - TolU,
-  - TolF,
-  - TolF.
------------------------------------------------------------------------------*/
+void Extrema_EPCOfELPCOfLocateExtPC::Perform(const gp_Pnt& P)
 {
   myF.SetPoint(P);
   myF.SubIntervalInitialize(myumin, myusup);
@@ -155,17 +141,15 @@ Methode:
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenExtPC::IsDone() const
+Standard_Boolean Extrema_EPCOfELPCOfLocateExtPC::IsDone() const
 {
-
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Integer Extrema_GenExtPC::NbExt() const
+Standard_Integer Extrema_EPCOfELPCOfLocateExtPC::NbExt() const
 {
-
   if (!IsDone())
   {
     throw StdFail_NotDone();
@@ -175,39 +159,33 @@ Standard_Integer Extrema_GenExtPC::NbExt() const
 
 //=================================================================================================
 
-Standard_Real Extrema_GenExtPC::SquareDistance(const Standard_Integer N) const
+Standard_Real Extrema_EPCOfELPCOfLocateExtPC::SquareDistance(const Standard_Integer N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
     throw Standard_OutOfRange();
   }
-
   return myF.SquareDistance(N);
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GenExtPC::IsMin(const Standard_Integer N) const
+Standard_Boolean Extrema_EPCOfELPCOfLocateExtPC::IsMin(const Standard_Integer N) const
 {
-
   if ((N < 1) || (N > NbExt()))
   {
     throw Standard_OutOfRange();
   }
-
   return myF.IsMin(N);
 }
 
 //=================================================================================================
 
-const POnC& Extrema_GenExtPC::Point(const Standard_Integer N) const
+const Extrema_POnCurv& Extrema_EPCOfELPCOfLocateExtPC::Point(const Standard_Integer N) const
 {
   if ((N < 1) || (N > NbExt()))
   {
     throw Standard_OutOfRange();
   }
-
   return myF.Point(N);
 }
-
-//=============================================================================
