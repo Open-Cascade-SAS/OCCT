@@ -359,7 +359,8 @@ inline constexpr gp_Mat gp_Mat::Added(const gp_Mat& theOther) const noexcept
 
 inline constexpr void gp_Mat::Divide(const Standard_Real theScalar)
 {
-  Standard_ConstructionError_Raise_if(std::abs(theScalar) <= gp::Resolution(),
+  Standard_ConstructionError_Raise_if((theScalar < 0.0 ? -theScalar : theScalar)
+                                        <= gp::Resolution(),
                                       "gp_Mat : Divide by 0");
   const Standard_Real anUnSurScalar = 1.0 / theScalar;
   myMat[0][0] *= anUnSurScalar;
