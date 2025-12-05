@@ -13,7 +13,7 @@
 
 #include <GeomHash_CurveHasher.hxx>
 
-#include <Standard_HashUtils.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
@@ -83,7 +83,7 @@ std::size_t GeomHash_CurveHasher::operator()(const Handle(Geom_Curve)& theCurve)
   }
 
   // Unknown curve type - hash the type name
-  return std::hash<std::string>{}(theCurve->DynamicType()->Name());
+  return Standard_CStringHasher{}(theCurve->DynamicType()->Name());
 }
 
 //=================================================================================================

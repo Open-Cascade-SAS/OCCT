@@ -16,6 +16,7 @@
 #ifndef TDF_AttributeMap_HeaderFile
 #define TDF_AttributeMap_HeaderFile
 
+#include <Standard_Handle.hxx>
 #include <TDF_Attribute.hxx>
 #include <NCollection_Map.hxx>
 
