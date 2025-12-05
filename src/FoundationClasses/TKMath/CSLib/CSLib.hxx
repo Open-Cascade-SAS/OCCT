@@ -72,9 +72,9 @@ public:
   //!
   //! @param[in]  theD1U    First derivative in U direction
   //! @param[in]  theD1V    First derivative in V direction
-  //! @param[in]  theD2U    Second derivative in U direction (d²S/du²)
-  //! @param[in]  theD2V    Second derivative in V direction (d²S/dv²)
-  //! @param[in]  theD2UV   Mixed second derivative (d²S/dudv)
+  //! @param[in]  theD2U    Second derivative in U direction (d^2S/du^2)
+  //! @param[in]  theD2V    Second derivative in V direction (d^2S/dv^2)
+  //! @param[in]  theD2UV   Mixed second derivative (d^2S/dudv)
   //! @param[in]  theSinTol Sine tolerance for parallelism check
   //! @param[out] theDone   True if normal was successfully computed
   //! @param[out] theStatus Result status with detailed information
