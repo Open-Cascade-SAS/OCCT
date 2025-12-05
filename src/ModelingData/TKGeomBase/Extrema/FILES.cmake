@@ -118,8 +118,6 @@ set(OCCT_Extrema_FILES
   Extrema_PCLocFOfLocEPCOfLocateExtPC2d.hxx
   Extrema_POnCurv.hxx
   Extrema_POnCurv2d.hxx
-  Extrema_POnCurv2d_0.cxx
-  Extrema_POnCurv_0.cxx
   Extrema_POnSurf.hxx
   Extrema_POnSurfParams.hxx
   Extrema_SequenceOfPOnCurv.hxx
