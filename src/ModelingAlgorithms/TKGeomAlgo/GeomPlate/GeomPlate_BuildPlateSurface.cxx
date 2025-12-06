@@ -509,6 +509,8 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
   GeomAdaptor_Surface aSurfInit(mySurfInit);
   myTolU = aSurfInit.UResolution(myTol3d);
   myTolV = aSurfInit.VResolution(myTol3d);
+  myProj.SetFlag(Extrema_ExtFlag_MIN);
+  myProj.SetAlgo(Extrema_ExtAlgo_Tree);
   myProj.Initialize(aSurfInit, u1, v1, u2, v2, myTolU, myTolV);
 
   //======================================================================

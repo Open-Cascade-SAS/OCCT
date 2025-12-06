@@ -15,12 +15,21 @@
 // commercial license or contractual agreement.
 
 #include <Extrema_GenExtCS.hxx>
+#include <BSplCLib_GridEvaluator.hxx>
+#include <BSplSLib_GridEvaluator.hxx>
+#include <BVH_BoxSet.hxx>
+#include <BVH_Tools.hxx>
+#include <BVH_Traverse.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_GlobOptFuncConicS.hxx>
 #include <Extrema_GlobOptFuncCQuadric.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_PSO.hxx>
@@ -108,6 +117,203 @@ static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS,
   {
     GetSurfMaxParamVals(*theS.BasisSurface(), theUmax, theVmax);
   }
+}
+
+//! BVH traverser for finding the closest curve point to a given surface point.
+class Extrema_CSBVHMinDistanceSelector
+    : public BVH_Traverse<Standard_Real, 3, BVH_BoxSet<Standard_Real, 3, Standard_Integer>, Standard_Real>
+{
+public:
+  Extrema_CSBVHMinDistanceSelector(const TColgp_Array1OfPnt& theCurvePnts)
+      : myCurvePnts(&theCurvePnts),
+        myMinDistSq(std::numeric_limits<Standard_Real>::max()),
+        myClosestIndex(0)
+  {
+  }
+
+  void SetQueryPoint(const gp_Pnt& thePoint)
+  {
+    myQueryPoint = BVH_Vec3d(thePoint.X(), thePoint.Y(), thePoint.Z());
+  }
+
+  void Reset()
+  {
+    myMinDistSq   = std::numeric_limits<Standard_Real>::max();
+    myClosestIndex = 0;
+  }
+
+  Standard_Real MinSquareDistance() const { return myMinDistSq; }
+
+  Standard_Integer ClosestIndex() const { return myClosestIndex; }
+
+  //! Reject nodes whose bounding box is farther than current minimum
+  virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
+                                      const BVH_Vec3d& theCornerMax,
+                                      Standard_Real&   theMetric) const Standard_OVERRIDE
+  {
+    theMetric =
+      BVH_Tools<Standard_Real, 3>::PointBoxSquareDistance(myQueryPoint, theCornerMin, theCornerMax);
+    return theMetric >= myMinDistSq;
+  }
+
+  //! Accept a leaf element and update minimum if closer
+  virtual Standard_Boolean Accept(const Standard_Integer theIndex,
+                                  const Standard_Real&) Standard_OVERRIDE
+  {
+    const Standard_Integer aCurveIdx = this->myBVHSet->Element(theIndex);
+    const gp_Pnt&          aPnt      = myCurvePnts->Value(aCurveIdx);
+    const Standard_Real    aDistSq   = (aPnt.X() - myQueryPoint.x()) * (aPnt.X() - myQueryPoint.x())
+                                     + (aPnt.Y() - myQueryPoint.y()) * (aPnt.Y() - myQueryPoint.y())
+                                     + (aPnt.Z() - myQueryPoint.z()) * (aPnt.Z() - myQueryPoint.z());
+    if (aDistSq < myMinDistSq)
+    {
+      myMinDistSq    = aDistSq;
+      myClosestIndex = aCurveIdx;
+    }
+    return Standard_True;
+  }
+
+  virtual Standard_Boolean IsMetricBetter(const Standard_Real& theLeft,
+                                          const Standard_Real& theRight) const Standard_OVERRIDE
+  {
+    return theLeft < theRight;
+  }
+
+  virtual Standard_Boolean RejectMetric(const Standard_Real& theMetric) const Standard_OVERRIDE
+  {
+    return theMetric >= myMinDistSq;
+  }
+
+private:
+  const TColgp_Array1OfPnt* myCurvePnts;
+  BVH_Vec3d                 myQueryPoint;
+  mutable Standard_Real     myMinDistSq;
+  mutable Standard_Integer  myClosestIndex;
+};
+
+//! Helper function to build grid for BSpline surface using optimized evaluator.
+//! @param theSurf    BSpline surface
+//! @param thePoints  output array of grid points (0-based)
+//! @param theUMin    minimum U parameter
+//! @param theUMax    maximum U parameter
+//! @param theVMin    minimum V parameter
+//! @param theVMax    maximum V parameter
+//! @param theNbU     number of U samples
+//! @param theNbV     number of V samples
+//! @return true if grid was built successfully
+static Standard_Boolean buildBSplineGridCS(const Handle(Geom_BSplineSurface)& theSurf,
+                                           Handle(TColgp_HArray2OfPnt)&       thePoints,
+                                           const Standard_Real                theUMin,
+                                           const Standard_Real                theUMax,
+                                           const Standard_Real                theVMin,
+                                           const Standard_Real                theVMax,
+                                           const Standard_Integer             theNbU,
+                                           const Standard_Integer             theNbV)
+{
+  if (theSurf.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline surface data
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(theSurf->UDegree(),
+                    theSurf->VDegree(),
+                    theSurf->Poles(),
+                    theSurf->Weights(),
+                    theSurf->UKnotSequence(),
+                    theSurf->VKnotSequence(),
+                    theSurf->IsURational(),
+                    theSurf->IsVRational(),
+                    theSurf->IsUPeriodic(),
+                    theSurf->IsVPeriodic());
+
+  if (!anEval.IsInitialized())
+  {
+    return Standard_False;
+  }
+
+  // Prepare parameters with uniform distribution (to match the expected grid dimensions)
+  anEval.PrepareUParams(theUMin, theUMax, theNbU + 1);
+  anEval.PrepareVParams(theVMin, theVMax, theNbV + 1);
+
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbU = anEval.NbUParams() - 1;  // -1 because we requested theNbU + 1
+  const Standard_Integer aNbV = anEval.NbVParams() - 1;
+
+  if (aNbU < 1 || aNbV < 1)
+  {
+    return Standard_False;
+  }
+
+  // Allocate points array (0-based to match original code)
+  thePoints = new TColgp_HArray2OfPnt(0, aNbU, 0, aNbV);
+
+  // Evaluate grid points using pre-computed span indices
+  for (Standard_Integer iu = 0; iu <= aNbU; ++iu)
+  {
+    for (Standard_Integer iv = 0; iv <= aNbV; ++iv)
+    {
+      thePoints->SetValue(iu, iv, anEval.Value(iu + 1, iv + 1));
+    }
+  }
+
+  return Standard_True;
+}
+
+//! Helper function to build grid for BSpline curve using optimized evaluator.
+//! @param theCurve   BSpline curve
+//! @param thePoints    output array of grid points (0-based)
+//! @param theParamMin  minimum parameter value
+//! @param theParamMax  maximum parameter value
+//! @param theNbSamples input: requested number of samples, output: actual number of samples
+//! @return true if grid was built successfully
+static Standard_Boolean buildBSplineCurveGrid(const Handle(Geom_BSplineCurve)& theCurve,
+                                              TColgp_Array1OfPnt&              thePoints,
+                                              const Standard_Real              theParamMin,
+                                              const Standard_Real              theParamMax,
+                                              Standard_Integer&                theNbSamples)
+{
+  if (theCurve.IsNull())
+  {
+    return Standard_False;
+  }
+
+  // Initialize the grid evaluator with BSpline curve data
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(theCurve->Degree(),
+                    theCurve->Poles(),
+                    theCurve->Weights(),
+                    theCurve->KnotSequence(),
+                    theCurve->IsRational(),
+                    theCurve->IsPeriodic());
+
+  if (!anEval.IsInitialized())
+  {
+    return Standard_False;
+  }
+
+  // Prepare parameters with uniform distribution
+  anEval.PrepareParams(theParamMin, theParamMax, theNbSamples + 1);
+
+  if (anEval.NbParams() < 2)
+  {
+    return Standard_False;
+  }
+
+  // Use actual parameter count from evaluator (may differ from requested)
+  const Standard_Integer aNbActual = anEval.NbParams() - 1;
+
+  // Evaluate grid points using pre-computed span indices
+  for (Standard_Integer i = 0; i <= aNbActual; ++i)
+  {
+    thePoints.SetValue(i, anEval.Value(i + 1));
+  }
+
+  // Update output count to reflect actual number of samples
+  theNbSamples = aNbActual;
+
+  return Standard_True;
 }
 
 //=================================================================================================
@@ -231,18 +437,31 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
   const Standard_Real aMaxU = myusup - du;
   const Standard_Real aMaxV = myvsup - dv;
 
-  const Standard_Real aStepSU = (aMaxU - aMinU) / myusample;
-  const Standard_Real aStepSV = (aMaxV - aMinV) / myvsample;
-
-  mySurfPnts = new TColgp_HArray2OfPnt(0, myusample, 0, myvsample);
-
-  Standard_Real aSU = aMinU;
-  for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
+  // Try optimized path for BSpline surfaces
+  Standard_Boolean isGridBuilt = Standard_False;
+  if (S.GetType() == GeomAbs_BSplineSurface)
   {
-    Standard_Real aSV = aMinV;
-    for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+    Handle(Geom_BSplineSurface) aBspl = S.BSpline();
+    isGridBuilt =
+      buildBSplineGridCS(aBspl, mySurfPnts, aMinU, aMaxU, aMinV, aMaxV, myusample, myvsample);
+  }
+
+  // Fall back to standard evaluation if optimization was not applied
+  if (!isGridBuilt)
+  {
+    const Standard_Real aStepSU = (aMaxU - aMinU) / myusample;
+    const Standard_Real aStepSV = (aMaxV - aMinV) / myvsample;
+
+    mySurfPnts = new TColgp_HArray2OfPnt(0, myusample, 0, myvsample);
+
+    Standard_Real aSU = aMinU;
+    for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
     {
-      mySurfPnts->ChangeValue(aSUI, aSVI) = myS->Value(aSU, aSV);
+      Standard_Real aSV = aMinV;
+      for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+      {
+        mySurfPnts->ChangeValue(aSUI, aSVI) = myS->Value(aSU, aSV);
+      }
     }
   }
 }
@@ -431,38 +650,68 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
   // Pre-compute curve sample points.
   TColgp_Array1OfPnt aCurvPnts(0, aNewCsample);
 
-  Standard_Real aCU1 = aMinTUV(1);
-  for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU1 += aStepCU)
-    aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
+  // Try optimized evaluation for BSpline curves
+  Standard_Boolean isCurveGridBuilt = Standard_False;
+  if (theC.GetType() == GeomAbs_BSplineCurve)
+  {
+    isCurveGridBuilt =
+      buildBSplineCurveGrid(theC.BSpline(), aCurvPnts, aMinTUV(1), aMaxTUV(1), aNewCsample);
+  }
+
+  if (!isCurveGridBuilt)
+  {
+    // Fallback to standard evaluation
+    Standard_Real aCU1 = aMinTUV(1);
+    for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU1 += aStepCU)
+      aCurvPnts.SetValue(aCUI, theC.Value(aCU1));
+  }
+
+  // Build BVH for curve points to accelerate closest point queries.
+  BVH_BoxSet<Standard_Real, 3, Standard_Integer> aCurveBVH;
+  aCurveBVH.SetSize(static_cast<Standard_Size>(aNewCsample + 1));
+  for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; ++aCUI)
+  {
+    const gp_Pnt&             aPnt = aCurvPnts.Value(aCUI);
+    BVH_Box<Standard_Real, 3> aBox(BVH_Vec3d(aPnt.X(), aPnt.Y(), aPnt.Z()),
+                                   BVH_Vec3d(aPnt.X(), aPnt.Y(), aPnt.Z()));
+    aCurveBVH.Add(aCUI, aBox);
+  }
+  aCurveBVH.Build();
+
+  Extrema_CSBVHMinDistanceSelector aSelector(aCurvPnts);
+  aSelector.SetBVHSet(&aCurveBVH);
 
   PSO_Particle* aParticle = aParticles.GetWorstParticle();
-  // Select specified number of particles from pre-computed set of samples
+  // Select specified number of particles from pre-computed set of samples.
   Standard_Real aSU = aMinTUV(2);
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
   {
     Standard_Real aSV = aMinTUV(3);
     for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
     {
-      Standard_Real aCU2 = aMinTUV(1);
-      for (Standard_Integer aCUI = 0; aCUI <= aNewCsample; aCUI++, aCU2 += aStepCU)
+      const gp_Pnt& aSurfPnt = mySurfPnts->Value(aSUI, aSVI);
+      aSelector.SetQueryPoint(aSurfPnt);
+      aSelector.Reset();
+      aSelector.Select();
+
+      const Standard_Real    aSqDist = aSelector.MinSquareDistance();
+      const Standard_Integer aCUI    = aSelector.ClosestIndex();
+      const Standard_Real    aCU2    = aMinTUV(1) + aCUI * aStepCU;
+
+      if (aSqDist < aParticle->Distance)
       {
-        Standard_Real aSqDist = mySurfPnts->Value(aSUI, aSVI).SquareDistance(aCurvPnts.Value(aCUI));
+        aParticle->Position[0] = aCU2;
+        aParticle->Position[1] = aSU;
+        aParticle->Position[2] = aSV;
 
-        if (aSqDist < aParticle->Distance)
-        {
-          aParticle->Position[0] = aCU2;
-          aParticle->Position[1] = aSU;
-          aParticle->Position[2] = aSV;
+        aParticle->BestPosition[0] = aCU2;
+        aParticle->BestPosition[1] = aSU;
+        aParticle->BestPosition[2] = aSV;
 
-          aParticle->BestPosition[0] = aCU2;
-          aParticle->BestPosition[1] = aSU;
-          aParticle->BestPosition[2] = aSV;
+        aParticle->Distance     = aSqDist;
+        aParticle->BestDistance = aSqDist;
 
-          aParticle->Distance     = aSqDist;
-          aParticle->BestDistance = aSqDist;
-
-          aParticle = aParticles.GetWorstParticle();
-        }
+        aParticle = aParticles.GetWorstParticle();
       }
     }
   }
