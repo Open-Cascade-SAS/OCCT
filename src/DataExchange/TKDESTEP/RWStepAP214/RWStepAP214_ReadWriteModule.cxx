@@ -2979,15 +2979,32 @@ static constexpr std::string_view s_CGRR("CGRR");
 
 // -- Definition of the libraries --
 
+// Hasher for std::string_view using OCCT hash utilities.
+struct StringViewHasher
+{
+  size_t operator()(const std::string_view& theKey) const noexcept
+  {
+    const int aLen = static_cast<int>(theKey.size());
+    return opencascade::hashBytes(theKey.data(), aLen);
+  }
+
+  bool operator()(const std::string_view& theK1, const std::string_view& theK2) const noexcept
+  {
+    return theK1 == theK2;
+  }
+};
+
+using StringViewDataMap = NCollection_DataMap<std::string_view, Standard_Integer, StringViewHasher>;
+
 // Static maps for theTypenums and theTypeshor
-NCollection_DataMap<std::string_view, Standard_Integer> THE_TYPENUMS;
+static StringViewDataMap THE_TYPENUMS;
 // Static map for theTypeshor
-NCollection_DataMap<std::string_view, Standard_Integer> THE_TYPESHOR;
+static StringViewDataMap THE_TYPESHOR;
 // Static allocator for the maps
-Handle(NCollection_IncAllocator) THE_INC_ALLOCATOR;
+static Handle(NCollection_IncAllocator) THE_INC_ALLOCATOR;
 
 // Initialize theTypenums map
-static void initializeTypenums(NCollection_DataMap<std::string_view, Standard_Integer>& theTypenums)
+static void initializeTypenums(StringViewDataMap& theTypenums)
 {
   theTypenums.Clear(THE_INC_ALLOCATOR);
   theTypenums.ReSize(1024);
@@ -3743,7 +3760,7 @@ static void initializeTypenums(NCollection_DataMap<std::string_view, Standard_In
 }
 
 // Initialize theTypeshor map
-static void initializeTypeshor(NCollection_DataMap<std::string_view, Standard_Integer>& theTypeshor)
+static void initializeTypeshor(StringViewDataMap& theTypeshor)
 {
   theTypeshor.Clear(THE_INC_ALLOCATOR);
   theTypeshor.ReSize(528);
