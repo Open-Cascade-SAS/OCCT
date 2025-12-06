@@ -18,6 +18,8 @@
 
 #include <BVH_Types.hxx>
 
+#include <limits>
+
 //! Describes a ray based on BVH vectors.
 template <class T, int N>
 class BVH_Ray
@@ -26,22 +28,58 @@ public:
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
-  BVH_VecNt Origin; //!< Ray origin point
-  BVH_VecNt Direct; //!< Ray direction vector
+  BVH_VecNt Origin;    //!< Ray origin point
+  BVH_VecNt Direct;    //!< Ray direction vector
+  BVH_VecNt InvDirect; //!< Reciprocal of direction (1/Direct)
 
 public:
   //! Creates ray with given origin and direction.
   constexpr BVH_Ray(const BVH_VecNt& theOrigin, const BVH_VecNt& theDirect) noexcept
       : Origin(theOrigin),
-        Direct(theDirect)
+        Direct(theDirect),
+        InvDirect(computeInvDirect(theDirect))
   {
   }
 
   //! Default constructor (creates invalid ray at origin).
   constexpr BVH_Ray() noexcept
       : Origin(BVH_VecNt()),
-        Direct(BVH_VecNt())
+        Direct(BVH_VecNt()),
+        InvDirect(BVH_VecNt())
   {
+  }
+
+private:
+  //! Computes reciprocal of direction component (returns infinity for zero).
+  static constexpr T invComponent(T theDir) noexcept
+  {
+    return (theDir != T(0)) ? (T(1) / theDir) : std::numeric_limits<T>::infinity();
+  }
+
+  //! Computes reciprocal of direction vector.
+  static constexpr BVH_VecNt computeInvDirect(const BVH_VecNt& theDirect) noexcept
+  {
+    if constexpr (N == 1)
+    {
+      return BVH_VecNt(invComponent(theDirect));
+    }
+    else if constexpr (N == 2)
+    {
+      return BVH_VecNt(invComponent(theDirect.x()), invComponent(theDirect.y()));
+    }
+    else if constexpr (N == 3)
+    {
+      return BVH_VecNt(invComponent(theDirect.x()),
+                       invComponent(theDirect.y()),
+                       invComponent(theDirect.z()));
+    }
+    else if constexpr (N == 4)
+    {
+      return BVH_VecNt(invComponent(theDirect.x()),
+                       invComponent(theDirect.y()),
+                       invComponent(theDirect.z()),
+                       invComponent(theDirect.w()));
+    }
   }
 };
 
