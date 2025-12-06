@@ -17,32 +17,21 @@
 #ifndef _CSLib_NormalStatus_HeaderFile
 #define _CSLib_NormalStatus_HeaderFile
 
-//! if N is the normal
+//! Status of surface normal computation.
 //!
-//! InfinityOfSolutions : ||DN/du||>Resolution, ||DN/dv||>Resolution
-//!
-//! D1NuIsNull          : ||DN/du|| <= Resolution
-//!
-//! D1NvIsNull          : ||DN/dv|| <= Resolution
-//!
-//! D1NIsNull           : ||DN/du||<=Resolution, ||DN/dv||<=Resolution
-//!
-//! D1NuNvRatioIsNull   : ||D1Nu|| / ||D1Nv|| <= RealEpsilon
-//!
-//! D1NvNuRatioIsNull   : ||D1Nu|| / ||D1Nv|| <= RealEpsilon
-//!
-//! D1NuIsParallelD1Nv  : The angle between D1Nu and D1Nv is Null.
+//! Describes the result of attempting to compute the normal N to a surface,
+//! including cases involving derivatives of the normal (DN/du, DN/dv).
 enum CSLib_NormalStatus
 {
-  CSLib_Singular,
-  CSLib_Defined,
-  CSLib_InfinityOfSolutions,
-  CSLib_D1NuIsNull,
-  CSLib_D1NvIsNull,
-  CSLib_D1NIsNull,
-  CSLib_D1NuNvRatioIsNull,
-  CSLib_D1NvNuRatioIsNull,
-  CSLib_D1NuIsParallelD1Nv
+  CSLib_Singular,            //!< Surface is singular at the point (normal undefined).
+  CSLib_Defined,             //!< Normal is well-defined and computed successfully.
+  CSLib_InfinityOfSolutions, //!< Infinite normals possible.
+  CSLib_D1NuIsNull,          //!< DN/du has null length: ||DN/du|| <= Resolution.
+  CSLib_D1NvIsNull,          //!< DN/dv has null length: ||DN/dv|| <= Resolution.
+  CSLib_D1NIsNull,           //!< Both normal derivatives are null.
+  CSLib_D1NuNvRatioIsNull,   //!< DN/du is negligible compared to DN/dv.
+  CSLib_D1NvNuRatioIsNull,   //!< DN/dv is negligible compared to DN/du.
+  CSLib_D1NuIsParallelD1Nv   //!< DN/du and DN/dv are parallel.
 };
 
 #endif // _CSLib_NormalStatus_HeaderFile

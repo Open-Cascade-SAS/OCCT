@@ -20,6 +20,7 @@ set(OCCT_TKMath_GTests_FILES
   BVH_Traverse_Test.cxx
   BVH_Triangulation_Test.cxx
   BVH_Tree_Test.cxx
+  CSLib_Test.cxx
   ElCLib_Test.cxx
   gp_Ax3_Test.cxx
   gp_Mat_Test.cxx
