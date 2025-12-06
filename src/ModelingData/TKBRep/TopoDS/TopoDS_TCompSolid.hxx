@@ -18,30 +18,49 @@
 #define _TopoDS_TCompSolid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TCompSolid;
 DEFINE_STANDARD_HANDLE(TopoDS_TCompSolid, TopoDS_TShape)
 
 //! A set of solids connected by their faces.
+//!
+//! A compsolid contains multiple solids.
+//! Uses dynamic array storage with bucket size 4.
 class TopoDS_TCompSolid : public TopoDS_TShape
 {
 public:
+  //! Bucket size for dynamic array (compsolids are rare, typically 2-5 solids)
+  static constexpr int BucketSize = 8;
+
   //! Creates an empty TCompSolid.
   TopoDS_TCompSolid()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_COMPSOLID),
+        mySubShapes(BucketSize)
   {
   }
-
-  //! returns COMPSOLID
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TCompSolid.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
+  //! Returns the number of sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return mySubShapes.Size(); }
+
+  //! Returns the sub-shape at the given index (0-based).
+  //! @param theIndex index of the sub-shape (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE { return mySubShapes.Value(theIndex); }
+
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  //! Storage for sub-shapes.
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes;
 };
 
 #endif // _TopoDS_TCompSolid_HeaderFile

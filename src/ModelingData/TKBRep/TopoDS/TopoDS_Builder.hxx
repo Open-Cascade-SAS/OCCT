@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 
 class TopoDS_Shape;
 class TopoDS_TShape;
@@ -105,6 +106,21 @@ protected:
   Standard_EXPORT void MakeShape(TopoDS_Shape& S, const Handle(TopoDS_TShape)& T) const;
 
 private:
+  //! Helper to add a child shape using type-switch with direct storage access
+  static void addChildByType(TopoDS_TShape*      theTShape,
+                             TopAbs_ShapeEnum    theShapeType,
+                             const TopoDS_Shape& theChild);
+
+  //! Helper to get number of children using type-switch with direct storage access
+  static int getNbChildrenByType(const TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType);
+
+  //! Helper to get a child shape using type-switch with direct storage access
+  static const TopoDS_Shape& getChildByType(const TopoDS_TShape* theTShape,
+                                            TopAbs_ShapeEnum     theShapeType,
+                                            int                  theIndex);
+
+  //! Helper to remove a child shape using type-switch with direct storage access
+  static void removeChildByType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theShapeType, int theIndex);
 };
 
 #include <TopoDS_Builder.lxx>

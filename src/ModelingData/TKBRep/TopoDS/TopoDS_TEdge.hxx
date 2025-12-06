@@ -18,8 +18,9 @@
 #define _TopoDS_TEdge_HeaderFile
 
 #include <Standard.hxx>
-
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TEdge;
@@ -27,20 +28,38 @@ DEFINE_STANDARD_HANDLE(TopoDS_TEdge, TopoDS_TShape)
 
 //! A topological part of a curve in 2D or 3D, the
 //! boundary is a set of oriented Vertices.
+//!
+//! An edge typically has 2 vertices (start and end).
+//! Uses dynamic array storage with bucket size 4.
 class TopoDS_TEdge : public TopoDS_TShape
 {
 public:
-  //! Returns EDGE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
+  //! Bucket size for dynamic array (edges almost always have exactly 2 vertices)
+  static constexpr int BucketSize = 2;
+
+  //! Returns the number of sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return mySubShapes.Size(); }
+
+  //! Returns the sub-shape at the given index (0-based).
+  //! @param theIndex index of the sub-shape (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE { return mySubShapes.Value(theIndex); }
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TEdge, TopoDS_TShape)
 
 protected:
-  //! Construct an edge.
+  //! Construct an edge with empty sub-shape storage.
   TopoDS_TEdge()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_EDGE),
+        mySubShapes(BucketSize)
   {
   }
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  //! Storage for sub-shapes.
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes;
 };
 
 #endif // _TopoDS_TEdge_HeaderFile

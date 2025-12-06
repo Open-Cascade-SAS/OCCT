@@ -18,32 +18,50 @@
 #define _TopoDS_TFace_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TFace;
 DEFINE_STANDARD_HANDLE(TopoDS_TFace, TopoDS_TShape)
 
 //! A topological part of a surface or of the 2D
-//! space. The boundary is a set of wires and
-//! vertices.
+//! space. The boundary is a set of wires and vertices.
+//!
+//! A face typically has 1-4 wires (outer boundary + holes).
+//! Uses dynamic array storage with bucket size 4.
 class TopoDS_TFace : public TopoDS_TShape
 {
 public:
+  //! Bucket size for dynamic array
+  static constexpr int BucketSize = 4;
+
   //! Creates an empty TFace.
   TopoDS_TFace()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_FACE),
+        mySubShapes(BucketSize)
   {
   }
-
-  //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TFace.
   Standard_EXPORT virtual Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
+  //! Returns the number of sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return mySubShapes.Size(); }
+
+  //! Returns the sub-shape at the given index (0-based).
+  //! @param theIndex index of the sub-shape (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE { return mySubShapes.Value(theIndex); }
+
   DEFINE_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  //! Storage for sub-shapes.
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes;
 };
 
 #endif // _TopoDS_TFace_HeaderFile
