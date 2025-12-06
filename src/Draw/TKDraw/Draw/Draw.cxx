@@ -746,8 +746,10 @@ void Draw::Load(Draw_Interpretor&              theDI,
     theMapOfFunctions.Bind(theKey, aFunc);
   }
 
-  void (*fp)(Draw_Interpretor&) = NULL;
-  fp                            = (void (*)(Draw_Interpretor&))aFunc;
+  // Cast through void* to avoid -Wcast-function-type-mismatch warning.
+  // This is safe for dynamically loaded plugin symbols.
+  void (*fp)(Draw_Interpretor&) =
+    reinterpret_cast<void (*)(Draw_Interpretor&)>(reinterpret_cast<void*>(aFunc));
   (*fp)(theDI);
 }
 

@@ -70,7 +70,9 @@ int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
   }
 #else
   NCollection_Utf8String aString(theName.ToExtString());
-  aFileDesc = open(aString.ToCString(), aFlags);
+  // Mode 0600 is used when O_CREAT is set
+  // (owner read+write only, similar to Windows _S_IREAD | _S_IWRITE)
+  aFileDesc = open(aString.ToCString(), aFlags, S_IRUSR | S_IWUSR);
 #endif
   return aFileDesc;
 }

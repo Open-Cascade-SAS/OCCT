@@ -139,7 +139,7 @@ public:
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are
   //! increased by the same amount.
-  void Enlarge(const Standard_Real theTol) noexcept { Gap = std::max(Gap, std::abs(theTol)); }
+  void Enlarge(const Standard_Real theTol) noexcept { Gap = (std::max)(Gap, std::abs(theTol)); }
 
   //! Returns the bounds of this 2D bounding box.
   //! The gap is included. If this bounding box is infinite (i.e. "open"), returned values

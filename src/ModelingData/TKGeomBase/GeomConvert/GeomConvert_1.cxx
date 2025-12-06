@@ -566,12 +566,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
       if (C->IsRational())
         C->Weights(Weights);
 
-      Standard_Integer nbUSpans;
-      Standard_Real    AlfaU;
+      Standard_Real AlfaU;
       if (Strim->IsUPeriodic())
       {
         NbUKnots = 4;
-        nbUSpans = 3;
         AlfaU    = M_PI / 3.;
         NbUPoles = 6;
         periodic = Standard_True;
@@ -579,7 +577,8 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface(const Handle(Ge
       else
       {
         // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
-        nbUSpans = (Standard_Integer)std::trunc(1.2 * (ULast - UFirst) / M_PI) + 1;
+        const Standard_Integer nbUSpans =
+          (Standard_Integer)std::trunc(1.2 * (ULast - UFirst) / M_PI) + 1;
         AlfaU    = (ULast - UFirst) / (nbUSpans * 2);
         NbUPoles = 2 * nbUSpans + 1;
         NbUKnots = nbUSpans + 1;

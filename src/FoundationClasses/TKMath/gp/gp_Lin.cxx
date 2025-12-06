@@ -33,11 +33,8 @@ Standard_Real gp_Lin::Distance(const gp_Lin& Other) const
   }
   else
   {
-    gp_Dir        dir(pos.Direction().Crossed(Other.pos.Direction()));
-    Standard_Real D = gp_Vec(pos.Location(), Other.pos.Location()).Dot(gp_Vec(dir));
-    if (D < 0)
-      D = -D;
-    return D;
+    const gp_Dir dir(pos.Direction().Crossed(Other.pos.Direction()));
+    return std::abs(gp_Vec(pos.Location(), Other.pos.Location()).Dot(gp_Vec(dir)));
   }
 }
 

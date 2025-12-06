@@ -24,6 +24,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
@@ -71,7 +72,7 @@ public:
     load(theCurve, theCurve->FirstParameter(), theCurve->LastParameter());
   }
 
-  //! Standard_ConstructionError is raised if theUFirst>theULast
+  //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
   void Load(const Handle(Geom2d_Curve)& theCurve,
             const Standard_Real         theUFirst,
             const Standard_Real         theULast)
@@ -80,7 +81,7 @@ public:
     {
       throw Standard_NullObject();
     }
-    if (theUFirst > theULast)
+    if (theUFirst > theULast + Precision::Confusion())
     {
       throw Standard_ConstructionError();
     }

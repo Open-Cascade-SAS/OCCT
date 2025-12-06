@@ -17,54 +17,16 @@
 #ifndef _Extrema_LocECC2d_HeaderFile
 #define _Extrema_LocECC2d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
+#include <Adaptor2d_Curve2d.hxx>
+#include <Extrema_CCLocFOfLocECC2d.hxx>
+#include <Extrema_Curve2dTool.hxx>
+#include <Extrema_GenLocateExtCC.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
-class Standard_DomainError;
-class StdFail_NotDone;
-class Adaptor2d_Curve2d;
-class Extrema_Curve2dTool;
-class Extrema_POnCurv2d;
-class gp_Pnt2d;
-class gp_Vec2d;
-class Extrema_CCLocFOfLocECC2d;
-
-class Extrema_LocECC2d
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  //! Calculates the distance with a close point. The
-  //! close point is defined by a parameter value on each
-  //! curve.
-  //! The function F(u,v)=distance(C1(u),C2(v)) has an
-  //! extremun when gradient(f)=0. The algorithm searches
-  //! the zero near the close point.
-  Standard_EXPORT Extrema_LocECC2d(const Adaptor2d_Curve2d& C1,
-                                   const Adaptor2d_Curve2d& C2,
-                                   const Standard_Real      U0,
-                                   const Standard_Real      V0,
-                                   const Standard_Real      TolU,
-                                   const Standard_Real      TolV);
-
-  //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
-
-  //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
-
-  //! Returns the points of the extremum distance.
-  //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Point(Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const;
-
-protected:
-private:
-  Standard_Boolean  myDone;
-  Standard_Real     mySqDist;
-  Extrema_POnCurv2d myPoint1;
-  Extrema_POnCurv2d myPoint2;
-};
+//! Type alias for 2D curve-curve local extremum locator.
+using Extrema_LocECC2d = Extrema_GenLocateExtCC<Adaptor2d_Curve2d,
+                                                Extrema_Curve2dTool,
+                                                Extrema_POnCurv2d,
+                                                Extrema_CCLocFOfLocECC2d>;
 
 #endif // _Extrema_LocECC2d_HeaderFile

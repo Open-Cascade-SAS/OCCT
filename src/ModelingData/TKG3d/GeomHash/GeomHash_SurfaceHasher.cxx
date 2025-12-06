@@ -13,7 +13,7 @@
 
 #include <GeomHash_SurfaceHasher.hxx>
 
-#include <Standard_HashUtils.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -100,7 +100,7 @@ std::size_t GeomHash_SurfaceHasher::operator()(
   }
 
   // Unknown surface type - hash the type name
-  return std::hash<std::string>{}(theSurface->DynamicType()->Name());
+  return Standard_CStringHasher{}(theSurface->DynamicType()->Name());
 }
 
 //=================================================================================================

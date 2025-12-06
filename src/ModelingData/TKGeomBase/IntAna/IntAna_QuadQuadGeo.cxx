@@ -1608,17 +1608,15 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1, const gp_Cone& Con2, const
     // 3.2 - one line  when cone1 touches cone2 (iRet=1)
     // 3.3 - two lines when cone1 intersects cone2 (iRet=2)
     //
-    Standard_Integer iRet;
-    Standard_Real    aGamma, aBeta1, aBeta2;
-    Standard_Real    aD1, aR1, aTgBeta1, aTgBeta2, aHalfPI;
-    Standard_Real    aCosGamma, aSinGamma, aDx, aR2, aRD2, aD2;
-    gp_Pnt2d         aP0, aPA1, aP1, aPA2;
-    gp_Vec2d         aVAx2;
-    gp_Ax1           aAx1, aAx2;
+    Standard_Real aGamma, aBeta1, aBeta2;
+    Standard_Real aD1, aR1, aTgBeta1, aTgBeta2, aHalfPI;
+    Standard_Real aCosGamma, aSinGamma, aDx, aR2, aRD2, aD2;
+    gp_Pnt2d      aP0, aPA1, aP1, aPA2;
+    gp_Vec2d      aVAx2;
+    gp_Ax1        aAx1, aAx2;
     //
     // Preliminary analysis. Determination of iRet
     //
-    iRet    = 0;
     aHalfPI = 0.5 * M_PI;
     aD1     = 1.;
     aPA1.SetCoord(aD1, 0.);
@@ -1663,12 +1661,11 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1, const gp_Cone& Con2, const
     //
     if (aRD2 > (aR2 + Tol))
     {
-      iRet    = 0;
       typeres = IntAna_Empty; // nothing
       return;
     }
     //
-    iRet = 1; // touch case => 1 line
+    Standard_Integer iRet = 1; // touch case => 1 line
     if (aRD2 < (aR2 - Tol))
     {
       iRet = 2; // intersection => couple of lines
@@ -1707,7 +1704,6 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1, const gp_Cone& Con2, const
     aIntr.Perform(aPln1, aPln2, Tol, Tol);
     if (!aIntr.IsDone() || 0 == aIntr.NbSolutions())
     {
-      iRet    = -1; // just in case. it must not be so
       typeres = IntAna_NoGeometricSolution;
       return;
     }

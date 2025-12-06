@@ -85,14 +85,8 @@ void gp_Trsf2d::SetTransformation(const gp_Ax2d& A)
 
 void gp_Trsf2d::SetTranslationPart(const gp_Vec2d& V)
 {
-  loc             = V.XY();
-  Standard_Real X = loc.X();
-  if (X < 0)
-    X = -X;
-  Standard_Real Y = loc.Y();
-  if (Y < 0)
-    Y = -Y;
-  if (X <= gp::Resolution() && Y <= gp::Resolution())
+  loc = V.XY();
+  if (std::abs(loc.X()) <= gp::Resolution() && std::abs(loc.Y()) <= gp::Resolution())
   {
     if (shape == gp_Identity || shape == gp_PntMirror || shape == gp_Scale || shape == gp_Rotation
         || shape == gp_Ax1Mirror)
@@ -230,20 +224,14 @@ void gp_Trsf2d::Invert()
   }
   else if (shape == gp_Scale)
   {
-    Standard_Real As = scale;
-    if (As < 0)
-      As = -As;
-    Standard_ConstructionError_Raise_if(As <= gp::Resolution(),
+    Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
                                         "gp_Trsf2d::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     loc.Multiply(-scale);
   }
   else
   {
-    Standard_Real As = scale;
-    if (As < 0)
-      As = -As;
-    Standard_ConstructionError_Raise_if(As <= gp::Resolution(),
+    Standard_ConstructionError_Raise_if(std::abs(scale) <= gp::Resolution(),
                                         "gp_Trsf2d::Invert() - transformation has zero scale");
     scale = 1.0 / scale;
     matrix.Transpose();
@@ -653,11 +641,8 @@ void gp_Trsf2d::SetValues(const Standard_Real a11,
   gp_XY col3(a13, a23);
   // compute the determinant
   gp_Mat2d      M(col1, col2);
-  Standard_Real s  = M.Determinant();
-  Standard_Real As = s;
-  if (As < 0)
-    As = -As;
-  Standard_ConstructionError_Raise_if(As < gp::Resolution(),
+  Standard_Real s = M.Determinant();
+  Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf2d::SetValues, null determinant");
 
   if (s > 0)

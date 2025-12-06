@@ -22,6 +22,7 @@
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomEvaluator_Curve.hxx>
+#include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ConstructionError.hxx>
 
@@ -47,7 +48,7 @@ public:
 
   GeomAdaptor_Curve(const Handle(Geom_Curve)& theCurve) { Load(theCurve); }
 
-  //! Standard_ConstructionError is raised if theUFirst>theULast
+  //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
   GeomAdaptor_Curve(const Handle(Geom_Curve)& theCurve,
                     const Standard_Real       theUFirst,
                     const Standard_Real       theULast)
@@ -70,7 +71,7 @@ public:
     load(theCurve, theCurve->FirstParameter(), theCurve->LastParameter());
   }
 
-  //! Standard_ConstructionError is raised if theUFirst>theULast
+  //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
   void Load(const Handle(Geom_Curve)& theCurve,
             const Standard_Real       theUFirst,
             const Standard_Real       theULast)
@@ -79,7 +80,7 @@ public:
     {
       throw Standard_NullObject();
     }
-    if (theUFirst > theULast)
+    if (theUFirst > theULast + Precision::Confusion())
     {
       throw Standard_ConstructionError();
     }

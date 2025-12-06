@@ -23,14 +23,16 @@
 #include <TDF_TagSource.hxx>
 #include <TDF_Data.hxx>
 
+#include <cstdint>
+
 namespace std
 {
 template <>
 struct hash<TDF_Label>
 {
-  size_t operator()(const TDF_Label& theNode) const
+  size_t operator()(const TDF_Label& theLabel) const noexcept
   {
-    return std::hash<TDF_LabelNodePtr>{}(theNode.myLabelNode);
+    return static_cast<size_t>(reinterpret_cast<std::uintptr_t>(theLabel.myLabelNode));
   }
 };
 } // namespace std

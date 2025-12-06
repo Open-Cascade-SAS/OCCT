@@ -1031,32 +1031,34 @@ void AIS_ViewCube::HilightOwnerWithColor(const Handle(PrsMgr_PresentationManager
     return;
   }
 
+  const AIS_ViewCubeOwner* aCubeOwner = dynamic_cast<AIS_ViewCubeOwner*>(theOwner.get());
+  if (aCubeOwner == nullptr)
+  {
+    return;
+  }
+
   const Graphic3d_ZLayerId aLayer =
     theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : myDrawer->ZLayer();
-  const AIS_ViewCubeOwner* aCubeOwner = dynamic_cast<AIS_ViewCubeOwner*>(theOwner.get());
-
   Handle(Prs3d_Presentation) aHiPrs = GetHilightPresentation(thePrsMgr);
   aHiPrs->Clear();
   aHiPrs->CStructure()->ViewAffinity = myViewAffinity;
   aHiPrs->SetTransformPersistence(TransformPersistence());
   aHiPrs->SetZLayer(aLayer);
 
+  Handle(Graphic3d_Group) aGroup = aHiPrs->NewGroup();
+  aGroup->SetGroupPrimitivesAspect(theStyle->ShadingAspect()->Aspect());
+  Standard_Integer aNbNodes = 0, aNbTris = 0;
+  createBoxPartTriangles(Handle(Graphic3d_ArrayOfTriangles)(),
+                         aNbNodes,
+                         aNbTris,
+                         aCubeOwner->MainOrientation());
+  if (aNbNodes > 0)
   {
-    Handle(Graphic3d_Group) aGroup = aHiPrs->NewGroup();
-    aGroup->SetGroupPrimitivesAspect(theStyle->ShadingAspect()->Aspect());
-    Standard_Integer aNbNodes = 0, aNbTris = 0;
-    createBoxPartTriangles(Handle(Graphic3d_ArrayOfTriangles)(),
-                           aNbNodes,
-                           aNbTris,
-                           aCubeOwner->MainOrientation());
-    if (aNbNodes > 0)
-    {
-      Handle(Graphic3d_ArrayOfTriangles) aTris =
-        new Graphic3d_ArrayOfTriangles(aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_None);
-      aNbNodes = aNbTris = 0;
-      createBoxPartTriangles(aTris, aNbNodes, aNbTris, aCubeOwner->MainOrientation());
-      aGroup->AddPrimitiveArray(aTris);
-    }
+    Handle(Graphic3d_ArrayOfTriangles) aTris =
+      new Graphic3d_ArrayOfTriangles(aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_None);
+    aNbNodes = aNbTris = 0;
+    createBoxPartTriangles(aTris, aNbNodes, aNbTris, aCubeOwner->MainOrientation());
+    aGroup->AddPrimitiveArray(aTris);
   }
 
   if (thePrsMgr->IsImmediateModeOn())

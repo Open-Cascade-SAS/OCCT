@@ -18,8 +18,6 @@
 #include <Standard_HashUtils.hxx>
 #include <Standard_TypeDef.hxx>
 
-#include <functional>
-
 class Standard_CStringHasher
 {
 public:

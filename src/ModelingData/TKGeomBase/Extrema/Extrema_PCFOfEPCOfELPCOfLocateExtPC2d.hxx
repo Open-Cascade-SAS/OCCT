@@ -17,92 +17,20 @@
 #ifndef _Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_HeaderFile
 #define _Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Extrema_Curve2dTool.hxx>
+#include <Extrema_GFuncExtPC.hxx>
+#include <Extrema_POnCurv2d.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
-#include <Standard_Boolean.hxx>
-#include <math_FunctionWithDerivative.hxx>
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
-class Adaptor2d_Curve2d;
-class Extrema_Curve2dTool;
-class Extrema_POnCurv2d;
-class gp_Pnt2d;
-class gp_Vec2d;
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
-class Extrema_PCFOfEPCOfELPCOfLocateExtPC2d : public math_FunctionWithDerivative
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  Standard_EXPORT Extrema_PCFOfEPCOfELPCOfLocateExtPC2d();
-
-  Standard_EXPORT Extrema_PCFOfEPCOfELPCOfLocateExtPC2d(const gp_Pnt2d&          P,
-                                                        const Adaptor2d_Curve2d& C);
-
-  //! sets the field mycurve of the function.
-  Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& C);
-
-  //! sets the field P of the function.
-  Standard_EXPORT void SetPoint(const gp_Pnt2d& P);
-
-  //! Calculation of F(U).
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real U, Standard_Real& F) Standard_OVERRIDE;
-
-  //! Calculation of F'(U).
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real U,
-                                              Standard_Real&      DF) Standard_OVERRIDE;
-
-  //! Calculation of F(U) and F'(U).
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real U,
-                                          Standard_Real&      F,
-                                          Standard_Real&      DF) Standard_OVERRIDE;
-
-  //! Save the found extremum.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
-
-  //! Return the number of found extrema.
-  Standard_EXPORT Standard_Integer NbExt() const;
-
-  //! Returns the Nth distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
-
-  //! Shows if the Nth distance is a minimum.
-  Standard_EXPORT Standard_Boolean IsMin(const Standard_Integer N) const;
-
-  //! Returns the Nth extremum.
-  Standard_EXPORT const Extrema_POnCurv2d& Point(const Standard_Integer N) const;
-
-  //! Determines boundaries of subinterval for find of root.
-  Standard_EXPORT void SubIntervalInitialize(const Standard_Real theUfirst,
-                                             const Standard_Real theUlast);
-
-  //! Computes a Tol value. If 1st derivative of curve
-  //! |D1|<Tol, it is considered D1=0.
-  Standard_EXPORT Standard_Real SearchOfTolerance();
-
-protected:
-private:
-  gp_Pnt2d                    myP;
-  Standard_Address            myC;
-  Standard_Real               myU;
-  gp_Pnt2d                    myPc;
-  Standard_Real               myD1f;
-  TColStd_SequenceOfReal      mySqDist;
-  TColStd_SequenceOfInteger   myIsMin;
-  Extrema_SequenceOfPOnCurv2d myPoint;
-  Standard_Boolean            myPinit;
-  Standard_Boolean            myCinit;
-  Standard_Boolean            myD1Init;
-  Standard_Real               myTol;
-  Standard_Integer            myMaxDerivOrder;
-  Standard_Real               myUinfium;
-  Standard_Real               myUsupremum;
-};
+//! Type alias for 2D point-curve extremum function (for LocateExtPC2d).
+using Extrema_PCFOfEPCOfELPCOfLocateExtPC2d = Extrema_GFuncExtPC<Adaptor2d_Curve2d,
+                                                                 Extrema_Curve2dTool,
+                                                                 Extrema_POnCurv2d,
+                                                                 gp_Pnt2d,
+                                                                 gp_Vec2d,
+                                                                 Extrema_SequenceOfPOnCurv2d>;
 
 #endif // _Extrema_PCFOfEPCOfELPCOfLocateExtPC2d_HeaderFile

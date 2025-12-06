@@ -240,13 +240,8 @@ inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
       radius(theRadius),
       semiAngle(theAng)
 {
-  Standard_Real aVal = theAng;
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  Standard_ConstructionError_Raise_if(theRadius < 0. || aVal <= gp::Resolution()
-                                        || M_PI * 0.5 - aVal <= gp::Resolution(),
+  Standard_ConstructionError_Raise_if(theRadius < 0. || std::abs(theAng) <= gp::Resolution()
+                                        || M_PI * 0.5 - std::abs(theAng) <= gp::Resolution(),
                                       "gp_Cone() - invalid construction parameters");
 }
 
@@ -254,13 +249,8 @@ inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
 
 inline void gp_Cone::SetSemiAngle(const Standard_Real theAng)
 {
-  Standard_Real aVal = theAng;
-  if (aVal < 0)
-  {
-    aVal = -aVal;
-  }
-  Standard_ConstructionError_Raise_if(aVal <= gp::Resolution()
-                                        || M_PI * 0.5 - aVal <= gp::Resolution(),
+  Standard_ConstructionError_Raise_if(std::abs(theAng) <= gp::Resolution()
+                                        || M_PI * 0.5 - std::abs(theAng) <= gp::Resolution(),
                                       "gp_Cone::SetSemiAngle() - invalid angle range");
   semiAngle = theAng;
 }

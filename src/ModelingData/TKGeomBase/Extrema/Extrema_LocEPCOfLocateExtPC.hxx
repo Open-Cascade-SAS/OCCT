@@ -17,88 +17,18 @@
 #ifndef _Extrema_LocEPCOfLocateExtPC_HeaderFile
 #define _Extrema_LocEPCOfLocateExtPC_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
+#include <Adaptor3d_Curve.hxx>
+#include <Extrema_CurveTool.hxx>
+#include <Extrema_GenLocateExtPC.hxx>
 #include <Extrema_PCLocFOfLocEPCOfLocateExtPC.hxx>
-class Standard_DomainError;
-class Standard_TypeMismatch;
-class StdFail_NotDone;
-class Adaptor3d_Curve;
-class Extrema_CurveTool;
-class Extrema_POnCurv;
-class gp_Pnt;
-class gp_Vec;
-class Extrema_PCLocFOfLocEPCOfLocateExtPC;
+#include <Extrema_POnCurv.hxx>
+#include <gp_Pnt.hxx>
 
-class Extrema_LocEPCOfLocateExtPC
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  Standard_EXPORT Extrema_LocEPCOfLocateExtPC();
-
-  //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searches a zero
-  //! near the close point.
-  //! TolU is used to decide to stop the iterations.
-  //! At the nth iteration, the criteria is:
-  //! abs(Un - Un-1) < TolU.
-  Standard_EXPORT Extrema_LocEPCOfLocateExtPC(const gp_Pnt&          P,
-                                              const Adaptor3d_Curve& C,
-                                              const Standard_Real    U0,
-                                              const Standard_Real    TolU);
-
-  //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searches a zero
-  //! near the close point.
-  //! Zeros are searched between Umin et Usup.
-  //! TolU is used to decide to stop the iterations.
-  //! At the nth iteration, the criteria is:
-  //! abs(Un - Un-1) < TolU.
-  Standard_EXPORT Extrema_LocEPCOfLocateExtPC(const gp_Pnt&          P,
-                                              const Adaptor3d_Curve& C,
-                                              const Standard_Real    U0,
-                                              const Standard_Real    Umin,
-                                              const Standard_Real    Usup,
-                                              const Standard_Real    TolU);
-
-  //! sets the fields of the algorithm.
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& C,
-                                  const Standard_Real    Umin,
-                                  const Standard_Real    Usup,
-                                  const Standard_Real    TolU);
-
-  //! the algorithm is done with the point P.
-  //! An exception is raised if the fields have not
-  //! been initialized.
-  Standard_EXPORT void Perform(const gp_Pnt& P, const Standard_Real U0);
-
-  //! Returns True if the distance is found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
-
-  //! Returns the value of the extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance() const;
-
-  //! Returns True if the extremum distance is a minimum.
-  Standard_EXPORT Standard_Boolean IsMin() const;
-
-  //! Returns the point of the extremum distance.
-  Standard_EXPORT const Extrema_POnCurv& Point() const;
-
-protected:
-private:
-  Standard_Boolean                    myDone;
-  Standard_Real                       mytolU;
-  Standard_Real                       myumin;
-  Standard_Real                       myusup;
-  Extrema_PCLocFOfLocEPCOfLocateExtPC myF;
-};
+//! Type alias for 3D curve local extremum search.
+using Extrema_LocEPCOfLocateExtPC = Extrema_GenLocateExtPC<Adaptor3d_Curve,
+                                                           Extrema_CurveTool,
+                                                           Extrema_POnCurv,
+                                                           gp_Pnt,
+                                                           Extrema_PCLocFOfLocEPCOfLocateExtPC>;
 
 #endif // _Extrema_LocEPCOfLocateExtPC_HeaderFile

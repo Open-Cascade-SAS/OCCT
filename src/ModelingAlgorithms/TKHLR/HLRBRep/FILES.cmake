@@ -75,7 +75,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter_0.cxx
   HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx
-  HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter_0.cxx
   HLRBRep_PolyAlgo.cxx
   HLRBRep_PolyAlgo.hxx
   HLRBRep_PolyHLRToShape.cxx
@@ -100,7 +99,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_TheCSFunctionOfInterCSurf.hxx
   HLRBRep_TheCSFunctionOfInterCSurf_0.cxx
   HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx
-  HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter_0.cxx
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_TheExactInterCSurf.hxx
@@ -114,7 +112,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_TheIntPCurvePCurveOfCInter.hxx
   HLRBRep_TheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx
-  HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter_0.cxx
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_ThePolygonOfInterCSurf.hxx

@@ -2389,7 +2389,6 @@ void BSplSLib::BuildCache(const Standard_Real         theU,
 
   Standard_Real* aCache =
     (Standard_Real*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
-  Standard_Real* aPolyCoeffs = dc.poles;
 
   Standard_Real aFactors[2];
   // aFactors[0] corresponds to variable with minimal degree
@@ -2402,8 +2401,8 @@ void BSplSLib::BuildCache(const Standard_Real         theU,
     aFactors[0] = 1.0;
     for (aCol = 0; aCol <= d1; aCol++)
     {
-      aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
-      aCoeff      = aFactors[0] * aFactors[1];
+      Standard_Real* aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
+      aCoeff                     = aFactors[0] * aFactors[1];
       for (i = 0; i < aDimension; i++)
         aCache[i] = aPolyCoeffs[i] * aCoeff;
       aCache += aCacheShift;
@@ -3076,9 +3075,9 @@ void BSplSLib::MovePoint(const Standard_Real         U,
     ULastIndex = UIndex2;
 
   Standard_Real    maxValue = 0.0;
-  Standard_Integer i, ukk1 = 0, ukk2;
+  Standard_Integer ukk1     = 0, ukk2;
 
-  for (i = UFirstIndex - UFirstNonZeroBsplineIndex + 1;
+  for (Standard_Integer i = UFirstIndex - UFirstNonZeroBsplineIndex + 1;
        i <= ULastIndex - UFirstNonZeroBsplineIndex + 1;
        i++)
   {
@@ -3091,7 +3090,6 @@ void BSplSLib::MovePoint(const Standard_Real         U,
 
   // find a ukk2 if symmetry
   ukk2 = ukk1;
-  i    = ukk1 - UFirstNonZeroBsplineIndex + 2;
   if ((ukk1 + 1) <= ULastIndex)
   {
     if (std::abs(UBSplineBasis(1, ukk1 - UFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
@@ -3109,10 +3107,10 @@ void BSplSLib::MovePoint(const Standard_Real         U,
   if (VLastIndex > VIndex2)
     VLastIndex = VIndex2;
 
-  maxValue = 0.0;
-  Standard_Integer j, vkk1 = 0, vkk2;
+  maxValue              = 0.0;
+  Standard_Integer vkk1 = 0, vkk2;
 
-  for (j = VFirstIndex - VFirstNonZeroBsplineIndex + 1;
+  for (Standard_Integer j = VFirstIndex - VFirstNonZeroBsplineIndex + 1;
        j <= VLastIndex - VFirstNonZeroBsplineIndex + 1;
        j++)
   {
@@ -3125,7 +3123,6 @@ void BSplSLib::MovePoint(const Standard_Real         U,
 
   // find a vkk2 if symmetry
   vkk2 = vkk1;
-  j    = vkk1 - VFirstNonZeroBsplineIndex + 2;
   if ((vkk1 + 1) <= VLastIndex)
   {
     if (std::abs(VBSplineBasis(1, vkk1 - VFirstNonZeroBsplineIndex + 2) - maxValue) < 1.e-10)
@@ -3139,11 +3136,9 @@ void BSplSLib::MovePoint(const Standard_Real         U,
   Standard_Real D2 = 0.0;
   Standard_Real hN, Coef, DvalU, DvalV;
 
-  Standard_Integer ii, jj;
-
-  for (i = 1; i <= UDegree + 1; i++)
+  for (Standard_Integer i = 1; i <= UDegree + 1; i++)
   {
-    ii = i + UFirstNonZeroBsplineIndex - 1;
+    const Standard_Integer ii = i + UFirstNonZeroBsplineIndex - 1;
     if (ii < ukk1)
     {
       DvalU = ukk1 - ii;
@@ -3157,9 +3152,9 @@ void BSplSLib::MovePoint(const Standard_Real         U,
       DvalU = 0.0;
     }
 
-    for (j = 1; j <= VDegree + 1; j++)
+    for (Standard_Integer j = 1; j <= VDegree + 1; j++)
     {
-      jj = j + VFirstNonZeroBsplineIndex - 1;
+      const Standard_Integer jj = j + VFirstNonZeroBsplineIndex - 1;
       if (Rational)
       {
         hN = Weights(ii, jj) * UBSplineBasis(1, i) * VBSplineBasis(1, j);
@@ -3199,7 +3194,7 @@ void BSplSLib::MovePoint(const Standard_Real         U,
 
   // compute the new poles
 
-  for (i = Poles.LowerRow(); i <= Poles.UpperRow(); i++)
+  for (Standard_Integer i = Poles.LowerRow(); i <= Poles.UpperRow(); i++)
   {
     if (i < ukk1)
     {
@@ -3214,7 +3209,7 @@ void BSplSLib::MovePoint(const Standard_Real         U,
       DvalU = 0.0;
     }
 
-    for (j = Poles.LowerCol(); j <= Poles.UpperCol(); j++)
+    for (Standard_Integer j = Poles.LowerCol(); j <= Poles.UpperCol(); j++)
     {
       if (i >= UFirstIndex && i <= ULastIndex && j >= VFirstIndex && j <= VLastIndex)
       {

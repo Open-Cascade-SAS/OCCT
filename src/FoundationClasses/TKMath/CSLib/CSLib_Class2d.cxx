@@ -14,328 +14,316 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// #define No_Standard_OutOfRange
-
 #include <CSLib_Class2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
 
-static inline Standard_Real Transform2d(const Standard_Real u,
-                                        const Standard_Real umin,
-                                        const Standard_Real umaxmumin);
+#include <cmath>
+
+namespace
+{
+//! Transforms a coordinate from original space to normalized [0,1] space.
+//! @param[in] theU       Original coordinate value
+//! @param[in] theUMin    Minimum bound of original range
+//! @param[in] theURange  Range of original domain (theUMax - theUMin)
+//! @return Normalized coordinate in [0,1], or original value if range is too small
+inline double transformToNormalized(const double theU, const double theUMin, const double theURange)
+{
+  constexpr double THE_MIN_RANGE = 1e-10;
+  if (theURange > THE_MIN_RANGE)
+  {
+    return (theU - theUMin) / theURange;
+  }
+  return theU;
+}
+} // namespace
 
 //=================================================================================================
 
 template <class TCol_Containers2d>
-void CSLib_Class2d::Init(const TCol_Containers2d& TP2d,
-                         const Standard_Real      aTolu,
-                         const Standard_Real      aTolv,
-                         const Standard_Real      umin,
-                         const Standard_Real      vmin,
-                         const Standard_Real      umax,
-                         const Standard_Real      vmax)
+void CSLib_Class2d::init(const TCol_Containers2d& thePnts2d,
+                         const double             theTolU,
+                         const double             theTolV,
+                         const double             theUMin,
+                         const double             theVMin,
+                         const double             theUMax,
+                         const double             theVMax)
 {
-  Umin = umin;
-  Vmin = vmin;
-  Umax = umax;
-  Vmax = vmax;
-  //
-  if ((umax <= umin) || (vmax <= vmin) || (TP2d.Length() < 3))
+  myUMin = theUMin;
+  myVMin = theVMin;
+  myUMax = theUMax;
+  myVMax = theVMax;
+
+  // Validate input parameters.
+  if (theUMax <= theUMin || theVMax <= theVMin || thePnts2d.Length() < 3)
   {
-    MyPnts2dX.Nullify();
-    MyPnts2dY.Nullify();
-    N = 0;
+    myPointsCount = 0;
+    return;
   }
-  //
-  else
+
+  myPointsCount = thePnts2d.Length();
+  myTolU        = theTolU;
+  myTolV        = theTolV;
+
+  // Allocate arrays with one extra element for closing the polygon.
+  myPnts2dX.Resize(0, myPointsCount, false);
+  myPnts2dY.Resize(0, myPointsCount, false);
+
+  const double aDu = theUMax - theUMin;
+  const double aDv = theVMax - theVMin;
+
+  // Transform points to normalized coordinates.
+  const int aLower = thePnts2d.Lower();
+  for (int i = 0; i < myPointsCount; ++i)
   {
-    Standard_Integer i, iLower;
-    Standard_Real    du, dv, aPrc;
-    //
-    aPrc      = 1.e-10;
-    N         = TP2d.Length();
-    Tolu      = aTolu;
-    Tolv      = aTolv;
-    MyPnts2dX = new TColStd_Array1OfReal(0, N);
-    MyPnts2dY = new TColStd_Array1OfReal(0, N);
-    du        = umax - umin;
-    dv        = vmax - vmin;
-    //
-    iLower = TP2d.Lower();
-    for (i = 0; i < N; ++i)
-    {
-      const gp_Pnt2d& aP2D      = TP2d(i + iLower);
-      MyPnts2dX->ChangeValue(i) = Transform2d(aP2D.X(), umin, du);
-      MyPnts2dY->ChangeValue(i) = Transform2d(aP2D.Y(), vmin, dv);
-    }
-    MyPnts2dX->ChangeLast() = MyPnts2dX->First();
-    MyPnts2dY->ChangeLast() = MyPnts2dY->First();
-    //
-    if (du > aPrc)
-    {
-      Tolu /= du;
-    }
-    if (dv > aPrc)
-    {
-      Tolv /= dv;
-    }
+    const gp_Pnt2d& aP2D     = thePnts2d(i + aLower);
+    myPnts2dX.ChangeValue(i) = transformToNormalized(aP2D.X(), theUMin, aDu);
+    myPnts2dY.ChangeValue(i) = transformToNormalized(aP2D.Y(), theVMin, aDv);
+  }
+
+  // Close the polygon by copying first point to last position.
+  myPnts2dX.ChangeLast() = myPnts2dX.First();
+  myPnts2dY.ChangeLast() = myPnts2dY.First();
+
+  // Normalize tolerances.
+  constexpr double THE_MIN_RANGE = 1e-10;
+  if (aDu > THE_MIN_RANGE)
+  {
+    myTolU /= aDu;
+  }
+  if (aDv > THE_MIN_RANGE)
+  {
+    myTolV /= aDv;
   }
 }
 
 //=================================================================================================
 
 CSLib_Class2d::CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
-                             const Standard_Real         theTolU,
-                             const Standard_Real         theTolV,
-                             const Standard_Real         theUMin,
-                             const Standard_Real         theVMin,
-                             const Standard_Real         theUMax,
-                             const Standard_Real         theVMax)
+                             const double                theTolU,
+                             const double                theTolV,
+                             const double                theUMin,
+                             const double                theVMin,
+                             const double                theUMax,
+                             const double                theVMax)
 {
-  Init(thePnts2d, theTolU, theTolV, theUMin, theVMin, theUMax, theVMax);
+  init(thePnts2d, theTolU, theTolV, theUMin, theVMin, theUMax, theVMax);
 }
 
 //=================================================================================================
 
 CSLib_Class2d::CSLib_Class2d(const TColgp_SequenceOfPnt2d& thePnts2d,
-                             const Standard_Real           theTolU,
-                             const Standard_Real           theTolV,
-                             const Standard_Real           theUMin,
-                             const Standard_Real           theVMin,
-                             const Standard_Real           theUMax,
-                             const Standard_Real           theVMax)
+                             const double                  theTolU,
+                             const double                  theTolV,
+                             const double                  theUMin,
+                             const double                  theVMin,
+                             const double                  theUMax,
+                             const double                  theVMax)
 {
-  Init(thePnts2d, theTolU, theTolV, theUMin, theVMin, theUMax, theVMax);
+  init(thePnts2d, theTolU, theTolV, theUMin, theVMin, theUMax, theVMax);
 }
 
 //=================================================================================================
 
-Standard_Integer CSLib_Class2d::SiDans(const gp_Pnt2d& P) const
+CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
 {
-  if (!N)
+  if (myPointsCount == 0)
   {
-    return 0;
+    return Result_Uncertain;
   }
-  //
-  Standard_Real x, y, aTolu, aTolv;
-  //
-  x     = P.X();
-  y     = P.Y();
-  aTolu = Tolu * (Umax - Umin);
-  aTolv = Tolv * (Vmax - Vmin);
-  //
-  if (Umin < Umax && Vmin < Vmax)
+
+  double aX = thePoint.X();
+  double aY = thePoint.Y();
+
+  // Compute tolerance in original coordinate space.
+  const double aTolU = myTolU * (myUMax - myUMin);
+  const double aTolV = myTolV * (myVMax - myVMin);
+
+  // Quick rejection test for points clearly outside the bounding box.
+  if (aX < (myUMin - aTolU) || aX > (myUMax + aTolU) || aY < (myVMin - aTolV)
+      || aY > (myVMax + aTolV))
   {
-    if ((x < (Umin - aTolu)) || (x > (Umax + aTolu)) || (y < (Vmin - aTolv))
-        || (y > (Vmax + aTolv)))
+    return Result_Outside;
+  }
+
+  // Transform to normalized coordinates.
+  aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
+  aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
+
+  // Perform classification with ON detection.
+  const Result aResult = internalSiDansOuOn(aX, aY);
+  if (aResult == Result_Uncertain)
+  {
+    return Result_Uncertain; // ON boundary
+  }
+
+  // Check corner points with tolerance for boundary detection.
+  if (myTolU > 0.0 || myTolV > 0.0)
+  {
+    const bool isInside = (aResult == Result_Inside);
+    if (isInside != internalSiDans(aX - myTolU, aY - myTolV)
+        || isInside != internalSiDans(aX + myTolU, aY - myTolV)
+        || isInside != internalSiDans(aX - myTolU, aY + myTolV)
+        || isInside != internalSiDans(aX + myTolU, aY + myTolV))
     {
-      return -1;
+      return Result_Uncertain; // Near boundary
     }
-    x = Transform2d(x, Umin, Umax - Umin);
-    y = Transform2d(y, Vmin, Vmax - Vmin);
   }
 
-  Standard_Integer res = InternalSiDansOuOn(x, y);
-  if (res == -1)
-  {
-    return 0;
-  }
-  if (Tolu || Tolv)
-  {
-    if (res != InternalSiDans(x - Tolu, y - Tolv))
-      return 0;
-    if (res != InternalSiDans(x + Tolu, y - Tolv))
-      return 0;
-    if (res != InternalSiDans(x - Tolu, y + Tolv))
-      return 0;
-    if (res != InternalSiDans(x + Tolu, y + Tolv))
-      return 0;
-  }
-  //
-  return ((res) ? 1 : -1);
+  return aResult;
 }
 
 //=================================================================================================
 
-Standard_Integer CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& P, const Standard_Real Tol) const
+CSLib_Class2d::Result CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint,
+                                                   const double    theTol) const
 {
-  if (!N)
+  if (myPointsCount == 0)
   {
-    return 0;
+    return Result_Uncertain;
   }
-  //
-  Standard_Real x, y, aTolu, aTolv;
-  //
-  x     = P.X();
-  y     = P.Y();
-  aTolu = Tol;
-  aTolv = Tol;
 
-  //-- ****** TO DO LATER, ESTIMATE AT EACH POINT Tol2d depending on Tol3d *****
-  if (Umin < Umax && Vmin < Vmax)
+  double aX = thePoint.X();
+  double aY = thePoint.Y();
+
+  // Quick rejection test.
+  if (aX < (myUMin - theTol) || aX > (myUMax + theTol) || aY < (myVMin - theTol)
+      || aY > (myVMax + theTol))
   {
-    if (x < (Umin - aTolu) || (x > Umax + aTolu) || (y < Vmin - aTolv) || (y > Vmax + aTolv))
+    return Result_Outside;
+  }
+
+  // Transform to normalized coordinates.
+  aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
+  aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
+
+  // Perform classification with ON detection.
+  const Result aResult = internalSiDansOuOn(aX, aY);
+
+  // Check corner points with tolerance.
+  if (theTol > 0.0)
+  {
+    const bool isInside = (aResult == Result_Inside);
+    if (isInside != internalSiDans(aX - theTol, aY - theTol)
+        || isInside != internalSiDans(aX + theTol, aY - theTol)
+        || isInside != internalSiDans(aX - theTol, aY + theTol)
+        || isInside != internalSiDans(aX + theTol, aY + theTol))
     {
-      return -1;
+      return Result_Uncertain;
     }
-    x = Transform2d(x, Umin, Umax - Umin);
-    y = Transform2d(y, Vmin, Vmax - Vmin);
   }
-  //
-  Standard_Integer res = InternalSiDansOuOn(x, y);
-  if (aTolu || aTolv)
-  {
-    if (res != InternalSiDans(x - aTolu, y - aTolv))
-      return 0;
-    if (res != InternalSiDans(x + aTolu, y - aTolv))
-      return 0;
-    if (res != InternalSiDans(x - aTolu, y + aTolv))
-      return 0;
-    if (res != InternalSiDans(x + aTolu, y + aTolv))
-      return 0;
-  }
-  return ((res) ? 1 : -1);
+
+  return aResult;
 }
 
 //=================================================================================================
 
-Standard_Integer CSLib_Class2d::InternalSiDans(const Standard_Real Px, const Standard_Real Py) const
+bool CSLib_Class2d::internalSiDans(const double thePx, const double thePy) const
 {
-  Standard_Integer nbc, i, ip1, SH, NH;
-  Standard_Real    x, y, nx, ny;
-  //
-  nbc = 0;
-  i   = 0;
-  ip1 = 1;
-  x   = (MyPnts2dX->Value(i) - Px);
-  y   = (MyPnts2dY->Value(i) - Py);
-  SH  = (y < 0.) ? -1 : 1;
-  //
-  for (i = 0; i < N; i++, ip1++)
-  {
-    nx = MyPnts2dX->Value(ip1) - Px;
-    ny = MyPnts2dY->Value(ip1) - Py;
+  // Ray-casting algorithm: count edge crossings with a horizontal ray from (Px, Py) to +infinity.
+  int aNbCrossings = 0;
 
-    NH = (ny < 0.) ? -1 : 1;
-    if (NH != SH)
+  double aPrevDx          = myPnts2dX.Value(0) - thePx;
+  double aPrevDy          = myPnts2dY.Value(0) - thePy;
+  bool   aPrevYIsNegative = (aPrevDy < 0.0);
+
+  for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
+  {
+    const double aCurrDx          = myPnts2dX.Value(aNextIdx) - thePx;
+    const double aCurrDy          = myPnts2dY.Value(aNextIdx) - thePy;
+    const bool   aCurrYIsNegative = (aCurrDy < 0.0);
+
+    // Check for edge crossing when Y changes sign.
+    if (aCurrYIsNegative != aPrevYIsNegative)
     {
-      if (x > 0. && nx > 0.)
+      if (aPrevDx > 0.0 && aCurrDx > 0.0)
       {
-        nbc++;
+        // Both endpoints are to the right of the test point.
+        ++aNbCrossings;
       }
-      else
+      else if (aPrevDx > 0.0 || aCurrDx > 0.0)
       {
-        if (x > 0.0 || nx > 0.)
+        // Compute X intersection with horizontal line Y = 0.
+        const double aXIntersect = aPrevDx - aPrevDy * (aCurrDx - aPrevDx) / (aCurrDy - aPrevDy);
+        if (aXIntersect > 0.0)
         {
-          if ((x - y * (nx - x) / (ny - y)) > 0.)
-          {
-            nbc++;
-          }
+          ++aNbCrossings;
         }
       }
-      SH = NH;
+      aPrevYIsNegative = aCurrYIsNegative;
     }
-    x = nx;
-    y = ny;
+
+    aPrevDx = aCurrDx;
+    aPrevDy = aCurrDy;
   }
-  return (nbc & 1);
+
+  // Odd number of crossings means inside.
+  return (aNbCrossings & 1) != 0;
 }
 
-// modified by NIZNHY-PKV Fri Jan 15 09:03:48 2010f
-//=======================================================================
-// function : InternalSiDansOuOn
-// purpose  : same code as above + test on ON (return(-1) in this case
-//=======================================================================
-Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
-                                                   const Standard_Real Py) const
-{
-  Standard_Integer nbc, i, ip1, SH, NH, iRet;
-  Standard_Real    x, y, nx, ny, aX;
-  Standard_Real    aYmin;
-  //
-  nbc   = 0;
-  i     = 0;
-  ip1   = 1;
-  x     = (MyPnts2dX->Value(i) - Px);
-  y     = (MyPnts2dY->Value(i) - Py);
-  aYmin = y;
-  SH    = (y < 0.) ? -1 : 1;
-  for (i = 0; i < N; i++, ip1++)
-  {
-
-    nx = MyPnts2dX->Value(ip1) - Px;
-    ny = MyPnts2dY->Value(ip1) - Py;
-    //-- le 14 oct 97
-    if (nx < Tolu && nx > -Tolu && ny < Tolv && ny > -Tolv)
-    {
-      iRet = -1;
-      return iRet;
-    }
-    // find Y coordinate of polyline for current X gka
-    // in order to detect possible status ON
-    Standard_Real aDx = (MyPnts2dX->Value(ip1) - MyPnts2dX->Value(ip1 - 1));
-    if ((MyPnts2dX->Value(ip1 - 1) - Px) * nx < 0.)
-    {
-
-      Standard_Real aCurPY =
-        MyPnts2dY->Value(ip1) - (MyPnts2dY->Value(ip1) - MyPnts2dY->Value(ip1 - 1)) / aDx * nx;
-      Standard_Real aDeltaY = aCurPY - Py;
-      if (aDeltaY >= -Tolv && aDeltaY <= Tolv)
-      {
-        iRet = -1;
-        return iRet;
-      }
-    }
-    //
-
-    NH = (ny < 0.) ? -1 : 1;
-    if (NH != SH)
-    {
-      if (x > 0. && nx > 0.)
-      {
-        nbc++;
-      }
-      else
-      {
-        if (x > 0. || nx > 0.)
-        {
-          aX = x - y * (nx - x) / (ny - y);
-          if (aX > 0.)
-          {
-            nbc++;
-          }
-        }
-      }
-      SH = NH;
-    }
-    else
-    { // y has same sign as ny
-      if (ny < aYmin)
-      {
-        aYmin = ny;
-      }
-    }
-    x = nx;
-    y = ny;
-  } // for(i=0; i<N ; i++,ip1++) {
-
-  iRet = nbc & 1;
-  return iRet;
-}
-
-// modified by NIZNHY-PKV Fri Jan 15 09:03:55 2010t
 //=================================================================================================
 
-Standard_Real Transform2d(const Standard_Real u,
-                          const Standard_Real umin,
-                          const Standard_Real umaxmumin)
+CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
+                                                        const double thePy) const
 {
-  if (umaxmumin > 1e-10)
+  // Ray-casting algorithm with ON detection.
+  int aNbCrossings = 0;
+
+  double aPrevDx          = myPnts2dX.Value(0) - thePx;
+  double aPrevDy          = myPnts2dY.Value(0) - thePy;
+  bool   aPrevYIsNegative = (aPrevDy < 0.0);
+
+  for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
   {
-    Standard_Real U = (u - umin) / umaxmumin;
-    return U;
+    const int    aPrevIdx = aNextIdx - 1;
+    const double aCurrDx  = myPnts2dX.Value(aNextIdx) - thePx;
+    const double aCurrDy  = myPnts2dY.Value(aNextIdx) - thePy;
+
+    // Check if point is very close to current vertex.
+    if (aCurrDx < myTolU && aCurrDx > -myTolU && aCurrDy < myTolV && aCurrDy > -myTolV)
+    {
+      return Result_Uncertain; // ON boundary (at vertex)
+    }
+
+    // Check if point is ON the edge by computing Y at the test point's X.
+    // Skip interpolation for nearly vertical edges to avoid division instability.
+    // For vertical edges, the ON detection is handled by the tolerance check above.
+    const double aEdgeDx = myPnts2dX.Value(aNextIdx) - myPnts2dX.Value(aPrevIdx);
+    if ((myPnts2dX.Value(aPrevIdx) - thePx) * aCurrDx < 0.0
+        && std::abs(aEdgeDx) > Precision::PConfusion())
+    {
+      const double aInterpY =
+        myPnts2dY.Value(aNextIdx)
+        - (myPnts2dY.Value(aNextIdx) - myPnts2dY.Value(aPrevIdx)) / aEdgeDx * aCurrDx;
+      const double aDeltaY = aInterpY - thePy;
+      if (aDeltaY >= -myTolV && aDeltaY <= myTolV)
+      {
+        return Result_Uncertain; // ON boundary (on edge)
+      }
+    }
+
+    const bool aCurrYIsNegative = (aCurrDy < 0.0);
+    if (aCurrYIsNegative != aPrevYIsNegative)
+    {
+      if (aPrevDx > 0.0 && aCurrDx > 0.0)
+      {
+        ++aNbCrossings;
+      }
+      else if (aPrevDx > 0.0 || aCurrDx > 0.0)
+      {
+        const double aXIntersect = aPrevDx - aPrevDy * (aCurrDx - aPrevDx) / (aCurrDy - aPrevDy);
+        if (aXIntersect > 0.0)
+        {
+          ++aNbCrossings;
+        }
+      }
+      aPrevYIsNegative = aCurrYIsNegative;
+    }
+
+    aPrevDx = aCurrDx;
+    aPrevDy = aCurrDy;
   }
-  else
-  {
-    return u;
-  }
+
+  // Odd number of crossings means inside.
+  return ((aNbCrossings & 1) != 0) ? Result_Inside : Result_Outside;
 }

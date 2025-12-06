@@ -16,12 +16,11 @@
 #ifndef _Extrema_POnSurfParams_HeaderFile
 #define _Extrema_POnSurfParams_HeaderFile
 
+#include <Extrema_ElementType.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <Extrema_ElementType.hxx>
-#include <Standard_Integer.hxx>
-#include <Extrema_POnSurf.hxx>
 class gp_Pnt;
 
 //! Data container for point on surface parameters. These parameters
@@ -33,41 +32,59 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! empty constructor
-  Extrema_POnSurfParams();
+  Extrema_POnSurfParams()
+      : mySqrDistance(0.),
+        myElementType(Extrema_Node),
+        myIndexU(0),
+        myIndexV(0)
+  {
+  }
 
   //! Creation of a point on surface with parameter
   //! values on the surface and a Pnt from gp.
-  Extrema_POnSurfParams(const Standard_Real theU, const Standard_Real theV, const gp_Pnt& thePnt);
+  Extrema_POnSurfParams(const double theU, const double theV, const gp_Pnt& thePnt)
+      : Extrema_POnSurf(theU, theV, thePnt),
+        mySqrDistance(0.),
+        myElementType(Extrema_Node),
+        myIndexU(0),
+        myIndexV(0)
+  {
+  }
 
   //! Sets the square distance from this point to another one
   //! (e.g. to the point to be projected).
-  void SetSqrDistance(const Standard_Real theSqrDistance);
+  void SetSqrDistance(const double theSqrDistance) { mySqrDistance = theSqrDistance; }
 
   //! Query the square distance from this point to another one.
-  Standard_Real GetSqrDistance() const;
+  double GetSqrDistance() const { return mySqrDistance; }
 
   //! Sets the element type on which this point is situated.
-  void SetElementType(const Extrema_ElementType theElementType);
+  void SetElementType(const Extrema_ElementType theElementType) { myElementType = theElementType; }
 
   //! Query the element type on which this point is situated.
-  Extrema_ElementType GetElementType() const;
+  Extrema_ElementType GetElementType() const { return myElementType; }
 
   //! Sets the U and V indices of an element that contains
   //! this point.
-  void SetIndices(const Standard_Integer theIndexU, const Standard_Integer theIndexV);
+  void SetIndices(const int theIndexU, const int theIndexV)
+  {
+    myIndexU = theIndexU;
+    myIndexV = theIndexV;
+  }
 
   //! Query the U and V indices of an element that contains
   //! this point.
-  void GetIndices(Standard_Integer& theIndexU, Standard_Integer& theIndexV) const;
+  void GetIndices(int& theIndexU, int& theIndexV) const
+  {
+    theIndexU = myIndexU;
+    theIndexV = myIndexV;
+  }
 
-protected:
 private:
-  Standard_Real       mySqrDistance;
+  double              mySqrDistance;
   Extrema_ElementType myElementType;
-  Standard_Integer    myIndexU;
-  Standard_Integer    myIndexV;
+  int                 myIndexU;
+  int                 myIndexV;
 };
-
-#include <Extrema_POnSurfParams.lxx>
 
 #endif // _Extrema_POnSurfParams_HeaderFile

@@ -1264,15 +1264,14 @@ void OSD_File::Close()
   myFileHandle = INVALID_HANDLE_VALUE;
 #else
   // note: it probably should be single call to fclose()...
-  int status = close(myFileChannel);
-  if (status == -1)
+  if (close(myFileChannel) == -1)
   {
     myError.SetValue(errno, Iam, "Close");
   }
   myFileChannel = -1;
   if (myFILE != NULL)
   {
-    status = fclose((FILE*)myFILE);
+    (void)fclose((FILE*)myFILE);
     myFILE = NULL;
   }
 #endif

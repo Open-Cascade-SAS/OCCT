@@ -17,51 +17,46 @@
 #ifndef _Extrema_POnCurv2d_HeaderFile
 #define _Extrema_POnCurv2d_HeaderFile
 
+#include <gp_Pnt2d.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <gp_Pnt2d.hxx>
-class gp_Pnt2d;
-
+//! Definition of a point on 2D curve.
 class Extrema_POnCurv2d
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Creation of an indefinite point on curve.
-  Standard_EXPORT Extrema_POnCurv2d();
+  Extrema_POnCurv2d()
+      : myU(0.0)
+  {
+  }
 
   //! Creation of a point on curve with a parameter
   //! value on the curve and a Pnt from gp.
-  Standard_EXPORT Extrema_POnCurv2d(const Standard_Real U, const gp_Pnt2d& P);
+  Extrema_POnCurv2d(const double theU, const gp_Pnt2d& theP)
+      : myU(theU),
+        myP(theP)
+  {
+  }
 
-  //! sets the point and parameter values.
-  Standard_EXPORT void SetValues(const Standard_Real U, const gp_Pnt2d& P);
+  //! Sets the point and parameter values.
+  void SetValues(const double theU, const gp_Pnt2d& theP)
+  {
+    myU = theU;
+    myP = theP;
+  }
 
   //! Returns the point.
-  const gp_Pnt2d& Value() const;
+  const gp_Pnt2d& Value() const { return myP; }
 
   //! Returns the parameter on the curve.
-  Standard_Real Parameter() const;
+  double Parameter() const { return myU; }
 
-protected:
 private:
-  Standard_Real myU;
-  gp_Pnt2d      myP;
+  double   myU;
+  gp_Pnt2d myP;
 };
-
-//=================================================================================================
-// Inline implementations
-//=================================================================================================
-
-inline Standard_Real Extrema_POnCurv2d::Parameter() const
-{
-  return myU;
-}
-
-inline const gp_Pnt2d& Extrema_POnCurv2d::Value() const
-{
-  return myP;
-}
 
 #endif // _Extrema_POnCurv2d_HeaderFile
