@@ -17,14 +17,12 @@
 #ifndef _Geom2dInt_TheProjPCurOfGInter_HeaderFile
 #define _Geom2dInt_TheProjPCurOfGInter_HeaderFile
 
+#include <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class Adaptor2d_Curve2d;
 class Geom2dInt_Geom2dCurveTool;
-class Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter;
-class Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter;
-class Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter;
 class gp_Pnt2d;
 
 class Geom2dInt_TheProjPCurOfGInter

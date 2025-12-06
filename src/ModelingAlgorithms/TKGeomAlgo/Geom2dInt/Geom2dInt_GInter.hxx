@@ -17,6 +17,7 @@
 #ifndef _Geom2dInt_GInter_HeaderFile
 #define _Geom2dInt_GInter_HeaderFile
 
+#include <Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -30,8 +31,6 @@ class Standard_ConstructionError;
 class Adaptor2d_Curve2d;
 class Geom2dInt_Geom2dCurveTool;
 class Geom2dInt_TheProjPCurOfGInter;
-class Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter;
-class Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter;
 class Geom2dInt_TheIntConicCurveOfGInter;
 class Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter;
 class Geom2dInt_IntConicCurveOfGInter;

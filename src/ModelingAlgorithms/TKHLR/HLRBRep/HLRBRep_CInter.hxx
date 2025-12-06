@@ -17,6 +17,7 @@
 #ifndef _HLRBRep_CInter_HeaderFile
 #define _HLRBRep_CInter_HeaderFile
 
+#include <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -29,8 +30,6 @@
 class Standard_ConstructionError;
 class HLRBRep_CurveTool;
 class HLRBRep_TheProjPCurOfCInter;
-class HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter;
-class HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter;
 class HLRBRep_TheIntConicCurveOfCInter;
 class HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter;
 class HLRBRep_IntConicCurveOfCInter;
