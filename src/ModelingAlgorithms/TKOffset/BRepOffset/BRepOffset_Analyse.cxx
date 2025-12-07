@@ -218,17 +218,14 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
   Standard_Integer aNbSamples = 23;
 
   // Check for mixed concavity: convex in some regions, concave in others.
-  Standard_Real    aPar;
-  Standard_Real    aDelta = (aLast - aFirst) / (aNbSamples - 1);
-  Standard_Integer i;
-  Standard_Integer aNbConvex  = 0;
-  Standard_Integer aNbConcave = 0;
-  Standard_Integer aNbValid   = 0;
+  const Standard_Real aDelta      = (aLast - aFirst) / (aNbSamples - 1);
+  bool                aHasConvex  = false;
+  bool                aHasConcave = false;
+  Standard_Integer    aNbValid    = 0;
 
-  for (i = 1, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta)
+  for (Standard_Integer i = 1; i <= aNbSamples; i++)
   {
-    if (i == aNbSamples)
-      aPar = aLast;
+    const Standard_Real aPar = (i == aNbSamples) ? aLast : aFirst + (i - 1) * aDelta;
 
     LocalAnalysis_SurfaceContinuity aCont(aC2d1,
                                           aC2d2,
@@ -248,17 +245,11 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
 
     aNbValid++;
 
-    if (!aCont.IsG1())
+    if (!aCont.IsG1() && (!aHasConvex || !aHasConcave))
     {
-      Standard_Real anAngle = aCont.C0Value();
-      if (anAngle > M_PI_2 + theAngTol)
-      {
-        aNbConvex++;
-      }
-      else if (anAngle < M_PI_2 - theAngTol)
-      {
-        aNbConcave++;
-      }
+      const Standard_Real anAngle = aCont.C0Value();
+      aHasConvex                  = aHasConvex || (anAngle > M_PI_2 + theAngTol);
+      aHasConcave                 = aHasConcave || (anAngle < M_PI_2 - theAngTol);
     }
   }
 
@@ -268,10 +259,7 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
   }
 
   // Mixed connectivity: both convex and concave regions exist.
-  if (aNbConvex > 0 && aNbConcave > 0)
-  {
-    aMixedCont = Standard_True;
-  }
+  aMixedCont = aHasConvex && aHasConcave;
 
   return aMixedCont;
 }
