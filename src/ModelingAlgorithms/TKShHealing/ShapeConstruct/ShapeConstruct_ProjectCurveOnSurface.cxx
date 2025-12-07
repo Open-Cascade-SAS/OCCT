@@ -45,7 +45,6 @@
 #include <IntCurve_IntConicConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
@@ -73,6 +72,25 @@ namespace
 {
 //! Default number of control points for discretization.
 constexpr Standard_Integer THE_NCONTROL = 23;
+
+//=================================================================================================
+
+//! Extracts B-spline curve from a possibly nested trimmed curve.
+//! Recursively unwraps trimmed curves to find B-spline basis.
+//! @param[in] theCurve the curve to extract from
+//! @return the extracted B-spline curve, or null if not a B-spline
+Handle(Geom_BSplineCurve) extractBSplineCurve(const Handle(Geom_Curve)& theCurve)
+{
+  Handle(Geom_Curve) aCurve = theCurve;
+
+  // Recursively unwrap trimmed curves
+  while (!aCurve.IsNull() && aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
+    aCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
+  }
+
+  return Handle(Geom_BSplineCurve)::DownCast(aCurve);
+}
 
 //=================================================================================================
 
@@ -238,33 +256,22 @@ Standard_Boolean fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
 //! @param[in] theCurve the curve to check (may be trimmed)
 //! @param[in] theFirst the first parameter of the working range
 //! @param[in] theLast the last parameter of the working range
+//! @param[out] theBSpline the extracted B-spline curve (if any)
 //! @return true if the curve has problematic knot spacing
-Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)& theCurve,
-                                       const Standard_Real       theFirst,
-                                       const Standard_Real       theLast)
+Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
+                                       const Standard_Real        theFirst,
+                                       const Standard_Real        theLast,
+                                       Handle(Geom_BSplineCurve)& theBSpline)
 {
-  if (theCurve.IsNull())
-    return Standard_False;
-
-  Handle(Geom_BSplineCurve) aBSpline;
-  if (theCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-  {
-    Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
-    aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
-  }
-  else
-  {
-    aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
-  }
-
-  if (aBSpline.IsNull())
+  theBSpline = extractBSplineCurve(theCurve);
+  if (theBSpline.IsNull())
     return Standard_False;
 
   try
   {
     OCC_CATCH_SIGNALS
 
-    const TColStd_Array1OfReal& aKnots = aBSpline->Knots();
+    const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
     if (aKnots.Length() < 10)
       return Standard_False;
 
@@ -486,18 +493,8 @@ Standard_Integer generateCurvePoints(const Handle(Geom_Curve)& theCurve,
                                      ShapeConstruct_ProjectCurveOnSurface::ArrayOfPnt&  thePoints,
                                      ShapeConstruct_ProjectCurveOnSurface::ArrayOfReal& theParams)
 {
-  Handle(Geom_BSplineCurve) aBSpline;
-  if (theCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-  {
-    Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
-    aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
-  }
-  else
-  {
-    aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
-  }
-
-  Standard_Integer aNbPini = theNbControlPoints;
+  Handle(Geom_BSplineCurve) aBSpline = extractBSplineCurve(theCurve);
+  Standard_Integer          aNbPini  = theNbControlPoints;
 
   if (!aBSpline.IsNull())
   {
@@ -689,128 +686,30 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   }
 
   // Handle problematic B-spline curves
-  Handle(Geom_Curve) aCurve = theC3D;
-  Standard_Real      aFirst = theFirst;
-  Standard_Real      aLast  = theLast;
+  Handle(Geom_Curve)        aCurve = theC3D;
+  Standard_Real             aFirst = theFirst;
+  Standard_Real             aLast  = theLast;
+  Handle(Geom_BSplineCurve) aBSpline;
 
-  if (isBSplineCurveInvalid(aCurve, aFirst, aLast))
+  if (isBSplineCurveInvalid(aCurve, aFirst, aLast, aBSpline))
   {
-    Handle(Geom_BSplineCurve) aBSpline;
-    if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    Handle(Geom_Curve) aCopy = Handle(Geom_Curve)::DownCast(aBSpline->Copy());
+    aBSpline->Segment(aFirst, aLast, Precision::PConfusion());
+
+    Handle(Geom_BSplineCurve) aNewBSpline = rebuildBSpline(aBSpline);
+    if (aNewBSpline.IsNull())
     {
-      Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
-      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aTrimmedCurve->BasisCurve());
-    }
-    else
-    {
-      aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
-    }
-
-    if (!aBSpline.IsNull())
-    {
-      Handle(Geom_Curve) aCopy = Handle(Geom_Curve)::DownCast(aBSpline->Copy());
-      aBSpline->Segment(aFirst, aLast, Precision::PConfusion());
-
-      Handle(Geom_BSplineCurve) aNewBSpline = rebuildBSpline(aBSpline);
-      if (aNewBSpline.IsNull())
-      {
-        if (PerformByProjLib(aBSpline, aFirst, aLast, theC2D))
-        {
-          return Status(ShapeExtend_DONE);
-        }
-        aCurve = aCopy;
-      }
-      else
-      {
-        aFirst = aNewBSpline->FirstParameter();
-        aLast  = aNewBSpline->LastParameter();
-        aCurve = aNewBSpline;
-      }
-    }
-  }
-
-  // Check for uneven B-spline parametrization
-  Handle(Geom_BSplineCurve) aBspl;
-  if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-  {
-    Handle(Geom_TrimmedCurve) aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
-    aBspl = Handle(Geom_BSplineCurve)::DownCast(aTrimmed->BasisCurve());
-  }
-  else
-  {
-    aBspl = Handle(Geom_BSplineCurve)::DownCast(aCurve);
-  }
-
-  if (!aBspl.IsNull())
-  {
-    NCollection_Sequence<Standard_Real> aKnotCoeffs;
-    Standard_Real                       aFirstParam = aFirst;
-    Standard_Real                       aLastParam  = aLast;
-
-    Standard_Integer anIdx = 1;
-    for (; anIdx <= aBspl->NbKnots() && aFirstParam < aLast; anIdx++)
-    {
-      if (aBspl->Knot(anIdx) > aFirst)
-        break;
-    }
-
-    GeomAdaptor_Curve aC3DAdaptor(aCurve);
-    Standard_Real     aMinParSpeed = Precision::Infinite();
-
-    for (; anIdx <= aBspl->NbKnots() && aFirstParam < aLast; anIdx++)
-    {
-      aLastParam                  = std::min(aLast, aBspl->Knot(anIdx));
-      Standard_Integer aNbIntPnts = THE_NCONTROL;
-
-      if (anIdx > 1)
-      {
-        const Standard_Real aLenThres = 1.e-2;
-        const Standard_Real aLenRatio =
-          (aLastParam - aFirstParam) / (aBspl->Knot(anIdx) - aBspl->Knot(anIdx - 1));
-        if (aLenRatio < aLenThres)
-        {
-          aNbIntPnts = Standard_Integer(aLenRatio / aLenThres * aNbIntPnts);
-          if (aNbIntPnts < 2)
-            aNbIntPnts = 2;
-        }
-      }
-
-      const Standard_Real aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
-      gp_Pnt              p3d1, p3d2;
-      aC3DAdaptor.D0(aFirstParam, p3d1);
-
-      Standard_Real aLength3d = 0.0;
-      for (Standard_Integer anIntIdx = 1; anIntIdx < aNbIntPnts; anIntIdx++)
-      {
-        const Standard_Real aParam = aFirstParam + aStep * anIntIdx;
-        aC3DAdaptor.D0(aParam, p3d2);
-        const Standard_Real aDist = p3d2.Distance(p3d1);
-        aLength3d += aDist;
-        p3d1         = p3d2;
-        aMinParSpeed = std::min(aMinParSpeed, aDist / aStep);
-      }
-
-      const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
-      if (std::abs(aCoeff) > gp::Resolution())
-        aKnotCoeffs.Append(aCoeff);
-      aFirstParam = aLastParam;
-    }
-
-    Standard_Real anEvenlyCoeff = 0;
-    if (aKnotCoeffs.Size() > 0)
-    {
-      anEvenlyCoeff = *std::max_element(aKnotCoeffs.begin(), aKnotCoeffs.end())
-                      / *std::min_element(aKnotCoeffs.begin(), aKnotCoeffs.end());
-    }
-
-    const Standard_Real aMaxQuotientCoeff = 1500.0;
-    if (anEvenlyCoeff > aMaxQuotientCoeff && aMinParSpeed > Precision::Confusion())
-    {
-      PerformByProjLib(aCurve, aFirst, aLast, theC2D);
-      if (!theC2D.IsNull())
+      if (PerformByProjLib(aBSpline, aFirst, aLast, theC2D))
       {
         return Status(ShapeExtend_DONE);
       }
+      aCurve = aCopy;
+    }
+    else
+    {
+      aFirst = aNewBSpline->FirstParameter();
+      aLast  = aNewBSpline->LastParameter();
+      aCurve = aNewBSpline;
     }
   }
 
