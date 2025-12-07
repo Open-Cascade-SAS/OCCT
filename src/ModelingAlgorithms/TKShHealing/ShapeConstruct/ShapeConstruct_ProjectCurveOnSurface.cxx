@@ -250,14 +250,65 @@ Standard_Boolean fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
 
 //=================================================================================================
 
+//! Checks if B-spline curve has degenerate sections (consecutive identical poles).
+//! Such curves can cause projection failures when sampling produces coincident points.
+//! @param[in] theBSpline the B-spline curve to check
+//! @param[in] theMinRepeats minimum number of consecutive repeated poles to consider degenerate
+//! @return true if the curve has degenerate sections
+Standard_Boolean hasDegenerateSection(const Handle(Geom_BSplineCurve)& theBSpline,
+                                      const Standard_Integer           theMinRepeats = 3)
+{
+  if (theBSpline.IsNull())
+    return Standard_False;
+
+  const TColgp_Array1OfPnt& aPoles    = theBSpline->Poles();
+  const Standard_Integer    aNbPoles  = aPoles.Length();
+  const Standard_Real       aTolSq    = Precision::SquareConfusion();
+  Standard_Integer          aRepeats  = 1;
+  gp_Pnt                    aPrevPole = aPoles(aPoles.Lower());
+
+  for (Standard_Integer i = aPoles.Lower() + 1; i <= aPoles.Upper(); ++i)
+  {
+    const gp_Pnt& aCurrPole = aPoles(i);
+    if (aPrevPole.SquareDistance(aCurrPole) < aTolSq)
+    {
+      aRepeats++;
+      if (aRepeats >= theMinRepeats)
+        return Standard_True;
+    }
+    else
+    {
+      aRepeats  = 1;
+      aPrevPole = aCurrPole;
+    }
+  }
+
+  // Also check for high multiplicities that create flat sections
+  const TColStd_Array1OfInteger& aMults  = theBSpline->Multiplicities();
+  const Standard_Integer         aDegree = theBSpline->Degree();
+  for (Standard_Integer i = aMults.Lower(); i <= aMults.Upper(); ++i)
+  {
+    // Multiplicity equal to degree creates C0 continuity (potential flat spot)
+    // High internal multiplicity with many poles may cause degenerate behavior
+    if (aMults(i) >= aDegree && i > aMults.Lower() && i < aMults.Upper() && aNbPoles > 20)
+    {
+      return Standard_True;
+    }
+  }
+
+  return Standard_False;
+}
+
+//=================================================================================================
+
 //! Checks if B-spline curve has problematic knot spacing that could cause issues.
 //! Detects cases where knot intervals are extremely small relative to the median
-//! interval or the working parameter range.
+//! interval or the working parameter range, or where the curve has degenerate sections.
 //! @param[in] theCurve the curve to check (may be trimmed)
 //! @param[in] theFirst the first parameter of the working range
 //! @param[in] theLast the last parameter of the working range
 //! @param[out] theBSpline the extracted B-spline curve (if any)
-//! @return true if the curve has problematic knot spacing
+//! @return true if the curve has problematic characteristics
 Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
                                        const Standard_Real        theFirst,
                                        const Standard_Real        theLast,
@@ -270,6 +321,10 @@ Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
   try
   {
     OCC_CATCH_SIGNALS
+
+    // Check for degenerate sections (consecutive identical poles)
+    if (hasDegenerateSection(theBSpline))
+      return Standard_True;
 
     const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
     if (aKnots.Length() < 10)
@@ -339,9 +394,9 @@ Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
 
 //=================================================================================================
 
-//! Rebuilds B-spline curve with fixed knot spacing while preserving geometry.
-//! Creates a new B-spline with uniformly spaced knots, recomputing poles
-//! by sampling the original curve.
+//! Rebuilds B-spline curve preserving knot structure where possible.
+//! Samples at knot parameters and mid-span, merges degenerate segments,
+//! and splits segments that are too large relative to average spacing.
 //! @param[in] theBSpline the B-spline curve to rebuild
 //! @return the rebuilt B-spline curve, or null on failure
 Handle(Geom_BSplineCurve) rebuildBSpline(const Handle(Geom_BSplineCurve)& theBSpline)
@@ -353,120 +408,148 @@ Handle(Geom_BSplineCurve) rebuildBSpline(const Handle(Geom_BSplineCurve)& theBSp
   {
     OCC_CATCH_SIGNALS
 
-    const Standard_Integer         aDegree         = theBSpline->Degree();
-    const TColgp_Array1OfPnt&      aPoles          = theBSpline->Poles();
-    const TColStd_Array1OfReal&    anOriginalKnots = theBSpline->Knots();
-    const TColStd_Array1OfInteger& aMults          = theBSpline->Multiplicities();
-    const Standard_Integer         aNbKnots        = anOriginalKnots.Length();
+    GeomAdaptor_Curve anAdaptor(theBSpline);
 
-    if (aNbKnots < 2)
+    const Standard_Real aFirst = anAdaptor.FirstParameter();
+    const Standard_Real aLast  = anAdaptor.LastParameter();
+    const Standard_Real aRange = aLast - aFirst;
+
+    if (aRange < Precision::Confusion())
       return nullptr;
 
-    std::vector<Standard_Real, NCollection_Allocator<Standard_Real>> anIntervals;
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
+    const Standard_Real         aTolSq = Precision::SquareConfusion();
+
+    // Collect points at knots AND mid-spans for better shape capture
+    NCollection_Vector<gp_Pnt>        aSamplePoints;
+    NCollection_Vector<Standard_Real> aSampleParams;
+
+    for (Standard_Integer i = aKnots.Lower(); i <= aKnots.Upper(); ++i)
     {
-      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-      if (anInterval > Precision::Confusion())
+      const Standard_Real aParam = aKnots(i);
+      if (aParam < aFirst - Precision::PConfusion() || aParam > aLast + Precision::PConfusion())
+        continue;
+
+      // Sample at knot
+      gp_Pnt aPt;
+      anAdaptor.D0(aParam, aPt);
+      aSamplePoints.Append(aPt);
+      aSampleParams.Append(aParam);
+
+      // Sample at mid-span (between this knot and next)
+      if (i < aKnots.Upper())
       {
-        anIntervals.push_back(anInterval);
+        const Standard_Real aNextParam = aKnots(i + 1);
+        if (aNextParam <= aLast + Precision::PConfusion())
+        {
+          const Standard_Real aMidParam = (aParam + aNextParam) * 0.5;
+          gp_Pnt              aMidPt;
+          anAdaptor.D0(aMidParam, aMidPt);
+          aSamplePoints.Append(aMidPt);
+          aSampleParams.Append(aMidParam);
+        }
       }
     }
 
-    if (anIntervals.empty())
+    if (aSamplePoints.Length() < 2)
       return nullptr;
 
-    std::sort(anIntervals.begin(), anIntervals.end());
+    // Compute segment lengths and average (excluding degenerate)
+    NCollection_Vector<Standard_Real> aSegmentLengths;
+    Standard_Real                     aTotalLength = 0.0;
+    Standard_Integer                  aNbValid     = 0;
+    const Standard_Real               aMinDist     = Precision::Confusion();
 
-    Standard_Real aMedianInterval;
-    const size_t  aMid = anIntervals.size() / 2;
-    if (anIntervals.size() % 2 == 0)
+    for (Standard_Integer i = 1; i < aSamplePoints.Length(); ++i)
     {
-      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
-    }
-    else
-    {
-      aMedianInterval = anIntervals[aMid];
-    }
-
-    Standard_Real    aTotalNormalInterval = 0.0;
-    Standard_Integer aNormalCount         = 0;
-    const size_t     aQuarter             = anIntervals.size() / 4;
-    for (size_t i = aQuarter; i < anIntervals.size(); i++)
-    {
-      aTotalNormalInterval += anIntervals[i];
-      aNormalCount++;
-    }
-    Standard_Real anAverageNormalInterval =
-      (aNormalCount > 0) ? (aTotalNormalInterval / aNormalCount) : aMedianInterval;
-
-    Standard_Real aTolerance = aMedianInterval * 0.1;
-    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
-
-    Standard_Boolean hasProblematicKnots = Standard_False;
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
-    {
-      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
+      const Standard_Real aDist = aSamplePoints(i - 1).Distance(aSamplePoints(i));
+      aSegmentLengths.Append(aDist);
+      if (aDist > aMinDist)
       {
-        hasProblematicKnots = Standard_True;
-        break;
+        aTotalLength += aDist;
+        ++aNbValid;
       }
     }
 
-    if (!hasProblematicKnots)
-      return theBSpline;
+    if (aNbValid == 0)
+      return nullptr;
 
-    Standard_Real aMinSpacing = Max(anAverageNormalInterval * 0.5, aMedianInterval * 0.3);
-    aMinSpacing               = Max(aMinSpacing, Precision::Confusion() * 10000);
+    const Standard_Real aAvgLength = aTotalLength / aNbValid;
+    const Standard_Real aMaxLength = aAvgLength * 3.0;
 
-    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
-    aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
+    // Build final point set: merge degenerate, split large segments
+    NCollection_Vector<gp_Pnt> aFinalPoints;
+    aFinalPoints.Append(aSamplePoints(0));
 
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
+    for (Standard_Integer i = 0; i < aSegmentLengths.Length(); ++i)
     {
-      const Standard_Real aPrevKnot          = aNewKnots(i - 1);
-      const Standard_Real aCurrKnot          = anOriginalKnots(i);
-      const Standard_Real anOriginalInterval = aCurrKnot - anOriginalKnots(i - 1);
+      const Standard_Real aSegLen = aSegmentLengths(i);
+      const gp_Pnt&       aPtEnd  = aSamplePoints(i + 1);
 
-      if (anOriginalInterval > Precision::Confusion() && anOriginalInterval < aTolerance)
+      if (aSegLen < aMinDist)
       {
-        aNewKnots(i) = aPrevKnot + Max(aMinSpacing, anOriginalInterval * 2.0);
+        // Degenerate segment - skip
+        continue;
       }
-      else
+      else if (aSegLen > aMaxLength)
       {
-        aNewKnots(i) = Max(aCurrKnot, aPrevKnot + aMinSpacing);
+        // Large segment - split
+        const Standard_Real    aParamStart = aSampleParams(i);
+        const Standard_Real    aParamEnd   = aSampleParams(i + 1);
+        const Standard_Integer aNbSplit = static_cast<Standard_Integer>(aSegLen / aAvgLength) + 1;
+
+        for (Standard_Integer j = 1; j < aNbSplit; ++j)
+        {
+          const Standard_Real aT     = static_cast<Standard_Real>(j) / aNbSplit;
+          const Standard_Real aParam = aParamStart + aT * (aParamEnd - aParamStart);
+
+          gp_Pnt aPtMid;
+          anAdaptor.D0(aParam, aPtMid);
+
+          if (aFinalPoints(aFinalPoints.Length() - 1).SquareDistance(aPtMid) > aTolSq)
+          {
+            aFinalPoints.Append(aPtMid);
+          }
+        }
       }
-    }
 
-    const Standard_Real aOriginalRange =
-      anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
-    const Standard_Real aNewRange = aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
-
-    if (aNewRange > aOriginalRange * 1.5)
-    {
-      const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
-      const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
-
-      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
+      // Add endpoint if distinct
+      if (aFinalPoints(aFinalPoints.Length() - 1).SquareDistance(aPtEnd) > aTolSq)
       {
-        const Standard_Real t =
-          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
-        aNewKnots(i) = aFirstKnot + t * (aLastKnot - aFirstKnot);
+        aFinalPoints.Append(aPtEnd);
       }
     }
 
-    Handle(Geom_BSplineCurve) aNewBSpline;
-    if (theBSpline->IsRational())
+    const Standard_Integer aNbPts = aFinalPoints.Length();
+    if (aNbPts < 2)
+      return nullptr;
+
+    // Build B-spline directly: degree 3 (or less if few points), clamped knots
+    const Standard_Integer aDegree = Min(3, aNbPts - 1);
+
+    // Create poles array
+    TColgp_Array1OfPnt aPoles(1, aNbPts);
+    for (Standard_Integer i = 0; i < aNbPts; ++i)
     {
-      const TColStd_Array1OfReal* aWeights = theBSpline->Weights();
-      aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
-    }
-    else
-    {
-      aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
+      aPoles(i + 1) = aFinalPoints(i);
     }
 
-    return aNewBSpline;
+    // Create uniform knot vector with clamped ends
+    const Standard_Integer aNbInternalKnots = aNbPts - aDegree - 1;
+    const Standard_Integer aNbNewKnots      = aNbInternalKnots + 2;
+
+    TColStd_Array1OfReal    aNewKnots(1, aNbNewKnots);
+    TColStd_Array1OfInteger aNewMults(1, aNbNewKnots);
+
+    for (Standard_Integer i = 1; i <= aNbNewKnots; ++i)
+    {
+      aNewKnots(i) = static_cast<Standard_Real>(i - 1) / (aNbNewKnots - 1);
+      aNewMults(i) = 1;
+    }
+    aNewMults(1)           = aDegree + 1;
+    aNewMults(aNbNewKnots) = aDegree + 1;
+
+    return new Geom_BSplineCurve(aPoles, aNewKnots, aNewMults, aDegree);
   }
   catch (Standard_Failure const&)
   {
