@@ -249,57 +249,6 @@ Standard_Boolean fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
 
 //=================================================================================================
 
-//! Checks if B-spline curve has degenerate sections (consecutive identical poles).
-//! Such curves can cause projection failures when sampling produces coincident points.
-//! @param[in] theBSpline the B-spline curve to check
-//! @param[in] theMinRepeats minimum number of consecutive repeated poles to consider degenerate
-//! @return true if the curve has degenerate sections
-Standard_Boolean hasDegenerateSection(const Handle(Geom_BSplineCurve)& theBSpline,
-                                      const Standard_Integer           theMinRepeats = 3)
-{
-  if (theBSpline.IsNull())
-    return Standard_False;
-
-  const TColgp_Array1OfPnt& aPoles    = theBSpline->Poles();
-  const Standard_Integer    aNbPoles  = aPoles.Length();
-  const Standard_Real       aTolSq    = Precision::SquareConfusion();
-  Standard_Integer          aRepeats  = 1;
-  gp_Pnt                    aPrevPole = aPoles(aPoles.Lower());
-
-  for (Standard_Integer i = aPoles.Lower() + 1; i <= aPoles.Upper(); ++i)
-  {
-    const gp_Pnt& aCurrPole = aPoles(i);
-    if (aPrevPole.SquareDistance(aCurrPole) < aTolSq)
-    {
-      aRepeats++;
-      if (aRepeats >= theMinRepeats)
-        return Standard_True;
-    }
-    else
-    {
-      aRepeats  = 1;
-      aPrevPole = aCurrPole;
-    }
-  }
-
-  // Also check for high multiplicities that create flat sections
-  const TColStd_Array1OfInteger& aMults  = theBSpline->Multiplicities();
-  const Standard_Integer         aDegree = theBSpline->Degree();
-  for (Standard_Integer i = aMults.Lower(); i <= aMults.Upper(); ++i)
-  {
-    // Multiplicity equal to degree creates C0 continuity (potential flat spot)
-    // High internal multiplicity with many poles may cause degenerate behavior
-    if (aMults(i) >= aDegree && i > aMults.Lower() && i < aMults.Upper() && aNbPoles > 20)
-    {
-      return Standard_True;
-    }
-  }
-
-  return Standard_False;
-}
-
-//=================================================================================================
-
 //! Checks if B-spline curve has problematic knot spacing that could cause issues.
 //! Detects cases where knot intervals are extremely small relative to the median
 //! interval or the working parameter range, or where the curve has degenerate sections.
@@ -320,10 +269,6 @@ Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
   try
   {
     OCC_CATCH_SIGNALS
-
-    // Check for degenerate sections (consecutive identical poles)
-    if (hasDegenerateSection(theBSpline))
-      return Standard_True;
 
     const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
     if (aKnots.Length() < 10)
