@@ -72,14 +72,16 @@ namespace
 //! Default number of control points for discretization.
 constexpr Standard_Integer THE_NCONTROL = 23;
 
-//! Utility class for projecting points onto a surface with B-spline pole cache optimization.
-//! For B-spline surfaces, caches pole positions and their UV parameters (Greville abscissae)
-//! to avoid expensive ValueOfUV calls when projected points coincide with surface poles.
+//! Utility class for projecting points onto a surface with B-spline corner cache optimization.
+//! For clamped B-spline surfaces, caches corner pole positions and their exact UV parameters
+//! to avoid expensive ValueOfUV calls when projected points coincide with surface corners.
+//! Only corner poles are cached because B-spline surfaces pass through corners only
+//! (when end multiplicities equal degree + 1).
 class SurfaceProjectorWithCache
 {
 public:
   //! Constructor - initializes the projector with a surface.
-  //! For B-spline surfaces, builds the pole cache automatically.
+  //! For B-spline surfaces, builds the corner cache automatically.
   //! @param[in] theSurf the surface analysis object
   SurfaceProjectorWithCache(const Handle(ShapeAnalysis_Surface)& theSurf)
       : mySurf(theSurf)
@@ -91,35 +93,35 @@ public:
       Handle(Geom_BSplineSurface)::DownCast(theSurf->Surface());
     if (!aBSplineSurf.IsNull())
     {
-      buildPoleCache(aBSplineSurf);
+      buildCornerCache(aBSplineSurf);
     }
   }
 
   //! Projects a 3D point onto the surface.
-  //! First checks B-spline pole cache, then falls back to ValueOfUV.
+  //! First checks B-spline corner cache, then falls back to ValueOfUV.
   //! @param[in] thePoint the 3D point to project
   //! @param[in] theTol the tolerance for projection
-  //! @param[in] theTolSq squared tolerance for pole matching
+  //! @param[in] theTolSq squared tolerance for corner matching
   //! @return the UV coordinates on the surface
   gp_Pnt2d ValueOfUV(const gp_Pnt&       thePoint,
                      const Standard_Real theTol,
                      const Standard_Real theTolSq) const
   {
     gp_Pnt2d aResult;
-    if (findInPoleCache(thePoint, theTolSq, aResult))
+    if (findInCornerCache(thePoint, theTolSq, aResult))
     {
-      // Refine with NextValueOfUV for better accuracy
+      // Corner UV is exact, but refine for numerical stability
       return mySurf->NextValueOfUV(aResult, thePoint, theTol, theTol);
     }
     return mySurf->ValueOfUV(thePoint, theTol);
   }
 
   //! Projects a 3D point onto the surface using a hint from previous projection.
-  //! First checks B-spline pole cache, then falls back to NextValueOfUV.
+  //! First checks B-spline corner cache, then falls back to NextValueOfUV.
   //! @param[in] theHint the UV hint from previous projection
   //! @param[in] thePoint the 3D point to project
   //! @param[in] theTol the tolerance for projection
-  //! @param[in] theTolSq squared tolerance for pole matching
+  //! @param[in] theTolSq squared tolerance for corner matching
   //! @param[in] theStep the step tolerance
   //! @return the UV coordinates on the surface
   gp_Pnt2d NextValueOfUV(const gp_Pnt2d&     theHint,
@@ -129,9 +131,9 @@ public:
                          const Standard_Real theStep) const
   {
     gp_Pnt2d aResult;
-    if (findInPoleCache(thePoint, theTolSq, aResult))
+    if (findInCornerCache(thePoint, theTolSq, aResult))
     {
-      // Refine with NextValueOfUV for better accuracy
+      // Corner UV is exact, but refine for numerical stability
       return mySurf->NextValueOfUV(aResult, thePoint, theTol, theTol);
     }
     return mySurf->NextValueOfUV(theHint, thePoint, theTol, theStep);
@@ -141,77 +143,78 @@ public:
   Standard_Real Gap() const { return mySurf->Gap(); }
 
 private:
-  //! Builds cache from B-spline surface poles.
-  //! For each pole, computes its UV parameter using Greville abscissae.
+  //! Builds cache from B-spline surface corner poles.
+  //! For clamped B-splines (multiplicity = degree + 1 at ends), the surface passes
+  //! exactly through corner poles, so we can use their UV parameters directly.
   //! @param[in] theSurface the B-spline surface
-  void buildPoleCache(const Handle(Geom_BSplineSurface)& theSurface)
+  void buildCornerCache(const Handle(Geom_BSplineSurface)& theSurface)
   {
     const Standard_Integer aNbPolesU = theSurface->NbUPoles();
     const Standard_Integer aNbPolesV = theSurface->NbVPoles();
     const Standard_Integer aDegreeU  = theSurface->UDegree();
     const Standard_Integer aDegreeV  = theSurface->VDegree();
 
-    // Get knots and multiplicities
-    TColStd_Array1OfReal    aUKnots(1, theSurface->NbUKnots());
-    TColStd_Array1OfReal    aVKnots(1, theSurface->NbVKnots());
-    TColStd_Array1OfInteger aUMults(1, theSurface->NbUKnots());
-    TColStd_Array1OfInteger aVMults(1, theSurface->NbVKnots());
-    theSurface->UKnots(aUKnots);
-    theSurface->VKnots(aVKnots);
-    theSurface->UMultiplicities(aUMults);
-    theSurface->VMultiplicities(aVMults);
+    // Check if surface is clamped (end multiplicities = degree + 1)
+    const Standard_Integer aFirstUMult = theSurface->UMultiplicity(1);
+    const Standard_Integer aLastUMult  = theSurface->UMultiplicity(theSurface->NbUKnots());
+    const Standard_Integer aFirstVMult = theSurface->VMultiplicity(1);
+    const Standard_Integer aLastVMult  = theSurface->VMultiplicity(theSurface->NbVKnots());
 
-    // Build flat knot vectors
-    NCollection_Vector<Standard_Real> aFlatU, aFlatV;
-    for (Standard_Integer i = aUKnots.Lower(); i <= aUKnots.Upper(); ++i)
-      for (Standard_Integer j = 0; j < aUMults(i); ++j)
-        aFlatU.Append(aUKnots(i));
-    for (Standard_Integer i = aVKnots.Lower(); i <= aVKnots.Upper(); ++i)
-      for (Standard_Integer j = 0; j < aVMults(i); ++j)
-        aFlatV.Append(aVKnots(i));
+    const Standard_Boolean isUFirstClamped = (aFirstUMult >= aDegreeU + 1);
+    const Standard_Boolean isULastClamped  = (aLastUMult >= aDegreeU + 1);
+    const Standard_Boolean isVFirstClamped = (aFirstVMult >= aDegreeV + 1);
+    const Standard_Boolean isVLastClamped  = (aLastVMult >= aDegreeV + 1);
 
-    // Compute Greville abscissae for U and V directions
-    NCollection_Vector<Standard_Real> aGrevilleU, aGrevilleV;
-    for (Standard_Integer i = 0; i < aNbPolesU; ++i)
+    // Get parameter bounds
+    const Standard_Real aUFirst = theSurface->UKnot(1);
+    const Standard_Real aULast  = theSurface->UKnot(theSurface->NbUKnots());
+    const Standard_Real aVFirst = theSurface->VKnot(1);
+    const Standard_Real aVLast  = theSurface->VKnot(theSurface->NbVKnots());
+
+    // Cache corner poles where surface passes through them
+    // Corner (1, 1) - UFirst, VFirst
+    if (isUFirstClamped && isVFirstClamped)
     {
-      Standard_Real aSum = 0.0;
-      for (Standard_Integer j = 1; j <= aDegreeU; ++j)
-        aSum += aFlatU(i + j);
-      aGrevilleU.Append(aSum / aDegreeU);
-    }
-    for (Standard_Integer i = 0; i < aNbPolesV; ++i)
-    {
-      Standard_Real aSum = 0.0;
-      for (Standard_Integer j = 1; j <= aDegreeV; ++j)
-        aSum += aFlatV(i + j);
-      aGrevilleV.Append(aSum / aDegreeV);
+      myCorners3d.Append(theSurface->Pole(1, 1));
+      myCorners2d.Append(gp_Pnt2d(aUFirst, aVFirst));
     }
 
-    // Build pole cache
-    for (Standard_Integer iU = 1; iU <= aNbPolesU; ++iU)
+    // Corner (NbPolesU, 1) - ULast, VFirst
+    if (isULastClamped && isVFirstClamped)
     {
-      for (Standard_Integer iV = 1; iV <= aNbPolesV; ++iV)
-      {
-        myPoles3d.Append(theSurface->Pole(iU, iV));
-        myPoles2d.Append(gp_Pnt2d(aGrevilleU(iU - 1), aGrevilleV(iV - 1)));
-      }
+      myCorners3d.Append(theSurface->Pole(aNbPolesU, 1));
+      myCorners2d.Append(gp_Pnt2d(aULast, aVFirst));
+    }
+
+    // Corner (1, NbPolesV) - UFirst, VLast
+    if (isUFirstClamped && isVLastClamped)
+    {
+      myCorners3d.Append(theSurface->Pole(1, aNbPolesV));
+      myCorners2d.Append(gp_Pnt2d(aUFirst, aVLast));
+    }
+
+    // Corner (NbPolesU, NbPolesV) - ULast, VLast
+    if (isULastClamped && isVLastClamped)
+    {
+      myCorners3d.Append(theSurface->Pole(aNbPolesU, aNbPolesV));
+      myCorners2d.Append(gp_Pnt2d(aULast, aVLast));
     }
   }
 
-  //! Finds the closest pole to a 3D point within tolerance.
+  //! Finds the closest corner to a 3D point within tolerance.
   //! @param[in] thePoint the 3D point to find
   //! @param[in] theTolSq squared tolerance for matching
   //! @param[out] theUV the UV parameter if found
-  //! @return true if a matching pole was found
-  Standard_Boolean findInPoleCache(const gp_Pnt&       thePoint,
-                                   const Standard_Real theTolSq,
-                                   gp_Pnt2d&           theUV) const
+  //! @return true if a matching corner was found
+  Standard_Boolean findInCornerCache(const gp_Pnt&       thePoint,
+                                     const Standard_Real theTolSq,
+                                     gp_Pnt2d&           theUV) const
   {
-    for (Standard_Integer i = 0; i < myPoles3d.Length(); ++i)
+    for (Standard_Integer i = 0; i < myCorners3d.Length(); ++i)
     {
-      if (myPoles3d(i).SquareDistance(thePoint) < theTolSq)
+      if (myCorners3d(i).SquareDistance(thePoint) < theTolSq)
       {
-        theUV = myPoles2d(i);
+        theUV = myCorners2d(i);
         return Standard_True;
       }
     }
@@ -219,9 +222,9 @@ private:
   }
 
 private:
-  Handle(ShapeAnalysis_Surface) mySurf;    //!< Surface to project on
-  NCollection_Vector<gp_Pnt>    myPoles3d; //!< 3D positions of B-spline surface poles
-  NCollection_Vector<gp_Pnt2d>  myPoles2d; //!< UV parameters of B-spline surface poles
+  Handle(ShapeAnalysis_Surface) mySurf;      //!< Surface to project on
+  NCollection_Vector<gp_Pnt>    myCorners3d; //!< 3D positions of B-spline surface corners
+  NCollection_Vector<gp_Pnt2d>  myCorners2d; //!< UV parameters of B-spline surface corners
 };
 
 //=================================================================================================
