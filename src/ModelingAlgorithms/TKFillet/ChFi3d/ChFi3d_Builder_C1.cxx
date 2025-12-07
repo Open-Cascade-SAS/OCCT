@@ -3097,7 +3097,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           DStr.SetNewSurface(Face[nb - 1], Sfacemoins1);
         }
         //// for periodic 3d curves ////
-        if (cad.IsPeriodic())
+        if (cad.IsPeriodic() && !C2dint1.IsNull())
         {
           gp_Pnt2d                      P2d = BRep_Tool::Parameters(Vtx, Face[0]);
           Geom2dAPI_ProjectPointOnCurve Projector(P2d, C2dint1);
