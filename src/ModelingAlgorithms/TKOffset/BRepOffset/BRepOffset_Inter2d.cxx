@@ -702,13 +702,17 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
   //
   if (E1.IsSame(E2))
     return;
+  if (E1.IsNull() || E2.IsNull())
+    return;
 
   Standard_Real    f[3], l[3];
   Standard_Real    TolDub = 1.e-7, TolLL = 0.0;
   Standard_Integer i;
 
-  // BRep_Tool::Range(E1, f[1], l[1]);
-  // BRep_Tool::Range(E2, f[2], l[2]);
+  Handle(Geom2d_Curve) pcurve1 = BRep_Tool::CurveOnSurface(E1, F, f[1], l[1]);
+  Handle(Geom2d_Curve) pcurve2 = BRep_Tool::CurveOnSurface(E2, F, f[2], l[2]);
+  if (pcurve1.IsNull() || pcurve2.IsNull())
+    return;
 
   BRepAdaptor_Curve CE1(E1, F);
   BRepAdaptor_Curve CE2(E2, F);
@@ -744,10 +748,8 @@ static void RefEdgeInter(const TopoDS_Face&                         F,
     }
   }
   //
-  Handle(Geom2d_Curve) pcurve1 = BRep_Tool::CurveOnSurface(E1, F, f[1], l[1]);
-  Handle(Geom2d_Curve) pcurve2 = BRep_Tool::CurveOnSurface(E2, F, f[2], l[2]);
-  Geom2dAdaptor_Curve  GAC1(pcurve1, f[1], l[1]);
-  Geom2dAdaptor_Curve  GAC2(pcurve2, f[2], l[2]);
+  Geom2dAdaptor_Curve GAC1(pcurve1, f[1], l[1]);
+  Geom2dAdaptor_Curve GAC2(pcurve2, f[2], l[2]);
   if ((GAC1.GetType() == GeomAbs_Line) && (GAC2.GetType() == GeomAbs_Line))
   {
     // Just quickly check if lines coincide

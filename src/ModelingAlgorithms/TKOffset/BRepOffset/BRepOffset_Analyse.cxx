@@ -152,7 +152,7 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
     // so, if aCurrOrder > C0 it means that faces are tangent along whole edge.
     return aMixedCont;
   }
-  // But we caqnnot trust result, if it is C0. because this value set by default.
+  // But we cannot trust result, if it is C0, because this value is set by default.
   Standard_Real TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
 
   Standard_Real aFirst;
@@ -217,45 +217,15 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
 
   Standard_Integer aNbSamples = 23;
 
-  // Computation of the continuity.
-  Standard_Real    aPar;
-  Standard_Real    aDelta = (aLast - aFirst) / (aNbSamples - 1);
-  Standard_Integer i, istart = 1;
-  Standard_Boolean isG1 = Standard_False;
+  // Check for mixed concavity: convex in some regions, concave in others.
+  const Standard_Real aDelta      = (aLast - aFirst) / (aNbSamples - 1);
+  bool                aHasConvex  = false;
+  bool                aHasConcave = false;
+  Standard_Integer    aNbValid    = 0;
 
-  for (i = 1, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta)
+  for (Standard_Integer i = 1; i <= aNbSamples; i++)
   {
-    if (i == aNbSamples)
-      aPar = aLast;
-
-    LocalAnalysis_SurfaceContinuity aCont(aC2d1,
-                                          aC2d2,
-                                          aPar,
-                                          aSurf1,
-                                          aSurf2,
-                                          GeomAbs_G1,
-                                          0.001,
-                                          TolC0,
-                                          theAngTol,
-                                          theAngTol,
-                                          theAngTol);
-    if (aCont.IsDone())
-    {
-      istart = i + 1;
-      isG1   = aCont.IsG1();
-      break;
-    }
-  }
-
-  if (istart > aNbSamples / 2)
-  {
-    return aMixedCont;
-  }
-
-  for (i = istart, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta)
-  {
-    if (i == aNbSamples)
-      aPar = aLast;
+    const Standard_Real aPar = (i == aNbSamples) ? aLast : aFirst + (i - 1) * aDelta;
 
     LocalAnalysis_SurfaceContinuity aCont(aC2d1,
                                           aC2d2,
@@ -273,16 +243,23 @@ Standard_Boolean CheckMixedContinuity(const TopoDS_Edge&  theEdge,
       continue;
     }
 
-    if (aCont.IsG1() == isG1)
+    aNbValid++;
+
+    if (!aCont.IsG1() && (!aHasConvex || !aHasConcave))
     {
-      continue;
-    }
-    else
-    {
-      aMixedCont = Standard_True;
-      break;
+      const Standard_Real anAngle = aCont.C0Value();
+      aHasConvex                  = aHasConvex || (anAngle > M_PI_2 + theAngTol);
+      aHasConcave                 = aHasConcave || (anAngle < M_PI_2 - theAngTol);
     }
   }
+
+  if (aNbValid < aNbSamples / 2)
+  {
+    return aMixedCont;
+  }
+
+  // Mixed connectivity: both convex and concave regions exist.
+  aMixedCont = aHasConvex && aHasConcave;
 
   return aMixedCont;
 }

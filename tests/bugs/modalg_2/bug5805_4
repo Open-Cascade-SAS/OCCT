@@ -1,5 +1,3 @@
-puts "TODO OCC25925 ALL: ERROR. Mixed connectivity of faces."
-
 puts "============"
 puts "OCC5805"
 puts "============"
