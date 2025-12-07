@@ -72,6 +72,158 @@ namespace
 //! Default number of control points for discretization.
 constexpr Standard_Integer THE_NCONTROL = 23;
 
+//! Utility class for projecting points onto a surface with B-spline pole cache optimization.
+//! For B-spline surfaces, caches pole positions and their UV parameters (Greville abscissae)
+//! to avoid expensive ValueOfUV calls when projected points coincide with surface poles.
+class SurfaceProjectorWithCache
+{
+public:
+  //! Constructor - initializes the projector with a surface.
+  //! For B-spline surfaces, builds the pole cache automatically.
+  //! @param[in] theSurf the surface analysis object
+  SurfaceProjectorWithCache(const Handle(ShapeAnalysis_Surface)& theSurf)
+      : mySurf(theSurf)
+  {
+    if (theSurf.IsNull())
+      return;
+
+    Handle(Geom_BSplineSurface) aBSplineSurf =
+      Handle(Geom_BSplineSurface)::DownCast(theSurf->Surface());
+    if (!aBSplineSurf.IsNull())
+    {
+      buildPoleCache(aBSplineSurf);
+    }
+  }
+
+  //! Projects a 3D point onto the surface.
+  //! First checks B-spline pole cache, then falls back to ValueOfUV.
+  //! @param[in] thePoint the 3D point to project
+  //! @param[in] theTol the tolerance for projection
+  //! @param[in] theTolSq squared tolerance for pole matching
+  //! @return the UV coordinates on the surface
+  gp_Pnt2d ValueOfUV(const gp_Pnt&       thePoint,
+                     const Standard_Real theTol,
+                     const Standard_Real theTolSq) const
+  {
+    gp_Pnt2d aResult;
+    if (findInPoleCache(thePoint, theTolSq, aResult))
+    {
+      // Refine with NextValueOfUV for better accuracy
+      return mySurf->NextValueOfUV(aResult, thePoint, theTol, theTol);
+    }
+    return mySurf->ValueOfUV(thePoint, theTol);
+  }
+
+  //! Projects a 3D point onto the surface using a hint from previous projection.
+  //! First checks B-spline pole cache, then falls back to NextValueOfUV.
+  //! @param[in] theHint the UV hint from previous projection
+  //! @param[in] thePoint the 3D point to project
+  //! @param[in] theTol the tolerance for projection
+  //! @param[in] theTolSq squared tolerance for pole matching
+  //! @param[in] theStep the step tolerance
+  //! @return the UV coordinates on the surface
+  gp_Pnt2d NextValueOfUV(const gp_Pnt2d&     theHint,
+                         const gp_Pnt&       thePoint,
+                         const Standard_Real theTol,
+                         const Standard_Real theTolSq,
+                         const Standard_Real theStep) const
+  {
+    gp_Pnt2d aResult;
+    if (findInPoleCache(thePoint, theTolSq, aResult))
+    {
+      // Refine with NextValueOfUV for better accuracy
+      return mySurf->NextValueOfUV(aResult, thePoint, theTol, theTol);
+    }
+    return mySurf->NextValueOfUV(theHint, thePoint, theTol, theStep);
+  }
+
+  //! Returns the gap from the last projection
+  Standard_Real Gap() const { return mySurf->Gap(); }
+
+private:
+  //! Builds cache from B-spline surface poles.
+  //! For each pole, computes its UV parameter using Greville abscissae.
+  //! @param[in] theSurface the B-spline surface
+  void buildPoleCache(const Handle(Geom_BSplineSurface)& theSurface)
+  {
+    const Standard_Integer aNbPolesU = theSurface->NbUPoles();
+    const Standard_Integer aNbPolesV = theSurface->NbVPoles();
+    const Standard_Integer aDegreeU  = theSurface->UDegree();
+    const Standard_Integer aDegreeV  = theSurface->VDegree();
+
+    // Get knots and multiplicities
+    TColStd_Array1OfReal    aUKnots(1, theSurface->NbUKnots());
+    TColStd_Array1OfReal    aVKnots(1, theSurface->NbVKnots());
+    TColStd_Array1OfInteger aUMults(1, theSurface->NbUKnots());
+    TColStd_Array1OfInteger aVMults(1, theSurface->NbVKnots());
+    theSurface->UKnots(aUKnots);
+    theSurface->VKnots(aVKnots);
+    theSurface->UMultiplicities(aUMults);
+    theSurface->VMultiplicities(aVMults);
+
+    // Build flat knot vectors
+    NCollection_Vector<Standard_Real> aFlatU, aFlatV;
+    for (Standard_Integer i = aUKnots.Lower(); i <= aUKnots.Upper(); ++i)
+      for (Standard_Integer j = 0; j < aUMults(i); ++j)
+        aFlatU.Append(aUKnots(i));
+    for (Standard_Integer i = aVKnots.Lower(); i <= aVKnots.Upper(); ++i)
+      for (Standard_Integer j = 0; j < aVMults(i); ++j)
+        aFlatV.Append(aVKnots(i));
+
+    // Compute Greville abscissae for U and V directions
+    NCollection_Vector<Standard_Real> aGrevilleU, aGrevilleV;
+    for (Standard_Integer i = 0; i < aNbPolesU; ++i)
+    {
+      Standard_Real aSum = 0.0;
+      for (Standard_Integer j = 1; j <= aDegreeU; ++j)
+        aSum += aFlatU(i + j);
+      aGrevilleU.Append(aSum / aDegreeU);
+    }
+    for (Standard_Integer i = 0; i < aNbPolesV; ++i)
+    {
+      Standard_Real aSum = 0.0;
+      for (Standard_Integer j = 1; j <= aDegreeV; ++j)
+        aSum += aFlatV(i + j);
+      aGrevilleV.Append(aSum / aDegreeV);
+    }
+
+    // Build pole cache
+    for (Standard_Integer iU = 1; iU <= aNbPolesU; ++iU)
+    {
+      for (Standard_Integer iV = 1; iV <= aNbPolesV; ++iV)
+      {
+        myPoles3d.Append(theSurface->Pole(iU, iV));
+        myPoles2d.Append(gp_Pnt2d(aGrevilleU(iU - 1), aGrevilleV(iV - 1)));
+      }
+    }
+  }
+
+  //! Finds the closest pole to a 3D point within tolerance.
+  //! @param[in] thePoint the 3D point to find
+  //! @param[in] theTolSq squared tolerance for matching
+  //! @param[out] theUV the UV parameter if found
+  //! @return true if a matching pole was found
+  Standard_Boolean findInPoleCache(const gp_Pnt&       thePoint,
+                                   const Standard_Real theTolSq,
+                                   gp_Pnt2d&           theUV) const
+  {
+    for (Standard_Integer i = 0; i < myPoles3d.Length(); ++i)
+    {
+      if (myPoles3d(i).SquareDistance(thePoint) < theTolSq)
+      {
+        theUV = myPoles2d(i);
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+
+private:
+  Handle(ShapeAnalysis_Surface) mySurf;    //!< Surface to project on
+  NCollection_Vector<gp_Pnt>    myPoles3d; //!< 3D positions of B-spline surface poles
+  NCollection_Vector<gp_Pnt2d>  myPoles2d; //!< UV parameters of B-spline surface poles
+};
+
 //=================================================================================================
 
 //! Extracts B-spline curve from a possibly nested trimmed curve.
@@ -898,29 +1050,39 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
   Standard_Integer aSavedPointNum = -1;
   gp_Pnt2d         aSavedPoint;
 
-  // Project first and last points
-  for (; i < 4; i += 3)
-  {
-    Standard_Integer       j        = 0;
+  // Create projector with B-spline surface pole cache optimization
+  SurfaceProjectorWithCache aProjector(mySurf);
+
+  // Helper lambda to project a point with cache lookup
+  auto projectPoint =
+    [&](const gp_Pnt& thePoint, gp_Pnt2d& theResult, const Standard_Integer theIndex) -> void {
+    // Try existing endpoint cache first
     const Standard_Integer aNbCache = myCache.Length();
-    for (; j < aNbCache; ++j)
+    for (Standard_Integer j = 0; j < aNbCache; ++j)
     {
       const CachePoint& aCachePnt = myCache(j);
-      if (aCachePnt.first.SquareDistance(aP[i]) < aTol2)
+      if (aCachePnt.first.SquareDistance(thePoint) < aTol2)
       {
-        aP2d[i]        = mySurf->NextValueOfUV(aCachePnt.second, aP[i], aTolWorking, aTolWorking);
-        aSavedPointNum = i;
+        theResult =
+          aProjector.NextValueOfUV(aCachePnt.second, thePoint, aTolWorking, aTol2, aTolWorking);
+        aSavedPointNum = theIndex;
         aSavedPoint    = aCachePnt.second;
-        if (i == 0)
+        if (theIndex == 0)
           theIsFromCache = Standard_True;
-        break;
+        return;
       }
     }
 
-    if (j >= aNbCache)
-      aP2d[i] = mySurf->ValueOfUV(aP[i], aTolWorking);
+    // Fall back to full projection (with B-spline pole cache optimization inside)
+    theResult = aProjector.ValueOfUV(thePoint, aTolWorking, aTol2);
+  };
 
-    const Standard_Real aDist    = mySurf->Gap();
+  // Project first and last points
+  for (; i < 4; i += 3)
+  {
+    projectPoint(aP[i], aP2d[i], i);
+
+    const Standard_Real aDist    = aProjector.Gap();
     const Standard_Real aCurDist = aDist * aDist;
     if (aTol2 < aCurDist)
       aTol2 = aCurDist;
@@ -931,24 +1093,9 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
     // Compute second and last but one c2d points
     for (i = 1; i < 3; i++)
     {
-      Standard_Integer       j        = 0;
-      const Standard_Integer aNbCache = myCache.Length();
-      for (; j < aNbCache; ++j)
-      {
-        const CachePoint& aCachePnt = myCache(j);
-        if (aCachePnt.first.SquareDistance(aP[i]) < aTol2)
-        {
-          aP2d[i]        = mySurf->NextValueOfUV(aCachePnt.second, aP[i], aTolWorking, aTolWorking);
-          aSavedPointNum = i;
-          aSavedPoint    = aCachePnt.second;
-          break;
-        }
-      }
+      projectPoint(aP[i], aP2d[i], i);
 
-      if (j >= aNbCache)
-        aP2d[i] = mySurf->ValueOfUV(aP[i], aTolWorking);
-
-      const Standard_Real aDist    = mySurf->Gap();
+      const Standard_Real aDist    = aProjector.Gap();
       const Standard_Real aCurDist = aDist * aDist;
       if (aTol2 < aCurDist)
         aTol2 = aCurDist;
