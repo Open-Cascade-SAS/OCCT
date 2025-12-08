@@ -7,6 +7,8 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
   Bnd_OBB_Test.cxx
+  BSplCLib_GridEvaluator_Test.cxx
+  BSplSLib_GridEvaluator_Test.cxx
   BVH_BinnedBuilder_Test.cxx
   BVH_Box_Test.cxx
   BVH_BuildQueue_Test.cxx
