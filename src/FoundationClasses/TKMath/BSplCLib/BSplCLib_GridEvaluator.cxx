@@ -474,3 +474,25 @@ bool BSplCLib_GridEvaluator::D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Ve
   myCache->D2(aParam.Param, theP, theD1, theD2);
   return true;
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> BSplCLib_GridEvaluator::EvaluateGrid() const
+{
+  if (!myIsInitialized || myParams.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  const int                  aNbParams = myParams.Length();
+  NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
+
+  for (int i = 1; i <= aNbParams; ++i)
+  {
+    const ParamWithSpan& aParam = myParams.Value(i);
+    ensureCacheValid(aParam.SpanIndex, aParam.Param);
+    myCache->D0(aParam.Param, aPoints.ChangeValue(i));
+  }
+
+  return aPoints;
+}

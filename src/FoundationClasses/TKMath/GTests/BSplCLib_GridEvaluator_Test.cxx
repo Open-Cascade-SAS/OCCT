@@ -872,3 +872,69 @@ TEST(BSplCLib_GridEvaluatorTest, MinimumSamplesConstraint)
   anEval.PrepareParamsFromKnots(0.0, 1.0, 50);
   EXPECT_GE(anEval.NbParams(), 50);
 }
+
+// Verifies EvaluateGrid returns array with correct size and values.
+TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+  anEval.PrepareParams(0.0, 1.0, 10, true);
+
+  // Get all points at once
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  // Check array size matches number of parameters
+  EXPECT_EQ(aPoints.Length(), anEval.NbParams());
+  EXPECT_EQ(aPoints.Lower(), 1);
+  EXPECT_EQ(aPoints.Upper(), 10);
+
+  // Verify values match individual evaluation
+  for (int i = 1; i <= anEval.NbParams(); ++i)
+  {
+    auto aPtSingle = anEval.Value(i);
+    ASSERT_TRUE(aPtSingle.has_value());
+
+    const gp_Pnt& aPtGrid = aPoints.Value(i);
+    EXPECT_NEAR(aPtGrid.X(), aPtSingle->X(), Precision::Confusion());
+    EXPECT_NEAR(aPtGrid.Y(), aPtSingle->Y(), Precision::Confusion());
+    EXPECT_NEAR(aPtGrid.Z(), aPtSingle->Z(), Precision::Confusion());
+  }
+
+  // First and last should be at curve endpoints
+  EXPECT_NEAR(aPoints.Value(1).X(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aPoints.Value(10).X(), 4.0, Precision::Confusion());
+}
+
+// Verifies EvaluateGrid returns empty array when not initialized.
+TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_NotInitialized)
+{
+  BSplCLib_GridEvaluator anEval;
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  EXPECT_TRUE(aPoints.IsEmpty());
+}
+
+// Verifies EvaluateGrid returns empty array when no parameters prepared.
+TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_NoParams)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+  // Note: PrepareParams not called
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  EXPECT_TRUE(aPoints.IsEmpty());
+}

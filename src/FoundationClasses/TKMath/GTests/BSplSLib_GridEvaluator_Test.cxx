@@ -1212,3 +1212,96 @@ TEST(BSplSLib_GridEvaluatorTest, SurfaceNormalFromDerivatives)
     }
   }
 }
+
+// Verifies EvaluateGrid returns 2D array with correct size and values.
+TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+  anEval.PrepareUParams(0.0, 1.0, 5, true);
+  anEval.PrepareVParams(0.0, 1.0, 5, true);
+
+  // Get all points at once
+  NCollection_Array2<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  // Check array dimensions match number of parameters
+  EXPECT_EQ(aPoints.ColLength(), anEval.NbUParams());
+  EXPECT_EQ(aPoints.RowLength(), anEval.NbVParams());
+  EXPECT_EQ(aPoints.LowerRow(), 1);
+  EXPECT_EQ(aPoints.LowerCol(), 1);
+  EXPECT_EQ(aPoints.UpperRow(), 5);
+  EXPECT_EQ(aPoints.UpperCol(), 5);
+
+  // Verify values match individual evaluation
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      auto aPtSingle = anEval.Value(iu, iv);
+      ASSERT_TRUE(aPtSingle.has_value());
+
+      const gp_Pnt& aPtGrid = aPoints.Value(iu, iv);
+      EXPECT_NEAR(aPtGrid.X(), aPtSingle->X(), Precision::Confusion());
+      EXPECT_NEAR(aPtGrid.Y(), aPtSingle->Y(), Precision::Confusion());
+      EXPECT_NEAR(aPtGrid.Z(), aPtSingle->Z(), Precision::Confusion());
+    }
+  }
+
+  // Corner points should be at surface corners
+  EXPECT_NEAR(aPoints.Value(1, 1).X(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aPoints.Value(1, 1).Y(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aPoints.Value(5, 5).X(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aPoints.Value(5, 5).Y(), 1.0, Precision::Confusion());
+}
+
+// Verifies EvaluateGrid returns empty array when not initialized.
+TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_NotInitialized)
+{
+  BSplSLib_GridEvaluator anEval;
+
+  NCollection_Array2<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  EXPECT_TRUE(aPoints.IsEmpty());
+}
+
+// Verifies EvaluateGrid returns empty array when no parameters prepared.
+TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_NoParams)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+  // Note: PrepareUParams/PrepareVParams not called
+
+  NCollection_Array2<gp_Pnt> aPoints = anEval.EvaluateGrid();
+
+  EXPECT_TRUE(aPoints.IsEmpty());
+}

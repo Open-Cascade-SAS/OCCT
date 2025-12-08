@@ -201,6 +201,11 @@ public:
   //! @return true if evaluation succeeded, false if index is invalid
   Standard_EXPORT bool D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const;
 
+  //! Evaluate all grid points and return as array.
+  //! @return array of evaluated points (1-based indexing, size = NbParams()),
+  //!         or empty array if evaluation failed
+  Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
+
 private:
   //! Compute parameters aligned with knots and their span indices (single-pass).
   void computeKnotAlignedParams(double theParamMin,

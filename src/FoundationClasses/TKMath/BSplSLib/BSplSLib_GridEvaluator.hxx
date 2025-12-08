@@ -16,6 +16,7 @@
 
 #include <BSplSLib_Cache.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -285,6 +286,12 @@ public:
                           gp_Vec& theDVV,
                           gp_Vec& theDUV) const;
 
+  //! Evaluate all grid points and return as 2D array.
+  //! Array indexing: result(iU, iV) where iU in [1..NbUParams], iV in [1..NbVParams].
+  //! @return 2D array of evaluated points (1-based indexing),
+  //!         or empty array if evaluation failed
+  Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
+
 private:
   //! Compute parameters aligned with knots and their span indices (single-pass).
   //! @param theFlatKnots  handle to flat knot sequence
@@ -346,7 +353,10 @@ private:
   //! @param theVSpanIndex V span index to validate cache against
   //! @param theUParam U parameter value within the span (used for cache rebuild)
   //! @param theVParam V parameter value within the span (used for cache rebuild)
-  void ensureCacheValid(int theUSpanIndex, int theVSpanIndex, double theUParam, double theVParam) const;
+  void ensureCacheValid(int    theUSpanIndex,
+                        int    theVSpanIndex,
+                        double theUParam,
+                        double theVParam) const;
 
 private:
   int                           myDegreeU;

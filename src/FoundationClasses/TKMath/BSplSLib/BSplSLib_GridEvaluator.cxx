@@ -520,7 +520,8 @@ void BSplSLib_GridEvaluator::ensureCacheValid(int    theUSpanIndex,
                                               double theUParam,
                                               double theVParam) const
 {
-  if (myCachedUSpanIndex == theUSpanIndex && myCachedVSpanIndex == theVSpanIndex && !myCache.IsNull())
+  if (myCachedUSpanIndex == theUSpanIndex && myCachedVSpanIndex == theVSpanIndex
+      && !myCache.IsNull())
   {
     return;
   }
@@ -620,4 +621,31 @@ bool BSplSLib_GridEvaluator::D2(int     theIU,
   ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
   myCache->D2(aUParam.Param, aVParam.Param, theP, theDU, theDV, theDUU, theDVV, theDUV);
   return true;
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Pnt> BSplSLib_GridEvaluator::EvaluateGrid() const
+{
+  if (!myIsInitialized || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<gp_Pnt>();
+  }
+
+  const int                  aNbU = myUParams.Length();
+  const int                  aNbV = myVParams.Length();
+  NCollection_Array2<gp_Pnt> aPoints(1, aNbU, 1, aNbV);
+
+  for (int iu = 1; iu <= aNbU; ++iu)
+  {
+    const ParamWithSpan& aUParam = myUParams.Value(iu);
+    for (int iv = 1; iv <= aNbV; ++iv)
+    {
+      const ParamWithSpan& aVParam = myVParams.Value(iv);
+      ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
+      myCache->D0(aUParam.Param, aVParam.Param, aPoints.ChangeValue(iu, iv));
+    }
+  }
+
+  return aPoints;
 }
