@@ -64,10 +64,10 @@ void validateBSplineDegree([[maybe_unused]] int theUDegree, [[maybe_unused]] int
 //=======================================================================
 struct BSplSLib_DataContainer
 {
-  double poles[4 * (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1)]{};
-  double knots1[2 * THE_MAX_DEGREE]{};
-  double knots2[2 * THE_MAX_DEGREE]{};
-  double ders[48]{};
+  double poles[4 * (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1)];
+  double knots1[2 * THE_MAX_DEGREE];
+  double knots2[2 * THE_MAX_DEGREE];
+  double ders[48];
 };
 } // namespace
 

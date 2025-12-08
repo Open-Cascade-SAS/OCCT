@@ -262,9 +262,9 @@ inline void validateBSplineDegree([[maybe_unused]] int theDegree)
 template <int Dimension>
 struct BSplCLib_DataContainer_T
 {
-  double poles[(THE_MAX_DEGREE + 1) * (Dimension + 1)]{};
-  double knots[2 * THE_MAX_DEGREE]{};
-  double ders[Dimension * 4]{};
+  double poles[(THE_MAX_DEGREE + 1) * (Dimension + 1)];
+  double knots[2 * THE_MAX_DEGREE];
+  double ders[Dimension * 4];
 };
 
 // Reverses the order of elements in the array using std::reverse.
