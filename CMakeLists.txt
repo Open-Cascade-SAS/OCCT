@@ -1402,3 +1402,14 @@ endforeach()
 OCCT_UPDATE_TARGET_FILE ()
 
 message (STATUS "Info: \(${CURRENT_TIME}\) OCCT configuration files prepared")
+
+
+# 添加子目录
+add_subdirectory(lib/googletest)
+# Organize gtest targets in VS Solution
+set_target_properties(gtest gtest_main gmock gmock_main PROPERTIES FOLDER "Tests/3rdparty")
+
+add_subdirectory(gtest)
+
+
+
