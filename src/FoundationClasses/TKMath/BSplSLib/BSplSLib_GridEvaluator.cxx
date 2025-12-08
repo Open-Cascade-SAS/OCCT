@@ -29,7 +29,9 @@ BSplSLib_GridEvaluator::BSplSLib_GridEvaluator()
       myVRational(false),
       myUPeriodic(false),
       myVPeriodic(false),
-      myIsInitialized(false)
+      myIsInitialized(false),
+      myCachedUSpanIndex(-1),
+      myCachedVSpanIndex(-1)
 {
 }
 
@@ -109,6 +111,11 @@ bool BSplSLib_GridEvaluator::Initialize(int                                  the
   myVPeriodic     = theVPeriodic;
   myIsInitialized = true;
 
+  // Reset cache
+  myCache.Nullify();
+  myCachedUSpanIndex = -1;
+  myCachedVSpanIndex = -1;
+
   return true;
 }
 
@@ -180,6 +187,11 @@ bool BSplSLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray2OfPnt)&
   myUPeriodic     = false;
   myVPeriodic     = false;
   myIsInitialized = true;
+
+  // Reset cache
+  myCache.Nullify();
+  myCachedUSpanIndex = -1;
+  myCachedVSpanIndex = -1;
 
   return true;
 }
@@ -503,6 +515,41 @@ int BSplSLib_GridEvaluator::locateSpanWithHint(const Handle(TColStd_HArray1OfRea
 
 //==================================================================================================
 
+void BSplSLib_GridEvaluator::ensureCacheValid(int    theUSpanIndex,
+                                              int    theVSpanIndex,
+                                              double theUParam,
+                                              double theVParam) const
+{
+  if (myCachedUSpanIndex == theUSpanIndex && myCachedVSpanIndex == theVSpanIndex && !myCache.IsNull())
+  {
+    return;
+  }
+
+  // Create cache if needed
+  if (myCache.IsNull())
+  {
+    myCache = new BSplSLib_Cache(myDegreeU,
+                                 myUPeriodic,
+                                 myUFlatKnots->Array1(),
+                                 myDegreeV,
+                                 myVPeriodic,
+                                 myVFlatKnots->Array1(),
+                                 myWeights.IsNull() ? nullptr : &myWeights->Array2());
+  }
+
+  // Build cache for the parameters (constructor doesn't build cache data)
+  myCache->BuildCache(theUParam,
+                      theVParam,
+                      myUFlatKnots->Array1(),
+                      myVFlatKnots->Array1(),
+                      myPoles->Array2(),
+                      myWeights.IsNull() ? nullptr : &myWeights->Array2());
+  myCachedUSpanIndex = theUSpanIndex;
+  myCachedVSpanIndex = theVSpanIndex;
+}
+
+//==================================================================================================
+
 std::optional<gp_Pnt> BSplSLib_GridEvaluator::Value(int theIU, int theIV) const
 {
   gp_Pnt aResult;
@@ -525,23 +572,8 @@ bool BSplSLib_GridEvaluator::D0(int theIU, int theIV, gp_Pnt& theP) const
   const ParamWithSpan& aUParam = myUParams.Value(theIU);
   const ParamWithSpan& aVParam = myVParams.Value(theIV);
 
-  BSplSLib::D0(aUParam.Param,
-               aVParam.Param,
-               aUParam.SpanIndex,
-               aVParam.SpanIndex,
-               myPoles->Array2(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array2(),
-               myUFlatKnots->Array1(),
-               myVFlatKnots->Array1(),
-               nullptr,
-               nullptr,
-               myDegreeU,
-               myDegreeV,
-               myURational,
-               myVRational,
-               myUPeriodic,
-               myVPeriodic,
-               theP);
+  ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
+  myCache->D0(aUParam.Param, aVParam.Param, theP);
   return true;
 }
 
@@ -561,25 +593,8 @@ bool BSplSLib_GridEvaluator::D1(int     theIU,
   const ParamWithSpan& aUParam = myUParams.Value(theIU);
   const ParamWithSpan& aVParam = myVParams.Value(theIV);
 
-  BSplSLib::D1(aUParam.Param,
-               aVParam.Param,
-               aUParam.SpanIndex,
-               aVParam.SpanIndex,
-               myPoles->Array2(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array2(),
-               myUFlatKnots->Array1(),
-               myVFlatKnots->Array1(),
-               nullptr,
-               nullptr,
-               myDegreeU,
-               myDegreeV,
-               myURational,
-               myVRational,
-               myUPeriodic,
-               myVPeriodic,
-               theP,
-               theDU,
-               theDV);
+  ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
+  myCache->D1(aUParam.Param, aVParam.Param, theP, theDU, theDV);
   return true;
 }
 
@@ -602,27 +617,7 @@ bool BSplSLib_GridEvaluator::D2(int     theIU,
   const ParamWithSpan& aUParam = myUParams.Value(theIU);
   const ParamWithSpan& aVParam = myVParams.Value(theIV);
 
-  BSplSLib::D2(aUParam.Param,
-               aVParam.Param,
-               aUParam.SpanIndex,
-               aVParam.SpanIndex,
-               myPoles->Array2(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array2(),
-               myUFlatKnots->Array1(),
-               myVFlatKnots->Array1(),
-               nullptr,
-               nullptr,
-               myDegreeU,
-               myDegreeV,
-               myURational,
-               myVRational,
-               myUPeriodic,
-               myVPeriodic,
-               theP,
-               theDU,
-               theDV,
-               theDUU,
-               theDVV,
-               theDUV);
+  ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
+  myCache->D2(aUParam.Param, aVParam.Param, theP, theDU, theDV, theDUU, theDVV, theDUV);
   return true;
 }

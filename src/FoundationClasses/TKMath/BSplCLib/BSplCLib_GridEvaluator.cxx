@@ -25,7 +25,8 @@ BSplCLib_GridEvaluator::BSplCLib_GridEvaluator()
     : myDegree(0),
       myRational(false),
       myPeriodic(false),
-      myIsInitialized(false)
+      myIsInitialized(false),
+      myCachedSpanIndex(-1)
 {
 }
 
@@ -89,6 +90,10 @@ bool BSplCLib_GridEvaluator::Initialize(int                                  the
   myPeriodic      = thePeriodic;
   myIsInitialized = true;
 
+  // Reset cache
+  myCache.Nullify();
+  myCachedSpanIndex = -1;
+
   return true;
 }
 
@@ -139,6 +144,10 @@ bool BSplCLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray1OfPnt)&
   myRational      = !theWeights.IsNull();
   myPeriodic      = false;
   myIsInitialized = true;
+
+  // Reset cache
+  myCache.Nullify();
+  myCachedSpanIndex = -1;
 
   return true;
 }
@@ -381,6 +390,33 @@ int BSplCLib_GridEvaluator::locateSpanWithHint(double theParam, int theHint) con
 
 //==================================================================================================
 
+void BSplCLib_GridEvaluator::ensureCacheValid(int theSpanIndex, double theParam) const
+{
+  if (myCachedSpanIndex == theSpanIndex && !myCache.IsNull())
+  {
+    return;
+  }
+
+  // Create cache if needed
+  if (myCache.IsNull())
+  {
+    myCache = new BSplCLib_Cache(myDegree,
+                                 myPeriodic,
+                                 myFlatKnots->Array1(),
+                                 myPoles->Array1(),
+                                 myWeights.IsNull() ? nullptr : &myWeights->Array1());
+  }
+
+  // Build cache for the parameter (constructor doesn't build cache data)
+  myCache->BuildCache(theParam,
+                      myFlatKnots->Array1(),
+                      myPoles->Array1(),
+                      myWeights.IsNull() ? nullptr : &myWeights->Array1());
+  myCachedSpanIndex = theSpanIndex;
+}
+
+//==================================================================================================
+
 std::optional<gp_Pnt> BSplCLib_GridEvaluator::Value(int theIndex) const
 {
   gp_Pnt aResult;
@@ -402,15 +438,8 @@ bool BSplCLib_GridEvaluator::D0(int theIndex, gp_Pnt& theP) const
 
   const ParamWithSpan& aParam = myParams.Value(theIndex);
 
-  BSplCLib::D0(aParam.Param,
-               aParam.SpanIndex,
-               myDegree,
-               myPeriodic,
-               myPoles->Array1(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
-               myFlatKnots->Array1(),
-               nullptr,
-               theP);
+  ensureCacheValid(aParam.SpanIndex, aParam.Param);
+  myCache->D0(aParam.Param, theP);
   return true;
 }
 
@@ -425,16 +454,8 @@ bool BSplCLib_GridEvaluator::D1(int theIndex, gp_Pnt& theP, gp_Vec& theD1) const
 
   const ParamWithSpan& aParam = myParams.Value(theIndex);
 
-  BSplCLib::D1(aParam.Param,
-               aParam.SpanIndex,
-               myDegree,
-               myPeriodic,
-               myPoles->Array1(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
-               myFlatKnots->Array1(),
-               nullptr,
-               theP,
-               theD1);
+  ensureCacheValid(aParam.SpanIndex, aParam.Param);
+  myCache->D1(aParam.Param, theP, theD1);
   return true;
 }
 
@@ -449,16 +470,7 @@ bool BSplCLib_GridEvaluator::D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Ve
 
   const ParamWithSpan& aParam = myParams.Value(theIndex);
 
-  BSplCLib::D2(aParam.Param,
-               aParam.SpanIndex,
-               myDegree,
-               myPeriodic,
-               myPoles->Array1(),
-               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
-               myFlatKnots->Array1(),
-               nullptr,
-               theP,
-               theD1,
-               theD2);
+  ensureCacheValid(aParam.SpanIndex, aParam.Param);
+  myCache->D2(aParam.Param, theP, theD1, theD2);
   return true;
 }

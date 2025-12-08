@@ -14,6 +14,7 @@
 #ifndef _BSplCLib_GridEvaluator_HeaderFile
 #define _BSplCLib_GridEvaluator_HeaderFile
 
+#include <BSplCLib_Cache.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -29,8 +30,9 @@ class gp_Vec;
 //! @brief Efficient grid evaluator for B-spline and Bezier curves.
 //!
 //! Optimizes evaluation of multiple points on a B-spline curve by
-//! pre-computing span indices for parameter arrays. This eliminates
-//! the binary search (LocateParameter) overhead when evaluating grid points.
+//! pre-computing span indices for parameter arrays and reusing a single
+//! BSplCLib_Cache instance. The cache is rebuilt only when crossing span
+//! boundaries, maximizing performance for sequential grid evaluation.
 //!
 //! The class is designed for scenarios where many points need to be evaluated
 //! on a B-spline curve, such as:
@@ -221,6 +223,11 @@ private:
   //! Check if index is valid for parameter access.
   bool isValidIndex(int theIndex) const { return theIndex >= 1 && theIndex <= myParams.Length(); }
 
+  //! Ensure cache is valid for the given span index, rebuild if necessary.
+  //! @param theSpanIndex span index to validate cache against
+  //! @param theParam parameter value within the span (used for cache rebuild)
+  void ensureCacheValid(int theSpanIndex, double theParam) const;
+
 private:
   int                           myDegree;
   Handle(TColgp_HArray1OfPnt)   myPoles;
@@ -232,6 +239,10 @@ private:
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myParams;
+
+  // Cache for efficient evaluation within spans
+  mutable Handle(BSplCLib_Cache) myCache;
+  mutable int                    myCachedSpanIndex;
 };
 
 #endif // _BSplCLib_GridEvaluator_HeaderFile

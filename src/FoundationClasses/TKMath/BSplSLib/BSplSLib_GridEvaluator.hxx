@@ -14,6 +14,7 @@
 #ifndef _BSplSLib_GridEvaluator_HeaderFile
 #define _BSplSLib_GridEvaluator_HeaderFile
 
+#include <BSplSLib_Cache.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -30,8 +31,9 @@ class gp_Vec;
 //! @brief Efficient grid evaluator for B-spline and Bezier surfaces.
 //!
 //! Optimizes evaluation of multiple points on a B-spline surface by
-//! pre-computing span indices for parameter arrays. This eliminates
-//! the binary search (LocateParameter) overhead when evaluating grid points.
+//! pre-computing span indices for parameter arrays and reusing a single
+//! BSplSLib_Cache instance. The cache is rebuilt only when crossing span
+//! boundaries, maximizing performance for sequential grid evaluation.
 //!
 //! The class is designed for scenarios where many points need to be evaluated
 //! on a B-spline surface, such as:
@@ -339,6 +341,13 @@ private:
     return theIU >= 1 && theIU <= myUParams.Length() && theIV >= 1 && theIV <= myVParams.Length();
   }
 
+  //! Ensure cache is valid for the given span indices, rebuild if necessary.
+  //! @param theUSpanIndex U span index to validate cache against
+  //! @param theVSpanIndex V span index to validate cache against
+  //! @param theUParam U parameter value within the span (used for cache rebuild)
+  //! @param theVParam V parameter value within the span (used for cache rebuild)
+  void ensureCacheValid(int theUSpanIndex, int theVSpanIndex, double theUParam, double theVParam) const;
+
 private:
   int                           myDegreeU;
   int                           myDegreeV;
@@ -355,6 +364,11 @@ private:
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myUParams;
   NCollection_Array1<ParamWithSpan> myVParams;
+
+  // Cache for efficient evaluation within spans
+  mutable Handle(BSplSLib_Cache) myCache;
+  mutable int                    myCachedUSpanIndex;
+  mutable int                    myCachedVSpanIndex;
 };
 
 #endif // _BSplSLib_GridEvaluator_HeaderFile
