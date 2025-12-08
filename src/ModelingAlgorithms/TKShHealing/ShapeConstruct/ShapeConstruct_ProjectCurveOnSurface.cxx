@@ -45,6 +45,7 @@
 #include <IntCurve_IntConicConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
@@ -404,14 +405,15 @@ Standard_Boolean fixPeriodicityTroubles(gp_Pnt2d*              thePnt,
 
 //=================================================================================================
 
-//! Checks if B-spline curve has problematic knot spacing that could cause issues.
-//! Detects cases where knot intervals are extremely small relative to the median
-//! interval or the working parameter range, or where the curve has degenerate sections.
+//! Checks if B-spline curve has uneven parameterization requiring special handling.
+//! Computes the ratio of maximum to minimum parameterization speed across knot intervals.
+//! If this ratio exceeds a threshold, the curve should be projected using ProjLib instead
+//! of the standard approximation approach.
 //! @param[in] theCurve the curve to check (may be trimmed)
 //! @param[in] theFirst the first parameter of the working range
 //! @param[in] theLast the last parameter of the working range
 //! @param[out] theBSpline the extracted B-spline curve (if any)
-//! @return true if the curve has problematic characteristics
+//! @return true if the curve has uneven parameterization requiring ProjLib
 Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
                                        const Standard_Real        theFirst,
                                        const Standard_Real        theLast,
@@ -421,212 +423,80 @@ Standard_Boolean isBSplineCurveInvalid(const Handle(Geom_Curve)&  theCurve,
   if (theBSpline.IsNull())
     return Standard_False;
 
-  try
+  // Compute parametrization speed on each knot interval inside [theFirst, theLast].
+  // If quotient = (MaxSpeed / MinSpeed) >= aMaxQuotientCoeff then use PerformByProjLib.
+  Standard_Real aFirstParam = theFirst;
+  Standard_Real aLastParam  = theLast;
+
+  // Find first knot index
+  Standard_Integer anIdx = 1;
+  for (; anIdx <= theBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
   {
-    OCC_CATCH_SIGNALS
-
-    const TColStd_Array1OfReal& aKnots = theBSpline->Knots();
-    if (aKnots.Length() < 10)
-      return Standard_False;
-
-    NCollection_Vector<Standard_Real> anIntervals;
-    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
+    if (theBSpline->Knot(anIdx) > theFirst)
     {
-      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
-      if (anInterval > Precision::Confusion())
-      {
-        anIntervals.Append(anInterval);
-      }
+      break;
     }
-
-    if (anIntervals.IsEmpty())
-      return Standard_True;
-
-    std::sort(anIntervals.begin(), anIntervals.end());
-
-    Standard_Real          aMedianInterval;
-    const Standard_Integer aMid = anIntervals.Length() / 2;
-    if (anIntervals.Length() % 2 == 0)
-    {
-      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
-    }
-    else
-    {
-      aMedianInterval = anIntervals[aMid];
-    }
-
-    Standard_Real aTolerance = aMedianInterval * 1e-3;
-    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
-
-    for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
-    {
-      const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
-      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
-      {
-        return Standard_True;
-      }
-    }
-
-    const Standard_Real aWorkingRange = theLast - theFirst;
-    if (aWorkingRange > Precision::Confusion())
-    {
-      const Standard_Real aRelativeTolerance = aWorkingRange * 1e-6;
-      for (Standard_Integer i = aKnots.Lower() + 1; i <= aKnots.Upper(); i++)
-      {
-        const Standard_Real anInterval = aKnots(i) - aKnots(i - 1);
-        if (aKnots(i - 1) >= theFirst - Precision::Confusion()
-            && aKnots(i) <= theLast + Precision::Confusion() && anInterval > Precision::Confusion()
-            && anInterval < aRelativeTolerance)
-        {
-          return Standard_True;
-        }
-      }
-    }
-
-    return Standard_False;
   }
-  catch (Standard_Failure const&)
+
+  GeomAdaptor_Curve                   aC3DAdaptor(theCurve);
+  Standard_Real                       aMinParSpeed = Precision::Infinite();
+  NCollection_Sequence<Standard_Real> aKnotCoeffs;
+
+  for (; anIdx <= theBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
   {
-    return Standard_True;
+    // Fill current knot interval
+    aLastParam                  = std::min(theLast, theBSpline->Knot(anIdx));
+    Standard_Integer aNbIntPnts = THE_NCONTROL;
+
+    // Adapt number of inner points according to the length of the interval
+    // to avoid a lot of calculations on small range of parameters.
+    if (anIdx > 1)
+    {
+      const Standard_Real aLenThres = 1.e-2;
+      const Standard_Real aLenRatio =
+        (aLastParam - aFirstParam) / (theBSpline->Knot(anIdx) - theBSpline->Knot(anIdx - 1));
+      if (aLenRatio < aLenThres)
+      {
+        aNbIntPnts = Standard_Integer(aLenRatio / aLenThres * aNbIntPnts);
+        if (aNbIntPnts < 2)
+          aNbIntPnts = 2;
+      }
+    }
+
+    Standard_Real aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
+    gp_Pnt        p3d1, p3d2;
+
+    // Start filling from first point
+    aC3DAdaptor.D0(aFirstParam, p3d1);
+
+    Standard_Real aLength3d = 0.0;
+    for (Standard_Integer anIntIdx = 1; anIntIdx < aNbIntPnts; anIntIdx++)
+    {
+      Standard_Real aParam = aFirstParam + aStep * anIntIdx;
+      aC3DAdaptor.D0(aParam, p3d2);
+      const Standard_Real aDist = p3d2.Distance(p3d1);
+
+      aLength3d += aDist;
+      p3d1 = p3d2;
+
+      aMinParSpeed = std::min(aMinParSpeed, aDist / aStep);
+    }
+
+    const Standard_Real aCoeff = aLength3d / (aLastParam - aFirstParam);
+    if (std::abs(aCoeff) > gp::Resolution())
+      aKnotCoeffs.Append(aCoeff);
+    aFirstParam = aLastParam;
   }
-}
 
-//=================================================================================================
-
-//! Rebuilds B-spline curve by adjusting problematic knot spacing while preserving poles.
-//! Only modifies the knot vector to fix degenerate parametrization; the curve geometry
-//! (poles, weights, degree, multiplicities) remains unchanged.
-//! @param[in] theBSpline the B-spline curve to rebuild
-//! @return the rebuilt B-spline curve, or null if cannot be fixed by knot adjustment
-Handle(Geom_BSplineCurve) rebuildBSpline(const Handle(Geom_BSplineCurve)& theBSpline)
-{
-  if (theBSpline.IsNull())
-    return nullptr;
-
-  try
+  Standard_Real anEvenlyCoeff = 0;
+  if (aKnotCoeffs.Size() > 0)
   {
-    OCC_CATCH_SIGNALS
-
-    const Standard_Integer         aDegree         = theBSpline->Degree();
-    const TColgp_Array1OfPnt&      aPoles          = theBSpline->Poles();
-    const TColStd_Array1OfReal&    anOriginalKnots = theBSpline->Knots();
-    const TColStd_Array1OfInteger& aMults          = theBSpline->Multiplicities();
-    const Standard_Integer         aNbKnots        = anOriginalKnots.Length();
-
-    if (aNbKnots < 2)
-      return nullptr;
-
-    // Check for problematic knot spacing
-    NCollection_Vector<Standard_Real> anIntervals;
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
-    {
-      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-      if (anInterval > Precision::Confusion())
-      {
-        anIntervals.Append(anInterval);
-      }
-    }
-
-    if (anIntervals.IsEmpty())
-      return nullptr;
-
-    std::sort(anIntervals.begin(), anIntervals.end());
-
-    Standard_Real          aMedianInterval;
-    const Standard_Integer aMid = anIntervals.Length() / 2;
-    if (anIntervals.Length() % 2 == 0)
-    {
-      aMedianInterval = (anIntervals[aMid - 1] + anIntervals[aMid]) / 2.0;
-    }
-    else
-    {
-      aMedianInterval = anIntervals[aMid];
-    }
-
-    Standard_Real          aTotalNormalInterval = 0.0;
-    Standard_Integer       aNormalCount         = 0;
-    const Standard_Integer aQuarter             = anIntervals.Length() / 4;
-    for (Standard_Integer i = aQuarter; i < anIntervals.Length(); i++)
-    {
-      aTotalNormalInterval += anIntervals[i];
-      aNormalCount++;
-    }
-    Standard_Real anAverageNormalInterval =
-      (aNormalCount > 0) ? (aTotalNormalInterval / aNormalCount) : aMedianInterval;
-
-    Standard_Real aTolerance = aMedianInterval * 0.1;
-    aTolerance               = Max(aTolerance, Precision::Confusion() * 100);
-
-    Standard_Boolean hasProblematicKnots = Standard_False;
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
-    {
-      const Standard_Real anInterval = anOriginalKnots(i) - anOriginalKnots(i - 1);
-      if (anInterval > Precision::Confusion() && anInterval < aTolerance)
-      {
-        hasProblematicKnots = Standard_True;
-        break;
-      }
-    }
-
-    if (!hasProblematicKnots)
-      return theBSpline;
-
-    Standard_Real aMinSpacing = Max(anAverageNormalInterval * 0.5, aMedianInterval * 0.3);
-    aMinSpacing               = Max(aMinSpacing, Precision::Confusion() * 10000);
-
-    TColStd_Array1OfReal aNewKnots(anOriginalKnots.Lower(), anOriginalKnots.Upper());
-    aNewKnots(anOriginalKnots.Lower()) = anOriginalKnots(anOriginalKnots.Lower());
-
-    for (Standard_Integer i = anOriginalKnots.Lower() + 1; i <= anOriginalKnots.Upper(); i++)
-    {
-      const Standard_Real aPrevKnot          = aNewKnots(i - 1);
-      const Standard_Real aCurrKnot          = anOriginalKnots(i);
-      const Standard_Real anOriginalInterval = aCurrKnot - anOriginalKnots(i - 1);
-
-      if (anOriginalInterval > Precision::Confusion() && anOriginalInterval < aTolerance)
-      {
-        aNewKnots(i) = aPrevKnot + Max(aMinSpacing, anOriginalInterval * 2.0);
-      }
-      else
-      {
-        aNewKnots(i) = Max(aCurrKnot, aPrevKnot + aMinSpacing);
-      }
-    }
-
-    const Standard_Real aOriginalRange =
-      anOriginalKnots(anOriginalKnots.Upper()) - anOriginalKnots(anOriginalKnots.Lower());
-    const Standard_Real aNewRange = aNewKnots(aNewKnots.Upper()) - aNewKnots(aNewKnots.Lower());
-
-    if (aNewRange > aOriginalRange * 1.5)
-    {
-      const Standard_Real aFirstKnot = anOriginalKnots(anOriginalKnots.Lower());
-      const Standard_Real aLastKnot  = anOriginalKnots(anOriginalKnots.Upper());
-
-      for (Standard_Integer i = anOriginalKnots.Lower(); i <= anOriginalKnots.Upper(); i++)
-      {
-        const Standard_Real t =
-          Standard_Real(i - anOriginalKnots.Lower()) / Standard_Real(aNbKnots - 1);
-        aNewKnots(i) = aFirstKnot + t * (aLastKnot - aFirstKnot);
-      }
-    }
-
-    Handle(Geom_BSplineCurve) aNewBSpline;
-    if (theBSpline->IsRational())
-    {
-      const TColStd_Array1OfReal* aWeights = theBSpline->Weights();
-      aNewBSpline = new Geom_BSplineCurve(aPoles, *aWeights, aNewKnots, aMults, aDegree);
-    }
-    else
-    {
-      aNewBSpline = new Geom_BSplineCurve(aPoles, aNewKnots, aMults, aDegree);
-    }
-
-    return aNewBSpline;
+    anEvenlyCoeff = *std::max_element(aKnotCoeffs.begin(), aKnotCoeffs.end())
+                    / *std::min_element(aKnotCoeffs.begin(), aKnotCoeffs.end());
   }
-  catch (Standard_Failure const&)
-  {
-    return nullptr;
-  }
+
+  const Standard_Real aMaxQuotientCoeff = 1500.0;
+  return (anEvenlyCoeff > aMaxQuotientCoeff && aMinParSpeed > Precision::Confusion());
 }
 
 //=================================================================================================
@@ -840,31 +710,14 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     return Standard_True;
   }
 
-  // Handle problematic B-spline curves
-  Handle(Geom_Curve)        aCurve = theC3D;
-  Standard_Real             aFirst = theFirst;
-  Standard_Real             aLast  = theLast;
+  // Handle problematic B-spline curves with uneven parameterization
   Handle(Geom_BSplineCurve) aBSpline;
-
-  if (isBSplineCurveInvalid(aCurve, aFirst, aLast, aBSpline))
+  if (isBSplineCurveInvalid(theC3D, theFirst, theLast, aBSpline))
   {
-    // Work with a copy to preserve the original geometry
-    Handle(Geom_BSplineCurve) aSegmented = Handle(Geom_BSplineCurve)::DownCast(aBSpline->Copy());
-    aSegmented->Segment(aFirst, aLast, Precision::PConfusion());
-
-    Handle(Geom_BSplineCurve) aNewBSpline = rebuildBSpline(aSegmented);
-    if (aNewBSpline.IsNull())
+    // Use ProjLib for curves with highly uneven parameterization speed
+    if (PerformByProjLib(theC3D, theFirst, theLast, theC2D))
     {
-      if (PerformByProjLib(aSegmented, aFirst, aLast, theC2D))
-      {
-        return Status(ShapeExtend_DONE);
-      }
-    }
-    else
-    {
-      aFirst = aNewBSpline->FirstParameter();
-      aLast  = aNewBSpline->LastParameter();
-      aCurve = aNewBSpline;
+      return Status(ShapeExtend_DONE);
     }
   }
 
@@ -872,7 +725,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
   ArrayOfPnt             aPoints;
   ArrayOfReal            aParams;
   const Standard_Integer aNbPnt =
-    generateCurvePoints(aCurve, aFirst, aLast, THE_NCONTROL, aPoints, aParams);
+    generateCurvePoints(theC3D, theFirst, theLast, THE_NCONTROL, aPoints, aParams);
 
   // Approximate pcurve
   ArrayOfPnt2d aPoints2d(1, aNbPnt);
@@ -881,7 +734,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform(const Handle(Geom
     aPoints2d.SetValue(i, gp_Pnt2d(0., 0.));
   }
 
-  approxPCurve(aNbPnt, aCurve, theTolFirst, theTolLast, aPoints, aParams, aPoints2d, theC2D);
+  approxPCurve(aNbPnt, theC3D, theTolFirst, theTolLast, aPoints, aParams, aPoints2d, theC2D);
 
   const Standard_Integer aNbPini = aPoints.Length();
   if (!theC2D.IsNull())
