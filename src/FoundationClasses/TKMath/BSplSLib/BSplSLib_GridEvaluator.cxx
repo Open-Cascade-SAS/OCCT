@@ -215,6 +215,7 @@ void BSplSLib_GridEvaluator::PrepareUParamsFromKnots(double theUMin,
                            theMinSamples,
                            theIncludeEnds,
                            myUParams);
+  computeSpanRanges(myUParams, myUSpanRanges);
 }
 
 //==================================================================================================
@@ -236,6 +237,7 @@ void BSplSLib_GridEvaluator::PrepareVParamsFromKnots(double theVMin,
                            theMinSamples,
                            theIncludeEnds,
                            myVParams);
+  computeSpanRanges(myVParams, myVSpanRanges);
 }
 
 //==================================================================================================
@@ -257,6 +259,7 @@ void BSplSLib_GridEvaluator::PrepareUParams(double theUMin,
                        theNbU,
                        theIncludeEnds,
                        myUParams);
+  computeSpanRanges(myUParams, myUSpanRanges);
 }
 
 //==================================================================================================
@@ -278,6 +281,7 @@ void BSplSLib_GridEvaluator::PrepareVParams(double theVMin,
                        theNbV,
                        theIncludeEnds,
                        myVParams);
+  computeSpanRanges(myVParams, myVSpanRanges);
 }
 
 //==================================================================================================
@@ -308,6 +312,7 @@ void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& the
     aPrevSpan = aSpanIdx;
     myUParams.SetValue(i, {aParam, aSpanIdx});
   }
+  computeSpanRanges(myUParams, myUSpanRanges);
 }
 
 //==================================================================================================
@@ -338,6 +343,7 @@ void BSplSLib_GridEvaluator::SetVParams(const Handle(TColStd_HArray1OfReal)& the
     aPrevSpan = aSpanIdx;
     myVParams.SetValue(i, {aParam, aSpanIdx});
   }
+  computeSpanRanges(myVParams, myVSpanRanges);
 }
 
 //==================================================================================================
@@ -586,6 +592,16 @@ void BSplSLib_GridEvaluator::ensureCacheValid(int    theUSpanIndex,
     return;
   }
 
+  rebuildCache(theUSpanIndex, theVSpanIndex, theUParam, theVParam);
+}
+
+//==================================================================================================
+
+void BSplSLib_GridEvaluator::rebuildCache(int    theUSpanIndex,
+                                          int    theVSpanIndex,
+                                          double theUParam,
+                                          double theVParam) const
+{
   // Create cache if needed
   if (myCache.IsNull())
   {
@@ -607,6 +623,32 @@ void BSplSLib_GridEvaluator::ensureCacheValid(int    theUSpanIndex,
                       myWeights.IsNull() ? nullptr : &myWeights->Array2());
   myCachedUSpanIndex = theUSpanIndex;
   myCachedVSpanIndex = theVSpanIndex;
+}
+
+//==================================================================================================
+
+void BSplSLib_GridEvaluator::rebuildCacheDirect(double theUParam, double theVParam) const
+{
+  // Create cache if needed
+  if (myCache.IsNull())
+  {
+    myCache = new BSplSLib_Cache(myDegreeU,
+                                 myUPeriodic,
+                                 myUFlatKnots->Array1(),
+                                 myDegreeV,
+                                 myVPeriodic,
+                                 myVFlatKnots->Array1(),
+                                 myWeights.IsNull() ? nullptr : &myWeights->Array2());
+  }
+
+  // Build cache for the parameters
+  myCache->BuildCache(theUParam,
+                      theVParam,
+                      myUFlatKnots->Array1(),
+                      myVFlatKnots->Array1(),
+                      myPoles->Array2(),
+                      myWeights.IsNull() ? nullptr : &myWeights->Array2());
+  // Note: We don't update span index tracking here since D0Direct doesn't use it
 }
 
 //==================================================================================================
@@ -696,16 +738,91 @@ NCollection_Array2<gp_Pnt> BSplSLib_GridEvaluator::EvaluateGrid() const
   const int                  aNbV = myVParams.Length();
   NCollection_Array2<gp_Pnt> aPoints(1, aNbU, 1, aNbV);
 
-  for (int iu = 1; iu <= aNbU; ++iu)
+  // Use pre-computed span ranges for optimal iteration.
+  // Iterate over all (U_span, V_span) combinations.
+  // For each combination, rebuild cache once, then evaluate all points
+  // within that span block without any checking.
+  const int aNbUSpans = myUSpanRanges.Length();
+  const int aNbVSpans = myVSpanRanges.Length();
+
+  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
   {
-    const ParamWithSpan& aUParam = myUParams.Value(iu);
-    for (int iv = 1; iv <= aNbV; ++iv)
+    const SpanRange& aURange    = myUSpanRanges.Value(iURange);
+    const int        aUSpanIdx  = aURange.SpanIndex;
+    const int        aUStartIdx = aURange.StartIdx;
+    const int        aUEndIdx   = aURange.EndIdx;
+
+    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
     {
-      const ParamWithSpan& aVParam = myVParams.Value(iv);
-      ensureCacheValid(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
-      myCache->D0(aUParam.Param, aVParam.Param, aPoints.ChangeValue(iu, iv));
+      const SpanRange& aVRange    = myVSpanRanges.Value(iVRange);
+      const int        aVSpanIdx  = aVRange.SpanIndex;
+      const int        aVStartIdx = aVRange.StartIdx;
+      const int        aVEndIdx   = aVRange.EndIdx;
+
+      // Rebuild cache once for this (U_span, V_span) block
+      rebuildCache(aUSpanIdx,
+                   aVSpanIdx,
+                   myUParams.Value(aUStartIdx).Param,
+                   myVParams.Value(aVStartIdx).Param);
+
+      // Evaluate all points in this span block - NO span checking needed
+      for (int iu = aUStartIdx; iu < aUEndIdx; ++iu)
+      {
+        const double aUParam = myUParams.Value(iu).Param;
+        for (int iv = aVStartIdx; iv < aVEndIdx; ++iv)
+        {
+          const double aVParam = myVParams.Value(iv).Param;
+          myCache->D0(aUParam, aVParam, aPoints.ChangeValue(iu, iv));
+        }
+      }
     }
   }
 
   return aPoints;
+}
+
+//==================================================================================================
+
+void BSplSLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWithSpan>& theParams,
+                                               NCollection_Array1<SpanRange>&           theSpanRanges)
+{
+  if (theParams.IsEmpty())
+  {
+    theSpanRanges.Resize(0, -1, false);
+    return;
+  }
+
+  // First pass: count distinct spans
+  const int aNbParams    = theParams.Length();
+  int       aNbRanges    = 1;
+  int       aCurrentSpan = theParams.Value(1).SpanIndex;
+  for (int i = 2; i <= aNbParams; ++i)
+  {
+    const int aSpan = theParams.Value(i).SpanIndex;
+    if (aSpan != aCurrentSpan)
+    {
+      ++aNbRanges;
+      aCurrentSpan = aSpan;
+    }
+  }
+
+  // Allocate exactly the needed size (0-based indexing)
+  theSpanRanges.Resize(0, aNbRanges - 1, false);
+
+  // Second pass: fill ranges
+  aCurrentSpan      = theParams.Value(1).SpanIndex;
+  int aRangeStart   = 1;
+  int aRangeIdx     = 0;
+  for (int i = 2; i <= aNbParams; ++i)
+  {
+    const int aSpan = theParams.Value(i).SpanIndex;
+    if (aSpan != aCurrentSpan)
+    {
+      theSpanRanges.SetValue(aRangeIdx++, {aCurrentSpan, aRangeStart, i});
+      aCurrentSpan = aSpan;
+      aRangeStart  = i;
+    }
+  }
+  // Add the last range
+  theSpanRanges.SetValue(aRangeIdx, {aCurrentSpan, aRangeStart, aNbParams + 1});
 }

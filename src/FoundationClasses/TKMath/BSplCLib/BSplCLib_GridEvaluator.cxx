@@ -516,11 +516,66 @@ NCollection_Array1<gp_Pnt> BSplCLib_GridEvaluator::EvaluateGrid() const
   const int                  aNbParams = myParams.Length();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
 
-  for (int i = 1; i <= aNbParams; ++i)
+  // Pre-compute span boundaries.
+  // For each distinct span, store the range of indices [start, end).
+  // Since parameters are sorted, spans are contiguous.
+  struct SpanRange
   {
-    const ParamWithSpan& aParam = myParams.Value(i);
-    ensureCacheValid(aParam.SpanIndex, aParam.Param);
-    myCache->D0(aParam.Param, aPoints.ChangeValue(i));
+    int SpanIndex;
+    int StartIdx;
+    int EndIdx;
+  };
+
+  NCollection_Vector<SpanRange> aSpanRanges;
+  {
+    int aCurrentSpan = myParams.Value(1).SpanIndex;
+    int aRangeStart  = 1;
+    for (int i = 2; i <= aNbParams; ++i)
+    {
+      const int aSpan = myParams.Value(i).SpanIndex;
+      if (aSpan != aCurrentSpan)
+      {
+        aSpanRanges.Append({aCurrentSpan, aRangeStart, i});
+        aCurrentSpan = aSpan;
+        aRangeStart  = i;
+      }
+    }
+    // Add the last range
+    aSpanRanges.Append({aCurrentSpan, aRangeStart, aNbParams + 1});
+  }
+
+  // Iterate over span ranges.
+  // For each span, rebuild cache once, then evaluate all points
+  // within that span block without any checking.
+  for (int iRange = 0; iRange < aSpanRanges.Length(); ++iRange)
+  {
+    const SpanRange& aRange    = aSpanRanges.Value(iRange);
+    const int        aStartIdx = aRange.StartIdx;
+    const int        anEndIdx  = aRange.EndIdx;
+
+    // Rebuild cache once for this span block
+    // Create cache if needed
+    if (myCache.IsNull())
+    {
+      myCache = new BSplCLib_Cache(myDegree,
+                                   myPeriodic,
+                                   myFlatKnots->Array1(),
+                                   myPoles->Array1(),
+                                   myWeights.IsNull() ? nullptr : &myWeights->Array1());
+    }
+
+    // Build cache for this span
+    myCache->BuildCache(myParams.Value(aStartIdx).Param,
+                        myFlatKnots->Array1(),
+                        myPoles->Array1(),
+                        myWeights.IsNull() ? nullptr : &myWeights->Array1());
+    myCachedSpanIndex = aRange.SpanIndex;
+
+    // Evaluate all points in this span block - NO span checking needed
+    for (int i = aStartIdx; i < anEndIdx; ++i)
+    {
+      myCache->D0(myParams.Value(i).Param, aPoints.ChangeValue(i));
+    }
   }
 
   return aPoints;

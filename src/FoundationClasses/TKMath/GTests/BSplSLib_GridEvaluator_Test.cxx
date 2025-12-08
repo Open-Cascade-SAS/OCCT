@@ -16,12 +16,20 @@
 #include <BSplSLib_GridEvaluator.hxx>
 
 #include <BSplSLib.hxx>
+#include <BSplSLib_Cache.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <OSD_Chronometer.hxx>
 #include <Precision.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
+
+#include <algorithm>
+#include <random>
+#include <vector>
 
 namespace
 {
@@ -1607,4 +1615,752 @@ TEST(BSplSLib_GridEvaluatorTest, SetParams_SpanIndices)
     ASSERT_TRUE(aPt.has_value());
     EXPECT_FALSE(std::isnan(aPt->X()));
   }
+}
+
+// Performance comparison test: BSplSLib_GridEvaluator vs GeomAdaptor_Surface vs
+// Geom_BSplineSurface. This test compares evaluation performance between the new grid evaluator and
+// traditional approaches. Includes initialization overhead and random vs sequential access
+// patterns.
+TEST(BSplSLib_GridEvaluatorTest, PerformanceComparison_GridEvaluatorVsAdaptorVsGeom)
+{
+  // Test parameters - use larger values for accurate Release build timing
+  const int    aNbSamplesU   = 200;
+  const int    aNbSamplesV   = 200;
+  const int    aNbIterations = 50; // More iterations for stable timing in Release
+  const double aUMin = 0.0, aUMax = 1.0;
+  const double aVMin = 0.0, aVMax = 1.0;
+
+  // B-spline surface parameters
+  const int aDegU     = 3;
+  const int aDegV     = 3;
+  const int aNbPolesU = 7; // For degree 3 with mults [4,1,1,1,4]: Sum=11, NbPoles=11-3-1=7
+  const int aNbPolesV = 7;
+
+  // Pre-compute parameter arrays (same for all methods)
+  Handle(TColStd_HArray1OfReal) aUParams = new TColStd_HArray1OfReal(1, aNbSamplesU);
+  Handle(TColStd_HArray1OfReal) aVParams = new TColStd_HArray1OfReal(1, aNbSamplesV);
+  for (int i = 1; i <= aNbSamplesU; ++i)
+  {
+    aUParams->SetValue(i, aUMin + (aUMax - aUMin) * (i - 1) / (aNbSamplesU - 1));
+  }
+  for (int j = 1; j <= aNbSamplesV; ++j)
+  {
+    aVParams->SetValue(j, aVMin + (aVMax - aVMin) * (j - 1) / (aNbSamplesV - 1));
+  }
+
+  // Pre-compute random access indices for random access tests
+  std::vector<std::pair<int, int>> aRandomIndices;
+  aRandomIndices.reserve(aNbSamplesU * aNbSamplesV);
+  for (int iu = 1; iu <= aNbSamplesU; ++iu)
+  {
+    for (int iv = 1; iv <= aNbSamplesV; ++iv)
+    {
+      aRandomIndices.emplace_back(iu, iv);
+    }
+  }
+  // Shuffle for random access pattern (use fixed seed for reproducibility)
+  std::mt19937 aRng(42);
+  std::shuffle(aRandomIndices.begin(), aRandomIndices.end(), aRng);
+
+  // ============================================================================
+  // Create B-spline surface ONCE (outside all timing loops)
+  // ============================================================================
+  TColgp_Array2OfPnt aPoles2D(1, aNbPolesU, 1, aNbPolesV);
+  for (int i = 1; i <= aNbPolesU; ++i)
+  {
+    for (int j = 1; j <= aNbPolesV; ++j)
+    {
+      const double x = (i - 1.0) / (aNbPolesU - 1);
+      const double y = (j - 1.0) / (aNbPolesV - 1);
+      const double z = 0.1 * std::sin(x * 6.0) * std::cos(y * 6.0);
+      aPoles2D.SetValue(i, j, gp_Pnt(x, y, z));
+    }
+  }
+
+  TColStd_Array1OfReal    aUKnots(1, 5);
+  TColStd_Array1OfInteger aUMults(1, 5);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 0.25;
+  aUKnots(3) = 0.5;
+  aUKnots(4) = 0.75;
+  aUKnots(5) = 1.0;
+  aUMults(1) = 4;
+  aUMults(2) = 1;
+  aUMults(3) = 1;
+  aUMults(4) = 1;
+  aUMults(5) = 4;
+
+  TColStd_Array1OfReal    aVKnots(1, 5);
+  TColStd_Array1OfInteger aVMults(1, 5);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 0.25;
+  aVKnots(3) = 0.5;
+  aVKnots(4) = 0.75;
+  aVKnots(5) = 1.0;
+  aVMults(1) = 4;
+  aVMults(2) = 1;
+  aVMults(3) = 1;
+  aVMults(4) = 1;
+  aVMults(5) = 4;
+
+  Handle(Geom_BSplineSurface) aBSplineSurf =
+    new Geom_BSplineSurface(aPoles2D, aUKnots, aVKnots, aUMults, aVMults, aDegU, aDegV);
+
+  // ============================================================================
+  // Pure evaluation timing (no object creation overhead)
+  // ============================================================================
+
+  // Method 1: GeomAdaptor_Surface - sequential access
+  double aAdaptorSeqTime = 0.0;
+  {
+    GeomAdaptor_Surface anAdaptor(aBSplineSurf);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          gp_Pnt aPt;
+          anAdaptor.D0(aUParams->Value(iu), aVParams->Value(iv), aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aAdaptorSeqTime);
+  }
+
+  // Method 2: GeomAdaptor_Surface - random access
+  double aAdaptorRndTime = 0.0;
+  {
+    GeomAdaptor_Surface anAdaptor(aBSplineSurf);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (const auto& anIdx : aRandomIndices)
+      {
+        gp_Pnt aPt;
+        anAdaptor.D0(aUParams->Value(anIdx.first), aVParams->Value(anIdx.second), aPt);
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aAdaptorRndTime);
+  }
+
+  // Method 3: Geom_BSplineSurface::D0 - sequential access
+  double aGeomSeqTime = 0.0;
+  {
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          gp_Pnt aPt;
+          aBSplineSurf->D0(aUParams->Value(iu), aVParams->Value(iv), aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGeomSeqTime);
+  }
+
+  // Method 4: Direct BSplSLib_Cache access (baseline - no wrapper overhead)
+  double aCacheDirectTime = 0.0;
+  {
+    // Create cache directly like adaptor does
+    Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(
+      aDegU,
+      aBSplineSurf->IsUPeriodic(),
+      aBSplineSurf->HArrayUFlatKnots()->Array1(),
+      aDegV,
+      aBSplineSurf->IsVPeriodic(),
+      aBSplineSurf->HArrayVFlatKnots()->Array1(),
+      nullptr); // non-rational
+
+    // Build cache for first point
+    aCache->BuildCache(aUParams->Value(1),
+                       aVParams->Value(1),
+                       aBSplineSurf->HArrayUFlatKnots()->Array1(),
+                       aBSplineSurf->HArrayVFlatKnots()->Array1(),
+                       aBSplineSurf->HArrayPoles()->Array2(),
+                       nullptr);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          const double aU = aUParams->Value(iu);
+          const double aV = aVParams->Value(iv);
+          // Check cache validity and rebuild like adaptor does
+          if (!aCache->IsCacheValid(aU, aV))
+          {
+            aCache->BuildCache(aU,
+                               aV,
+                               aBSplineSurf->HArrayUFlatKnots()->Array1(),
+                               aBSplineSurf->HArrayVFlatKnots()->Array1(),
+                               aBSplineSurf->HArrayPoles()->Array2(),
+                               nullptr);
+          }
+          gp_Pnt aPt;
+          aCache->D0(aU, aV, aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aCacheDirectTime);
+  }
+
+  // Method 5: BSplSLib_GridEvaluator - sequential access (with bounds check)
+  double aGridEvalSeqTime = 0.0;
+  {
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          gp_Pnt aPt;
+          aGridEval.D0(iu, iv, aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalSeqTime);
+  }
+
+  // Method 4b: BSplSLib_GridEvaluator - sequential with raw pointer access (fastest)
+  double aGridEvalSeqRawTime = 0.0;
+  {
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+
+    // Get raw pointers for zero-overhead access
+    const BSplSLib_GridEvaluator::ParamWithSpan* aUData = aGridEval.UParamsData();
+    const BSplSLib_GridEvaluator::ParamWithSpan* aVData = aGridEval.VParamsData();
+    const int                                    aNbU   = aGridEval.NbUParams();
+    const int                                    aNbV   = aGridEval.NbVParams();
+
+    // Ensure cache is ready before hot loop
+    aGridEval.EnsureCacheReady();
+
+    // Check if single span optimization is possible
+    const bool isSingleSpan = aGridEval.IsSingleSpan();
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    if (isSingleSpan)
+    {
+      // Fastest path: no span checking needed
+      for (int iter = 0; iter < aNbIterations; ++iter)
+      {
+        for (int iu = 0; iu < aNbU; ++iu)
+        {
+          for (int iv = 0; iv < aNbV; ++iv)
+          {
+            gp_Pnt aPt;
+            aGridEval.D0SingleSpan(aUData[iu], aVData[iv], aPt);
+          }
+        }
+      }
+    }
+    else
+    {
+      // Standard path with span checking
+      for (int iter = 0; iter < aNbIterations; ++iter)
+      {
+        for (int iu = 0; iu < aNbU; ++iu)
+        {
+          for (int iv = 0; iv < aNbV; ++iv)
+          {
+            gp_Pnt aPt;
+            aGridEval.D0Raw(aUData[iu], aVData[iv], aPt);
+          }
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalSeqRawTime);
+  }
+
+  // Method 4c: BSplSLib_GridEvaluator - D0Direct (same pattern as GeomAdaptor)
+  double aGridEvalDirectTime = 0.0;
+  {
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    // Note: D0Direct doesn't need SetUParams/SetVParams
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          gp_Pnt aPt;
+          aGridEval.D0Direct(aUParams->Value(iu), aVParams->Value(iv), aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalDirectTime);
+  }
+
+  // Method 4d: Exact copy of Direct Cache test (to verify test ordering effect)
+  double aGridEvalCacheDirectTime = 0.0;
+  {
+    // Create cache directly like adaptor does (EXACT copy of Direct Cache test)
+    Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aDegU,
+                                                       aBSplineSurf->IsUPeriodic(),
+                                                       aBSplineSurf->HArrayUFlatKnots()->Array1(),
+                                                       aDegV,
+                                                       aBSplineSurf->IsVPeriodic(),
+                                                       aBSplineSurf->HArrayVFlatKnots()->Array1(),
+                                                       nullptr); // non-rational
+
+    // Build cache for first point
+    aCache->BuildCache(aUParams->Value(1),
+                       aVParams->Value(1),
+                       aBSplineSurf->HArrayUFlatKnots()->Array1(),
+                       aBSplineSurf->HArrayVFlatKnots()->Array1(),
+                       aBSplineSurf->HArrayPoles()->Array2(),
+                       nullptr);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          const double aU = aUParams->Value(iu);
+          const double aV = aVParams->Value(iv);
+          // Check cache validity and rebuild like adaptor does
+          if (!aCache->IsCacheValid(aU, aV))
+          {
+            aCache->BuildCache(aU,
+                               aV,
+                               aBSplineSurf->HArrayUFlatKnots()->Array1(),
+                               aBSplineSurf->HArrayVFlatKnots()->Array1(),
+                               aBSplineSurf->HArrayPoles()->Array2(),
+                               nullptr);
+          }
+          gp_Pnt aPt;
+          aCache->D0(aU, aV, aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalCacheDirectTime);
+  }
+
+  // Method 5: BSplSLib_GridEvaluator - random access (unchecked)
+  double aGridEvalRndTime = 0.0;
+  {
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (const auto& anIdx : aRandomIndices)
+      {
+        gp_Pnt aPt;
+        aGridEval.D0Unchecked(anIdx.first, anIdx.second, aPt);
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalRndTime);
+  }
+
+  // Method 6: BSplSLib_GridEvaluator - batch evaluation
+  double aGridEvalBatchTime = 0.0;
+  {
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      NCollection_Array2<gp_Pnt> aPoints = aGridEval.EvaluateGrid();
+      (void)aPoints; // Prevent optimization
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aGridEvalBatchTime);
+  }
+
+  // Method 7: Single-span test using Bezier surface (degree 3, single span)
+  double aSingleSpanTime = 0.0;
+  {
+    // Create a Bezier surface (single span in U and V)
+    TColgp_Array2OfPnt aBezierPoles(1, 4, 1, 4);
+    for (int i = 1; i <= 4; ++i)
+    {
+      for (int j = 1; j <= 4; ++j)
+      {
+        const double x = (i - 1.0) / 3.0;
+        const double y = (j - 1.0) / 3.0;
+        const double z = 0.1 * std::sin(x * 6.0) * std::cos(y * 6.0);
+        aBezierPoles.SetValue(i, j, gp_Pnt(x, y, z));
+      }
+    }
+
+    // Create knots and multiplicities for Bezier (single span)
+    TColStd_Array1OfReal    aBezierKnots(1, 2);
+    TColStd_Array1OfInteger aBezierMults(1, 2);
+    aBezierKnots(1) = 0.0;
+    aBezierKnots(2) = 1.0;
+    aBezierMults(1) = 4;
+    aBezierMults(2) = 4;
+
+    Handle(Geom_BSplineSurface) aBezierSurf = new Geom_BSplineSurface(
+      aBezierPoles, aBezierKnots, aBezierKnots, aBezierMults, aBezierMults, 3, 3);
+
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(3,
+                         3,
+                         aBezierSurf->HArrayPoles(),
+                         aBezierSurf->HArrayWeights(),
+                         aBezierSurf->HArrayUFlatKnots(),
+                         aBezierSurf->HArrayVFlatKnots(),
+                         aBezierSurf->IsURational(),
+                         aBezierSurf->IsVRational(),
+                         aBezierSurf->IsUPeriodic(),
+                         aBezierSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+
+    const BSplSLib_GridEvaluator::ParamWithSpan* aUData = aGridEval.UParamsData();
+    const BSplSLib_GridEvaluator::ParamWithSpan* aVData = aGridEval.VParamsData();
+    const int                                    aNbU   = aGridEval.NbUParams();
+    const int                                    aNbV   = aGridEval.NbVParams();
+
+    aGridEval.EnsureCacheReady();
+
+    // Verify single span
+    ASSERT_TRUE(aGridEval.IsSingleSpan()) << "Bezier surface should be single span";
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 0; iu < aNbU; ++iu)
+      {
+        for (int iv = 0; iv < aNbV; ++iv)
+        {
+          gp_Pnt aPt;
+          aGridEval.D0SingleSpan(aUData[iu], aVData[iv], aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aSingleSpanTime);
+  }
+
+  // Method 8: Direct cache evaluation with raw doubles (to isolate struct access overhead)
+  double aCacheDirectRawTime = 0.0;
+  {
+    // Create a Bezier surface (single span)
+    TColgp_Array2OfPnt aBezierPoles(1, 4, 1, 4);
+    for (int i = 1; i <= 4; ++i)
+    {
+      for (int j = 1; j <= 4; ++j)
+      {
+        const double x = (i - 1.0) / 3.0;
+        const double y = (j - 1.0) / 3.0;
+        const double z = 0.1 * std::sin(x * 6.0) * std::cos(y * 6.0);
+        aBezierPoles.SetValue(i, j, gp_Pnt(x, y, z));
+      }
+    }
+
+    TColStd_Array1OfReal    aBezierKnots(1, 2);
+    TColStd_Array1OfInteger aBezierMults(1, 2);
+    aBezierKnots(1) = 0.0;
+    aBezierKnots(2) = 1.0;
+    aBezierMults(1) = 4;
+    aBezierMults(2) = 4;
+
+    Handle(Geom_BSplineSurface) aBezierSurf = new Geom_BSplineSurface(
+      aBezierPoles, aBezierKnots, aBezierKnots, aBezierMults, aBezierMults, 3, 3);
+
+    BSplSLib_GridEvaluator aGridEval;
+    aGridEval.Initialize(3,
+                         3,
+                         aBezierSurf->HArrayPoles(),
+                         aBezierSurf->HArrayWeights(),
+                         aBezierSurf->HArrayUFlatKnots(),
+                         aBezierSurf->HArrayVFlatKnots(),
+                         aBezierSurf->IsURational(),
+                         aBezierSurf->IsVRational(),
+                         aBezierSurf->IsUPeriodic(),
+                         aBezierSurf->IsVPeriodic());
+    aGridEval.SetUParams(aUParams);
+    aGridEval.SetVParams(aVParams);
+    aGridEval.EnsureCacheReady();
+
+    // Get cache as local variable to avoid member access overhead
+    const Handle(BSplSLib_Cache)& aLocalCache = aGridEval.Cache();
+
+    OSD_Chronometer aTimer;
+    aTimer.Start();
+
+    for (int iter = 0; iter < aNbIterations; ++iter)
+    {
+      for (int iu = 1; iu <= aNbSamplesU; ++iu)
+      {
+        for (int iv = 1; iv <= aNbSamplesV; ++iv)
+        {
+          gp_Pnt aPt;
+          // Use local cache reference to avoid member indirection
+          aLocalCache->D0(aUParams->Value(iu), aVParams->Value(iv), aPt);
+        }
+      }
+    }
+
+    aTimer.Stop();
+    aTimer.Show(aCacheDirectRawTime);
+  }
+
+  // Output timing results
+  const int aTotalPoints = aNbSamplesU * aNbSamplesV * aNbIterations;
+  std::cout << "\n=== BSplSLib_GridEvaluator Performance Comparison ===\n";
+  std::cout << "Surface: " << aNbPolesU << "x" << aNbPolesV << " poles, degree " << aDegU << "x"
+            << aDegV << "\n";
+  std::cout << "Grid: " << aNbSamplesU << "x" << aNbSamplesV << " samples, " << aNbIterations
+            << " iterations\n";
+  std::cout << "Total evaluations: " << aTotalPoints << "\n";
+  std::cout << "(Surface created once, pure evaluation timing)\n\n";
+
+  // Print span coverage information
+  {
+    BSplSLib_GridEvaluator aSpanInfo;
+    aSpanInfo.Initialize(aDegU,
+                         aDegV,
+                         aBSplineSurf->HArrayPoles(),
+                         aBSplineSurf->HArrayWeights(),
+                         aBSplineSurf->HArrayUFlatKnots(),
+                         aBSplineSurf->HArrayVFlatKnots(),
+                         aBSplineSurf->IsURational(),
+                         aBSplineSurf->IsVRational(),
+                         aBSplineSurf->IsUPeriodic(),
+                         aBSplineSurf->IsVPeriodic());
+    aSpanInfo.SetUParams(aUParams);
+    aSpanInfo.SetVParams(aVParams);
+
+    std::cout << "--- Span Coverage (points per cache rebuild) ---\n";
+    std::cout << "U spans: " << aSpanInfo.NbUSpanRanges() << ", V spans: " << aSpanInfo.NbVSpanRanges()
+              << "\n";
+    std::cout << "Total span blocks: " << aSpanInfo.NbUSpanRanges() * aSpanInfo.NbVSpanRanges()
+              << " (cache rebuilds per iteration)\n";
+
+    // Print U span ranges
+    std::cout << "U span distribution: [";
+    for (int i = 0; i < aSpanInfo.NbUSpanRanges(); ++i)
+    {
+      const auto& aRange = aSpanInfo.USpanRange(i);
+      const int   aNbPts = aRange.EndIdx - aRange.StartIdx;
+      if (i > 0)
+        std::cout << ", ";
+      std::cout << aNbPts;
+    }
+    std::cout << "] points per span\n";
+
+    // Print V span ranges
+    std::cout << "V span distribution: [";
+    for (int i = 0; i < aSpanInfo.NbVSpanRanges(); ++i)
+    {
+      const auto& aRange = aSpanInfo.VSpanRange(i);
+      const int   aNbPts = aRange.EndIdx - aRange.StartIdx;
+      if (i > 0)
+        std::cout << ", ";
+      std::cout << aNbPts;
+    }
+    std::cout << "] points per span\n";
+
+    // Calculate average points per cache rebuild
+    int aTotalSpanBlocks = aSpanInfo.NbUSpanRanges() * aSpanInfo.NbVSpanRanges();
+    int aTotalPtsPerIter = aNbSamplesU * aNbSamplesV;
+    std::cout << "Points per span block (avg): " << aTotalPtsPerIter / aTotalSpanBlocks << "\n\n";
+  }
+
+  std::cout << "--- Sequential Access (row-major iteration) ---\n";
+  std::cout << "GeomAdaptor_Surface::D0():        " << aAdaptorSeqTime * 1000.0 << " ms ("
+            << aTotalPoints / aAdaptorSeqTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "Direct BSplSLib_Cache (baseline): " << aCacheDirectTime * 1000.0 << " ms ("
+            << aTotalPoints / aCacheDirectTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "Geom_BSplineSurface::D0():        " << aGeomSeqTime * 1000.0 << " ms ("
+            << aTotalPoints / aGeomSeqTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEvaluator::D0() checked:      " << aGridEvalSeqTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalSeqTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEvaluator::D0Raw():           " << aGridEvalSeqRawTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalSeqRawTime / 1000000.0 << " M pts/sec) [multi-span]\n";
+  std::cout << "GridEvaluator::D0Direct():        " << aGridEvalDirectTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalDirectTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "Direct Cache (copy, later):       " << aGridEvalCacheDirectTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalCacheDirectTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEvaluator::EvaluateGrid():    " << aGridEvalBatchTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalBatchTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEval D0SingleSpan (Bezier):   " << aSingleSpanTime * 1000.0 << " ms ("
+            << aTotalPoints / aSingleSpanTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEval D0CacheDirect (Bezier):  " << aCacheDirectRawTime * 1000.0 << " ms ("
+            << aTotalPoints / aCacheDirectRawTime / 1000000.0 << " M pts/sec)\n";
+
+  std::cout << "\n--- Random Access (shuffled indices) ---\n";
+  std::cout << "GeomAdaptor_Surface::D0():        " << aAdaptorRndTime * 1000.0 << " ms ("
+            << aTotalPoints / aAdaptorRndTime / 1000000.0 << " M pts/sec)\n";
+  std::cout << "GridEvaluator::D0Unchecked():     " << aGridEvalRndTime * 1000.0 << " ms ("
+            << aTotalPoints / aGridEvalRndTime / 1000000.0 << " M pts/sec)\n";
+
+  std::cout << "\n--- Speedup Summary (vs GeomAdaptor sequential) ---\n";
+  if (aAdaptorSeqTime > 0.0)
+  {
+    std::cout << "GridEval D0 checked:     " << aAdaptorSeqTime / aGridEvalSeqTime << "x\n";
+    std::cout << "GridEval D0Raw:          " << aAdaptorSeqTime / aGridEvalSeqRawTime << "x\n";
+    std::cout << "GridEval EvaluateGrid:   " << aAdaptorSeqTime / aGridEvalBatchTime << "x\n";
+    std::cout << "GridEval random:         " << aAdaptorSeqTime / aGridEvalRndTime << "x\n";
+    std::cout << "Adaptor random:          " << aAdaptorSeqTime / aAdaptorRndTime << "x\n";
+  }
+
+  std::cout << "\n--- Speedup Summary (vs Geom_BSplineSurface::D0) ---\n";
+  if (aGeomSeqTime > 0.0)
+  {
+    std::cout << "GridEval D0 checked:     " << aGeomSeqTime / aGridEvalSeqTime << "x\n";
+    std::cout << "GridEval D0Raw:          " << aGeomSeqTime / aGridEvalSeqRawTime << "x\n";
+    std::cout << "GridEval EvaluateGrid:   " << aGeomSeqTime / aGridEvalBatchTime << "x\n";
+    std::cout << "Adaptor sequential:      " << aGeomSeqTime / aAdaptorSeqTime << "x\n";
+  }
+  std::cout << "=====================================================\n";
+
+  // Verify correctness
+  GeomAdaptor_Surface aVerifyAdaptor(aBSplineSurf);
+
+  BSplSLib_GridEvaluator aVerifyGridEval;
+  aVerifyGridEval.Initialize(aDegU,
+                             aDegV,
+                             aBSplineSurf->HArrayPoles(),
+                             aBSplineSurf->HArrayWeights(),
+                             aBSplineSurf->HArrayUFlatKnots(),
+                             aBSplineSurf->HArrayVFlatKnots(),
+                             aBSplineSurf->IsURational(),
+                             aBSplineSurf->IsVRational(),
+                             aBSplineSurf->IsUPeriodic(),
+                             aBSplineSurf->IsVPeriodic());
+  aVerifyGridEval.SetUParams(aUParams);
+  aVerifyGridEval.SetVParams(aVParams);
+
+  for (int iu = 1; iu <= aNbSamplesU; iu += 10)
+  {
+    for (int iv = 1; iv <= aNbSamplesV; iv += 10)
+    {
+      gp_Pnt aPtAdaptor, aPtGeom, aPtGrid;
+      aVerifyAdaptor.D0(aUParams->Value(iu), aVParams->Value(iv), aPtAdaptor);
+      aBSplineSurf->D0(aUParams->Value(iu), aVParams->Value(iv), aPtGeom);
+      aVerifyGridEval.D0(iu, iv, aPtGrid);
+
+      EXPECT_NEAR(aPtAdaptor.X(), aPtGrid.X(), Precision::Confusion());
+      EXPECT_NEAR(aPtAdaptor.Y(), aPtGrid.Y(), Precision::Confusion());
+      EXPECT_NEAR(aPtAdaptor.Z(), aPtGrid.Z(), Precision::Confusion());
+
+      EXPECT_NEAR(aPtGeom.X(), aPtGrid.X(), Precision::Confusion());
+      EXPECT_NEAR(aPtGeom.Y(), aPtGrid.Y(), Precision::Confusion());
+      EXPECT_NEAR(aPtGeom.Z(), aPtGrid.Z(), Precision::Confusion());
+    }
+  }
+
+  // The grid evaluator should not be slower than direct Geom evaluation
+  EXPECT_LE(aGridEvalSeqTime, aGeomSeqTime * 1.5); // Allow 50% margin for variability
 }

@@ -79,6 +79,14 @@ public:
     int    SpanIndex; //!< Flat knot index identifying the span
   };
 
+  //! Range of parameter indices belonging to the same span.
+  struct SpanRange
+  {
+    int SpanIndex; //!< Flat knot index of this span
+    int StartIdx;  //!< First parameter index in this span (1-based, inclusive)
+    int EndIdx;    //!< Past-the-end parameter index (exclusive)
+  };
+
   //! Empty constructor.
   Standard_EXPORT BSplSLib_GridEvaluator();
 
@@ -270,6 +278,162 @@ public:
   //! @return true if evaluation succeeded, false if indices are invalid
   Standard_EXPORT bool D0(int theIU, int theIV, gp_Pnt& theP) const;
 
+  //! Fast evaluation without bounds checking for performance-critical loops.
+  //! Caller must ensure indices are valid: 1 <= theIU <= NbUParams(), 1 <= theIV <= NbVParams().
+  //! @param theIU U index (1-based, unchecked)
+  //! @param theIV V index (1-based, unchecked)
+  //! @param theP  output point
+  void D0Unchecked(int theIU, int theIV, gp_Pnt& theP) const
+  {
+    const ParamWithSpan& aUParam = myUParams.Value(theIU);
+    const ParamWithSpan& aVParam = myVParams.Value(theIV);
+
+    // Inline cache validity check for maximum performance
+    if (myCachedUSpanIndex != aUParam.SpanIndex || myCachedVSpanIndex != aVParam.SpanIndex
+        || myCache.IsNull())
+    {
+      rebuildCache(aUParam.SpanIndex, aVParam.SpanIndex, aUParam.Param, aVParam.Param);
+    }
+    myCache->D0(aUParam.Param, aVParam.Param, theP);
+  }
+
+  //! Returns raw pointer to U parameters array for zero-overhead iteration.
+  //! Valid indices: [0..NbUParams()-1]. The pointer is valid as long as the evaluator exists.
+  //! @return pointer to first U parameter, or nullptr if no parameters prepared
+  const ParamWithSpan* UParamsData() const
+  {
+    return myUParams.IsEmpty() ? nullptr : &myUParams.First();
+  }
+
+  //! Returns raw pointer to V parameters array for zero-overhead iteration.
+  //! Valid indices: [0..NbVParams()-1]. The pointer is valid as long as the evaluator exists.
+  //! @return pointer to first V parameter, or nullptr if no parameters prepared
+  const ParamWithSpan* VParamsData() const
+  {
+    return myVParams.IsEmpty() ? nullptr : &myVParams.First();
+  }
+
+  //! Fastest evaluation using raw parameter data (no array bounds checking).
+  //! Use with UParamsData()/VParamsData() for maximum performance.
+  //! IMPORTANT: Call EnsureCacheReady() once before using this method.
+  //! @param theUParam pre-fetched U parameter data
+  //! @param theVParam pre-fetched V parameter data
+  //! @param theP output point
+  void D0Raw(const ParamWithSpan& theUParam, const ParamWithSpan& theVParam, gp_Pnt& theP) const
+  {
+    // Note: No IsNull() check - assumes EnsureCacheReady() was called
+    if (myCachedUSpanIndex != theUParam.SpanIndex || myCachedVSpanIndex != theVParam.SpanIndex)
+    {
+      rebuildCache(theUParam.SpanIndex, theVParam.SpanIndex, theUParam.Param, theVParam.Param);
+    }
+    myCache->D0(theUParam.Param, theVParam.Param, theP);
+  }
+
+  //! Ensures the cache is created and ready for evaluation.
+  //! Call this once before using D0Raw() in a loop.
+  void EnsureCacheReady() const
+  {
+    if (myCache.IsNull() && !myUParams.IsEmpty() && !myVParams.IsEmpty())
+    {
+      rebuildCache(myUParams.First().SpanIndex,
+                   myVParams.First().SpanIndex,
+                   myUParams.First().Param,
+                   myVParams.First().Param);
+    }
+  }
+
+  //! Returns true if all U parameters are in the same span.
+  //! When true, the cache never needs to be rebuilt for U direction.
+  bool IsSingleUSpan() const
+  {
+    if (myUParams.IsEmpty())
+      return true;
+    const int aFirstSpan = myUParams.First().SpanIndex;
+    const int aLastSpan  = myUParams.Last().SpanIndex;
+    return aFirstSpan == aLastSpan;
+  }
+
+  //! Returns true if all V parameters are in the same span.
+  //! When true, the cache never needs to be rebuilt for V direction.
+  bool IsSingleVSpan() const
+  {
+    if (myVParams.IsEmpty())
+      return true;
+    const int aFirstSpan = myVParams.First().SpanIndex;
+    const int aLastSpan  = myVParams.Last().SpanIndex;
+    return aFirstSpan == aLastSpan;
+  }
+
+  //! Returns true if all parameters fit in a single UV span.
+  //! When true, D0SingleSpan() can be used for maximum performance.
+  bool IsSingleSpan() const { return IsSingleUSpan() && IsSingleVSpan(); }
+
+  //! Returns number of U span ranges (contiguous blocks of parameters in the same span).
+  int NbUSpanRanges() const { return myUSpanRanges.Length(); }
+
+  //! Returns number of V span ranges.
+  int NbVSpanRanges() const { return myVSpanRanges.Length(); }
+
+  //! Returns U span range at index (0-based).
+  //! @param theIndex range index (0-based)
+  //! @return span range data
+  const SpanRange& USpanRange(int theIndex) const { return myUSpanRanges.Value(theIndex); }
+
+  //! Returns V span range at index (0-based).
+  //! @param theIndex range index (0-based)
+  //! @return span range data
+  const SpanRange& VSpanRange(int theIndex) const { return myVSpanRanges.Value(theIndex); }
+
+  //! Fastest evaluation when all parameters are in a single span.
+  //! Call IsSingleSpan() first to verify. Cache is never rebuilt.
+  //! @param theUParam pre-fetched U parameter data
+  //! @param theVParam pre-fetched V parameter data
+  //! @param theP output point
+  void D0SingleSpan(const ParamWithSpan& theUParam,
+                    const ParamWithSpan& theVParam,
+                    gp_Pnt&              theP) const
+  {
+    myCache->D0(theUParam.Param, theVParam.Param, theP);
+  }
+
+  //! Direct cache evaluation using raw parameter values.
+  //! This is the absolute fastest path - no struct access, no span checking.
+  //! Requires: EnsureCacheReady() called and IsSingleSpan() == true.
+  //! @param theU U parameter value
+  //! @param theV V parameter value
+  //! @param theP output point
+  void D0CacheDirect(double theU, double theV, gp_Pnt& theP) const
+  {
+    myCache->D0(theU, theV, theP);
+  }
+
+  //! Evaluation using cache's native validity check (same pattern as GeomAdaptor).
+  //! This method bypasses span index tracking and uses the cache's IsCacheValid directly.
+  //! For sequential access where cache hits are common, this should match GeomAdaptor performance.
+  //! @param theU U parameter value
+  //! @param theV V parameter value
+  //! @param theP output point
+  void D0Direct(double theU, double theV, gp_Pnt& theP) const
+  {
+    if (myCache.IsNull() || !myCache->IsCacheValid(theU, theV))
+    {
+      rebuildCacheDirect(theU, theV);
+    }
+    myCache->D0(theU, theV, theP);
+  }
+
+  //! Returns the internal cache (for advanced usage / testing).
+  //! Allows direct access to the cache for performance-critical code
+  //! that wants to replicate GeomAdaptor's exact pattern.
+  //! @return handle to the internal cache (may be null if not yet built)
+  const Handle(BSplSLib_Cache)& Cache() const { return myCache; }
+
+  //! Ensures the internal cache is created and built for the given parameters.
+  //! Call this once before using Cache() directly for evaluation.
+  //! @param theU U parameter to build cache for
+  //! @param theV V parameter to build cache for
+  void BuildCache(double theU, double theV) const { rebuildCacheDirect(theU, theV); }
+
   //! Evaluate point and first derivatives at grid position.
   //! @param theIU U index (1-based)
   //! @param theIV V index (1-based)
@@ -370,6 +534,20 @@ private:
                         double theUParam,
                         double theVParam) const;
 
+  //! Rebuild cache for the given span (called when cache is invalid).
+  //! Separated from ensureCacheValid to allow inlining of the fast path.
+  void rebuildCache(int theUSpanIndex, int theVSpanIndex, double theUParam, double theVParam) const;
+
+  //! Rebuild cache using only parameter values (for D0Direct method).
+  //! Does not update span index tracking.
+  void rebuildCacheDirect(double theUParam, double theVParam) const;
+
+  //! Compute span ranges from parameters array.
+  //! @param theParams     source parameters with span indices
+  //! @param theSpanRanges output span ranges array
+  static void computeSpanRanges(const NCollection_Array1<ParamWithSpan>& theParams,
+                                NCollection_Array1<SpanRange>&           theSpanRanges);
+
 private:
   int                           myDegreeU;
   int                           myDegreeV;
@@ -386,6 +564,10 @@ private:
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myUParams;
   NCollection_Array1<ParamWithSpan> myVParams;
+
+  // Pre-computed span ranges for optimized iteration
+  NCollection_Array1<SpanRange> myUSpanRanges;
+  NCollection_Array1<SpanRange> myVSpanRanges;
 
   // Cache for efficient evaluation within spans
   mutable Handle(BSplSLib_Cache) myCache;
