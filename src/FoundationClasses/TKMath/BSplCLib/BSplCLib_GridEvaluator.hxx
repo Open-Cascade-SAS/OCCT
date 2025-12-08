@@ -20,30 +20,54 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+#include <optional>
+
 class gp_Pnt;
 class gp_Vec;
 
-//! @brief Efficient grid evaluator for BSpline curves.
+//! @brief Efficient grid evaluator for B-spline and Bezier curves.
 //!
-//! Optimizes evaluation of multiple points on a BSpline curve by
+//! Optimizes evaluation of multiple points on a B-spline curve by
 //! pre-computing span indices for parameter arrays. This eliminates
 //! the binary search (LocateParameter) overhead when evaluating grid points.
 //!
 //! The class is designed for scenarios where many points need to be evaluated
-//! on a BSpline curve, such as:
+//! on a B-spline curve, such as:
 //! - Building sampling grids for extrema computation
 //! - Tessellation and discretization
 //! - Curve analysis
 //!
-//! Usage:
+//! @warning LIFETIME REQUIREMENT: This class stores pointers to external data
+//! (poles, weights, flat knots). The caller MUST ensure these arrays remain
+//! valid and unchanged for the entire lifetime of the evaluator. Destroying
+//! or modifying the source arrays after Initialize() leads to undefined behavior.
+//!
+//! For Bezier curves, use InitializeBezier() which generates internal flat knots.
+//!
+//! Usage for B-spline:
 //! @code
 //!   BSplCLib_GridEvaluator anEvaluator;
-//!   anEvaluator.Initialize(poles, weights, knots, degree, ...);
+//!   anEvaluator.Initialize(poles, weights, flatKnots, degree, ...);
 //!   anEvaluator.PrepareParamsFromKnots(tMin, tMax, minSamples);
 //!
-//!   // Evaluate all grid points efficiently - no binary search per point
 //!   for (int i = 1; i <= anEvaluator.NbParams(); ++i)
-//!       gp_Pnt P = anEvaluator.Value(i);
+//!   {
+//!     if (auto aPt = anEvaluator.Value(i))
+//!       ProcessPoint(*aPt);
+//!   }
+//! @endcode
+//!
+//! Usage for Bezier:
+//! @code
+//!   BSplCLib_GridEvaluator anEvaluator;
+//!   anEvaluator.InitializeBezier(poles, weights);
+//!   anEvaluator.PrepareParams(0.0, 1.0, 20);
+//!
+//!   for (int i = 1; i <= anEvaluator.NbParams(); ++i)
+//!   {
+//!     if (auto aPt = anEvaluator.Value(i))
+//!       ProcessPoint(*aPt);
+//!   }
 //! @endcode
 class BSplCLib_GridEvaluator
 {
@@ -53,41 +77,60 @@ public:
   //! Parameter value with pre-computed span index.
   struct ParamWithSpan
   {
-    double Param;     //!< parameter value
-    int    SpanIndex; //!< flat knot index identifying the span
+    double Param;     //!< Parameter value
+    int    SpanIndex; //!< Flat knot index identifying the span
   };
 
   //! Empty constructor.
   Standard_EXPORT BSplCLib_GridEvaluator();
 
-  //! Initialize with BSpline curve data.
-  //! @param theDegree    polynomial degree
+  //! Initialize with B-spline curve data.
+  //! @warning The caller must ensure all referenced arrays remain valid
+  //!          for the lifetime of this evaluator.
+  //! @param theDegree    polynomial degree (must be >= 1)
   //! @param thePoles     array of control points
   //! @param theWeights   array of weights (nullptr for non-rational)
-  //! @param theFlatKnots flat knot sequence
-  //! @param theRational  true if rational curve
+  //! @param theFlatKnots flat knot sequence (must be sorted, size = NbPoles + Degree + 1)
+  //! @param theRational  true if rational curve (requires non-null weights)
   //! @param thePeriodic  true if periodic curve
-  Standard_EXPORT void Initialize(int                        theDegree,
-                                  const TColgp_Array1OfPnt&  thePoles,
+  //! @return true if initialization succeeded, false if parameters are invalid
+  Standard_EXPORT bool Initialize(int                         theDegree,
+                                  const TColgp_Array1OfPnt&   thePoles,
                                   const TColStd_Array1OfReal* theWeights,
                                   const TColStd_Array1OfReal& theFlatKnots,
-                                  bool                       theRational,
-                                  bool                       thePeriodic);
+                                  bool                        theRational,
+                                  bool                        thePeriodic);
 
-  //! Prepare parameters aligned with knots (optimal for BSplines).
+  //! Initialize with Bezier curve data.
+  //! Internally generates appropriate flat knot vector [0,0,...,0,1,1,...,1].
+  //! @param thePoles   array of control points (degree = NbPoles - 1)
+  //! @param theWeights array of weights (nullptr for non-rational)
+  //! @return true if initialization succeeded, false if parameters are invalid
+  Standard_EXPORT bool InitializeBezier(const TColgp_Array1OfPnt&   thePoles,
+                                        const TColStd_Array1OfReal* theWeights);
+
+  //! Prepare parameters aligned with knots (optimal for B-splines).
   //! Creates sample points within each knot span based on degree.
   //! The span indices are computed during this process - no binary search later.
-  //! @param theParamMin   minimum parameter value
-  //! @param theParamMax   maximum parameter value
-  //! @param theMinSamples minimum number of samples (may increase based on knots)
-  Standard_EXPORT void PrepareParamsFromKnots(double theParamMin, double theParamMax, int theMinSamples);
+  //! @param theParamMin     minimum parameter value
+  //! @param theParamMax     maximum parameter value
+  //! @param theMinSamples   minimum number of samples (may increase based on knots)
+  //! @param theIncludeEnds  if true, include exact boundary values (default: true)
+  Standard_EXPORT void PrepareParamsFromKnots(double theParamMin,
+                                              double theParamMax,
+                                              int    theMinSamples,
+                                              bool   theIncludeEnds = true);
 
   //! Prepare parameters with uniform distribution.
   //! Span indices are computed for each parameter.
-  //! @param theParamMin  minimum parameter value
-  //! @param theParamMax  maximum parameter value
-  //! @param theNbSamples number of samples
-  Standard_EXPORT void PrepareParams(double theParamMin, double theParamMax, int theNbSamples);
+  //! @param theParamMin    minimum parameter value
+  //! @param theParamMax    maximum parameter value
+  //! @param theNbSamples   number of samples (minimum 2)
+  //! @param theIncludeEnds if true, include exact boundary values (default: true)
+  Standard_EXPORT void PrepareParams(double theParamMin,
+                                     double theParamMax,
+                                     int    theNbSamples,
+                                     bool   theIncludeEnds = true);
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
@@ -96,69 +139,77 @@ public:
   int NbParams() const { return myParams.Length(); }
 
   //! Returns parameter data at index (1-based).
-  const ParamWithSpan& ParamData(int theIndex) const { return myParams.Value(theIndex); }
+  //! @param theIndex parameter index (1-based)
+  //! @return parameter data if index is valid, empty optional otherwise
+  std::optional<ParamWithSpan> ParamData(int theIndex) const
+  {
+    if (theIndex < 1 || theIndex > myParams.Length())
+    {
+      return std::nullopt;
+    }
+    return myParams.Value(theIndex);
+  }
 
   //! Returns parameter value at index (1-based).
-  double Param(int theIndex) const { return myParams.Value(theIndex).Param; }
+  //! @param theIndex parameter index (1-based)
+  //! @return parameter value if index is valid, empty optional otherwise
+  std::optional<double> Param(int theIndex) const
+  {
+    if (theIndex < 1 || theIndex > myParams.Length())
+    {
+      return std::nullopt;
+    }
+    return myParams.Value(theIndex).Param;
+  }
 
   //! Evaluate point at grid position.
   //! Uses pre-computed span indices - no binary search.
   //! @param theIndex parameter index (1-based)
-  //! @return computed point on curve
-  Standard_EXPORT gp_Pnt Value(int theIndex) const;
+  //! @return computed point on curve, or empty optional if index is invalid
+  Standard_EXPORT std::optional<gp_Pnt> Value(int theIndex) const;
 
   //! Evaluate point at grid position.
   //! @param theIndex parameter index (1-based)
   //! @param theP     output point
-  Standard_EXPORT void D0(int theIndex, gp_Pnt& theP) const;
+  //! @return true if evaluation succeeded, false if index is invalid
+  Standard_EXPORT bool D0(int theIndex, gp_Pnt& theP) const;
 
   //! Evaluate point and first derivative at grid position.
   //! @param theIndex parameter index (1-based)
   //! @param theP     output point
   //! @param theD1    output derivative
-  Standard_EXPORT void D1(int theIndex, gp_Pnt& theP, gp_Vec& theD1) const;
+  //! @return true if evaluation succeeded, false if index is invalid
+  Standard_EXPORT bool D1(int theIndex, gp_Pnt& theP, gp_Vec& theD1) const;
 
   //! Evaluate point and derivatives up to 2nd order at grid position.
   //! @param theIndex parameter index (1-based)
   //! @param theP     output point
   //! @param theD1    output first derivative
   //! @param theD2    output second derivative
-  Standard_EXPORT void D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const;
+  //! @return true if evaluation succeeded, false if index is invalid
+  Standard_EXPORT bool D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const;
 
 private:
-  //! Compute parameters aligned with knots and their span indices.
-  void computeKnotAlignedParams(const TColStd_Array1OfReal&     theFlatKnots,
-                                int                             theDegree,
-                                bool                            thePeriodic,
-                                double                          theParamMin,
-                                double                          theParamMax,
-                                int                             theMinSamples,
-                                NCollection_Array1<ParamWithSpan>& theParams) const;
+  //! Compute parameters aligned with knots and their span indices (single-pass).
+  void computeKnotAlignedParams(double theParamMin,
+                                double theParamMax,
+                                int    theMinSamples,
+                                bool   theIncludeEnds);
 
   //! Compute uniform parameters with their span indices.
-  void computeUniformParams(const TColStd_Array1OfReal&     theFlatKnots,
-                            int                             theDegree,
-                            bool                            thePeriodic,
-                            double                          theParamMin,
-                            double                          theParamMax,
-                            int                             theNbSamples,
-                            NCollection_Array1<ParamWithSpan>& theParams) const;
+  void computeUniformParams(double theParamMin, double theParamMax, int theNbSamples, bool theIncludeEnds);
 
   //! Find span index for a parameter value using binary search.
-  int locateSpan(const TColStd_Array1OfReal& theFlatKnots,
-                 int                         theDegree,
-                 bool                        thePeriodic,
-                 double                      theParam) const;
+  int locateSpan(double theParam) const;
 
   //! Find span index with a hint for better performance on sorted parameters.
-  int locateSpanWithHint(const TColStd_Array1OfReal& theFlatKnots,
-                         int                         theDegree,
-                         bool                        thePeriodic,
-                         double                      theParam,
-                         int                         theHint) const;
+  int locateSpanWithHint(double theParam, int theHint) const;
+
+  //! Check if index is valid for parameter access.
+  bool isValidIndex(int theIndex) const { return theIndex >= 1 && theIndex <= myParams.Length(); }
 
 private:
-  // Curve data (stored by pointer)
+  // Curve data (stored by pointer - caller must ensure lifetime)
   int                         myDegree;
   const TColgp_Array1OfPnt*   myPoles;
   const TColStd_Array1OfReal* myWeights;
@@ -166,6 +217,9 @@ private:
   bool                        myRational;
   bool                        myPeriodic;
   bool                        myIsInitialized;
+
+  // Internal flat knots for Bezier curves
+  TColStd_Array1OfReal myBezierFlatKnots;
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myParams;
