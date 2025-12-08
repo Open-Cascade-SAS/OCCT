@@ -221,8 +221,8 @@ TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_MatchesBSplSLib)
   Handle(TColStd_HArray1OfReal) aUParams = createUniformParams(0.0, 1.0, 5);
   Handle(TColStd_HArray1OfReal) aVParams = createUniformParams(0.0, 1.0, 5);
 
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUParams(aUParams->Array1());
+  anEval.SetVParams(aVParams->Array1());
 
   EXPECT_EQ(anEval.NbUParams(), 5);
   EXPECT_EQ(anEval.NbVParams(), 5);
@@ -300,8 +300,8 @@ TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_RationalSurface)
   Handle(TColStd_HArray1OfReal) aUParams = createUniformParams(0.0, 1.0, 5);
   Handle(TColStd_HArray1OfReal) aVParams = createUniformParams(0.0, 1.0, 5);
 
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUParams(aUParams->Array1());
+  anEval.SetVParams(aVParams->Array1());
 
   NCollection_Array2<gp_Pnt> aGridPoints = anEval.EvaluateGrid();
 

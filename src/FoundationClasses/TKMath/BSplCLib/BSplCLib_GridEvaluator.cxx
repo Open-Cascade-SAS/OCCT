@@ -83,14 +83,14 @@ bool BSplCLib_GridEvaluator::Initialize(int                                  the
 
 //==================================================================================================
 
-void BSplCLib_GridEvaluator::SetParams(const Handle(TColStd_HArray1OfReal)& theParams)
+void BSplCLib_GridEvaluator::SetParams(const TColStd_Array1OfReal& theParams)
 {
-  if (!myIsInitialized || myFlatKnots.IsNull() || theParams.IsNull())
+  if (!myIsInitialized || myFlatKnots.IsNull() || theParams.IsEmpty())
   {
     return;
   }
 
-  const int aNbParams = theParams->Length();
+  const int aNbParams = theParams.Size();
   if (aNbParams < 1)
   {
     return;
@@ -105,7 +105,7 @@ void BSplCLib_GridEvaluator::SetParams(const Handle(TColStd_HArray1OfReal)& theP
 
   for (int i = 1; i <= aNbParams; ++i)
   {
-    const double aParam   = theParams->Value(i);
+    const double aParam   = theParams.Value(i);
     const int    aSpanIdx = locateSpanWithHint(aParam, aPrevSpan);
     aPrevSpan             = aSpanIdx;
 

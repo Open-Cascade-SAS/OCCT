@@ -196,7 +196,7 @@ TEST(BSplCLib_GridEvaluatorTest, SetParams)
     aParams->SetValue(i, (i - 1) / 9.0);
   }
 
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   EXPECT_EQ(anEval.NbParams(), 10);
 }
@@ -218,7 +218,7 @@ TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_NonRational)
   {
     aParams->SetValue(i, (i - 1) / 9.0);
   }
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate grid
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
@@ -255,7 +255,7 @@ TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_Rational)
   {
     aParams->SetValue(i, (i - 1) / 9.0);
   }
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate grid
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
@@ -312,7 +312,7 @@ TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_CompareWithBSplCLib)
   {
     aParams->SetValue(i, (i - 1) / 9.0);
   }
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate grid
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
@@ -369,7 +369,7 @@ TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_MultiSpan)
   {
     aParams->SetValue(i, (i - 1) / 99.0);
   }
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate grid
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluateGrid();
@@ -407,7 +407,7 @@ TEST(BSplCLib_GridEvaluatorTest, SetParams_NullHandle)
   anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   // Call with null handle - should not crash
-  anEval.SetParams(Handle(TColStd_HArray1OfReal)());
+  anEval.SetParams(TColStd_Array1OfReal());
 
   // Parameters should remain empty
   EXPECT_EQ(anEval.NbParams(), 0);
@@ -430,7 +430,7 @@ TEST(BSplCLib_GridEvaluatorTest, ReinitializationResetsState)
   {
     aParams->SetValue(i, (i - 1) / 9.0);
   }
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate to populate cache
   NCollection_Array1<gp_Pnt> aPoints1 = anEval.EvaluateGrid();
@@ -446,7 +446,7 @@ TEST(BSplCLib_GridEvaluatorTest, ReinitializationResetsState)
 
   // Reinitialize with new poles
   anEval.Initialize(aDeg, aNewPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   // Evaluate - should get points from new curve
   NCollection_Array1<gp_Pnt> aPoints2 = anEval.EvaluateGrid();
@@ -468,7 +468,7 @@ TEST(BSplCLib_GridEvaluatorTest, SingleParameter)
   // Create single parameter
   Handle(TColStd_HArray1OfReal) aParams = new TColStd_HArray1OfReal(1, 1);
   aParams->SetValue(1, 0.5);
-  anEval.SetParams(aParams);
+  anEval.SetParams(aParams->Array1());
 
   EXPECT_EQ(anEval.NbParams(), 1);
 

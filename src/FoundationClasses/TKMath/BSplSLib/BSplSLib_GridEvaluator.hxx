@@ -74,13 +74,13 @@ public:
 
   //! Set U parameters from array.
   //! Span indices and span ranges are pre-computed for optimal EvaluateGrid() performance.
-  //! @param theUParams handle to array of U parameter values (1-based)
-  Standard_EXPORT void SetUParams(const Handle(TColStd_HArray1OfReal)& theUParams);
+  //! @param theUParams array of U parameter values
+  Standard_EXPORT void SetUParams(const TColStd_Array1OfReal& theUParams);
 
   //! Set V parameters from array.
   //! Span indices and span ranges are pre-computed for optimal EvaluateGrid() performance.
-  //! @param theVParams handle to array of V parameter values (1-based)
-  Standard_EXPORT void SetVParams(const Handle(TColStd_HArray1OfReal)& theVParams);
+  //! @param theVParams array of V parameter values
+  Standard_EXPORT void SetVParams(const TColStd_Array1OfReal& theVParams);
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }

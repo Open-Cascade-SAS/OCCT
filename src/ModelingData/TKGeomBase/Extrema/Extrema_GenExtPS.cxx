@@ -557,8 +557,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
                                               aBspl->IsVPeriodic());
         if (isGridEvalUsed)
         {
-          aGridEval.SetUParams(myUParams);
-          aGridEval.SetVParams(myVParams);
+          aGridEval.SetUParams(myUParams->Array1());
+          aGridEval.SetVParams(myVParams->Array1());
 
           NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
           for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
@@ -920,8 +920,8 @@ void Extrema_GenExtPS::BuildTree()
                                             aBspl->IsVPeriodic());
       if (isGridEvalUsed)
       {
-        aGridEval.SetUParams(myUParams);
-        aGridEval.SetVParams(myVParams);
+        aGridEval.SetUParams(myUParams->Array1());
+        aGridEval.SetVParams(myVParams->Array1());
 
         NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
         for (NoU = 1; NoU <= myusample; NoU++)

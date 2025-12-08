@@ -100,12 +100,12 @@ bool BSplSLib_GridEvaluator::Initialize(int                                  the
 
 //==================================================================================================
 
-void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& theUParams)
+void BSplSLib_GridEvaluator::SetUParams(const TColStd_Array1OfReal& theUParams)
 {
-  if (!myIsInitialized || theUParams.IsNull())
+  if (!myIsInitialized)
     return;
 
-  const int aNbParams = theUParams->Length();
+  const int aNbParams = theUParams.Length();
   if (aNbParams < 2)
     return;
 
@@ -119,7 +119,7 @@ void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& the
 
   for (int i = 0; i < aNbParams; ++i)
   {
-    const double aParam   = theUParams->Value(i + 1);
+    const double aParam   = theUParams.Value(theUParams.Lower() + i);
     const int    aSpanIdx = locateSpanWithHint(aParam, true, aPrevSpan);
     aPrevSpan             = aSpanIdx;
 
@@ -140,12 +140,12 @@ void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& the
 
 //==================================================================================================
 
-void BSplSLib_GridEvaluator::SetVParams(const Handle(TColStd_HArray1OfReal)& theVParams)
+void BSplSLib_GridEvaluator::SetVParams(const TColStd_Array1OfReal& theVParams)
 {
-  if (!myIsInitialized || theVParams.IsNull())
+  if (!myIsInitialized)
     return;
 
-  const int aNbParams = theVParams->Length();
+  const int aNbParams = theVParams.Length();
   if (aNbParams < 2)
     return;
 
@@ -159,7 +159,7 @@ void BSplSLib_GridEvaluator::SetVParams(const Handle(TColStd_HArray1OfReal)& the
 
   for (int i = 0; i < aNbParams; ++i)
   {
-    const double aParam   = theVParams->Value(i + 1);
+    const double aParam   = theVParams.Value(theVParams.Lower() + i);
     const int    aSpanIdx = locateSpanWithHint(aParam, false, aPrevSpan);
     aPrevSpan             = aSpanIdx;
 

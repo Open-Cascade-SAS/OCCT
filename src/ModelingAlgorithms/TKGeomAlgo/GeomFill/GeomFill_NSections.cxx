@@ -849,12 +849,12 @@ gp_Pnt GeomFill_NSections::BarycentreOfSurf() const
   const double aDeltaV = (V1 - V0) / (THE_NB_SAMPLES - 1);
 
   // Build parameter arrays
-  Handle(TColStd_HArray1OfReal) aUParams = new TColStd_HArray1OfReal(1, THE_NB_SAMPLES);
-  Handle(TColStd_HArray1OfReal) aVParams = new TColStd_HArray1OfReal(1, THE_NB_SAMPLES);
+  TColStd_Array1OfReal aUParams(1, THE_NB_SAMPLES);
+  TColStd_Array1OfReal aVParams(1, THE_NB_SAMPLES);
   for (int i = 0; i < THE_NB_SAMPLES; ++i)
   {
-    aUParams->SetValue(i + 1, U0 + i * aDeltaU);
-    aVParams->SetValue(i + 1, V0 + i * aDeltaV);
+    aUParams.SetValue(i + 1, U0 + i * aDeltaU);
+    aVParams.SetValue(i + 1, V0 + i * aDeltaV);
   }
 
   // Use grid evaluator for efficient batch evaluation

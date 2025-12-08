@@ -64,7 +64,7 @@ public:
   //! Set parameters from array.
   //! Span indices and local parameters are pre-computed for optimal EvaluateGrid() performance.
   //! @param theParams handle to array of parameter values (1-based)
-  Standard_EXPORT void SetParams(const Handle(TColStd_HArray1OfReal)& theParams);
+  Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
