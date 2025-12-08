@@ -403,8 +403,8 @@ TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_NoParams)
 TEST(BSplSLib_GridEvaluatorTest, PerformanceComparison_GridEvaluatorVsAdaptorVsGeom)
 {
   // Test parameters
-  const int    aNbSamplesU   = 50;
-  const int    aNbSamplesV   = 50;
+  const int    aNbSamplesU   = 200;
+  const int    aNbSamplesV   = 200;
   const int    aNbIterations = 1000;
   const double aUMin = 0.0, aUMax = 1.0;
   const double aVMin = 0.0, aVMax = 1.0;

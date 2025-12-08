@@ -153,6 +153,52 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
     thePoint.ChangeCoord().Divide(aPoint[3]);
 }
 
+void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
+{
+  Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
+  Standard_Real  aPoint[4];
+
+  Standard_Integer aDimension       = myIsRational ? 4 : 3;
+  Standard_Integer aCacheCols       = myPolesWeights->RowLength();
+  Standard_Integer aMinMaxDegree[2] = {std::min(myParamsU.Degree, myParamsV.Degree),
+                                       std::max(myParamsU.Degree, myParamsV.Degree)};
+  Standard_Real    aParameters[2];
+  if (myParamsU.Degree > myParamsV.Degree)
+  {
+    aParameters[0] = theLocalV;
+    aParameters[1] = theLocalU;
+  }
+  else
+  {
+    aParameters[0] = theLocalU;
+    aParameters[1] = theLocalV;
+  }
+
+  // clang-format off
+  NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols); // array for intermediate results
+  // clang-format on
+
+  // Calculate intermediate value of cached polynomial along columns
+  PLib::NoDerivativeEvalPolynomial(aParameters[1],
+                                   aMinMaxDegree[1],
+                                   aCacheCols,
+                                   aMinMaxDegree[1] * aCacheCols,
+                                   aPolesArray[0],
+                                   aTransientCoeffs[0]);
+
+  // Calculate total value
+  PLib::NoDerivativeEvalPolynomial(aParameters[0],
+                                   aMinMaxDegree[0],
+                                   aDimension,
+                                   aDimension * aMinMaxDegree[0],
+                                   aTransientCoeffs[0],
+                                   aPoint[0]);
+
+  thePoint.SetCoord(aPoint[0], aPoint[1], aPoint[2]);
+  if (myIsRational)
+    thePoint.ChangeCoord().Divide(aPoint[3]);
+}
+
 void BSplSLib_Cache::D1(const Standard_Real& theU,
                         const Standard_Real& theV,
                         gp_Pnt&              thePoint,

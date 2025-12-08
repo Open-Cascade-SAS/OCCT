@@ -112,19 +112,30 @@ void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& the
   // Resize array (0-based indexing)
   myUParams.Resize(0, aNbParams - 1, false);
 
+  const TColStd_Array1OfReal& aKnots = myUFlatKnots->Array1();
+
   // Use hint-based span location for efficiency on sorted parameters
-  int aPrevSpan = myUFlatKnots->Lower() + myDegreeU;
+  int aPrevSpan = aKnots.Lower() + myDegreeU;
 
   for (int i = 0; i < aNbParams; ++i)
   {
     const double aParam   = theUParams->Value(i + 1);
     const int    aSpanIdx = locateSpanWithHint(aParam, true, aPrevSpan);
     aPrevSpan             = aSpanIdx;
-    myUParams.SetValue(i, {aParam, aSpanIdx});
+
+    // Pre-compute local parameter in [-1, 1] range using BSplSLib convention:
+    // SpanMid = SpanStart + SpanLength/2, SpanHalfLen = SpanLength/2
+    // LocalParam = (Param - SpanMid) / SpanHalfLen
+    const double aSpanStart   = aKnots.Value(aSpanIdx);
+    const double aSpanHalfLen = 0.5 * (aKnots.Value(aSpanIdx + 1) - aSpanStart);
+    const double aSpanMid     = aSpanStart + aSpanHalfLen;
+    const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
+
+    myUParams.SetValue(i, {aParam, aLocalParam, aSpanIdx});
   }
 
-  // Pre-compute span ranges
-  computeSpanRanges(myUParams, myUSpanRanges);
+  // Pre-compute span ranges with adjusted span mid/half-length for cache convention
+  computeSpanRanges(myUParams, aKnots, myUSpanRanges);
 }
 
 //==================================================================================================
@@ -141,19 +152,30 @@ void BSplSLib_GridEvaluator::SetVParams(const Handle(TColStd_HArray1OfReal)& the
   // Resize array (0-based indexing)
   myVParams.Resize(0, aNbParams - 1, false);
 
+  const TColStd_Array1OfReal& aKnots = myVFlatKnots->Array1();
+
   // Use hint-based span location for efficiency on sorted parameters
-  int aPrevSpan = myVFlatKnots->Lower() + myDegreeV;
+  int aPrevSpan = aKnots.Lower() + myDegreeV;
 
   for (int i = 0; i < aNbParams; ++i)
   {
     const double aParam   = theVParams->Value(i + 1);
     const int    aSpanIdx = locateSpanWithHint(aParam, false, aPrevSpan);
     aPrevSpan             = aSpanIdx;
-    myVParams.SetValue(i, {aParam, aSpanIdx});
+
+    // Pre-compute local parameter in [-1, 1] range using BSplSLib convention:
+    // SpanMid = SpanStart + SpanLength/2, SpanHalfLen = SpanLength/2
+    // LocalParam = (Param - SpanMid) / SpanHalfLen
+    const double aSpanStart   = aKnots.Value(aSpanIdx);
+    const double aSpanHalfLen = 0.5 * (aKnots.Value(aSpanIdx + 1) - aSpanStart);
+    const double aSpanMid     = aSpanStart + aSpanHalfLen;
+    const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
+
+    myVParams.SetValue(i, {aParam, aLocalParam, aSpanIdx});
   }
 
-  // Pre-compute span ranges
-  computeSpanRanges(myVParams, myVSpanRanges);
+  // Pre-compute span ranges with adjusted span mid/half-length for cache convention
+  computeSpanRanges(myVParams, aKnots, myVSpanRanges);
 }
 
 //==================================================================================================
@@ -220,6 +242,7 @@ int BSplSLib_GridEvaluator::locateSpanWithHint(double theParam, bool theUDir, in
 //==================================================================================================
 
 void BSplSLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWithSpan>& theParams,
+                                               const TColStd_Array1OfReal&    theFlatKnots,
                                                NCollection_Array1<SpanRange>& theSpanRanges)
 {
   const int aNbParams = theParams.Size();
@@ -244,7 +267,7 @@ void BSplSLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWit
   // Allocate exactly the needed size (0-based indexing)
   theSpanRanges.Resize(0, aNbRanges - 1, false);
 
-  // Second pass: fill ranges
+  // Second pass: fill ranges with adjusted span mid/half-length (BSplSLib cache convention)
   aCurrentSpan    = theParams.Value(0).SpanIndex;
   int aRangeStart = 0;
   int aRangeIdx   = 0;
@@ -252,13 +275,19 @@ void BSplSLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWit
   {
     if (theParams.Value(i).SpanIndex != aCurrentSpan)
     {
-      theSpanRanges.SetValue(aRangeIdx++, {aCurrentSpan, aRangeStart, i});
+      const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+      const double aSpanHalfLen = 0.5 * (theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart);
+      const double aSpanMid     = aSpanStart + aSpanHalfLen;
+      theSpanRanges.SetValue(aRangeIdx++, {aCurrentSpan, aRangeStart, i, aSpanMid, aSpanHalfLen});
       aCurrentSpan = theParams.Value(i).SpanIndex;
       aRangeStart  = i;
     }
   }
   // Add the last range
-  theSpanRanges.SetValue(aRangeIdx, {aCurrentSpan, aRangeStart, aNbParams});
+  const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+  const double aSpanHalfLen = 0.5 * (theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart);
+  const double aSpanMid     = aSpanStart + aSpanHalfLen;
+  theSpanRanges.SetValue(aRangeIdx, {aCurrentSpan, aRangeStart, aNbParams, aSpanMid, aSpanHalfLen});
 }
 
 //==================================================================================================
@@ -328,16 +357,20 @@ NCollection_Array2<gp_Pnt> BSplSLib_GridEvaluator::EvaluateGrid() const
 
       if (aNbPoints >= THE_CACHE_THRESHOLD)
       {
-        // Large block: use cache for efficiency
+        // Large block: use cache with pre-computed local parameters for efficiency
         rebuildCache(myUParams.Value(aURange.StartIdx).Param,
                      myVParams.Value(aVRange.StartIdx).Param);
 
         for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
         {
-          const double aUParam = myUParams.Value(iu).Param;
+          const double aLocalU = myUParams.Value(iu).LocalParam;
           for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
           {
-            myCache->D0(aUParam, myVParams.Value(iv).Param, aPoints.ChangeValue(iu + 1, iv + 1));
+            // Use D0Local with pre-computed local parameters - bypasses
+            // PeriodicNormalization and local param calculation per point
+            myCache->D0Local(aLocalU,
+                             myVParams.Value(iv).LocalParam,
+                             aPoints.ChangeValue(iu + 1, iv + 1));
           }
         }
       }

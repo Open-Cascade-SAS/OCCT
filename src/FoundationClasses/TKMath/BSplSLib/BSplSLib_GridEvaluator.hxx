@@ -99,19 +99,22 @@ public:
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
 
 private:
-  //! Parameter value with pre-computed span index.
+  //! Parameter value with pre-computed span index and local parameter.
   struct ParamWithSpan
   {
-    double Param;     //!< Parameter value
-    int    SpanIndex; //!< Flat knot index identifying the span
+    double Param;      //!< Original parameter value
+    double LocalParam; //!< Pre-computed local parameter in [-1, 1] range for polynomial evaluation
+    int    SpanIndex;  //!< Flat knot index identifying the span
   };
 
   //! Range of parameter indices belonging to the same span.
   struct SpanRange
   {
-    int SpanIndex; //!< Flat knot index of this span
-    int StartIdx;  //!< First parameter index (0-based, inclusive)
-    int EndIdx;    //!< Past-the-end parameter index (exclusive)
+    int    SpanIndex;   //!< Flat knot index of this span
+    int    StartIdx;    //!< First parameter index (0-based, inclusive)
+    int    EndIdx;      //!< Past-the-end parameter index (exclusive)
+    double SpanMid;     //!< Midpoint of span (for cache convention: start + length/2)
+    double SpanHalfLen; //!< Half-length of span (for cache convention: length/2)
   };
 
   //! Find span index for a parameter value.
@@ -121,7 +124,11 @@ private:
   int locateSpanWithHint(double theParam, bool theUDir, int theHint) const;
 
   //! Compute span ranges from parameters array.
+  //! @param theParams      pre-computed parameters with span indices
+  //! @param theFlatKnots   flat knots array for span start/length calculation
+  //! @param theSpanRanges  output array of span ranges
   static void computeSpanRanges(const NCollection_Array1<ParamWithSpan>& theParams,
+                                const TColStd_Array1OfReal&              theFlatKnots,
                                 NCollection_Array1<SpanRange>&           theSpanRanges);
 
   //! Rebuild cache for the given parameter values.

@@ -104,6 +104,13 @@ public:
                           gp_Vec&              theCurvatureV,
                           gp_Vec&              theCurvatureUV) const;
 
+  //! Calculates the point using pre-computed local parameters in [-1, 1] range.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalU pre-computed local U parameter: (U - SpanMid) / SpanHalfLen
+  //! @param[in]  theLocalV pre-computed local V parameter: (V - SpanMid) / SpanHalfLen
+  //! @param[out] thePoint  the result of calculation (the point on the surface)
+  Standard_EXPORT void D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const;
+
   DEFINE_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
 
 private:
