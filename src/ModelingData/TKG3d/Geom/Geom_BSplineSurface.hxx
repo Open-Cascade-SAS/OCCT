@@ -1106,6 +1106,19 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const TColStd_Array2OfReal* Weights() const;
 
+  //! Returns handle to the poles array (direct access to internal storage).
+  const Handle(TColgp_HArray2OfPnt)& HArrayPoles() const { return poles; }
+
+  //! Returns handle to the weights array.
+  //! Returns null handle for non-rational surfaces.
+  const Handle(TColStd_HArray2OfReal)& HArrayWeights() const { return weights; }
+
+  //! Returns handle to the U flat knots sequence.
+  const Handle(TColStd_HArray1OfReal)& HArrayUFlatKnots() const { return ufknots; }
+
+  //! Returns handle to the V flat knots sequence.
+  const Handle(TColStd_HArray1OfReal)& HArrayVFlatKnots() const { return vfknots; }
+
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
                           gp_Pnt&             P) const Standard_OVERRIDE;
