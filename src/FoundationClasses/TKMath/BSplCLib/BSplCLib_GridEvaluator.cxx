@@ -15,9 +15,6 @@
 
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <NCollection_Vector.hxx>
-#include <Precision.hxx>
 
 //==================================================================================================
 
@@ -25,8 +22,7 @@ BSplCLib_GridEvaluator::BSplCLib_GridEvaluator()
     : myDegree(0),
       myRational(false),
       myPeriodic(false),
-      myIsInitialized(false),
-      myCachedSpanIndex(-1)
+      myIsInitialized(false)
 {
 }
 
@@ -71,17 +67,6 @@ bool BSplCLib_GridEvaluator::Initialize(int                                  the
     return false;
   }
 
-  // Validate flat knots size: should be NbPoles + Degree + 1
-  const int anExpectedKnots = thePoles->Length() + theDegree + 1;
-  if (theFlatKnots->Length() != anExpectedKnots)
-  {
-    // For periodic curves, the knot vector size can differ
-    if (!thePeriodic)
-    {
-      return false;
-    }
-  }
-
   myDegree        = theDegree;
   myPoles         = thePoles;
   myWeights       = theWeights;
@@ -92,92 +77,8 @@ bool BSplCLib_GridEvaluator::Initialize(int                                  the
 
   // Reset cache
   myCache.Nullify();
-  myCachedSpanIndex = -1;
 
   return true;
-}
-
-//==================================================================================================
-
-bool BSplCLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray1OfPnt)&   thePoles,
-                                              const Handle(TColStd_HArray1OfReal)& theWeights)
-{
-  myIsInitialized = false;
-
-  // Validate poles handle
-  if (thePoles.IsNull())
-  {
-    return false;
-  }
-
-  const int aNbPoles = thePoles->Length();
-  if (aNbPoles < 2)
-  {
-    return false;
-  }
-
-  // Validate weights array size matches poles if provided
-  if (!theWeights.IsNull() && theWeights->Length() != aNbPoles)
-  {
-    return false;
-  }
-
-  const int aDegree = aNbPoles - 1;
-
-  // Generate Bezier flat knots: [0,0,...,0,1,1,...,1] with (degree+1) zeros and ones
-  const int                     aNbKnots     = 2 * (aDegree + 1);
-  Handle(TColStd_HArray1OfReal) aBezierKnots = new TColStd_HArray1OfReal(1, aNbKnots);
-
-  for (int i = 1; i <= aDegree + 1; ++i)
-  {
-    aBezierKnots->SetValue(i, 0.0);
-  }
-  for (int i = aDegree + 2; i <= aNbKnots; ++i)
-  {
-    aBezierKnots->SetValue(i, 1.0);
-  }
-
-  myDegree        = aDegree;
-  myPoles         = thePoles;
-  myWeights       = theWeights;
-  myFlatKnots     = aBezierKnots;
-  myRational      = !theWeights.IsNull();
-  myPeriodic      = false;
-  myIsInitialized = true;
-
-  // Reset cache
-  myCache.Nullify();
-  myCachedSpanIndex = -1;
-
-  return true;
-}
-
-//==================================================================================================
-
-void BSplCLib_GridEvaluator::PrepareParamsFromKnots(double theParamMin,
-                                                    double theParamMax,
-                                                    int    theMinSamples,
-                                                    bool   theIncludeEnds)
-{
-  if (!myIsInitialized || myFlatKnots.IsNull())
-  {
-    return;
-  }
-  computeKnotAlignedParams(theParamMin, theParamMax, theMinSamples, theIncludeEnds);
-}
-
-//==================================================================================================
-
-void BSplCLib_GridEvaluator::PrepareParams(double theParamMin,
-                                           double theParamMax,
-                                           int    theNbSamples,
-                                           bool   theIncludeEnds)
-{
-  if (!myIsInitialized || myFlatKnots.IsNull())
-  {
-    return;
-  }
-  computeUniformParams(theParamMin, theParamMax, theNbSamples, theIncludeEnds);
 }
 
 //==================================================================================================
@@ -190,181 +91,36 @@ void BSplCLib_GridEvaluator::SetParams(const Handle(TColStd_HArray1OfReal)& theP
   }
 
   const int aNbParams = theParams->Length();
-  if (aNbParams < 2)
+  if (aNbParams < 1)
   {
     return;
   }
 
-  myParams.Resize(1, aNbParams, false);
+  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
+
+  myParams.Resize(0, aNbParams - 1, false);
 
   // Use hint-based span location for efficiency on sorted parameters
-  int aPrevSpan = myFlatKnots->Lower() + myDegree;
+  int aPrevSpan = aKnots.Lower() + myDegree;
 
   for (int i = 1; i <= aNbParams; ++i)
   {
     const double aParam   = theParams->Value(i);
     const int    aSpanIdx = locateSpanWithHint(aParam, aPrevSpan);
     aPrevSpan             = aSpanIdx;
-    myParams.SetValue(i, {aParam, aSpanIdx});
-  }
-}
 
-//==================================================================================================
+    // Pre-compute local parameter for this span
+    // BSplCLib_Cache uses SpanStart and SpanLength convention
+    const double aSpanStart  = aKnots.Value(aSpanIdx);
+    const double aSpanLength = aKnots.Value(aSpanIdx + 1) - aSpanStart;
+    // Local parameter is (param - spanStart) / spanLength, normalized to [0, 1]
+    const double aLocalParam = (aParam - aSpanStart) / aSpanLength;
 
-void BSplCLib_GridEvaluator::computeKnotAlignedParams(double theParamMin,
-                                                      double theParamMax,
-                                                      int    theMinSamples,
-                                                      bool   theIncludeEnds)
-{
-  // Use NCollection_Vector for single-pass algorithm (dynamic growth)
-  NCollection_Vector<ParamWithSpan> aParamsVec;
-
-  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
-
-  // First valid span index in flat knots
-  const int aFirstSpan = aKnots.Lower() + myDegree;
-  // Last valid span index
-  const int aLastSpan = aKnots.Upper() - myDegree - 1;
-
-  double aPrevParam = theParamMin - 1.0; // Ensure first point is added
-
-  // Add starting boundary if requested
-  if (theIncludeEnds)
-  {
-    const int aStartSpan = locateSpan(theParamMin);
-    aParamsVec.Append({theParamMin, aStartSpan});
-    aPrevParam = theParamMin;
+    myParams.SetValue(i - 1, ParamWithSpan{aParam, aLocalParam, aSpanIdx});
   }
 
-  // Iterate through spans and add sample points
-  for (int aSpanIdx = aFirstSpan; aSpanIdx <= aLastSpan; ++aSpanIdx)
-  {
-    const double aSpanStart = aKnots.Value(aSpanIdx);
-    const double aSpanEnd   = aKnots.Value(aSpanIdx + 1);
-
-    // Skip spans outside the parameter range
-    if (aSpanEnd < theParamMin + Precision::PConfusion())
-    {
-      continue;
-    }
-    if (aSpanStart > theParamMax - Precision::PConfusion())
-    {
-      break;
-    }
-
-    // Skip degenerate spans (zero length)
-    const double aSpanLength = aSpanEnd - aSpanStart;
-    if (aSpanLength < Precision::PConfusion())
-    {
-      continue;
-    }
-
-    const int    aNbSteps = std::max(myDegree, 2);
-    const double aStep    = aSpanLength / aNbSteps;
-
-    for (int k = 1; k <= aNbSteps; ++k)
-    {
-      double aParam = aSpanStart + k * aStep;
-
-      // Clamp to parameter range
-      if (aParam > theParamMax - Precision::PConfusion())
-      {
-        break;
-      }
-      if (aParam < theParamMin + Precision::PConfusion())
-      {
-        continue;
-      }
-
-      // Avoid duplicate points
-      if (aParam > aPrevParam + Precision::PConfusion())
-      {
-        // For points at span boundaries, use the next span
-        int anEffectiveSpan = aSpanIdx;
-        if (k == aNbSteps && aSpanIdx < aLastSpan)
-        {
-          anEffectiveSpan = aSpanIdx + 1;
-        }
-        aParamsVec.Append({aParam, anEffectiveSpan});
-        aPrevParam = aParam;
-      }
-    }
-  }
-
-  // Add ending boundary if requested and not already added
-  if (theIncludeEnds && theParamMax > aPrevParam + Precision::PConfusion())
-  {
-    const int anEndSpan = locateSpan(theParamMax);
-    aParamsVec.Append({theParamMax, anEndSpan});
-  }
-
-  // If we don't have enough samples, fall back to uniform distribution
-  if (aParamsVec.Length() < theMinSamples)
-  {
-    computeUniformParams(theParamMin, theParamMax, theMinSamples, theIncludeEnds);
-    return;
-  }
-
-  // Copy to fixed-size array
-  myParams.Resize(1, aParamsVec.Length(), false);
-  for (int i = 0; i < aParamsVec.Length(); ++i)
-  {
-    myParams.SetValue(i + 1, aParamsVec.Value(i));
-  }
-}
-
-//==================================================================================================
-
-void BSplCLib_GridEvaluator::computeUniformParams(double theParamMin,
-                                                  double theParamMax,
-                                                  int    theNbSamples,
-                                                  bool   theIncludeEnds)
-{
-  if (theNbSamples < 2)
-  {
-    theNbSamples = 2;
-  }
-
-  myParams.Resize(1, theNbSamples, false);
-
-  const double aRange = theParamMax - theParamMin;
-
-  double aStart, aStep;
-  if (theIncludeEnds)
-  {
-    // Include exact boundary values
-    aStart = theParamMin;
-    aStep  = aRange / (theNbSamples - 1);
-  }
-  else
-  {
-    // Small offset from boundaries (useful for avoiding singularities)
-    const double aOffset = aRange / theNbSamples / 100.0;
-    aStart               = theParamMin + aOffset / 2.0;
-    aStep                = (aRange - aOffset) / (theNbSamples - 1);
-  }
-
-  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
-
-  // Use hint-based span location for efficiency on sorted parameters
-  int aPrevSpan = aKnots.Lower() + myDegree;
-
-  for (int i = 1; i <= theNbSamples; ++i)
-  {
-    double aParam = aStart + (i - 1) * aStep;
-
-    // Ensure last point is exactly at boundary when including ends
-    if (theIncludeEnds && i == theNbSamples)
-    {
-      aParam = theParamMax;
-    }
-
-    // Find span index - use previous span as hint for efficiency
-    const int aSpanIdx = locateSpanWithHint(aParam, aPrevSpan);
-    aPrevSpan          = aSpanIdx;
-
-    myParams.SetValue(i, {aParam, aSpanIdx});
-  }
+  // Compute span ranges for optimized iteration
+  computeSpanRanges(myParams, aKnots, mySpanRanges);
 }
 
 //==================================================================================================
@@ -419,13 +175,69 @@ int BSplCLib_GridEvaluator::locateSpanWithHint(double theParam, int theHint) con
 
 //==================================================================================================
 
-void BSplCLib_GridEvaluator::ensureCacheValid(int theSpanIndex, double theParam) const
+void BSplCLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWithSpan>& theParams,
+                                               const TColStd_Array1OfReal&    theFlatKnots,
+                                               NCollection_Array1<SpanRange>& theSpanRanges)
 {
-  if (myCachedSpanIndex == theSpanIndex && !myCache.IsNull())
+  if (theParams.IsEmpty())
   {
+    theSpanRanges.Resize(0, -1, false);
     return;
   }
 
+  // Count distinct spans
+  int aNbSpans     = 1;
+  int aCurrentSpan = theParams.Value(0).SpanIndex;
+  for (int i = 1; i < theParams.Size(); ++i)
+  {
+    if (theParams.Value(i).SpanIndex != aCurrentSpan)
+    {
+      ++aNbSpans;
+      aCurrentSpan = theParams.Value(i).SpanIndex;
+    }
+  }
+
+  theSpanRanges.Resize(0, aNbSpans - 1, false);
+
+  // Fill span ranges
+  aCurrentSpan    = theParams.Value(0).SpanIndex;
+  int aRangeStart = 0;
+  int aRangeIdx   = 0;
+
+  for (int i = 1; i < theParams.Size(); ++i)
+  {
+    const int aSpan = theParams.Value(i).SpanIndex;
+    if (aSpan != aCurrentSpan)
+    {
+      // Compute span geometry
+      const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+      const double aSpanLength  = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
+      const double aSpanMid     = aSpanStart + aSpanLength * 0.5;
+      const double aSpanHalfLen = aSpanLength * 0.5;
+
+      theSpanRanges.SetValue(aRangeIdx,
+                             SpanRange{aCurrentSpan, aRangeStart, i, aSpanMid, aSpanHalfLen});
+      ++aRangeIdx;
+      aCurrentSpan = aSpan;
+      aRangeStart  = i;
+    }
+  }
+
+  // Add the last range
+  const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+  const double aSpanLength  = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
+  const double aSpanMid     = aSpanStart + aSpanLength * 0.5;
+  const double aSpanHalfLen = aSpanLength * 0.5;
+
+  theSpanRanges.SetValue(
+    aRangeIdx,
+    SpanRange{aCurrentSpan, aRangeStart, theParams.Size(), aSpanMid, aSpanHalfLen});
+}
+
+//==================================================================================================
+
+void BSplCLib_GridEvaluator::rebuildCache(double theParam) const
+{
   // Create cache if needed
   if (myCache.IsNull())
   {
@@ -436,72 +248,11 @@ void BSplCLib_GridEvaluator::ensureCacheValid(int theSpanIndex, double theParam)
                                  myWeights.IsNull() ? nullptr : &myWeights->Array1());
   }
 
-  // Build cache for the parameter (constructor doesn't build cache data)
+  // Build cache for the parameter
   myCache->BuildCache(theParam,
                       myFlatKnots->Array1(),
                       myPoles->Array1(),
                       myWeights.IsNull() ? nullptr : &myWeights->Array1());
-  myCachedSpanIndex = theSpanIndex;
-}
-
-//==================================================================================================
-
-std::optional<gp_Pnt> BSplCLib_GridEvaluator::Value(int theIndex) const
-{
-  gp_Pnt aResult;
-  if (!D0(theIndex, aResult))
-  {
-    return std::nullopt;
-  }
-  return aResult;
-}
-
-//==================================================================================================
-
-bool BSplCLib_GridEvaluator::D0(int theIndex, gp_Pnt& theP) const
-{
-  if (!isValidIndex(theIndex))
-  {
-    return false;
-  }
-
-  const ParamWithSpan& aParam = myParams.Value(theIndex);
-
-  ensureCacheValid(aParam.SpanIndex, aParam.Param);
-  myCache->D0(aParam.Param, theP);
-  return true;
-}
-
-//==================================================================================================
-
-bool BSplCLib_GridEvaluator::D1(int theIndex, gp_Pnt& theP, gp_Vec& theD1) const
-{
-  if (!isValidIndex(theIndex))
-  {
-    return false;
-  }
-
-  const ParamWithSpan& aParam = myParams.Value(theIndex);
-
-  ensureCacheValid(aParam.SpanIndex, aParam.Param);
-  myCache->D1(aParam.Param, theP, theD1);
-  return true;
-}
-
-//==================================================================================================
-
-bool BSplCLib_GridEvaluator::D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const
-{
-  if (!isValidIndex(theIndex))
-  {
-    return false;
-  }
-
-  const ParamWithSpan& aParam = myParams.Value(theIndex);
-
-  ensureCacheValid(aParam.SpanIndex, aParam.Param);
-  myCache->D2(aParam.Param, theP, theD1, theD2);
-  return true;
 }
 
 //==================================================================================================
@@ -513,68 +264,22 @@ NCollection_Array1<gp_Pnt> BSplCLib_GridEvaluator::EvaluateGrid() const
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNbParams = myParams.Length();
+  const int                  aNbParams = myParams.Size();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
 
-  // Pre-compute span boundaries.
-  // For each distinct span, store the range of indices [start, end).
-  // Since parameters are sorted, spans are contiguous.
-  struct SpanRange
+  // Iterate over pre-computed span ranges
+  // For each span, rebuild cache once, then evaluate all points within that span block
+  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
   {
-    int SpanIndex;
-    int StartIdx;
-    int EndIdx;
-  };
+    const SpanRange& aRange = mySpanRanges.Value(iRange);
 
-  NCollection_Vector<SpanRange> aSpanRanges;
-  {
-    int aCurrentSpan = myParams.Value(1).SpanIndex;
-    int aRangeStart  = 1;
-    for (int i = 2; i <= aNbParams; ++i)
+    // Rebuild cache once for this span block using first parameter in range
+    rebuildCache(myParams.Value(aRange.StartIdx).Param);
+
+    // Evaluate all points in this span block using pre-computed local parameters
+    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
-      const int aSpan = myParams.Value(i).SpanIndex;
-      if (aSpan != aCurrentSpan)
-      {
-        aSpanRanges.Append({aCurrentSpan, aRangeStart, i});
-        aCurrentSpan = aSpan;
-        aRangeStart  = i;
-      }
-    }
-    // Add the last range
-    aSpanRanges.Append({aCurrentSpan, aRangeStart, aNbParams + 1});
-  }
-
-  // Iterate over span ranges.
-  // For each span, rebuild cache once, then evaluate all points
-  // within that span block without any checking.
-  for (int iRange = 0; iRange < aSpanRanges.Length(); ++iRange)
-  {
-    const SpanRange& aRange    = aSpanRanges.Value(iRange);
-    const int        aStartIdx = aRange.StartIdx;
-    const int        anEndIdx  = aRange.EndIdx;
-
-    // Rebuild cache once for this span block
-    // Create cache if needed
-    if (myCache.IsNull())
-    {
-      myCache = new BSplCLib_Cache(myDegree,
-                                   myPeriodic,
-                                   myFlatKnots->Array1(),
-                                   myPoles->Array1(),
-                                   myWeights.IsNull() ? nullptr : &myWeights->Array1());
-    }
-
-    // Build cache for this span
-    myCache->BuildCache(myParams.Value(aStartIdx).Param,
-                        myFlatKnots->Array1(),
-                        myPoles->Array1(),
-                        myWeights.IsNull() ? nullptr : &myWeights->Array1());
-    myCachedSpanIndex = aRange.SpanIndex;
-
-    // Evaluate all points in this span block - NO span checking needed
-    for (int i = aStartIdx; i < anEndIdx; ++i)
-    {
-      myCache->D0(myParams.Value(i).Param, aPoints.ChangeValue(i));
+      myCache->D0Local(myParams.Value(i).LocalParam, aPoints.ChangeValue(i + 1));
     }
   }
 

@@ -122,6 +122,12 @@ public:
                           gp_Vec&              theCurvature,
                           gp_Vec&              theTorsion) const;
 
+  //! Calculates the 3D point using pre-computed local parameter in [0, 1] range.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the result of calculation (the point on the curve)
+  Standard_EXPORT void D0Local(double theLocalParam, gp_Pnt& thePoint) const;
+
   DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 protected:
