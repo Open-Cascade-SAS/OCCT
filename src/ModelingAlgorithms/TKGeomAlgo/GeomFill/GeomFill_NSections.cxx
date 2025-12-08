@@ -22,6 +22,7 @@
 
 #include <GeomFill_NSections.hxx>
 
+#include <BSplSLib_GridEvaluator.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
@@ -673,6 +674,8 @@ void GeomFill_NSections::ComputeSurface()
   {
     mySurface->IncreaseDegree(mySurface->UDegree(), 2);
   }
+  // Reset barycentre cache when surface changes
+  myCachedBarycentre.reset();
 #ifdef OCCT_DEBUG
   NbSurf++;
   if (Affich)
@@ -832,28 +835,56 @@ void GeomFill_NSections::GetTolerance(
 //=======================================================
 gp_Pnt GeomFill_NSections::BarycentreOfSurf() const
 {
-  gp_Pnt P, Bary;
-  Bary.SetCoord(0., 0., 0.);
+  if (myCachedBarycentre.has_value())
+    return *myCachedBarycentre;
 
   if (mySurface.IsNull())
-    return Bary;
+    return gp_Pnt(0., 0., 0.);
 
-  Standard_Integer ii, jj;
-  Standard_Real    U0, U1, V0, V1;
+  constexpr int THE_NB_SAMPLES = 21;
+
+  double U0, U1, V0, V1;
   mySurface->Bounds(U0, U1, V0, V1);
-  Standard_Real V = V0, DeltaV = (V1 - V0) / 20;
-  Standard_Real U = U0, DeltaU = (U1 - U0) / 20;
-  for (jj = 0; jj <= 20; jj++, V += DeltaV)
+  const double aDeltaU = (U1 - U0) / (THE_NB_SAMPLES - 1);
+  const double aDeltaV = (V1 - V0) / (THE_NB_SAMPLES - 1);
+
+  // Build parameter arrays
+  Handle(TColStd_HArray1OfReal) aUParams = new TColStd_HArray1OfReal(1, THE_NB_SAMPLES);
+  Handle(TColStd_HArray1OfReal) aVParams = new TColStd_HArray1OfReal(1, THE_NB_SAMPLES);
+  for (int i = 0; i < THE_NB_SAMPLES; ++i)
   {
-    for (ii = 0; ii <= 20; ii++, U += DeltaU)
+    aUParams->SetValue(i + 1, U0 + i * aDeltaU);
+    aVParams->SetValue(i + 1, V0 + i * aDeltaV);
+  }
+
+  // Use grid evaluator for efficient batch evaluation
+  BSplSLib_GridEvaluator anEvaluator;
+  anEvaluator.Initialize(mySurface->UDegree(),
+                         mySurface->VDegree(),
+                         mySurface->HArrayPoles(),
+                         mySurface->HArrayWeights(),
+                         mySurface->HArrayUFlatKnots(),
+                         mySurface->HArrayVFlatKnots(),
+                         mySurface->IsURational(),
+                         mySurface->IsVRational(),
+                         mySurface->IsUPeriodic(),
+                         mySurface->IsVPeriodic());
+  anEvaluator.SetUParams(aUParams);
+  anEvaluator.SetVParams(aVParams);
+
+  gp_Pnt                           aBarycentre(0., 0., 0.);
+  const NCollection_Array2<gp_Pnt> aPoints = anEvaluator.EvaluateGrid();
+  for (int iu = aPoints.LowerRow(); iu <= aPoints.UpperRow(); ++iu)
+  {
+    for (int iv = aPoints.LowerCol(); iv <= aPoints.UpperCol(); ++iv)
     {
-      P = mySurface->Value(U, V);
-      Bary.ChangeCoord() += P.XYZ();
+      aBarycentre.ChangeCoord() += aPoints.Value(iu, iv).XYZ();
     }
   }
 
-  Bary.ChangeCoord() /= (21 * 21);
-  return Bary;
+  aBarycentre.ChangeCoord() /= (THE_NB_SAMPLES * THE_NB_SAMPLES);
+  myCachedBarycentre = aBarycentre;
+  return *myCachedBarycentre;
 }
 
 //=======================================================
