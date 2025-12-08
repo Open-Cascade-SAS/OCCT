@@ -17,9 +17,10 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <Standard_Handle.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 #include <optional>
 
@@ -38,17 +39,10 @@ class gp_Vec;
 //! - Tessellation and meshing
 //! - Surface analysis and visualization
 //!
-//! @warning LIFETIME REQUIREMENT: This class stores pointers to external data
-//! (poles, weights, flat knots). The caller MUST ensure these arrays remain
-//! valid and unchanged for the entire lifetime of the evaluator. Destroying
-//! or modifying the source arrays after Initialize() leads to undefined behavior.
-//!
-//! For Bezier surfaces, use InitializeBezier() which generates internal flat knots.
-//!
 //! Usage for B-spline:
 //! @code
 //!   BSplSLib_GridEvaluator anEvaluator;
-//!   anEvaluator.Initialize(poles, weights, uKnots, vKnots, ...);
+//!   anEvaluator.Initialize(degU, degV, poles, weights, uKnots, vKnots, ...);
 //!   anEvaluator.PrepareUParamsFromKnots(uMin, uMax, minSamplesU);
 //!   anEvaluator.PrepareVParamsFromKnots(vMin, vMax, minSamplesV);
 //!
@@ -86,37 +80,35 @@ public:
   Standard_EXPORT BSplSLib_GridEvaluator();
 
   //! Initialize with B-spline surface data.
-  //! @warning The caller must ensure all referenced arrays remain valid
-  //!          for the lifetime of this evaluator.
   //! @param theDegreeU     degree in U direction (must be >= 1)
   //! @param theDegreeV     degree in V direction (must be >= 1)
-  //! @param thePoles       2D array of control points
-  //! @param theWeights     2D array of weights (nullptr for non-rational)
-  //! @param theUFlatKnots  flat knot sequence in U direction
-  //! @param theVFlatKnots  flat knot sequence in V direction
+  //! @param thePoles       handle to 2D array of control points
+  //! @param theWeights     handle to 2D array of weights (null handle for non-rational)
+  //! @param theUFlatKnots  handle to flat knot sequence in U direction
+  //! @param theVFlatKnots  handle to flat knot sequence in V direction
   //! @param theURational   true if rational in U direction (requires non-null weights)
   //! @param theVRational   true if rational in V direction (requires non-null weights)
   //! @param theUPeriodic   true if periodic in U direction
   //! @param theVPeriodic   true if periodic in V direction
   //! @return true if initialization succeeded, false if parameters are invalid
-  Standard_EXPORT bool Initialize(int                         theDegreeU,
-                                  int                         theDegreeV,
-                                  const TColgp_Array2OfPnt&   thePoles,
-                                  const TColStd_Array2OfReal* theWeights,
-                                  const TColStd_Array1OfReal& theUFlatKnots,
-                                  const TColStd_Array1OfReal& theVFlatKnots,
-                                  bool                        theURational,
-                                  bool                        theVRational,
-                                  bool                        theUPeriodic,
-                                  bool                        theVPeriodic);
+  Standard_EXPORT bool Initialize(int                                  theDegreeU,
+                                  int                                  theDegreeV,
+                                  const Handle(TColgp_HArray2OfPnt)&   thePoles,
+                                  const Handle(TColStd_HArray2OfReal)& theWeights,
+                                  const Handle(TColStd_HArray1OfReal)& theUFlatKnots,
+                                  const Handle(TColStd_HArray1OfReal)& theVFlatKnots,
+                                  bool                                 theURational,
+                                  bool                                 theVRational,
+                                  bool                                 theUPeriodic,
+                                  bool                                 theVPeriodic);
 
   //! Initialize with Bezier surface data.
   //! Internally generates appropriate flat knot vectors.
-  //! @param thePoles   2D array of control points (degreeU = NbUPoles - 1, degreeV = NbVPoles - 1)
-  //! @param theWeights 2D array of weights (nullptr for non-rational)
+  //! @param thePoles   handle to 2D array of control points (degreeU = NbUPoles - 1, degreeV = NbVPoles - 1)
+  //! @param theWeights handle to 2D array of weights (null handle for non-rational)
   //! @return true if initialization succeeded, false if parameters are invalid
-  Standard_EXPORT bool InitializeBezier(const TColgp_Array2OfPnt&   thePoles,
-                                        const TColStd_Array2OfReal* theWeights);
+  Standard_EXPORT bool InitializeBezier(const Handle(TColgp_HArray2OfPnt)&   thePoles,
+                                        const Handle(TColStd_HArray2OfReal)& theWeights);
 
   //! Prepare U parameters aligned with knots (optimal for B-splines).
   //! Creates sample points within each knot span based on degree.
@@ -157,6 +149,36 @@ public:
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
+
+  //! Returns the polynomial degree in U direction.
+  int DegreeU() const { return myDegreeU; }
+
+  //! Returns the polynomial degree in V direction.
+  int DegreeV() const { return myDegreeV; }
+
+  //! Returns handle to control points array.
+  const Handle(TColgp_HArray2OfPnt)& Poles() const { return myPoles; }
+
+  //! Returns handle to weights array (may be null for non-rational).
+  const Handle(TColStd_HArray2OfReal)& Weights() const { return myWeights; }
+
+  //! Returns handle to U flat knots array.
+  const Handle(TColStd_HArray1OfReal)& UFlatKnots() const { return myUFlatKnots; }
+
+  //! Returns handle to V flat knots array.
+  const Handle(TColStd_HArray1OfReal)& VFlatKnots() const { return myVFlatKnots; }
+
+  //! Returns true if the surface is rational in U direction.
+  bool IsURational() const { return myURational; }
+
+  //! Returns true if the surface is rational in V direction.
+  bool IsVRational() const { return myVRational; }
+
+  //! Returns true if the surface is periodic in U direction.
+  bool IsUPeriodic() const { return myUPeriodic; }
+
+  //! Returns true if the surface is periodic in V direction.
+  bool IsVPeriodic() const { return myVPeriodic; }
 
   //! Returns number of U parameters.
   int NbUParams() const { return myUParams.Length(); }
@@ -256,24 +278,25 @@ public:
 
 private:
   //! Compute parameters aligned with knots and their span indices (single-pass).
-  //! @param theFlatKnots  flat knot sequence
+  //! @param theFlatKnots  handle to flat knot sequence
   //! @param theDegree     polynomial degree
+  //! @param thePeriodic   periodicity flag
   //! @param theParamMin   minimum parameter value
   //! @param theParamMax   maximum parameter value
   //! @param theMinSamples minimum number of samples
   //! @param theIncludeEnds whether to include exact boundaries
   //! @param theParams     output array of parameters with span indices
-  void computeKnotAlignedParams(const TColStd_Array1OfReal&        theFlatKnots,
-                                int                                theDegree,
-                                bool                               thePeriodic,
-                                double                             theParamMin,
-                                double                             theParamMax,
-                                int                                theMinSamples,
-                                bool                               theIncludeEnds,
-                                NCollection_Array1<ParamWithSpan>& theParams) const;
+  void computeKnotAlignedParams(const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                                int                                  theDegree,
+                                bool                                 thePeriodic,
+                                double                               theParamMin,
+                                double                               theParamMax,
+                                int                                  theMinSamples,
+                                bool                                 theIncludeEnds,
+                                NCollection_Array1<ParamWithSpan>&   theParams) const;
 
   //! Compute uniform parameters with their span indices.
-  //! @param theFlatKnots  flat knot sequence
+  //! @param theFlatKnots  handle to flat knot sequence
   //! @param theDegree     polynomial degree
   //! @param thePeriodic   periodicity flag
   //! @param theParamMin   minimum parameter value
@@ -281,27 +304,27 @@ private:
   //! @param theNbSamples  number of samples
   //! @param theIncludeEnds whether to include exact boundaries
   //! @param theParams     output array of parameters with span indices
-  void computeUniformParams(const TColStd_Array1OfReal&        theFlatKnots,
-                            int                                theDegree,
-                            bool                               thePeriodic,
-                            double                             theParamMin,
-                            double                             theParamMax,
-                            int                                theNbSamples,
-                            bool                               theIncludeEnds,
-                            NCollection_Array1<ParamWithSpan>& theParams) const;
+  void computeUniformParams(const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                            int                                  theDegree,
+                            bool                                 thePeriodic,
+                            double                               theParamMin,
+                            double                               theParamMax,
+                            int                                  theNbSamples,
+                            bool                                 theIncludeEnds,
+                            NCollection_Array1<ParamWithSpan>&   theParams) const;
 
   //! Find span index for a parameter value using binary search.
-  int locateSpan(const TColStd_Array1OfReal& theFlatKnots,
-                 int                         theDegree,
-                 bool                        thePeriodic,
-                 double                      theParam) const;
+  int locateSpan(const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                 int                                  theDegree,
+                 bool                                 thePeriodic,
+                 double                               theParam) const;
 
   //! Find span index with a hint for better performance on sorted parameters.
-  int locateSpanWithHint(const TColStd_Array1OfReal& theFlatKnots,
-                         int                         theDegree,
-                         bool                        thePeriodic,
-                         double                      theParam,
-                         int                         theHint) const;
+  int locateSpanWithHint(const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                         int                                  theDegree,
+                         bool                                 thePeriodic,
+                         double                               theParam,
+                         int                                  theHint) const;
 
   //! Check if UV indices are valid for parameter access.
   bool areValidIndices(int theIU, int theIV) const
@@ -310,22 +333,17 @@ private:
   }
 
 private:
-  // Surface data (stored by pointer - caller must ensure lifetime)
-  int                         myDegreeU;
-  int                         myDegreeV;
-  const TColgp_Array2OfPnt*   myPoles;
-  const TColStd_Array2OfReal* myWeights;
-  const TColStd_Array1OfReal* myUFlatKnots;
-  const TColStd_Array1OfReal* myVFlatKnots;
-  bool                        myURational;
-  bool                        myVRational;
-  bool                        myUPeriodic;
-  bool                        myVPeriodic;
-  bool                        myIsInitialized;
-
-  // Internal flat knots for Bezier surfaces
-  TColStd_Array1OfReal myBezierUFlatKnots;
-  TColStd_Array1OfReal myBezierVFlatKnots;
+  int                          myDegreeU;
+  int                          myDegreeV;
+  Handle(TColgp_HArray2OfPnt)  myPoles;
+  Handle(TColStd_HArray2OfReal) myWeights;
+  Handle(TColStd_HArray1OfReal) myUFlatKnots;
+  Handle(TColStd_HArray1OfReal) myVFlatKnots;
+  bool                         myURational;
+  bool                         myVRational;
+  bool                         myUPeriodic;
+  bool                         myVPeriodic;
+  bool                         myIsInitialized;
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myUParams;

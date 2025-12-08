@@ -17,8 +17,9 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Handle.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #include <optional>
 
@@ -37,17 +38,10 @@ class gp_Vec;
 //! - Tessellation and discretization
 //! - Curve analysis
 //!
-//! @warning LIFETIME REQUIREMENT: This class stores pointers to external data
-//! (poles, weights, flat knots). The caller MUST ensure these arrays remain
-//! valid and unchanged for the entire lifetime of the evaluator. Destroying
-//! or modifying the source arrays after Initialize() leads to undefined behavior.
-//!
-//! For Bezier curves, use InitializeBezier() which generates internal flat knots.
-//!
 //! Usage for B-spline:
 //! @code
 //!   BSplCLib_GridEvaluator anEvaluator;
-//!   anEvaluator.Initialize(poles, weights, flatKnots, degree, ...);
+//!   anEvaluator.Initialize(degree, poles, weights, flatKnots, rational, periodic);
 //!   anEvaluator.PrepareParamsFromKnots(tMin, tMax, minSamples);
 //!
 //!   for (int i = 1; i <= anEvaluator.NbParams(); ++i)
@@ -85,29 +79,27 @@ public:
   Standard_EXPORT BSplCLib_GridEvaluator();
 
   //! Initialize with B-spline curve data.
-  //! @warning The caller must ensure all referenced arrays remain valid
-  //!          for the lifetime of this evaluator.
   //! @param theDegree    polynomial degree (must be >= 1)
-  //! @param thePoles     array of control points
-  //! @param theWeights   array of weights (nullptr for non-rational)
-  //! @param theFlatKnots flat knot sequence (must be sorted, size = NbPoles + Degree + 1)
+  //! @param thePoles     handle to array of control points
+  //! @param theWeights   handle to array of weights (null handle for non-rational)
+  //! @param theFlatKnots handle to flat knot sequence (must be sorted, size = NbPoles + Degree + 1)
   //! @param theRational  true if rational curve (requires non-null weights)
   //! @param thePeriodic  true if periodic curve
   //! @return true if initialization succeeded, false if parameters are invalid
-  Standard_EXPORT bool Initialize(int                         theDegree,
-                                  const TColgp_Array1OfPnt&   thePoles,
-                                  const TColStd_Array1OfReal* theWeights,
-                                  const TColStd_Array1OfReal& theFlatKnots,
-                                  bool                        theRational,
-                                  bool                        thePeriodic);
+  Standard_EXPORT bool Initialize(int                               theDegree,
+                                  const Handle(TColgp_HArray1OfPnt)&  thePoles,
+                                  const Handle(TColStd_HArray1OfReal)& theWeights,
+                                  const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                                  bool                              theRational,
+                                  bool                              thePeriodic);
 
   //! Initialize with Bezier curve data.
   //! Internally generates appropriate flat knot vector [0,0,...,0,1,1,...,1].
-  //! @param thePoles   array of control points (degree = NbPoles - 1)
-  //! @param theWeights array of weights (nullptr for non-rational)
+  //! @param thePoles   handle to array of control points (degree = NbPoles - 1)
+  //! @param theWeights handle to array of weights (null handle for non-rational)
   //! @return true if initialization succeeded, false if parameters are invalid
-  Standard_EXPORT bool InitializeBezier(const TColgp_Array1OfPnt&   thePoles,
-                                        const TColStd_Array1OfReal* theWeights);
+  Standard_EXPORT bool InitializeBezier(const Handle(TColgp_HArray1OfPnt)&   thePoles,
+                                        const Handle(TColStd_HArray1OfReal)& theWeights);
 
   //! Prepare parameters aligned with knots (optimal for B-splines).
   //! Creates sample points within each knot span based on degree.
@@ -134,6 +126,24 @@ public:
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
+
+  //! Returns the polynomial degree.
+  int Degree() const { return myDegree; }
+
+  //! Returns handle to control points array.
+  const Handle(TColgp_HArray1OfPnt)& Poles() const { return myPoles; }
+
+  //! Returns handle to weights array (may be null for non-rational).
+  const Handle(TColStd_HArray1OfReal)& Weights() const { return myWeights; }
+
+  //! Returns handle to flat knots array.
+  const Handle(TColStd_HArray1OfReal)& FlatKnots() const { return myFlatKnots; }
+
+  //! Returns true if the curve is rational.
+  bool IsRational() const { return myRational; }
+
+  //! Returns true if the curve is periodic.
+  bool IsPeriodic() const { return myPeriodic; }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Length(); }
@@ -209,17 +219,13 @@ private:
   bool isValidIndex(int theIndex) const { return theIndex >= 1 && theIndex <= myParams.Length(); }
 
 private:
-  // Curve data (stored by pointer - caller must ensure lifetime)
-  int                         myDegree;
-  const TColgp_Array1OfPnt*   myPoles;
-  const TColStd_Array1OfReal* myWeights;
-  const TColStd_Array1OfReal* myFlatKnots;
-  bool                        myRational;
-  bool                        myPeriodic;
-  bool                        myIsInitialized;
-
-  // Internal flat knots for Bezier curves
-  TColStd_Array1OfReal myBezierFlatKnots;
+  int                          myDegree;
+  Handle(TColgp_HArray1OfPnt)  myPoles;
+  Handle(TColStd_HArray1OfReal) myWeights;
+  Handle(TColStd_HArray1OfReal) myFlatKnots;
+  bool                         myRational;
+  bool                         myPeriodic;
+  bool                         myIsInitialized;
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myParams;

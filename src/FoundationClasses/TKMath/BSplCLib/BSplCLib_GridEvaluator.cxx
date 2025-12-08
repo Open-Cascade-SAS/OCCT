@@ -23,9 +23,6 @@
 
 BSplCLib_GridEvaluator::BSplCLib_GridEvaluator()
     : myDegree(0),
-      myPoles(nullptr),
-      myWeights(nullptr),
-      myFlatKnots(nullptr),
       myRational(false),
       myPeriodic(false),
       myIsInitialized(false)
@@ -34,12 +31,12 @@ BSplCLib_GridEvaluator::BSplCLib_GridEvaluator()
 
 //==================================================================================================
 
-bool BSplCLib_GridEvaluator::Initialize(int                         theDegree,
-                                        const TColgp_Array1OfPnt&   thePoles,
-                                        const TColStd_Array1OfReal* theWeights,
-                                        const TColStd_Array1OfReal& theFlatKnots,
-                                        bool                        theRational,
-                                        bool                        thePeriodic)
+bool BSplCLib_GridEvaluator::Initialize(int                                  theDegree,
+                                        const Handle(TColgp_HArray1OfPnt)&   thePoles,
+                                        const Handle(TColStd_HArray1OfReal)& theWeights,
+                                        const Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                                        bool                                 theRational,
+                                        bool                                 thePeriodic)
 {
   myIsInitialized = false;
 
@@ -49,21 +46,33 @@ bool BSplCLib_GridEvaluator::Initialize(int                         theDegree,
     return false;
   }
 
+  // Validate poles handle
+  if (thePoles.IsNull() || thePoles->Length() < 2)
+  {
+    return false;
+  }
+
+  // Validate flat knots handle
+  if (theFlatKnots.IsNull())
+  {
+    return false;
+  }
+
   // Validate rational curve has weights
-  if (theRational && theWeights == nullptr)
+  if (theRational && theWeights.IsNull())
   {
     return false;
   }
 
   // Validate weights array size matches poles if provided
-  if (theWeights != nullptr && theWeights->Length() != thePoles.Length())
+  if (!theWeights.IsNull() && theWeights->Length() != thePoles->Length())
   {
     return false;
   }
 
   // Validate flat knots size: should be NbPoles + Degree + 1
-  const int anExpectedKnots = thePoles.Length() + theDegree + 1;
-  if (theFlatKnots.Length() != anExpectedKnots)
+  const int anExpectedKnots = thePoles->Length() + theDegree + 1;
+  if (theFlatKnots->Length() != anExpectedKnots)
   {
     // For periodic curves, the knot vector size can differ
     if (!thePeriodic)
@@ -73,9 +82,9 @@ bool BSplCLib_GridEvaluator::Initialize(int                         theDegree,
   }
 
   myDegree      = theDegree;
-  myPoles       = &thePoles;
+  myPoles       = thePoles;
   myWeights     = theWeights;
-  myFlatKnots   = &theFlatKnots;
+  myFlatKnots   = theFlatKnots;
   myRational    = theRational;
   myPeriodic    = thePeriodic;
   myIsInitialized = true;
@@ -85,19 +94,25 @@ bool BSplCLib_GridEvaluator::Initialize(int                         theDegree,
 
 //==================================================================================================
 
-bool BSplCLib_GridEvaluator::InitializeBezier(const TColgp_Array1OfPnt&   thePoles,
-                                              const TColStd_Array1OfReal* theWeights)
+bool BSplCLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray1OfPnt)&   thePoles,
+                                              const Handle(TColStd_HArray1OfReal)& theWeights)
 {
   myIsInitialized = false;
 
-  const int aNbPoles = thePoles.Length();
+  // Validate poles handle
+  if (thePoles.IsNull())
+  {
+    return false;
+  }
+
+  const int aNbPoles = thePoles->Length();
   if (aNbPoles < 2)
   {
     return false;
   }
 
   // Validate weights array size matches poles if provided
-  if (theWeights != nullptr && theWeights->Length() != aNbPoles)
+  if (!theWeights.IsNull() && theWeights->Length() != aNbPoles)
   {
     return false;
   }
@@ -106,22 +121,22 @@ bool BSplCLib_GridEvaluator::InitializeBezier(const TColgp_Array1OfPnt&   thePol
 
   // Generate Bezier flat knots: [0,0,...,0,1,1,...,1] with (degree+1) zeros and ones
   const int aNbKnots = 2 * (aDegree + 1);
-  myBezierFlatKnots.Resize(1, aNbKnots, false);
+  Handle(TColStd_HArray1OfReal) aBezierKnots = new TColStd_HArray1OfReal(1, aNbKnots);
 
   for (int i = 1; i <= aDegree + 1; ++i)
   {
-    myBezierFlatKnots.SetValue(i, 0.0);
+    aBezierKnots->SetValue(i, 0.0);
   }
   for (int i = aDegree + 2; i <= aNbKnots; ++i)
   {
-    myBezierFlatKnots.SetValue(i, 1.0);
+    aBezierKnots->SetValue(i, 1.0);
   }
 
   myDegree      = aDegree;
-  myPoles       = &thePoles;
+  myPoles       = thePoles;
   myWeights     = theWeights;
-  myFlatKnots   = &myBezierFlatKnots;
-  myRational    = (theWeights != nullptr);
+  myFlatKnots   = aBezierKnots;
+  myRational    = !theWeights.IsNull();
   myPeriodic    = false;
   myIsInitialized = true;
 
@@ -135,7 +150,7 @@ void BSplCLib_GridEvaluator::PrepareParamsFromKnots(double theParamMin,
                                                     int    theMinSamples,
                                                     bool   theIncludeEnds)
 {
-  if (!myIsInitialized || myFlatKnots == nullptr)
+  if (!myIsInitialized || myFlatKnots.IsNull())
   {
     return;
   }
@@ -149,7 +164,7 @@ void BSplCLib_GridEvaluator::PrepareParams(double theParamMin,
                                            int    theNbSamples,
                                            bool   theIncludeEnds)
 {
-  if (!myIsInitialized || myFlatKnots == nullptr)
+  if (!myIsInitialized || myFlatKnots.IsNull())
   {
     return;
   }
@@ -166,10 +181,12 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(double theParamMin,
   // Use NCollection_Vector for single-pass algorithm (dynamic growth)
   NCollection_Vector<ParamWithSpan> aParamsVec;
 
+  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
+
   // First valid span index in flat knots
-  const int aFirstSpan = myFlatKnots->Lower() + myDegree;
+  const int aFirstSpan = aKnots.Lower() + myDegree;
   // Last valid span index
-  const int aLastSpan = myFlatKnots->Upper() - myDegree - 1;
+  const int aLastSpan = aKnots.Upper() - myDegree - 1;
 
   double aPrevParam = theParamMin - 1.0; // Ensure first point is added
 
@@ -184,8 +201,8 @@ void BSplCLib_GridEvaluator::computeKnotAlignedParams(double theParamMin,
   // Iterate through spans and add sample points
   for (int aSpanIdx = aFirstSpan; aSpanIdx <= aLastSpan; ++aSpanIdx)
   {
-    const double aSpanStart = myFlatKnots->Value(aSpanIdx);
-    const double aSpanEnd   = myFlatKnots->Value(aSpanIdx + 1);
+    const double aSpanStart = aKnots.Value(aSpanIdx);
+    const double aSpanEnd   = aKnots.Value(aSpanIdx + 1);
 
     // Skip spans outside the parameter range
     if (aSpanEnd < theParamMin + Precision::PConfusion())
@@ -289,8 +306,10 @@ void BSplCLib_GridEvaluator::computeUniformParams(double theParamMin,
     aStep  = (aRange - aOffset) / (theNbSamples - 1);
   }
 
+  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
+
   // Use hint-based span location for efficiency on sorted parameters
-  int aPrevSpan = myFlatKnots->Lower() + myDegree;
+  int aPrevSpan = aKnots.Lower() + myDegree;
 
   for (int i = 1; i <= theNbSamples; ++i)
   {
@@ -317,7 +336,7 @@ int BSplCLib_GridEvaluator::locateSpan(double theParam) const
   int    aSpanIndex = 0;
   double aNewParam  = theParam;
   BSplCLib::LocateParameter(myDegree,
-                            *myFlatKnots,
+                            myFlatKnots->Array1(),
                             BSplCLib::NoMults(),
                             theParam,
                             myPeriodic,
@@ -330,14 +349,15 @@ int BSplCLib_GridEvaluator::locateSpan(double theParam) const
 
 int BSplCLib_GridEvaluator::locateSpanWithHint(double theParam, int theHint) const
 {
-  const int aLower = myFlatKnots->Lower() + myDegree;
-  const int aUpper = myFlatKnots->Upper() - myDegree - 1;
+  const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
+  const int aLower = aKnots.Lower() + myDegree;
+  const int aUpper = aKnots.Upper() - myDegree - 1;
 
   // Quick check if hint is still valid
   if (theHint >= aLower && theHint <= aUpper)
   {
-    const double aSpanStart = myFlatKnots->Value(theHint);
-    const double aSpanEnd   = myFlatKnots->Value(theHint + 1);
+    const double aSpanStart = aKnots.Value(theHint);
+    const double aSpanEnd   = aKnots.Value(theHint + 1);
 
     if (theParam >= aSpanStart && theParam < aSpanEnd)
     {
@@ -347,7 +367,7 @@ int BSplCLib_GridEvaluator::locateSpanWithHint(double theParam, int theHint) con
     // Check next span (common case for sorted parameters)
     if (theHint < aUpper && theParam >= aSpanEnd)
     {
-      const double aNextEnd = myFlatKnots->Value(theHint + 2);
+      const double aNextEnd = aKnots.Value(theHint + 2);
       if (theParam < aNextEnd)
       {
         return theHint + 1;
@@ -386,9 +406,9 @@ bool BSplCLib_GridEvaluator::D0(int theIndex, gp_Pnt& theP) const
                aParam.SpanIndex,
                myDegree,
                myPeriodic,
-               *myPoles,
-               myWeights,
-               *myFlatKnots,
+               myPoles->Array1(),
+               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
+               myFlatKnots->Array1(),
                nullptr,
                theP);
   return true;
@@ -409,9 +429,9 @@ bool BSplCLib_GridEvaluator::D1(int theIndex, gp_Pnt& theP, gp_Vec& theD1) const
                aParam.SpanIndex,
                myDegree,
                myPeriodic,
-               *myPoles,
-               myWeights,
-               *myFlatKnots,
+               myPoles->Array1(),
+               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
+               myFlatKnots->Array1(),
                nullptr,
                theP,
                theD1);
@@ -433,9 +453,9 @@ bool BSplCLib_GridEvaluator::D2(int theIndex, gp_Pnt& theP, gp_Vec& theD1, gp_Ve
                aParam.SpanIndex,
                myDegree,
                myPeriodic,
-               *myPoles,
-               myWeights,
-               *myFlatKnots,
+               myPoles->Array1(),
+               myWeights.IsNull() ? nullptr : &myWeights->Array1(),
+               myFlatKnots->Array1(),
                nullptr,
                theP,
                theD1,

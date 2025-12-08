@@ -18,79 +18,80 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 // Helper function to create a simple cubic B-spline curve.
 // Control points form a simple arc.
-static void CreateSimpleBSplineCurve(TColgp_Array1OfPnt&   thePoles,
-                                     TColStd_Array1OfReal& theFlatKnots,
-                                     int&                  theDegree)
+static void CreateSimpleBSplineCurve(Handle(TColgp_HArray1OfPnt)&   thePoles,
+                                     Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                                     int&                           theDegree)
 {
   theDegree = 3;
 
   // 5 control points
-  thePoles.Resize(1, 5, false);
-  thePoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
-  thePoles.SetValue(2, gp_Pnt(1.0, 2.0, 0.0));
-  thePoles.SetValue(3, gp_Pnt(2.0, 2.0, 1.0));
-  thePoles.SetValue(4, gp_Pnt(3.0, 1.0, 1.0));
-  thePoles.SetValue(5, gp_Pnt(4.0, 0.0, 0.0));
+  thePoles = new TColgp_HArray1OfPnt(1, 5);
+  thePoles->SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  thePoles->SetValue(2, gp_Pnt(1.0, 2.0, 0.0));
+  thePoles->SetValue(3, gp_Pnt(2.0, 2.0, 1.0));
+  thePoles->SetValue(4, gp_Pnt(3.0, 1.0, 1.0));
+  thePoles->SetValue(5, gp_Pnt(4.0, 0.0, 0.0));
 
   // Flat knots for degree 3 with 5 control points
   // n + p + 1 = 5 + 3 + 1 = 9 knots
   // Clamped knot vector: [0, 0, 0, 0, 0.5, 1, 1, 1, 1]
-  theFlatKnots.Resize(1, 9, false);
-  theFlatKnots.SetValue(1, 0.0);
-  theFlatKnots.SetValue(2, 0.0);
-  theFlatKnots.SetValue(3, 0.0);
-  theFlatKnots.SetValue(4, 0.0);
-  theFlatKnots.SetValue(5, 0.5);
-  theFlatKnots.SetValue(6, 1.0);
-  theFlatKnots.SetValue(7, 1.0);
-  theFlatKnots.SetValue(8, 1.0);
-  theFlatKnots.SetValue(9, 1.0);
+  theFlatKnots = new TColStd_HArray1OfReal(1, 9);
+  theFlatKnots->SetValue(1, 0.0);
+  theFlatKnots->SetValue(2, 0.0);
+  theFlatKnots->SetValue(3, 0.0);
+  theFlatKnots->SetValue(4, 0.0);
+  theFlatKnots->SetValue(5, 0.5);
+  theFlatKnots->SetValue(6, 1.0);
+  theFlatKnots->SetValue(7, 1.0);
+  theFlatKnots->SetValue(8, 1.0);
+  theFlatKnots->SetValue(9, 1.0);
 }
 
 // Helper function to create a rational B-spline curve (circular arc).
-static void CreateRationalBSplineCurve(TColgp_Array1OfPnt&   thePoles,
-                                       TColStd_Array1OfReal& theWeights,
-                                       TColStd_Array1OfReal& theFlatKnots,
-                                       int&                  theDegree)
+static void CreateRationalBSplineCurve(Handle(TColgp_HArray1OfPnt)&   thePoles,
+                                       Handle(TColStd_HArray1OfReal)& theWeights,
+                                       Handle(TColStd_HArray1OfReal)& theFlatKnots,
+                                       int&                           theDegree)
 {
   theDegree = 2;
 
   // 3 control points for a 90-degree circular arc
-  thePoles.Resize(1, 3, false);
-  thePoles.SetValue(1, gp_Pnt(1.0, 0.0, 0.0));
-  thePoles.SetValue(2, gp_Pnt(1.0, 1.0, 0.0));
-  thePoles.SetValue(3, gp_Pnt(0.0, 1.0, 0.0));
+  thePoles = new TColgp_HArray1OfPnt(1, 3);
+  thePoles->SetValue(1, gp_Pnt(1.0, 0.0, 0.0));
+  thePoles->SetValue(2, gp_Pnt(1.0, 1.0, 0.0));
+  thePoles->SetValue(3, gp_Pnt(0.0, 1.0, 0.0));
 
   // Weights for circular arc
-  theWeights.Resize(1, 3, false);
-  theWeights.SetValue(1, 1.0);
-  theWeights.SetValue(2, 1.0 / std::sqrt(2.0));
-  theWeights.SetValue(3, 1.0);
+  theWeights = new TColStd_HArray1OfReal(1, 3);
+  theWeights->SetValue(1, 1.0);
+  theWeights->SetValue(2, 1.0 / std::sqrt(2.0));
+  theWeights->SetValue(3, 1.0);
 
   // Flat knots: [0,0,0,1,1,1]
-  theFlatKnots.Resize(1, 6, false);
-  theFlatKnots.SetValue(1, 0.0);
-  theFlatKnots.SetValue(2, 0.0);
-  theFlatKnots.SetValue(3, 0.0);
-  theFlatKnots.SetValue(4, 1.0);
-  theFlatKnots.SetValue(5, 1.0);
-  theFlatKnots.SetValue(6, 1.0);
+  theFlatKnots = new TColStd_HArray1OfReal(1, 6);
+  theFlatKnots->SetValue(1, 0.0);
+  theFlatKnots->SetValue(2, 0.0);
+  theFlatKnots->SetValue(3, 0.0);
+  theFlatKnots->SetValue(4, 1.0);
+  theFlatKnots->SetValue(5, 1.0);
+  theFlatKnots->SetValue(6, 1.0);
 }
 
 // Helper function to create Bezier curve control points.
-static void CreateBezierCurve(TColgp_Array1OfPnt& thePoles)
+static Handle(TColgp_HArray1OfPnt) CreateBezierCurve()
 {
   // Cubic Bezier curve (degree 3)
-  thePoles.Resize(1, 4, false);
-  thePoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
-  thePoles.SetValue(2, gp_Pnt(1.0, 3.0, 0.0));
-  thePoles.SetValue(3, gp_Pnt(3.0, 3.0, 0.0));
-  thePoles.SetValue(4, gp_Pnt(4.0, 0.0, 0.0));
+  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, 4);
+  aPoles->SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles->SetValue(2, gp_Pnt(1.0, 3.0, 0.0));
+  aPoles->SetValue(3, gp_Pnt(3.0, 3.0, 0.0));
+  aPoles->SetValue(4, gp_Pnt(4.0, 0.0, 0.0));
+  return aPoles;
 }
 
 TEST(BSplCLib_GridEvaluatorTest, DefaultConstructor)
@@ -102,16 +103,16 @@ TEST(BSplCLib_GridEvaluatorTest, DefaultConstructor)
 
 TEST(BSplCLib_GridEvaluatorTest, Initialize)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
   const bool             isOk = anEval.Initialize(aDeg,
                                       aPoles,
-                                      nullptr, // non-rational
+                                      Handle(TColStd_HArray1OfReal)(), // non-rational
                                       aKnots,
                                       false, // not rational
                                       false);  // not periodic
@@ -122,25 +123,26 @@ TEST(BSplCLib_GridEvaluatorTest, Initialize)
 
 TEST(BSplCLib_GridEvaluatorTest, InitializeValidation_InvalidDegree)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
 
   // Degree 0 should fail
-  const bool isOk = anEval.Initialize(0, aPoles, nullptr, aKnots, false, false);
+  const bool isOk =
+    anEval.Initialize(0, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
   EXPECT_FALSE(isOk);
   EXPECT_FALSE(anEval.IsInitialized());
 }
 
 TEST(BSplCLib_GridEvaluatorTest, InitializeValidation_RationalWithoutWeights)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
@@ -149,7 +151,7 @@ TEST(BSplCLib_GridEvaluatorTest, InitializeValidation_RationalWithoutWeights)
   // Rational curve without weights should fail
   const bool isOk = anEval.Initialize(aDeg,
                                       aPoles,
-                                      nullptr, // No weights
+                                      Handle(TColStd_HArray1OfReal)(), // No weights
                                       aKnots,
                                       true, // Rational flag set
                                       false);
@@ -159,14 +161,14 @@ TEST(BSplCLib_GridEvaluatorTest, InitializeValidation_RationalWithoutWeights)
 
 TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParams)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParams(0.0, 1.0, 10);
 
@@ -184,14 +186,14 @@ TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParams)
 
 TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParamsWithExactBoundaries)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   // With theIncludeEnds = true (default)
   anEval.PrepareParams(0.0, 1.0, 10, true);
@@ -208,14 +210,14 @@ TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParamsWithExactBoundaries)
 
 TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParamsWithoutBoundaries)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   // With theIncludeEnds = false
   anEval.PrepareParams(0.0, 1.0, 10, false);
@@ -232,14 +234,14 @@ TEST(BSplCLib_GridEvaluatorTest, PrepareUniformParamsWithoutBoundaries)
 
 TEST(BSplCLib_GridEvaluatorTest, PrepareKnotAlignedParams)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParamsFromKnots(0.0, 1.0, 5);
 
@@ -257,14 +259,14 @@ TEST(BSplCLib_GridEvaluatorTest, PrepareKnotAlignedParams)
 
 TEST(BSplCLib_GridEvaluatorTest, D0Evaluation)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParams(0.0, 1.0, 10);
 
@@ -283,9 +285,9 @@ TEST(BSplCLib_GridEvaluatorTest, D0Evaluation)
                  aData->SpanIndex,
                  aDeg,
                  false, // not periodic
-                 aPoles,
+                 aPoles->Array1(),
                  nullptr,
-                 aKnots,
+                 aKnots->Array1(),
                  nullptr, // NoMults for flat knots
                  aPtDirect);
 
@@ -297,14 +299,14 @@ TEST(BSplCLib_GridEvaluatorTest, D0Evaluation)
 
 TEST(BSplCLib_GridEvaluatorTest, D1Evaluation)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParams(0.0, 1.0, 5);
 
@@ -320,14 +322,14 @@ TEST(BSplCLib_GridEvaluatorTest, D1Evaluation)
 
 TEST(BSplCLib_GridEvaluatorTest, D2Evaluation)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParams(0.0, 1.0, 5);
 
@@ -343,14 +345,14 @@ TEST(BSplCLib_GridEvaluatorTest, D2Evaluation)
 
 TEST(BSplCLib_GridEvaluatorTest, InvalidIndexReturnsNullopt)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
   anEval.PrepareParams(0.0, 1.0, 10);
 
   // Invalid indices
@@ -370,14 +372,14 @@ TEST(BSplCLib_GridEvaluatorTest, InvalidIndexReturnsNullopt)
 
 TEST(BSplCLib_GridEvaluatorTest, EndpointsMatch)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  anEval.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   anEval.PrepareParams(0.0, 1.0, 10, true);
 
@@ -398,15 +400,15 @@ TEST(BSplCLib_GridEvaluatorTest, EndpointsMatch)
 
 TEST(BSplCLib_GridEvaluatorTest, RationalCurveEvaluation)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aWeights;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aWeights;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateRationalBSplineCurve(aPoles, aWeights, aKnots, aDeg);
 
   BSplCLib_GridEvaluator anEval;
-  const bool             isOk = anEval.Initialize(aDeg, aPoles, &aWeights, aKnots, true, false);
+  const bool             isOk = anEval.Initialize(aDeg, aPoles, aWeights, aKnots, true, false);
 
   ASSERT_TRUE(isOk);
 
@@ -425,11 +427,10 @@ TEST(BSplCLib_GridEvaluatorTest, RationalCurveEvaluation)
 
 TEST(BSplCLib_GridEvaluatorTest, BezierCurveInitialization)
 {
-  TColgp_Array1OfPnt aPoles;
-  CreateBezierCurve(aPoles);
+  Handle(TColgp_HArray1OfPnt) aPoles = CreateBezierCurve();
 
   BSplCLib_GridEvaluator anEval;
-  const bool             isOk = anEval.InitializeBezier(aPoles, nullptr);
+  const bool             isOk = anEval.InitializeBezier(aPoles, Handle(TColStd_HArray1OfReal)());
 
   ASSERT_TRUE(isOk);
   EXPECT_TRUE(anEval.IsInitialized());
@@ -437,11 +438,10 @@ TEST(BSplCLib_GridEvaluatorTest, BezierCurveInitialization)
 
 TEST(BSplCLib_GridEvaluatorTest, BezierCurveEvaluation)
 {
-  TColgp_Array1OfPnt aPoles;
-  CreateBezierCurve(aPoles);
+  Handle(TColgp_HArray1OfPnt) aPoles = CreateBezierCurve();
 
   BSplCLib_GridEvaluator anEval;
-  anEval.InitializeBezier(aPoles, nullptr);
+  anEval.InitializeBezier(aPoles, Handle(TColStd_HArray1OfReal)());
 
   anEval.PrepareParams(0.0, 1.0, 10, true);
 
@@ -460,11 +460,11 @@ TEST(BSplCLib_GridEvaluatorTest, BezierCurveEvaluation)
 
 TEST(BSplCLib_GridEvaluatorTest, BezierCurveValidation_TooFewPoles)
 {
-  TColgp_Array1OfPnt aPoles(1, 1);
-  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, 1);
+  aPoles->SetValue(1, gp_Pnt(0, 0, 0));
 
   BSplCLib_GridEvaluator anEval;
-  const bool             isOk = anEval.InitializeBezier(aPoles, nullptr);
+  const bool             isOk = anEval.InitializeBezier(aPoles, Handle(TColStd_HArray1OfReal)());
 
   EXPECT_FALSE(isOk);
   EXPECT_FALSE(anEval.IsInitialized());
@@ -472,19 +472,19 @@ TEST(BSplCLib_GridEvaluatorTest, BezierCurveValidation_TooFewPoles)
 
 TEST(BSplCLib_GridEvaluatorTest, ConsistencyBetweenMethods)
 {
-  TColgp_Array1OfPnt   aPoles;
-  TColStd_Array1OfReal aKnots;
-  int                  aDeg;
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
 
   CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
 
   // Create two evaluators - one with uniform, one with knot-aligned params
   BSplCLib_GridEvaluator anEvalUniform;
-  anEvalUniform.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEvalUniform.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
   anEvalUniform.PrepareParams(0.0, 1.0, 20, true);
 
   BSplCLib_GridEvaluator anEvalKnots;
-  anEvalKnots.Initialize(aDeg, aPoles, nullptr, aKnots, false, false);
+  anEvalKnots.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
   anEvalKnots.PrepareParamsFromKnots(0.0, 1.0, 20, true);
 
   // Both should produce valid results at endpoints
@@ -506,19 +506,19 @@ TEST(BSplCLib_GridEvaluatorTest, SingleSpanBSpline)
   // Linear B-spline (degree 1, single span)
   const int aDegree = 1;
 
-  TColgp_Array1OfPnt aPoles(1, 2);
-  aPoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
-  aPoles.SetValue(2, gp_Pnt(1.0, 1.0, 0.0));
+  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, 2);
+  aPoles->SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles->SetValue(2, gp_Pnt(1.0, 1.0, 0.0));
 
   // Flat knots: [0,0,1,1]
-  TColStd_Array1OfReal aKnots(1, 4);
-  aKnots.SetValue(1, 0.0);
-  aKnots.SetValue(2, 0.0);
-  aKnots.SetValue(3, 1.0);
-  aKnots.SetValue(4, 1.0);
+  Handle(TColStd_HArray1OfReal) aKnots = new TColStd_HArray1OfReal(1, 4);
+  aKnots->SetValue(1, 0.0);
+  aKnots->SetValue(2, 0.0);
+  aKnots->SetValue(3, 1.0);
+  aKnots->SetValue(4, 1.0);
 
   BSplCLib_GridEvaluator anEval;
-  const bool             isOk = anEval.Initialize(aDegree, aPoles, nullptr, aKnots, false, false);
+  const bool isOk = anEval.Initialize(aDegree, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
 
   ASSERT_TRUE(isOk);
 
@@ -533,4 +533,32 @@ TEST(BSplCLib_GridEvaluatorTest, SingleSpanBSpline)
     // For a linear curve, X should equal Y
     EXPECT_NEAR(aPt->X(), aPt->Y(), Precision::Confusion());
   }
+}
+
+TEST(BSplCLib_GridEvaluatorTest, HandleAccessors)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aWeights;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateRationalBSplineCurve(aPoles, aWeights, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, aWeights, aKnots, true, false);
+
+  // Test accessor methods
+  EXPECT_EQ(anEval.Degree(), aDeg);
+  EXPECT_TRUE(anEval.IsRational());
+  EXPECT_FALSE(anEval.IsPeriodic());
+
+  // Test Handle accessors
+  EXPECT_FALSE(anEval.Poles().IsNull());
+  EXPECT_FALSE(anEval.Weights().IsNull());
+  EXPECT_FALSE(anEval.FlatKnots().IsNull());
+
+  // Verify the handles contain the expected data
+  EXPECT_EQ(anEval.Poles()->Length(), 3);
+  EXPECT_EQ(anEval.Weights()->Length(), 3);
+  EXPECT_EQ(anEval.FlatKnots()->Length(), 6);
 }

@@ -14,133 +14,147 @@
 #include <gtest/gtest.h>
 
 #include <BSplSLib_GridEvaluator.hxx>
+
 #include <BSplSLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
-// Helper function to create a simple planar B-spline surface (degree 2x2).
-// Control points form a flat plane z = x + y.
-static void CreateSimpleBSplineSurface(TColgp_Array2OfPnt&   thePoles,
-                                       TColStd_Array1OfReal& theUFlatKnots,
-                                       TColStd_Array1OfReal& theVFlatKnots,
-                                       int&                  theDegreeU,
-                                       int&                  theDegreeV)
+namespace
+{
+
+//! Creates a quadratic B-spline surface (degree 2x2) with planar geometry z = x + y.
+//! Surface has 4x4 control points and two spans in each direction.
+//! @param[out] thePoles      control points array
+//! @param[out] theUFlatKnots flat knot vector in U direction
+//! @param[out] theVFlatKnots flat knot vector in V direction
+//! @param[out] theDegreeU    polynomial degree in U direction
+//! @param[out] theDegreeV    polynomial degree in V direction
+void createQuadraticBSplineSurface(Handle(TColgp_HArray2OfPnt)&   thePoles,
+                                   Handle(TColStd_HArray1OfReal)& theUFlatKnots,
+                                   Handle(TColStd_HArray1OfReal)& theVFlatKnots,
+                                   int&                           theDegreeU,
+                                   int&                           theDegreeV)
 {
   theDegreeU = 2;
   theDegreeV = 2;
 
-  // 4x4 control points
-  thePoles.Resize(1, 4, 1, 4, false);
+  thePoles = new TColgp_HArray2OfPnt(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
     {
       const double x = (i - 1) / 3.0;
       const double y = (j - 1) / 3.0;
-      const double z = x + y; // Simple plane z = x + y
-      thePoles.SetValue(i, j, gp_Pnt(x, y, z));
+      const double z = x + y;
+      thePoles->SetValue(i, j, gp_Pnt(x, y, z));
     }
   }
 
-  // Flat knots for degree 2 with 2 internal spans in each direction
-  // Knot vector: [0, 0, 0, 0.5, 1, 1, 1]
-  theUFlatKnots.Resize(1, 7, false);
-  theUFlatKnots.SetValue(1, 0.0);
-  theUFlatKnots.SetValue(2, 0.0);
-  theUFlatKnots.SetValue(3, 0.0);
-  theUFlatKnots.SetValue(4, 0.5);
-  theUFlatKnots.SetValue(5, 1.0);
-  theUFlatKnots.SetValue(6, 1.0);
-  theUFlatKnots.SetValue(7, 1.0);
+  // Clamped knot vector with one internal knot at 0.5
+  theUFlatKnots = new TColStd_HArray1OfReal(1, 7);
+  theUFlatKnots->SetValue(1, 0.0);
+  theUFlatKnots->SetValue(2, 0.0);
+  theUFlatKnots->SetValue(3, 0.0);
+  theUFlatKnots->SetValue(4, 0.5);
+  theUFlatKnots->SetValue(5, 1.0);
+  theUFlatKnots->SetValue(6, 1.0);
+  theUFlatKnots->SetValue(7, 1.0);
 
-  theVFlatKnots.Resize(1, 7, false);
-  theVFlatKnots.SetValue(1, 0.0);
-  theVFlatKnots.SetValue(2, 0.0);
-  theVFlatKnots.SetValue(3, 0.0);
-  theVFlatKnots.SetValue(4, 0.5);
-  theVFlatKnots.SetValue(5, 1.0);
-  theVFlatKnots.SetValue(6, 1.0);
-  theVFlatKnots.SetValue(7, 1.0);
+  theVFlatKnots = new TColStd_HArray1OfReal(1, 7);
+  theVFlatKnots->SetValue(1, 0.0);
+  theVFlatKnots->SetValue(2, 0.0);
+  theVFlatKnots->SetValue(3, 0.0);
+  theVFlatKnots->SetValue(4, 0.5);
+  theVFlatKnots->SetValue(5, 1.0);
+  theVFlatKnots->SetValue(6, 1.0);
+  theVFlatKnots->SetValue(7, 1.0);
 }
 
-// Helper function to create Bezier surface control points.
-static void CreateBezierSurface(TColgp_Array2OfPnt& thePoles)
+//! Creates a bicubic Bezier surface with paraboloid-like geometry z = x^2 + y^2.
+//! @return control points array (4x4 poles for degree 3x3)
+Handle(TColgp_HArray2OfPnt) createBicubicBezierSurface()
 {
-  // Bicubic Bezier surface (degree 3x3)
-  thePoles.Resize(1, 4, 1, 4, false);
+  Handle(TColgp_HArray2OfPnt) aPoles = new TColgp_HArray2OfPnt(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
     {
       const double x = (i - 1) / 3.0;
       const double y = (j - 1) / 3.0;
-      // Simple paraboloid-like surface
       const double z = x * x + y * y;
-      thePoles.SetValue(i, j, gp_Pnt(x, y, z));
+      aPoles->SetValue(i, j, gp_Pnt(x, y, z));
     }
   }
+  return aPoles;
 }
 
-// Helper function to create a rational B-spline surface (spherical patch).
-static void CreateRationalBSplineSurface(TColgp_Array2OfPnt&   thePoles,
-                                         TColStd_Array2OfReal& theWeights,
-                                         TColStd_Array1OfReal& theUFlatKnots,
-                                         TColStd_Array1OfReal& theVFlatKnots,
-                                         int&                  theDegreeU,
-                                         int&                  theDegreeV)
+//! Creates a quadratic rational B-spline surface (degree 2x2) with 3x3 control points.
+//! @param[out] thePoles      control points array
+//! @param[out] theWeights    weights array for rational surface
+//! @param[out] theUFlatKnots flat knot vector in U direction
+//! @param[out] theVFlatKnots flat knot vector in V direction
+//! @param[out] theDegreeU    polynomial degree in U direction
+//! @param[out] theDegreeV    polynomial degree in V direction
+void createRationalBSplineSurface(Handle(TColgp_HArray2OfPnt)&   thePoles,
+                                  Handle(TColStd_HArray2OfReal)& theWeights,
+                                  Handle(TColStd_HArray1OfReal)& theUFlatKnots,
+                                  Handle(TColStd_HArray1OfReal)& theVFlatKnots,
+                                  int&                           theDegreeU,
+                                  int&                           theDegreeV)
 {
   theDegreeU = 2;
   theDegreeV = 2;
 
-  // 3x3 control points
-  thePoles.Resize(1, 3, 1, 3, false);
-  theWeights.Resize(1, 3, 1, 3, false);
+  thePoles   = new TColgp_HArray2OfPnt(1, 3, 1, 3);
+  theWeights = new TColStd_HArray2OfReal(1, 3, 1, 3);
 
-  // Create a simple rational surface patch
   const double aW = 1.0 / std::sqrt(2.0);
 
-  thePoles.SetValue(1, 1, gp_Pnt(1.0, 0.0, 0.0));
-  thePoles.SetValue(1, 2, gp_Pnt(1.0, 1.0, 0.0));
-  thePoles.SetValue(1, 3, gp_Pnt(0.0, 1.0, 0.0));
-  thePoles.SetValue(2, 1, gp_Pnt(1.0, 0.0, 1.0));
-  thePoles.SetValue(2, 2, gp_Pnt(1.0, 1.0, 1.0));
-  thePoles.SetValue(2, 3, gp_Pnt(0.0, 1.0, 1.0));
-  thePoles.SetValue(3, 1, gp_Pnt(0.0, 0.0, 1.0));
-  thePoles.SetValue(3, 2, gp_Pnt(0.0, 0.0, 1.0));
-  thePoles.SetValue(3, 3, gp_Pnt(0.0, 0.0, 1.0));
+  thePoles->SetValue(1, 1, gp_Pnt(1.0, 0.0, 0.0));
+  thePoles->SetValue(1, 2, gp_Pnt(1.0, 1.0, 0.0));
+  thePoles->SetValue(1, 3, gp_Pnt(0.0, 1.0, 0.0));
+  thePoles->SetValue(2, 1, gp_Pnt(1.0, 0.0, 1.0));
+  thePoles->SetValue(2, 2, gp_Pnt(1.0, 1.0, 1.0));
+  thePoles->SetValue(2, 3, gp_Pnt(0.0, 1.0, 1.0));
+  thePoles->SetValue(3, 1, gp_Pnt(0.0, 0.0, 1.0));
+  thePoles->SetValue(3, 2, gp_Pnt(0.0, 0.0, 1.0));
+  thePoles->SetValue(3, 3, gp_Pnt(0.0, 0.0, 1.0));
 
-  theWeights.SetValue(1, 1, 1.0);
-  theWeights.SetValue(1, 2, aW);
-  theWeights.SetValue(1, 3, 1.0);
-  theWeights.SetValue(2, 1, aW);
-  theWeights.SetValue(2, 2, 0.5);
-  theWeights.SetValue(2, 3, aW);
-  theWeights.SetValue(3, 1, 1.0);
-  theWeights.SetValue(3, 2, aW);
-  theWeights.SetValue(3, 3, 1.0);
+  theWeights->SetValue(1, 1, 1.0);
+  theWeights->SetValue(1, 2, aW);
+  theWeights->SetValue(1, 3, 1.0);
+  theWeights->SetValue(2, 1, aW);
+  theWeights->SetValue(2, 2, 0.5);
+  theWeights->SetValue(2, 3, aW);
+  theWeights->SetValue(3, 1, 1.0);
+  theWeights->SetValue(3, 2, aW);
+  theWeights->SetValue(3, 3, 1.0);
 
-  // Flat knots: [0,0,0,1,1,1]
-  theUFlatKnots.Resize(1, 6, false);
-  theUFlatKnots.SetValue(1, 0.0);
-  theUFlatKnots.SetValue(2, 0.0);
-  theUFlatKnots.SetValue(3, 0.0);
-  theUFlatKnots.SetValue(4, 1.0);
-  theUFlatKnots.SetValue(5, 1.0);
-  theUFlatKnots.SetValue(6, 1.0);
+  // Clamped Bezier-style knots for single span
+  theUFlatKnots = new TColStd_HArray1OfReal(1, 6);
+  theUFlatKnots->SetValue(1, 0.0);
+  theUFlatKnots->SetValue(2, 0.0);
+  theUFlatKnots->SetValue(3, 0.0);
+  theUFlatKnots->SetValue(4, 1.0);
+  theUFlatKnots->SetValue(5, 1.0);
+  theUFlatKnots->SetValue(6, 1.0);
 
-  theVFlatKnots.Resize(1, 6, false);
-  theVFlatKnots.SetValue(1, 0.0);
-  theVFlatKnots.SetValue(2, 0.0);
-  theVFlatKnots.SetValue(3, 0.0);
-  theVFlatKnots.SetValue(4, 1.0);
-  theVFlatKnots.SetValue(5, 1.0);
-  theVFlatKnots.SetValue(6, 1.0);
+  theVFlatKnots = new TColStd_HArray1OfReal(1, 6);
+  theVFlatKnots->SetValue(1, 0.0);
+  theVFlatKnots->SetValue(2, 0.0);
+  theVFlatKnots->SetValue(3, 0.0);
+  theVFlatKnots->SetValue(4, 1.0);
+  theVFlatKnots->SetValue(5, 1.0);
+  theVFlatKnots->SetValue(6, 1.0);
 }
 
+} // namespace
+
+// Verifies that default-constructed evaluator is in uninitialized state.
 TEST(BSplSLib_GridEvaluatorTest, DefaultConstructor)
 {
   BSplSLib_GridEvaluator anEval;
@@ -149,76 +163,112 @@ TEST(BSplSLib_GridEvaluatorTest, DefaultConstructor)
   EXPECT_EQ(anEval.NbVParams(), 0);
 }
 
+// Verifies successful initialization with valid B-spline surface data.
 TEST(BSplSLib_GridEvaluatorTest, Initialize)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
   const bool             isOk = anEval.Initialize(aDegU,
                                       aDegV,
                                       aPoles,
-                                      nullptr, // non-rational
+                                      Handle(TColStd_HArray2OfReal)(),
                                       aUKnots,
                                       aVKnots,
-                                      false, // not U-rational
-                                      false, // not V-rational
-                                      false, // not U-periodic
-                                      false);  // not V-periodic
+                                      false,
+                                      false,
+                                      false,
+                                      false);
 
   EXPECT_TRUE(isOk);
   EXPECT_TRUE(anEval.IsInitialized());
 }
 
+// Verifies that initialization fails when degree is zero.
 TEST(BSplSLib_GridEvaluatorTest, InitializeValidation_InvalidDegree)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
 
-  // Degree 0 in U should fail
-  bool isOk = anEval.Initialize(0, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  bool isOk = anEval.Initialize(0,
+                                aDegV,
+                                aPoles,
+                                Handle(TColStd_HArray2OfReal)(),
+                                aUKnots,
+                                aVKnots,
+                                false,
+                                false,
+                                false,
+                                false);
   EXPECT_FALSE(isOk);
 
-  // Degree 0 in V should fail
-  isOk = anEval.Initialize(aDegU, 0, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  isOk = anEval.Initialize(aDegU,
+                           0,
+                           aPoles,
+                           Handle(TColStd_HArray2OfReal)(),
+                           aUKnots,
+                           aVKnots,
+                           false,
+                           false,
+                           false,
+                           false);
   EXPECT_FALSE(isOk);
 }
 
+// Verifies that initialization fails when rational flag is set but weights are null.
 TEST(BSplSLib_GridEvaluatorTest, InitializeValidation_RationalWithoutWeights)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
 
-  // Rational surface without weights should fail
-  const bool isOk =
-    anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, true, false, false, false);
+  const bool isOk = anEval.Initialize(aDegU,
+                                      aDegV,
+                                      aPoles,
+                                      Handle(TColStd_HArray2OfReal)(),
+                                      aUKnots,
+                                      aVKnots,
+                                      true,
+                                      false,
+                                      false,
+                                      false);
   EXPECT_FALSE(isOk);
   EXPECT_FALSE(anEval.IsInitialized());
 }
 
+// Verifies that uniform parameter preparation creates the correct number of samples.
 TEST(BSplSLib_GridEvaluatorTest, PrepareUniformParams)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
   anEval.PrepareUParams(0.0, 1.0, 5);
   anEval.PrepareVParams(0.0, 1.0, 5);
@@ -226,7 +276,6 @@ TEST(BSplSLib_GridEvaluatorTest, PrepareUniformParams)
   EXPECT_EQ(anEval.NbUParams(), 5);
   EXPECT_EQ(anEval.NbVParams(), 5);
 
-  // Check that parameters are in range
   for (int i = 1; i <= anEval.NbUParams(); ++i)
   {
     auto aParam = anEval.UParam(i);
@@ -236,22 +285,30 @@ TEST(BSplSLib_GridEvaluatorTest, PrepareUniformParams)
   }
 }
 
+// Verifies that uniform parameters include exact boundary values when requested.
 TEST(BSplSLib_GridEvaluatorTest, PrepareUniformParamsWithExactBoundaries)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
-  // With theIncludeEnds = true (default)
   anEval.PrepareUParams(0.0, 1.0, 5, true);
   anEval.PrepareVParams(0.0, 1.0, 5, true);
 
-  // First and last parameters should be exactly at boundaries
   auto aFirstU = anEval.UParam(1);
   auto aLastU  = anEval.UParam(anEval.NbUParams());
   auto aFirstV = anEval.VParam(1);
@@ -268,25 +325,33 @@ TEST(BSplSLib_GridEvaluatorTest, PrepareUniformParamsWithExactBoundaries)
   EXPECT_DOUBLE_EQ(*aLastV, 1.0);
 }
 
+// Verifies that knot-aligned parameter preparation creates valid span indices.
 TEST(BSplSLib_GridEvaluatorTest, PrepareKnotAlignedParams)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
   anEval.PrepareUParamsFromKnots(0.0, 1.0, 3);
   anEval.PrepareVParamsFromKnots(0.0, 1.0, 3);
 
-  // Should have at least 3 samples
   EXPECT_GE(anEval.NbUParams(), 3);
   EXPECT_GE(anEval.NbVParams(), 3);
 
-  // Check that span indices are valid
   for (int i = 1; i <= anEval.NbUParams(); ++i)
   {
     auto aData = anEval.UParamData(i);
@@ -295,21 +360,30 @@ TEST(BSplSLib_GridEvaluatorTest, PrepareKnotAlignedParams)
   }
 }
 
+// Verifies that D0 evaluation produces results identical to direct BSplSLib::D0 calls.
 TEST(BSplSLib_GridEvaluatorTest, D0Evaluation)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
   anEval.PrepareUParams(0.0, 1.0, 5);
   anEval.PrepareVParams(0.0, 1.0, 5);
 
-  // Evaluate and compare with direct BSplSLib evaluation
   for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
   {
     for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
@@ -317,7 +391,6 @@ TEST(BSplSLib_GridEvaluatorTest, D0Evaluation)
       auto aPtGrid = anEval.Value(iu, iv);
       ASSERT_TRUE(aPtGrid.has_value());
 
-      // Direct evaluation using BSplSLib for comparison
       gp_Pnt aPtDirect;
       auto   aUData = anEval.UParamData(iu);
       auto   aVData = anEval.VParamData(iv);
@@ -328,10 +401,10 @@ TEST(BSplSLib_GridEvaluatorTest, D0Evaluation)
                    aVData->Param,
                    aUData->SpanIndex,
                    aVData->SpanIndex,
-                   aPoles,
+                   aPoles->Array2(),
                    nullptr,
-                   aUKnots,
-                   aVKnots,
+                   aUKnots->Array1(),
+                   aVKnots->Array1(),
                    nullptr,
                    nullptr,
                    aDegU,
@@ -349,68 +422,93 @@ TEST(BSplSLib_GridEvaluatorTest, D0Evaluation)
   }
 }
 
+// Verifies that D1 evaluation computes non-zero first derivatives.
 TEST(BSplSLib_GridEvaluatorTest, D1Evaluation)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
   anEval.PrepareUParams(0.0, 1.0, 3);
   anEval.PrepareVParams(0.0, 1.0, 3);
 
-  // Test D1 evaluation
   gp_Pnt     aPt;
   gp_Vec     aDU, aDV;
   const bool isOk = anEval.D1(2, 2, aPt, aDU, aDV);
 
   EXPECT_TRUE(isOk);
-  // For a B-spline surface, derivatives should be non-zero
   EXPECT_GT(aDU.Magnitude() + aDV.Magnitude(), Precision::Confusion());
 }
 
+// Verifies that D2 evaluation completes without producing NaN values.
 TEST(BSplSLib_GridEvaluatorTest, D2Evaluation)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
 
   anEval.PrepareUParams(0.0, 1.0, 3);
   anEval.PrepareVParams(0.0, 1.0, 3);
 
-  // Test D2 evaluation - should not crash
   gp_Pnt     aPt;
   gp_Vec     aDU, aDV, aDUU, aDVV, aDUV;
   const bool isOk = anEval.D2(2, 2, aPt, aDU, aDV, aDUU, aDVV, aDUV);
 
   EXPECT_TRUE(isOk);
-  // Point should be valid (not NaN)
   EXPECT_FALSE(std::isnan(aPt.X()));
 }
 
+// Verifies that out-of-range indices return std::nullopt or false.
 TEST(BSplSLib_GridEvaluatorTest, InvalidIndexReturnsNullopt)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
-  anEval.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
   anEval.PrepareUParams(0.0, 1.0, 5);
   anEval.PrepareVParams(0.0, 1.0, 5);
 
-  // Invalid indices
   EXPECT_FALSE(anEval.Value(0, 1).has_value());
   EXPECT_FALSE(anEval.Value(1, 0).has_value());
   EXPECT_FALSE(anEval.Value(6, 1).has_value());
@@ -418,7 +516,6 @@ TEST(BSplSLib_GridEvaluatorTest, InvalidIndexReturnsNullopt)
   EXPECT_FALSE(anEval.UParam(0).has_value());
   EXPECT_FALSE(anEval.VParam(0).has_value());
 
-  // D0/D1/D2 should return false for invalid indices
   gp_Pnt aPt;
   gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
   EXPECT_FALSE(anEval.D0(0, 1, aPt));
@@ -426,32 +523,31 @@ TEST(BSplSLib_GridEvaluatorTest, InvalidIndexReturnsNullopt)
   EXPECT_FALSE(anEval.D2(0, 1, aPt, aDU, aDV, aDUU, aDVV, aDUV));
 }
 
+// Verifies that rational surface evaluation produces valid non-NaN coordinates.
 TEST(BSplSLib_GridEvaluatorTest, RationalSurfaceEvaluation)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array2OfReal aWeights;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray2OfReal) aWeights;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateRationalBSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aDegU, aDegV);
+  createRationalBSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aDegU, aDegV);
 
   BSplSLib_GridEvaluator anEval;
   const bool             isOk =
-    anEval.Initialize(aDegU, aDegV, aPoles, &aWeights, aUKnots, aVKnots, true, true, false, false);
+    anEval.Initialize(aDegU, aDegV, aPoles, aWeights, aUKnots, aVKnots, true, true, false, false);
 
   ASSERT_TRUE(isOk);
 
   anEval.PrepareUParams(0.0, 1.0, 5, true);
   anEval.PrepareVParams(0.0, 1.0, 5, true);
 
-  // All evaluations should succeed
   for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
   {
     for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
     {
       auto aPt = anEval.Value(iu, iv);
       ASSERT_TRUE(aPt.has_value());
-      // Point should be valid (not NaN)
       EXPECT_FALSE(std::isnan(aPt->X()));
       EXPECT_FALSE(std::isnan(aPt->Y()));
       EXPECT_FALSE(std::isnan(aPt->Z()));
@@ -459,30 +555,29 @@ TEST(BSplSLib_GridEvaluatorTest, RationalSurfaceEvaluation)
   }
 }
 
+// Verifies that InitializeBezier succeeds with valid control points.
 TEST(BSplSLib_GridEvaluatorTest, BezierSurfaceInitialization)
 {
-  TColgp_Array2OfPnt aPoles;
-  CreateBezierSurface(aPoles);
+  Handle(TColgp_HArray2OfPnt) aPoles = createBicubicBezierSurface();
 
   BSplSLib_GridEvaluator anEval;
-  const bool             isOk = anEval.InitializeBezier(aPoles, nullptr);
+  const bool             isOk = anEval.InitializeBezier(aPoles, Handle(TColStd_HArray2OfReal)());
 
   ASSERT_TRUE(isOk);
   EXPECT_TRUE(anEval.IsInitialized());
 }
 
+// Verifies that Bezier surface corner points match the control polygon corners.
 TEST(BSplSLib_GridEvaluatorTest, BezierSurfaceEvaluation)
 {
-  TColgp_Array2OfPnt aPoles;
-  CreateBezierSurface(aPoles);
+  Handle(TColgp_HArray2OfPnt) aPoles = createBicubicBezierSurface();
 
   BSplSLib_GridEvaluator anEval;
-  anEval.InitializeBezier(aPoles, nullptr);
+  anEval.InitializeBezier(aPoles, Handle(TColStd_HArray2OfReal)());
 
   anEval.PrepareUParams(0.0, 1.0, 5, true);
   anEval.PrepareVParams(0.0, 1.0, 5, true);
 
-  // Corner points should match control points
   auto aCorner00 = anEval.Value(1, 1);
   auto aCorner10 = anEval.Value(anEval.NbUParams(), 1);
   auto aCorner01 = anEval.Value(1, anEval.NbVParams());
@@ -493,66 +588,111 @@ TEST(BSplSLib_GridEvaluatorTest, BezierSurfaceEvaluation)
   ASSERT_TRUE(aCorner01.has_value());
   ASSERT_TRUE(aCorner11.has_value());
 
-  // (0,0) corner
   EXPECT_NEAR(aCorner00->X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aCorner00->Y(), 0.0, Precision::Confusion());
 
-  // (1,0) corner
   EXPECT_NEAR(aCorner10->X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aCorner10->Y(), 0.0, Precision::Confusion());
 
-  // (0,1) corner
   EXPECT_NEAR(aCorner01->X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aCorner01->Y(), 1.0, Precision::Confusion());
 
-  // (1,1) corner
   EXPECT_NEAR(aCorner11->X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aCorner11->Y(), 1.0, Precision::Confusion());
 }
 
+// Verifies that InitializeBezier fails when control point array has insufficient size.
 TEST(BSplSLib_GridEvaluatorTest, BezierSurfaceValidation_TooFewPoles)
 {
-  // 1x2 poles - not enough for a surface
-  TColgp_Array2OfPnt aPoles(1, 1, 1, 2);
-  aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
-  aPoles.SetValue(1, 2, gp_Pnt(1, 0, 0));
+  Handle(TColgp_HArray2OfPnt) aPoles = new TColgp_HArray2OfPnt(1, 1, 1, 2);
+  aPoles->SetValue(1, 1, gp_Pnt(0, 0, 0));
+  aPoles->SetValue(1, 2, gp_Pnt(1, 0, 0));
 
   BSplSLib_GridEvaluator anEval;
-  const bool             isOk = anEval.InitializeBezier(aPoles, nullptr);
+  const bool             isOk = anEval.InitializeBezier(aPoles, Handle(TColStd_HArray2OfReal)());
 
   EXPECT_FALSE(isOk);
   EXPECT_FALSE(anEval.IsInitialized());
 }
 
+// Verifies that uniform and knot-aligned parameter methods produce consistent corner values.
 TEST(BSplSLib_GridEvaluatorTest, ConsistencyWithKnotAlignedParams)
 {
-  TColgp_Array2OfPnt   aPoles;
-  TColStd_Array1OfReal aUKnots, aVKnots;
-  int                  aDegU, aDegV;
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
 
-  CreateSimpleBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
 
-  // Create two evaluators - one with uniform, one with knot-aligned params
   BSplSLib_GridEvaluator anEvalUniform;
-  anEvalUniform.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEvalUniform.Initialize(aDegU,
+                           aDegV,
+                           aPoles,
+                           Handle(TColStd_HArray2OfReal)(),
+                           aUKnots,
+                           aVKnots,
+                           false,
+                           false,
+                           false,
+                           false);
   anEvalUniform.PrepareUParams(0.0, 1.0, 10, true);
   anEvalUniform.PrepareVParams(0.0, 1.0, 10, true);
 
   BSplSLib_GridEvaluator anEvalKnots;
-  anEvalKnots.Initialize(aDegU, aDegV, aPoles, nullptr, aUKnots, aVKnots, false, false, false, false);
+  anEvalKnots.Initialize(aDegU,
+                         aDegV,
+                         aPoles,
+                         Handle(TColStd_HArray2OfReal)(),
+                         aUKnots,
+                         aVKnots,
+                         false,
+                         false,
+                         false,
+                         false);
   anEvalKnots.PrepareUParamsFromKnots(0.0, 1.0, 10, true);
   anEvalKnots.PrepareVParamsFromKnots(0.0, 1.0, 10, true);
 
-  // Both should produce valid results at corners
   auto aPt1 = anEvalUniform.Value(1, 1);
   auto aPt2 = anEvalKnots.Value(1, 1);
 
   ASSERT_TRUE(aPt1.has_value());
   ASSERT_TRUE(aPt2.has_value());
 
-  // First point should be near (0,0,0) since that's the corner
   EXPECT_NEAR(aPt1->X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aPt1->Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aPt2->X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aPt2->Y(), 0.0, Precision::Confusion());
+}
+
+// Verifies that Handle accessor methods return valid data after initialization.
+TEST(BSplSLib_GridEvaluatorTest, HandleAccessors)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray2OfReal) aWeights;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createRationalBSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU, aDegV, aPoles, aWeights, aUKnots, aVKnots, true, true, false, false);
+
+  EXPECT_EQ(anEval.DegreeU(), aDegU);
+  EXPECT_EQ(anEval.DegreeV(), aDegV);
+  EXPECT_TRUE(anEval.IsURational());
+  EXPECT_TRUE(anEval.IsVRational());
+  EXPECT_FALSE(anEval.IsUPeriodic());
+  EXPECT_FALSE(anEval.IsVPeriodic());
+
+  EXPECT_FALSE(anEval.Poles().IsNull());
+  EXPECT_FALSE(anEval.Weights().IsNull());
+  EXPECT_FALSE(anEval.UFlatKnots().IsNull());
+  EXPECT_FALSE(anEval.VFlatKnots().IsNull());
+
+  EXPECT_EQ(anEval.Poles()->ColLength(), 3);
+  EXPECT_EQ(anEval.Poles()->RowLength(), 3);
+  EXPECT_EQ(anEval.Weights()->ColLength(), 3);
+  EXPECT_EQ(anEval.Weights()->RowLength(), 3);
+  EXPECT_EQ(anEval.UFlatKnots()->Length(), 6);
+  EXPECT_EQ(anEval.VFlatKnots()->Length(), 6);
 }
