@@ -157,6 +157,18 @@ public:
                                       int    theNbV,
                                       bool   theIncludeEnds = true);
 
+  //! Set U parameters from pre-computed array.
+  //! Span indices are computed for each parameter value.
+  //! Use this when exact parameter values must match external sources.
+  //! @param theUParams handle to array of U parameter values (1-based)
+  Standard_EXPORT void SetUParams(const Handle(TColStd_HArray1OfReal)& theUParams);
+
+  //! Set V parameters from pre-computed array.
+  //! Span indices are computed for each parameter value.
+  //! Use this when exact parameter values must match external sources.
+  //! @param theVParams handle to array of V parameter values (1-based)
+  Standard_EXPORT void SetVParams(const Handle(TColStd_HArray1OfReal)& theVParams);
+
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
 

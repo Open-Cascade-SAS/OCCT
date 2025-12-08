@@ -938,3 +938,173 @@ TEST(BSplCLib_GridEvaluatorTest, EvaluateGrid_NoParams)
 
   EXPECT_TRUE(aPoints.IsEmpty());
 }
+
+// Verifies that SetParams accepts pre-computed parameter arrays.
+TEST(BSplCLib_GridEvaluatorTest, SetParams)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+
+  // Create custom parameters array
+  Handle(TColStd_HArray1OfReal) aCustomParams = new TColStd_HArray1OfReal(1, 4);
+  aCustomParams->SetValue(1, 0.0);
+  aCustomParams->SetValue(2, 0.25);
+  aCustomParams->SetValue(3, 0.75);
+  aCustomParams->SetValue(4, 1.0);
+
+  anEval.SetParams(aCustomParams);
+
+  EXPECT_EQ(anEval.NbParams(), 4);
+
+  // Verify parameters are exactly as provided
+  auto aP1 = anEval.Param(1);
+  auto aP2 = anEval.Param(2);
+  auto aP3 = anEval.Param(3);
+  auto aP4 = anEval.Param(4);
+
+  ASSERT_TRUE(aP1.has_value());
+  ASSERT_TRUE(aP2.has_value());
+  ASSERT_TRUE(aP3.has_value());
+  ASSERT_TRUE(aP4.has_value());
+
+  EXPECT_DOUBLE_EQ(*aP1, 0.0);
+  EXPECT_DOUBLE_EQ(*aP2, 0.25);
+  EXPECT_DOUBLE_EQ(*aP3, 0.75);
+  EXPECT_DOUBLE_EQ(*aP4, 1.0);
+
+  // Verify evaluation works correctly
+  auto aPt = anEval.Value(1);
+  ASSERT_TRUE(aPt.has_value());
+  EXPECT_NEAR(aPt->X(), 0.0, Precision::Confusion());
+}
+
+// Verifies that SetParams produces identical results to PrepareParams with same values.
+TEST(BSplCLib_GridEvaluatorTest, SetParams_MatchesPrepareParams)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  // First evaluator uses PrepareParams
+  BSplCLib_GridEvaluator anEvalPrepare;
+  anEvalPrepare.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+  anEvalPrepare.PrepareParams(0.0, 1.0, 10, true);
+
+  // Extract parameters from first evaluator
+  Handle(TColStd_HArray1OfReal) aParams = new TColStd_HArray1OfReal(1, anEvalPrepare.NbParams());
+  for (int i = 1; i <= anEvalPrepare.NbParams(); ++i)
+  {
+    aParams->SetValue(i, *anEvalPrepare.Param(i));
+  }
+
+  // Second evaluator uses SetParams with same values
+  BSplCLib_GridEvaluator anEvalSet;
+  anEvalSet.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+  anEvalSet.SetParams(aParams);
+
+  // Verify both produce identical results
+  EXPECT_EQ(anEvalPrepare.NbParams(), anEvalSet.NbParams());
+
+  for (int i = 1; i <= anEvalPrepare.NbParams(); ++i)
+  {
+    auto aPt1 = anEvalPrepare.Value(i);
+    auto aPt2 = anEvalSet.Value(i);
+
+    ASSERT_TRUE(aPt1.has_value());
+    ASSERT_TRUE(aPt2.has_value());
+
+    EXPECT_NEAR(aPt1->X(), aPt2->X(), Precision::Confusion());
+    EXPECT_NEAR(aPt1->Y(), aPt2->Y(), Precision::Confusion());
+    EXPECT_NEAR(aPt1->Z(), aPt2->Z(), Precision::Confusion());
+  }
+}
+
+// Verifies that SetParams ignores null handles.
+TEST(BSplCLib_GridEvaluatorTest, SetParams_NullHandle)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+
+  // Call with null handle - should not crash
+  anEval.SetParams(Handle(TColStd_HArray1OfReal)());
+
+  // Parameters should remain empty
+  EXPECT_EQ(anEval.NbParams(), 0);
+}
+
+// Verifies that SetParams ignores arrays with fewer than 2 elements.
+TEST(BSplCLib_GridEvaluatorTest, SetParams_TooFewElements)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateSimpleBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+
+  // Create array with only 1 element
+  Handle(TColStd_HArray1OfReal) aSmallArray = new TColStd_HArray1OfReal(1, 1);
+  aSmallArray->SetValue(1, 0.5);
+
+  anEval.SetParams(aSmallArray);
+
+  // Parameters should remain empty
+  EXPECT_EQ(anEval.NbParams(), 0);
+}
+
+// Verifies that SetParams computes correct span indices.
+TEST(BSplCLib_GridEvaluatorTest, SetParams_SpanIndices)
+{
+  Handle(TColgp_HArray1OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aKnots;
+  int                           aDeg;
+
+  CreateMultiSpanBSplineCurve(aPoles, aKnots, aDeg);
+
+  BSplCLib_GridEvaluator anEval;
+  anEval.Initialize(aDeg, aPoles, Handle(TColStd_HArray1OfReal)(), aKnots, false, false);
+
+  // Create parameters that span multiple knot spans
+  Handle(TColStd_HArray1OfReal) aParams = new TColStd_HArray1OfReal(1, 4);
+  aParams->SetValue(1, 0.1); // In first span
+  aParams->SetValue(2, 0.4); // In first or second span
+  aParams->SetValue(3, 0.6); // In later span
+  aParams->SetValue(4, 0.9); // In last span
+
+  anEval.SetParams(aParams);
+
+  // Verify span indices are computed
+  auto aData1 = anEval.ParamData(1);
+  auto aData4 = anEval.ParamData(4);
+
+  ASSERT_TRUE(aData1.has_value());
+  ASSERT_TRUE(aData4.has_value());
+
+  // Span indices should be valid (>= degree)
+  EXPECT_GE(aData1->SpanIndex, aDeg);
+  EXPECT_GE(aData4->SpanIndex, aDeg);
+
+  // Verify evaluation works correctly across spans
+  for (int i = 1; i <= 4; ++i)
+  {
+    auto aPt = anEval.Value(i);
+    ASSERT_TRUE(aPt.has_value());
+    EXPECT_FALSE(std::isnan(aPt->X()));
+  }
+}

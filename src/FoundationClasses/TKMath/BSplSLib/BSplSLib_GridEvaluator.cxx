@@ -282,6 +282,66 @@ void BSplSLib_GridEvaluator::PrepareVParams(double theVMin,
 
 //==================================================================================================
 
+void BSplSLib_GridEvaluator::SetUParams(const Handle(TColStd_HArray1OfReal)& theUParams)
+{
+  if (!myIsInitialized || myUFlatKnots.IsNull() || theUParams.IsNull())
+  {
+    return;
+  }
+
+  const int aNbParams = theUParams->Length();
+  if (aNbParams < 2)
+  {
+    return;
+  }
+
+  myUParams.Resize(1, aNbParams, false);
+
+  // Use hint-based span location for efficiency on sorted parameters
+  int aPrevSpan = myUFlatKnots->Lower() + myDegreeU;
+
+  for (int i = 1; i <= aNbParams; ++i)
+  {
+    const double aParam = theUParams->Value(i);
+    const int    aSpanIdx =
+      locateSpanWithHint(myUFlatKnots, myDegreeU, myUPeriodic, aParam, aPrevSpan);
+    aPrevSpan = aSpanIdx;
+    myUParams.SetValue(i, {aParam, aSpanIdx});
+  }
+}
+
+//==================================================================================================
+
+void BSplSLib_GridEvaluator::SetVParams(const Handle(TColStd_HArray1OfReal)& theVParams)
+{
+  if (!myIsInitialized || myVFlatKnots.IsNull() || theVParams.IsNull())
+  {
+    return;
+  }
+
+  const int aNbParams = theVParams->Length();
+  if (aNbParams < 2)
+  {
+    return;
+  }
+
+  myVParams.Resize(1, aNbParams, false);
+
+  // Use hint-based span location for efficiency on sorted parameters
+  int aPrevSpan = myVFlatKnots->Lower() + myDegreeV;
+
+  for (int i = 1; i <= aNbParams; ++i)
+  {
+    const double aParam = theVParams->Value(i);
+    const int    aSpanIdx =
+      locateSpanWithHint(myVFlatKnots, myDegreeV, myVPeriodic, aParam, aPrevSpan);
+    aPrevSpan = aSpanIdx;
+    myVParams.SetValue(i, {aParam, aSpanIdx});
+  }
+}
+
+//==================================================================================================
+
 void BSplSLib_GridEvaluator::computeKnotAlignedParams(
   const Handle(TColStd_HArray1OfReal)& theFlatKnots,
   int                                  theDegree,

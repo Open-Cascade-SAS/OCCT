@@ -126,6 +126,12 @@ public:
                                      int    theNbSamples,
                                      bool   theIncludeEnds = true);
 
+  //! Set parameters from pre-computed array.
+  //! Span indices are computed for each parameter value.
+  //! Use this when exact parameter values must match external sources.
+  //! @param theParams handle to array of parameter values (1-based)
+  Standard_EXPORT void SetParams(const Handle(TColStd_HArray1OfReal)& theParams);
+
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
 

@@ -808,6 +808,16 @@ public:
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const TColStd_Array1OfReal* Weights() const;
 
+  //! Returns handle to the array of poles for efficient grid evaluation.
+  const Handle(TColgp_HArray1OfPnt)& HArrayPoles() const { return poles; }
+
+  //! Returns handle to the array of weights for efficient grid evaluation.
+  //! May be null for non-rational curves.
+  const Handle(TColStd_HArray1OfReal)& HArrayWeights() const { return weights; }
+
+  //! Returns handle to the flat knots array for efficient grid evaluation.
+  const Handle(TColStd_HArray1OfReal)& HArrayFlatKnots() const { return flatknots; }
+
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) Standard_OVERRIDE;
 

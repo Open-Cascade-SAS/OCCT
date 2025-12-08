@@ -182,6 +182,35 @@ void BSplCLib_GridEvaluator::PrepareParams(double theParamMin,
 
 //==================================================================================================
 
+void BSplCLib_GridEvaluator::SetParams(const Handle(TColStd_HArray1OfReal)& theParams)
+{
+  if (!myIsInitialized || myFlatKnots.IsNull() || theParams.IsNull())
+  {
+    return;
+  }
+
+  const int aNbParams = theParams->Length();
+  if (aNbParams < 2)
+  {
+    return;
+  }
+
+  myParams.Resize(1, aNbParams, false);
+
+  // Use hint-based span location for efficiency on sorted parameters
+  int aPrevSpan = myFlatKnots->Lower() + myDegree;
+
+  for (int i = 1; i <= aNbParams; ++i)
+  {
+    const double aParam   = theParams->Value(i);
+    const int    aSpanIdx = locateSpanWithHint(aParam, aPrevSpan);
+    aPrevSpan             = aSpanIdx;
+    myParams.SetValue(i, {aParam, aSpanIdx});
+  }
+}
+
+//==================================================================================================
+
 void BSplCLib_GridEvaluator::computeKnotAlignedParams(double theParamMin,
                                                       double theParamMax,
                                                       int    theMinSamples,

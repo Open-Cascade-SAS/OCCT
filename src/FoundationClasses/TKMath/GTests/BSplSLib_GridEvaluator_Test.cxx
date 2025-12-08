@@ -1305,3 +1305,306 @@ TEST(BSplSLib_GridEvaluatorTest, EvaluateGrid_NoParams)
 
   EXPECT_TRUE(aPoints.IsEmpty());
 }
+
+// Verifies that SetUParams accepts pre-computed parameter arrays.
+TEST(BSplSLib_GridEvaluatorTest, SetUParams)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Create custom U parameters array
+  Handle(TColStd_HArray1OfReal) aCustomUParams = new TColStd_HArray1OfReal(1, 4);
+  aCustomUParams->SetValue(1, 0.0);
+  aCustomUParams->SetValue(2, 0.25);
+  aCustomUParams->SetValue(3, 0.75);
+  aCustomUParams->SetValue(4, 1.0);
+
+  anEval.SetUParams(aCustomUParams);
+  anEval.PrepareVParams(0.0, 1.0, 3, true);
+
+  EXPECT_EQ(anEval.NbUParams(), 4);
+
+  // Verify parameters are exactly as provided
+  auto aU1 = anEval.UParam(1);
+  auto aU2 = anEval.UParam(2);
+  auto aU3 = anEval.UParam(3);
+  auto aU4 = anEval.UParam(4);
+
+  ASSERT_TRUE(aU1.has_value());
+  ASSERT_TRUE(aU2.has_value());
+  ASSERT_TRUE(aU3.has_value());
+  ASSERT_TRUE(aU4.has_value());
+
+  EXPECT_DOUBLE_EQ(*aU1, 0.0);
+  EXPECT_DOUBLE_EQ(*aU2, 0.25);
+  EXPECT_DOUBLE_EQ(*aU3, 0.75);
+  EXPECT_DOUBLE_EQ(*aU4, 1.0);
+
+  // Verify evaluation works correctly
+  auto aPt = anEval.Value(1, 1);
+  ASSERT_TRUE(aPt.has_value());
+  EXPECT_NEAR(aPt->X(), 0.0, Precision::Confusion());
+}
+
+// Verifies that SetVParams accepts pre-computed parameter arrays.
+TEST(BSplSLib_GridEvaluatorTest, SetVParams)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Create custom V parameters array
+  Handle(TColStd_HArray1OfReal) aCustomVParams = new TColStd_HArray1OfReal(1, 5);
+  aCustomVParams->SetValue(1, 0.0);
+  aCustomVParams->SetValue(2, 0.1);
+  aCustomVParams->SetValue(3, 0.5);
+  aCustomVParams->SetValue(4, 0.9);
+  aCustomVParams->SetValue(5, 1.0);
+
+  anEval.PrepareUParams(0.0, 1.0, 3, true);
+  anEval.SetVParams(aCustomVParams);
+
+  EXPECT_EQ(anEval.NbVParams(), 5);
+
+  // Verify parameters are exactly as provided
+  auto aV1 = anEval.VParam(1);
+  auto aV2 = anEval.VParam(2);
+  auto aV3 = anEval.VParam(3);
+  auto aV4 = anEval.VParam(4);
+  auto aV5 = anEval.VParam(5);
+
+  ASSERT_TRUE(aV1.has_value());
+  ASSERT_TRUE(aV2.has_value());
+  ASSERT_TRUE(aV3.has_value());
+  ASSERT_TRUE(aV4.has_value());
+  ASSERT_TRUE(aV5.has_value());
+
+  EXPECT_DOUBLE_EQ(*aV1, 0.0);
+  EXPECT_DOUBLE_EQ(*aV2, 0.1);
+  EXPECT_DOUBLE_EQ(*aV3, 0.5);
+  EXPECT_DOUBLE_EQ(*aV4, 0.9);
+  EXPECT_DOUBLE_EQ(*aV5, 1.0);
+}
+
+// Verifies that SetUParams and SetVParams produce identical results to
+// PrepareUParams/PrepareVParams.
+TEST(BSplSLib_GridEvaluatorTest, SetParams_MatchesPrepareParams)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  // First evaluator uses PrepareUParams/PrepareVParams
+  BSplSLib_GridEvaluator anEvalPrepare;
+  anEvalPrepare.Initialize(aDegU,
+                           aDegV,
+                           aPoles,
+                           Handle(TColStd_HArray2OfReal)(),
+                           aUKnots,
+                           aVKnots,
+                           false,
+                           false,
+                           false,
+                           false);
+  anEvalPrepare.PrepareUParams(0.0, 1.0, 10, true);
+  anEvalPrepare.PrepareVParams(0.0, 1.0, 10, true);
+
+  // Extract parameters from first evaluator
+  Handle(TColStd_HArray1OfReal) aUParams = new TColStd_HArray1OfReal(1, anEvalPrepare.NbUParams());
+  Handle(TColStd_HArray1OfReal) aVParams = new TColStd_HArray1OfReal(1, anEvalPrepare.NbVParams());
+  for (int i = 1; i <= anEvalPrepare.NbUParams(); ++i)
+  {
+    aUParams->SetValue(i, *anEvalPrepare.UParam(i));
+  }
+  for (int i = 1; i <= anEvalPrepare.NbVParams(); ++i)
+  {
+    aVParams->SetValue(i, *anEvalPrepare.VParam(i));
+  }
+
+  // Second evaluator uses SetUParams/SetVParams with same values
+  BSplSLib_GridEvaluator anEvalSet;
+  anEvalSet.Initialize(aDegU,
+                       aDegV,
+                       aPoles,
+                       Handle(TColStd_HArray2OfReal)(),
+                       aUKnots,
+                       aVKnots,
+                       false,
+                       false,
+                       false,
+                       false);
+  anEvalSet.SetUParams(aUParams);
+  anEvalSet.SetVParams(aVParams);
+
+  // Verify both produce identical results
+  EXPECT_EQ(anEvalPrepare.NbUParams(), anEvalSet.NbUParams());
+  EXPECT_EQ(anEvalPrepare.NbVParams(), anEvalSet.NbVParams());
+
+  for (int iu = 1; iu <= anEvalPrepare.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEvalPrepare.NbVParams(); ++iv)
+    {
+      auto aPt1 = anEvalPrepare.Value(iu, iv);
+      auto aPt2 = anEvalSet.Value(iu, iv);
+
+      ASSERT_TRUE(aPt1.has_value());
+      ASSERT_TRUE(aPt2.has_value());
+
+      EXPECT_NEAR(aPt1->X(), aPt2->X(), Precision::Confusion());
+      EXPECT_NEAR(aPt1->Y(), aPt2->Y(), Precision::Confusion());
+      EXPECT_NEAR(aPt1->Z(), aPt2->Z(), Precision::Confusion());
+    }
+  }
+}
+
+// Verifies that SetUParams/SetVParams ignore null handles.
+TEST(BSplSLib_GridEvaluatorTest, SetParams_NullHandle)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Call with null handles - should not crash
+  anEval.SetUParams(Handle(TColStd_HArray1OfReal)());
+  anEval.SetVParams(Handle(TColStd_HArray1OfReal)());
+
+  // Parameters should remain empty
+  EXPECT_EQ(anEval.NbUParams(), 0);
+  EXPECT_EQ(anEval.NbVParams(), 0);
+}
+
+// Verifies that SetUParams/SetVParams ignore arrays with fewer than 2 elements.
+TEST(BSplSLib_GridEvaluatorTest, SetParams_TooFewElements)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Create array with only 1 element
+  Handle(TColStd_HArray1OfReal) aSmallArray = new TColStd_HArray1OfReal(1, 1);
+  aSmallArray->SetValue(1, 0.5);
+
+  anEval.SetUParams(aSmallArray);
+  anEval.SetVParams(aSmallArray);
+
+  // Parameters should remain empty
+  EXPECT_EQ(anEval.NbUParams(), 0);
+  EXPECT_EQ(anEval.NbVParams(), 0);
+}
+
+// Verifies that SetUParams/SetVParams compute correct span indices.
+TEST(BSplSLib_GridEvaluatorTest, SetParams_SpanIndices)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Create parameters that span both knot spans (0-0.5 and 0.5-1.0)
+  Handle(TColStd_HArray1OfReal) aUParams = new TColStd_HArray1OfReal(1, 4);
+  aUParams->SetValue(1, 0.1); // In first span
+  aUParams->SetValue(2, 0.4); // In first span
+  aUParams->SetValue(3, 0.6); // In second span
+  aUParams->SetValue(4, 0.9); // In second span
+
+  anEval.SetUParams(aUParams);
+  anEval.PrepareVParams(0.0, 1.0, 3, true);
+
+  // Verify span indices are different for parameters in different spans
+  auto aData1 = anEval.UParamData(1);
+  auto aData2 = anEval.UParamData(2);
+  auto aData3 = anEval.UParamData(3);
+  auto aData4 = anEval.UParamData(4);
+
+  ASSERT_TRUE(aData1.has_value());
+  ASSERT_TRUE(aData2.has_value());
+  ASSERT_TRUE(aData3.has_value());
+  ASSERT_TRUE(aData4.has_value());
+
+  // First two should be in the same span
+  EXPECT_EQ(aData1->SpanIndex, aData2->SpanIndex);
+  // Last two should be in the same span
+  EXPECT_EQ(aData3->SpanIndex, aData4->SpanIndex);
+  // First and last should be in different spans
+  EXPECT_NE(aData1->SpanIndex, aData3->SpanIndex);
+
+  // Verify evaluation works correctly across spans
+  for (int iu = 1; iu <= 4; ++iu)
+  {
+    auto aPt = anEval.Value(iu, 1);
+    ASSERT_TRUE(aPt.has_value());
+    EXPECT_FALSE(std::isnan(aPt->X()));
+  }
+}
