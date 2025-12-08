@@ -87,10 +87,10 @@ bool BSplSLib_GridEvaluator::Initialize(int                                  the
   myIsInitialized = true;
 
   // Clear old parameters
-  myUParams.Resize(0, -1, false);
-  myVParams.Resize(0, -1, false);
-  myUSpanRanges.Resize(0, -1, false);
-  myVSpanRanges.Resize(0, -1, false);
+  myUParams     = NCollection_Array1<ParamWithSpan>();
+  myVParams     = NCollection_Array1<ParamWithSpan>();
+  myUSpanRanges = NCollection_Array1<SpanRange>();
+  myVSpanRanges = NCollection_Array1<SpanRange>();
 
   // Reset cache
   myCache.Nullify();
@@ -248,7 +248,7 @@ void BSplSLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWit
   const int aNbParams = theParams.Size();
   if (aNbParams == 0)
   {
-    theSpanRanges.Resize(0, -1, false);
+    theSpanRanges = NCollection_Array1<SpanRange>();
     return;
   }
 

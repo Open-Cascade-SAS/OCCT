@@ -181,7 +181,7 @@ void BSplCLib_GridEvaluator::computeSpanRanges(const NCollection_Array1<ParamWit
 {
   if (theParams.IsEmpty())
   {
-    theSpanRanges.Resize(0, -1, false);
+    theSpanRanges = NCollection_Array1<SpanRange>();
     return;
   }
 
