@@ -30,39 +30,46 @@
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
 #include <TColgp_Array2OfXYZ.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
 // for null derivatives
-static constexpr Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
+static constexpr double BSplSLib_zero[3] = {0.0, 0.0, 0.0};
 
 #ifndef M_SQRT2
   #define M_SQRT2 1.41421356237309504880168872420969808
 #endif
 
+namespace
+{
+//! Maximum supported degree for B-spline surfaces.
+static constexpr int THE_MAX_DEGREE = BSplCLib::MaxDegree();
+
+//! Validates that the given degrees do not exceed the maximum supported degree.
+//! @param theUDegree degree in U direction
+//! @param theVDegree degree in V direction
+//! @throws Standard_OutOfRange if either degree exceeds MaxDegree()
+void validateBSplineDegree([[maybe_unused]] int theUDegree, [[maybe_unused]] int theVDegree)
+{
+  Standard_OutOfRange_Raise_if(theUDegree > THE_MAX_DEGREE || theVDegree > THE_MAX_DEGREE,
+                               "BSplSLib: bspline degree is greater than maximum supported");
+}
+
 //=======================================================================
-// struct : BSplCLib_DataContainer
+// struct : BSplSLib_DataContainer
 // purpose: Auxiliary structure providing buffers for poles and knots used in
 //         evaluation of bspline (allocated in the stack)
 //=======================================================================
-
 struct BSplSLib_DataContainer
 {
-  BSplSLib_DataContainer(Standard_Integer UDegree, Standard_Integer VDegree)
-  {
-    (void)UDegree;
-    (void)VDegree; // just to avoid compiler warning in Release mode
-    Standard_OutOfRange_Raise_if(UDegree > BSplCLib::MaxDegree() || VDegree > BSplCLib::MaxDegree()
-                                   || BSplCLib::MaxDegree() > 25,
-                                 "BSplSLib: bspline degree is greater than maximum supported");
-  }
-
-  Standard_Real poles[4 * (25 + 1) * (25 + 1)]{};
-  Standard_Real knots1[2 * 25]{};
-  Standard_Real knots2[2 * 25]{};
-  Standard_Real ders[48]{};
+  double poles[4 * (THE_MAX_DEGREE + 1) * (THE_MAX_DEGREE + 1)];
+  double knots1[2 * THE_MAX_DEGREE];
+  double knots2[2 * THE_MAX_DEGREE];
+  double ders[48];
 };
+} // namespace
 
 //**************************************************************************
 //                     Evaluation methods
@@ -702,7 +709,8 @@ void BSplSLib::HomogeneousD0(const Standard_Real            U,
   Standard_Integer d1, d2;
   W = 1.0e0;
 
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   PrepareEval(U,
               V,
               UIndex,
@@ -770,11 +778,12 @@ void BSplSLib::D1(const Standard_Real            U,
 {
   Standard_Boolean rational;
   //  Standard_Integer k,dim,dim2;
-  Standard_Integer       dim, dim2;
-  Standard_Real          u1, u2;
-  Standard_Integer       d1, d2;
-  Standard_Real *        result, *resVu, *resVv;
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  Standard_Integer dim, dim2;
+  Standard_Real    u1, u2;
+  Standard_Integer d1, d2;
+  Standard_Real *  result, *resVu, *resVv;
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   if (PrepareEval(U,
                   V,
                   UIndex,
@@ -898,7 +907,8 @@ void BSplSLib::HomogeneousD1(const Standard_Real            U,
   D  = 1.0e0;
   Du = 0.0e0;
   Dv = 0.0e0;
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   Standard_Boolean       ufirst = PrepareEval(U,
                                         V,
                                         UIndex,
@@ -979,12 +989,13 @@ void BSplSLib::D2(const Standard_Real            U,
 {
   Standard_Boolean rational;
   //  Standard_Integer k,dim,dim2;
-  Standard_Integer       dim, dim2;
-  Standard_Real          u1, u2;
-  Standard_Integer       d1, d2;
-  Standard_Real*         result;
-  const Standard_Real *  resVu, *resVv, *resVuu, *resVvv, *resVuv;
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  Standard_Integer     dim, dim2;
+  Standard_Real        u1, u2;
+  Standard_Integer     d1, d2;
+  Standard_Real*       result;
+  const Standard_Real *resVu, *resVv, *resVuu, *resVvv, *resVuv;
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   if (PrepareEval(U,
                   V,
                   UIndex,
@@ -1152,7 +1163,8 @@ void BSplSLib::D3(const Standard_Real            U,
   Standard_Real*       result;
   const Standard_Real *resVu, *resVv, *resVuu, *resVvv, *resVuv, *resVuuu, *resVvvv, *resVuuv,
     *resVuvv;
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   if (PrepareEval(U,
                   V,
                   UIndex,
@@ -1378,7 +1390,8 @@ void BSplSLib::DN(const Standard_Real            U,
   Standard_Real    u1, u2;
   Standard_Integer d1, d2;
 
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   Standard_Boolean       ufirst = PrepareEval(U,
                                         V,
                                         UIndex,
@@ -2190,7 +2203,8 @@ void BSplSLib::BuildCache(const Standard_Real         U,
     rational_u = rational_v = Standard_True;
   else
     rational_u = rational_v = Standard_False;
-  BSplSLib_DataContainer dc(UDegree, VDegree);
+  validateBSplineDegree(UDegree, VDegree);
+  BSplSLib_DataContainer dc;
   flag_u_or_v = PrepareEval(U,
                             V,
                             UIndex,
@@ -2339,7 +2353,8 @@ void BSplSLib::BuildCache(const Standard_Real         theU,
   Standard_Boolean isRationalOnParam = (theWeights != NULL);
   Standard_Boolean isRational;
 
-  BSplSLib_DataContainer dc(theUDegree, theVDegree);
+  validateBSplineDegree(theUDegree, theVDegree);
+  BSplSLib_DataContainer dc;
   flag_u_or_v = PrepareEval(theU,
                             theV,
                             theUIndex,

@@ -136,10 +136,11 @@ void BSplCLib::D0(const Standard_Real            U,
                   const TColStd_Array1OfInteger* Mults,
                   Standard_Real&                 P)
 {
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
-  BSplCLib_DataContainer dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Eval(u, Degree, *dc.knots, dim, *dc.poles);
   if (rational)
@@ -161,10 +162,11 @@ void BSplCLib::D1(const Standard_Real            U,
                   Standard_Real&                 P,
                   Standard_Real&                 V)
 {
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
-  BSplCLib_DataContainer dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 1, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
@@ -191,10 +193,11 @@ void BSplCLib::D2(const Standard_Real            U,
                   Standard_Real&                 V1,
                   Standard_Real&                 V2)
 {
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
-  BSplCLib_DataContainer dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 2, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
@@ -226,10 +229,11 @@ void BSplCLib::D3(const Standard_Real            U,
                   Standard_Real&                 V2,
                   Standard_Real&                 V3)
 {
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
-  BSplCLib_DataContainer dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 3, *dc.knots, dim, *dc.poles);
   Standard_Real* result = dc.poles;
@@ -263,10 +267,11 @@ void BSplCLib::DN(const Standard_Real            U,
                   const TColStd_Array1OfInteger* Mults,
                   Standard_Real&                 VN)
 {
-  Standard_Integer       dim, index = Index;
-  Standard_Real          u = U;
-  Standard_Boolean       rational;
-  BSplCLib_DataContainer dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, N, *dc.knots, dim, *dc.poles);
   if (rational)
