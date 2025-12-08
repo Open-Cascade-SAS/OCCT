@@ -23,6 +23,7 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <PLib.hxx>
 #include <math_Matrix.hxx>
 
@@ -244,21 +245,26 @@ public:
   TColStd_Array1OfInteger Mult;
 };
 
+//! Maximum supported degree for B-spline curves.
+static constexpr int THE_MAX_DEGREE = BSplCLib::MaxDegree();
+
+//! Validates that the given degree does not exceed the maximum supported degree.
+//! @param theDegree degree of the B-spline curve
+//! @throws Standard_OutOfRange if degree exceeds MaxDegree()
+inline void validateBSplineDegree([[maybe_unused]] int theDegree)
+{
+  Standard_OutOfRange_Raise_if(theDegree > THE_MAX_DEGREE,
+                               "BSplCLib: bspline degree is greater than maximum supported");
+}
+
 // Auxiliary structure providing buffers for poles and knots used in evaluation of bspline
 // (allocated in the stack)
-template <Standard_Integer Dimension>
+template <int Dimension>
 struct BSplCLib_DataContainer_T
 {
-  BSplCLib_DataContainer_T(Standard_Integer Degree)
-  {
-    (void)Degree; // avoid compiler warning
-    Standard_OutOfRange_Raise_if(Degree > BSplCLib::MaxDegree() || BSplCLib::MaxDegree() > 25,
-                                 "BSplCLib: bspline degree is greater than maximum supported");
-  }
-
-  Standard_Real poles[(25 + 1) * (Dimension + 1)];
-  Standard_Real knots[2 * 25];
-  Standard_Real ders[Dimension * 4];
+  double poles[(THE_MAX_DEGREE + 1) * (Dimension + 1)]{};
+  double knots[2 * THE_MAX_DEGREE]{};
+  double ders[Dimension * 4]{};
 };
 
 // Reverses the order of elements in the array using std::reverse.
@@ -786,10 +792,11 @@ void BSplCLib_D0(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer                    dim, index = Index;
-  Standard_Real                       u = U;
-  Standard_Boolean                    rational;
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -837,10 +844,11 @@ void BSplCLib_D1(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer                    dim, index = Index;
-  Standard_Real                       u = U;
-  Standard_Boolean                    rational;
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -891,10 +899,11 @@ void BSplCLib_D2(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer                    dim, index = Index;
-  Standard_Real                       u = U;
-  Standard_Boolean                    rational;
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -951,10 +960,11 @@ void BSplCLib_D3(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer                    dim, index = Index;
-  Standard_Real                       u = U;
-  Standard_Boolean                    rational;
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -1011,10 +1021,11 @@ void BSplCLib_DN(const Standard_Real            U,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  Standard_Integer                    dim, index = Index;
-  Standard_Real                       u = U;
-  Standard_Boolean                    rational;
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  Standard_Integer dim, index = Index;
+  Standard_Real    u = U;
+  Standard_Boolean rational;
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -1451,7 +1462,8 @@ void BSplCLib_BuildCache(const Standard_Real         U,
   Standard_Real    u = U, LocalValue;
   Standard_Boolean rational;
 
-  BSplCLib_DataContainer_T<Dimension> dc(Degree);
+  validateBSplineDegree(Degree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           LocalDimension,
@@ -1533,7 +1545,8 @@ void BSplCLib_BuildCache(const Standard_Real         theParameter,
   Standard_Integer aDimension;
   Standard_Boolean isRational;
 
-  BSplCLib_DataContainer_T<Dimension> dc(theDegree);
+  validateBSplineDegree(theDegree);
+  BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(aParam,
                                                           anIndex,
                                                           aDimension,
