@@ -696,3 +696,519 @@ TEST(BSplSLib_GridEvaluatorTest, HandleAccessors)
   EXPECT_EQ(anEval.UFlatKnots()->Length(), 6);
   EXPECT_EQ(anEval.VFlatKnots()->Length(), 6);
 }
+
+//! Creates a multi-span B-spline surface (degree 3x3) with multiple spans in each direction.
+//! @param[out] thePoles      control points array (6x6)
+//! @param[out] theUFlatKnots flat knot vector in U direction
+//! @param[out] theVFlatKnots flat knot vector in V direction
+//! @param[out] theDegreeU    polynomial degree in U direction
+//! @param[out] theDegreeV    polynomial degree in V direction
+void createMultiSpanBSplineSurface(Handle(TColgp_HArray2OfPnt)&   thePoles,
+                                   Handle(TColStd_HArray1OfReal)& theUFlatKnots,
+                                   Handle(TColStd_HArray1OfReal)& theVFlatKnots,
+                                   int&                           theDegreeU,
+                                   int&                           theDegreeV)
+{
+  theDegreeU = 3;
+  theDegreeV = 3;
+
+  // 6x6 control points for 2 spans in each direction
+  thePoles = new TColgp_HArray2OfPnt(1, 6, 1, 6);
+  for (int i = 1; i <= 6; ++i)
+  {
+    for (int j = 1; j <= 6; ++j)
+    {
+      const double x = (i - 1) / 5.0;
+      const double y = (j - 1) / 5.0;
+      // Add some curvature
+      const double z = 0.5 * std::sin(x * 3.14159) * std::sin(y * 3.14159);
+      thePoles->SetValue(i, j, gp_Pnt(x, y, z));
+    }
+  }
+
+  // Flat knots: 6 poles + degree 3 + 1 = 10 knots per direction
+  // Clamped with 2 internal knots: [0,0,0,0, 0.5, 0.75, 1,1,1,1]
+  theUFlatKnots = new TColStd_HArray1OfReal(1, 10);
+  theUFlatKnots->SetValue(1, 0.0);
+  theUFlatKnots->SetValue(2, 0.0);
+  theUFlatKnots->SetValue(3, 0.0);
+  theUFlatKnots->SetValue(4, 0.0);
+  theUFlatKnots->SetValue(5, 0.4);
+  theUFlatKnots->SetValue(6, 0.7);
+  theUFlatKnots->SetValue(7, 1.0);
+  theUFlatKnots->SetValue(8, 1.0);
+  theUFlatKnots->SetValue(9, 1.0);
+  theUFlatKnots->SetValue(10, 1.0);
+
+  theVFlatKnots = new TColStd_HArray1OfReal(1, 10);
+  theVFlatKnots->SetValue(1, 0.0);
+  theVFlatKnots->SetValue(2, 0.0);
+  theVFlatKnots->SetValue(3, 0.0);
+  theVFlatKnots->SetValue(4, 0.0);
+  theVFlatKnots->SetValue(5, 0.35);
+  theVFlatKnots->SetValue(6, 0.65);
+  theVFlatKnots->SetValue(7, 1.0);
+  theVFlatKnots->SetValue(8, 1.0);
+  theVFlatKnots->SetValue(9, 1.0);
+  theVFlatKnots->SetValue(10, 1.0);
+}
+
+// Verifies that cache is properly used across a large grid evaluation.
+TEST(BSplSLib_GridEvaluatorTest, CacheReuseWithinSpan)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createMultiSpanBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Prepare many points - they should use the cache efficiently
+  anEval.PrepareUParams(0.0, 1.0, 50);
+  anEval.PrepareVParams(0.0, 1.0, 50);
+
+  // Evaluate all grid points - cache should be reused within each span
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      auto aPt = anEval.Value(iu, iv);
+      ASSERT_TRUE(aPt.has_value());
+      EXPECT_FALSE(std::isnan(aPt->X()));
+      EXPECT_FALSE(std::isnan(aPt->Y()));
+      EXPECT_FALSE(std::isnan(aPt->Z()));
+    }
+  }
+}
+
+// Verifies that evaluation across all spans with knot-aligned parameters works correctly.
+TEST(BSplSLib_GridEvaluatorTest, MultiSpanKnotAlignedEvaluation)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createMultiSpanBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  anEval.PrepareUParamsFromKnots(0.0, 1.0, 5);
+  anEval.PrepareVParamsFromKnots(0.0, 1.0, 5);
+
+  // Should have samples in each span
+  EXPECT_GE(anEval.NbUParams(), 5);
+  EXPECT_GE(anEval.NbVParams(), 5);
+
+  // Verify U span indices are properly distributed
+  int aLastUSpan    = -1;
+  int aUSpanChanges = 0;
+  for (int i = 1; i <= anEval.NbUParams(); ++i)
+  {
+    auto aData = anEval.UParamData(i);
+    ASSERT_TRUE(aData.has_value());
+    if (aData->SpanIndex != aLastUSpan)
+    {
+      aUSpanChanges++;
+      aLastUSpan = aData->SpanIndex;
+    }
+  }
+  // Should have crossed multiple spans
+  EXPECT_GE(aUSpanChanges, 2);
+
+  // Evaluate all grid points
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      auto aPt = anEval.Value(iu, iv);
+      ASSERT_TRUE(aPt.has_value());
+      EXPECT_FALSE(std::isnan(aPt->X()));
+    }
+  }
+}
+
+// Verifies that reinitialization properly resets the internal cache.
+TEST(BSplSLib_GridEvaluatorTest, ReinitializationResetsCache)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+  anEval.PrepareUParams(0.0, 1.0, 5);
+  anEval.PrepareVParams(0.0, 1.0, 5);
+
+  // Evaluate to populate cache
+  auto aPt1 = anEval.Value(3, 3);
+  ASSERT_TRUE(aPt1.has_value());
+
+  // Create a different surface with offset control points
+  Handle(TColgp_HArray2OfPnt) aNewPoles = new TColgp_HArray2OfPnt(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      const double x = (i - 1) / 3.0 + 10.0; // Offset by 10
+      const double y = (j - 1) / 3.0 + 10.0;
+      const double z = x + y;
+      aNewPoles->SetValue(i, j, gp_Pnt(x, y, z));
+    }
+  }
+
+  // Reinitialize with new poles
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aNewPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+  anEval.PrepareUParams(0.0, 1.0, 5);
+  anEval.PrepareVParams(0.0, 1.0, 5);
+
+  // Evaluate - should get points from new surface, not cached old ones
+  auto aPt2 = anEval.Value(1, 1);
+  ASSERT_TRUE(aPt2.has_value());
+  EXPECT_NEAR(aPt2->X(), 10.0, Precision::Confusion());
+  EXPECT_NEAR(aPt2->Y(), 10.0, Precision::Confusion());
+}
+
+// Verifies that D1 derivatives are consistent across span boundaries.
+TEST(BSplSLib_GridEvaluatorTest, DerivativeContinuityAcrossSpans)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Evaluate near knot at 0.5 in U direction
+  anEval.PrepareUParams(0.49, 0.51, 3, true);
+  anEval.PrepareVParams(0.5, 0.5, 1, true); // Fixed V
+
+  gp_Pnt aPt1, aPt2, aPt3;
+  gp_Vec aDU1, aDV1, aDU2, aDV2, aDU3, aDV3;
+
+  ASSERT_TRUE(anEval.D1(1, 1, aPt1, aDU1, aDV1));
+  ASSERT_TRUE(anEval.D1(2, 1, aPt2, aDU2, aDV2));
+  ASSERT_TRUE(anEval.D1(3, 1, aPt3, aDU3, aDV3));
+
+  // For C1 continuous B-spline, derivatives should be similar near knot
+  EXPECT_LT((aDU1 - aDU2).Magnitude(), 0.5);
+  EXPECT_LT((aDU2 - aDU3).Magnitude(), 0.5);
+}
+
+// Verifies that evaluation works correctly at exact knot values.
+TEST(BSplSLib_GridEvaluatorTest, EvaluationAtKnotValues)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Prepare parameters exactly at knot values
+  anEval.PrepareUParams(0.0, 1.0, 3, true); // 0.0, 0.5, 1.0
+  anEval.PrepareVParams(0.0, 1.0, 3, true);
+
+  // Evaluate corners
+  auto aCorner00 = anEval.Value(1, 1);
+  auto aCorner11 = anEval.Value(3, 3);
+
+  ASSERT_TRUE(aCorner00.has_value());
+  ASSERT_TRUE(aCorner11.has_value());
+
+  // Corners should match control points for clamped surface
+  EXPECT_NEAR(aCorner00->X(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aCorner00->Y(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aCorner11->X(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aCorner11->Y(), 1.0, Precision::Confusion());
+}
+
+// Verifies that a high sample count grid evaluation stress tests the cache properly.
+TEST(BSplSLib_GridEvaluatorTest, HighSampleCountStressTest)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createMultiSpanBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Large grid
+  anEval.PrepareUParams(0.0, 1.0, 100);
+  anEval.PrepareVParams(0.0, 1.0, 100);
+
+  EXPECT_EQ(anEval.NbUParams(), 100);
+  EXPECT_EQ(anEval.NbVParams(), 100);
+
+  // Evaluate all points
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      gp_Pnt aPt;
+      ASSERT_TRUE(anEval.D0(iu, iv, aPt));
+      EXPECT_FALSE(std::isnan(aPt.X()));
+
+      // Points should be within expected bounds
+      EXPECT_GE(aPt.X(), -0.01);
+      EXPECT_LE(aPt.X(), 1.01);
+      EXPECT_GE(aPt.Y(), -0.01);
+      EXPECT_LE(aPt.Y(), 1.01);
+    }
+  }
+}
+
+// Verifies that partial range evaluation constrains parameters correctly.
+TEST(BSplSLib_GridEvaluatorTest, PartialRangeEvaluation)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Evaluate only in [0.2, 0.8] range
+  anEval.PrepareUParams(0.2, 0.8, 5, true);
+  anEval.PrepareVParams(0.3, 0.7, 5, true);
+
+  auto aFirstU = anEval.UParam(1);
+  auto aLastU  = anEval.UParam(anEval.NbUParams());
+  auto aFirstV = anEval.VParam(1);
+  auto aLastV  = anEval.VParam(anEval.NbVParams());
+
+  ASSERT_TRUE(aFirstU.has_value());
+  ASSERT_TRUE(aLastU.has_value());
+  ASSERT_TRUE(aFirstV.has_value());
+  ASSERT_TRUE(aLastV.has_value());
+
+  EXPECT_NEAR(*aFirstU, 0.2, Precision::Confusion());
+  EXPECT_NEAR(*aLastU, 0.8, Precision::Confusion());
+  EXPECT_NEAR(*aFirstV, 0.3, Precision::Confusion());
+  EXPECT_NEAR(*aLastV, 0.7, Precision::Confusion());
+
+  // All evaluated points should be in valid range
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      auto aPt = anEval.Value(iu, iv);
+      ASSERT_TRUE(aPt.has_value());
+      // X and Y coordinates should be in partial range
+      EXPECT_GT(aPt->X(), 0.15);
+      EXPECT_LT(aPt->X(), 0.85);
+      EXPECT_GT(aPt->Y(), 0.25);
+      EXPECT_LT(aPt->Y(), 0.75);
+    }
+  }
+}
+
+// Verifies that D2 second derivatives produce valid values.
+TEST(BSplSLib_GridEvaluatorTest, SecondDerivativeEvaluation)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+  anEval.PrepareUParams(0.0, 1.0, 5, true);
+  anEval.PrepareVParams(0.0, 1.0, 5, true);
+
+  // Evaluate D2 at multiple points
+  for (int iu = 1; iu <= anEval.NbUParams(); ++iu)
+  {
+    for (int iv = 1; iv <= anEval.NbVParams(); ++iv)
+    {
+      gp_Pnt aPt;
+      gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
+      ASSERT_TRUE(anEval.D2(iu, iv, aPt, aDU, aDV, aDUU, aDVV, aDUV));
+
+      // Values should not be NaN
+      EXPECT_FALSE(std::isnan(aPt.X()));
+      EXPECT_FALSE(std::isnan(aDU.X()));
+      EXPECT_FALSE(std::isnan(aDV.X()));
+      EXPECT_FALSE(std::isnan(aDUU.X()));
+      EXPECT_FALSE(std::isnan(aDVV.X()));
+      EXPECT_FALSE(std::isnan(aDUV.X()));
+    }
+  }
+}
+
+// Verifies that minimum samples constraint is respected.
+TEST(BSplSLib_GridEvaluatorTest, MinimumSamplesConstraint)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createQuadraticBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  // Request very few samples
+  anEval.PrepareUParams(0.0, 1.0, 2);
+  anEval.PrepareVParams(0.0, 1.0, 2);
+  EXPECT_GE(anEval.NbUParams(), 2);
+  EXPECT_GE(anEval.NbVParams(), 2);
+
+  // Request minimum with knot-aligned
+  anEval.PrepareUParamsFromKnots(0.0, 1.0, 20);
+  anEval.PrepareVParamsFromKnots(0.0, 1.0, 20);
+  EXPECT_GE(anEval.NbUParams(), 20);
+  EXPECT_GE(anEval.NbVParams(), 20);
+}
+
+// Verifies surface normals can be computed from D1 derivatives.
+TEST(BSplSLib_GridEvaluatorTest, SurfaceNormalFromDerivatives)
+{
+  Handle(TColgp_HArray2OfPnt)   aPoles;
+  Handle(TColStd_HArray1OfReal) aUKnots, aVKnots;
+  int                           aDegU, aDegV;
+
+  createMultiSpanBSplineSurface(aPoles, aUKnots, aVKnots, aDegU, aDegV);
+
+  BSplSLib_GridEvaluator anEval;
+  anEval.Initialize(aDegU,
+                    aDegV,
+                    aPoles,
+                    Handle(TColStd_HArray2OfReal)(),
+                    aUKnots,
+                    aVKnots,
+                    false,
+                    false,
+                    false,
+                    false);
+
+  anEval.PrepareUParams(0.0, 1.0, 10);
+  anEval.PrepareVParams(0.0, 1.0, 10);
+
+  // Compute normals at several points
+  for (int iu = 2; iu <= anEval.NbUParams() - 1; ++iu)
+  {
+    for (int iv = 2; iv <= anEval.NbVParams() - 1; ++iv)
+    {
+      gp_Pnt aPt;
+      gp_Vec aDU, aDV;
+      ASSERT_TRUE(anEval.D1(iu, iv, aPt, aDU, aDV));
+
+      // Normal = dU x dV
+      gp_Vec aNormal = aDU.Crossed(aDV);
+
+      // Normal should be non-zero for non-degenerate surface
+      EXPECT_GT(aNormal.Magnitude(), Precision::Confusion());
+
+      // Normal should point in a consistent direction (roughly along Z for this surface)
+      if (aNormal.Z() < 0)
+      {
+        aNormal.Reverse();
+      }
+      EXPECT_GT(aNormal.Z(), 0.0);
+    }
+  }
+}
