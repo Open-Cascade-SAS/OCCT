@@ -86,12 +86,12 @@ public:
   //! @param theRational  true if rational curve (requires non-null weights)
   //! @param thePeriodic  true if periodic curve
   //! @return true if initialization succeeded, false if parameters are invalid
-  Standard_EXPORT bool Initialize(int                               theDegree,
-                                  const Handle(TColgp_HArray1OfPnt)&  thePoles,
+  Standard_EXPORT bool Initialize(int                                  theDegree,
+                                  const Handle(TColgp_HArray1OfPnt)&   thePoles,
                                   const Handle(TColStd_HArray1OfReal)& theWeights,
                                   const Handle(TColStd_HArray1OfReal)& theFlatKnots,
-                                  bool                              theRational,
-                                  bool                              thePeriodic);
+                                  bool                                 theRational,
+                                  bool                                 thePeriodic);
 
   //! Initialize with Bezier curve data.
   //! Internally generates appropriate flat knot vector [0,0,...,0,1,1,...,1].
@@ -207,7 +207,10 @@ private:
                                 bool   theIncludeEnds);
 
   //! Compute uniform parameters with their span indices.
-  void computeUniformParams(double theParamMin, double theParamMax, int theNbSamples, bool theIncludeEnds);
+  void computeUniformParams(double theParamMin,
+                            double theParamMax,
+                            int    theNbSamples,
+                            bool   theIncludeEnds);
 
   //! Find span index for a parameter value using binary search.
   int locateSpan(double theParam) const;
@@ -219,13 +222,13 @@ private:
   bool isValidIndex(int theIndex) const { return theIndex >= 1 && theIndex <= myParams.Length(); }
 
 private:
-  int                          myDegree;
-  Handle(TColgp_HArray1OfPnt)  myPoles;
+  int                           myDegree;
+  Handle(TColgp_HArray1OfPnt)   myPoles;
   Handle(TColStd_HArray1OfReal) myWeights;
   Handle(TColStd_HArray1OfReal) myFlatKnots;
-  bool                         myRational;
-  bool                         myPeriodic;
-  bool                         myIsInitialized;
+  bool                          myRational;
+  bool                          myPeriodic;
+  bool                          myIsInitialized;
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myParams;

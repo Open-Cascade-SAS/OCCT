@@ -104,7 +104,8 @@ public:
 
   //! Initialize with Bezier surface data.
   //! Internally generates appropriate flat knot vectors.
-  //! @param thePoles   handle to 2D array of control points (degreeU = NbUPoles - 1, degreeV = NbVPoles - 1)
+  //! @param thePoles   handle to 2D array of control points (degreeU = NbUPoles - 1, degreeV =
+  //! NbVPoles - 1)
   //! @param theWeights handle to 2D array of weights (null handle for non-rational)
   //! @return true if initialization succeeded, false if parameters are invalid
   Standard_EXPORT bool InitializeBezier(const Handle(TColgp_HArray2OfPnt)&   thePoles,
@@ -138,14 +139,20 @@ public:
   //! @param theUMax        maximum U parameter
   //! @param theNbU         number of U samples (minimum 2)
   //! @param theIncludeEnds if true, include exact boundary values (default: true)
-  Standard_EXPORT void PrepareUParams(double theUMin, double theUMax, int theNbU, bool theIncludeEnds = true);
+  Standard_EXPORT void PrepareUParams(double theUMin,
+                                      double theUMax,
+                                      int    theNbU,
+                                      bool   theIncludeEnds = true);
 
   //! Prepare V parameters with uniform distribution.
   //! @param theVMin        minimum V parameter
   //! @param theVMax        maximum V parameter
   //! @param theNbV         number of V samples (minimum 2)
   //! @param theIncludeEnds if true, include exact boundary values (default: true)
-  Standard_EXPORT void PrepareVParams(double theVMin, double theVMax, int theNbV, bool theIncludeEnds = true);
+  Standard_EXPORT void PrepareVParams(double theVMin,
+                                      double theVMax,
+                                      int    theNbV,
+                                      bool   theIncludeEnds = true);
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return myIsInitialized; }
@@ -333,17 +340,17 @@ private:
   }
 
 private:
-  int                          myDegreeU;
-  int                          myDegreeV;
-  Handle(TColgp_HArray2OfPnt)  myPoles;
+  int                           myDegreeU;
+  int                           myDegreeV;
+  Handle(TColgp_HArray2OfPnt)   myPoles;
   Handle(TColStd_HArray2OfReal) myWeights;
   Handle(TColStd_HArray1OfReal) myUFlatKnots;
   Handle(TColStd_HArray1OfReal) myVFlatKnots;
-  bool                         myURational;
-  bool                         myVRational;
-  bool                         myUPeriodic;
-  bool                         myVPeriodic;
-  bool                         myIsInitialized;
+  bool                          myURational;
+  bool                          myVRational;
+  bool                          myUPeriodic;
+  bool                          myVPeriodic;
+  bool                          myIsInitialized;
 
   // Pre-computed parameters with span indices
   NCollection_Array1<ParamWithSpan> myUParams;

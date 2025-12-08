@@ -81,12 +81,12 @@ bool BSplCLib_GridEvaluator::Initialize(int                                  the
     }
   }
 
-  myDegree      = theDegree;
-  myPoles       = thePoles;
-  myWeights     = theWeights;
-  myFlatKnots   = theFlatKnots;
-  myRational    = theRational;
-  myPeriodic    = thePeriodic;
+  myDegree        = theDegree;
+  myPoles         = thePoles;
+  myWeights       = theWeights;
+  myFlatKnots     = theFlatKnots;
+  myRational      = theRational;
+  myPeriodic      = thePeriodic;
   myIsInitialized = true;
 
   return true;
@@ -120,7 +120,7 @@ bool BSplCLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray1OfPnt)&
   const int aDegree = aNbPoles - 1;
 
   // Generate Bezier flat knots: [0,0,...,0,1,1,...,1] with (degree+1) zeros and ones
-  const int aNbKnots = 2 * (aDegree + 1);
+  const int                     aNbKnots     = 2 * (aDegree + 1);
   Handle(TColStd_HArray1OfReal) aBezierKnots = new TColStd_HArray1OfReal(1, aNbKnots);
 
   for (int i = 1; i <= aDegree + 1; ++i)
@@ -132,12 +132,12 @@ bool BSplCLib_GridEvaluator::InitializeBezier(const Handle(TColgp_HArray1OfPnt)&
     aBezierKnots->SetValue(i, 1.0);
   }
 
-  myDegree      = aDegree;
-  myPoles       = thePoles;
-  myWeights     = theWeights;
-  myFlatKnots   = aBezierKnots;
-  myRational    = !theWeights.IsNull();
-  myPeriodic    = false;
+  myDegree        = aDegree;
+  myPoles         = thePoles;
+  myWeights       = theWeights;
+  myFlatKnots     = aBezierKnots;
+  myRational      = !theWeights.IsNull();
+  myPeriodic      = false;
   myIsInitialized = true;
 
   return true;
@@ -302,8 +302,8 @@ void BSplCLib_GridEvaluator::computeUniformParams(double theParamMin,
   {
     // Small offset from boundaries (useful for avoiding singularities)
     const double aOffset = aRange / theNbSamples / 100.0;
-    aStart = theParamMin + aOffset / 2.0;
-    aStep  = (aRange - aOffset) / (theNbSamples - 1);
+    aStart               = theParamMin + aOffset / 2.0;
+    aStep                = (aRange - aOffset) / (theNbSamples - 1);
   }
 
   const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
@@ -323,7 +323,7 @@ void BSplCLib_GridEvaluator::computeUniformParams(double theParamMin,
 
     // Find span index - use previous span as hint for efficiency
     const int aSpanIdx = locateSpanWithHint(aParam, aPrevSpan);
-    aPrevSpan = aSpanIdx;
+    aPrevSpan          = aSpanIdx;
 
     myParams.SetValue(i, {aParam, aSpanIdx});
   }
@@ -350,8 +350,8 @@ int BSplCLib_GridEvaluator::locateSpan(double theParam) const
 int BSplCLib_GridEvaluator::locateSpanWithHint(double theParam, int theHint) const
 {
   const TColStd_Array1OfReal& aKnots = myFlatKnots->Array1();
-  const int aLower = aKnots.Lower() + myDegree;
-  const int aUpper = aKnots.Upper() - myDegree - 1;
+  const int                   aLower = aKnots.Lower() + myDegree;
+  const int                   aUpper = aKnots.Upper() - myDegree - 1;
 
   // Quick check if hint is still valid
   if (theHint >= aLower && theHint <= aUpper)
