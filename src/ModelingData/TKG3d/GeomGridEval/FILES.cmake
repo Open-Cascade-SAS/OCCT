@@ -13,6 +13,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Hyperbola.cxx
   GeomGridEval_Parabola.hxx
   GeomGridEval_Parabola.cxx
+  GeomGridEval_BezierCurve.hxx
+  GeomGridEval_BezierCurve.cxx
   GeomGridEval_BSplineCurve.hxx
   GeomGridEval_BSplineCurve.cxx
   GeomGridEval_OtherCurve.hxx

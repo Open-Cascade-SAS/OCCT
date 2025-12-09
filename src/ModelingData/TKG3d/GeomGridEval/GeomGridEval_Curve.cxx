@@ -14,6 +14,7 @@
 #include <GeomGridEval_Curve.hxx>
 
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
@@ -78,6 +79,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
       myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
       break;
     }
+    case GeomAbs_BezierCurve:
+    {
+      myEvaluator = GeomGridEval_BezierCurve(theCurve->Bezier());
+      break;
+    }
     case GeomAbs_BSplineCurve:
     {
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
@@ -127,6 +133,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     myCurveType = GeomAbs_Parabola;
     myEvaluator = GeomGridEval_Parabola(aParabola);
+  }
+  else if (auto aBezier = Handle(Geom_BezierCurve)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_BezierCurve;
+    myEvaluator = GeomGridEval_BezierCurve(aBezier);
   }
   else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
   {

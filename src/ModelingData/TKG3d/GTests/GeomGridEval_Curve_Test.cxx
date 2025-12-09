@@ -19,6 +19,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomGridEval_BSplineCurve.hxx>
@@ -406,7 +407,7 @@ TEST(GeomGridEval_CurveTest, ParabolaDispatch)
   }
 }
 
-TEST(GeomGridEval_CurveTest, BezierCurveFallbackDispatch)
+TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
 {
   // Bezier curve is not optimized, should use fallback
   TColgp_Array1OfPnt aPoles(1, 4);
@@ -431,6 +432,31 @@ TEST(GeomGridEval_CurveTest, BezierCurveFallbackDispatch)
   for (int i = 1; i <= 11; ++i)
   {
     gp_Pnt aExpected = aBezier->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_CurveTest, OffsetCurveFallbackDispatch)
+{
+  // Offset curve is not optimized, should use fallback
+  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_OffsetCurve) anOffset = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 6; ++i)
+  {
+    gp_Pnt aExpected = anOffset->Value(aParams.Value(i));
     EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }

@@ -13,6 +13,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomAPI_Interpolate_Test.cxx
   GeomGridEval_Cone_Test.cxx
   GeomGridEval_Curve_Test.cxx
+  GeomGridEval_BezierCurve_Test.cxx
   GeomGridEval_Cylinder_Test.cxx
   GeomGridEval_Ellipse_Test.cxx
   GeomGridEval_Hyperbola_Test.cxx

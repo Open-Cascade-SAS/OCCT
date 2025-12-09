@@ -18,6 +18,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomGridEval_BSplineCurve.hxx>
+#include <GeomGridEval_BezierCurve.hxx>
 #include <GeomGridEval_Circle.hxx>
 #include <GeomGridEval_Ellipse.hxx>
 #include <GeomGridEval_Hyperbola.hxx>
@@ -44,6 +45,7 @@
 //! - Ellipse: Analytical formula
 //! - Hyperbola: Analytical formula
 //! - Parabola: Analytical formula
+//! - BezierCurve: Optimized batch evaluation via BSplCLib
 //! - BSplineCurve: Optimized batch evaluation via BSplCLib_GridEvaluator
 //! - Other: Fallback using Adaptor3d_Curve::D0
 //!
@@ -68,6 +70,7 @@ public:
                                         GeomGridEval_Ellipse,  // Ellipse curve
                                         GeomGridEval_Hyperbola, // Hyperbola curve
                                         GeomGridEval_Parabola,  // Parabola curve
+                                        GeomGridEval_BezierCurve, // Bezier curve
                                         GeomGridEval_BSplineCurve, // B-spline curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 
