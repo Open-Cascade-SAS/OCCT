@@ -111,6 +111,38 @@ public:
   //! @param[out] thePoint  the result of calculation (the point on the surface)
   Standard_EXPORT void D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const;
 
+  //! Calculates the point and first derivatives using pre-computed local parameters in [-1, 1] range.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalU   pre-computed local U parameter: (U - SpanMid) / SpanHalfLen
+  //! @param[in]  theLocalV   pre-computed local V parameter: (V - SpanMid) / SpanHalfLen
+  //! @param[out] thePoint    the result of calculation (the point on the surface)
+  //! @param[out] theTangentU tangent vector along U axis in the calculated point
+  //! @param[out] theTangentV tangent vector along V axis in the calculated point
+  Standard_EXPORT void D1Local(double  theLocalU,
+                               double  theLocalV,
+                               gp_Pnt& thePoint,
+                               gp_Vec& theTangentU,
+                               gp_Vec& theTangentV) const;
+
+  //! Calculates the point and derivatives till second order using pre-computed local parameters.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalU      pre-computed local U parameter: (U - SpanMid) / SpanHalfLen
+  //! @param[in]  theLocalV      pre-computed local V parameter: (V - SpanMid) / SpanHalfLen
+  //! @param[out] thePoint       the result of calculation (the point on the surface)
+  //! @param[out] theTangentU    tangent vector along U axis in the calculated point
+  //! @param[out] theTangentV    tangent vector along V axis in the calculated point
+  //! @param[out] theCurvatureU  curvature vector (2nd derivative on U) along U axis
+  //! @param[out] theCurvatureV  curvature vector (2nd derivative on V) along V axis
+  //! @param[out] theCurvatureUV 2nd mixed derivative on U and V
+  Standard_EXPORT void D2Local(double  theLocalU,
+                               double  theLocalV,
+                               gp_Pnt& thePoint,
+                               gp_Vec& theTangentU,
+                               gp_Vec& theTangentV,
+                               gp_Vec& theCurvatureU,
+                               gp_Vec& theCurvatureV,
+                               gp_Vec& theCurvatureUV) const;
+
   DEFINE_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
 
 private:

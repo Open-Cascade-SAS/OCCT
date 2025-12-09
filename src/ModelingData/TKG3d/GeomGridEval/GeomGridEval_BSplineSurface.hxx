@@ -42,6 +42,24 @@ class GeomGridEval_BSplineSurface
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Parameter value with pre-computed span index and local parameter.
+  struct ParamWithSpan
+  {
+    double Param;      //!< Original parameter value
+    double LocalParam; //!< Pre-computed local parameter in [-1, 1] range
+    int    SpanIndex;  //!< Flat knot index identifying the span
+  };
+
+  //! Range of parameter indices belonging to the same span.
+  struct SpanRange
+  {
+    int    SpanIndex;   //!< Flat knot index of this span
+    int    StartIdx;    //!< First parameter index (0-based, inclusive)
+    int    EndIdx;      //!< Past-the-end parameter index (exclusive)
+    double SpanMid;     //!< Midpoint of span
+    double SpanHalfLen; //!< Half-length of span
+  };
+
   //! Constructor with geometry.
   //! @param theSurface the B-spline surface to evaluate
   GeomGridEval_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface)
@@ -81,24 +99,6 @@ public:
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
 private:
-  //! Parameter value with pre-computed span index and local parameter.
-  struct ParamWithSpan
-  {
-    double Param;      //!< Original parameter value
-    double LocalParam; //!< Pre-computed local parameter in [-1, 1] range
-    int    SpanIndex;  //!< Flat knot index identifying the span
-  };
-
-  //! Range of parameter indices belonging to the same span.
-  struct SpanRange
-  {
-    int    SpanIndex;   //!< Flat knot index of this span
-    int    StartIdx;    //!< First parameter index (0-based, inclusive)
-    int    EndIdx;      //!< Past-the-end parameter index (exclusive)
-    double SpanMid;     //!< Midpoint of span
-    double SpanHalfLen; //!< Half-length of span
-  };
-
   //! Find span index for a parameter value.
   int locateSpan(double theParam, bool theUDir, const TColStd_Array1OfReal& theFlatKnots) const;
 

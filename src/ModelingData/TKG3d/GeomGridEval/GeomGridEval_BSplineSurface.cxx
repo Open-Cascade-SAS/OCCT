@@ -19,6 +19,108 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
+namespace
+{
+//! Threshold for using cache vs direct evaluation.
+//! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
+constexpr int THE_CACHE_THRESHOLD = 4;
+
+//! Helper structure holding common B-spline surface data for evaluation.
+struct BSplineSurfData
+{
+  const TColStd_Array1OfReal* UFlatKnots;
+  const TColStd_Array1OfReal* VFlatKnots;
+  const TColgp_Array2OfPnt*   Poles;
+  const TColStd_Array2OfReal* Weights;
+  int                         UDegree;
+  int                         VDegree;
+  bool                        IsURational;
+  bool                        IsVRational;
+  bool                        IsUPeriodic;
+  bool                        IsVPeriodic;
+};
+
+//! @brief Iterates over UV span blocks and invokes evaluation functors.
+//!
+//! This helper encapsulates the common pattern of iterating over pre-computed span ranges,
+//! deciding whether to use cache or direct evaluation based on block size, and invoking
+//! the appropriate evaluation functor.
+//!
+//! @tparam CacheEvalFunc   Functor type for cache-based evaluation: void(int iu, int iv, double uParam, double vParam)
+//! @tparam DirectEvalFunc  Functor type for direct evaluation: void(int iu, int iv, double uParam, double vParam, int uSpanIdx, int vSpanIdx)
+//!
+//! @param theUSpanRanges  Pre-computed U span ranges
+//! @param theVSpanRanges  Pre-computed V span ranges
+//! @param theUParams      U parameters with span info
+//! @param theVParams      V parameters with span info
+//! @param theCache        B-spline surface cache
+//! @param theData         Common B-spline data
+//! @param theCacheEval    Functor called for cache evaluation (large blocks)
+//! @param theDirectEval   Functor called for direct evaluation (small blocks)
+template <typename CacheEvalFunc, typename DirectEvalFunc>
+void iterateSpanBlocks(
+  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&      theUSpanRanges,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&      theVSpanRanges,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>&  theUParams,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>&  theVParams,
+  const Handle(BSplSLib_Cache)&                                         theCache,
+  const BSplineSurfData&                                                 theData,
+  CacheEvalFunc&&                                                        theCacheEval,
+  DirectEvalFunc&&                                                       theDirectEval)
+{
+  const int aNbUSpans = theUSpanRanges.Size();
+  const int aNbVSpans = theVSpanRanges.Size();
+
+  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
+  {
+    const auto& aURange    = theUSpanRanges.Value(iURange);
+    const int   aNbUInSpan = aURange.EndIdx - aURange.StartIdx;
+
+    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
+    {
+      const auto& aVRange    = theVSpanRanges.Value(iVRange);
+      const int   aNbVInSpan = aVRange.EndIdx - aVRange.StartIdx;
+      const int   aNbPoints  = aNbUInSpan * aNbVInSpan;
+
+      if (aNbPoints >= THE_CACHE_THRESHOLD)
+      {
+        // Large block: use cache
+        theCache->BuildCache(theUParams.Value(aURange.StartIdx).Param,
+                             theVParams.Value(aVRange.StartIdx).Param,
+                             *theData.UFlatKnots,
+                             *theData.VFlatKnots,
+                             *theData.Poles,
+                             theData.Weights);
+
+        for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
+        {
+          const double aLocalU = theUParams.Value(iu).LocalParam;
+          for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
+          {
+            theCacheEval(iu, iv, aLocalU, theVParams.Value(iv).LocalParam);
+          }
+        }
+      }
+      else
+      {
+        // Small block: direct evaluation
+        for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
+        {
+          const double aUParam   = theUParams.Value(iu).Param;
+          const int    aUSpanIdx = aURange.SpanIndex;
+
+          for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
+          {
+            theDirectEval(iu, iv, aUParam, theVParams.Value(iv).Param, aUSpanIdx, aVRange.SpanIndex);
+          }
+        }
+      }
+    }
+  }
+}
+
+} // namespace
+
 //==================================================================================================
 
 void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
@@ -243,7 +345,6 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
     return NCollection_Array2<gp_Pnt>();
   }
 
-  // Prepare span data if needed
   prepare();
 
   const int aNbUParams = myUParams.Size();
@@ -256,7 +357,6 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
 
   NCollection_Array2<gp_Pnt> aPoints(1, aNbUParams, 1, aNbVParams);
 
-  // Get flat knots directly from geometry
   const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
   const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
   if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull())
@@ -269,7 +369,6 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
-  // Get poles and weights from geometry
   TColgp_Array2OfPnt aPoles(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles());
   myGeom->Poles(aPoles);
 
@@ -281,7 +380,6 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
     myGeom->Weights(aWeights);
   }
 
-  // Create or update cache
   if (myCache.IsNull())
   {
     myCache = new BSplSLib_Cache(aUDegree,
@@ -293,79 +391,50 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
                                  isRational ? &aWeights : nullptr);
   }
 
-  // Threshold for cache vs direct evaluation
-  constexpr int THE_CACHE_THRESHOLD = 4;
+  // Prepare data structure for helper
+  const BSplineSurfData aData = {&aUFlatKnots,
+                                 &aVFlatKnots,
+                                 &aPoles,
+                                 isRational ? &aWeights : nullptr,
+                                 aUDegree,
+                                 aVDegree,
+                                 myGeom->IsURational(),
+                                 myGeom->IsVRational(),
+                                 myGeom->IsUPeriodic(),
+                                 myGeom->IsVPeriodic()};
 
-  const int aNbUSpans = myUSpanRanges.Size();
-  const int aNbVSpans = myVSpanRanges.Size();
-
-  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
-  {
-    const SpanRange& aURange    = myUSpanRanges.Value(iURange);
-    const int        aNbUInSpan = aURange.EndIdx - aURange.StartIdx;
-
-    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
-    {
-      const SpanRange& aVRange    = myVSpanRanges.Value(iVRange);
-      const int        aNbVInSpan = aVRange.EndIdx - aVRange.StartIdx;
-      const int        aNbPoints  = aNbUInSpan * aNbVInSpan;
-
-      if (aNbPoints >= THE_CACHE_THRESHOLD)
-      {
-        // Large block: use cache
-        myCache->BuildCache(myUParams.Value(aURange.StartIdx).Param,
-                            myVParams.Value(aVRange.StartIdx).Param,
-                            aUFlatKnots,
-                            aVFlatKnots,
-                            aPoles,
-                            isRational ? &aWeights : nullptr);
-
-        for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
-        {
-          const double aLocalU = myUParams.Value(iu).LocalParam;
-          for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
-          {
-            myCache->D0Local(aLocalU,
-                             myVParams.Value(iv).LocalParam,
-                             aPoints.ChangeValue(iu + 1, iv + 1));
-          }
-        }
-      }
-      else
-      {
-        // Small block: direct evaluation
-        for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
-        {
-          const double aUParam   = myUParams.Value(iu).Param;
-          const int    aUSpanIdx = aURange.SpanIndex;
-
-          for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
-          {
-            const double aVParam   = myVParams.Value(iv).Param;
-            const int    aVSpanIdx = aVRange.SpanIndex;
-
-            BSplSLib::D0(aUParam,
-                         aVParam,
-                         aUSpanIdx,
-                         aVSpanIdx,
-                         aPoles,
-                         isRational ? &aWeights : nullptr,
-                         aUFlatKnots,
-                         aVFlatKnots,
-                         nullptr,
-                         nullptr,
-                         aUDegree,
-                         aVDegree,
-                         myGeom->IsURational(),
-                         myGeom->IsVRational(),
-                         myGeom->IsUPeriodic(),
-                         myGeom->IsVPeriodic(),
-                         aPoints.ChangeValue(iu + 1, iv + 1));
-          }
-        }
-      }
-    }
-  }
+  // Use helper with lambdas for cache and direct evaluation
+  iterateSpanBlocks(
+    myUSpanRanges,
+    myVSpanRanges,
+    myUParams,
+    myVParams,
+    myCache,
+    aData,
+    // Cache evaluation (local parameters)
+    [&](int iu, int iv, double theLocalU, double theLocalV) {
+      myCache->D0Local(theLocalU, theLocalV, aPoints.ChangeValue(iu + 1, iv + 1));
+    },
+    // Direct evaluation (global parameters + span indices)
+    [&](int iu, int iv, double theUParam, double theVParam, int theUSpanIdx, int theVSpanIdx) {
+      BSplSLib::D0(theUParam,
+                   theVParam,
+                   theUSpanIdx,
+                   theVSpanIdx,
+                   aPoles,
+                   isRational ? &aWeights : nullptr,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aData.UDegree,
+                   aData.VDegree,
+                   aData.IsURational,
+                   aData.IsVRational,
+                   aData.IsUPeriodic,
+                   aData.IsVPeriodic,
+                   aPoints.ChangeValue(iu + 1, iv + 1));
+    });
 
   return aPoints;
 }
@@ -425,37 +494,58 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                                  isRational ? &aWeights : nullptr);
   }
 
-  const int aNbUSpans = myUSpanRanges.Size();
-  const int aNbVSpans = myVSpanRanges.Size();
+  // Prepare data structure for helper
+  const BSplineSurfData aData = {&aUFlatKnots,
+                                 &aVFlatKnots,
+                                 &aPoles,
+                                 isRational ? &aWeights : nullptr,
+                                 aUDegree,
+                                 aVDegree,
+                                 myGeom->IsURational(),
+                                 myGeom->IsVRational(),
+                                 myGeom->IsUPeriodic(),
+                                 myGeom->IsVPeriodic()};
 
-  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
-  {
-    const SpanRange& aURange = myUSpanRanges.Value(iURange);
-
-    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
-    {
-      const SpanRange& aVRange = myVSpanRanges.Value(iVRange);
-
-      myCache->BuildCache(myUParams.Value(aURange.StartIdx).Param,
-                          myVParams.Value(aVRange.StartIdx).Param,
-                          aUFlatKnots,
-                          aVFlatKnots,
-                          aPoles,
-                          isRational ? &aWeights : nullptr);
-
-      for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
-      {
-        const double aUParam = myUParams.Value(iu).Param;
-        for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
-        {
-          gp_Pnt aPoint;
-          gp_Vec aD1U, aD1V;
-          myCache->D1(aUParam, myVParams.Value(iv).Param, aPoint, aD1U, aD1V);
-          aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V};
-        }
-      }
-    }
-  }
+  // Use helper with lambdas for cache and direct evaluation
+  iterateSpanBlocks(
+    myUSpanRanges,
+    myVSpanRanges,
+    myUParams,
+    myVParams,
+    myCache,
+    aData,
+    // Cache evaluation (local parameters)
+    [&](int iu, int iv, double theLocalU, double theLocalV) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V;
+      myCache->D1Local(theLocalU, theLocalV, aPoint, aD1U, aD1V);
+      aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V};
+    },
+    // Direct evaluation (global parameters + span indices)
+    [&](int iu, int iv, double theUParam, double theVParam, int theUSpanIdx, int theVSpanIdx) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V;
+      BSplSLib::D1(theUParam,
+                   theVParam,
+                   theUSpanIdx,
+                   theVSpanIdx,
+                   aPoles,
+                   isRational ? &aWeights : nullptr,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aData.UDegree,
+                   aData.VDegree,
+                   aData.IsURational,
+                   aData.IsVRational,
+                   aData.IsUPeriodic,
+                   aData.IsVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V);
+      aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V};
+    });
 
   return aResults;
 }
@@ -515,37 +605,61 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                                  isRational ? &aWeights : nullptr);
   }
 
-  const int aNbUSpans = myUSpanRanges.Size();
-  const int aNbVSpans = myVSpanRanges.Size();
+  // Prepare data structure for helper
+  const BSplineSurfData aData = {&aUFlatKnots,
+                                 &aVFlatKnots,
+                                 &aPoles,
+                                 isRational ? &aWeights : nullptr,
+                                 aUDegree,
+                                 aVDegree,
+                                 myGeom->IsURational(),
+                                 myGeom->IsVRational(),
+                                 myGeom->IsUPeriodic(),
+                                 myGeom->IsVPeriodic()};
 
-  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
-  {
-    const SpanRange& aURange = myUSpanRanges.Value(iURange);
-
-    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
-    {
-      const SpanRange& aVRange = myVSpanRanges.Value(iVRange);
-
-      myCache->BuildCache(myUParams.Value(aURange.StartIdx).Param,
-                          myVParams.Value(aVRange.StartIdx).Param,
-                          aUFlatKnots,
-                          aVFlatKnots,
-                          aPoles,
-                          isRational ? &aWeights : nullptr);
-
-      for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
-      {
-        const double aUParam = myUParams.Value(iu).Param;
-        for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
-        {
-          gp_Pnt aPoint;
-          gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-          myCache->D2(aUParam, myVParams.Value(iv).Param, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
-          aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
-        }
-      }
-    }
-  }
+  // Use helper with lambdas for cache and direct evaluation
+  iterateSpanBlocks(
+    myUSpanRanges,
+    myVSpanRanges,
+    myUParams,
+    myVParams,
+    myCache,
+    aData,
+    // Cache evaluation (local parameters)
+    [&](int iu, int iv, double theLocalU, double theLocalV) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      myCache->D2Local(theLocalU, theLocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
+    },
+    // Direct evaluation (global parameters + span indices)
+    [&](int iu, int iv, double theUParam, double theVParam, int theUSpanIdx, int theVSpanIdx) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      BSplSLib::D2(theUParam,
+                   theVParam,
+                   theUSpanIdx,
+                   theVSpanIdx,
+                   aPoles,
+                   isRational ? &aWeights : nullptr,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aData.UDegree,
+                   aData.VDegree,
+                   aData.IsURational,
+                   aData.IsVRational,
+                   aData.IsUPeriodic,
+                   aData.IsVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV);
+      aResults.ChangeValue(iu + 1, iv + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
+    });
 
   return aResults;
 }
