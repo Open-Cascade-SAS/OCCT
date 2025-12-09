@@ -115,6 +115,66 @@ void BSplCLib_Cache::CalculateDerivative(const Standard_Real&    theParameter,
   calculateDerivativeLocal(aLocalParam, theDerivative, &theDerivArray);
 }
 
+//==================================================================================================
+
+void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
+                                              int            theDerivative,
+                                              Standard_Real* theDerivArray) const
+{
+  const int      aDimension  = myRowLength;
+  Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
+
+  // Temporary container for polynomial evaluation (max 4 derivatives * 4 components)
+  Standard_Real aTmpContainer[16];
+
+  // Clamp derivative order to curve degree for non-rational curves
+  int aDerivative = theDerivative;
+  if (!myIsRational && myParams.Degree < theDerivative)
+  {
+    aDerivative = myParams.Degree;
+    // Zero out higher derivative entries
+    for (int ind = myParams.Degree * aDimension; ind < (theDerivative + 1) * aDimension; ind++)
+    {
+      aTmpContainer[ind] = 0.0;
+      theDerivArray[ind] = 0.0;
+    }
+  }
+
+  PLib::EvalPolynomial(theLocalParam,
+                       aDerivative,
+                       myParams.Degree,
+                       aDimension,
+                       aPolesArray[0],
+                       aTmpContainer[0]);
+
+  // Unnormalize derivatives
+  Standard_Real aFactor = 1.0;
+  for (int deriv = 1; deriv <= aDerivative; deriv++)
+  {
+    aFactor /= myParams.SpanLength;
+    for (int ind = 0; ind < aDimension; ind++)
+    {
+      aTmpContainer[aDimension * deriv + ind] *= aFactor;
+    }
+  }
+
+  if (myIsRational)
+  {
+    PLib::RationalDerivative(theDerivative,
+                             theDerivative,
+                             aDimension - 1,
+                             aTmpContainer[0],
+                             theDerivArray[0]);
+  }
+  else
+  {
+    for (int i = 0; i < (theDerivative + 1) * aDimension; ++i)
+    {
+      theDerivArray[i] = aTmpContainer[i];
+    }
+  }
+}
+
 void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt2d& thePoint) const
 {
   Standard_Real aNewParameter = myParams.PeriodicNormalization(theParameter);
@@ -188,6 +248,18 @@ void BSplCLib_Cache::D1(const Standard_Real& theParameter,
   D1Local(aLocalParam, thePoint, theTangent);
 }
 
+//==================================================================================================
+
+void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& theTangent) const
+{
+  Standard_Real aDerivArray[8];
+  calculateDerivativeLocal(theLocalParam, 1, aDerivArray);
+
+  const int aDim = myIsRational ? myRowLength - 1 : myRowLength;
+  thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+  theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1], aDerivArray[aDim + 2]);
+}
+
 void BSplCLib_Cache::D2(const Standard_Real& theParameter,
                         gp_Pnt2d&            thePoint,
                         gp_Vec2d&            theTangent,
@@ -213,6 +285,23 @@ void BSplCLib_Cache::D2(const Standard_Real& theParameter,
   Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
   aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D2Local(aLocalParam, thePoint, theTangent, theCurvature);
+}
+
+//==================================================================================================
+
+void BSplCLib_Cache::D2Local(double  theLocalParam,
+                             gp_Pnt& thePoint,
+                             gp_Vec& theTangent,
+                             gp_Vec& theCurvature) const
+{
+  Standard_Real aDerivArray[12];
+  calculateDerivativeLocal(theLocalParam, 2, aDerivArray);
+
+  const int aDim   = myIsRational ? myRowLength - 1 : myRowLength;
+  const int aShift = aDim << 1;
+  thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
+  theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1], aDerivArray[aDim + 2]);
+  theCurvature.SetCoord(aDerivArray[aShift], aDerivArray[aShift + 1], aDerivArray[aShift + 2]);
 }
 
 void BSplCLib_Cache::D3(const Standard_Real& theParameter,
@@ -245,86 +334,6 @@ void BSplCLib_Cache::D3(const Standard_Real& theParameter,
   Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
   aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
   D3Local(aLocalParam, thePoint, theTangent, theCurvature, theTorsion);
-}
-
-//==================================================================================================
-
-void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
-                                              int            theDerivative,
-                                              Standard_Real* theDerivArray) const
-{
-  const int      aDimension  = myRowLength;
-  Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
-
-  // Temporary container for polynomial evaluation (max 4 derivatives * 4 components)
-  Standard_Real aTmpContainer[16];
-
-  // Clamp derivative order to curve degree for non-rational curves
-  int aDerivative = theDerivative;
-  if (!myIsRational && myParams.Degree < theDerivative)
-  {
-    aDerivative = myParams.Degree;
-    // Zero out higher derivative entries
-    for (int ind = myParams.Degree * aDimension; ind < (theDerivative + 1) * aDimension; ind++)
-    {
-      aTmpContainer[ind] = 0.0;
-      theDerivArray[ind] = 0.0;
-    }
-  }
-
-  PLib::EvalPolynomial(theLocalParam, aDerivative, myParams.Degree, aDimension, aPolesArray[0], aTmpContainer[0]);
-
-  // Unnormalize derivatives
-  Standard_Real aFactor = 1.0;
-  for (int deriv = 1; deriv <= aDerivative; deriv++)
-  {
-    aFactor /= myParams.SpanLength;
-    for (int ind = 0; ind < aDimension; ind++)
-    {
-      aTmpContainer[aDimension * deriv + ind] *= aFactor;
-    }
-  }
-
-  if (myIsRational)
-  {
-    PLib::RationalDerivative(theDerivative, theDerivative, aDimension - 1, aTmpContainer[0], theDerivArray[0]);
-  }
-  else
-  {
-    for (int i = 0; i < (theDerivative + 1) * aDimension; ++i)
-    {
-      theDerivArray[i] = aTmpContainer[i];
-    }
-  }
-}
-
-//==================================================================================================
-
-void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& theTangent) const
-{
-  Standard_Real aDerivArray[8];
-  calculateDerivativeLocal(theLocalParam, 1, aDerivArray);
-
-  const int aDim = myIsRational ? myRowLength - 1 : myRowLength;
-  thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
-  theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1], aDerivArray[aDim + 2]);
-}
-
-//==================================================================================================
-
-void BSplCLib_Cache::D2Local(double  theLocalParam,
-                             gp_Pnt& thePoint,
-                             gp_Vec& theTangent,
-                             gp_Vec& theCurvature) const
-{
-  Standard_Real aDerivArray[12];
-  calculateDerivativeLocal(theLocalParam, 2, aDerivArray);
-
-  const int aDim   = myIsRational ? myRowLength - 1 : myRowLength;
-  const int aShift = aDim << 1;
-  thePoint.SetCoord(aDerivArray[0], aDerivArray[1], aDerivArray[2]);
-  theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1], aDerivArray[aDim + 2]);
-  theCurvature.SetCoord(aDerivArray[aShift], aDerivArray[aShift + 1], aDerivArray[aShift + 2]);
 }
 
 //==================================================================================================
