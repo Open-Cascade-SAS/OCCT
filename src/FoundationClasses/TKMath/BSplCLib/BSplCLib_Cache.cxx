@@ -160,15 +160,11 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
 
   if (myIsRational)
   {
-    PLib::RationalDerivative(theDerivative,
-                             theDerivative,
-                             aDimension - 1,
-                             aTmpContainer[0],
-                             theDerivArray[0]);
+    PLib::RationalDerivative(aDerivative, aDerivative, aDimension - 1, aTmpContainer[0], theDerivArray[0]);
   }
   else
   {
-    for (int i = 0; i < (theDerivative + 1) * aDimension; ++i)
+    for (int i = 0; i < (aDerivative + 1) * aDimension; ++i)
     {
       theDerivArray[i] = aTmpContainer[i];
     }
