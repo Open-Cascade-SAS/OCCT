@@ -13,6 +13,7 @@
 
 #include <gtest/gtest.h>
 
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
@@ -381,9 +382,8 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
   }
 }
 
-TEST(GeomGridEval_CurveTest, ParabolaFallbackDispatch)
+TEST(GeomGridEval_CurveTest, ParabolaDispatch)
 {
-  // Parabola is not optimized, should use fallback
   Handle(Geom_Parabola) aParab =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aParab);
@@ -402,6 +402,35 @@ TEST(GeomGridEval_CurveTest, ParabolaFallbackDispatch)
   for (int i = 1; i <= 11; ++i)
   {
     gp_Pnt aExpected = aParab->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_CurveTest, BezierCurveFallbackDispatch)
+{
+  // Bezier curve is not optimized, should use fallback
+  TColgp_Array1OfPnt aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aBezier);
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_BezierCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aExpected = aBezier->Value(aParams.Value(i));
     EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }

@@ -19,6 +19,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
 
 //==================================================================================================
 
@@ -70,6 +71,13 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
       myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
       break;
     }
+    case GeomAbs_Parabola:
+    {
+      // Create Handle(Geom_Parabola) from gp_Parab
+      Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve->Parabola());
+      myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
+      break;
+    }
     case GeomAbs_BSplineCurve:
     {
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
@@ -114,6 +122,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     myCurveType = GeomAbs_Hyperbola;
     myEvaluator = GeomGridEval_Hyperbola(aHyperbola);
+  }
+  else if (auto aParabola = Handle(Geom_Parabola)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_Parabola;
+    myEvaluator = GeomGridEval_Parabola(aParabola);
   }
   else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
   {

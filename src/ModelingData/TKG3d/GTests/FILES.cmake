@@ -16,6 +16,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_Cylinder_Test.cxx
   GeomGridEval_Ellipse_Test.cxx
   GeomGridEval_Hyperbola_Test.cxx
+  GeomGridEval_Parabola_Test.cxx
   GeomGridEval_Surface_Test.cxx
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx

@@ -23,6 +23,7 @@
 #include <GeomGridEval_Hyperbola.hxx>
 #include <GeomGridEval_Line.hxx>
 #include <GeomGridEval_OtherCurve.hxx>
+#include <GeomGridEval_Parabola.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
@@ -42,6 +43,7 @@
 //! - Circle: Trigonometric formula
 //! - Ellipse: Analytical formula
 //! - Hyperbola: Analytical formula
+//! - Parabola: Analytical formula
 //! - BSplineCurve: Optimized batch evaluation via BSplCLib_GridEvaluator
 //! - Other: Fallback using Adaptor3d_Curve::D0
 //!
@@ -65,6 +67,7 @@ public:
                                         GeomGridEval_Circle,   // Circle curve
                                         GeomGridEval_Ellipse,  // Ellipse curve
                                         GeomGridEval_Hyperbola, // Hyperbola curve
+                                        GeomGridEval_Parabola,  // Parabola curve
                                         GeomGridEval_BSplineCurve, // B-spline curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 

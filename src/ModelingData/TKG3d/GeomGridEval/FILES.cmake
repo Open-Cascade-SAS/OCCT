@@ -11,6 +11,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Ellipse.cxx
   GeomGridEval_Hyperbola.hxx
   GeomGridEval_Hyperbola.cxx
+  GeomGridEval_Parabola.hxx
+  GeomGridEval_Parabola.cxx
   GeomGridEval_BSplineCurve.hxx
   GeomGridEval_BSplineCurve.cxx
   GeomGridEval_OtherCurve.hxx
