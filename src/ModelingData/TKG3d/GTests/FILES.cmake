@@ -11,6 +11,8 @@ set(OCCT_TKG3d_GTests_FILES
   GeomAdaptor_Curve_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
+  GeomGridEvaluator_Curve_Test.cxx
+  GeomGridEvaluator_Surface_Test.cxx
   GeomHash_CurveHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
 )
