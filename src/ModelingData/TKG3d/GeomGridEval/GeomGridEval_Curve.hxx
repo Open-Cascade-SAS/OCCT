@@ -19,6 +19,7 @@
 #include <Geom_Curve.hxx>
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <GeomGridEval_Circle.hxx>
+#include <GeomGridEval_Ellipse.hxx>
 #include <GeomGridEval_Line.hxx>
 #include <GeomGridEval_OtherCurve.hxx>
 #include <gp_Pnt.hxx>
@@ -38,6 +39,7 @@
 //! Supported curve types with optimized evaluation:
 //! - Line: Direct analytical formula
 //! - Circle: Trigonometric formula
+//! - Ellipse: Analytical formula
 //! - BSplineCurve: Optimized batch evaluation via BSplCLib_GridEvaluator
 //! - Other: Fallback using Adaptor3d_Curve::D0
 //!
@@ -59,6 +61,7 @@ public:
   using EvaluatorVariant = std::variant<std::monostate,             // Uninitialized state
                                         GeomGridEval_Line,     // Line curve
                                         GeomGridEval_Circle,   // Circle curve
+                                        GeomGridEval_Ellipse,  // Ellipse curve
                                         GeomGridEval_BSplineCurve, // B-spline curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 

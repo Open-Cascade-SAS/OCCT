@@ -16,6 +16,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 
 //==================================================================================================
@@ -54,6 +55,13 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
       myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
       break;
     }
+    case GeomAbs_Ellipse:
+    {
+      // Create Handle(Geom_Ellipse) from gp_Elips
+      Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve->Ellipse());
+      myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
+      break;
+    }
     case GeomAbs_BSplineCurve:
     {
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
@@ -88,6 +96,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     myCurveType = GeomAbs_Circle;
     myEvaluator = GeomGridEval_Circle(aCircle);
+  }
+  else if (auto anEllipse = Handle(Geom_Ellipse)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_Ellipse;
+    myEvaluator = GeomGridEval_Ellipse(anEllipse);
   }
   else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
   {

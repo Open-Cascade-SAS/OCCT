@@ -7,6 +7,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Line.hxx
   GeomGridEval_Circle.hxx
   GeomGridEval_Circle.cxx
+  GeomGridEval_Ellipse.hxx
+  GeomGridEval_Ellipse.cxx
   GeomGridEval_BSplineCurve.hxx
   GeomGridEval_BSplineCurve.cxx
   GeomGridEval_OtherCurve.hxx
