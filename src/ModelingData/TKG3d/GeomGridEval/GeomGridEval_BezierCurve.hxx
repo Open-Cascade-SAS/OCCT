@@ -14,6 +14,7 @@
 #ifndef _GeomGridEval_BezierCurve_HeaderFile
 #define _GeomGridEval_BezierCurve_HeaderFile
 
+#include <BSplCLib_Cache.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
@@ -71,8 +72,12 @@ public:
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
 private:
-  Handle(Geom_BezierCurve)   myGeom;
-  NCollection_Array1<double> myParams;
+  //! Build the cache if not already built.
+  void buildCache() const;
+
+  Handle(Geom_BezierCurve)        myGeom;
+  NCollection_Array1<double>      myParams;
+  mutable Handle(BSplCLib_Cache)  myCache;
 };
 
 #endif // _GeomGridEval_BezierCurve_HeaderFile

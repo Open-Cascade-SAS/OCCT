@@ -13,6 +13,7 @@
 
 #include <GeomGridEval_BezierCurve.hxx>
 
+#include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
 
 //==================================================================================================
@@ -25,6 +26,32 @@ void GeomGridEval_BezierCurve::SetParams(const TColStd_Array1OfReal& theParams)
   {
     myParams.SetValue(i, theParams.Value(theParams.Lower() + i - 1));
   }
+
+  // Invalidate cache when parameters change
+  myCache.Nullify();
+}
+
+//==================================================================================================
+
+void GeomGridEval_BezierCurve::buildCache() const
+{
+  if (myGeom.IsNull())
+  {
+    return;
+  }
+
+  const int            aDegree = myGeom->Degree();
+  TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
+
+  // Create cache following the pattern from GeomAdaptor_Curve
+  myCache = new BSplCLib_Cache(aDegree,
+                               myGeom->IsPeriodic(),
+                               aFlatKnots,
+                               myGeom->Poles(),
+                               myGeom->Weights());
+
+  // Build cache at parameter 0.5 (middle of the single span)
+  myCache->BuildCache(0.5, aFlatKnots, myGeom->Poles(), myGeom->Weights());
 }
 
 //==================================================================================================
@@ -36,13 +63,20 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid() const
     return NCollection_Array1<gp_Pnt>();
   }
 
+  // Build cache if needed
+  if (myCache.IsNull())
+  {
+    buildCache();
+  }
+
   const int                  aNb = myParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
+  // Single span Bezier - use cache for all points
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
-    myGeom->D0(myParams.Value(i), aP);
+    myCache->D0(myParams.Value(i), aP);
     aResult.SetValue(i, aP);
   }
   return aResult;
@@ -57,14 +91,21 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
+  // Build cache if needed
+  if (myCache.IsNull())
+  {
+    buildCache();
+  }
+
   const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
+  // Single span Bezier - use cache for all points
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1;
-    myGeom->D1(myParams.Value(i), aP, aD1);
+    myCache->D1(myParams.Value(i), aP, aD1);
     aResult.ChangeValue(i) = {aP, aD1};
   }
   return aResult;
@@ -79,14 +120,21 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
+  // Build cache if needed
+  if (myCache.IsNull())
+  {
+    buildCache();
+  }
+
   const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
+  // Single span Bezier - use cache for all points
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1, aD2;
-    myGeom->D2(myParams.Value(i), aP, aD1, aD2);
+    myCache->D2(myParams.Value(i), aP, aD1, aD2);
     aResult.ChangeValue(i) = {aP, aD1, aD2};
   }
   return aResult;
@@ -101,14 +149,21 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
+  // Build cache if needed
+  if (myCache.IsNull())
+  {
+    buildCache();
+  }
+
   const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
+  // Single span Bezier - use cache for all points
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1, aD2, aD3;
-    myGeom->D3(myParams.Value(i), aP, aD1, aD2, aD3);
+    myCache->D3(myParams.Value(i), aP, aD1, aD2, aD3);
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }
   return aResult;
