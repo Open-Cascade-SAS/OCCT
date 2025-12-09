@@ -18,6 +18,7 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomGridEval_BSplineSurface.hxx>
+#include <GeomGridEval_BezierSurface.hxx>
 #include <GeomGridEval_Cone.hxx>
 #include <GeomGridEval_Cylinder.hxx>
 #include <GeomGridEval_OtherSurface.hxx>
@@ -44,6 +45,7 @@
 //! - Sphere: Trigonometric formula
 //! - Cone: Analytical formula
 //! - Torus: Analytical formula
+//! - BezierSurface: Optimized batch evaluation via BSplSLib
 //! - BSplineSurface: Optimized batch evaluation with span-based caching
 //! - Other: Fallback using Adaptor3d_Surface::D0
 //!
@@ -68,6 +70,7 @@ public:
                                         GeomGridEval_Sphere,         // Spherical surface
                                         GeomGridEval_Cone,           // Conical surface
                                         GeomGridEval_Torus,          // Toroidal surface
+                                        GeomGridEval_BezierSurface,  // Bezier surface
                                         GeomGridEval_BSplineSurface, // B-spline surface
                                         GeomGridEval_OtherSurface>;  // Fallback for other types
 

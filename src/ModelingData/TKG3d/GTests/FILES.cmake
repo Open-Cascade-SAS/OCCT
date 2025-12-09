@@ -14,6 +14,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_Cone_Test.cxx
   GeomGridEval_Curve_Test.cxx
   GeomGridEval_BezierCurve_Test.cxx
+  GeomGridEval_BezierSurface_Test.cxx
   GeomGridEval_Cylinder_Test.cxx
   GeomGridEval_Ellipse_Test.cxx
   GeomGridEval_Hyperbola_Test.cxx

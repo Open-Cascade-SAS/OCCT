@@ -31,6 +31,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Cone.cxx
   GeomGridEval_Torus.hxx
   GeomGridEval_Torus.cxx
+  GeomGridEval_BezierSurface.hxx
+  GeomGridEval_BezierSurface.cxx
   GeomGridEval_BSplineSurface.hxx
   GeomGridEval_BSplineSurface.cxx
   GeomGridEval_OtherSurface.hxx

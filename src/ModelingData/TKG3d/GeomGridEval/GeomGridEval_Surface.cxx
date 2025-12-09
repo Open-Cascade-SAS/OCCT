@@ -15,6 +15,7 @@
 
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -79,6 +80,11 @@ void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurfac
       myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
       break;
     }
+    case GeomAbs_BezierSurface:
+    {
+      myEvaluator = GeomGridEval_BezierSurface(theSurface->Bezier());
+      break;
+    }
     case GeomAbs_BSplineSurface:
     {
       myEvaluator = GeomGridEval_BSplineSurface(theSurface->BSpline());
@@ -86,7 +92,10 @@ void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurfac
     }
     default:
     {
-      // Fallback: use OtherSurface. Taking handle directly.
+      // Fallback: use OtherSurface. Since we have a Handle, we can use it directly
+      // without needing ShallowCopy if it's safe, but Adaptor3d_Surface semantics usually
+      // imply ShallowCopy if we want to own it or if it's transient.
+      // However, since we take a Handle, we share ownership.
       myEvaluator = GeomGridEval_OtherSurface(theSurface);
       break;
     }
@@ -128,6 +137,11 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   {
     mySurfaceType = GeomAbs_Torus;
     myEvaluator = GeomGridEval_Torus(aTorus);
+  }
+  else if (auto aBezier = Handle(Geom_BezierSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_BezierSurface;
+    myEvaluator = GeomGridEval_BezierSurface(aBezier);
   }
   else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface))
   {

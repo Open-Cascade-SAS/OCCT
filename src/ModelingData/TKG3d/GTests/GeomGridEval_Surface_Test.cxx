@@ -13,6 +13,7 @@
 
 #include <gtest/gtest.h>
 
+#include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -385,6 +386,36 @@ TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
     {
       gp_Pnt aExpected = aSurf->Value(aUParams.Value(iU), aVParams.Value(iV));
       EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
+{
+  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
+  aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
+  aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aBezier);
+
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_BezierSurface);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aParams, aParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 5; ++j)
+    {
+      gp_Pnt aExpected = aBezier->Value(aParams.Value(i), aParams.Value(j));
+      EXPECT_NEAR(aGrid.Value(i, j).Distance(aExpected), 0.0, THE_TOLERANCE);
     }
   }
 }
