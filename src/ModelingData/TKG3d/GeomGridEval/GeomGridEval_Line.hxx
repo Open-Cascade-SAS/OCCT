@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_Line_HeaderFile
-#define _GeomGridEvaluator_Line_HeaderFile
+#ifndef _GeomGridEval_Line_HeaderFile
+#define _GeomGridEval_Line_HeaderFile
 
 #include <Geom_Line.hxx>
-#include <GeomGridEvaluator_Results.hxx>
+#include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -26,18 +26,18 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Line anEvaluator(myGeomLine);
+//!   GeomGridEval_Line anEvaluator(myGeomLine);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_Line
+class GeomGridEval_Line
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with geometry.
   //! @param theLine the line geometry to evaluate
-  GeomGridEvaluator_Line(const Handle(Geom_Line)& theLine)
+  GeomGridEval_Line(const Handle(Geom_Line)& theLine)
       : myGeom(theLine)
   {
   }
@@ -211,4 +211,4 @@ private:
   NCollection_Array1<double> myParams;
 };
 
-#endif // _GeomGridEvaluator_Line_HeaderFile
+#endif // _GeomGridEval_Line_HeaderFile

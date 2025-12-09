@@ -11,15 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_Surface_HeaderFile
-#define _GeomGridEvaluator_Surface_HeaderFile
+#ifndef _GeomGridEval_Surface_HeaderFile
+#define _GeomGridEval_Surface_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomGridEvaluator_BSplineSurface.hxx>
-#include <GeomGridEvaluator_OtherSurface.hxx>
-#include <GeomGridEvaluator_Plane.hxx>
-#include <GeomGridEvaluator_Sphere.hxx>
+#include <GeomGridEval_BSplineSurface.hxx>
+#include <GeomGridEval_OtherSurface.hxx>
+#include <GeomGridEval_Plane.hxx>
+#include <GeomGridEval_Sphere.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -42,25 +42,25 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Surface anEval;
+//!   GeomGridEval_Surface anEval;
 //!   anEval.Initialize(myAdaptorSurface);
 //!   anEval.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_Surface
+class GeomGridEval_Surface
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible surface evaluators.
   using EvaluatorVariant = std::variant<std::monostate,                   // Uninitialized state
-                                        GeomGridEvaluator_Plane,          // Plane surface
-                                        GeomGridEvaluator_Sphere,         // Spherical surface
-                                        GeomGridEvaluator_BSplineSurface, // B-spline surface
-                                        GeomGridEvaluator_OtherSurface>;  // Fallback for other types
+                                        GeomGridEval_Plane,          // Plane surface
+                                        GeomGridEval_Sphere,         // Spherical surface
+                                        GeomGridEval_BSplineSurface, // B-spline surface
+                                        GeomGridEval_OtherSurface>;  // Fallback for other types
 
   //! Default constructor - uninitialized state.
-  GeomGridEvaluator_Surface()
+  GeomGridEval_Surface()
       : myEvaluator(std::monostate{}),
         mySurfaceType(GeomAbs_OtherSurface)
   {
@@ -105,4 +105,4 @@ private:
   GeomAbs_SurfaceType mySurfaceType;
 };
 
-#endif // _GeomGridEvaluator_Surface_HeaderFile
+#endif // _GeomGridEval_Surface_HeaderFile

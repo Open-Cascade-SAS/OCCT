@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_Circle.hxx>
+#include <GeomGridEval_Circle.hxx>
 
 #include <cmath>
 
 //==================================================================================================
 
-void GeomGridEvaluator_Circle::SetParams(const TColStd_Array1OfReal& theParams)
+void GeomGridEval_Circle::SetParams(const TColStd_Array1OfReal& theParams)
 {
   myParams.Resize(theParams.Lower(), theParams.Upper(), false);
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -28,7 +28,7 @@ void GeomGridEvaluator_Circle::SetParams(const TColStd_Array1OfReal& theParams)
 
 //==================================================================================================
 
-NCollection_Array1<gp_Pnt> GeomGridEvaluator_Circle::EvaluateGrid() const
+NCollection_Array1<gp_Pnt> GeomGridEval_Circle::EvaluateGrid() const
 {
   if (myGeom.IsNull() || myParams.IsEmpty())
   {
@@ -71,7 +71,7 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_Circle::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Circle::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Circle::EvaluateGridD1() const
 {
   if (myGeom.IsNull() || myParams.IsEmpty())
   {
@@ -117,7 +117,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Circle::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Circle::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Circle::EvaluateGridD2() const
 {
   if (myGeom.IsNull() || myParams.IsEmpty())
   {
@@ -167,7 +167,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Circle::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_Circle::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Circle::EvaluateGridD3() const
 {
   if (myGeom.IsNull() || myParams.IsEmpty())
   {

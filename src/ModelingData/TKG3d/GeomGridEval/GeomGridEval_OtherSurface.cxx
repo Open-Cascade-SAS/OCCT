@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_OtherSurface.hxx>
+#include <GeomGridEval_OtherSurface.hxx>
 
 //==================================================================================================
 
-void GeomGridEvaluator_OtherSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
+void GeomGridEval_OtherSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
                                                  const TColStd_Array1OfReal& theVParams)
 {
   const int aNbU = theUParams.Size();
@@ -36,7 +36,7 @@ void GeomGridEvaluator_OtherSurface::SetUVParams(const TColStd_Array1OfReal& the
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEvaluator_OtherSurface::EvaluateGrid() const
+NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid() const
 {
   if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
@@ -63,7 +63,7 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_OtherSurface::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_OtherSurface::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGridD1() const
 {
   if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
@@ -93,7 +93,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_OtherSurface::Evaluat
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_OtherSurface::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGridD2() const
 {
   if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {

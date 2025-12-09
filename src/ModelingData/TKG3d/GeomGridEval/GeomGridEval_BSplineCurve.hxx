@@ -11,12 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_BSplineCurve_HeaderFile
-#define _GeomGridEvaluator_BSplineCurve_HeaderFile
+#ifndef _GeomGridEval_BSplineCurve_HeaderFile
+#define _GeomGridEval_BSplineCurve_HeaderFile
 
 #include <BSplCLib_Cache.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <GeomGridEvaluator_Results.hxx>
+#include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -32,18 +32,18 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_BSplineCurve anEvaluator(myBSplineCurve);
+//!   GeomGridEval_BSplineCurve anEvaluator(myBSplineCurve);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_BSplineCurve
+class GeomGridEval_BSplineCurve
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with geometry.
   //! @param theCurve the B-spline curve to evaluate
-  GeomGridEvaluator_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve)
+  GeomGridEval_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve)
       : myGeom(theCurve)
   {
   }
@@ -140,4 +140,4 @@ private:
   mutable Handle(BSplCLib_Cache) myCache;
 };
 
-#endif // _GeomGridEvaluator_BSplineCurve_HeaderFile
+#endif // _GeomGridEval_BSplineCurve_HeaderFile

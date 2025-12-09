@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_Sphere.hxx>
+#include <GeomGridEval_Sphere.hxx>
 
 #include <gp_Sphere.hxx>
 
@@ -19,7 +19,7 @@
 
 //==================================================================================================
 
-void GeomGridEvaluator_Sphere::SetUVParams(const TColStd_Array1OfReal& theUParams,
+void GeomGridEval_Sphere::SetUVParams(const TColStd_Array1OfReal& theUParams,
                                            const TColStd_Array1OfReal& theVParams)
 {
   const int aNbU = theUParams.Size();
@@ -40,7 +40,7 @@ void GeomGridEvaluator_Sphere::SetUVParams(const TColStd_Array1OfReal& theUParam
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEvaluator_Sphere::EvaluateGrid() const
+NCollection_Array2<gp_Pnt> GeomGridEval_Sphere::EvaluateGrid() const
 {
   if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
@@ -112,7 +112,7 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_Sphere::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_Sphere::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Sphere::EvaluateGridD1() const
 {
   if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
@@ -194,7 +194,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_Sphere::EvaluateGridD
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_Sphere::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Sphere::EvaluateGridD2() const
 {
   if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {

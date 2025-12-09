@@ -11,77 +11,78 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_OtherCurve_HeaderFile
-#define _GeomGridEvaluator_OtherCurve_HeaderFile
+#ifndef _GeomGridEval_Circle_HeaderFile
+#define _GeomGridEval_Circle_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
-#include <GeomGridEvaluator_Results.hxx>
+#include <Geom_Circle.hxx>
+#include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-//! @brief Fallback evaluator for unknown curve types.
+//! @brief Efficient batch evaluator for circle grid points.
 //!
-//! Uses Adaptor3d_Curve::D0 for point-by-point evaluation.
-//! This is the slowest evaluator but handles any curve type.
+//! Uses analytical formula: P(u) = Center + R * (cos(u) * XDir + sin(u) * YDir)
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_OtherCurve anEvaluator(myCurveAdaptor);
+//!   GeomGridEval_Circle anEvaluator(myGeomCircle);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_OtherCurve
+class GeomGridEval_Circle
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with curve adaptor.
-  //! @param theCurve handle to curve adaptor
-  GeomGridEvaluator_OtherCurve(const Handle(Adaptor3d_Curve)& theCurve)
-      : myCurve(theCurve)
+  //! Constructor with geometry.
+  //! @param theCircle the circle geometry to evaluate
+  GeomGridEval_Circle(const Handle(Geom_Circle)& theCircle)
+      : myGeom(theCircle)
   {
   }
 
   //! Set parameters for grid evaluation (by const reference).
-  //! @param theParams array of parameter values
+  //! @param theParams array of parameter values (angles in radians)
   void SetParams(const TColStd_Array1OfReal& theParams);
 
   //! Set parameters for grid evaluation (by move).
   //! @param theParams array of parameter values to move
   void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
 
-  //! Returns the curve adaptor handle.
-  const Handle(Adaptor3d_Curve)& Curve() const { return myCurve; }
+  //! Returns the geometry handle.
+  const Handle(Geom_Circle)& Geometry() const { return myGeom; }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Size(); }
 
   //! Evaluate all grid points.
   //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if curve is null or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
 
   //! Evaluate all grid points with first derivative.
+  //! D1 = R * (-sin(u) * XDir + cos(u) * YDir)
   //! @return array of CurveD1 (1-based indexing),
-  //!         or empty array if curve is null or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1() const;
 
   //! Evaluate all grid points with first and second derivatives.
+  //! D2 = R * (-cos(u) * XDir - sin(u) * YDir) = -P (relative to center)
   //! @return array of CurveD2 (1-based indexing),
-  //!         or empty array if curve is null or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2() const;
 
   //! Evaluate all grid points with first, second, and third derivatives.
+  //! D3 = R * (sin(u) * XDir - cos(u) * YDir) = -D1
   //! @return array of CurveD3 (1-based indexing),
-  //!         or empty array if curve is null or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
 private:
-  Handle(Adaptor3d_Curve)    myCurve;
+  Handle(Geom_Circle)        myGeom;
   NCollection_Array1<double> myParams;
 };
 
-#endif // _GeomGridEvaluator_OtherCurve_HeaderFile
+#endif // _GeomGridEval_Circle_HeaderFile

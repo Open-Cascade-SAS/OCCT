@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_BSplineCurve.hxx>
+#include <GeomGridEval_BSplineCurve.hxx>
 
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineCurve::SetParams(const TColStd_Array1OfReal& theParams)
+void GeomGridEval_BSplineCurve::SetParams(const TColStd_Array1OfReal& theParams)
 {
   mySpanRanges = NCollection_Array1<SpanRange>(); // Clear cached span data
   myRawParams.Resize(theParams.Lower(), theParams.Upper(), false);
@@ -30,7 +30,7 @@ void GeomGridEvaluator_BSplineCurve::SetParams(const TColStd_Array1OfReal& thePa
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineCurve::prepare() const
+void GeomGridEval_BSplineCurve::prepare() const
 {
   // Check if already prepared using span ranges emptiness
   if (!mySpanRanges.IsEmpty())
@@ -80,7 +80,7 @@ void GeomGridEvaluator_BSplineCurve::prepare() const
 
 //==================================================================================================
 
-int GeomGridEvaluator_BSplineCurve::locateSpan(double                      theParam,
+int GeomGridEval_BSplineCurve::locateSpan(double                      theParam,
                                                const TColStd_Array1OfReal& theFlatKnots) const
 {
   int    aSpanIndex = 0;
@@ -97,7 +97,7 @@ int GeomGridEvaluator_BSplineCurve::locateSpan(double                      thePa
 
 //==================================================================================================
 
-int GeomGridEvaluator_BSplineCurve::locateSpanWithHint(double                      theParam,
+int GeomGridEval_BSplineCurve::locateSpanWithHint(double                      theParam,
                                                        int                         theHint,
                                                        const TColStd_Array1OfReal& theFlatKnots) const
 {
@@ -133,7 +133,7 @@ int GeomGridEvaluator_BSplineCurve::locateSpanWithHint(double                   
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineCurve::computeSpanRanges(
+void GeomGridEval_BSplineCurve::computeSpanRanges(
   const NCollection_Array1<ParamWithSpan>& theParams,
   const TColStd_Array1OfReal&              theFlatKnots,
   NCollection_Array1<SpanRange>&           theSpanRanges)
@@ -194,7 +194,7 @@ void GeomGridEvaluator_BSplineCurve::computeSpanRanges(
 
 //==================================================================================================
 
-NCollection_Array1<gp_Pnt> GeomGridEvaluator_BSplineCurve::EvaluateGrid() const
+NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
 {
   if (myGeom.IsNull() || myRawParams.IsEmpty())
   {
@@ -267,7 +267,7 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_BSplineCurve::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_BSplineCurve::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGridD1() const
 {
   if (myGeom.IsNull() || myRawParams.IsEmpty())
   {
@@ -336,7 +336,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_BSplineCurve::Evalua
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_BSplineCurve::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGridD2() const
 {
   if (myGeom.IsNull() || myRawParams.IsEmpty())
   {
@@ -405,7 +405,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_BSplineCurve::Evalua
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_BSplineCurve::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGridD3() const
 {
   if (myGeom.IsNull() || myRawParams.IsEmpty())
   {

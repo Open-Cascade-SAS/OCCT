@@ -11,15 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_Curve_HeaderFile
-#define _GeomGridEvaluator_Curve_HeaderFile
+#ifndef _GeomGridEval_Curve_HeaderFile
+#define _GeomGridEval_Curve_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <GeomGridEvaluator_BSplineCurve.hxx>
-#include <GeomGridEvaluator_Circle.hxx>
-#include <GeomGridEvaluator_Line.hxx>
-#include <GeomGridEvaluator_OtherCurve.hxx>
+#include <GeomGridEval_BSplineCurve.hxx>
+#include <GeomGridEval_Circle.hxx>
+#include <GeomGridEval_Line.hxx>
+#include <GeomGridEval_OtherCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
@@ -42,25 +42,25 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Curve anEval;
+//!   GeomGridEval_Curve anEval;
 //!   anEval.Initialize(myAdaptorCurve);
 //!   anEval.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_Curve
+class GeomGridEval_Curve
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible curve evaluators.
   using EvaluatorVariant = std::variant<std::monostate,             // Uninitialized state
-                                        GeomGridEvaluator_Line,     // Line curve
-                                        GeomGridEvaluator_Circle,   // Circle curve
-                                        GeomGridEvaluator_BSplineCurve, // B-spline curve
-                                        GeomGridEvaluator_OtherCurve>;  // Fallback for other types
+                                        GeomGridEval_Line,     // Line curve
+                                        GeomGridEval_Circle,   // Circle curve
+                                        GeomGridEval_BSplineCurve, // B-spline curve
+                                        GeomGridEval_OtherCurve>;  // Fallback for other types
 
   //! Default constructor - uninitialized state.
-  GeomGridEvaluator_Curve()
+  GeomGridEval_Curve()
       : myEvaluator(std::monostate{}),
         myCurveType(GeomAbs_OtherCurve)
   {
@@ -104,4 +104,4 @@ private:
   GeomAbs_CurveType myCurveType;
 };
 
-#endif // _GeomGridEvaluator_Curve_HeaderFile
+#endif // _GeomGridEval_Curve_HeaderFile

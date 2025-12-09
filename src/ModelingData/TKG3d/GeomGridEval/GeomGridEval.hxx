@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_Results_HeaderFile
-#define _GeomGridEvaluator_Results_HeaderFile
+#ifndef _GeomGridEval_HeaderFile
+#define _GeomGridEval_HeaderFile
 
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -69,4 +69,4 @@ struct SurfD2
 
 } // namespace GeomGridEval
 
-#endif // _GeomGridEvaluator_Results_HeaderFile
+#endif // _GeomGridEval_HeaderFile

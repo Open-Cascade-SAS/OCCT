@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_BSplineSurface.hxx>
+#include <GeomGridEval_BSplineSurface.hxx>
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
@@ -21,7 +21,7 @@
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
+void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
                                                    const TColStd_Array1OfReal& theVParams)
 {
   const int aNbU = theUParams.Size();
@@ -45,7 +45,7 @@ void GeomGridEvaluator_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& t
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineSurface::prepare() const
+void GeomGridEval_BSplineSurface::prepare() const
 {
   // Check if already prepared using span ranges emptiness
   if (!myUSpanRanges.IsEmpty())
@@ -123,7 +123,7 @@ void GeomGridEvaluator_BSplineSurface::prepare() const
 
 //==================================================================================================
 
-int GeomGridEvaluator_BSplineSurface::locateSpan(double                      theParam,
+int GeomGridEval_BSplineSurface::locateSpan(double                      theParam,
                                                  bool                        theUDir,
                                                  const TColStd_Array1OfReal& theFlatKnots) const
 {
@@ -145,7 +145,7 @@ int GeomGridEvaluator_BSplineSurface::locateSpan(double                      the
 
 //==================================================================================================
 
-int GeomGridEvaluator_BSplineSurface::locateSpanWithHint(double                      theParam,
+int GeomGridEval_BSplineSurface::locateSpanWithHint(double                      theParam,
                                                          bool                        theUDir,
                                                          int                         theHint,
                                                          const TColStd_Array1OfReal& theFlatKnots) const
@@ -179,7 +179,7 @@ int GeomGridEvaluator_BSplineSurface::locateSpanWithHint(double                 
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineSurface::computeSpanRanges(
+void GeomGridEval_BSplineSurface::computeSpanRanges(
   const NCollection_Array1<ParamWithSpan>& theParams,
   const TColStd_Array1OfReal&              theFlatKnots,
   NCollection_Array1<SpanRange>&           theSpanRanges)
@@ -236,7 +236,7 @@ void GeomGridEvaluator_BSplineSurface::computeSpanRanges(
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEvaluator_BSplineSurface::EvaluateGrid() const
+NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
 {
   if (myGeom.IsNull() || myRawUParams.IsEmpty() || myRawVParams.IsEmpty())
   {
@@ -372,7 +372,7 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_BSplineSurface::EvaluateGrid() cons
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_BSplineSurface::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGridD1() const
 {
   if (myGeom.IsNull() || myRawUParams.IsEmpty() || myRawVParams.IsEmpty())
   {
@@ -462,7 +462,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_BSplineSurface::Evalu
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_BSplineSurface::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGridD2() const
 {
   if (myGeom.IsNull() || myRawUParams.IsEmpty() || myRawVParams.IsEmpty())
   {

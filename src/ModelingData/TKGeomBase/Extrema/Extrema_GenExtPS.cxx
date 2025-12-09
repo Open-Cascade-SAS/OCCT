@@ -20,7 +20,7 @@
 
 #include <Bnd_HArray1OfSphere.hxx>
 #include <Bnd_Sphere.hxx>
-#include <GeomGridEvaluator_BSplineSurface.hxx>
+#include <GeomGridEval_BSplineSurface.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -544,7 +544,7 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
       Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
       if (!aBspl.IsNull())
       {
-        GeomGridEvaluator_BSplineSurface aGridEval(aBspl);
+        GeomGridEval_BSplineSurface aGridEval(aBspl);
         aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
 
         NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
@@ -897,7 +897,7 @@ void Extrema_GenExtPS::BuildTree()
     Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
     if (!aBspl.IsNull())
     {
-      GeomGridEvaluator_BSplineSurface aGridEval(aBspl);
+      GeomGridEval_BSplineSurface aGridEval(aBspl);
       aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
 
       NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();

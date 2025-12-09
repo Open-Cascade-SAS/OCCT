@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_Surface.hxx>
+#include <GeomGridEval_Surface.hxx>
 
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 
 //==================================================================================================
 
-void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
+void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 {
   mySurfaceType = theSurface.GetType();
 
@@ -28,25 +28,25 @@ void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     {
       // Create Handle(Geom_Plane) from gp_Pln
       Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
-      myEvaluator                   = GeomGridEvaluator_Plane(aGeomPlane);
+      myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
       break;
     }
     case GeomAbs_Sphere:
     {
       // Create Handle(Geom_SphericalSurface) from gp_Sphere
       Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
-      myEvaluator                               = GeomGridEvaluator_Sphere(aGeomSphere);
+      myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
       break;
     }
     case GeomAbs_BSplineSurface:
     {
-      myEvaluator = GeomGridEvaluator_BSplineSurface(theSurface.BSpline());
+      myEvaluator = GeomGridEval_BSplineSurface(theSurface.BSpline());
       break;
     }
     default:
     {
       // Fallback: use OtherSurface with adaptor copy
-      myEvaluator = GeomGridEvaluator_OtherSurface(theSurface.ShallowCopy());
+      myEvaluator = GeomGridEval_OtherSurface(theSurface.ShallowCopy());
       break;
     }
   }
@@ -54,7 +54,7 @@ void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
 //==================================================================================================
 
-void GeomGridEvaluator_Surface::SetUVParams(const TColStd_Array1OfReal& theUParams,
+void GeomGridEval_Surface::SetUVParams(const TColStd_Array1OfReal& theUParams,
                                             const TColStd_Array1OfReal& theVParams)
 {
   std::visit(
@@ -71,14 +71,14 @@ void GeomGridEvaluator_Surface::SetUVParams(const TColStd_Array1OfReal& theUPara
 
 //==================================================================================================
 
-bool GeomGridEvaluator_Surface::IsInitialized() const
+bool GeomGridEval_Surface::IsInitialized() const
 {
   return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================
 
-int GeomGridEvaluator_Surface::NbUParams() const
+int GeomGridEval_Surface::NbUParams() const
 {
   return std::visit(
     [](const auto& theEval) -> int
@@ -98,7 +98,7 @@ int GeomGridEvaluator_Surface::NbUParams() const
 
 //==================================================================================================
 
-int GeomGridEvaluator_Surface::NbVParams() const
+int GeomGridEval_Surface::NbVParams() const
 {
   return std::visit(
     [](const auto& theEval) -> int
@@ -118,7 +118,7 @@ int GeomGridEvaluator_Surface::NbVParams() const
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEvaluator_Surface::EvaluateGrid() const
+NCollection_Array2<gp_Pnt> GeomGridEval_Surface::EvaluateGrid() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array2<gp_Pnt>
@@ -138,7 +138,7 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_Surface::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_Surface::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Surface::EvaluateGridD1() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD1>
@@ -158,7 +158,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_Surface::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_Surface::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD2>

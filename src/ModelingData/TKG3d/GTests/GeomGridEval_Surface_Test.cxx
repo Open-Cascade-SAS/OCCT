@@ -18,11 +18,11 @@
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomGridEvaluator_BSplineSurface.hxx>
-#include <GeomGridEvaluator_OtherSurface.hxx>
-#include <GeomGridEvaluator_Plane.hxx>
-#include <GeomGridEvaluator_Sphere.hxx>
-#include <GeomGridEvaluator_Surface.hxx>
+#include <GeomGridEval_BSplineSurface.hxx>
+#include <GeomGridEval_OtherSurface.hxx>
+#include <GeomGridEval_Plane.hxx>
+#include <GeomGridEval_Sphere.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
@@ -77,15 +77,15 @@ Handle(Geom_BSplineSurface) CreateSimpleBSplineSurface()
 } // namespace
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Plane
+// Tests for GeomGridEval_Plane
 //==================================================================================================
 
-TEST(GeomGridEvaluator_PlaneTest, BasicEvaluation)
+TEST(GeomGridEval_PlaneTest, BasicEvaluation)
 {
   // XY plane at origin
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomGridEvaluator_Plane anEval(aPlane);
+  GeomGridEval_Plane anEval(aPlane);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
@@ -112,12 +112,12 @@ TEST(GeomGridEvaluator_PlaneTest, BasicEvaluation)
   }
 }
 
-TEST(GeomGridEvaluator_PlaneTest, NonOriginPlane)
+TEST(GeomGridEval_PlaneTest, NonOriginPlane)
 {
   // Plane at (1, 2, 3) with normal (0, 0, 1)
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
 
-  GeomGridEvaluator_Plane anEval(aPlane);
+  GeomGridEval_Plane anEval(aPlane);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(-1.0, 1.0, 3);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-1.0, 1.0, 3);
@@ -140,16 +140,16 @@ TEST(GeomGridEvaluator_PlaneTest, NonOriginPlane)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Sphere
+// Tests for GeomGridEval_Sphere
 //==================================================================================================
 
-TEST(GeomGridEvaluator_SphereTest, BasicEvaluation)
+TEST(GeomGridEval_SphereTest, BasicEvaluation)
 {
   // Unit sphere at origin
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
-  GeomGridEvaluator_Sphere anEval(aSphere);
+  GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);           // Longitude
@@ -185,13 +185,13 @@ TEST(GeomGridEvaluator_SphereTest, BasicEvaluation)
   }
 }
 
-TEST(GeomGridEvaluator_SphereTest, NonUnitSphere)
+TEST(GeomGridEval_SphereTest, NonUnitSphere)
 {
   // Sphere with radius 3 at center (1, 2, 3)
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 3.0);
 
-  GeomGridEvaluator_Sphere anEval(aSphere);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 17);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 9);
@@ -212,14 +212,14 @@ TEST(GeomGridEvaluator_SphereTest, NonUnitSphere)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_BSplineSurface
+// Tests for GeomGridEval_BSplineSurface
 //==================================================================================================
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, BasicEvaluation)
+TEST(GeomGridEval_BSplineSurfaceTest, BasicEvaluation)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
@@ -239,11 +239,11 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, BasicEvaluation)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, CornerPoints)
+TEST(GeomGridEval_BSplineSurfaceTest, CornerPoints)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams(1, 2);
   TColStd_Array1OfReal aVParams(1, 2);
@@ -269,17 +269,17 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, CornerPoints)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_OtherSurface (fallback)
+// Tests for GeomGridEval_OtherSurface (fallback)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_OtherSurfaceTest, CylinderFallback)
+TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 {
   // Cylinder is not directly supported, should use fallback
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
-  GeomGridEvaluator_OtherSurface anEval(anAdaptor.ShallowCopy());
+  GeomGridEval_OtherSurface anEval(anAdaptor.ShallowCopy());
   EXPECT_FALSE(anEval.Surface().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -300,15 +300,15 @@ TEST(GeomGridEvaluator_OtherSurfaceTest, CylinderFallback)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Surface (unified dispatcher)
+// Tests for GeomGridEval_Surface (unified dispatcher)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_SurfaceTest, PlaneDispatch)
+TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
   Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Plane);
@@ -330,13 +330,13 @@ TEST(GeomGridEvaluator_SurfaceTest, PlaneDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, SphereDispatch)
+TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 {
   Handle(Geom_SphericalSurface) aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Sphere);
@@ -358,12 +358,12 @@ TEST(GeomGridEvaluator_SurfaceTest, SphereDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, BSplineDispatch)
+TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_BSplineSurface);
@@ -385,13 +385,13 @@ TEST(GeomGridEvaluator_SurfaceTest, BSplineDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, CylinderFallbackDispatch)
+TEST(GeomGridEval_SurfaceTest, CylinderFallbackDispatch)
 {
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Cylinder);
@@ -413,9 +413,9 @@ TEST(GeomGridEvaluator_SurfaceTest, CylinderFallbackDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, UninitializedState)
+TEST(GeomGridEval_SurfaceTest, UninitializedState)
 {
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   EXPECT_FALSE(anEval.IsInitialized());
   EXPECT_EQ(anEval.NbUParams(), 0);
   EXPECT_EQ(anEval.NbVParams(), 0);
@@ -424,12 +424,12 @@ TEST(GeomGridEvaluator_SurfaceTest, UninitializedState)
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, EmptyParams)
+TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
   Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.NbUParams(), 0);
@@ -525,11 +525,11 @@ Handle(Geom_BSplineSurface) CreateMultiSpanBSplineSurface()
 }
 } // namespace
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, RationalSurface)
+TEST(GeomGridEval_BSplineSurfaceTest, RationalSurface)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateRationalBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
@@ -548,11 +548,11 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, RationalSurface)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, MultiSpanSurface)
+TEST(GeomGridEval_BSplineSurfaceTest, MultiSpanSurface)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 21);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 21);
@@ -571,7 +571,7 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, MultiSpanSurface)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, HigherDegree)
+TEST(GeomGridEval_BSplineSurfaceTest, HigherDegree)
 {
   // Create a bicubic B-spline surface
   TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
@@ -604,7 +604,7 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, HigherDegree)
   Handle(Geom_BSplineSurface) aSurf =
     new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
 
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 17);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 17);
@@ -627,11 +627,11 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, HigherDegree)
 // Tests for Surface Derivative Evaluation (D1, D2)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_PlaneTest, DerivativeD1)
+TEST(GeomGridEval_PlaneTest, DerivativeD1)
 {
   // XY plane at origin
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomGridEvaluator_Plane anEval(aPlane);
+  GeomGridEval_Plane anEval(aPlane);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
@@ -654,10 +654,10 @@ TEST(GeomGridEvaluator_PlaneTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_PlaneTest, DerivativeD2)
+TEST(GeomGridEval_PlaneTest, DerivativeD2)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomGridEvaluator_Plane anEval(aPlane);
+  GeomGridEval_Plane anEval(aPlane);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
@@ -677,11 +677,11 @@ TEST(GeomGridEvaluator_PlaneTest, DerivativeD2)
   }
 }
 
-TEST(GeomGridEvaluator_SphereTest, DerivativeD1)
+TEST(GeomGridEval_SphereTest, DerivativeD1)
 {
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomGridEvaluator_Sphere anEval(aSphere);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
@@ -704,11 +704,11 @@ TEST(GeomGridEvaluator_SphereTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_SphereTest, DerivativeD2)
+TEST(GeomGridEval_SphereTest, DerivativeD2)
 {
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomGridEvaluator_Sphere anEval(aSphere);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
@@ -734,10 +734,10 @@ TEST(GeomGridEvaluator_SphereTest, DerivativeD2)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD1)
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD1)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -760,10 +760,10 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD2)
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD2)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
-  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -789,13 +789,13 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD2)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, UnifiedDerivativeD1)
+TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 {
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aSphere);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -819,12 +819,12 @@ TEST(GeomGridEvaluator_SurfaceTest, UnifiedDerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_SurfaceTest, UnifiedDerivativeD2)
+TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
   GeomAdaptor_Surface anAdaptor(aSurf);
 
-  GeomGridEvaluator_Surface anEval;
+  GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);

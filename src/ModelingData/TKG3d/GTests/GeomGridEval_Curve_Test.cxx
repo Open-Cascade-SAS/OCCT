@@ -18,11 +18,11 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomGridEvaluator_BSplineCurve.hxx>
-#include <GeomGridEvaluator_Circle.hxx>
-#include <GeomGridEvaluator_Curve.hxx>
-#include <GeomGridEvaluator_Line.hxx>
-#include <GeomGridEvaluator_OtherCurve.hxx>
+#include <GeomGridEval_BSplineCurve.hxx>
+#include <GeomGridEval_Circle.hxx>
+#include <GeomGridEval_Curve.hxx>
+#include <GeomGridEval_Line.hxx>
+#include <GeomGridEval_OtherCurve.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
@@ -69,15 +69,15 @@ Handle(Geom_BSplineCurve) CreateSimpleBSpline()
 } // namespace
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Line
+// Tests for GeomGridEval_Line
 //==================================================================================================
 
-TEST(GeomGridEvaluator_LineTest, BasicEvaluation)
+TEST(GeomGridEval_LineTest, BasicEvaluation)
 {
   // Create a Geom_Line along X axis starting at origin
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
-  GeomGridEvaluator_Line anEval(aGeomLine);
+  GeomGridEval_Line anEval(aGeomLine);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 10.0, 11);
@@ -98,12 +98,12 @@ TEST(GeomGridEvaluator_LineTest, BasicEvaluation)
   }
 }
 
-TEST(GeomGridEvaluator_LineTest, NonOriginLine)
+TEST(GeomGridEval_LineTest, NonOriginLine)
 {
   // Create a line at (1, 2, 3) along direction (1, 1, 1)/sqrt(3)
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(1, 2, 3), gp_Dir(1, 1, 1));
 
-  GeomGridEvaluator_Line anEval(aGeomLine);
+  GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
   anEval.SetParams(aParams);
@@ -120,16 +120,16 @@ TEST(GeomGridEvaluator_LineTest, NonOriginLine)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Circle
+// Tests for GeomGridEval_Circle
 //==================================================================================================
 
-TEST(GeomGridEvaluator_CircleTest, BasicEvaluation)
+TEST(GeomGridEval_CircleTest, BasicEvaluation)
 {
   // Circle in XY plane, radius 2, center at origin
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  GeomGridEvaluator_Circle anEval(aGeomCircle);
+  GeomGridEval_Circle anEval(aGeomCircle);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   // Test at 0, PI/2, PI, 3PI/2, 2PI
@@ -164,12 +164,12 @@ TEST(GeomGridEvaluator_CircleTest, BasicEvaluation)
   EXPECT_NEAR(aGrid.Value(5).Y(), 0.0, THE_TOLERANCE);
 }
 
-TEST(GeomGridEvaluator_CircleTest, NonStandardCircle)
+TEST(GeomGridEval_CircleTest, NonStandardCircle)
 {
   // Circle in YZ plane, radius 3, center at (1, 0, 0)
   Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(1, 0, 0), gp_Dir(1, 0, 0)), 3.0);
 
-  GeomGridEvaluator_Circle anEval(aGeomCircle);
+  GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   anEval.SetParams(aParams);
@@ -186,14 +186,14 @@ TEST(GeomGridEvaluator_CircleTest, NonStandardCircle)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_BSplineCurve
+// Tests for GeomGridEval_BSplineCurve
 //==================================================================================================
 
-TEST(GeomGridEvaluator_BSplineCurveTest, BasicEvaluation)
+TEST(GeomGridEval_BSplineCurveTest, BasicEvaluation)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
 
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
@@ -210,11 +210,11 @@ TEST(GeomGridEvaluator_BSplineCurveTest, BasicEvaluation)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, EndpointsMatch)
+TEST(GeomGridEval_BSplineCurveTest, EndpointsMatch)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
 
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams(1, 2);
   aParams.SetValue(1, 0.0);
@@ -230,17 +230,17 @@ TEST(GeomGridEvaluator_BSplineCurveTest, EndpointsMatch)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_OtherCurve (fallback)
+// Tests for GeomGridEval_OtherCurve (fallback)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_OtherCurveTest, EllipseFallback)
+TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
 {
   // Ellipse is not directly supported, so it should use OtherCurve fallback
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomAdaptor_Curve anAdaptor(anEllipse);
 
-  GeomGridEvaluator_OtherCurve anEval(anAdaptor.ShallowCopy());
+  GeomGridEval_OtherCurve anEval(anAdaptor.ShallowCopy());
   EXPECT_FALSE(anEval.Curve().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -257,15 +257,15 @@ TEST(GeomGridEvaluator_OtherCurveTest, EllipseFallback)
 }
 
 //==================================================================================================
-// Tests for GeomGridEvaluator_Curve (unified dispatcher)
+// Tests for GeomGridEval_Curve (unified dispatcher)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_CurveTest, LineDispatch)
+TEST(GeomGridEval_CurveTest, LineDispatch)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
@@ -284,13 +284,13 @@ TEST(GeomGridEvaluator_CurveTest, LineDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, CircleDispatch)
+TEST(GeomGridEval_CurveTest, CircleDispatch)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Circle);
@@ -308,12 +308,12 @@ TEST(GeomGridEvaluator_CurveTest, CircleDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, BSplineDispatch)
+TEST(GeomGridEval_CurveTest, BSplineDispatch)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
   GeomAdaptor_Curve         anAdaptor(aCurve);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_BSplineCurve);
@@ -331,13 +331,13 @@ TEST(GeomGridEvaluator_CurveTest, BSplineDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, EllipseFallbackDispatch)
+TEST(GeomGridEval_CurveTest, EllipseFallbackDispatch)
 {
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomAdaptor_Curve anAdaptor(anEllipse);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Ellipse);
@@ -355,9 +355,9 @@ TEST(GeomGridEvaluator_CurveTest, EllipseFallbackDispatch)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, UninitializedState)
+TEST(GeomGridEval_CurveTest, UninitializedState)
 {
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   EXPECT_FALSE(anEval.IsInitialized());
   EXPECT_EQ(anEval.NbParams(), 0);
 
@@ -365,12 +365,12 @@ TEST(GeomGridEvaluator_CurveTest, UninitializedState)
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
-TEST(GeomGridEvaluator_CurveTest, EmptyParams)
+TEST(GeomGridEval_CurveTest, EmptyParams)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.NbParams(), 0);
@@ -384,7 +384,7 @@ TEST(GeomGridEvaluator_CurveTest, EmptyParams)
 // Additional tests for B-spline curves (from BSplCLib_GridEvaluator_Test)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_BSplineCurveTest, RationalBSpline)
+TEST(GeomGridEval_BSplineCurveTest, RationalBSpline)
 {
   // Create a rational B-spline (NURBS circle approximation)
   TColgp_Array1OfPnt  aPoles(1, 4);
@@ -409,7 +409,7 @@ TEST(GeomGridEvaluator_BSplineCurveTest, RationalBSpline)
 
   Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
 
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
   anEval.SetParams(aParams);
@@ -425,7 +425,7 @@ TEST(GeomGridEvaluator_BSplineCurveTest, RationalBSpline)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, MultiSpanBSpline)
+TEST(GeomGridEval_BSplineCurveTest, MultiSpanBSpline)
 {
   // Create a B-spline with multiple spans (degree 3, 6 control points, 1 internal knot)
   // Formula: n_poles = sum(multiplicities) - degree - 1 = (4 + 2 + 4) - 3 - 1 = 6
@@ -448,7 +448,7 @@ TEST(GeomGridEvaluator_BSplineCurveTest, MultiSpanBSpline)
 
   Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
 
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 31);
   anEval.SetParams(aParams);
@@ -463,7 +463,7 @@ TEST(GeomGridEvaluator_BSplineCurveTest, MultiSpanBSpline)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, HighDegree)
+TEST(GeomGridEval_BSplineCurveTest, HighDegree)
 {
   // Create a higher degree B-spline (degree 5)
   TColgp_Array1OfPnt aPoles(1, 6);
@@ -483,7 +483,7 @@ TEST(GeomGridEvaluator_BSplineCurveTest, HighDegree)
 
   Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 5);
 
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 51);
   anEval.SetParams(aParams);
@@ -502,11 +502,11 @@ TEST(GeomGridEvaluator_BSplineCurveTest, HighDegree)
 // Tests for Curve Derivative Evaluation (D1, D2, D3)
 //==================================================================================================
 
-TEST(GeomGridEvaluator_LineTest, DerivativeD1)
+TEST(GeomGridEval_LineTest, DerivativeD1)
 {
   // Line along (1, 2, 3) normalized direction
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 2, 3));
-  GeomGridEvaluator_Line anEval(aGeomLine);
+  GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
   anEval.SetParams(aParams);
@@ -525,10 +525,10 @@ TEST(GeomGridEvaluator_LineTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_LineTest, DerivativeD2D3)
+TEST(GeomGridEval_LineTest, DerivativeD2D3)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomGridEvaluator_Line anEval(aGeomLine);
+  GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
   anEval.SetParams(aParams);
@@ -545,11 +545,11 @@ TEST(GeomGridEvaluator_LineTest, DerivativeD2D3)
   }
 }
 
-TEST(GeomGridEvaluator_CircleTest, DerivativeD1)
+TEST(GeomGridEval_CircleTest, DerivativeD1)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomGridEvaluator_Circle anEval(aGeomCircle);
+  GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams(1, 5);
   aParams.SetValue(1, 0.0);
@@ -572,11 +572,11 @@ TEST(GeomGridEvaluator_CircleTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_CircleTest, DerivativeD2)
+TEST(GeomGridEval_CircleTest, DerivativeD2)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomGridEvaluator_Circle anEval(aGeomCircle);
+  GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   anEval.SetParams(aParams);
@@ -595,10 +595,10 @@ TEST(GeomGridEvaluator_CircleTest, DerivativeD2)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD1)
+TEST(GeomGridEval_BSplineCurveTest, DerivativeD1)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
   anEval.SetParams(aParams);
@@ -616,10 +616,10 @@ TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD2)
+TEST(GeomGridEval_BSplineCurveTest, DerivativeD2)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
   anEval.SetParams(aParams);
@@ -638,10 +638,10 @@ TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD2)
   }
 }
 
-TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD3)
+TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
-  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
   anEval.SetParams(aParams);
@@ -661,13 +661,13 @@ TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD3)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, UnifiedDerivativeD1)
+TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -686,12 +686,12 @@ TEST(GeomGridEvaluator_CurveTest, UnifiedDerivativeD1)
   }
 }
 
-TEST(GeomGridEvaluator_CurveTest, UnifiedDerivativeD2)
+TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
   GeomAdaptor_Curve anAdaptor(aCurve);
 
-  GeomGridEvaluator_Curve anEval;
+  GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);

@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomGridEvaluator_Curve.hxx>
+#include <GeomGridEval_Curve.hxx>
 
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 
 //==================================================================================================
 
-void GeomGridEvaluator_Curve::Initialize(const Adaptor3d_Curve& theCurve)
+void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 {
   myCurveType = theCurve.GetType();
 
@@ -28,25 +28,25 @@ void GeomGridEvaluator_Curve::Initialize(const Adaptor3d_Curve& theCurve)
     {
       // Create Handle(Geom_Line) from gp_Lin
       Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
-      myEvaluator                 = GeomGridEvaluator_Line(aGeomLine);
+      myEvaluator                 = GeomGridEval_Line(aGeomLine);
       break;
     }
     case GeomAbs_Circle:
     {
       // Create Handle(Geom_Circle) from gp_Circ
       Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
-      myEvaluator                     = GeomGridEvaluator_Circle(aGeomCircle);
+      myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
       break;
     }
     case GeomAbs_BSplineCurve:
     {
-      myEvaluator = GeomGridEvaluator_BSplineCurve(theCurve.BSpline());
+      myEvaluator = GeomGridEval_BSplineCurve(theCurve.BSpline());
       break;
     }
     default:
     {
       // Fallback: use OtherCurve with adaptor copy
-      myEvaluator = GeomGridEvaluator_OtherCurve(theCurve.ShallowCopy());
+      myEvaluator = GeomGridEval_OtherCurve(theCurve.ShallowCopy());
       break;
     }
   }
@@ -54,7 +54,7 @@ void GeomGridEvaluator_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 
 //==================================================================================================
 
-void GeomGridEvaluator_Curve::SetParams(const TColStd_Array1OfReal& theParams)
+void GeomGridEval_Curve::SetParams(const TColStd_Array1OfReal& theParams)
 {
   std::visit(
     [&theParams](auto& theEval)
@@ -70,14 +70,14 @@ void GeomGridEvaluator_Curve::SetParams(const TColStd_Array1OfReal& theParams)
 
 //==================================================================================================
 
-bool GeomGridEvaluator_Curve::IsInitialized() const
+bool GeomGridEval_Curve::IsInitialized() const
 {
   return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================
 
-int GeomGridEvaluator_Curve::NbParams() const
+int GeomGridEval_Curve::NbParams() const
 {
   return std::visit(
     [](const auto& theEval) -> int
@@ -97,7 +97,7 @@ int GeomGridEvaluator_Curve::NbParams() const
 
 //==================================================================================================
 
-NCollection_Array1<gp_Pnt> GeomGridEvaluator_Curve::EvaluateGrid() const
+NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array1<gp_Pnt>
@@ -117,7 +117,7 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_Curve::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Curve::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD1>
@@ -137,7 +137,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Curve::EvaluateGridD
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Curve::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD2>
@@ -157,7 +157,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Curve::EvaluateGridD
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_Curve::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3() const
 {
   return std::visit(
     [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD3>

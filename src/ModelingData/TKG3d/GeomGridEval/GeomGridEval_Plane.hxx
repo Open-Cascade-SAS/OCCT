@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _GeomGridEvaluator_Plane_HeaderFile
-#define _GeomGridEvaluator_Plane_HeaderFile
+#ifndef _GeomGridEval_Plane_HeaderFile
+#define _GeomGridEval_Plane_HeaderFile
 
 #include <Geom_Plane.hxx>
-#include <GeomGridEvaluator_Results.hxx>
+#include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -28,18 +28,18 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Plane anEvaluator(myGeomPlane);
+//!   GeomGridEval_Plane anEvaluator(myGeomPlane);
 //!   anEvaluator.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
-class GeomGridEvaluator_Plane
+class GeomGridEval_Plane
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with geometry.
   //! @param thePlane the plane geometry to evaluate
-  GeomGridEvaluator_Plane(const Handle(Geom_Plane)& thePlane)
+  GeomGridEval_Plane(const Handle(Geom_Plane)& thePlane)
       : myGeom(thePlane)
   {
   }
@@ -231,4 +231,4 @@ private:
   NCollection_Array1<double> myVParams;
 };
 
-#endif // _GeomGridEvaluator_Plane_HeaderFile
+#endif // _GeomGridEval_Plane_HeaderFile
