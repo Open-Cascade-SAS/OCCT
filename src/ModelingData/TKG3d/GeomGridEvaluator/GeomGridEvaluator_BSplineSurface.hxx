@@ -16,7 +16,7 @@
 
 #include <BSplSLib_Cache.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <gp_Pnt.hxx>
+#include <GeomGridEvaluator_Results.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -69,6 +69,16 @@ public:
   //! @return 2D array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
+
+  //! Evaluate all grid points with first partial derivatives.
+  //! @return 2D array of SurfD1 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1() const;
+
+  //! Evaluate all grid points with first and second partial derivatives.
+  //! @return 2D array of SurfD2 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
 private:
   //! Parameter value with pre-computed span index and local parameter.

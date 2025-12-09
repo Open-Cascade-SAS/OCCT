@@ -42,3 +42,69 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_OtherCurve::EvaluateGrid() const
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_OtherCurve::EvaluateGridD1() const
+{
+  if (myCurve.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD1>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD1> aResult(myParams.Lower(), myParams.Upper());
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    gp_Pnt aPoint;
+    gp_Vec aD1;
+    myCurve->D1(myParams.Value(i), aPoint, aD1);
+    aResult.ChangeValue(i) = {aPoint, aD1};
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_OtherCurve::EvaluateGridD2() const
+{
+  if (myCurve.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD2>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD2> aResult(myParams.Lower(), myParams.Upper());
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    gp_Pnt aPoint;
+    gp_Vec aD1, aD2;
+    myCurve->D2(myParams.Value(i), aPoint, aD1, aD2);
+    aResult.ChangeValue(i) = {aPoint, aD1, aD2};
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_OtherCurve::EvaluateGridD3() const
+{
+  if (myCurve.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD3>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD3> aResult(myParams.Lower(), myParams.Upper());
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    gp_Pnt aPoint;
+    gp_Vec aD1, aD2, aD3;
+    myCurve->D3(myParams.Value(i), aPoint, aD1, aD2, aD3);
+    aResult.ChangeValue(i) = {aPoint, aD1, aD2, aD3};
+  }
+
+  return aResult;
+}

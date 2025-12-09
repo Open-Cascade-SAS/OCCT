@@ -622,3 +622,231 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, HigherDegree)
     }
   }
 }
+
+//==================================================================================================
+// Tests for Surface Derivative Evaluation (D1, D2)
+//==================================================================================================
+
+TEST(GeomGridEvaluator_PlaneTest, DerivativeD1)
+{
+  // XY plane at origin
+  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomGridEvaluator_Plane anEval(aPlane);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+
+  // For a plane, D1U and D1V are constant (the X and Y directions of the plane)
+  gp_Pnt aPnt;
+  gp_Vec aD1URef, aD1VRef;
+  aPlane->D1(0.0, 0.0, aPnt, aD1URef, aD1VRef);
+
+  for (int iU = 1; iU <= 6; ++iU)
+  {
+    for (int iV = 1; iV <= 4; ++iV)
+    {
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1URef).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1VRef).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_PlaneTest, DerivativeD2)
+{
+  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomGridEvaluator_Plane anEval(aPlane);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  // For a plane, all second derivatives are zero
+  for (int iU = 1; iU <= 6; ++iU)
+  {
+    for (int iV = 1; iV <= 4; ++iV)
+    {
+      EXPECT_NEAR(aGrid.Value(iU, iV).D2U.Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR(aGrid.Value(iU, iV).D2V.Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR(aGrid.Value(iU, iV).D2UV.Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_SphereTest, DerivativeD1)
+{
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomGridEvaluator_Sphere anEval(aSphere);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify D1 against direct evaluation
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V;
+      aSphere->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_SphereTest, DerivativeD2)
+{
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomGridEvaluator_Sphere anEval(aSphere);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify D2 against direct evaluation
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      aSphere->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD1)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V;
+      aSurf->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineSurfaceTest, DerivativeD2)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      aSurf->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_SurfaceTest, UnifiedDerivativeD1)
+{
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomAdaptor_Surface anAdaptor(aSphere);
+
+  GeomGridEvaluator_Surface anEval;
+  anEval.Initialize(anAdaptor);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V;
+      aSphere->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_SurfaceTest, UnifiedDerivativeD2)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomAdaptor_Surface anAdaptor(aSurf);
+
+  GeomGridEvaluator_Surface anEval;
+  anEval.Initialize(anAdaptor);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      aSurf->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}

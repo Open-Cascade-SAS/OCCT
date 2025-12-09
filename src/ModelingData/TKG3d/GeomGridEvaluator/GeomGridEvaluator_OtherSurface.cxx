@@ -60,3 +60,63 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_OtherSurface::EvaluateGrid() const
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_OtherSurface::EvaluateGridD1() const
+{
+  if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD1>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u = myUParams.Value(iU);
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = myVParams.Value(iV);
+      gp_Pnt       aPoint;
+      gp_Vec       aD1U, aD1V;
+      mySurface->D1(u, v, aPoint, aD1U, aD1V);
+      aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V};
+    }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_OtherSurface::EvaluateGridD2() const
+{
+  if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD2>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u = myUParams.Value(iU);
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = myVParams.Value(iV);
+      gp_Pnt       aPoint;
+      gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV;
+      mySurface->D2(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
+    }
+  }
+
+  return aResult;
+}

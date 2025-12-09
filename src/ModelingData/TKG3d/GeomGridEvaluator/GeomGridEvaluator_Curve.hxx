@@ -84,6 +84,18 @@ public:
   //! @return array of 3D points (1-based indexing)
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
 
+  //! Evaluate grid points with first derivative.
+  //! @return array of CurveD1 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1() const;
+
+  //! Evaluate grid points with first and second derivatives.
+  //! @return array of CurveD2 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2() const;
+
+  //! Evaluate grid points with first, second, and third derivatives.
+  //! @return array of CurveD3 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
+
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 

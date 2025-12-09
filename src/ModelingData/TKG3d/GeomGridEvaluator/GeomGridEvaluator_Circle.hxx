@@ -15,7 +15,7 @@
 #define _GeomGridEvaluator_Circle_HeaderFile
 
 #include <Geom_Circle.hxx>
-#include <gp_Pnt.hxx>
+#include <GeomGridEvaluator_Results.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -61,6 +61,24 @@ public:
   //! @return array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
+
+  //! Evaluate all grid points with first derivative.
+  //! D1 = R * (-sin(u) * XDir + cos(u) * YDir)
+  //! @return array of CurveD1 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1() const;
+
+  //! Evaluate all grid points with first and second derivatives.
+  //! D2 = R * (-cos(u) * XDir - sin(u) * YDir) = -P (relative to center)
+  //! @return array of CurveD2 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2() const;
+
+  //! Evaluate all grid points with first, second, and third derivatives.
+  //! D3 = R * (sin(u) * XDir - cos(u) * YDir) = -D1
+  //! @return array of CurveD3 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
 private:
   Handle(Geom_Circle)        myGeom;

@@ -15,7 +15,7 @@
 #define _GeomGridEvaluator_Line_HeaderFile
 
 #include <Geom_Line.hxx>
-#include <gp_Pnt.hxx>
+#include <GeomGridEvaluator_Results.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -92,6 +92,116 @@ public:
     {
       const double t = myParams.Value(i);
       aResult.SetValue(i, gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ));
+    }
+    return aResult;
+  }
+
+  //! Evaluate all grid points with first derivative.
+  //! For a line, D1 is constant (the direction vector).
+  //! @return array of CurveD1 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1() const
+  {
+    if (myGeom.IsNull() || myParams.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::CurveD1>();
+    }
+
+    NCollection_Array1<GeomGridEval::CurveD1> aResult(myParams.Lower(), myParams.Upper());
+
+    const gp_Lin& aLin = myGeom->Lin();
+    const gp_Pnt& aLoc = aLin.Location();
+    const gp_Dir& aDir = aLin.Direction();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aDirX = aDir.X();
+    const double aDirY = aDir.Y();
+    const double aDirZ = aDir.Z();
+
+    // D1 is constant for a line
+    const gp_Vec aD1(aDirX, aDirY, aDirZ);
+
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      const double t = myParams.Value(i);
+      aResult.ChangeValue(i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ), aD1};
+    }
+    return aResult;
+  }
+
+  //! Evaluate all grid points with first and second derivatives.
+  //! For a line, D1 is constant and D2 is zero.
+  //! @return array of CurveD2 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2() const
+  {
+    if (myGeom.IsNull() || myParams.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::CurveD2>();
+    }
+
+    NCollection_Array1<GeomGridEval::CurveD2> aResult(myParams.Lower(), myParams.Upper());
+
+    const gp_Lin& aLin = myGeom->Lin();
+    const gp_Pnt& aLoc = aLin.Location();
+    const gp_Dir& aDir = aLin.Direction();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aDirX = aDir.X();
+    const double aDirY = aDir.Y();
+    const double aDirZ = aDir.Z();
+
+    const gp_Vec aD1(aDirX, aDirY, aDirZ);
+    const gp_Vec aD2(0, 0, 0); // Second derivative is zero for a line
+
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      const double t = myParams.Value(i);
+      aResult.ChangeValue(i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+                                aD1,
+                                aD2};
+    }
+    return aResult;
+  }
+
+  //! Evaluate all grid points with first, second, and third derivatives.
+  //! For a line, D1 is constant, D2 and D3 are zero.
+  //! @return array of CurveD3 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const
+  {
+    if (myGeom.IsNull() || myParams.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::CurveD3>();
+    }
+
+    NCollection_Array1<GeomGridEval::CurveD3> aResult(myParams.Lower(), myParams.Upper());
+
+    const gp_Lin& aLin = myGeom->Lin();
+    const gp_Pnt& aLoc = aLin.Location();
+    const gp_Dir& aDir = aLin.Direction();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aDirX = aDir.X();
+    const double aDirY = aDir.Y();
+    const double aDirZ = aDir.Z();
+
+    const gp_Vec aD1(aDirX, aDirY, aDirZ);
+    const gp_Vec aZero(0, 0, 0);
+
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      const double t = myParams.Value(i);
+      aResult.ChangeValue(i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+                                aD1,
+                                aZero,
+                                aZero};
     }
     return aResult;
   }

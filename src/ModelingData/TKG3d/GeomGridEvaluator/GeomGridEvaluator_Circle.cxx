@@ -68,3 +68,153 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_Circle::EvaluateGrid() const
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Circle::EvaluateGridD1() const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD1>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD1> aResult(myParams.Lower(), myParams.Upper());
+
+  const gp_Circ& aCirc   = myGeom->Circ();
+  const gp_Pnt&  aCenter = aCirc.Location();
+  const gp_Dir&  aXDir   = aCirc.Position().XDirection();
+  const gp_Dir&  aYDir   = aCirc.Position().YDirection();
+  const double   aRadius = aCirc.Radius();
+
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    const double u    = myParams.Value(i);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // P = C + R * (cos(u) * X + sin(u) * Y)
+    // D1 = R * (-sin(u) * X + cos(u) * Y)
+    aResult.ChangeValue(i) = {
+      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+             aCY + aRadius * (cosU * aXY + sinU * aYY),
+             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+             aRadius * (-sinU * aXY + cosU * aYY),
+             aRadius * (-sinU * aXZ + cosU * aYZ))};
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Circle::EvaluateGridD2() const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD2>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD2> aResult(myParams.Lower(), myParams.Upper());
+
+  const gp_Circ& aCirc   = myGeom->Circ();
+  const gp_Pnt&  aCenter = aCirc.Location();
+  const gp_Dir&  aXDir   = aCirc.Position().XDirection();
+  const gp_Dir&  aYDir   = aCirc.Position().YDirection();
+  const double   aRadius = aCirc.Radius();
+
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    const double u    = myParams.Value(i);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // P = C + R * (cos(u) * X + sin(u) * Y)
+    // D1 = R * (-sin(u) * X + cos(u) * Y)
+    // D2 = R * (-cos(u) * X - sin(u) * Y)
+    aResult.ChangeValue(i) = {
+      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+             aCY + aRadius * (cosU * aXY + sinU * aYY),
+             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+             aRadius * (-sinU * aXY + cosU * aYY),
+             aRadius * (-sinU * aXZ + cosU * aYZ)),
+      gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
+             aRadius * (-cosU * aXY - sinU * aYY),
+             aRadius * (-cosU * aXZ - sinU * aYZ))};
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_Circle::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD3>();
+  }
+
+  NCollection_Array1<GeomGridEval::CurveD3> aResult(myParams.Lower(), myParams.Upper());
+
+  const gp_Circ& aCirc   = myGeom->Circ();
+  const gp_Pnt&  aCenter = aCirc.Location();
+  const gp_Dir&  aXDir   = aCirc.Position().XDirection();
+  const gp_Dir&  aYDir   = aCirc.Position().YDirection();
+  const double   aRadius = aCirc.Radius();
+
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    const double u    = myParams.Value(i);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // P = C + R * (cos(u) * X + sin(u) * Y)
+    // D1 = R * (-sin(u) * X + cos(u) * Y)
+    // D2 = R * (-cos(u) * X - sin(u) * Y)
+    // D3 = R * (sin(u) * X - cos(u) * Y)
+    aResult.ChangeValue(i) = {
+      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+             aCY + aRadius * (cosU * aXY + sinU * aYY),
+             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+             aRadius * (-sinU * aXY + cosU * aYY),
+             aRadius * (-sinU * aXZ + cosU * aYZ)),
+      gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
+             aRadius * (-cosU * aXY - sinU * aYY),
+             aRadius * (-cosU * aXZ - sinU * aYZ)),
+      gp_Vec(aRadius * (sinU * aXX - cosU * aYX),
+             aRadius * (sinU * aXY - cosU * aYY),
+             aRadius * (sinU * aXZ - cosU * aYZ))};
+  }
+  return aResult;
+}

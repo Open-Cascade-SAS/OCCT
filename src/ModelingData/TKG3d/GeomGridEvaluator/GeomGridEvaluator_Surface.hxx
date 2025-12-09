@@ -89,6 +89,14 @@ public:
   //! @return 2D array of 3D points (1-based indexing)
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
 
+  //! Evaluate grid points with first partial derivatives.
+  //! @return 2D array of SurfD1 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1() const;
+
+  //! Evaluate grid points with first and second partial derivatives.
+  //! @return 2D array of SurfD2 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
+
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 

@@ -497,3 +497,216 @@ TEST(GeomGridEvaluator_BSplineCurveTest, HighDegree)
     EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }
+
+//==================================================================================================
+// Tests for Curve Derivative Evaluation (D1, D2, D3)
+//==================================================================================================
+
+TEST(GeomGridEvaluator_LineTest, DerivativeD1)
+{
+  // Line along (1, 2, 3) normalized direction
+  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 2, 3));
+  GeomGridEvaluator_Line anEval(aGeomLine);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  EXPECT_EQ(aGrid.Size(), 6);
+
+  // For a line, D1 is constant (the direction vector)
+  gp_Dir aDir(1, 2, 3);
+  for (int i = 1; i <= 6; ++i)
+  {
+    // Verify D1 is the direction
+    EXPECT_NEAR(aGrid.Value(i).D1.X(), aDir.X(), THE_TOLERANCE);
+    EXPECT_NEAR(aGrid.Value(i).D1.Y(), aDir.Y(), THE_TOLERANCE);
+    EXPECT_NEAR(aGrid.Value(i).D1.Z(), aDir.Z(), THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_LineTest, DerivativeD2D3)
+{
+  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  GeomGridEvaluator_Line anEval(aGeomLine);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD2> aGridD2 = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD3> aGridD3 = anEval.EvaluateGridD3();
+
+  // For a line, D2 and D3 are zero
+  for (int i = 1; i <= 6; ++i)
+  {
+    EXPECT_NEAR(aGridD2.Value(i).D2.Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR(aGridD3.Value(i).D2.Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR(aGridD3.Value(i).D3.Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_CircleTest, DerivativeD1)
+{
+  Handle(Geom_Circle) aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomGridEvaluator_Circle anEval(aGeomCircle);
+
+  TColStd_Array1OfReal aParams(1, 5);
+  aParams.SetValue(1, 0.0);
+  aParams.SetValue(2, M_PI / 2);
+  aParams.SetValue(3, M_PI);
+  aParams.SetValue(4, 3 * M_PI / 2);
+  aParams.SetValue(5, 2 * M_PI);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify D1 against direct evaluation
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1;
+    aGeomCircle->D1(aParams.Value(i), aPnt, aD1);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_CircleTest, DerivativeD2)
+{
+  Handle(Geom_Circle) aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomGridEvaluator_Circle anEval(aGeomCircle);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify D2 against direct evaluation
+  for (int i = 1; i <= 9; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2;
+    aGeomCircle->D2(aParams.Value(i), aPnt, aD1, aD2);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD1)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1;
+    aCurve->D1(aParams.Value(i), aPnt, aD1);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD2)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2;
+    aCurve->D2(aParams.Value(i), aPnt, aD1, aD2);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineCurveTest, DerivativeD3)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2, aD3;
+    aCurve->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_CurveTest, UnifiedDerivativeD1)
+{
+  Handle(Geom_Circle) aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomAdaptor_Curve anAdaptor(aGeomCircle);
+
+  GeomGridEvaluator_Curve anEval;
+  anEval.Initialize(anAdaptor);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 9; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1;
+    aGeomCircle->D1(aParams.Value(i), aPnt, aD1);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_CurveTest, UnifiedDerivativeD2)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomAdaptor_Curve anAdaptor(aCurve);
+
+  GeomGridEvaluator_Curve anEval;
+  anEval.Initialize(anAdaptor);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2;
+    aCurve->D2(aParams.Value(i), aPnt, aD1, aD2);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}

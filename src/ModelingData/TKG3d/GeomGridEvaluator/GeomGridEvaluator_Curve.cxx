@@ -114,3 +114,63 @@ NCollection_Array1<gp_Pnt> GeomGridEvaluator_Curve::EvaluateGrid() const
     },
     myEvaluator);
 }
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEvaluator_Curve::EvaluateGridD1() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD1>
+    {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array1<GeomGridEval::CurveD1>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD1();
+      }
+    },
+    myEvaluator);
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEvaluator_Curve::EvaluateGridD2() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD2>
+    {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array1<GeomGridEval::CurveD2>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD2();
+      }
+    },
+    myEvaluator);
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEvaluator_Curve::EvaluateGridD3() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD3>
+    {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array1<GeomGridEval::CurveD3>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD3();
+      }
+    },
+    myEvaluator);
+}

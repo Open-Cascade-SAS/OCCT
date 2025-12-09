@@ -135,3 +135,43 @@ NCollection_Array2<gp_Pnt> GeomGridEvaluator_Surface::EvaluateGrid() const
     },
     myEvaluator);
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEvaluator_Surface::EvaluateGridD1() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD1>
+    {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array2<GeomGridEval::SurfD1>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD1();
+      }
+    },
+    myEvaluator);
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEvaluator_Surface::EvaluateGridD2() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD2>
+    {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array2<GeomGridEval::SurfD2>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD2();
+      }
+    },
+    myEvaluator);
+}

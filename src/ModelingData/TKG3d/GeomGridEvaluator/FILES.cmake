@@ -2,6 +2,8 @@
 set(OCCT_GeomGridEvaluator_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_GeomGridEvaluator_FILES
+  # Common result structures
+  GeomGridEvaluator_Results.hxx
   # Curve evaluators
   GeomGridEvaluator_Line.hxx
   GeomGridEvaluator_Circle.hxx
