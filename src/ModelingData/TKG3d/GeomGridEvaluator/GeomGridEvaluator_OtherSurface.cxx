@@ -15,23 +15,22 @@
 
 //==================================================================================================
 
-void GeomGridEvaluator_OtherSurface::SetUParams(const TColStd_Array1OfReal& theParams)
+void GeomGridEvaluator_OtherSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                                 const TColStd_Array1OfReal& theVParams)
 {
-  myUParams.Resize(theParams.Lower(), theParams.Upper(), false);
-  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  myUParams.Resize(1, aNbU, false);
+  for (int i = 1; i <= aNbU; ++i)
   {
-    myUParams.SetValue(i, theParams.Value(i));
+    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
   }
-}
 
-//==================================================================================================
-
-void GeomGridEvaluator_OtherSurface::SetVParams(const TColStd_Array1OfReal& theParams)
-{
-  myVParams.Resize(theParams.Lower(), theParams.Upper(), false);
-  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+  myVParams.Resize(1, aNbV, false);
+  for (int j = 1; j <= aNbV; ++j)
   {
-    myVParams.SetValue(i, theParams.Value(i));
+    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
 }
 
@@ -39,22 +38,20 @@ void GeomGridEvaluator_OtherSurface::SetVParams(const TColStd_Array1OfReal& theP
 
 NCollection_Array2<gp_Pnt> GeomGridEvaluator_OtherSurface::EvaluateGrid() const
 {
-  if (!myIsInitialized || myUParams.IsEmpty() || myVParams.IsEmpty() || mySurface.IsNull())
+  if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aRowLower = myUParams.Lower();
-  const int aRowUpper = myUParams.Upper();
-  const int aColLower = myVParams.Lower();
-  const int aColUpper = myVParams.Upper();
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
 
-  NCollection_Array2<gp_Pnt> aResult(aRowLower, aRowUpper, aColLower, aColUpper);
+  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
-  for (int iU = aRowLower; iU <= aRowUpper; ++iU)
+  for (int iU = 1; iU <= aNbU; ++iU)
   {
     const double u = myUParams.Value(iU);
-    for (int iV = aColLower; iV <= aColUpper; ++iV)
+    for (int iV = 1; iV <= aNbV; ++iV)
     {
       const double v = myVParams.Value(iV);
       aResult.SetValue(iU, iV, mySurface->Value(u, v));

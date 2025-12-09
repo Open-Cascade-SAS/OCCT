@@ -28,7 +28,7 @@ void GeomGridEvaluator_OtherCurve::SetParams(const TColStd_Array1OfReal& thePara
 
 NCollection_Array1<gp_Pnt> GeomGridEvaluator_OtherCurve::EvaluateGrid() const
 {
-  if (!myIsInitialized || myParams.IsEmpty() || myCurve.IsNull())
+  if (myCurve.IsNull() || myParams.IsEmpty())
   {
     return NCollection_Array1<gp_Pnt>();
   }

@@ -29,8 +29,7 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_OtherCurve anEvaluator;
-//!   anEvaluator.Initialize(myCurveAdaptor);
+//!   GeomGridEvaluator_OtherCurve anEvaluator(myCurveAdaptor);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
@@ -39,39 +38,35 @@ class GeomGridEvaluator_OtherCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_OtherCurve()
-      : myIsInitialized(false)
+  //! Constructor with curve adaptor.
+  //! @param theCurve handle to curve adaptor
+  GeomGridEvaluator_OtherCurve(const Handle(Adaptor3d_Curve)& theCurve)
+      : myCurve(theCurve)
   {
   }
 
-  //! Initialize with curve adaptor.
-  //! @param theCurve handle to curve adaptor (takes ownership via ShallowCopy)
-  void Initialize(const Handle(Adaptor3d_Curve)& theCurve)
-  {
-    myCurve         = theCurve;
-    myIsInitialized = !theCurve.IsNull();
-  }
-
-  //! Set parameters for grid evaluation.
-  //! @param theParams array of parameter values (1-based)
+  //! Set parameters for grid evaluation (by const reference).
+  //! @param theParams array of parameter values
   void SetParams(const TColStd_Array1OfReal& theParams);
 
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Set parameters for grid evaluation (by move).
+  //! @param theParams array of parameter values to move
+  void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
+
+  //! Returns the curve adaptor handle.
+  const Handle(Adaptor3d_Curve)& Curve() const { return myCurve; }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Size(); }
 
   //! Evaluate all grid points.
   //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if curve is null or no parameters set
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
 
 private:
   Handle(Adaptor3d_Curve)    myCurve;
   NCollection_Array1<double> myParams;
-  bool                       myIsInitialized;
 };
 
 #endif // _GeomGridEvaluator_OtherCurve_HeaderFile

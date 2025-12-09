@@ -30,10 +30,8 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_OtherSurface anEvaluator;
-//!   anEvaluator.Initialize(mySurfaceAdaptor);
-//!   anEvaluator.SetUParams(myUParams);
-//!   anEvaluator.SetVParams(myVParams);
+//!   GeomGridEvaluator_OtherSurface anEvaluator(mySurfaceAdaptor);
+//!   anEvaluator.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
 class GeomGridEvaluator_OtherSurface
@@ -41,30 +39,21 @@ class GeomGridEvaluator_OtherSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_OtherSurface()
-      : myIsInitialized(false)
+  //! Constructor with surface adaptor.
+  //! @param theSurface handle to surface adaptor
+  GeomGridEvaluator_OtherSurface(const Handle(Adaptor3d_Surface)& theSurface)
+      : mySurface(theSurface)
   {
   }
 
-  //! Initialize with surface adaptor.
-  //! @param theSurface handle to surface adaptor (takes ownership via ShallowCopy)
-  void Initialize(const Handle(Adaptor3d_Surface)& theSurface)
-  {
-    mySurface       = theSurface;
-    myIsInitialized = !theSurface.IsNull();
-  }
+  //! Set UV parameters from two 1D arrays.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                   const TColStd_Array1OfReal& theVParams);
 
-  //! Set U parameters for grid evaluation.
-  //! @param theParams array of U parameter values (1-based)
-  void SetUParams(const TColStd_Array1OfReal& theParams);
-
-  //! Set V parameters for grid evaluation.
-  //! @param theParams array of V parameter values (1-based)
-  void SetVParams(const TColStd_Array1OfReal& theParams);
-
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Returns the surface adaptor handle.
+  const Handle(Adaptor3d_Surface)& Surface() const { return mySurface; }
 
   //! Returns number of U parameters.
   int NbUParams() const { return myUParams.Size(); }
@@ -74,14 +63,13 @@ public:
 
   //! Evaluate all grid points.
   //! @return 2D array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if surface is null or no parameters set
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
 
 private:
-  Handle(Adaptor3d_Surface)    mySurface;
-  NCollection_Array1<double> myUParams;
-  NCollection_Array1<double> myVParams;
-  bool                         myIsInitialized;
+  Handle(Adaptor3d_Surface)   mySurface;
+  NCollection_Array1<double>  myUParams;
+  NCollection_Array1<double>  myVParams;
 };
 
 #endif // _GeomGridEvaluator_OtherSurface_HeaderFile

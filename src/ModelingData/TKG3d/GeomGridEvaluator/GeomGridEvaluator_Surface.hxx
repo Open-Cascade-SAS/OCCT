@@ -44,8 +44,7 @@
 //! @code
 //!   GeomGridEvaluator_Surface anEval;
 //!   anEval.Initialize(myAdaptorSurface);
-//!   anEval.SetUParams(myUParams);
-//!   anEval.SetVParams(myVParams);
+//!   anEval.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 //! @endcode
 class GeomGridEvaluator_Surface
@@ -54,9 +53,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible surface evaluators.
-  using EvaluatorVariant = std::variant<std::monostate,                // Uninitialized state
-                                        GeomGridEvaluator_Plane,       // Plane surface
-                                        GeomGridEvaluator_Sphere,      // Spherical surface
+  using EvaluatorVariant = std::variant<std::monostate,                   // Uninitialized state
+                                        GeomGridEvaluator_Plane,          // Plane surface
+                                        GeomGridEvaluator_Sphere,         // Spherical surface
                                         GeomGridEvaluator_BSplineSurface, // B-spline surface
                                         GeomGridEvaluator_OtherSurface>;  // Fallback for other types
 
@@ -71,13 +70,11 @@ public:
   //! @param theSurface surface adaptor to evaluate
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
 
-  //! Set U parameters for evaluation.
-  //! @param theParams array of U parameter values (1-based)
-  Standard_EXPORT void SetUParams(const TColStd_Array1OfReal& theParams);
-
-  //! Set V parameters for evaluation.
-  //! @param theParams array of V parameter values (1-based)
-  Standard_EXPORT void SetVParams(const TColStd_Array1OfReal& theParams);
+  //! Set UV parameters from two 1D arrays.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                   const TColStd_Array1OfReal& theVParams);
 
   //! Returns true if properly initialized.
   Standard_EXPORT bool IsInitialized() const;

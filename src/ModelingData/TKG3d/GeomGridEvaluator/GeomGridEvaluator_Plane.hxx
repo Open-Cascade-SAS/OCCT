@@ -14,8 +14,7 @@
 #ifndef _GeomGridEvaluator_Plane_HeaderFile
 #define _GeomGridEvaluator_Plane_HeaderFile
 
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
+#include <Geom_Plane.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -29,10 +28,8 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Plane anEvaluator;
-//!   anEvaluator.Initialize(myPlane);
-//!   anEvaluator.SetUParams(myUParams);
-//!   anEvaluator.SetVParams(myVParams);
+//!   GeomGridEvaluator_Plane anEvaluator(myGeomPlane);
+//!   anEvaluator.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
 class GeomGridEvaluator_Plane
@@ -40,46 +37,36 @@ class GeomGridEvaluator_Plane
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_Plane()
-      : myIsInitialized(false)
+  //! Constructor with geometry.
+  //! @param thePlane the plane geometry to evaluate
+  GeomGridEvaluator_Plane(const Handle(Geom_Plane)& thePlane)
+      : myGeom(thePlane)
   {
   }
 
-  //! Initialize with plane geometry.
-  //! @param thePlane the plane to evaluate
-  void Initialize(const gp_Pln& thePlane)
+  //! Set UV parameters from two 1D arrays.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  void SetUVParams(const TColStd_Array1OfReal& theUParams, const TColStd_Array1OfReal& theVParams)
   {
-    myLocation      = thePlane.Location();
-    myXDir          = thePlane.Position().XDirection();
-    myYDir          = thePlane.Position().YDirection();
-    myIsInitialized = true;
-  }
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
 
-  //! Set U parameters for grid evaluation.
-  //! @param theParams array of U parameter values (1-based)
-  void SetUParams(const TColStd_Array1OfReal& theParams)
-  {
-    myUParams.Resize(theParams.Lower(), theParams.Upper(), false);
-    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+    myUParams.Resize(1, aNbU, false);
+    for (int i = 1; i <= aNbU; ++i)
     {
-      myUParams.SetValue(i, theParams.Value(i));
+      myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
+    }
+
+    myVParams.Resize(1, aNbV, false);
+    for (int j = 1; j <= aNbV; ++j)
+    {
+      myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
     }
   }
 
-  //! Set V parameters for grid evaluation.
-  //! @param theParams array of V parameter values (1-based)
-  void SetVParams(const TColStd_Array1OfReal& theParams)
-  {
-    myVParams.Resize(theParams.Lower(), theParams.Upper(), false);
-    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
-    {
-      myVParams.SetValue(i, theParams.Value(i));
-    }
-  }
-
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Returns the geometry handle.
+  const Handle(Geom_Plane)& Geometry() const { return myGeom; }
 
   //! Returns number of U parameters.
   int NbUParams() const { return myUParams.Size(); }
@@ -89,40 +76,44 @@ public:
 
   //! Evaluate all grid points.
   //! @return 2D array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   NCollection_Array2<gp_Pnt> EvaluateGrid() const
   {
-    if (!myIsInitialized || myUParams.IsEmpty() || myVParams.IsEmpty())
+    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
     {
       return NCollection_Array2<gp_Pnt>();
     }
 
-    const int aRowLower = myUParams.Lower();
-    const int aRowUpper = myUParams.Upper();
-    const int aColLower = myVParams.Lower();
-    const int aColUpper = myVParams.Upper();
+    const int aNbU = myUParams.Size();
+    const int aNbV = myVParams.Size();
 
-    NCollection_Array2<gp_Pnt> aResult(aRowLower, aRowUpper, aColLower, aColUpper);
+    NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+
+    // Extract plane data from geometry
+    const gp_Pln& aPln  = myGeom->Pln();
+    const gp_Pnt& aLoc  = aPln.Location();
+    const gp_Dir& aXDir = aPln.Position().XDirection();
+    const gp_Dir& aYDir = aPln.Position().YDirection();
 
     // Pre-extract coordinates for performance
-    const double aLocX = myLocation.X();
-    const double aLocY = myLocation.Y();
-    const double aLocZ = myLocation.Z();
-    const double aXX   = myXDir.X();
-    const double aXY   = myXDir.Y();
-    const double aXZ   = myXDir.Z();
-    const double aYX   = myYDir.X();
-    const double aYY   = myYDir.Y();
-    const double aYZ   = myYDir.Z();
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aXX   = aXDir.X();
+    const double aXY   = aXDir.Y();
+    const double aXZ   = aXDir.Z();
+    const double aYX   = aYDir.X();
+    const double aYY   = aYDir.Y();
+    const double aYZ   = aYDir.Z();
 
-    for (int iU = aRowLower; iU <= aRowUpper; ++iU)
+    for (int iU = 1; iU <= aNbU; ++iU)
     {
       const double u  = myUParams.Value(iU);
       const double uX = aLocX + u * aXX;
       const double uY = aLocY + u * aXY;
       const double uZ = aLocZ + u * aXZ;
 
-      for (int iV = aColLower; iV <= aColUpper; ++iV)
+      for (int iV = 1; iV <= aNbV; ++iV)
       {
         const double v = myVParams.Value(iV);
         aResult.SetValue(iU, iV, gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ));
@@ -132,12 +123,9 @@ public:
   }
 
 private:
-  gp_Pnt                     myLocation;
-  gp_Dir                     myXDir;
-  gp_Dir                     myYDir;
+  Handle(Geom_Plane)        myGeom;
   NCollection_Array1<double> myUParams;
   NCollection_Array1<double> myVParams;
-  bool                       myIsInitialized;
 };
 
 #endif // _GeomGridEvaluator_Plane_HeaderFile

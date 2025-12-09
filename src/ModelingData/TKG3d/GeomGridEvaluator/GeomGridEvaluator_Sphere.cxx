@@ -13,47 +13,28 @@
 
 #include <GeomGridEvaluator_Sphere.hxx>
 
+#include <gp_Sphere.hxx>
+
 #include <cmath>
 
 //==================================================================================================
 
-GeomGridEvaluator_Sphere::GeomGridEvaluator_Sphere()
-    : myRadius(0.0),
-      myIsInitialized(false)
+void GeomGridEvaluator_Sphere::SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                           const TColStd_Array1OfReal& theVParams)
 {
-}
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
-//==================================================================================================
-
-void GeomGridEvaluator_Sphere::Initialize(const gp_Sphere& theSphere)
-{
-  myCenter        = theSphere.Location();
-  myXDir          = theSphere.Position().XDirection();
-  myYDir          = theSphere.Position().YDirection();
-  myZDir          = theSphere.Position().Direction();
-  myRadius        = theSphere.Radius();
-  myIsInitialized = true;
-}
-
-//==================================================================================================
-
-void GeomGridEvaluator_Sphere::SetUParams(const TColStd_Array1OfReal& theParams)
-{
-  myUParams.Resize(theParams.Lower(), theParams.Upper(), false);
-  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+  myUParams.Resize(1, aNbU, false);
+  for (int i = 1; i <= aNbU; ++i)
   {
-    myUParams.SetValue(i, theParams.Value(i));
+    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
   }
-}
 
-//==================================================================================================
-
-void GeomGridEvaluator_Sphere::SetVParams(const TColStd_Array1OfReal& theParams)
-{
-  myVParams.Resize(theParams.Lower(), theParams.Upper(), false);
-  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+  myVParams.Resize(1, aNbV, false);
+  for (int j = 1; j <= aNbV; ++j)
   {
-    myVParams.SetValue(i, theParams.Value(i));
+    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
 }
 
@@ -61,58 +42,63 @@ void GeomGridEvaluator_Sphere::SetVParams(const TColStd_Array1OfReal& theParams)
 
 NCollection_Array2<gp_Pnt> GeomGridEvaluator_Sphere::EvaluateGrid() const
 {
-  if (!myIsInitialized || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aRowLower = myUParams.Lower();
-  const int aRowUpper = myUParams.Upper();
-  const int aColLower = myVParams.Lower();
-  const int aColUpper = myVParams.Upper();
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
 
-  NCollection_Array2<gp_Pnt> aResult(aRowLower, aRowUpper, aColLower, aColUpper);
+  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+
+  // Extract sphere data from geometry
+  const gp_Sphere& aSph    = myGeom->Sphere();
+  const gp_Pnt&    aCenter = aSph.Location();
+  const gp_Dir&    aXDir   = aSph.Position().XDirection();
+  const gp_Dir&    aYDir   = aSph.Position().YDirection();
+  const gp_Dir&    aZDir   = aSph.Position().Direction();
+  const double     aRadius = aSph.Radius();
 
   // Pre-extract coordinates for performance
-  const double aCX = myCenter.X();
-  const double aCY = myCenter.Y();
-  const double aCZ = myCenter.Z();
-  const double aXX = myXDir.X();
-  const double aXY = myXDir.Y();
-  const double aXZ = myXDir.Z();
-  const double aYX = myYDir.X();
-  const double aYY = myYDir.Y();
-  const double aYZ = myYDir.Z();
-  const double aZX = myZDir.X();
-  const double aZY = myZDir.Y();
-  const double aZZ = myZDir.Z();
-  const double aR  = myRadius;
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
 
   // Pre-compute V-dependent values (sin/cos of latitude)
-  NCollection_Array1<double> aCosV(aColLower, aColUpper);
-  NCollection_Array1<double> aSinV(aColLower, aColUpper);
-  for (int iV = aColLower; iV <= aColUpper; ++iV)
+  NCollection_Array1<double> aCosV(1, aNbV);
+  NCollection_Array1<double> aSinV(1, aNbV);
+  for (int iV = 1; iV <= aNbV; ++iV)
   {
     const double v = myVParams.Value(iV);
     aCosV.SetValue(iV, std::cos(v));
     aSinV.SetValue(iV, std::sin(v));
   }
 
-  for (int iU = aRowLower; iU <= aRowUpper; ++iU)
+  for (int iU = 1; iU <= aNbU; ++iU)
   {
     const double u    = myUParams.Value(iU);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
-    for (int iV = aColLower; iV <= aColUpper; ++iV)
+    for (int iV = 1; iV <= aNbV; ++iV)
     {
       const double cosV = aCosV.Value(iV);
       const double sinV = aSinV.Value(iV);
 
       // P = Center + R * (cosV*cosU*XDir + cosV*sinU*YDir + sinV*ZDir)
-      const double coeff1 = aR * cosV * cosU;
-      const double coeff2 = aR * cosV * sinU;
-      const double coeff3 = aR * sinV;
+      const double coeff1 = aRadius * cosV * cosU;
+      const double coeff2 = aRadius * cosV * sinU;
+      const double coeff3 = aRadius * sinV;
 
       aResult.SetValue(iU,
                        iV,

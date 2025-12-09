@@ -83,16 +83,14 @@ Handle(Geom_BSplineSurface) CreateSimpleBSplineSurface()
 TEST(GeomGridEvaluator_PlaneTest, BasicEvaluation)
 {
   // XY plane at origin
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  GeomGridEvaluator_Plane anEval;
-  anEval.Initialize(aPlane);
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEvaluator_Plane anEval(aPlane);
+  EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   EXPECT_EQ(anEval.NbUParams(), 6);
   EXPECT_EQ(anEval.NbVParams(), 4);
@@ -117,15 +115,13 @@ TEST(GeomGridEvaluator_PlaneTest, BasicEvaluation)
 TEST(GeomGridEvaluator_PlaneTest, NonOriginPlane)
 {
   // Plane at (1, 2, 3) with normal (0, 0, 1)
-  gp_Pln aPlane(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
 
-  GeomGridEvaluator_Plane anEval;
-  anEval.Initialize(aPlane);
+  GeomGridEvaluator_Plane anEval(aPlane);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(-1.0, 1.0, 3);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-1.0, 1.0, 3);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -150,16 +146,15 @@ TEST(GeomGridEvaluator_PlaneTest, NonOriginPlane)
 TEST(GeomGridEvaluator_SphereTest, BasicEvaluation)
 {
   // Unit sphere at origin
-  gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
-  GeomGridEvaluator_Sphere anEval;
-  anEval.Initialize(aSphere);
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEvaluator_Sphere anEval(aSphere);
+  EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);           // Longitude
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);     // Latitude
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -193,15 +188,14 @@ TEST(GeomGridEvaluator_SphereTest, BasicEvaluation)
 TEST(GeomGridEvaluator_SphereTest, NonUnitSphere)
 {
   // Sphere with radius 3 at center (1, 2, 3)
-  gp_Sphere aSphere(gp_Ax3(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 3.0);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 3.0);
 
-  GeomGridEvaluator_Sphere anEval;
-  anEval.Initialize(aSphere);
+  GeomGridEvaluator_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 17);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 9);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -225,14 +219,12 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, BasicEvaluation)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval;
-  anEval.Initialize(aSurf);
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+  EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -251,8 +243,7 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, CornerPoints)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
 
-  GeomGridEvaluator_BSplineSurface anEval;
-  anEval.Initialize(aSurf);
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
 
   TColStd_Array1OfReal aUParams(1, 2);
   TColStd_Array1OfReal aVParams(1, 2);
@@ -260,8 +251,7 @@ TEST(GeomGridEvaluator_BSplineSurfaceTest, CornerPoints)
   aUParams.SetValue(2, 1.0);
   aVParams.SetValue(1, 0.0);
   aVParams.SetValue(2, 1.0);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -289,14 +279,12 @@ TEST(GeomGridEvaluator_OtherSurfaceTest, CylinderFallback)
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
-  GeomGridEvaluator_OtherSurface anEval;
-  anEval.Initialize(anAdaptor.ShallowCopy());
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEvaluator_OtherSurface anEval(anAdaptor.ShallowCopy());
+  EXPECT_FALSE(anEval.Surface().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -327,8 +315,7 @@ TEST(GeomGridEvaluator_SurfaceTest, PlaneDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(-5.0, 5.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-3.0, 3.0, 7);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -356,8 +343,7 @@ TEST(GeomGridEvaluator_SurfaceTest, SphereDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 13);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -384,8 +370,7 @@ TEST(GeomGridEvaluator_SurfaceTest, BSplineDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
@@ -413,8 +398,7 @@ TEST(GeomGridEvaluator_SurfaceTest, CylinderFallbackDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUParams(aUParams);
-  anEval.SetVParams(aVParams);
+  anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 

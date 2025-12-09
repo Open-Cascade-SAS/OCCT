@@ -14,8 +14,7 @@
 #ifndef _GeomGridEvaluator_Circle_HeaderFile
 #define _GeomGridEvaluator_Circle_HeaderFile
 
-#include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
+#include <Geom_Circle.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
@@ -28,8 +27,7 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Circle anEvaluator;
-//!   anEvaluator.Initialize(myCircle);
+//!   GeomGridEvaluator_Circle anEvaluator(myGeomCircle);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
@@ -38,35 +36,35 @@ class GeomGridEvaluator_Circle
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_Circle();
+  //! Constructor with geometry.
+  //! @param theCircle the circle geometry to evaluate
+  GeomGridEvaluator_Circle(const Handle(Geom_Circle)& theCircle)
+      : myGeom(theCircle)
+  {
+  }
 
-  //! Initialize with circle geometry.
-  //! @param theCircle the circle to evaluate
-  void Initialize(const gp_Circ& theCircle);
-
-  //! Set parameters for grid evaluation.
-  //! @param theParams array of parameter values (angles in radians, 1-based)
+  //! Set parameters for grid evaluation (by const reference).
+  //! @param theParams array of parameter values (angles in radians)
   void SetParams(const TColStd_Array1OfReal& theParams);
 
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Set parameters for grid evaluation (by move).
+  //! @param theParams array of parameter values to move
+  void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
+
+  //! Returns the geometry handle.
+  const Handle(Geom_Circle)& Geometry() const { return myGeom; }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Size(); }
 
   //! Evaluate all grid points.
   //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluateGrid() const;
 
 private:
-  gp_Pnt                       myCenter;
-  gp_Dir                       myXDir;
-  gp_Dir                       myYDir;
-  double                       myRadius;
+  Handle(Geom_Circle)        myGeom;
   NCollection_Array1<double> myParams;
-  bool                         myIsInitialized;
 };
 
 #endif // _GeomGridEvaluator_Circle_HeaderFile

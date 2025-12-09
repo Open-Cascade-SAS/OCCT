@@ -14,50 +14,253 @@
 #include <GeomGridEvaluator_BSplineCurve.hxx>
 
 #include <BSplCLib.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
 
 //==================================================================================================
 
-void GeomGridEvaluator_BSplineCurve::Initialize(const Handle(Geom_BSplineCurve)& theCurve)
+void GeomGridEvaluator_BSplineCurve::SetParams(const TColStd_Array1OfReal& theParams)
 {
-  myIsInitialized = false;
+  mySpanRanges = NCollection_Array1<SpanRange>(); // Clear cached span data
+  myRawParams.Resize(theParams.Lower(), theParams.Upper(), false);
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
+  {
+    myRawParams.SetValue(i, theParams.Value(i));
+  }
+}
 
-  if (theCurve.IsNull())
+//==================================================================================================
+
+void GeomGridEvaluator_BSplineCurve::prepare() const
+{
+  // Check if already prepared using span ranges emptiness
+  if (!mySpanRanges.IsEmpty())
   {
     return;
   }
 
-  // Extract poles
-  Handle(TColgp_HArray1OfPnt) aPoles = new TColgp_HArray1OfPnt(1, theCurve->NbPoles());
-  theCurve->Poles(aPoles->ChangeArray1());
-
-  // Extract weights if rational
-  Handle(TColStd_HArray1OfReal) aWeights;
-  if (theCurve->IsRational())
+  if (myGeom.IsNull() || myRawParams.IsEmpty())
   {
-    aWeights = new TColStd_HArray1OfReal(1, theCurve->NbPoles());
-    theCurve->Weights(aWeights->ChangeArray1());
+    myParams = NCollection_Array1<ParamWithSpan>();
+    return;
   }
 
-  // Build flat knot sequence
-  const int aDegree     = theCurve->Degree();
-  const int aFlatLength = BSplCLib::KnotSequenceLength(theCurve->Multiplicities(),
-                                                       aDegree,
-                                                       theCurve->IsPeriodic());
+  // Get flat knots directly from geometry
+  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  if (aFlatKnotsHandle.IsNull())
+  {
+    myParams = NCollection_Array1<ParamWithSpan>();
+    return;
+  }
+  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  Handle(TColStd_HArray1OfReal) aFlatKnots = new TColStd_HArray1OfReal(1, aFlatLength);
-  BSplCLib::KnotSequence(theCurve->Knots(),
-                         theCurve->Multiplicities(),
-                         aDegree,
-                         theCurve->IsPeriodic(),
-                         aFlatKnots->ChangeArray1());
+  const int aDegree   = myGeom->Degree();
+  const int aNbParams = myRawParams.Size();
+  myParams.Resize(0, aNbParams - 1, false);
 
-  myIsInitialized = myEvaluator.Initialize(aDegree,
-                                           aPoles,
-                                           aWeights,
-                                           aFlatKnots,
-                                           theCurve->IsRational(),
-                                           theCurve->IsPeriodic());
+  // Use hint-based span location for efficiency on sorted parameters
+  int aPrevSpan = aFlatKnots.Lower() + aDegree;
+
+  for (int i = myRawParams.Lower(); i <= myRawParams.Upper(); ++i)
+  {
+    const double aParam   = myRawParams.Value(i);
+    const int    aSpanIdx = locateSpanWithHint(aParam, aPrevSpan, aFlatKnots);
+    aPrevSpan             = aSpanIdx;
+
+    // Pre-compute local parameter for this span
+    const double aSpanStart  = aFlatKnots.Value(aSpanIdx);
+    const double aSpanLength = aFlatKnots.Value(aSpanIdx + 1) - aSpanStart;
+    const double aLocalParam = (aParam - aSpanStart) / aSpanLength;
+
+    myParams.SetValue(i - myRawParams.Lower(), ParamWithSpan{aParam, aLocalParam, aSpanIdx});
+  }
+
+  // Compute span ranges for optimized iteration
+  computeSpanRanges(myParams, aFlatKnots, mySpanRanges);
+}
+
+//==================================================================================================
+
+int GeomGridEvaluator_BSplineCurve::locateSpan(double                      theParam,
+                                               const TColStd_Array1OfReal& theFlatKnots) const
+{
+  int    aSpanIndex = 0;
+  double aNewParam  = theParam;
+  BSplCLib::LocateParameter(myGeom->Degree(),
+                            theFlatKnots,
+                            BSplCLib::NoMults(),
+                            theParam,
+                            myGeom->IsPeriodic(),
+                            aSpanIndex,
+                            aNewParam);
+  return aSpanIndex;
+}
+
+//==================================================================================================
+
+int GeomGridEvaluator_BSplineCurve::locateSpanWithHint(double                      theParam,
+                                                       int                         theHint,
+                                                       const TColStd_Array1OfReal& theFlatKnots) const
+{
+  const int aDegree = myGeom->Degree();
+  const int aLower  = theFlatKnots.Lower() + aDegree;
+  const int aUpper  = theFlatKnots.Upper() - aDegree - 1;
+
+  // Quick check if hint is still valid
+  if (theHint >= aLower && theHint <= aUpper)
+  {
+    const double aSpanStart = theFlatKnots.Value(theHint);
+    const double aSpanEnd   = theFlatKnots.Value(theHint + 1);
+
+    if (theParam >= aSpanStart && theParam < aSpanEnd)
+    {
+      return theHint;
+    }
+
+    // Check next span (common case for sorted parameters)
+    if (theHint < aUpper && theParam >= aSpanEnd)
+    {
+      const double aNextEnd = theFlatKnots.Value(theHint + 2);
+      if (theParam < aNextEnd)
+      {
+        return theHint + 1;
+      }
+    }
+  }
+
+  // Fall back to standard locate
+  return locateSpan(theParam, theFlatKnots);
+}
+
+//==================================================================================================
+
+void GeomGridEvaluator_BSplineCurve::computeSpanRanges(
+  const NCollection_Array1<ParamWithSpan>& theParams,
+  const TColStd_Array1OfReal&              theFlatKnots,
+  NCollection_Array1<SpanRange>&           theSpanRanges)
+{
+  if (theParams.IsEmpty())
+  {
+    theSpanRanges = NCollection_Array1<SpanRange>();
+    return;
+  }
+
+  // Count distinct spans
+  int aNbSpans     = 1;
+  int aCurrentSpan = theParams.Value(0).SpanIndex;
+  for (int i = 1; i < theParams.Size(); ++i)
+  {
+    if (theParams.Value(i).SpanIndex != aCurrentSpan)
+    {
+      ++aNbSpans;
+      aCurrentSpan = theParams.Value(i).SpanIndex;
+    }
+  }
+
+  theSpanRanges.Resize(0, aNbSpans - 1, false);
+
+  // Fill span ranges
+  aCurrentSpan    = theParams.Value(0).SpanIndex;
+  int aRangeStart = 0;
+  int aRangeIdx   = 0;
+
+  for (int i = 1; i < theParams.Size(); ++i)
+  {
+    const int aSpan = theParams.Value(i).SpanIndex;
+    if (aSpan != aCurrentSpan)
+    {
+      const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+      const double aSpanLength  = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
+      const double aSpanMid     = aSpanStart + aSpanLength * 0.5;
+      const double aSpanHalfLen = aSpanLength * 0.5;
+
+      theSpanRanges.SetValue(aRangeIdx,
+                             SpanRange{aCurrentSpan, aRangeStart, i, aSpanMid, aSpanHalfLen});
+      ++aRangeIdx;
+      aCurrentSpan = aSpan;
+      aRangeStart  = i;
+    }
+  }
+
+  // Add the last range
+  const double aSpanStart   = theFlatKnots.Value(aCurrentSpan);
+  const double aSpanLength  = theFlatKnots.Value(aCurrentSpan + 1) - aSpanStart;
+  const double aSpanMid     = aSpanStart + aSpanLength * 0.5;
+  const double aSpanHalfLen = aSpanLength * 0.5;
+
+  theSpanRanges.SetValue(
+    aRangeIdx,
+    SpanRange{aCurrentSpan, aRangeStart, theParams.Size(), aSpanMid, aSpanHalfLen});
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEvaluator_BSplineCurve::EvaluateGrid() const
+{
+  if (myGeom.IsNull() || myRawParams.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  // Prepare span data if needed
+  prepare();
+
+  if (myParams.IsEmpty() || mySpanRanges.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  const int                  aNbParams = myParams.Size();
+  NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
+
+  // Get flat knots directly from geometry
+  const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
+  if (aFlatKnotsHandle.IsNull())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+  const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
+
+  // Get poles and weights from geometry
+  const int aDegree = myGeom->Degree();
+
+  TColgp_Array1OfPnt aPoles(1, myGeom->NbPoles());
+  myGeom->Poles(aPoles);
+
+  TColStd_Array1OfReal aWeights;
+  const bool           isRational = myGeom->IsRational();
+  if (isRational)
+  {
+    aWeights.Resize(1, myGeom->NbPoles(), false);
+    myGeom->Weights(aWeights);
+  }
+
+  // Create or update cache
+  if (myCache.IsNull())
+  {
+    myCache = new BSplCLib_Cache(aDegree,
+                                 myGeom->IsPeriodic(),
+                                 aFlatKnots,
+                                 aPoles,
+                                 isRational ? &aWeights : nullptr);
+  }
+
+  // Iterate over pre-computed span ranges
+  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
+  {
+    const SpanRange& aRange = mySpanRanges.Value(iRange);
+
+    // Rebuild cache once for this span block using first parameter in range
+    myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
+                        aFlatKnots,
+                        aPoles,
+                        isRational ? &aWeights : nullptr);
+
+    // Evaluate all points in this span block using pre-computed local parameters
+    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
+    {
+      myCache->D0Local(myParams.Value(i).LocalParam, aPoints.ChangeValue(i + 1));
+    }
+  }
+
+  return aPoints;
 }

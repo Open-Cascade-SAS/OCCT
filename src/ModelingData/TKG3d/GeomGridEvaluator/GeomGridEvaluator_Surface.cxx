@@ -13,6 +13,9 @@
 
 #include <GeomGridEvaluator_Surface.hxx>
 
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+
 //==================================================================================================
 
 void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
@@ -23,31 +26,27 @@ void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   {
     case GeomAbs_Plane:
     {
-      GeomGridEvaluator_Plane anEval;
-      anEval.Initialize(theSurface.Plane());
-      myEvaluator = std::move(anEval);
+      // Create Handle(Geom_Plane) from gp_Pln
+      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
+      myEvaluator                   = GeomGridEvaluator_Plane(aGeomPlane);
       break;
     }
     case GeomAbs_Sphere:
     {
-      GeomGridEvaluator_Sphere anEval;
-      anEval.Initialize(theSurface.Sphere());
-      myEvaluator = std::move(anEval);
+      // Create Handle(Geom_SphericalSurface) from gp_Sphere
+      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
+      myEvaluator                               = GeomGridEvaluator_Sphere(aGeomSphere);
       break;
     }
     case GeomAbs_BSplineSurface:
     {
-      GeomGridEvaluator_BSplineSurface anEval;
-      anEval.Initialize(theSurface.BSpline());
-      myEvaluator = std::move(anEval);
+      myEvaluator = GeomGridEvaluator_BSplineSurface(theSurface.BSpline());
       break;
     }
     default:
     {
       // Fallback: use OtherSurface with adaptor copy
-      GeomGridEvaluator_OtherSurface anEval;
-      anEval.Initialize(theSurface.ShallowCopy());
-      myEvaluator = std::move(anEval);
+      myEvaluator = GeomGridEvaluator_OtherSurface(theSurface.ShallowCopy());
       break;
     }
   }
@@ -55,31 +54,16 @@ void GeomGridEvaluator_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
 //==================================================================================================
 
-void GeomGridEvaluator_Surface::SetUParams(const TColStd_Array1OfReal& theParams)
+void GeomGridEvaluator_Surface::SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                            const TColStd_Array1OfReal& theVParams)
 {
   std::visit(
-    [&theParams](auto& theEval)
+    [&theUParams, &theVParams](auto& theEval)
     {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
       {
-        theEval.SetUParams(theParams);
-      }
-    },
-    myEvaluator);
-}
-
-//==================================================================================================
-
-void GeomGridEvaluator_Surface::SetVParams(const TColStd_Array1OfReal& theParams)
-{
-  std::visit(
-    [&theParams](auto& theEval)
-    {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.SetVParams(theParams);
+        theEval.SetUVParams(theUParams, theVParams);
       }
     },
     myEvaluator);
@@ -89,20 +73,7 @@ void GeomGridEvaluator_Surface::SetVParams(const TColStd_Array1OfReal& theParams
 
 bool GeomGridEvaluator_Surface::IsInitialized() const
 {
-  return std::visit(
-    [](const auto& theEval) -> bool
-    {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        return false;
-      }
-      else
-      {
-        return theEval.IsInitialized();
-      }
-    },
-    myEvaluator);
+  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

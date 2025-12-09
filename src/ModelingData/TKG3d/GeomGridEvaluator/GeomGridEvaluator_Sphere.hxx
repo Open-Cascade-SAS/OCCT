@@ -14,9 +14,8 @@
 #ifndef _GeomGridEvaluator_Sphere_HeaderFile
 #define _GeomGridEvaluator_Sphere_HeaderFile
 
-#include <gp_Dir.hxx>
+#include <Geom_SphericalSurface.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Sphere.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -32,10 +31,8 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Sphere anEvaluator;
-//!   anEvaluator.Initialize(mySphere);
-//!   anEvaluator.SetUParams(myUParams);
-//!   anEvaluator.SetVParams(myVParams);
+//!   GeomGridEvaluator_Sphere anEvaluator(myGeomSphere);
+//!   anEvaluator.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
 class GeomGridEvaluator_Sphere
@@ -43,23 +40,21 @@ class GeomGridEvaluator_Sphere
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_Sphere();
+  //! Constructor with geometry.
+  //! @param theSphere the spherical surface geometry to evaluate
+  GeomGridEvaluator_Sphere(const Handle(Geom_SphericalSurface)& theSphere)
+      : myGeom(theSphere)
+  {
+  }
 
-  //! Initialize with sphere geometry.
-  //! @param theSphere the sphere to evaluate
-  void Initialize(const gp_Sphere& theSphere);
+  //! Set UV parameters from two 1D arrays.
+  //! @param theUParams array of U parameter values (longitude)
+  //! @param theVParams array of V parameter values (latitude)
+  Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
+                                   const TColStd_Array1OfReal& theVParams);
 
-  //! Set U parameters for grid evaluation.
-  //! @param theParams array of U parameter values (longitude, 1-based)
-  void SetUParams(const TColStd_Array1OfReal& theParams);
-
-  //! Set V parameters for grid evaluation.
-  //! @param theParams array of V parameter values (latitude, 1-based)
-  void SetVParams(const TColStd_Array1OfReal& theParams);
-
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Returns the geometry handle.
+  const Handle(Geom_SphericalSurface)& Geometry() const { return myGeom; }
 
   //! Returns number of U parameters.
   int NbUParams() const { return myUParams.Size(); }
@@ -69,18 +64,13 @@ public:
 
   //! Evaluate all grid points.
   //! @return 2D array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
 
 private:
-  gp_Pnt                     myCenter;
-  gp_Dir                     myXDir;
-  gp_Dir                     myYDir;
-  gp_Dir                     myZDir;
-  double                     myRadius;
-  NCollection_Array1<double> myUParams;
-  NCollection_Array1<double> myVParams;
-  bool                       myIsInitialized;
+  Handle(Geom_SphericalSurface) myGeom;
+  NCollection_Array1<double>    myUParams;
+  NCollection_Array1<double>    myVParams;
 };
 
 #endif // _GeomGridEvaluator_Sphere_HeaderFile

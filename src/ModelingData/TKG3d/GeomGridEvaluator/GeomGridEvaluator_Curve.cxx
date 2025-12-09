@@ -13,6 +13,9 @@
 
 #include <GeomGridEvaluator_Curve.hxx>
 
+#include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
+
 //==================================================================================================
 
 void GeomGridEvaluator_Curve::Initialize(const Adaptor3d_Curve& theCurve)
@@ -23,31 +26,27 @@ void GeomGridEvaluator_Curve::Initialize(const Adaptor3d_Curve& theCurve)
   {
     case GeomAbs_Line:
     {
-      GeomGridEvaluator_Line anEval;
-      anEval.Initialize(theCurve.Line());
-      myEvaluator = std::move(anEval);
+      // Create Handle(Geom_Line) from gp_Lin
+      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
+      myEvaluator                 = GeomGridEvaluator_Line(aGeomLine);
       break;
     }
     case GeomAbs_Circle:
     {
-      GeomGridEvaluator_Circle anEval;
-      anEval.Initialize(theCurve.Circle());
-      myEvaluator = std::move(anEval);
+      // Create Handle(Geom_Circle) from gp_Circ
+      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
+      myEvaluator                     = GeomGridEvaluator_Circle(aGeomCircle);
       break;
     }
     case GeomAbs_BSplineCurve:
     {
-      GeomGridEvaluator_BSplineCurve anEval;
-      anEval.Initialize(theCurve.BSpline());
-      myEvaluator = std::move(anEval);
+      myEvaluator = GeomGridEvaluator_BSplineCurve(theCurve.BSpline());
       break;
     }
     default:
     {
       // Fallback: use OtherCurve with adaptor copy
-      GeomGridEvaluator_OtherCurve anEval;
-      anEval.Initialize(theCurve.ShallowCopy());
-      myEvaluator = std::move(anEval);
+      myEvaluator = GeomGridEvaluator_OtherCurve(theCurve.ShallowCopy());
       break;
     }
   }
@@ -73,20 +72,7 @@ void GeomGridEvaluator_Curve::SetParams(const TColStd_Array1OfReal& theParams)
 
 bool GeomGridEvaluator_Curve::IsInitialized() const
 {
-  return std::visit(
-    [](const auto& theEval) -> bool
-    {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        return false;
-      }
-      else
-      {
-        return theEval.IsInitialized();
-      }
-    },
-    myEvaluator);
+  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

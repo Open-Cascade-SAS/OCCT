@@ -14,8 +14,7 @@
 #ifndef _GeomGridEvaluator_Line_HeaderFile
 #define _GeomGridEvaluator_Line_HeaderFile
 
-#include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
+#include <Geom_Line.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -24,12 +23,10 @@
 //! @brief Efficient batch evaluator for line grid points.
 //!
 //! Uses direct analytical formula: P(t) = Location + t * Direction
-//! This is a header-only implementation for maximum performance.
 //!
 //! Usage:
 //! @code
-//!   GeomGridEvaluator_Line anEvaluator;
-//!   anEvaluator.Initialize(myLine);
+//!   GeomGridEvaluator_Line anEvaluator(myGeomLine);
 //!   anEvaluator.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 //! @endcode
@@ -38,23 +35,15 @@ class GeomGridEvaluator_Line
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - creates uninitialized evaluator.
-  GeomGridEvaluator_Line()
-      : myIsInitialized(false)
+  //! Constructor with geometry.
+  //! @param theLine the line geometry to evaluate
+  GeomGridEvaluator_Line(const Handle(Geom_Line)& theLine)
+      : myGeom(theLine)
   {
   }
 
-  //! Initialize with line geometry.
-  //! @param theLine the line to evaluate
-  void Initialize(const gp_Lin& theLine)
-  {
-    myLocation      = theLine.Location();
-    myDirection     = theLine.Direction();
-    myIsInitialized = true;
-  }
-
-  //! Set parameters for grid evaluation.
-  //! @param theParams array of parameter values (1-based)
+  //! Set parameters for grid evaluation (by const reference).
+  //! @param theParams array of parameter values
   void SetParams(const TColStd_Array1OfReal& theParams)
   {
     myParams.Resize(theParams.Lower(), theParams.Upper(), false);
@@ -64,31 +53,40 @@ public:
     }
   }
 
-  //! Returns true if the evaluator is properly initialized.
-  bool IsInitialized() const { return myIsInitialized; }
+  //! Set parameters for grid evaluation (by move).
+  //! @param theParams array of parameter values to move
+  void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
+
+  //! Returns the geometry handle.
+  const Handle(Geom_Line)& Geometry() const { return myGeom; }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Size(); }
 
   //! Evaluate all grid points.
   //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if not initialized or no parameters set
+  //!         or empty array if geometry is null or no parameters set
   NCollection_Array1<gp_Pnt> EvaluateGrid() const
   {
-    if (!myIsInitialized || myParams.IsEmpty())
+    if (myGeom.IsNull() || myParams.IsEmpty())
     {
       return NCollection_Array1<gp_Pnt>();
     }
 
     NCollection_Array1<gp_Pnt> aResult(myParams.Lower(), myParams.Upper());
 
+    // Extract line data
+    const gp_Lin& aLin = myGeom->Lin();
+    const gp_Pnt& aLoc = aLin.Location();
+    const gp_Dir& aDir = aLin.Direction();
+
     // Pre-extract coordinates for vectorization potential
-    const double aLocX = myLocation.X();
-    const double aLocY = myLocation.Y();
-    const double aLocZ = myLocation.Z();
-    const double aDirX = myDirection.X();
-    const double aDirY = myDirection.Y();
-    const double aDirZ = myDirection.Z();
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aDirX = aDir.X();
+    const double aDirY = aDir.Y();
+    const double aDirZ = aDir.Z();
 
     for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
     {
@@ -99,10 +97,8 @@ public:
   }
 
 private:
-  gp_Pnt                       myLocation;
-  gp_Dir                       myDirection;
+  Handle(Geom_Line)          myGeom;
   NCollection_Array1<double> myParams;
-  bool                         myIsInitialized;
 };
 
 #endif // _GeomGridEvaluator_Line_HeaderFile
