@@ -124,19 +124,23 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
   const int      aDimension  = myRowLength;
   Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
 
-  // Temporary container for polynomial evaluation (max 4 derivatives * 4 components)
+  // Temporary container. The maximal size of this container is defined by:
+  //    1) maximal derivative for cache evaluation, which is 3, plus one row for function values,
+  //    2) and maximal dimension of the point, which is 3, plus one column for weights.
   Standard_Real aTmpContainer[16];
 
-  // Clamp derivative order to curve degree for non-rational curves
+  // When the PLib::RationalDerivative needs to be called, use temporary container
+  Standard_Real* aPntDeriv = myIsRational ? aTmpContainer : theDerivArray;
+
+  // When the degree of curve is lesser than the requested derivative,
+  // nullify array cells corresponding to greater derivatives
   int aDerivative = theDerivative;
   if (!myIsRational && myParams.Degree < theDerivative)
   {
     aDerivative = myParams.Degree;
-    // Zero out higher derivative entries
     for (int ind = myParams.Degree * aDimension; ind < (theDerivative + 1) * aDimension; ind++)
     {
-      aTmpContainer[ind] = 0.0;
-      theDerivArray[ind] = 0.0;
+      aPntDeriv[ind] = 0.0;
     }
   }
 
@@ -145,29 +149,26 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
                        myParams.Degree,
                        aDimension,
                        aPolesArray[0],
-                       aTmpContainer[0]);
+                       aPntDeriv[0]);
 
-  // Unnormalize derivatives
+  // Unnormalize derivatives since those are computed normalized
   Standard_Real aFactor = 1.0;
   for (int deriv = 1; deriv <= aDerivative; deriv++)
   {
     aFactor /= myParams.SpanLength;
     for (int ind = 0; ind < aDimension; ind++)
     {
-      aTmpContainer[aDimension * deriv + ind] *= aFactor;
+      aPntDeriv[aDimension * deriv + ind] *= aFactor;
     }
   }
 
   if (myIsRational)
   {
-    PLib::RationalDerivative(aDerivative, aDerivative, aDimension - 1, aTmpContainer[0], theDerivArray[0]);
-  }
-  else
-  {
-    for (int i = 0; i < (aDerivative + 1) * aDimension; ++i)
-    {
-      theDerivArray[i] = aTmpContainer[i];
-    }
+    PLib::RationalDerivative(aDerivative,
+                             aDerivative,
+                             aDimension - 1,
+                             aPntDeriv[0],
+                             theDerivArray[0]);
   }
 }
 
