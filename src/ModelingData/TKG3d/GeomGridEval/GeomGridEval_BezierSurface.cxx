@@ -13,6 +13,7 @@
 
 #include <GeomGridEval_BezierSurface.hxx>
 
+#include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -53,20 +54,9 @@ void GeomGridEval_BezierSurface::buildCache() const
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
-  // Build flat knots for Bezier: [0,...,0, 1,...,1] with degree+1 repetitions
-  TColStd_Array1OfReal aUFlatKnots(1, 2 * (aUDegree + 1));
-  TColStd_Array1OfReal aVFlatKnots(1, 2 * (aVDegree + 1));
-
-  for (int i = 1; i <= aUDegree + 1; ++i)
-  {
-    aUFlatKnots.SetValue(i, 0.0);
-    aUFlatKnots.SetValue(aUDegree + 1 + i, 1.0);
-  }
-  for (int i = 1; i <= aVDegree + 1; ++i)
-  {
-    aVFlatKnots.SetValue(i, 0.0);
-    aVFlatKnots.SetValue(aVDegree + 1 + i, 1.0);
-  }
+  // Use pre-defined flat knots from BSplCLib
+  TColStd_Array1OfReal aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree), 1, 2 * (aUDegree + 1));
+  TColStd_Array1OfReal aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree), 1, 2 * (aVDegree + 1));
 
   // Get poles and weights directly (const references, no copy)
   const TColgp_Array2OfPnt&   aPoles   = myGeom->Poles();
