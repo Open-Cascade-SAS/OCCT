@@ -68,18 +68,9 @@ void GeomGridEval_BezierSurface::buildCache() const
     aVFlatKnots.SetValue(aVDegree + 1 + i, 1.0);
   }
 
-  // Get poles
-  TColgp_Array2OfPnt aPoles(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles());
-  myGeom->Poles(aPoles);
-
-  // Get weights if rational
-  const bool isRational = myGeom->IsURational() || myGeom->IsVRational();
-  TColStd_Array2OfReal aWeights;
-  if (isRational)
-  {
-    aWeights.Resize(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles(), false);
-    myGeom->Weights(aWeights);
-  }
+  // Get poles and weights directly (const references, no copy)
+  const TColgp_Array2OfPnt&   aPoles   = myGeom->Poles();
+  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
 
   // Create cache (Bezier is non-periodic)
   myCache = new BSplSLib_Cache(aUDegree,
@@ -88,10 +79,10 @@ void GeomGridEval_BezierSurface::buildCache() const
                                aVDegree,
                                false, // not periodic
                                aVFlatKnots,
-                               isRational ? &aWeights : nullptr);
+                               aWeights);
 
   // Build cache at parameter 0.5 (middle of single span)
-  myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, isRational ? &aWeights : nullptr);
+  myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
 }
 
 //==================================================================================================

@@ -13,10 +13,7 @@
 
 #include <GeomGridEval_BezierCurve.hxx>
 
-#include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 //==================================================================================================
 
@@ -60,7 +57,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   for (int i = 1; i <= aNb; ++i)
@@ -82,7 +79,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   for (int i = 1; i <= aNb; ++i)
@@ -104,7 +101,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   for (int i = 1; i <= aNb; ++i)
