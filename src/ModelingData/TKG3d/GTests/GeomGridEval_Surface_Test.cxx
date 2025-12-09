@@ -504,6 +504,28 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
   }
 }
 
+TEST(GeomGridEval_SurfaceTest, DirectHandleInit)
+{
+  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+
+  // Initialize directly from Handle(Geom_Surface)
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(aPlane);
+  
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_Plane);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  EXPECT_FALSE(aGrid.IsEmpty());
+  
+  // Verify value
+  EXPECT_NEAR(aGrid.Value(1, 1).Z(), 0.0, THE_TOLERANCE);
+}
+
 TEST(GeomGridEval_SurfaceTest, UninitializedState)
 {
   GeomGridEval_Surface anEval;

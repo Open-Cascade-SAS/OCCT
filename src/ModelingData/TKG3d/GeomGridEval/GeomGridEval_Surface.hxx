@@ -16,6 +16,7 @@
 
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomGridEval_BSplineSurface.hxx>
 #include <GeomGridEval_Cone.hxx>
 #include <GeomGridEval_Cylinder.hxx>
@@ -50,6 +51,8 @@
 //! @code
 //!   GeomGridEval_Surface anEval;
 //!   anEval.Initialize(myAdaptorSurface);
+//!   // OR
+//!   anEval.Initialize(myGeomSurface);
 //!   anEval.SetUVParams(myUParams, myVParams);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 //! @endcode
@@ -78,6 +81,10 @@ public:
   //! Initialize from adaptor (auto-detects surface type).
   //! @param theSurface surface adaptor to evaluate
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
+
+  //! Initialize from geometry handle (auto-detects surface type).
+  //! @param theSurface geometry to evaluate
+  Standard_EXPORT void Initialize(const Handle(Geom_Surface)& theSurface);
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values

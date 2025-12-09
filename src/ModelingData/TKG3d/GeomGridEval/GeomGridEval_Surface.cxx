@@ -13,6 +13,8 @@
 
 #include <GeomGridEval_Surface.hxx>
 
+#include <GeomAdaptor_Surface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -23,6 +25,13 @@
 
 void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 {
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  {
+    const GeomAdaptor_Surface& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
+    Initialize(aGeomAdaptor.Surface());
+    return;
+  }
+
   mySurfaceType = theSurface.GetType();
 
   switch (mySurfaceType)
@@ -73,6 +82,56 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       myEvaluator = GeomGridEval_OtherSurface(theSurface.ShallowCopy());
       break;
     }
+  }
+}
+
+//==================================================================================================
+
+void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
+{
+  if (theSurface.IsNull())
+  {
+    myEvaluator = std::monostate{};
+    mySurfaceType = GeomAbs_OtherSurface;
+    return;
+  }
+
+  if (auto aPlane = Handle(Geom_Plane)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_Plane;
+    myEvaluator = GeomGridEval_Plane(aPlane);
+  }
+  else if (auto aCyl = Handle(Geom_CylindricalSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_Cylinder;
+    myEvaluator = GeomGridEval_Cylinder(aCyl);
+  }
+  else if (auto aSphere = Handle(Geom_SphericalSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_Sphere;
+    myEvaluator = GeomGridEval_Sphere(aSphere);
+  }
+  else if (auto aCone = Handle(Geom_ConicalSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_Cone;
+    myEvaluator = GeomGridEval_Cone(aCone);
+  }
+  else if (auto aTorus = Handle(Geom_ToroidalSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_Torus;
+    myEvaluator = GeomGridEval_Torus(aTorus);
+  }
+  else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_BSplineSurface;
+    myEvaluator = GeomGridEval_BSplineSurface(aBSpline);
+  }
+  else
+  {
+    // Create adaptor for general surfaces (without copying geometry)
+    Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(theSurface);
+    mySurfaceType = anAdaptor->GetType();
+    myEvaluator = GeomGridEval_OtherSurface(anAdaptor);
   }
 }
 
