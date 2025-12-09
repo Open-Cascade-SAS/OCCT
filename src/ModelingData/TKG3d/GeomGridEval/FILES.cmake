@@ -15,6 +15,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Curve.cxx
   # Surface evaluators
   GeomGridEval_Plane.hxx
+  GeomGridEval_Cylinder.hxx
+  GeomGridEval_Cylinder.cxx
   GeomGridEval_Sphere.hxx
   GeomGridEval_Sphere.cxx
   GeomGridEval_BSplineSurface.hxx

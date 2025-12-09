@@ -13,6 +13,7 @@
 
 #include <GeomGridEval_Surface.hxx>
 
+#include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 
@@ -29,6 +30,13 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       // Create Handle(Geom_Plane) from gp_Pln
       Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
       myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
+      break;
+    }
+    case GeomAbs_Cylinder:
+    {
+      // Create Handle(Geom_CylindricalSurface) from gp_Cylinder
+      Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface.Cylinder());
+      myEvaluator                              = GeomGridEval_Cylinder(aGeomCyl);
       break;
     }
     case GeomAbs_Sphere:
