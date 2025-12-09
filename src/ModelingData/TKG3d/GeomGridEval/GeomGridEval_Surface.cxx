@@ -86,10 +86,7 @@ void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurfac
     }
     default:
     {
-      // Fallback: use OtherSurface. Since we have a Handle, we can use it directly
-      // without needing ShallowCopy if it's safe, but Adaptor3d_Surface semantics usually
-      // imply ShallowCopy if we want to own it or if it's transient.
-      // However, since we take a Handle, we share ownership.
+      // Fallback: use OtherSurface. Taking handle directly.
       myEvaluator = GeomGridEval_OtherSurface(theSurface);
       break;
     }
