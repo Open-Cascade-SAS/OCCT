@@ -13,26 +13,14 @@
 
 #include <GeomGridEval_OffsetSurface.hxx>
 
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomGridEval_Surface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <gp_Vec.hxx>
-#include <CSLib.hxx>
 
-//==================================================================================================
-
-GeomGridEval_OffsetSurface::GeomGridEval_OffsetSurface(const Handle(Geom_OffsetSurface)& theOffset)
-    : myGeom(theOffset)
+namespace
 {
-  if (!myGeom.IsNull())
-  {
-    myBasisEval = std::make_unique<GeomGridEval_Surface>();
-    myBasisEval->Initialize(myGeom->BasisSurface());
-  }
-}
-
-//==================================================================================================
-
-GeomGridEval_OffsetSurface::~GeomGridEval_OffsetSurface() = default;
+//! Tolerance for detecting singular normal (degenerate surface point).
+constexpr double THE_NORMAL_TOL = 1e-10;
+} // namespace
 
 //==================================================================================================
 
@@ -53,24 +41,23 @@ void GeomGridEval_OffsetSurface::SetUVParams(const TColStd_Array1OfReal& theUPar
   {
     myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
-
-  if (myBasisEval)
-  {
-    myBasisEval->SetUVParams(theUParams, theVParams);
-  }
 }
 
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
 {
-  if (myGeom.IsNull() || !myBasisEval || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasis.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  // To compute offset D0, we need basis D1 to compute Normal
-  NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 = myBasisEval->EvaluateGridD1();
+  // Offset D0 requires basis D1 to compute normal
+  GeomGridEval_Surface aBasisEval;
+  aBasisEval.Initialize(myBasis);
+  aBasisEval.SetUVParams(myUParams, myVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 = aBasisEval.EvaluateGridD1();
   if (aBasisD1.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
@@ -79,21 +66,26 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
   const int                  aNbU = myUParams.Size();
   const int                  aNbV = myVParams.Size();
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
-  const double               anOffset = myGeom->Offset();
 
   for (int i = 1; i <= aNbU; ++i)
   {
     for (int j = 1; j <= aNbV; ++j)
     {
-      const auto& aBasis = aBasisD1.Value(i, j);
-      gp_Dir      aNorm;
-      CSLib::Normal(aBasis.D1U, aBasis.D1V, 1e-9, aNorm);
-      
-      gp_Pnt aP = aBasis.Point;
-      aP.SetXYZ(aP.XYZ() + anOffset * aNorm.XYZ());
+      const GeomGridEval::SurfD1& aBasis = aBasisD1.Value(i, j);
+
+      // Compute normal N = D1U ^ D1V
+      gp_Vec  aN    = aBasis.D1U.Crossed(aBasis.D1V);
+      double  aNMag = aN.Magnitude();
+      gp_Pnt  aP    = aBasis.Point;
+
+      if (aNMag > THE_NORMAL_TOL)
+      {
+        aP.SetXYZ(aP.XYZ() + (myOffset / aNMag) * aN.XYZ());
+      }
       aResult.SetValue(i, j, aP);
     }
   }
+
   return aResult;
 }
 
@@ -101,13 +93,17 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGridD1() const
 {
-  if (myGeom.IsNull() || !myBasisEval || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasis.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  // To compute offset D1, we need basis D2 to compute derivatives of Normal
-  NCollection_Array2<GeomGridEval::SurfD2> aBasisD2 = myBasisEval->EvaluateGridD2();
+  // Offset D1 requires basis D2 to compute derivative of normal
+  GeomGridEval_Surface aBasisEval;
+  aBasisEval.Initialize(myBasis);
+  aBasisEval.SetUVParams(myUParams, myVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aBasisD2 = aBasisEval.EvaluateGridD2();
   if (aBasisD2.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
@@ -116,41 +112,48 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
   const int                                aNbU = myUParams.Size();
   const int                                aNbV = myVParams.Size();
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
-  const double                             anOffset = myGeom->Offset();
 
   for (int i = 1; i <= aNbU; ++i)
   {
     for (int j = 1; j <= aNbV; ++j)
     {
-      const auto& aBasis = aBasisD2.Value(i, j);
-      gp_Dir      aNorm;
-      gp_Vec      aDNU, aDNV;
-      
-      // Compute normal and its derivatives
-      // This is simplified; robust implementation should use CSLib::Normal
-      // and handle singularities, but here we assume regular surface as per simple evaluator scope.
-      // Or use Geom_OffsetSurface::D1 logic logic if accessible, but we want batch.
-      
-      // N = (D1U ^ D1V) / ||...||
-      // Using CSLib for safety
-      if (CSLib::Normal(aBasis.D1U, aBasis.D1V, 1e-9, aNorm) == CSLib_Singular)
-      {
-         // Handle singularity or just use zero?
-         // For now, consistent with OCCT usage, we might just leave it or use 0.
-         // Let's assume non-singular for this optimized path.
-      }
-      
-      CSLib::DNNormal(aBasis.D1U, aBasis.D1V, aBasis.D2U, aBasis.D2V, aBasis.D2UV, aDNU, aDNV);
+      const GeomGridEval::SurfD2& aBasis = aBasisD2.Value(i, j);
 
-      gp_Pnt aP = aBasis.Point;
-      aP.SetXYZ(aP.XYZ() + anOffset * aNorm.XYZ());
-      
-      gp_Vec aD1U = aBasis.D1U + anOffset * aDNU;
-      gp_Vec aD1V = aBasis.D1V + anOffset * aDNV;
+      // Compute N = D1U ^ D1V
+      gp_Vec aN    = aBasis.D1U.Crossed(aBasis.D1V);
+      double aNMag = aN.Magnitude();
+
+      gp_Pnt aP   = aBasis.Point;
+      gp_Vec aD1U = aBasis.D1U;
+      gp_Vec aD1V = aBasis.D1V;
+
+      if (aNMag > THE_NORMAL_TOL)
+      {
+        gp_XYZ aNorm = aN.XYZ() / aNMag;
+        aP.SetXYZ(aP.XYZ() + myOffset * aNorm);
+
+        // Compute dN/du and dN/dv (non-normalized cross product derivatives)
+        // Nu = D2U ^ D1V + D1U ^ D2UV
+        // Nv = D2UV ^ D1V + D1U ^ D2V
+        gp_Vec aNu = aBasis.D2U.Crossed(aBasis.D1V) + aBasis.D1U.Crossed(aBasis.D2UV);
+        gp_Vec aNv = aBasis.D2UV.Crossed(aBasis.D1V) + aBasis.D1U.Crossed(aBasis.D2V);
+
+        // Compute dn/du and dn/dv (unit normal derivatives)
+        // dn/du = (Nu - n * (n . Nu)) / |N|
+        double nDotNu = aNorm.Dot(aNu.XYZ());
+        double nDotNv = aNorm.Dot(aNv.XYZ());
+
+        gp_Vec aDnDu((aNu.XYZ() - aNorm * nDotNu) / aNMag);
+        gp_Vec aDnDv((aNv.XYZ() - aNorm * nDotNv) / aNMag);
+
+        aD1U += myOffset * aDnDu;
+        aD1V += myOffset * aDnDv;
+      }
 
       aResult.ChangeValue(i, j) = {aP, aD1U, aD1V};
     }
   }
+
   return aResult;
 }
 
@@ -158,35 +161,30 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGridD2() const
 {
-  if (myGeom.IsNull() || !myBasisEval || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  // To compute offset D2, we technically need basis D3.
-  // Since EvaluateGridD3 is not yet available on GeomGridEval_Surface,
-  // we will use a hybrid approach: Batch D2 from Basis, then calculate D3 point-by-point
-  // or just fall back to using Geom_OffsetSurface::D2 point-by-point if efficient enough.
-  // But to respect the structure, we will use the basis D2 and assume D3 is not needed
-  // OR acknowledge this limitation.
-  // Actually, let's implement it correctly by calling D2 on the geometry directly for now
-  // to avoid incorrect results, as we can't batch optimize D3 yet.
-  
+  // Offset D2 requires basis D3, which is not available in batch form.
+  // Use adaptor for more efficient repeated evaluations.
   const int                                aNbU = myUParams.Size();
   const int                                aNbV = myVParams.Size();
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
+  GeomAdaptor_Surface anAdaptor(myGeom);
+
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double u = myUParams.Value(i);
+    const double aU = myUParams.Value(i);
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double v = myVParams.Value(j);
-      gp_Pnt       aP;
-      gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myGeom->D2(u, v, aP, aD1U, aD1V, aD2U, aD2V, aD2UV);
-      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      anAdaptor.D2(aU, myVParams.Value(j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aResult.ChangeValue(i, j) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
+
   return aResult;
 }

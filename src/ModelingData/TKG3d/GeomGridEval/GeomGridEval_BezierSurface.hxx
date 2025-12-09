@@ -14,6 +14,7 @@
 #ifndef _GeomGridEval_BezierSurface_HeaderFile
 #define _GeomGridEval_BezierSurface_HeaderFile
 
+#include <BSplSLib_Cache.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
@@ -24,7 +25,8 @@
 
 //! @brief Efficient batch evaluator for Bezier surface grid points.
 //!
-//! Uses BSplSLib to evaluate Bezier surfaces (treated as B-Splines).
+//! Uses BSplSLib_Cache for optimized polynomial evaluation.
+//! Bezier surfaces are treated as single-span B-spline surfaces.
 //!
 //! Usage:
 //! @code
@@ -75,9 +77,14 @@ public:
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
 private:
-  Handle(Geom_BezierSurface) myGeom;
-  NCollection_Array1<double> myUParams;
-  NCollection_Array1<double> myVParams;
+  //! Build cache for the Bezier surface (single span).
+  void buildCache() const;
+
+private:
+  Handle(Geom_BezierSurface)       myGeom;
+  NCollection_Array1<double>       myUParams;
+  NCollection_Array1<double>       myVParams;
+  mutable Handle(BSplSLib_Cache)   myCache;
 };
 
 #endif // _GeomGridEval_BezierSurface_HeaderFile

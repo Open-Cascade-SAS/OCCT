@@ -15,6 +15,7 @@
 #define _GeomGridEval_OffsetSurface_HeaderFile
 
 #include <Geom_OffsetSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -22,16 +23,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-#include <memory>
-
-class GeomGridEval_Surface;
-
-//! @brief Efficient batch evaluator for offset surface grid points.
+//! @brief Batch evaluator for offset surface grid points.
 //!
 //! Evaluates the offset surface formula:
 //! P(u,v) = S(u,v) + Offset * Normal(u,v)
 //!
-//! Uses the basis surface's evaluator for batch evaluation of S(u,v) and its derivatives.
+//! Uses GeomGridEval_Surface for batch evaluation of the basis surface,
+//! then applies offset transformation.
 //!
 //! Usage:
 //! @code
@@ -46,10 +44,16 @@ public:
 
   //! Constructor with geometry.
   //! @param theOffset the offset surface geometry to evaluate
-  Standard_EXPORT GeomGridEval_OffsetSurface(const Handle(Geom_OffsetSurface)& theOffset);
-
-  //! Destructor
-  Standard_EXPORT ~GeomGridEval_OffsetSurface();
+  GeomGridEval_OffsetSurface(const Handle(Geom_OffsetSurface)& theOffset)
+      : myGeom(theOffset),
+        myOffset(0.0)
+  {
+    if (!myGeom.IsNull())
+    {
+      myOffset = myGeom->Offset();
+      myBasis  = myGeom->BasisSurface();
+    }
+  }
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values
@@ -82,10 +86,11 @@ public:
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
 private:
-  Handle(Geom_OffsetSurface)              myGeom;
-  NCollection_Array1<double>              myUParams;
-  NCollection_Array1<double>              myVParams;
-  std::unique_ptr<GeomGridEval_Surface>   myBasisEval;
+  Handle(Geom_OffsetSurface) myGeom;
+  Handle(Geom_Surface)       myBasis;
+  double                     myOffset;
+  NCollection_Array1<double> myUParams;
+  NCollection_Array1<double> myVParams;
 };
 
 #endif // _GeomGridEval_OffsetSurface_HeaderFile

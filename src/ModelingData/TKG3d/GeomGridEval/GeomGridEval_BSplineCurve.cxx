@@ -220,19 +220,11 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  // Get poles and weights from geometry
-  const int aDegree = myGeom->Degree();
-
-  TColgp_Array1OfPnt aPoles(1, myGeom->NbPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array1OfReal aWeights;
-  const bool           isRational = myGeom->IsRational();
-  if (isRational)
-  {
-    aWeights.Resize(1, myGeom->NbPoles(), false);
-    myGeom->Weights(aWeights);
-  }
+  // Get poles and weights handles directly from geometry
+  const int                            aDegree    = myGeom->Degree();
+  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
+  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
+  const bool                           isRational = myGeom->IsRational();
 
   // Create or update cache
   if (myCache.IsNull())
@@ -240,8 +232,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
     myCache = new BSplCLib_Cache(aDegree,
                                  myGeom->IsPeriodic(),
                                  aFlatKnots,
-                                 aPoles,
-                                 isRational ? &aWeights : nullptr);
+                                 aPoles->Array1(),
+                                 isRational ? &aWeights->Array1() : nullptr);
   }
 
   // Iterate over pre-computed span ranges
@@ -252,8 +244,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
     // Rebuild cache once for this span block using first parameter in range
     myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
                         aFlatKnots,
-                        aPoles,
-                        isRational ? &aWeights : nullptr);
+                        aPoles->Array1(),
+                        isRational ? &aWeights->Array1() : nullptr);
 
     // Evaluate all points in this span block using pre-computed local parameters
     for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
@@ -291,26 +283,19 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const int aDegree = myGeom->Degree();
-
-  TColgp_Array1OfPnt aPoles(1, myGeom->NbPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array1OfReal aWeights;
-  const bool           isRational = myGeom->IsRational();
-  if (isRational)
-  {
-    aWeights.Resize(1, myGeom->NbPoles(), false);
-    myGeom->Weights(aWeights);
-  }
+  // Get poles and weights handles directly from geometry
+  const int                            aDegree    = myGeom->Degree();
+  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
+  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
+  const bool                           isRational = myGeom->IsRational();
 
   if (myCache.IsNull())
   {
     myCache = new BSplCLib_Cache(aDegree,
                                  myGeom->IsPeriodic(),
                                  aFlatKnots,
-                                 aPoles,
-                                 isRational ? &aWeights : nullptr);
+                                 aPoles->Array1(),
+                                 isRational ? &aWeights->Array1() : nullptr);
   }
 
   for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
@@ -319,14 +304,14 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
 
     myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
                         aFlatKnots,
-                        aPoles,
-                        isRational ? &aWeights : nullptr);
+                        aPoles->Array1(),
+                        isRational ? &aWeights->Array1() : nullptr);
 
     for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
       gp_Pnt aPoint;
       gp_Vec aD1;
-      myCache->D1(myParams.Value(i).Param, aPoint, aD1);
+      myCache->D1Local(myParams.Value(i).LocalParam, aPoint, aD1);
       aResults.ChangeValue(i + 1) = {aPoint, aD1};
     }
   }
@@ -360,26 +345,19 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const int aDegree = myGeom->Degree();
-
-  TColgp_Array1OfPnt aPoles(1, myGeom->NbPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array1OfReal aWeights;
-  const bool           isRational = myGeom->IsRational();
-  if (isRational)
-  {
-    aWeights.Resize(1, myGeom->NbPoles(), false);
-    myGeom->Weights(aWeights);
-  }
+  // Get poles and weights handles directly from geometry
+  const int                            aDegree    = myGeom->Degree();
+  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
+  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
+  const bool                           isRational = myGeom->IsRational();
 
   if (myCache.IsNull())
   {
     myCache = new BSplCLib_Cache(aDegree,
                                  myGeom->IsPeriodic(),
                                  aFlatKnots,
-                                 aPoles,
-                                 isRational ? &aWeights : nullptr);
+                                 aPoles->Array1(),
+                                 isRational ? &aWeights->Array1() : nullptr);
   }
 
   for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
@@ -388,14 +366,14 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
 
     myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
                         aFlatKnots,
-                        aPoles,
-                        isRational ? &aWeights : nullptr);
+                        aPoles->Array1(),
+                        isRational ? &aWeights->Array1() : nullptr);
 
     for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2;
-      myCache->D2(myParams.Value(i).Param, aPoint, aD1, aD2);
+      myCache->D2Local(myParams.Value(i).LocalParam, aPoint, aD1, aD2);
       aResults.ChangeValue(i + 1) = {aPoint, aD1, aD2};
     }
   }
@@ -429,26 +407,19 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  const int aDegree = myGeom->Degree();
-
-  TColgp_Array1OfPnt aPoles(1, myGeom->NbPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array1OfReal aWeights;
-  const bool           isRational = myGeom->IsRational();
-  if (isRational)
-  {
-    aWeights.Resize(1, myGeom->NbPoles(), false);
-    myGeom->Weights(aWeights);
-  }
+  // Get poles and weights handles directly from geometry
+  const int                            aDegree    = myGeom->Degree();
+  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
+  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
+  const bool                           isRational = myGeom->IsRational();
 
   if (myCache.IsNull())
   {
     myCache = new BSplCLib_Cache(aDegree,
                                  myGeom->IsPeriodic(),
                                  aFlatKnots,
-                                 aPoles,
-                                 isRational ? &aWeights : nullptr);
+                                 aPoles->Array1(),
+                                 isRational ? &aWeights->Array1() : nullptr);
   }
 
   for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
@@ -457,14 +428,14 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
 
     myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
                         aFlatKnots,
-                        aPoles,
-                        isRational ? &aWeights : nullptr);
+                        aPoles->Array1(),
+                        isRational ? &aWeights->Array1() : nullptr);
 
     for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2, aD3;
-      myCache->D3(myParams.Value(i).Param, aPoint, aD1, aD2, aD3);
+      myCache->D3Local(myParams.Value(i).LocalParam, aPoint, aD1, aD2, aD3);
       aResults.ChangeValue(i + 1) = {aPoint, aD1, aD2, aD3};
     }
   }

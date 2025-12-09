@@ -42,13 +42,10 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierCurve::EvaluateGrid() const
   const int                  aNb = myParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
-  const TColgp_Array1OfPnt&   aPoles = myGeom->Poles();
-  const TColStd_Array1OfReal* aW     = myGeom->Weights();
-
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
-    BSplCLib::BezierD0(myParams.Value(i), aPoles, aW, aP);
+    myGeom->D0(myParams.Value(i), aP);
     aResult.SetValue(i, aP);
   }
   return aResult;
@@ -66,14 +63,11 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                   aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
-  const TColgp_Array1OfPnt&   aPoles = myGeom->Poles();
-  const TColStd_Array1OfReal* aW     = myGeom->Weights();
-
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1;
-    BSplCLib::BezierD1(myParams.Value(i), aPoles, aW, aP, aD1);
+    myGeom->D1(myParams.Value(i), aP, aD1);
     aResult.ChangeValue(i) = {aP, aD1};
   }
   return aResult;
@@ -91,14 +85,11 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                   aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
-  const TColgp_Array1OfPnt&   aPoles = myGeom->Poles();
-  const TColStd_Array1OfReal* aW     = myGeom->Weights();
-
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1, aD2;
-    BSplCLib::BezierD2(myParams.Value(i), aPoles, aW, aP, aD1, aD2);
+    myGeom->D2(myParams.Value(i), aP, aD1, aD2);
     aResult.ChangeValue(i) = {aP, aD1, aD2};
   }
   return aResult;
@@ -116,14 +107,11 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
   const int                                   aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
-  const TColgp_Array1OfPnt&   aPoles = myGeom->Poles();
-  const TColStd_Array1OfReal* aW     = myGeom->Weights();
-
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Pnt aP;
     gp_Vec aD1, aD2, aD3;
-    BSplCLib::BezierD3(myParams.Value(i), aPoles, aW, aP, aD1, aD2, aD3);
+    myGeom->D3(myParams.Value(i), aP, aD1, aD2, aD3);
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }
   return aResult;
