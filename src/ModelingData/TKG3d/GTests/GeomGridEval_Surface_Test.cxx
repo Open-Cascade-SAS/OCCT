@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
@@ -414,9 +415,8 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
   }
 }
 
-TEST(GeomGridEval_SurfaceTest, TorusFallbackDispatch)
+TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 {
-  // Torus is not optimized, should use fallback
   Handle(Geom_ToroidalSurface) aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
   GeomAdaptor_Surface anAdaptor(aTorus);
@@ -438,6 +438,35 @@ TEST(GeomGridEval_SurfaceTest, TorusFallbackDispatch)
     for (int iV = 1; iV <= 9; ++iV)
     {
       gp_Pnt aExpected = aTorus->Value(aUParams.Value(iU), aVParams.Value(iV));
+      EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_SurfaceTest, ConeFallbackDispatch)
+{
+  // Cone is not optimized, should use fallback
+  Handle(Geom_ConicalSurface) aCone =
+    new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
+  GeomAdaptor_Surface anAdaptor(aCone);
+
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_Cone);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 6; ++iV)
+    {
+      gp_Pnt aExpected = aCone->Value(aUParams.Value(iU), aVParams.Value(iV));
       EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
     }
   }

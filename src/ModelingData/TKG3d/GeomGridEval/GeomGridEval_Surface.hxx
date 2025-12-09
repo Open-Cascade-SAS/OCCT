@@ -21,6 +21,7 @@
 #include <GeomGridEval_OtherSurface.hxx>
 #include <GeomGridEval_Plane.hxx>
 #include <GeomGridEval_Sphere.hxx>
+#include <GeomGridEval_Torus.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -39,6 +40,7 @@
 //! - Plane: Direct analytical formula
 //! - Cylinder: Analytical formula
 //! - Sphere: Trigonometric formula
+//! - Torus: Analytical formula
 //! - BSplineSurface: Optimized batch evaluation with span-based caching
 //! - Other: Fallback using Adaptor3d_Surface::D0
 //!
@@ -59,6 +61,7 @@ public:
                                         GeomGridEval_Plane,          // Plane surface
                                         GeomGridEval_Cylinder,       // Cylindrical surface
                                         GeomGridEval_Sphere,         // Spherical surface
+                                        GeomGridEval_Torus,          // Toroidal surface
                                         GeomGridEval_BSplineSurface, // B-spline surface
                                         GeomGridEval_OtherSurface>;  // Fallback for other types
 

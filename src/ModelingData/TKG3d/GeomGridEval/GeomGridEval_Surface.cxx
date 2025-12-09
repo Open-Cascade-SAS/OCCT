@@ -16,6 +16,7 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 
 //==================================================================================================
 
@@ -44,6 +45,13 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       // Create Handle(Geom_SphericalSurface) from gp_Sphere
       Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
       myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
+      break;
+    }
+    case GeomAbs_Torus:
+    {
+      // Create Handle(Geom_ToroidalSurface) from gp_Torus
+      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface.Torus());
+      myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
       break;
     }
     case GeomAbs_BSplineSurface:

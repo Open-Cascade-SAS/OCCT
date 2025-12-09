@@ -19,6 +19,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Cylinder.cxx
   GeomGridEval_Sphere.hxx
   GeomGridEval_Sphere.cxx
+  GeomGridEval_Torus.hxx
+  GeomGridEval_Torus.cxx
   GeomGridEval_BSplineSurface.hxx
   GeomGridEval_BSplineSurface.cxx
   GeomGridEval_OtherSurface.hxx
