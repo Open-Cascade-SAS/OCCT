@@ -64,13 +64,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible curve evaluators.
-  using EvaluatorVariant = std::variant<std::monostate,             // Uninitialized state
-                                        GeomGridEval_Line,     // Line curve
-                                        GeomGridEval_Circle,   // Circle curve
-                                        GeomGridEval_Ellipse,  // Ellipse curve
-                                        GeomGridEval_Hyperbola, // Hyperbola curve
-                                        GeomGridEval_Parabola,  // Parabola curve
-                                        GeomGridEval_BezierCurve, // Bezier curve
+  using EvaluatorVariant = std::variant<std::monostate,            // Uninitialized state
+                                        GeomGridEval_Line,         // Line curve
+                                        GeomGridEval_Circle,       // Circle curve
+                                        GeomGridEval_Ellipse,      // Ellipse curve
+                                        GeomGridEval_Hyperbola,    // Hyperbola curve
+                                        GeomGridEval_Parabola,     // Parabola curve
+                                        GeomGridEval_BezierCurve,  // Bezier curve
                                         GeomGridEval_BSplineCurve, // B-spline curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 

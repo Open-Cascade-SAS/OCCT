@@ -144,7 +144,8 @@ public:
                                gp_Vec& theTangent,
                                gp_Vec& theCurvature) const;
 
-  //! Calculates the 3D point, first, second and third derivatives using pre-computed local parameter.
+  //! Calculates the 3D point, first, second and third derivatives using pre-computed local
+  //! parameter.
   //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
   //! @param[out] thePoint      the point on the curve
   //! @param[out] theTangent    first derivative (tangent vector)

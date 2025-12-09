@@ -130,8 +130,7 @@ TEST(GeomGridEval_LineTest, NonOriginLine)
 TEST(GeomGridEval_CircleTest, BasicEvaluation)
 {
   // Circle in XY plane, radius 2, center at origin
-  Handle(Geom_Circle) aGeomCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
   GeomGridEval_Circle anEval(aGeomCircle);
   EXPECT_FALSE(anEval.Geometry().IsNull());
@@ -266,7 +265,7 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
 
 TEST(GeomGridEval_CurveTest, LineDispatch)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_Line)         aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
 
   GeomGridEval_Curve anEval;
@@ -290,8 +289,7 @@ TEST(GeomGridEval_CurveTest, LineDispatch)
 
 TEST(GeomGridEval_CurveTest, CircleDispatch)
 {
-  Handle(Geom_Circle) aGeomCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
 
   GeomGridEval_Curve anEval;
@@ -314,7 +312,7 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
 
 TEST(GeomGridEval_CurveTest, BSplineDispatch)
 {
-  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
 
   GeomGridEval_Curve anEval;
@@ -385,8 +383,7 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
 
 TEST(GeomGridEval_CurveTest, ParabolaDispatch)
 {
-  Handle(Geom_Parabola) aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aParab);
 
   GeomGridEval_Curve anEval;
@@ -415,7 +412,7 @@ TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
   aPoles.SetValue(2, gp_Pnt(1, 2, 0));
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
-  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  Handle(Geom_BezierCurve)  aBezier   = new Geom_BezierCurve(aPoles);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aBezier);
 
   GeomGridEval_Curve anEval;
@@ -439,8 +436,8 @@ TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
 TEST(GeomGridEval_CurveTest, OffsetCurveFallbackDispatch)
 {
   // Offset curve is not optimized, should use fallback
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_OffsetCurve) anOffset = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
+  Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
 
   GeomGridEval_Curve anEval;
@@ -490,7 +487,7 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
 
 TEST(GeomGridEval_CurveTest, EmptyParams)
 {
-  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_Line)         aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
 
   GeomGridEval_Curve anEval;
@@ -510,7 +507,7 @@ TEST(GeomGridEval_CurveTest, EmptyParams)
 TEST(GeomGridEval_BSplineCurveTest, RationalBSpline)
 {
   // Create a rational B-spline (NURBS circle approximation)
-  TColgp_Array1OfPnt  aPoles(1, 4);
+  TColgp_Array1OfPnt   aPoles(1, 4);
   TColStd_Array1OfReal aWeights(1, 4);
 
   aPoles.SetValue(1, gp_Pnt(1, 0, 0));
@@ -670,8 +667,7 @@ TEST(GeomGridEval_LineTest, DerivativeD2D3)
 
 TEST(GeomGridEval_CircleTest, DerivativeD1)
 {
-  Handle(Geom_Circle) aGeomCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams(1, 5);
@@ -697,8 +693,7 @@ TEST(GeomGridEval_CircleTest, DerivativeD1)
 
 TEST(GeomGridEval_CircleTest, DerivativeD2)
 {
-  Handle(Geom_Circle) aGeomCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -786,8 +781,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
 
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 {
-  Handle(Geom_Circle) aGeomCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
 
   GeomGridEval_Curve anEval;
@@ -811,7 +805,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 {
-  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
 
   GeomGridEval_Curve anEval;

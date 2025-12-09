@@ -53,13 +53,13 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Cone::EvaluateGrid() const
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Extract cone data
-  const gp_Cone& aCone       = myGeom->Cone();
-  const gp_Pnt&  aCenter     = aCone.Location();
-  const gp_Dir&  aXDir       = aCone.Position().XDirection();
-  const gp_Dir&  aYDir       = aCone.Position().YDirection();
-  const gp_Dir&  aZDir       = aCone.Position().Direction();
-  const double   aRefRadius  = aCone.RefRadius();
-  const double   aSemiAngle  = aCone.SemiAngle();
+  const gp_Cone& aCone      = myGeom->Cone();
+  const gp_Pnt&  aCenter    = aCone.Location();
+  const gp_Dir&  aXDir      = aCone.Position().XDirection();
+  const gp_Dir&  aYDir      = aCone.Position().YDirection();
+  const gp_Dir&  aZDir      = aCone.Position().Direction();
+  const double   aRefRadius = aCone.RefRadius();
+  const double   aSemiAngle = aCone.SemiAngle();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -102,11 +102,12 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Cone::EvaluateGrid() const
 
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double K = aKv.Value(iV);
+      const double K    = aKv.Value(iV);
       const double ZOff = aZOffset.Value(iV);
 
       // P = Center + K(v) * DirU + ZOffset(v) * ZDir
-      aResult.SetValue(iU, iV,
+      aResult.SetValue(iU,
+                       iV,
                        gp_Pnt(aCX + K * dirUX + ZOff * aZX,
                               aCY + K * dirUY + ZOff * aZY,
                               aCZ + K * dirUZ + ZOff * aZZ));
@@ -129,13 +130,13 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Cone::EvaluateGridD1() con
 
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
-  const gp_Cone& aCone       = myGeom->Cone();
-  const gp_Pnt&  aCenter     = aCone.Location();
-  const gp_Dir&  aXDir       = aCone.Position().XDirection();
-  const gp_Dir&  aYDir       = aCone.Position().YDirection();
-  const gp_Dir&  aZDir       = aCone.Position().Direction();
-  const double   aRefRadius  = aCone.RefRadius();
-  const double   aSemiAngle  = aCone.SemiAngle();
+  const gp_Cone& aCone      = myGeom->Cone();
+  const gp_Pnt&  aCenter    = aCone.Location();
+  const gp_Dir&  aXDir      = aCone.Position().XDirection();
+  const gp_Dir&  aYDir      = aCone.Position().YDirection();
+  const gp_Dir&  aZDir      = aCone.Position().Direction();
+  const double   aRefRadius = aCone.RefRadius();
+  const double   aSemiAngle = aCone.SemiAngle();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -199,11 +200,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Cone::EvaluateGridD1() con
       const double dU2 = K * dDirUY;
       const double dU3 = K * dDirUZ;
 
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(pX, pY, pZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3)
-      };
+      aResult.ChangeValue(iU,
+                          iV) = {gp_Pnt(pX, pY, pZ), gp_Vec(dU1, dU2, dU3), gp_Vec(dV1, dV2, dV3)};
     }
   }
   return aResult;
@@ -223,13 +221,13 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cone::EvaluateGridD2() con
 
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
-  const gp_Cone& aCone       = myGeom->Cone();
-  const gp_Pnt&  aCenter     = aCone.Location();
-  const gp_Dir&  aXDir       = aCone.Position().XDirection();
-  const gp_Dir&  aYDir       = aCone.Position().YDirection();
-  const gp_Dir&  aZDir       = aCone.Position().Direction();
-  const double   aRefRadius  = aCone.RefRadius();
-  const double   aSemiAngle  = aCone.SemiAngle();
+  const gp_Cone& aCone      = myGeom->Cone();
+  const gp_Pnt&  aCenter    = aCone.Location();
+  const gp_Dir&  aXDir      = aCone.Position().XDirection();
+  const gp_Dir&  aYDir      = aCone.Position().YDirection();
+  const gp_Dir&  aZDir      = aCone.Position().Direction();
+  const double   aRefRadius = aCone.RefRadius();
+  const double   aSemiAngle = aCone.SemiAngle();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -311,14 +309,12 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cone::EvaluateGridD2() con
       const double d2U2 = K * d2DirUY;
       const double d2U3 = K * d2DirUZ;
 
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(pX, pY, pZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3),
-        gp_Vec(d2U1, d2U2, d2U3),
-        aZeroVec, // D2V
-        gp_Vec(d2UV1, d2UV2, d2UV3)
-      };
+      aResult.ChangeValue(iU, iV) = {gp_Pnt(pX, pY, pZ),
+                                     gp_Vec(dU1, dU2, dU3),
+                                     gp_Vec(dV1, dV2, dV3),
+                                     gp_Vec(d2U1, d2U2, d2U3),
+                                     aZeroVec, // D2V
+                                     gp_Vec(d2UV1, d2UV2, d2UV3)};
     }
   }
   return aResult;

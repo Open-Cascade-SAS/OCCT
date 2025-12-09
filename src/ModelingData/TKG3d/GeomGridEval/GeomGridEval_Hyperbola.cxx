@@ -82,7 +82,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -111,13 +111,12 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1
     // P = Center + MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir
     // D1 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-             aMajR * sinhU * aXY + aMinR * coshU * aYY,
-             aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
+                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
   }
   return aResult;
 }
@@ -131,7 +130,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -161,16 +160,15 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2
     // D1 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir
     // D2 = MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir = (P - Center)
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-             aMajR * sinhU * aXY + aMinR * coshU * aYY,
-             aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
-      gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
-             aMajR * coshU * aXY + aMinR * sinhU * aYY,
-             aMajR * coshU * aXZ + aMinR * sinhU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
+                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
+                              gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                                     aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                                     aMajR * coshU * aXZ + aMinR * sinhU * aYZ)};
   }
   return aResult;
 }
@@ -184,7 +182,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -215,19 +213,18 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
     // D2 = MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir
     // D3 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir = D1
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-             aMajR * sinhU * aXY + aMinR * coshU * aYY,
-             aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
-      gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
-             aMajR * coshU * aXY + aMinR * sinhU * aYY,
-             aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-             aMajR * sinhU * aXY + aMinR * coshU * aYY,
-             aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
+                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
+                              gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                                     aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                                     aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
+                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
   }
   return aResult;
 }

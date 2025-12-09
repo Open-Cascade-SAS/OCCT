@@ -82,7 +82,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1()
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -111,13 +111,12 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1()
     // P = Center + MajorR * cos(u) * XDir + MinorR * sin(u) * YDir
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-             -aMajR * sinU * aXY + aMinR * cosU * aYY,
-             -aMajR * sinU * aXZ + aMinR * cosU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
+                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ)};
   }
   return aResult;
 }
@@ -131,7 +130,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2()
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -161,16 +160,15 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2()
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir = -(P - Center)
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-             -aMajR * sinU * aXY + aMinR * cosU * aYY,
-             -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
-      gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-             -aMajR * cosU * aXY - aMinR * sinU * aYY,
-             -aMajR * cosU * aXZ - aMinR * sinU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
+                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
+                              gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
+                                     -aMajR * cosU * aXY - aMinR * sinU * aYY,
+                                     -aMajR * cosU * aXZ - aMinR * sinU * aYZ)};
   }
   return aResult;
 }
@@ -184,7 +182,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3()
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                   aNb = myParams.Size();
+  const int                                 aNb = myParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -215,19 +213,18 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3()
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir
     // D3 =  MajorR * sin(u) * XDir - MinorR * cos(u) * YDir = -D1
 
-    aResult.ChangeValue(i) = {
-      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-             -aMajR * sinU * aXY + aMinR * cosU * aYY,
-             -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
-      gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-             -aMajR * cosU * aXY - aMinR * sinU * aYY,
-             -aMajR * cosU * aXZ - aMinR * sinU * aYZ),
-      gp_Vec(aMajR * sinU * aXX - aMinR * cosU * aYX,
-             aMajR * sinU * aXY - aMinR * cosU * aYY,
-             aMajR * sinU * aXZ - aMinR * cosU * aYZ)};
+    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
+                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
+                              gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
+                                     -aMajR * cosU * aXY - aMinR * sinU * aYY,
+                                     -aMajR * cosU * aXZ - aMinR * sinU * aYZ),
+                              gp_Vec(aMajR * sinU * aXX - aMinR * cosU * aYX,
+                                     aMajR * sinU * aXY - aMinR * cosU * aYY,
+                                     aMajR * sinU * aXZ - aMinR * cosU * aYZ)};
   }
   return aResult;
 }

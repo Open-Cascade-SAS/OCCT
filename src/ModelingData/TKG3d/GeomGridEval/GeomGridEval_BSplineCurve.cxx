@@ -81,7 +81,7 @@ void GeomGridEval_BSplineCurve::prepare() const
 //==================================================================================================
 
 int GeomGridEval_BSplineCurve::locateSpan(double                      theParam,
-                                               const TColStd_Array1OfReal& theFlatKnots) const
+                                          const TColStd_Array1OfReal& theFlatKnots) const
 {
   int    aSpanIndex = 0;
   double aNewParam  = theParam;
@@ -98,8 +98,8 @@ int GeomGridEval_BSplineCurve::locateSpan(double                      theParam,
 //==================================================================================================
 
 int GeomGridEval_BSplineCurve::locateSpanWithHint(double                      theParam,
-                                                       int                         theHint,
-                                                       const TColStd_Array1OfReal& theFlatKnots) const
+                                                  int                         theHint,
+                                                  const TColStd_Array1OfReal& theFlatKnots) const
 {
   const int aDegree = myGeom->Degree();
   const int aLower  = theFlatKnots.Lower() + aDegree;

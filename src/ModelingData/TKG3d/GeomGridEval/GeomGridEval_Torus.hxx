@@ -25,7 +25,8 @@
 //! @brief Efficient batch evaluator for torus grid points.
 //!
 //! Uses analytical formula:
-//! P(u,v) = Location + (MajorRadius + MinorRadius * cos(v)) * (cos(u) * XDir + sin(u) * YDir) + MinorRadius * sin(v) * ZDir
+//! P(u,v) = Location + (MajorRadius + MinorRadius * cos(v)) * (cos(u) * XDir + sin(u) * YDir) +
+//! MinorRadius * sin(v) * ZDir
 //!
 //! Where U is major angle (0 to 2*PI) and V is minor angle (0 to 2*PI).
 //!

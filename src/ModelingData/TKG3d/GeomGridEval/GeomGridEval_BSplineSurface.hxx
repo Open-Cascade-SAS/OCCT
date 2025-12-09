@@ -29,7 +29,8 @@
 //! - Pre-computing span indices during parameter setup (no runtime binary search)
 //! - Pre-grouping parameters by span for cache-optimal iteration
 //! - Rebuilding cache only once per span block (not per point)
-//! - Using HArrayUFlatKnots()/HArrayVFlatKnots() from Geom_BSplineSurface for direct flat knot access
+//! - Using HArrayUFlatKnots()/HArrayVFlatKnots() from Geom_BSplineSurface for direct flat knot
+//! access
 //!
 //! Usage:
 //! @code

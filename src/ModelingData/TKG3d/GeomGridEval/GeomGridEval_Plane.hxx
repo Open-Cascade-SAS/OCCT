@@ -166,8 +166,9 @@ public:
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v = myVParams.Value(iV);
-        aResult.ChangeValue(iU, iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V};
+        const double v          = myVParams.Value(iV);
+        aResult.ChangeValue(iU,
+                            iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V};
       }
     }
     return aResult;
@@ -218,8 +219,9 @@ public:
       for (int iV = 1; iV <= aNbV; ++iV)
       {
         const double v = myVParams.Value(iV);
-        aResult.ChangeValue(iU, iV) = {
-          gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V, aZero, aZero, aZero};
+        aResult.ChangeValue(
+          iU,
+          iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V, aZero, aZero, aZero};
       }
     }
     return aResult;

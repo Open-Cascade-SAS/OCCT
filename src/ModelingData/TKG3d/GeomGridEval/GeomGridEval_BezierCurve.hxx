@@ -75,9 +75,9 @@ private:
   //! Build the cache if not already built.
   void buildCache() const;
 
-  Handle(Geom_BezierCurve)        myGeom;
-  NCollection_Array1<double>      myParams;
-  mutable Handle(BSplCLib_Cache)  myCache;
+  Handle(Geom_BezierCurve)       myGeom;
+  NCollection_Array1<double>     myParams;
+  mutable Handle(BSplCLib_Cache) myCache;
 };
 
 #endif // _GeomGridEval_BezierCurve_HeaderFile

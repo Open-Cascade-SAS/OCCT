@@ -66,7 +66,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible surface evaluators.
-  using EvaluatorVariant = std::variant<std::monostate,                   // Uninitialized state
+  using EvaluatorVariant = std::variant<std::monostate,              // Uninitialized state
                                         GeomGridEval_Plane,          // Plane surface
                                         GeomGridEval_Cylinder,       // Cylindrical surface
                                         GeomGridEval_Sphere,         // Spherical surface

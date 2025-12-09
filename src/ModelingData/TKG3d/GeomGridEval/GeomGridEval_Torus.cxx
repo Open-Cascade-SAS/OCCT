@@ -53,11 +53,11 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid() const
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Extract torus data
-  const gp_Torus& aTorus      = myGeom->Torus();
-  const gp_Pnt&   aCenter     = aTorus.Location();
-  const gp_Dir&   aXDir       = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir       = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir       = aTorus.Position().Direction();
+  const gp_Torus& aTorus       = myGeom->Torus();
+  const gp_Pnt&   aCenter      = aTorus.Location();
+  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir        = aTorus.Position().Direction();
   const double    aMajorRadius = aTorus.MajorRadius();
   const double    aMinorRadius = aTorus.MinorRadius();
 
@@ -104,7 +104,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid() const
       const double K = aMajorRadius + aMinorRadius * cosV;
 
       // P = Center + K * (cosU*XDir + sinU*YDir) + MinorRadius * sinV * ZDir
-      aResult.SetValue(iU, iV,
+      aResult.SetValue(iU,
+                       iV,
                        gp_Pnt(aCX + K * aDirUX + aMinorRadius * sinV * aZX,
                               aCY + K * aDirUY + aMinorRadius * sinV * aZY,
                               aCZ + K * aDirUZ + aMinorRadius * sinV * aZZ));
@@ -127,11 +128,11 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1() co
 
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
-  const gp_Torus& aTorus      = myGeom->Torus();
-  const gp_Pnt&   aCenter     = aTorus.Location();
-  const gp_Dir&   aXDir       = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir       = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir       = aTorus.Position().Direction();
+  const gp_Torus& aTorus       = myGeom->Torus();
+  const gp_Pnt&   aCenter      = aTorus.Location();
+  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir        = aTorus.Position().Direction();
   const double    aMajorRadius = aTorus.MajorRadius();
   const double    aMinorRadius = aTorus.MinorRadius();
 
@@ -196,11 +197,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1() co
       const double dV2 = -aMinorRadius * sinV * dirUY + aMinorRadius * cosV * aZY;
       const double dV3 = -aMinorRadius * sinV * dirUZ + aMinorRadius * cosV * aZZ;
 
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(pX, pY, pZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3)
-      };
+      aResult.ChangeValue(iU,
+                          iV) = {gp_Pnt(pX, pY, pZ), gp_Vec(dU1, dU2, dU3), gp_Vec(dV1, dV2, dV3)};
     }
   }
   return aResult;
@@ -220,11 +218,11 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2() co
 
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
-  const gp_Torus& aTorus      = myGeom->Torus();
-  const gp_Pnt&   aCenter     = aTorus.Location();
-  const gp_Dir&   aXDir       = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir       = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir       = aTorus.Position().Direction();
+  const gp_Torus& aTorus       = myGeom->Torus();
+  const gp_Pnt&   aCenter      = aTorus.Location();
+  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir        = aTorus.Position().Direction();
   const double    aMajorRadius = aTorus.MajorRadius();
   const double    aMinorRadius = aTorus.MinorRadius();
 
@@ -308,14 +306,12 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2() co
       const double d2UV2 = -aMinorRadius * sinV * dDirUY;
       const double d2UV3 = -aMinorRadius * sinV * dDirUZ;
 
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(pX, pY, pZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3),
-        gp_Vec(d2U1, d2U2, d2U3),
-        gp_Vec(d2V1, d2V2, d2V3),
-        gp_Vec(d2UV1, d2UV2, d2UV3)
-      };
+      aResult.ChangeValue(iU, iV) = {gp_Pnt(pX, pY, pZ),
+                                     gp_Vec(dU1, dU2, dU3),
+                                     gp_Vec(dV1, dV2, dV3),
+                                     gp_Vec(d2U1, d2U2, d2U3),
+                                     gp_Vec(d2V1, d2V2, d2V3),
+                                     gp_Vec(d2UV1, d2UV2, d2UV3)};
     }
   }
   return aResult;

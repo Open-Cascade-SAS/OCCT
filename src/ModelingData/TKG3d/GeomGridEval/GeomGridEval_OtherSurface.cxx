@@ -16,7 +16,7 @@
 //==================================================================================================
 
 void GeomGridEval_OtherSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                                 const TColStd_Array1OfReal& theVParams)
+                                            const TColStd_Array1OfReal& theVParams)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();

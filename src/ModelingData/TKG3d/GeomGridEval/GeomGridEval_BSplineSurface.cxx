@@ -46,8 +46,10 @@ struct BSplineSurfData
 //! deciding whether to use cache or direct evaluation based on block size, and invoking
 //! the appropriate evaluation functor.
 //!
-//! @tparam CacheEvalFunc   Functor type for cache-based evaluation: void(int iu, int iv, double uParam, double vParam)
-//! @tparam DirectEvalFunc  Functor type for direct evaluation: void(int iu, int iv, double uParam, double vParam, int uSpanIdx, int vSpanIdx)
+//! @tparam CacheEvalFunc   Functor type for cache-based evaluation: void(int iu, int iv, double
+//! uParam, double vParam)
+//! @tparam DirectEvalFunc  Functor type for direct evaluation: void(int iu, int iv, double uParam,
+//! double vParam, int uSpanIdx, int vSpanIdx)
 //!
 //! @param theUSpanRanges  Pre-computed U span ranges
 //! @param theVSpanRanges  Pre-computed V span ranges
@@ -59,14 +61,14 @@ struct BSplineSurfData
 //! @param theDirectEval   Functor called for direct evaluation (small blocks)
 template <typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSpanBlocks(
-  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&      theUSpanRanges,
-  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&      theVSpanRanges,
-  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>&  theUParams,
-  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>&  theVParams,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&     theUSpanRanges,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&     theVSpanRanges,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>& theUParams,
+  const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>& theVParams,
   const Handle(BSplSLib_Cache)&                                         theCache,
-  const BSplineSurfData&                                                 theData,
-  CacheEvalFunc&&                                                        theCacheEval,
-  DirectEvalFunc&&                                                       theDirectEval)
+  const BSplineSurfData&                                                theData,
+  CacheEvalFunc&&                                                       theCacheEval,
+  DirectEvalFunc&&                                                      theDirectEval)
 {
   const int aNbUSpans = theUSpanRanges.Size();
   const int aNbVSpans = theVSpanRanges.Size();
@@ -111,7 +113,12 @@ void iterateSpanBlocks(
 
           for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
           {
-            theDirectEval(iu, iv, aUParam, theVParams.Value(iv).Param, aUSpanIdx, aVRange.SpanIndex);
+            theDirectEval(iu,
+                          iv,
+                          aUParam,
+                          theVParams.Value(iv).Param,
+                          aUSpanIdx,
+                          aVRange.SpanIndex);
           }
         }
       }
@@ -124,7 +131,7 @@ void iterateSpanBlocks(
 //==================================================================================================
 
 void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                                   const TColStd_Array1OfReal& theVParams)
+                                              const TColStd_Array1OfReal& theVParams)
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
@@ -226,8 +233,8 @@ void GeomGridEval_BSplineSurface::prepare() const
 //==================================================================================================
 
 int GeomGridEval_BSplineSurface::locateSpan(double                      theParam,
-                                                 bool                        theUDir,
-                                                 const TColStd_Array1OfReal& theFlatKnots) const
+                                            bool                        theUDir,
+                                            const TColStd_Array1OfReal& theFlatKnots) const
 {
   int    aSpanIndex = 0;
   double aNewParam  = theParam;
@@ -248,9 +255,9 @@ int GeomGridEval_BSplineSurface::locateSpan(double                      theParam
 //==================================================================================================
 
 int GeomGridEval_BSplineSurface::locateSpanWithHint(double                      theParam,
-                                                         bool                        theUDir,
-                                                         int                         theHint,
-                                                         const TColStd_Array1OfReal& theFlatKnots) const
+                                                    bool                        theUDir,
+                                                    int                         theHint,
+                                                    const TColStd_Array1OfReal& theFlatKnots) const
 {
   const int aDegree = theUDir ? myGeom->UDegree() : myGeom->VDegree();
   const int aLower  = theFlatKnots.Lower() + aDegree;

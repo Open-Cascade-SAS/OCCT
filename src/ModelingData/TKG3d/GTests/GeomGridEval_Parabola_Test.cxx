@@ -41,8 +41,7 @@ TEST(GeomGridEval_ParabolaTest, BasicEvaluation)
 {
   // Parabola in XY plane, Focal=1.0, center at origin
   // Y^2 = 4*F*X => Y^2 = 4X
-  Handle(Geom_Parabola) aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
   // By default in OCCT:
   // XAxis is symmetry axis.
@@ -69,8 +68,7 @@ TEST(GeomGridEval_ParabolaTest, BasicEvaluation)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD1)
 {
-  Handle(Geom_Parabola) aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
@@ -90,8 +88,7 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD1)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD2)
 {
-  Handle(Geom_Parabola) aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
@@ -112,8 +109,7 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD2)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD3)
 {
-  Handle(Geom_Parabola) aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);

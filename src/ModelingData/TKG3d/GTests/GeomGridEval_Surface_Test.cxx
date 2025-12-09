@@ -157,8 +157,8 @@ TEST(GeomGridEval_SphereTest, BasicEvaluation)
   GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);           // Longitude
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);     // Latitude
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5); // Latitude
   anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
@@ -310,8 +310,8 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomPlane);
+  Handle(Geom_Plane)          aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(GeomAdaptor_Surface) anAdaptor  = new GeomAdaptor_Surface(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -365,7 +365,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
-  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  Handle(Geom_BSplineSurface) aSurf     = CreateSimpleBSplineSurface();
   Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
 
   GeomGridEval_Surface anEval;
@@ -397,7 +397,7 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  Handle(Geom_BezierSurface)  aBezier   = new Geom_BezierSurface(aPoles);
   Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aBezier);
 
   GeomGridEval_Surface anEval;
@@ -507,7 +507,8 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
 {
   // Surface of Revolution is not optimized, should use fallback
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(0, 0, 1)); // Line at x=1 parallel to Z
+  Handle(Geom_Line) aLine =
+    new Geom_Line(gp_Pnt(1, 0, 0), gp_Dir(0, 0, 1)); // Line at x=1 parallel to Z
   Handle(Geom_SurfaceOfRevolution) aRevSurf =
     new Geom_SurfaceOfRevolution(aLine, gp::OZ()); // Revolving around Z -> Cylinder-like
 
@@ -542,7 +543,7 @@ TEST(GeomGridEval_SurfaceTest, DirectHandleInit)
   // Initialize directly from Handle(Geom_Surface)
   GeomGridEval_Surface anEval;
   anEval.Initialize(aPlane);
-  
+
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_Plane);
 
@@ -552,7 +553,7 @@ TEST(GeomGridEval_SurfaceTest, DirectHandleInit)
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
   EXPECT_FALSE(aGrid.IsEmpty());
-  
+
   // Verify value
   EXPECT_NEAR(aGrid.Value(1, 1).Z(), 0.0, THE_TOLERANCE);
 }
@@ -570,8 +571,8 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 
 TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomPlane);
+  Handle(Geom_Plane)          aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(GeomAdaptor_Surface) anAdaptor  = new GeomAdaptor_Surface(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -965,7 +966,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
-  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  Handle(Geom_BSplineSurface) aSurf     = CreateSimpleBSplineSurface();
   Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
 
   GeomGridEval_Surface anEval;

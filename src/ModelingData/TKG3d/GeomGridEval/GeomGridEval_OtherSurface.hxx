@@ -77,9 +77,9 @@ public:
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
 private:
-  Handle(Adaptor3d_Surface)   mySurface;
-  NCollection_Array1<double>  myUParams;
-  NCollection_Array1<double>  myVParams;
+  Handle(Adaptor3d_Surface)  mySurface;
+  NCollection_Array1<double> myUParams;
+  NCollection_Array1<double> myVParams;
 };
 
 #endif // _GeomGridEval_OtherSurface_HeaderFile

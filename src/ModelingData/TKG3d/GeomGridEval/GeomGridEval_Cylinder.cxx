@@ -91,10 +91,10 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Cylinder::EvaluateGrid() const
       const double v = myVParams.Value(iV);
 
       // P = Center + (Circle Point) + v * ZDir
-      aResult.SetValue(iU, iV,
-                       gp_Pnt(aCX + aCircleX + v * aZX,
-                              aCY + aCircleY + v * aZY,
-                              aCZ + aCircleZ + v * aZZ));
+      aResult.SetValue(
+        iU,
+        iV,
+        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ));
     }
   }
   return aResult;
@@ -161,12 +161,9 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Cylinder::EvaluateGridD1()
       const double v = myVParams.Value(iV);
 
       aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(aCX + aCircleX + v * aZX,
-               aCY + aCircleY + v * aZY,
-               aCZ + aCircleZ + v * aZZ),
+        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
         gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3)
-      };
+        gp_Vec(dV1, dV2, dV3)};
     }
   }
   return aResult;
@@ -239,9 +236,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cylinder::EvaluateGridD2()
       const double v = myVParams.Value(iV);
 
       aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(aCX + aCircleX + v * aZX,
-               aCY + aCircleY + v * aZY,
-               aCZ + aCircleZ + v * aZZ),
+        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
         gp_Vec(dU1, dU2, dU3),
         gp_Vec(dV1, dV2, dV3),
         gp_Vec(d2U1, d2U2, d2U3),

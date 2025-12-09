@@ -74,9 +74,9 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
       const GeomGridEval::SurfD1& aBasis = aBasisD1.Value(i, j);
 
       // Compute normal N = D1U ^ D1V
-      gp_Vec  aN    = aBasis.D1U.Crossed(aBasis.D1V);
-      double  aNMag = aN.Magnitude();
-      gp_Pnt  aP    = aBasis.Point;
+      gp_Vec aN    = aBasis.D1U.Crossed(aBasis.D1V);
+      double aNMag = aN.Magnitude();
+      gp_Pnt aP    = aBasis.Point;
 
       if (aNMag > THE_NORMAL_TOL)
       {

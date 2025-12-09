@@ -44,53 +44,45 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
 
   switch (myCurveType)
   {
-    case GeomAbs_Line:
-    {
+    case GeomAbs_Line: {
       // Create Handle(Geom_Line) from gp_Lin
       Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve->Line());
       myEvaluator                 = GeomGridEval_Line(aGeomLine);
       break;
     }
-    case GeomAbs_Circle:
-    {
+    case GeomAbs_Circle: {
       // Create Handle(Geom_Circle) from gp_Circ
       Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve->Circle());
       myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
       break;
     }
-    case GeomAbs_Ellipse:
-    {
+    case GeomAbs_Ellipse: {
       // Create Handle(Geom_Ellipse) from gp_Elips
       Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve->Ellipse());
       myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
       break;
     }
-    case GeomAbs_Hyperbola:
-    {
+    case GeomAbs_Hyperbola: {
       // Create Handle(Geom_Hyperbola) from gp_Hypr
       Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve->Hyperbola());
       myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
       break;
     }
-    case GeomAbs_Parabola:
-    {
+    case GeomAbs_Parabola: {
       // Create Handle(Geom_Parabola) from gp_Parab
       Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve->Parabola());
       myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
       break;
     }
-    case GeomAbs_BezierCurve:
-    {
+    case GeomAbs_BezierCurve: {
       myEvaluator = GeomGridEval_BezierCurve(theCurve->Bezier());
       break;
     }
-    case GeomAbs_BSplineCurve:
-    {
+    case GeomAbs_BSplineCurve: {
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
       break;
     }
-    default:
-    {
+    default: {
       // Fallback: use OtherCurve. Taking handle directly.
       myEvaluator = GeomGridEval_OtherCurve(theCurve);
       break;
@@ -148,8 +140,8 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     // Create adaptor for general curves
     Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(theCurve);
-    myCurveType = anAdaptor->GetType();
-    myEvaluator = GeomGridEval_OtherCurve(anAdaptor);
+    myCurveType                         = anAdaptor->GetType();
+    myEvaluator                         = GeomGridEval_OtherCurve(anAdaptor);
   }
 }
 
@@ -158,8 +150,7 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
 void GeomGridEval_Curve::SetParams(const TColStd_Array1OfReal& theParams)
 {
   std::visit(
-    [&theParams](auto& theEval)
-    {
+    [&theParams](auto& theEval) {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
       {
@@ -181,8 +172,7 @@ bool GeomGridEval_Curve::IsInitialized() const
 int GeomGridEval_Curve::NbParams() const
 {
   return std::visit(
-    [](const auto& theEval) -> int
-    {
+    [](const auto& theEval) -> int {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
@@ -201,8 +191,7 @@ int GeomGridEval_Curve::NbParams() const
 NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid() const
 {
   return std::visit(
-    [](const auto& theEval) -> NCollection_Array1<gp_Pnt>
-    {
+    [](const auto& theEval) -> NCollection_Array1<gp_Pnt> {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
@@ -221,8 +210,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid() const
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1() const
 {
   return std::visit(
-    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD1>
-    {
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD1> {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
@@ -241,8 +229,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1() c
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2() const
 {
   return std::visit(
-    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD2>
-    {
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD2> {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
@@ -261,8 +248,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2() c
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3() const
 {
   return std::visit(
-    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD3>
-    {
+    [](const auto& theEval) -> NCollection_Array1<GeomGridEval::CurveD3> {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {

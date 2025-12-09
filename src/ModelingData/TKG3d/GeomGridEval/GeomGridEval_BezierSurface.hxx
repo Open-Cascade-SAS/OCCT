@@ -81,10 +81,10 @@ private:
   void buildCache() const;
 
 private:
-  Handle(Geom_BezierSurface)       myGeom;
-  NCollection_Array1<double>       myUParams;
-  NCollection_Array1<double>       myVParams;
-  mutable Handle(BSplSLib_Cache)   myCache;
+  Handle(Geom_BezierSurface)     myGeom;
+  NCollection_Array1<double>     myUParams;
+  NCollection_Array1<double>     myVParams;
+  mutable Handle(BSplSLib_Cache) myCache;
 };
 
 #endif // _GeomGridEval_BezierSurface_HeaderFile

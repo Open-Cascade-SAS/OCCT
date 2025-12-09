@@ -25,7 +25,8 @@
 //! @brief Efficient batch evaluator for cone grid points.
 //!
 //! Uses analytical formula:
-//! P(u,v) = Location + (RefRadius + v * sin(SemiAngle)) * (cos(u) * XDir + sin(u) * YDir) + v * cos(SemiAngle) * ZDir
+//! P(u,v) = Location + (RefRadius + v * sin(SemiAngle)) * (cos(u) * XDir + sin(u) * YDir) + v *
+//! cos(SemiAngle) * ZDir
 //!
 //! Where U is angle (0 to 2*PI) and V is linear parameter along the ruling.
 //!
