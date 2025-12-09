@@ -33,6 +33,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_Torus.cxx
   GeomGridEval_BezierSurface.hxx
   GeomGridEval_BezierSurface.cxx
+  GeomGridEval_OffsetSurface.hxx
+  GeomGridEval_OffsetSurface.cxx
   GeomGridEval_BSplineSurface.hxx
   GeomGridEval_BSplineSurface.cxx
   GeomGridEval_OtherSurface.hxx

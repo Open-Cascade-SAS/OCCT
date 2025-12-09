@@ -18,6 +18,7 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
@@ -90,12 +91,29 @@ void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurfac
       myEvaluator = GeomGridEval_BSplineSurface(theSurface->BSpline());
       break;
     }
+    case GeomAbs_OffsetSurface:
+    {
+      // Create Handle(Geom_OffsetSurface)
+      // Note: Adaptor3d_Surface does not expose an OffsetSurface() method returning Geom_OffsetSurface directly
+      // It exposes BasisSurface() and Offset value.
+      // So we have to reconstruct it or rely on fallback if we can't reconstruct perfectly.
+      // But GeomGridEval_OffsetSurface takes Handle(Geom_OffsetSurface).
+      // So we must create a NEW Geom_OffsetSurface from the adaptor's data.
+      // This might be expensive or lose some data if the adaptor was complex.
+      // Ideally, we should only support Offset if we started from Geom_OffsetSurface (via handle init).
+      // For pure adaptors, we might fallback or try to reconstruct.
+      // Let's reconstruct for now as it fits the pattern.
+      // But wait, BasisSurface() returns Adaptor3d_Surface. Geom_OffsetSurface needs Geom_Surface.
+      // We can't easily convert Adaptor3d_Surface back to Geom_Surface without loss or complexity.
+      // So for pure Adaptor initialization, OffsetSurface support is tricky.
+      // We will fallback to OtherSurface for now in this switch case,
+      // UNLESS we can safely cast. But we can't.
+      myEvaluator = GeomGridEval_OtherSurface(theSurface->ShallowCopy());
+      break;
+    }
     default:
     {
-      // Fallback: use OtherSurface. Since we have a Handle, we can use it directly
-      // without needing ShallowCopy if it's safe, but Adaptor3d_Surface semantics usually
-      // imply ShallowCopy if we want to own it or if it's transient.
-      // However, since we take a Handle, we share ownership.
+      // Fallback: use OtherSurface.
       myEvaluator = GeomGridEval_OtherSurface(theSurface);
       break;
     }
@@ -147,6 +165,11 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   {
     mySurfaceType = GeomAbs_BSplineSurface;
     myEvaluator = GeomGridEval_BSplineSurface(aBSpline);
+  }
+  else if (auto anOffset = Handle(Geom_OffsetSurface)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_OffsetSurface;
+    myEvaluator = GeomGridEval_OffsetSurface(anOffset);
   }
   else
   {
