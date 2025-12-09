@@ -379,3 +379,121 @@ TEST(GeomGridEvaluator_CurveTest, EmptyParams)
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
   EXPECT_TRUE(aGrid.IsEmpty());
 }
+
+//==================================================================================================
+// Additional tests for B-spline curves (from BSplCLib_GridEvaluator_Test)
+//==================================================================================================
+
+TEST(GeomGridEvaluator_BSplineCurveTest, RationalBSpline)
+{
+  // Create a rational B-spline (NURBS circle approximation)
+  TColgp_Array1OfPnt  aPoles(1, 4);
+  TColStd_Array1OfReal aWeights(1, 4);
+
+  aPoles.SetValue(1, gp_Pnt(1, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 1, 0));
+  aPoles.SetValue(3, gp_Pnt(0, 1, 0));
+  aPoles.SetValue(4, gp_Pnt(-1, 1, 0));
+
+  aWeights.SetValue(1, 1.0);
+  aWeights.SetValue(2, 1.0 / std::sqrt(2.0));
+  aWeights.SetValue(3, 1.0);
+  aWeights.SetValue(4, 1.0 / std::sqrt(2.0));
+
+  TColStd_Array1OfReal    aKnots(1, 2);
+  TColStd_Array1OfInteger aMults(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 4);
+
+  Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
+
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  EXPECT_EQ(aGrid.Size(), 21);
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 21; ++i)
+  {
+    gp_Pnt aExpected = aCurve->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineCurveTest, MultiSpanBSpline)
+{
+  // Create a B-spline with multiple spans (degree 3, 6 control points, 1 internal knot)
+  // Formula: n_poles = sum(multiplicities) - degree - 1 = (4 + 2 + 4) - 3 - 1 = 6
+  TColgp_Array1OfPnt aPoles(1, 6);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(2, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(3, 0, 0));
+  aPoles.SetValue(5, gp_Pnt(4, -1, 0));
+  aPoles.SetValue(6, gp_Pnt(5, 0, 0));
+
+  TColStd_Array1OfReal    aKnots(1, 3);
+  TColStd_Array1OfInteger aMults(1, 3);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 0.5);
+  aKnots.SetValue(3, 1.0);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 2);
+  aMults.SetValue(3, 4);
+
+  Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 31);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation - should match exactly
+  for (int i = 1; i <= 31; ++i)
+  {
+    gp_Pnt aExpected = aCurve->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineCurveTest, HighDegree)
+{
+  // Create a higher degree B-spline (degree 5)
+  TColgp_Array1OfPnt aPoles(1, 6);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 3, 0));
+  aPoles.SetValue(3, gp_Pnt(2, 1, 0));
+  aPoles.SetValue(4, gp_Pnt(3, 4, 0));
+  aPoles.SetValue(5, gp_Pnt(4, 2, 0));
+  aPoles.SetValue(6, gp_Pnt(5, 0, 0));
+
+  TColStd_Array1OfReal    aKnots(1, 2);
+  TColStd_Array1OfInteger aMults(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  aMults.SetValue(1, 6);
+  aMults.SetValue(2, 6);
+
+  Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 5);
+
+  GeomGridEvaluator_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 51);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 51; ++i)
+  {
+    gp_Pnt aExpected = aCurve->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}

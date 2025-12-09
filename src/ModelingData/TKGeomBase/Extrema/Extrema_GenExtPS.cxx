@@ -20,7 +20,7 @@
 
 #include <Bnd_HArray1OfSphere.hxx>
 #include <Bnd_Sphere.hxx>
-#include <BSplSLib_GridEvaluator.hxx>
+#include <GeomGridEvaluator_BSplineSurface.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -544,23 +544,13 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
       Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
       if (!aBspl.IsNull())
       {
-        BSplSLib_GridEvaluator aGridEval;
-        isGridEvalUsed = aGridEval.Initialize(aBspl->UDegree(),
-                                              aBspl->VDegree(),
-                                              aBspl->HArrayPoles(),
-                                              aBspl->HArrayWeights(),
-                                              aBspl->HArrayUFlatKnots(),
-                                              aBspl->HArrayVFlatKnots(),
-                                              aBspl->IsURational(),
-                                              aBspl->IsVRational(),
-                                              aBspl->IsUPeriodic(),
-                                              aBspl->IsVPeriodic());
+        GeomGridEvaluator_BSplineSurface aGridEval(aBspl);
+        aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+
+        NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
+        isGridEvalUsed = !aGridPoints.IsEmpty();
         if (isGridEvalUsed)
         {
-          aGridEval.SetUParams(myUParams->Array1());
-          aGridEval.SetVParams(myVParams->Array1());
-
-          NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
           for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
           {
             for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
@@ -907,23 +897,13 @@ void Extrema_GenExtPS::BuildTree()
     Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
     if (!aBspl.IsNull())
     {
-      BSplSLib_GridEvaluator aGridEval;
-      isGridEvalUsed = aGridEval.Initialize(aBspl->UDegree(),
-                                            aBspl->VDegree(),
-                                            aBspl->HArrayPoles(),
-                                            aBspl->HArrayWeights(),
-                                            aBspl->HArrayUFlatKnots(),
-                                            aBspl->HArrayVFlatKnots(),
-                                            aBspl->IsURational(),
-                                            aBspl->IsVRational(),
-                                            aBspl->IsUPeriodic(),
-                                            aBspl->IsVPeriodic());
+      GeomGridEvaluator_BSplineSurface aGridEval(aBspl);
+      aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+
+      NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
+      isGridEvalUsed = !aGridPoints.IsEmpty();
       if (isGridEvalUsed)
       {
-        aGridEval.SetUParams(myUParams->Array1());
-        aGridEval.SetVParams(myVParams->Array1());
-
-        NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
         for (NoU = 1; NoU <= myusample; NoU++)
         {
           for (NoV = 1; NoV <= myvsample; NoV++)

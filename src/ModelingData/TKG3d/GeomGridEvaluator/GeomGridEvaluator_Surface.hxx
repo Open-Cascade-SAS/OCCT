@@ -37,7 +37,7 @@
 //! Supported surface types with optimized evaluation:
 //! - Plane: Direct analytical formula
 //! - Sphere: Trigonometric formula
-//! - BSplineSurface: Optimized batch evaluation via BSplSLib_GridEvaluator
+//! - BSplineSurface: Optimized batch evaluation with span-based caching
 //! - Other: Fallback using Adaptor3d_Surface::D0
 //!
 //! Usage:

@@ -439,3 +439,186 @@ TEST(GeomGridEvaluator_SurfaceTest, EmptyParams)
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
   EXPECT_TRUE(aGrid.IsEmpty());
 }
+
+//==================================================================================================
+// Additional tests for B-spline surfaces (from BSplSLib_GridEvaluator_Test)
+//==================================================================================================
+
+namespace
+{
+//! Helper function to create a rational B-spline surface
+Handle(Geom_BSplineSurface) CreateRationalBSplineSurface()
+{
+  TColgp_Array2OfPnt   aPoles(1, 3, 1, 3);
+  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+
+  // Create a curved surface patch with varying weights
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      double x = (i - 1) * 1.0;
+      double y = (j - 1) * 1.0;
+      double z = (i == 2 && j == 2) ? 1.0 : 0.0; // Center point elevated
+      aPoles.SetValue(i, j, gp_Pnt(x, y, z));
+      aWeights.SetValue(i, j, (i == 2 && j == 2) ? 2.0 : 1.0); // Center weight higher
+    }
+  }
+
+  TColStd_Array1OfReal    aUKnots(1, 2);
+  TColStd_Array1OfReal    aVKnots(1, 2);
+  TColStd_Array1OfInteger aUMults(1, 2);
+  TColStd_Array1OfInteger aVMults(1, 2);
+
+  aUKnots.SetValue(1, 0.0);
+  aUKnots.SetValue(2, 1.0);
+  aVKnots.SetValue(1, 0.0);
+  aVKnots.SetValue(2, 1.0);
+  aUMults.SetValue(1, 3);
+  aUMults.SetValue(2, 3);
+  aVMults.SetValue(1, 3);
+  aVMults.SetValue(2, 3);
+
+  return new Geom_BSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aUMults, aVMults, 2, 2);
+}
+
+//! Helper function to create a multi-span B-spline surface
+Handle(Geom_BSplineSurface) CreateMultiSpanBSplineSurface()
+{
+  // Degree 2, multi-span surface with 1 internal knot in each direction
+  // Formula: n_poles = sum(multiplicities) - degree - 1
+  // U: (3 + 2 + 3) - 2 - 1 = 5 poles
+  // V: (3 + 2 + 3) - 2 - 1 = 5 poles
+  TColgp_Array2OfPnt aPoles(1, 5, 1, 5);
+
+  // Create a wavy surface with 5x5 poles
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 5; ++j)
+    {
+      double x = (i - 1) * 1.0;
+      double y = (j - 1) * 1.0;
+      double z = std::sin((i - 1) * M_PI / 4.0) * std::sin((j - 1) * M_PI / 4.0);
+      aPoles.SetValue(i, j, gp_Pnt(x, y, z));
+    }
+  }
+
+  TColStd_Array1OfReal    aUKnots(1, 3);
+  TColStd_Array1OfReal    aVKnots(1, 3);
+  TColStd_Array1OfInteger aUMults(1, 3);
+  TColStd_Array1OfInteger aVMults(1, 3);
+
+  aUKnots.SetValue(1, 0.0);
+  aUKnots.SetValue(2, 0.5);
+  aUKnots.SetValue(3, 1.0);
+  aVKnots.SetValue(1, 0.0);
+  aVKnots.SetValue(2, 0.5);
+  aVKnots.SetValue(3, 1.0);
+  aUMults.SetValue(1, 3);
+  aUMults.SetValue(2, 2);
+  aUMults.SetValue(3, 3);
+  aVMults.SetValue(1, 3);
+  aVMults.SetValue(2, 2);
+  aVMults.SetValue(3, 3);
+
+  return new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 2, 2);
+}
+} // namespace
+
+TEST(GeomGridEvaluator_BSplineSurfaceTest, RationalSurface)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateRationalBSplineSurface();
+
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 11; ++iU)
+  {
+    for (int iV = 1; iV <= 11; ++iV)
+    {
+      gp_Pnt aExpected = aSurf->Value(aUParams.Value(iU), aVParams.Value(iV));
+      EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineSurfaceTest, MultiSpanSurface)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 21);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 21);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 21; ++iU)
+  {
+    for (int iV = 1; iV <= 21; ++iV)
+    {
+      gp_Pnt aExpected = aSurf->Value(aUParams.Value(iU), aVParams.Value(iV));
+      EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEvaluator_BSplineSurfaceTest, HigherDegree)
+{
+  // Create a bicubic B-spline surface
+  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      double x = (i - 1) * 1.0;
+      double y = (j - 1) * 1.0;
+      double z = std::cos((i + j - 2) * M_PI / 6.0);
+      aPoles.SetValue(i, j, gp_Pnt(x, y, z));
+    }
+  }
+
+  TColStd_Array1OfReal    aUKnots(1, 2);
+  TColStd_Array1OfReal    aVKnots(1, 2);
+  TColStd_Array1OfInteger aUMults(1, 2);
+  TColStd_Array1OfInteger aVMults(1, 2);
+
+  aUKnots.SetValue(1, 0.0);
+  aUKnots.SetValue(2, 1.0);
+  aVKnots.SetValue(1, 0.0);
+  aVKnots.SetValue(2, 1.0);
+  aUMults.SetValue(1, 4);
+  aUMults.SetValue(2, 4);
+  aVMults.SetValue(1, 4);
+  aVMults.SetValue(2, 4);
+
+  Handle(Geom_BSplineSurface) aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+
+  GeomGridEvaluator_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 17);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 17);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int iU = 1; iU <= 17; ++iU)
+  {
+    for (int iV = 1; iV <= 17; ++iV)
+    {
+      gp_Pnt aExpected = aSurf->Value(aUParams.Value(iU), aVParams.Value(iV));
+      EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}

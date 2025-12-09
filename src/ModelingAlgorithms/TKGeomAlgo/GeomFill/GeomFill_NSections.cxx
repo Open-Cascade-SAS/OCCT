@@ -22,7 +22,7 @@
 
 #include <GeomFill_NSections.hxx>
 
-#include <BSplSLib_GridEvaluator.hxx>
+#include <GeomGridEvaluator_BSplineSurface.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
@@ -858,19 +858,8 @@ gp_Pnt GeomFill_NSections::BarycentreOfSurf() const
   }
 
   // Use grid evaluator for efficient batch evaluation
-  BSplSLib_GridEvaluator anEvaluator;
-  anEvaluator.Initialize(mySurface->UDegree(),
-                         mySurface->VDegree(),
-                         mySurface->HArrayPoles(),
-                         mySurface->HArrayWeights(),
-                         mySurface->HArrayUFlatKnots(),
-                         mySurface->HArrayVFlatKnots(),
-                         mySurface->IsURational(),
-                         mySurface->IsVRational(),
-                         mySurface->IsUPeriodic(),
-                         mySurface->IsVPeriodic());
-  anEvaluator.SetUParams(aUParams);
-  anEvaluator.SetVParams(aVParams);
+  GeomGridEvaluator_BSplineSurface anEvaluator(mySurface);
+  anEvaluator.SetUVParams(aUParams, aVParams);
 
   gp_Pnt                           aBarycentre(0., 0., 0.);
   const NCollection_Array2<gp_Pnt> aPoints = anEvaluator.EvaluateGrid();

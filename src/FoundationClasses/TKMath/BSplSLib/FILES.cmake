@@ -9,6 +9,4 @@ set(OCCT_BSplSLib_FILES
   BSplSLib_Cache.cxx
   BSplSLib_Cache.hxx
   BSplSLib_EvaluatorFunction.hxx
-  BSplSLib_GridEvaluator.cxx
-  BSplSLib_GridEvaluator.hxx
 )
