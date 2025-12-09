@@ -80,7 +80,7 @@ public:
 
   //! Initialize from adaptor (auto-detects surface type).
   //! @param theSurface surface adaptor to evaluate
-  Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
+  Standard_EXPORT void Initialize(const Handle(Adaptor3d_Surface)& theSurface);
 
   //! Initialize from geometry handle (auto-detects surface type).
   //! @param theSurface geometry to evaluate

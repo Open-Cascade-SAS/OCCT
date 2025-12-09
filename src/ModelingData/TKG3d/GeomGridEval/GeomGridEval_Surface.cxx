@@ -23,63 +23,74 @@
 
 //==================================================================================================
 
-void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
+void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
 {
-  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  if (theSurface.IsNull())
   {
-    const GeomAdaptor_Surface& aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
-    Initialize(aGeomAdaptor.Surface());
+    myEvaluator = std::monostate{};
+    mySurfaceType = GeomAbs_OtherSurface;
     return;
   }
 
-  mySurfaceType = theSurface.GetType();
+  // Check if it is a GeomAdaptor_Surface
+  Handle(GeomAdaptor_Surface) aGeomAdaptor = Handle(GeomAdaptor_Surface)::DownCast(theSurface);
+  if (!aGeomAdaptor.IsNull())
+  {
+    Initialize(aGeomAdaptor->Surface());
+    return;
+  }
+
+  mySurfaceType = theSurface->GetType();
 
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
     {
       // Create Handle(Geom_Plane) from gp_Pln
-      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
+      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface->Plane());
       myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
       break;
     }
     case GeomAbs_Cylinder:
     {
       // Create Handle(Geom_CylindricalSurface) from gp_Cylinder
-      Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface.Cylinder());
+      Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface->Cylinder());
       myEvaluator                              = GeomGridEval_Cylinder(aGeomCyl);
       break;
     }
     case GeomAbs_Sphere:
     {
       // Create Handle(Geom_SphericalSurface) from gp_Sphere
-      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
+      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface->Sphere());
       myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
       break;
     }
     case GeomAbs_Cone:
     {
       // Create Handle(Geom_ConicalSurface) from gp_Cone
-      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface.Cone());
+      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface->Cone());
       myEvaluator                           = GeomGridEval_Cone(aGeomCone);
       break;
     }
     case GeomAbs_Torus:
     {
       // Create Handle(Geom_ToroidalSurface) from gp_Torus
-      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface.Torus());
+      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface->Torus());
       myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
       break;
     }
     case GeomAbs_BSplineSurface:
     {
-      myEvaluator = GeomGridEval_BSplineSurface(theSurface.BSpline());
+      myEvaluator = GeomGridEval_BSplineSurface(theSurface->BSpline());
       break;
     }
     default:
     {
-      // Fallback: use OtherSurface with adaptor copy
-      myEvaluator = GeomGridEval_OtherSurface(theSurface.ShallowCopy());
+      // Fallback: use OtherSurface. Since we have a Handle, we can use it directly
+      // without needing ShallowCopy if it's safe, but Adaptor3d_Surface semantics usually
+      // imply ShallowCopy if we want to own it or if it's transient.
+      // However, since we take a Handle, we share ownership.
+      myEvaluator = GeomGridEval_OtherSurface(theSurface);
       break;
     }
   }

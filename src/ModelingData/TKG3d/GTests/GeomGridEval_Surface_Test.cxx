@@ -281,9 +281,9 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
   // Cylinder is not directly supported, should use fallback
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Surface anAdaptor(aCyl);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCyl);
 
-  GeomGridEval_OtherSurface anEval(anAdaptor.ShallowCopy());
+  GeomGridEval_OtherSurface anEval(anAdaptor->ShallowCopy());
   EXPECT_FALSE(anEval.Surface().IsNull());
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -310,7 +310,7 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
   Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomAdaptor_Surface anAdaptor(aGeomPlane);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -338,7 +338,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 {
   Handle(Geom_SphericalSurface) aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Surface anAdaptor(aGeomSphere);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomSphere);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -365,7 +365,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -393,7 +393,7 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
 {
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Surface anAdaptor(aCyl);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCyl);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -421,7 +421,7 @@ TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 {
   Handle(Geom_ToroidalSurface) aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
-  GeomAdaptor_Surface anAdaptor(aTorus);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aTorus);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -449,7 +449,7 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 {
   Handle(Geom_ConicalSurface) aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
-  GeomAdaptor_Surface anAdaptor(aCone);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCone);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -480,7 +480,7 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
   Handle(Geom_SurfaceOfRevolution) aRevSurf =
     new Geom_SurfaceOfRevolution(aLine, gp::OZ()); // Revolving around Z -> Cylinder-like
 
-  GeomAdaptor_Surface anAdaptor(aRevSurf);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aRevSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -540,7 +540,7 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
   Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomAdaptor_Surface anAdaptor(aGeomPlane);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -906,7 +906,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 {
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Surface anAdaptor(aSphere);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSphere);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -935,7 +935,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
   Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
