@@ -13,6 +13,7 @@
 
 #include <GeomGridEval_Surface.hxx>
 
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
@@ -45,6 +46,13 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       // Create Handle(Geom_SphericalSurface) from gp_Sphere
       Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
       myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
+      break;
+    }
+    case GeomAbs_Cone:
+    {
+      // Create Handle(Geom_ConicalSurface) from gp_Cone
+      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface.Cone());
+      myEvaluator                           = GeomGridEval_Cone(aGeomCone);
       break;
     }
     case GeomAbs_Torus:

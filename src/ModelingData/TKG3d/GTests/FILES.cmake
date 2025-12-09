@@ -12,6 +12,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
   GeomGridEval_Curve_Test.cxx
+  GeomGridEval_Cone_Test.cxx
   GeomGridEval_Cylinder_Test.cxx
   GeomGridEval_Surface_Test.cxx
   GeomGridEval_Torus_Test.cxx
