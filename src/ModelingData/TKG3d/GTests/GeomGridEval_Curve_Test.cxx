@@ -238,9 +238,9 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
   // Ellipse is not directly supported, so it should use OtherCurve fallback
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
-  GeomAdaptor_Curve anAdaptor(anEllipse);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anEllipse);
 
-  GeomGridEval_OtherCurve anEval(anAdaptor.ShallowCopy());
+  GeomGridEval_OtherCurve anEval(anAdaptor->ShallowCopy());
   EXPECT_FALSE(anEval.Curve().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -263,7 +263,7 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
 TEST(GeomGridEval_CurveTest, LineDispatch)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -288,7 +288,7 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Curve anAdaptor(aGeomCircle);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -311,7 +311,7 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
 TEST(GeomGridEval_CurveTest, BSplineDispatch)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
-  GeomAdaptor_Curve         anAdaptor(aCurve);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -335,7 +335,7 @@ TEST(GeomGridEval_CurveTest, EllipseFallbackDispatch)
 {
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
-  GeomAdaptor_Curve anAdaptor(anEllipse);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anEllipse);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -355,6 +355,23 @@ TEST(GeomGridEval_CurveTest, EllipseFallbackDispatch)
   }
 }
 
+TEST(GeomGridEval_CurveTest, DirectHandleInit)
+{
+  Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(aGeomLine);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 10.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  EXPECT_EQ(aGrid.Size(), 11);
+  EXPECT_NEAR(aGrid.Value(1).X(), 0.0, THE_TOLERANCE);
+}
+
 TEST(GeomGridEval_CurveTest, UninitializedState)
 {
   GeomGridEval_Curve anEval;
@@ -368,7 +385,7 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
 TEST(GeomGridEval_CurveTest, EmptyParams)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -665,7 +682,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 {
   Handle(Geom_Circle) aGeomCircle =
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Curve anAdaptor(aGeomCircle);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -689,7 +706,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 {
   Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
-  GeomAdaptor_Curve anAdaptor(aCurve);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);

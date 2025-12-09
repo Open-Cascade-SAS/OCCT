@@ -16,6 +16,7 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <GeomGridEval_Circle.hxx>
 #include <GeomGridEval_Line.hxx>
@@ -44,6 +45,8 @@
 //! @code
 //!   GeomGridEval_Curve anEval;
 //!   anEval.Initialize(myAdaptorCurve);
+//!   // OR
+//!   anEval.Initialize(myGeomCurve);
 //!   anEval.SetParams(myParams);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
 //! @endcode
@@ -68,7 +71,11 @@ public:
 
   //! Initialize from adaptor (auto-detects curve type).
   //! @param theCurve curve adaptor to evaluate
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve);
+  Standard_EXPORT void Initialize(const Handle(Adaptor3d_Curve)& theCurve);
+
+  //! Initialize from geometry handle (auto-detects curve type).
+  //! @param theCurve geometry to evaluate
+  Standard_EXPORT void Initialize(const Handle(Geom_Curve)& theCurve);
 
   //! Set parameters for evaluation.
   //! @param theParams array of parameter values (1-based)

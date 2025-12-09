@@ -13,42 +13,93 @@
 
 #include <GeomGridEval_Curve.hxx>
 
+#include <GeomAdaptor_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 
 //==================================================================================================
 
-void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
+void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
 {
-  myCurveType = theCurve.GetType();
+  if (theCurve.IsNull())
+  {
+    myEvaluator = std::monostate{};
+    myCurveType = GeomAbs_OtherCurve;
+    return;
+  }
+
+  Handle(GeomAdaptor_Curve) aGeomAdaptor = Handle(GeomAdaptor_Curve)::DownCast(theCurve);
+  if (!aGeomAdaptor.IsNull())
+  {
+    Initialize(aGeomAdaptor->Curve());
+    return;
+  }
+
+  myCurveType = theCurve->GetType();
 
   switch (myCurveType)
   {
     case GeomAbs_Line:
     {
       // Create Handle(Geom_Line) from gp_Lin
-      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
+      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve->Line());
       myEvaluator                 = GeomGridEval_Line(aGeomLine);
       break;
     }
     case GeomAbs_Circle:
     {
       // Create Handle(Geom_Circle) from gp_Circ
-      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
+      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve->Circle());
       myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
       break;
     }
     case GeomAbs_BSplineCurve:
     {
-      myEvaluator = GeomGridEval_BSplineCurve(theCurve.BSpline());
+      myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
       break;
     }
     default:
     {
-      // Fallback: use OtherCurve with adaptor copy
-      myEvaluator = GeomGridEval_OtherCurve(theCurve.ShallowCopy());
+      // Fallback: use OtherCurve. Taking handle directly.
+      myEvaluator = GeomGridEval_OtherCurve(theCurve);
       break;
     }
+  }
+}
+
+//==================================================================================================
+
+void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
+{
+  if (theCurve.IsNull())
+  {
+    myEvaluator = std::monostate{};
+    myCurveType = GeomAbs_OtherCurve;
+    return;
+  }
+
+  if (auto aLine = Handle(Geom_Line)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_Line;
+    myEvaluator = GeomGridEval_Line(aLine);
+  }
+  else if (auto aCircle = Handle(Geom_Circle)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_Circle;
+    myEvaluator = GeomGridEval_Circle(aCircle);
+  }
+  else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_BSplineCurve;
+    myEvaluator = GeomGridEval_BSplineCurve(aBSpline);
+  }
+  else
+  {
+    // Create adaptor for general curves
+    Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(theCurve);
+    myCurveType = anAdaptor->GetType();
+    myEvaluator = GeomGridEval_OtherCurve(anAdaptor);
   }
 }
 
