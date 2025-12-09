@@ -17,6 +17,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
 
 //==================================================================================================
@@ -62,6 +63,13 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
       myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
       break;
     }
+    case GeomAbs_Hyperbola:
+    {
+      // Create Handle(Geom_Hyperbola) from gp_Hypr
+      Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve->Hyperbola());
+      myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
+      break;
+    }
     case GeomAbs_BSplineCurve:
     {
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
@@ -101,6 +109,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     myCurveType = GeomAbs_Ellipse;
     myEvaluator = GeomGridEval_Ellipse(anEllipse);
+  }
+  else if (auto aHyperbola = Handle(Geom_Hyperbola)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_Hyperbola;
+    myEvaluator = GeomGridEval_Hyperbola(aHyperbola);
   }
   else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
   {

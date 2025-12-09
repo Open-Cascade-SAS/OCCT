@@ -18,6 +18,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <GeomGridEval_Circle.hxx>
@@ -356,9 +357,8 @@ TEST(GeomGridEval_CurveTest, EllipseDispatch)
   }
 }
 
-TEST(GeomGridEval_CurveTest, HyperbolaFallbackDispatch)
+TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
 {
-  // Hyperbola is not optimized, should use fallback
   Handle(Geom_Hyperbola) aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aHypr);
@@ -377,6 +377,31 @@ TEST(GeomGridEval_CurveTest, HyperbolaFallbackDispatch)
   for (int i = 1; i <= 11; ++i)
   {
     gp_Pnt aExpected = aHypr->Value(aParams.Value(i));
+    EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_CurveTest, ParabolaFallbackDispatch)
+{
+  // Parabola is not optimized, should use fallback
+  Handle(Geom_Parabola) aParab =
+    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aParab);
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_TRUE(anEval.IsInitialized());
+  EXPECT_EQ(anEval.GetType(), GeomAbs_Parabola);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aExpected = aParab->Value(aParams.Value(i));
     EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }
