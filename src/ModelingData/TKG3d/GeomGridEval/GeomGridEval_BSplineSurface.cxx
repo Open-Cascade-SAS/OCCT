@@ -148,8 +148,10 @@ void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUPa
     myRawVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
 
-  // Clear cached span data
+  // Clear cached span data and cache
   myUSpanRanges = NCollection_Array1<SpanRange>();
+  myVSpanRanges = NCollection_Array1<SpanRange>();
+  myCache.Nullify();
 }
 
 //==================================================================================================
@@ -166,7 +168,9 @@ void GeomGridEval_BSplineSurface::prepare() const
   {
     myUParams     = NCollection_Array1<ParamWithSpan>();
     myVParams     = NCollection_Array1<ParamWithSpan>();
+    myUSpanRanges = NCollection_Array1<SpanRange>();
     myVSpanRanges = NCollection_Array1<SpanRange>();
+    myCache.Nullify();
     return;
   }
 
@@ -177,7 +181,9 @@ void GeomGridEval_BSplineSurface::prepare() const
   {
     myUParams     = NCollection_Array1<ParamWithSpan>();
     myVParams     = NCollection_Array1<ParamWithSpan>();
+    myUSpanRanges = NCollection_Array1<SpanRange>();
     myVSpanRanges = NCollection_Array1<SpanRange>();
+    myCache.Nullify();
     return;
   }
   const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
@@ -376,16 +382,14 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
-  TColgp_Array2OfPnt aPoles(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array2OfReal aWeights;
-  const bool           isRational = myGeom->IsURational() || myGeom->IsVRational();
-  if (isRational)
+  const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
   {
-    aWeights.Resize(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles(), false);
-    myGeom->Weights(aWeights);
+    return NCollection_Array2<gp_Pnt>();
   }
+  const TColgp_Array2OfPnt& aPoles = aPolesHandle->Array2();
+
+  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
 
   if (myCache.IsNull())
   {
@@ -395,14 +399,14 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
                                  aVDegree,
                                  myGeom->IsVPeriodic(),
                                  aVFlatKnots,
-                                 isRational ? &aWeights : nullptr);
+                                 aWeights);
   }
 
   // Prepare data structure for helper
   const BSplineSurfData aData = {&aUFlatKnots,
                                  &aVFlatKnots,
                                  &aPoles,
-                                 isRational ? &aWeights : nullptr,
+                                 aWeights,
                                  aUDegree,
                                  aVDegree,
                                  myGeom->IsURational(),
@@ -429,7 +433,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
                    theUSpanIdx,
                    theVSpanIdx,
                    aPoles,
-                   isRational ? &aWeights : nullptr,
+                   aWeights,
                    aUFlatKnots,
                    aVFlatKnots,
                    nullptr,
@@ -479,16 +483,14 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
-  TColgp_Array2OfPnt aPoles(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array2OfReal aWeights;
-  const bool           isRational = myGeom->IsURational() || myGeom->IsVRational();
-  if (isRational)
+  const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
   {
-    aWeights.Resize(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles(), false);
-    myGeom->Weights(aWeights);
+    return NCollection_Array2<GeomGridEval::SurfD1>();
   }
+  const TColgp_Array2OfPnt& aPoles = aPolesHandle->Array2();
+
+  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
 
   if (myCache.IsNull())
   {
@@ -498,14 +500,14 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                                  aVDegree,
                                  myGeom->IsVPeriodic(),
                                  aVFlatKnots,
-                                 isRational ? &aWeights : nullptr);
+                                 aWeights);
   }
 
   // Prepare data structure for helper
   const BSplineSurfData aData = {&aUFlatKnots,
                                  &aVFlatKnots,
                                  &aPoles,
-                                 isRational ? &aWeights : nullptr,
+                                 aWeights,
                                  aUDegree,
                                  aVDegree,
                                  myGeom->IsURational(),
@@ -537,7 +539,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                    theUSpanIdx,
                    theVSpanIdx,
                    aPoles,
-                   isRational ? &aWeights : nullptr,
+                   aWeights,
                    aUFlatKnots,
                    aVFlatKnots,
                    nullptr,
@@ -590,16 +592,14 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
-  TColgp_Array2OfPnt aPoles(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles());
-  myGeom->Poles(aPoles);
-
-  TColStd_Array2OfReal aWeights;
-  const bool           isRational = myGeom->IsURational() || myGeom->IsVRational();
-  if (isRational)
+  const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
   {
-    aWeights.Resize(1, myGeom->NbUPoles(), 1, myGeom->NbVPoles(), false);
-    myGeom->Weights(aWeights);
+    return NCollection_Array2<GeomGridEval::SurfD2>();
   }
+  const TColgp_Array2OfPnt& aPoles = aPolesHandle->Array2();
+
+  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
 
   if (myCache.IsNull())
   {
@@ -609,14 +609,14 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                                  aVDegree,
                                  myGeom->IsVPeriodic(),
                                  aVFlatKnots,
-                                 isRational ? &aWeights : nullptr);
+                                 aWeights);
   }
 
   // Prepare data structure for helper
   const BSplineSurfData aData = {&aUFlatKnots,
                                  &aVFlatKnots,
                                  &aPoles,
-                                 isRational ? &aWeights : nullptr,
+                                 aWeights,
                                  aUDegree,
                                  aVDegree,
                                  myGeom->IsURational(),
@@ -648,7 +648,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                    theUSpanIdx,
                    theVSpanIdx,
                    aPoles,
-                   isRational ? &aWeights : nullptr,
+                   aWeights,
                    aUFlatKnots,
                    aVFlatKnots,
                    nullptr,

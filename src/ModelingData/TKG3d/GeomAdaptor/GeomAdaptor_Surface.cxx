@@ -59,6 +59,7 @@
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion() * 0.5;
 
@@ -1429,14 +1430,24 @@ Standard_Boolean GeomAdaptor_Surface::IfUVBound(const Standard_Real    U,
                    anULKIndx = myBSplineSurface->LastUKnotIndex(),
                    aVFKIndx  = myBSplineSurface->FirstVKnotIndex(),
                    aVLKIndx  = myBSplineSurface->LastVKnotIndex();
-  myBSplineSurface->LocateU(U, PosTol, Ideb, Ifin, Standard_False);
-  Standard_Boolean Local = (Ideb == Ifin);
-  Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);
   Standard_Integer IVdeb, IVfin;
-  myBSplineSurface->LocateV(V, PosTol, IVdeb, IVfin, Standard_False);
-  if (IVdeb == IVfin)
-    Local = Standard_True;
-  Span(VSide, IVdeb, IVfin, IVdeb, IVfin, aVFKIndx, aVLKIndx);
+  Standard_Boolean Local = Standard_False;
+
+  try
+  {
+    OCC_CATCH_SIGNALS;
+    myBSplineSurface->LocateU(U, PosTol, Ideb, Ifin, Standard_False);
+    Local = (Ideb == Ifin);
+    Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);
+    myBSplineSurface->LocateV(V, PosTol, IVdeb, IVfin, Standard_False);
+    if (IVdeb == IVfin)
+      Local = Standard_True;
+    Span(VSide, IVdeb, IVfin, IVdeb, IVfin, aVFKIndx, aVLKIndx);
+  }
+  catch (const Standard_Failure&)
+  {
+    return Standard_False;
+  }
 
   IOutDeb  = Ideb;
   IOutFin  = Ifin;
