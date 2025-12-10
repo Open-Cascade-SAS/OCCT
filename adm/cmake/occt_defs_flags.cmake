@@ -47,15 +47,21 @@ else()
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-elaborated-enum-base")
     set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wno-elaborated-enum-base")
   endif()
-  add_definitions(-DOCC_CONVERT_SIGNALS)
 endif()
 
-# enable structured exceptions for MSVC
-string (REGEX MATCH "EHsc" ISFLAG "${CMAKE_CXX_FLAGS}")
-if (ISFLAG)
-  string (REGEX REPLACE "EHsc" "EHa" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-elseif (MSVC)
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHa")
+# Enable standard C++ exception handling
+# Note: OSD signal handling is disabled - relying on C++ exceptions only
+if (MSVC)
+  # /EHsc - synchronous C++ exception handling only (no SEH/hardware exceptions)
+  string (REGEX MATCH "EHa" ISFLAG_EHA "${CMAKE_CXX_FLAGS}")
+  if (ISFLAG_EHA)
+    string (REGEX REPLACE "EHa" "EHsc" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    string (REGEX MATCH "EHsc" ISFLAG_EHSC "${CMAKE_CXX_FLAGS}")
+    if (NOT ISFLAG_EHSC)
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+    endif()
+  endif()
 endif()
 
 if (MSVC)
