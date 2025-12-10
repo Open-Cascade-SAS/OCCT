@@ -539,32 +539,32 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     // Evaluate surface at grid points.
     // Use optimized grid evaluator with span-based caching for B-spline surfaces.
     bool isGridEvalUsed = false;
-    if (myS->GetType() == GeomAbs_BSplineSurface)
-    {
-      Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
-      if (!aBspl.IsNull())
-      {
-        GeomGridEval_BSplineSurface aGridEval(aBspl);
-        aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+    // if (myS->GetType() == GeomAbs_BSplineSurface)
+    // {
+    //   Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
+    //   if (!aBspl.IsNull())
+    //   {
+    //     GeomGridEval_BSplineSurface aGridEval(aBspl);
+    //     aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
 
-        NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
-        isGridEvalUsed                         = !aGridPoints.IsEmpty();
-        if (isGridEvalUsed)
-        {
-          for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
-          {
-            for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
-            {
-              const gp_Pnt&         aP1 = aGridPoints.Value(NoU, NoV);
-              Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), aP1);
-              aParam.SetElementType(Extrema_Node);
-              aParam.SetIndices(NoU, NoV);
-              myPoints.SetValue(NoU, NoV, aParam);
-            }
-          }
-        }
-      }
-    }
+    //     NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
+    //     isGridEvalUsed                         = !aGridPoints.IsEmpty();
+    //     if (isGridEvalUsed)
+    //     {
+    //       for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
+    //       {
+    //         for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
+    //         {
+    //           const gp_Pnt&         aP1 = aGridPoints.Value(NoU, NoV);
+    //           Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), aP1);
+    //           aParam.SetElementType(Extrema_Node);
+    //           aParam.SetIndices(NoU, NoV);
+    //           myPoints.SetValue(NoU, NoV, aParam);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // Fallback to standard evaluation
     if (!isGridEvalUsed)
