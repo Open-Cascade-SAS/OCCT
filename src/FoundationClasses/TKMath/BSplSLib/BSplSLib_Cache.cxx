@@ -28,6 +28,97 @@ static Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArra
   return (Standard_Real*)&(anArray(anArray.LowerRow(), anArray.LowerCol()));
 }
 
+//! Evaluates the polynomials and their derivatives.
+//! @param[in] thePolesWeights handle to the array of poles and weights
+//! @param[in] theParamsU parameters for U direction
+//! @param[in] theParamsV parameters for V direction
+//! @param[in] theIsRational flag indicating if the surface is rational
+//! @param[in] theLocalU local U parameter
+//! @param[in] theLocalV local V parameter
+//! @param[in] theUDerivMax maximum U derivative
+//! @param[in] theVDerivMax maximum V derivative
+//! @param[out] theResultArray array to store the results
+static void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
+                                const BSplCLib_CacheParams&          theParamsU,
+                                const BSplCLib_CacheParams&          theParamsV,
+                                const Standard_Boolean               theIsRational,
+                                double                               theLocalU,
+                                double                               theLocalV,
+                                int                                  theUDerivMax,
+                                int                                  theVDerivMax,
+                                Standard_Real*                       theResultArray)
+{
+  Standard_Real* const   aPolesArray  = ConvertArray(thePolesWeights);
+  const Standard_Integer aDimension   = theIsRational ? 4 : 3;
+  const Standard_Integer aCacheCols   = thePolesWeights->RowLength();
+  const auto [aMinDegree, aMaxDegree] = std::minmax(theParamsU.Degree, theParamsV.Degree);
+  const auto [aMinParam, aMaxParam]   = (theParamsU.Degree > theParamsV.Degree)
+                                          ? std::make_pair(theLocalV, theLocalU)
+                                          : std::make_pair(theLocalU, theLocalV);
+
+  // Determine actual max derivatives to calculate based on degrees
+  const auto [aMinDeriv, aMaxDeriv] = std::minmax(theUDerivMax, theVDerivMax);
+
+  // Transient coefficients array size:
+  // (UDerivMax + 1) * CacheCols  for the first evaluation (along max degree parameter)
+  // (VDerivMax + 1) * Dimension for the second evaluation (along min degree parameter)
+  NCollection_LocalArray<Standard_Real> aTransientCoeffs(
+    std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
+
+  // Calculate intermediate values and derivatives of bivariate polynomial along variable with
+  // maximal degree
+  PLib::EvalPolynomial(aMaxParam,
+                       aMaxDeriv,
+                       aMaxDegree,
+                       aCacheCols,
+                       aPolesArray[0],
+                       aTransientCoeffs[0]);
+
+  // Calculate derivatives along variable with minimal degree
+  PLib::EvalPolynomial(aMinParam,
+                       aMinDeriv,
+                       aMinDegree,
+                       aDimension,
+                       aTransientCoeffs[0],
+                       theResultArray[0]);
+
+  if (theUDerivMax > 0 || theVDerivMax > 0)
+  {
+    // If theMaxUDeriv is 1, and theMinUDeriv is 0 for example, but still need to calculate
+    // The second part of cross derivative.
+    const int anUDeriv = (theParamsU.Degree > theParamsV.Degree) ? theUDerivMax : theVDerivMax;
+
+    // Calculate derivative along variable with maximal degree and mixed derivative
+    PLib::EvalPolynomial(aMinParam,
+                         anUDeriv,
+                         aMinDegree,
+                         aDimension,
+                         aTransientCoeffs[aCacheCols],
+                         theResultArray[3 * aDimension]);
+
+    if (theUDerivMax > 1 || theVDerivMax > 1)
+    {
+      // Calculate second derivative along variable with maximal degree
+      PLib::NoDerivativeEvalPolynomial(aMinParam,
+                                       aMinDegree,
+                                       aDimension,
+                                       aMinDegree * aDimension,
+                                       aTransientCoeffs[aCacheCols << 1],
+                                       theResultArray[6 * aDimension]);
+    }
+  }
+
+  if (theIsRational)
+  {
+    BSplSLib::RationalDerivative(theUDerivMax,
+                                 theVDerivMax,
+                                 theUDerivMax,
+                                 theVDerivMax,
+                                 theResultArray[0],
+                                 theResultArray[0]); // Overwrite in place
+  }
+}
+
 BSplSLib_Cache::BSplSLib_Cache(const Standard_Integer&     theDegreeU,
                                const Standard_Boolean&     thePeriodicU,
                                const TColStd_Array1OfReal& theFlatKnotsU,
@@ -114,39 +205,22 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
 
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
-  Standard_Real* const aPolesArray = ConvertArray(myPolesWeights);
-  Standard_Real        aPoint[4];
+  Standard_Real aPntDeriv[4]; // Result storage for D0
+  EvaluatePolynomials(myPolesWeights,
+                      myParamsU,
+                      myParamsV,
+                      myIsRational,
+                      theLocalU,
+                      theLocalV,
+                      0,
+                      0,
+                      aPntDeriv);
 
-  const Standard_Integer aDimension   = myIsRational ? 4 : 3;
-  const Standard_Integer aCacheCols   = myPolesWeights->RowLength();
-  const auto [aMinDegree, aMaxDegree] = std::minmax(myParamsU.Degree, myParamsV.Degree);
-  const auto [aMinParam, aMaxParam]   = (myParamsU.Degree > myParamsV.Degree)
-                                          ? std::make_pair(theLocalV, theLocalU)
-                                          : std::make_pair(theLocalU, theLocalV);
-
-  // clang-format off
-  NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols); // array for intermediate results
-  // clang-format on
-
-  // Calculate intermediate value of cached polynomial along columns
-  PLib::NoDerivativeEvalPolynomial(aMaxParam,
-                                   aMaxDegree,
-                                   aCacheCols,
-                                   aMaxDegree * aCacheCols,
-                                   aPolesArray[0],
-                                   aTransientCoeffs[0]);
-
-  // Calculate total value
-  PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                   aMinDegree,
-                                   aDimension,
-                                   aDimension * aMinDegree,
-                                   aTransientCoeffs[0],
-                                   aPoint[0]);
-
-  thePoint.SetCoord(aPoint[0], aPoint[1], aPoint[2]);
+  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
   if (myIsRational)
-    thePoint.ChangeCoord().Divide(aPoint[3]);
+  {
+    thePoint.ChangeCoord().Divide(aPntDeriv[3]);
+  }
 }
 
 //==================================================================================================
@@ -157,65 +231,41 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
                              gp_Vec& theTangentU,
                              gp_Vec& theTangentV) const
 {
-  // Compute inverse span lengths for derivative scaling
-  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
-  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
-  const Standard_Real anInvU       = 1.0 / aSpanLengthU;
-  const Standard_Real anInvV       = 1.0 / aSpanLengthV;
+  Standard_Real aPntDeriv[16]; // Result storage for D1
+  EvaluatePolynomials(myPolesWeights,
+                      myParamsU,
+                      myParamsV,
+                      myIsRational,
+                      theLocalU,
+                      theLocalV,
+                      1,
+                      1,
+                      aPntDeriv);
 
-  Standard_Real* const aPolesArray = ConvertArray(myPolesWeights);
-  Standard_Real        aPntDeriv[16]; // result storage (point and derivative coordinates)
-  for (Standard_Integer i = 0; i < 16; i++)
-    aPntDeriv[i] = 0.0;
+  const Standard_Integer aDimension = myIsRational ? 4 : 3;
+  const Standard_Integer aShift     = aDimension; // Shift for first derivatives
 
-  Standard_Integer       aDimension   = myIsRational ? 4 : 3;
-  const Standard_Integer aCacheCols   = myPolesWeights->RowLength();
-  const auto [aMinDegree, aMaxDegree] = std::minmax(myParamsU.Degree, myParamsV.Degree);
-  const auto [aMinParam, aMaxParam]   = (myParamsU.Degree > myParamsV.Degree)
-                                          ? std::make_pair(theLocalV, theLocalU)
-                                          : std::make_pair(theLocalU, theLocalV);
+  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
 
-  // clang-format off
-  NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols<<1); // array for intermediate results
-  // clang-format on
-
-  // Calculate intermediate values and derivatives of bivariate polynomial along variable with
-  // maximal degree
-  PLib::EvalPolynomial(aMaxParam, 1, aMaxDegree, aCacheCols, aPolesArray[0], aTransientCoeffs[0]);
-
-  // Calculate a point on surface and a derivative along variable with minimal degree
-  PLib::EvalPolynomial(aMinParam, 1, aMinDegree, aDimension, aTransientCoeffs[0], aPntDeriv[0]);
-
-  // Calculate derivative along variable with maximal degree
-  PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                   aMinDegree,
-                                   aDimension,
-                                   aMinDegree * aDimension,
-                                   aTransientCoeffs[aCacheCols],
-                                   aPntDeriv[aDimension << 1]);
-
-  const Standard_Real* aResult = aPntDeriv;
-  Standard_Real        aTempStorage[12];
-  if (myIsRational) // calculate derivatives divided by weight's derivatives
-  {
-    BSplSLib::RationalDerivative(1, 1, 1, 1, aPntDeriv[0], aTempStorage[0]);
-    aResult = aTempStorage;
-    aDimension--;
-  }
-
-  thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
+  // Tangents are stored after the point coordinates
+  // Order: D0, DU, DV (if U max degree, else D0, DV, DU)
   if (myParamsU.Degree > myParamsV.Degree)
   {
-    theTangentV.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
-    const Standard_Integer aShift = aDimension << 1;
-    theTangentU.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
+    theTangentV.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theTangentU.SetCoord(aPntDeriv[aShift + aDimension],
+                         aPntDeriv[aShift + aDimension + 1],
+                         aPntDeriv[aShift + aDimension + 2]);
   }
   else
   {
-    theTangentU.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
-    const Standard_Integer aShift = aDimension << 1;
-    theTangentV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
+    theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theTangentV.SetCoord(aPntDeriv[aShift + aDimension],
+                         aPntDeriv[aShift + aDimension + 1],
+                         aPntDeriv[aShift + aDimension + 2]);
   }
+
+  const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
+  const Standard_Real anInvV = 2.0 * myParamsV.InvSpanLength;
   theTangentU.Multiply(anInvU);
   theTangentV.Multiply(anInvV);
 }
@@ -231,105 +281,46 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
                              gp_Vec& theCurvatureV,
                              gp_Vec& theCurvatureUV) const
 {
-  // Compute inverse span lengths for derivative scaling
-  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
-  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
-  const Standard_Real anInvU       = 1.0 / aSpanLengthU;
-  const Standard_Real anInvV       = 1.0 / aSpanLengthV;
+  Standard_Real aPntDeriv[36]; // Result storage for D2
+  EvaluatePolynomials(myPolesWeights,
+                      myParamsU,
+                      myParamsV,
+                      myIsRational,
+                      theLocalU,
+                      theLocalV,
+                      2,
+                      2,
+                      aPntDeriv);
 
-  Standard_Real* const aPolesArray = ConvertArray(myPolesWeights);
-  Standard_Real        aPntDeriv[36]; // result storage (point and derivative coordinates)
-  for (Standard_Integer i = 0; i < 36; i++)
-    aPntDeriv[i] = 0.0;
+  const Standard_Integer aDimension = myIsRational ? 4 : 3;
+  const Standard_Integer aShift     = aDimension; // Shift for first derivatives
+  const Standard_Integer aShift2    = aDimension << 1;
+  const Standard_Integer aShift3    = aShift2 + aDimension;
+  const Standard_Integer aShift4    = aShift3 + aDimension;
+  const Standard_Integer aShift5    = aShift4 + aDimension;
 
-  Standard_Integer       aDimension   = myIsRational ? 4 : 3;
-  const Standard_Integer aCacheCols   = myPolesWeights->RowLength();
-  const auto [aMinDegree, aMaxDegree] = std::minmax(myParamsU.Degree, myParamsV.Degree);
-  const auto [aMinParam, aMaxParam]   = (myParamsU.Degree > myParamsV.Degree)
-                                          ? std::make_pair(theLocalV, theLocalU)
-                                          : std::make_pair(theLocalU, theLocalV);
+  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
 
-  // clang-format off
-  NCollection_LocalArray<Standard_Real> aTransientCoeffs(3 * aCacheCols); // array for intermediate results
-  // Calculating derivative to be evaluate and
-  // nulling transient coefficients when max or min derivative is less than 2
-  // clang-format on
-  const Standard_Integer aMinDeriv = std::min(2, aMinDegree);
-  const Standard_Integer aMaxDeriv = std::min(2, aMaxDegree);
-  for (Standard_Integer i = aMaxDeriv + 1; i < 3; i++)
-  {
-    Standard_Integer anIndex = i * aCacheCols;
-    for (Standard_Integer j = 0; j < aCacheCols; j++)
-      aTransientCoeffs[anIndex++] = 0.0;
-  }
-
-  // Calculate intermediate values and derivatives of bivariate polynomial along variable with
-  // maximal degree
-  PLib::EvalPolynomial(aMaxParam,
-                       aMaxDeriv,
-                       aMaxDegree,
-                       aCacheCols,
-                       aPolesArray[0],
-                       aTransientCoeffs[0]);
-
-  // Calculate a point on surface and a derivatives along variable with minimal degree
-  PLib::EvalPolynomial(aMinParam,
-                       aMinDeriv,
-                       aMinDegree,
-                       aDimension,
-                       aTransientCoeffs[0],
-                       aPntDeriv[0]);
-
-  // Calculate derivative along variable with maximal degree and mixed derivative
-  PLib::EvalPolynomial(aMinParam,
-                       1,
-                       aMinDegree,
-                       aDimension,
-                       aTransientCoeffs[aCacheCols],
-                       aPntDeriv[3 * aDimension]);
-
-  // Calculate second derivative along variable with maximal degree
-  PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                   aMinDegree,
-                                   aDimension,
-                                   aMinDegree * aDimension,
-                                   aTransientCoeffs[aCacheCols << 1],
-                                   aPntDeriv[6 * aDimension]);
-
-  const Standard_Real* aResult = aPntDeriv;
-  Standard_Real        aTempStorage[36];
-  if (myIsRational) // calculate derivatives divided by weight's derivatives
-  {
-    BSplSLib::RationalDerivative(2, 2, 2, 2, aPntDeriv[0], aTempStorage[0]);
-    aResult = aTempStorage;
-    aDimension--;
-  }
-
-  thePoint.SetCoord(aResult[0], aResult[1], aResult[2]);
+  // Derivatives are stored consecutively: D0, DU, DV, DUU, DVV, DUV
   if (myParamsU.Degree > myParamsV.Degree)
   {
-    theTangentV.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
-    Standard_Integer aShift = aDimension << 1;
-    theCurvatureV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += aDimension;
-    theTangentU.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += aDimension;
-    theCurvatureUV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += (aDimension << 1);
-    theCurvatureU.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
+    theTangentV.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theCurvatureV.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
+    theTangentU.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
+    theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
+    theCurvatureU.SetCoord(aPntDeriv[aShift5], aPntDeriv[aShift5 + 1], aPntDeriv[aShift5 + 2]);
   }
   else
   {
-    theTangentU.SetCoord(aResult[aDimension], aResult[aDimension + 1], aResult[aDimension + 2]);
-    Standard_Integer aShift = aDimension << 1;
-    theCurvatureU.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += aDimension;
-    theTangentV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += aDimension;
-    theCurvatureUV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
-    aShift += (aDimension << 1);
-    theCurvatureV.SetCoord(aResult[aShift], aResult[aShift + 1], aResult[aShift + 2]);
+    theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theCurvatureU.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
+    theTangentV.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
+    theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
+    theCurvatureV.SetCoord(aPntDeriv[aShift5], aPntDeriv[aShift5 + 1], aPntDeriv[aShift5 + 2]);
   }
+
+  const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
+  const Standard_Real anInvV = 2.0 * myParamsV.InvSpanLength;
   theTangentU.Multiply(anInvU);
   theTangentV.Multiply(anInvV);
   theCurvatureU.Multiply(anInvU * anInvU);
