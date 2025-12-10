@@ -201,16 +201,16 @@ void GeomGridEval_BSplineSurface::prepare() const
   int aPrevUSpan = aUFlatKnots.Lower() + aUDegree;
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double aParam   = myRawUParams.Value(i);
-    const int    aSpanIdx = locateSpanWithHint(aParam, true, aPrevUSpan, aUFlatKnots);
-    aPrevUSpan            = aSpanIdx;
+    double    aParam   = myRawUParams.Value(i);
+    const int aSpanIdx = locateSpanWithHint(aParam, true, aPrevUSpan, aUFlatKnots);
+    aPrevUSpan         = aSpanIdx;
 
     const double aSpanStart   = aUFlatKnots.Value(aSpanIdx);
     const double aSpanHalfLen = 0.5 * (aUFlatKnots.Value(aSpanIdx + 1) - aSpanStart);
     const double aSpanMid     = aSpanStart + aSpanHalfLen;
     const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
 
-    myUParams.SetValue(i - 1, ParamWithSpan{aParam, aLocalParam, aSpanIdx});
+    myUParams.SetValue(i - 1, ParamWithSpan{myRawUParams.Value(i), aLocalParam, aSpanIdx});
   }
 
   // Process V parameters
@@ -219,16 +219,16 @@ void GeomGridEval_BSplineSurface::prepare() const
   int aPrevVSpan = aVFlatKnots.Lower() + aVDegree;
   for (int j = 1; j <= aNbV; ++j)
   {
-    const double aParam   = myRawVParams.Value(j);
-    const int    aSpanIdx = locateSpanWithHint(aParam, false, aPrevVSpan, aVFlatKnots);
-    aPrevVSpan            = aSpanIdx;
+    double    aParam   = myRawVParams.Value(j);
+    const int aSpanIdx = locateSpanWithHint(aParam, false, aPrevVSpan, aVFlatKnots);
+    aPrevVSpan         = aSpanIdx;
 
     const double aSpanStart   = aVFlatKnots.Value(aSpanIdx);
     const double aSpanHalfLen = 0.5 * (aVFlatKnots.Value(aSpanIdx + 1) - aSpanStart);
     const double aSpanMid     = aSpanStart + aSpanHalfLen;
     const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
 
-    myVParams.SetValue(j - 1, ParamWithSpan{aParam, aLocalParam, aSpanIdx});
+    myVParams.SetValue(j - 1, ParamWithSpan{myRawVParams.Value(j), aLocalParam, aSpanIdx});
   }
 
   // Compute span ranges
@@ -238,7 +238,7 @@ void GeomGridEval_BSplineSurface::prepare() const
 
 //==================================================================================================
 
-int GeomGridEval_BSplineSurface::locateSpan(double                      theParam,
+int GeomGridEval_BSplineSurface::locateSpan(double&                     theParam,
                                             bool                        theUDir,
                                             const TColStd_Array1OfReal& theFlatKnots) const
 {
@@ -255,12 +255,13 @@ int GeomGridEval_BSplineSurface::locateSpan(double                      theParam
                             isPeriodic,
                             aSpanIndex,
                             aNewParam);
+  theParam = aNewParam;
   return aSpanIndex;
 }
 
 //==================================================================================================
 
-int GeomGridEval_BSplineSurface::locateSpanWithHint(double                      theParam,
+int GeomGridEval_BSplineSurface::locateSpanWithHint(double&                     theParam,
                                                     bool                        theUDir,
                                                     int                         theHint,
                                                     const TColStd_Array1OfReal& theFlatKnots) const

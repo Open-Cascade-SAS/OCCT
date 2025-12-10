@@ -101,10 +101,10 @@ public:
 
 private:
   //! Find span index for a parameter value.
-  int locateSpan(double theParam, bool theUDir, const TColStd_Array1OfReal& theFlatKnots) const;
+  int locateSpan(double& theParam, bool theUDir, const TColStd_Array1OfReal& theFlatKnots) const;
 
   //! Find span index with a hint for better performance on sorted parameters.
-  int locateSpanWithHint(double                      theParam,
+  int locateSpanWithHint(double&                     theParam,
                          bool                        theUDir,
                          int                         theHint,
                          const TColStd_Array1OfReal& theFlatKnots) const;
