@@ -247,3 +247,90 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cylinder::EvaluateGridD2()
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Cylinder::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  const gp_Cylinder& aCyl    = myGeom->Cylinder();
+  const gp_Pnt&      aCenter = aCyl.Location();
+  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
+  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
+  const gp_Dir&      aZDir   = aCyl.Position().Direction();
+  const double       aRadius = aCyl.Radius();
+
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
+
+  const gp_Vec aZero(0.0, 0.0, 0.0);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u    = myUParams.Value(iU);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // A1 = R * cosU, A2 = R * sinU
+    const double A1 = aRadius * cosU;
+    const double A2 = aRadius * sinU;
+
+    // Som1 = A1*X + A2*Y (circle point)
+    const double aCircleX = A1 * aXX + A2 * aYX;
+    const double aCircleY = A1 * aXY + A2 * aYY;
+    const double aCircleZ = A1 * aXZ + A2 * aYZ;
+
+    // D1U = R * (-sinU * X + cosU * Y)
+    const double dU1 = aRadius * (-sinU * aXX + cosU * aYX);
+    const double dU2 = aRadius * (-sinU * aXY + cosU * aYY);
+    const double dU3 = aRadius * (-sinU * aXZ + cosU * aYZ);
+
+    // D2U = -Som1 = - circle point
+    const double d2U1 = -aCircleX;
+    const double d2U2 = -aCircleY;
+    const double d2U3 = -aCircleZ;
+
+    // D3U = -D1U (Vuuu = Dif1 where Dif1 = A2*X - A1*Y, which equals -D1U)
+    const double d3U1 = -dU1;
+    const double d3U2 = -dU2;
+    const double d3U3 = -dU3;
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = myVParams.Value(iV);
+
+      aResult.ChangeValue(iU, iV) = {
+        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
+        gp_Vec(dU1, dU2, dU3),
+        gp_Vec(aZX, aZY, aZZ), // D1V = ZDir
+        gp_Vec(d2U1, d2U2, d2U3),
+        aZero, // D2V = 0
+        aZero, // D2UV = 0
+        gp_Vec(d3U1, d3U2, d3U3),
+        aZero, // D3V = 0
+        aZero, // D3UUV = 0
+        aZero  // D3UVV = 0
+      };
+    }
+  }
+  return aResult;
+}

@@ -178,3 +178,44 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const int                                aNbU = myUParams.Size();
+  const int                                aNbV = myVParams.Size();
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  // D3 uses direct geometry evaluation
+  for (int i = 0; i < aNbU; ++i)
+  {
+    const double aU = myUParams.Value(i);
+    for (int j = 0; j < aNbV; ++j)
+    {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      myGeom->D3(aU,
+                 myVParams.Value(j),
+                 aPoint,
+                 aD1U,
+                 aD1V,
+                 aD2U,
+                 aD2V,
+                 aD2UV,
+                 aD3U,
+                 aD3V,
+                 aD3UUV,
+                 aD3UVV);
+      aResult.ChangeValue(i + 1, j + 1) =
+        {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+    }
+  }
+
+  return aResult;
+}

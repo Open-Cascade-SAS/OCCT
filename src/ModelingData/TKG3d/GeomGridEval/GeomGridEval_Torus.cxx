@@ -316,3 +316,157 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2() co
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  const gp_Torus& aTorus       = myGeom->Torus();
+  const gp_Pnt&   aCenter      = aTorus.Location();
+  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir        = aTorus.Position().Direction();
+  const double    aMajorRadius = aTorus.MajorRadius();
+  const double    aMinorRadius = aTorus.MinorRadius();
+
+  const double aCX = aCenter.X();
+  const double aCY = aCenter.Y();
+  const double aCZ = aCenter.Z();
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
+
+  NCollection_Array1<double> aCosV(1, aNbV);
+  NCollection_Array1<double> aSinV(1, aNbV);
+  for (int iV = 1; iV <= aNbV; ++iV)
+  {
+    const double v = myVParams.Value(iV);
+    aCosV.SetValue(iV, std::cos(v));
+    aSinV.SetValue(iV, std::sin(v));
+  }
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u    = myUParams.Value(iU);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // DirU = cosU*XDir + sinU*YDir
+    const double dirUX = cosU * aXX + sinU * aYX;
+    const double dirUY = cosU * aXY + sinU * aYY;
+    const double dirUZ = cosU * aXZ + sinU * aYZ;
+
+    // DerivDirU = -sinU*XDir + cosU*YDir
+    const double dDirUX = -sinU * aXX + cosU * aYX;
+    const double dDirUY = -sinU * aXY + cosU * aYY;
+    const double dDirUZ = -sinU * aXZ + cosU * aYZ;
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double cosV = aCosV.Value(iV);
+      const double sinV = aSinV.Value(iV);
+
+      // R1 = r * cosV, R2 = r * sinV
+      const double R1 = aMinorRadius * cosV;
+      const double R2 = aMinorRadius * sinV;
+
+      // K = R + r * cosV
+      const double K = aMajorRadius + R1;
+
+      // A3 = R2 * cosU, A4 = R2 * sinU (for Som3)
+      const double A3 = R2 * cosU;
+      const double A4 = R2 * sinU;
+      // A5 = R1 * cosU, A6 = R1 * sinU (for Vvv, Vuvv)
+      const double A5 = R1 * cosU;
+      const double A6 = R1 * sinU;
+
+      // Som1 = K * DirU (for P and D2U)
+      const double Som1X = K * dirUX;
+      const double Som1Y = K * dirUY;
+      const double Som1Z = K * dirUZ;
+
+      // Som3 = R2 * (cosU*X + sinU*Y) = A3*X + A4*Y
+      const double Som3X = A3 * aXX + A4 * aYX;
+      const double Som3Y = A3 * aXY + A4 * aYY;
+      const double Som3Z = A3 * aXZ + A4 * aYZ;
+
+      // P = Center + Som1 + R2*Z
+      const double pX = aCX + Som1X + R2 * aZX;
+      const double pY = aCY + Som1Y + R2 * aZY;
+      const double pZ = aCZ + Som1Z + R2 * aZZ;
+
+      // D1U = K * DerivDirU
+      const double dU1 = K * dDirUX;
+      const double dU2 = K * dDirUY;
+      const double dU3 = K * dDirUZ;
+
+      // D1V = -Som3 + R1*Z = -r*sinV*DirU + r*cosV*Z
+      const double dV1 = -Som3X + R1 * aZX;
+      const double dV2 = -Som3Y + R1 * aZY;
+      const double dV3 = -Som3Z + R1 * aZZ;
+
+      // D2U = -Som1 = -K * DirU
+      const double d2U1 = -Som1X;
+      const double d2U2 = -Som1Y;
+      const double d2U3 = -Som1Z;
+
+      // D2V = -R1*DirU - R2*Z = -(A5*X + A6*Y) - R2*Z
+      const double d2V1 = -A5 * aXX - A6 * aYX - R2 * aZX;
+      const double d2V2 = -A5 * aXY - A6 * aYY - R2 * aZY;
+      const double d2V3 = -A5 * aXZ - A6 * aYZ - R2 * aZZ;
+
+      // D2UV = r*sinV*(sinU*X - cosU*Y) = A4*X - A3*Y
+      const double d2UV1 = A4 * aXX - A3 * aYX;
+      const double d2UV2 = A4 * aXY - A3 * aYY;
+      const double d2UV3 = A4 * aXZ - A3 * aYZ;
+
+      // D3U = -D1U (Vuuu = Dif1 = -DerivDirU*K)
+      const double d3U1 = -dU1;
+      const double d3U2 = -dU2;
+      const double d3U3 = -dU3;
+
+      // D3V = -D1V (Vvvv = Som3 - R1*Z)
+      const double d3V1 = Som3X - R1 * aZX;
+      const double d3V2 = Som3Y - R1 * aZY;
+      const double d3V3 = Som3Z - R1 * aZZ;
+
+      // D3UUV = Som3 = r*sinV*(cosU*X + sinU*Y)
+      const double d3UUV1 = Som3X;
+      const double d3UUV2 = Som3Y;
+      const double d3UUV3 = Som3Z;
+
+      // D3UVV = r*cosV*(sinU*X - cosU*Y) = A6*X - A5*Y
+      const double d3UVV1 = A6 * aXX - A5 * aYX;
+      const double d3UVV2 = A6 * aXY - A5 * aYY;
+      const double d3UVV3 = A6 * aXZ - A5 * aYZ;
+
+      aResult.ChangeValue(iU, iV) = {gp_Pnt(pX, pY, pZ),
+                                     gp_Vec(dU1, dU2, dU3),
+                                     gp_Vec(dV1, dV2, dV3),
+                                     gp_Vec(d2U1, d2U2, d2U3),
+                                     gp_Vec(d2V1, d2V2, d2V3),
+                                     gp_Vec(d2UV1, d2UV2, d2UV3),
+                                     gp_Vec(d3U1, d3U2, d3U3),
+                                     gp_Vec(d3V1, d3V2, d3V3),
+                                     gp_Vec(d3UUV1, d3UUV2, d3UUV3),
+                                     gp_Vec(d3UVV1, d3UVV2, d3UVV3)};
+    }
+  }
+  return aResult;
+}

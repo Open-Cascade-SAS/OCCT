@@ -188,3 +188,35 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  // Offset D3 requires basis D4, which is not available in batch form.
+  // Use adaptor for more efficient repeated evaluations.
+  const int                                aNbU = myUParams.Size();
+  const int                                aNbV = myVParams.Size();
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  GeomAdaptor_Surface anAdaptor(myGeom);
+
+  for (int i = 1; i <= aNbU; ++i)
+  {
+    const double aU = myUParams.Value(i);
+    for (int j = 1; j <= aNbV; ++j)
+    {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      anAdaptor.D3(aU, myVParams.Value(j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+      aResult.ChangeValue(i, j) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+    }
+  }
+
+  return aResult;
+}

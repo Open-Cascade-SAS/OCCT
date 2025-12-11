@@ -120,3 +120,33 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGrid
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGridD3() const
+{
+  if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u = myUParams.Value(iU);
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = myVParams.Value(iV);
+      gp_Pnt       aPoint;
+      gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      mySurface->D3(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+      aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+    }
+  }
+
+  return aResult;
+}

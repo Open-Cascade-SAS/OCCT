@@ -119,6 +119,10 @@ public:
   //! @return 2D array of SurfD2 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
+  //! Evaluate grid points with derivatives up to third order.
+  //! @return 2D array of SurfD3 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
+
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 

@@ -67,6 +67,21 @@ struct SurfD2
   gp_Vec D2UV;
 };
 
+//! Result structure for surface D3 evaluation (point and partial derivatives up to 3rd order).
+struct SurfD3
+{
+  gp_Pnt Point;
+  gp_Vec D1U;
+  gp_Vec D1V;
+  gp_Vec D2U;
+  gp_Vec D2V;
+  gp_Vec D2UV;
+  gp_Vec D3U;
+  gp_Vec D3V;
+  gp_Vec D3UUV;
+  gp_Vec D3UVV;
+};
+
 } // namespace GeomGridEval
 
 #endif // _GeomGridEval_HeaderFile

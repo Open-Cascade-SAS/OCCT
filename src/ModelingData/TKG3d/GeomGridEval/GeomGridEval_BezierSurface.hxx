@@ -76,6 +76,12 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
+  //! Evaluate all grid points with derivatives up to third order.
+  //! Uses direct Geom_BezierSurface::D3 evaluation.
+  //! @return 2D array of SurfD3 (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
+
 private:
   //! Build cache for the Bezier surface (single span).
   void buildCache() const;

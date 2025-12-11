@@ -629,3 +629,108 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
 
   return aResults;
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGridD3() const
+{
+  if (myGeom.IsNull() || myRawUParams.IsEmpty() || myRawVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  prepare();
+
+  const int aNbUParams = myUParams.Size();
+  const int aNbVParams = myVParams.Size();
+
+  if (aNbUParams == 0 || aNbVParams == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResults(1, aNbUParams, 1, aNbVParams);
+
+  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
+
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+
+  const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+  const TColgp_Array2OfPnt& aPoles = aPolesHandle->Array2();
+
+  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
+
+  // D3 evaluation uses direct BSplSLib::D3 - no cache available for third derivatives
+  const int aNbUSpans = myUSpanRanges.Size();
+  const int aNbVSpans = myVSpanRanges.Size();
+
+  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
+  {
+    const auto& aURange = myUSpanRanges.Value(iURange);
+
+    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
+    {
+      const auto& aVRange = myVSpanRanges.Value(iVRange);
+
+      for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
+      {
+        const double aUParam   = myUParams.Value(iu).Param;
+        const int    aUSpanIdx = aURange.SpanIndex;
+
+        for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
+        {
+          gp_Pnt aPoint;
+          gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+
+          BSplSLib::D3(aUParam,
+                       myVParams.Value(iv).Param,
+                       aUSpanIdx,
+                       aVRange.SpanIndex,
+                       aPoles,
+                       aWeights,
+                       aUFlatKnots,
+                       aVFlatKnots,
+                       nullptr,
+                       nullptr,
+                       aUDegree,
+                       aVDegree,
+                       isURational,
+                       isVRational,
+                       isUPeriodic,
+                       isVPeriodic,
+                       aPoint,
+                       aD1U,
+                       aD1V,
+                       aD2U,
+                       aD2V,
+                       aD2UV,
+                       aD3U,
+                       aD3V,
+                       aD3UUV,
+                       aD3UVV);
+
+          aResults.ChangeValue(iu + 1, iv + 1) =
+            {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+        }
+      }
+    }
+  }
+
+  return aResults;
+}

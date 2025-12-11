@@ -287,3 +287,22 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2() 
     },
     myEvaluator);
 }
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3() const
+{
+  return std::visit(
+    [](const auto& theEval) -> NCollection_Array2<GeomGridEval::SurfD3> {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array2<GeomGridEval::SurfD3>();
+      }
+      else
+      {
+        return theEval.EvaluateGridD3();
+      }
+    },
+    myEvaluator);
+}

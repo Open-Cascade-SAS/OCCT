@@ -76,6 +76,12 @@ public:
   //!         or empty array if surface is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
 
+  //! Evaluate all grid points with derivatives up to third order.
+  //! Uses Adaptor3d_Surface::D3 for evaluation.
+  //! @return 2D array of SurfD3 (1-based indexing),
+  //!         or empty array if surface is null or no parameters set
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
+
 private:
   Handle(Adaptor3d_Surface)  mySurface;
   NCollection_Array1<double> myUParams;
