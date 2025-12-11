@@ -20,6 +20,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
 
 //==================================================================================================
@@ -82,6 +83,10 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
       myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
       break;
     }
+    case GeomAbs_OffsetCurve: {
+      myEvaluator = GeomGridEval_OffsetCurve(theCurve->OffsetCurve());
+      break;
+    }
     default: {
       // Fallback: use OtherCurve. Taking handle directly.
       myEvaluator = GeomGridEval_OtherCurve(theCurve);
@@ -135,6 +140,11 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   {
     myCurveType = GeomAbs_BSplineCurve;
     myEvaluator = GeomGridEval_BSplineCurve(aBSpline);
+  }
+  else if (auto anOffset = Handle(Geom_OffsetCurve)::DownCast(theCurve))
+  {
+    myCurveType = GeomAbs_OffsetCurve;
+    myEvaluator = GeomGridEval_OffsetCurve(anOffset);
   }
   else
   {

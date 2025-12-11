@@ -23,6 +23,7 @@
 #include <GeomGridEval_Ellipse.hxx>
 #include <GeomGridEval_Hyperbola.hxx>
 #include <GeomGridEval_Line.hxx>
+#include <GeomGridEval_OffsetCurve.hxx>
 #include <GeomGridEval_OtherCurve.hxx>
 #include <GeomGridEval_Parabola.hxx>
 #include <gp_Pnt.hxx>
@@ -72,6 +73,7 @@ public:
                                         GeomGridEval_Parabola,     // Parabola curve
                                         GeomGridEval_BezierCurve,  // Bezier curve
                                         GeomGridEval_BSplineCurve, // B-spline curve
+                                        GeomGridEval_OffsetCurve,  // Offset curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 
   //! Default constructor - uninitialized state.

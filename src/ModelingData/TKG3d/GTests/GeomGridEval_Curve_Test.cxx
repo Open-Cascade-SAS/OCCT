@@ -827,3 +827,112 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
     EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
   }
 }
+
+//==================================================================================================
+// Tests for Curve Third Derivative Evaluation (D3)
+//==================================================================================================
+
+TEST(GeomGridEval_CircleTest, DerivativeD3)
+{
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomGridEval_Circle anEval(aGeomCircle);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+
+  // Verify D3 against direct evaluation
+  for (int i = 1; i <= 9; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2, aD3;
+    aGeomCircle->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_OffsetCurveTest, DerivativeD3)
+{
+  // Offset curve from a circle
+  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aCircle, 0.5, gp::DZ());
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+
+  GeomGridEval_OtherCurve anEval(anAdaptor->ShallowCopy());
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+
+  // Verify D3 against adaptor evaluation
+  for (int i = 1; i <= 9; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2, aD3;
+    anAdaptor->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
+{
+  // Offset curve via unified dispatcher
+  Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(anAdaptor);
+  EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+
+  // Verify D3 against adaptor evaluation
+  for (int i = 1; i <= 6; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2, aD3;
+    anAdaptor->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
+{
+  Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
+  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+
+  GeomGridEval_Curve anEval;
+  anEval.Initialize(anAdaptor);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+
+  // Verify against direct evaluation
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1, aD2, aD3;
+    aCurve->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
