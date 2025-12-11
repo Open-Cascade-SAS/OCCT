@@ -25,21 +25,6 @@ namespace
 //! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
 constexpr int THE_CACHE_THRESHOLD = 4;
 
-//! Helper structure holding common B-spline surface data for evaluation.
-struct BSplineSurfData
-{
-  const TColStd_Array1OfReal* UFlatKnots;
-  const TColStd_Array1OfReal* VFlatKnots;
-  const TColgp_Array2OfPnt*   Poles;
-  const TColStd_Array2OfReal* Weights;
-  int                         UDegree;
-  int                         VDegree;
-  bool                        IsURational;
-  bool                        IsVRational;
-  bool                        IsUPeriodic;
-  bool                        IsVPeriodic;
-};
-
 //! @brief Iterates over UV span blocks and invokes evaluation functors.
 //!
 //! This helper encapsulates the common pattern of iterating over pre-computed span ranges,
@@ -55,18 +40,16 @@ struct BSplineSurfData
 //! @param theVSpanRanges  Pre-computed V span ranges
 //! @param theUParams      U parameters with span info
 //! @param theVParams      V parameters with span info
-//! @param theCache        B-spline surface cache
-//! @param theData         Common B-spline data
+//! @param theBuildCache   Functor that rebuilds cache for a span block
 //! @param theCacheEval    Functor called for cache evaluation (large blocks)
 //! @param theDirectEval   Functor called for direct evaluation (small blocks)
-template <typename CacheEvalFunc, typename DirectEvalFunc>
+template <typename BuildCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSpanBlocks(
   const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&     theUSpanRanges,
   const NCollection_Array1<GeomGridEval_BSplineSurface::SpanRange>&     theVSpanRanges,
   const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>& theUParams,
   const NCollection_Array1<GeomGridEval_BSplineSurface::ParamWithSpan>& theVParams,
-  const Handle(BSplSLib_Cache)&                                         theCache,
-  const BSplineSurfData&                                                theData,
+  BuildCacheFunc&&                                                      theBuildCache,
   CacheEvalFunc&&                                                       theCacheEval,
   DirectEvalFunc&&                                                      theDirectEval)
 {
@@ -87,12 +70,8 @@ void iterateSpanBlocks(
       if (aNbPoints >= THE_CACHE_THRESHOLD)
       {
         // Large block: use cache
-        theCache->BuildCache(theUParams.Value(aURange.StartIdx).Param,
-                             theVParams.Value(aVRange.StartIdx).Param,
-                             *theData.UFlatKnots,
-                             *theData.VFlatKnots,
-                             *theData.Poles,
-                             theData.Weights);
+        theBuildCache(theUParams.Value(aURange.StartIdx).Param,
+                      theVParams.Value(aVRange.StartIdx).Param);
 
         for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
         {
@@ -380,8 +359,12 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
   const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
   const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
 
-  const int aUDegree = myGeom->UDegree();
-  const int aVDegree = myGeom->VDegree();
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
 
   const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
@@ -403,26 +386,15 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
                                  aWeights);
   }
 
-  // Prepare data structure for helper
-  const BSplineSurfData aData = {&aUFlatKnots,
-                                 &aVFlatKnots,
-                                 &aPoles,
-                                 aWeights,
-                                 aUDegree,
-                                 aVDegree,
-                                 myGeom->IsURational(),
-                                 myGeom->IsVRational(),
-                                 myGeom->IsUPeriodic(),
-                                 myGeom->IsVPeriodic()};
-
   // Use helper with lambdas for cache and direct evaluation
   iterateSpanBlocks(
     myUSpanRanges,
     myVSpanRanges,
     myUParams,
     myVParams,
-    myCache,
-    aData,
+    [&](double theUParam, double theVParam) {
+      myCache->BuildCache(theUParam, theVParam, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    },
     // Cache evaluation (local parameters)
     [&](int iu, int iv, double theLocalU, double theLocalV) {
       myCache->D0Local(theLocalU, theLocalV, aPoints.ChangeValue(iu + 1, iv + 1));
@@ -439,12 +411,12 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
                    aVFlatKnots,
                    nullptr,
                    nullptr,
-                   aData.UDegree,
-                   aData.VDegree,
-                   aData.IsURational,
-                   aData.IsVRational,
-                   aData.IsUPeriodic,
-                   aData.IsVPeriodic,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
                    aPoints.ChangeValue(iu + 1, iv + 1));
     });
 
@@ -481,8 +453,12 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
   const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
   const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
 
-  const int aUDegree = myGeom->UDegree();
-  const int aVDegree = myGeom->VDegree();
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
 
   const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
@@ -504,26 +480,15 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                                  aWeights);
   }
 
-  // Prepare data structure for helper
-  const BSplineSurfData aData = {&aUFlatKnots,
-                                 &aVFlatKnots,
-                                 &aPoles,
-                                 aWeights,
-                                 aUDegree,
-                                 aVDegree,
-                                 myGeom->IsURational(),
-                                 myGeom->IsVRational(),
-                                 myGeom->IsUPeriodic(),
-                                 myGeom->IsVPeriodic()};
-
   // Use helper with lambdas for cache and direct evaluation
   iterateSpanBlocks(
     myUSpanRanges,
     myVSpanRanges,
     myUParams,
     myVParams,
-    myCache,
-    aData,
+    [&](double theUParam, double theVParam) {
+      myCache->BuildCache(theUParam, theVParam, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    },
     // Cache evaluation (local parameters)
     [&](int iu, int iv, double theLocalU, double theLocalV) {
       gp_Pnt aPoint;
@@ -545,12 +510,12 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
                    aVFlatKnots,
                    nullptr,
                    nullptr,
-                   aData.UDegree,
-                   aData.VDegree,
-                   aData.IsURational,
-                   aData.IsVRational,
-                   aData.IsUPeriodic,
-                   aData.IsVPeriodic,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
                    aPoint,
                    aD1U,
                    aD1V);
@@ -590,8 +555,12 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
   const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
   const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
 
-  const int aUDegree = myGeom->UDegree();
-  const int aVDegree = myGeom->VDegree();
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
 
   const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
@@ -613,26 +582,15 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                                  aWeights);
   }
 
-  // Prepare data structure for helper
-  const BSplineSurfData aData = {&aUFlatKnots,
-                                 &aVFlatKnots,
-                                 &aPoles,
-                                 aWeights,
-                                 aUDegree,
-                                 aVDegree,
-                                 myGeom->IsURational(),
-                                 myGeom->IsVRational(),
-                                 myGeom->IsUPeriodic(),
-                                 myGeom->IsVPeriodic()};
-
   // Use helper with lambdas for cache and direct evaluation
   iterateSpanBlocks(
     myUSpanRanges,
     myVSpanRanges,
     myUParams,
     myVParams,
-    myCache,
-    aData,
+    [&](double theUParam, double theVParam) {
+      myCache->BuildCache(theUParam, theVParam, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+    },
     // Cache evaluation (local parameters)
     [&](int iu, int iv, double theLocalU, double theLocalV) {
       gp_Pnt aPoint;
@@ -654,12 +612,12 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
                    aVFlatKnots,
                    nullptr,
                    nullptr,
-                   aData.UDegree,
-                   aData.VDegree,
-                   aData.IsURational,
-                   aData.IsVRational,
-                   aData.IsUPeriodic,
-                   aData.IsVPeriodic,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
                    aPoint,
                    aD1U,
                    aD1V,

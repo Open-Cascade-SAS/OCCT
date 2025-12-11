@@ -48,6 +48,24 @@ public:
   {
   }
 
+  //! Parameter value with pre-computed span index and local parameter.
+  struct ParamWithSpan
+  {
+    double Param;      //!< Original parameter value
+    double LocalParam; //!< Pre-computed local parameter in [0, 1] range for polynomial evaluation
+    int    SpanIndex;  //!< Flat knot index identifying the span
+  };
+
+  //! Range of parameter indices belonging to the same span.
+  struct SpanRange
+  {
+    int    SpanIndex;   //!< Flat knot index of this span
+    int    StartIdx;    //!< First parameter index (0-based, inclusive)
+    int    EndIdx;      //!< Past-the-end parameter index (exclusive)
+    double SpanMid;     //!< Midpoint of span (for cache convention: start + length/2)
+    double SpanHalfLen; //!< Half-length of span (for cache convention: length/2)
+  };
+
   //! Set parameters for grid evaluation (by const reference).
   //! Span indices and local parameters are pre-computed for optimal EvaluateGrid() performance.
   //! @param theParams array of parameter values
@@ -89,24 +107,6 @@ public:
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
 private:
-  //! Parameter value with pre-computed span index and local parameter.
-  struct ParamWithSpan
-  {
-    double Param;      //!< Original parameter value
-    double LocalParam; //!< Pre-computed local parameter in [0, 1] range for polynomial evaluation
-    int    SpanIndex;  //!< Flat knot index identifying the span
-  };
-
-  //! Range of parameter indices belonging to the same span.
-  struct SpanRange
-  {
-    int    SpanIndex;   //!< Flat knot index of this span
-    int    StartIdx;    //!< First parameter index (0-based, inclusive)
-    int    EndIdx;      //!< Past-the-end parameter index (exclusive)
-    double SpanMid;     //!< Midpoint of span (for cache convention: start + length/2)
-    double SpanHalfLen; //!< Half-length of span (for cache convention: length/2)
-  };
-
   //! Find span index for a parameter value.
   int locateSpan(double theParam, const TColStd_Array1OfReal& theFlatKnots) const;
 

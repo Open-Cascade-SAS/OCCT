@@ -15,6 +15,54 @@
 
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+
+namespace
+{
+//! Threshold for using cache vs direct evaluation (same logic as surface).
+constexpr int THE_CACHE_THRESHOLD = 4;
+
+//! Iterate over span blocks and dispatch to cache or direct evaluation functors.
+template <typename SpanArray,
+          typename ParamArray,
+          typename BuildCacheFunc,
+          typename CacheEvalFunc,
+          typename DirectEvalFunc>
+void iterateSpanBlocks(const SpanArray&  theSpanRanges,
+                       const ParamArray& theParams,
+                       BuildCacheFunc&&  theBuildCache,
+                       CacheEvalFunc&&   theCacheEval,
+                       DirectEvalFunc&&  theDirectEval)
+{
+  const int aNbRanges = theSpanRanges.Size();
+  for (int iRange = 0; iRange < aNbRanges; ++iRange)
+  {
+    const auto& aRange    = theSpanRanges.Value(iRange);
+    const int   aNbInSpan = aRange.EndIdx - aRange.StartIdx;
+
+    if (aNbInSpan >= THE_CACHE_THRESHOLD)
+    {
+      // Large block: reuse cache
+      theBuildCache(theParams.Value(aRange.StartIdx).Param);
+
+      for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
+      {
+        theCacheEval(i, theParams.Value(i).LocalParam);
+      }
+    }
+    else
+    {
+      // Small block: cheaper to evaluate directly
+      const int aSpanIdx = aRange.SpanIndex;
+      for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
+      {
+        theDirectEval(i, theParams.Value(i).Param, aSpanIdx);
+      }
+    }
+  }
+}
+
+} // namespace
 
 //==================================================================================================
 
@@ -212,7 +260,6 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
   const int                  aNbParams = myParams.Size();
   NCollection_Array1<gp_Pnt> aPoints(1, aNbParams);
 
-  // Get flat knots directly from geometry
   const Handle(TColStd_HArray1OfReal)& aFlatKnotsHandle = myGeom->HArrayFlatKnots();
   if (aFlatKnotsHandle.IsNull())
   {
@@ -220,39 +267,51 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineCurve::EvaluateGrid() const
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  // Get poles and weights handles directly from geometry
-  const int                            aDegree    = myGeom->Degree();
-  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
-  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
-  const bool                           isRational = myGeom->IsRational();
+  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
 
-  // Create or update cache
+  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                           isRational     = myGeom->IsRational();
+  if (isRational && aWeightsHandle.IsNull())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+
+  const int  aDegree    = myGeom->Degree();
+  const bool isPeriodic = myGeom->IsPeriodic();
+
   if (myCache.IsNull())
   {
-    myCache = new BSplCLib_Cache(aDegree,
-                                 myGeom->IsPeriodic(),
-                                 aFlatKnots,
-                                 aPoles->Array1(),
-                                 isRational ? &aWeights->Array1() : nullptr);
+    myCache = new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
   }
 
-  // Iterate over pre-computed span ranges
-  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
-  {
-    const SpanRange& aRange = mySpanRanges.Value(iRange);
-
-    // Rebuild cache once for this span block using first parameter in range
-    myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
-                        aFlatKnots,
-                        aPoles->Array1(),
-                        isRational ? &aWeights->Array1() : nullptr);
-
-    // Evaluate all points in this span block using pre-computed local parameters
-    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
-    {
-      myCache->D0Local(myParams.Value(i).LocalParam, aPoints.ChangeValue(i + 1));
-    }
-  }
+  iterateSpanBlocks(
+    mySpanRanges,
+    myParams,
+    [&](double theParam) { myCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
+    // Cache evaluation (local parameter)
+    [&](int theIdx, double theLocalParam) {
+      myCache->D0Local(theLocalParam, aPoints.ChangeValue(theIdx + 1));
+    },
+    // Direct evaluation (global parameter + span index)
+    [&](int theIdx, double theParam, int theSpanIdx) {
+      gp_Pnt aPoint;
+      BSplCLib::D0(theParam,
+                   theSpanIdx,
+                   aDegree,
+                   isPeriodic,
+                   aPoles,
+                   aWeights,
+                   aFlatKnots,
+                   nullptr,
+                   aPoint);
+      aPoints.ChangeValue(theIdx + 1) = aPoint;
+    });
 
   return aPoints;
 }
@@ -283,38 +342,56 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  // Get poles and weights handles directly from geometry
-  const int                            aDegree    = myGeom->Degree();
-  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
-  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
-  const bool                           isRational = myGeom->IsRational();
+  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD1>();
+  }
+  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+
+  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                           isRational     = myGeom->IsRational();
+  if (isRational && aWeightsHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD1>();
+  }
+  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+
+  const int  aDegree    = myGeom->Degree();
+  const bool isPeriodic = myGeom->IsPeriodic();
 
   if (myCache.IsNull())
   {
-    myCache = new BSplCLib_Cache(aDegree,
-                                 myGeom->IsPeriodic(),
-                                 aFlatKnots,
-                                 aPoles->Array1(),
-                                 isRational ? &aWeights->Array1() : nullptr);
+    myCache = new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
   }
 
-  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
-  {
-    const SpanRange& aRange = mySpanRanges.Value(iRange);
-
-    myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
-                        aFlatKnots,
-                        aPoles->Array1(),
-                        isRational ? &aWeights->Array1() : nullptr);
-
-    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
-    {
+  iterateSpanBlocks(
+    mySpanRanges,
+    myParams,
+    [&](double theParam) { myCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
+    // Cache evaluation
+    [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1;
-      myCache->D1Local(myParams.Value(i).LocalParam, aPoint, aD1);
-      aResults.ChangeValue(i + 1) = {aPoint, aD1};
-    }
-  }
+      myCache->D1Local(theLocalParam, aPoint, aD1);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1};
+    },
+    // Direct evaluation
+    [&](int theIdx, double theParam, int theSpanIdx) {
+      gp_Pnt aPoint;
+      gp_Vec aD1;
+      BSplCLib::D1(theParam,
+                   theSpanIdx,
+                   aDegree,
+                   isPeriodic,
+                   aPoles,
+                   aWeights,
+                   aFlatKnots,
+                   nullptr,
+                   aPoint,
+                   aD1);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1};
+    });
 
   return aResults;
 }
@@ -345,38 +422,57 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  // Get poles and weights handles directly from geometry
-  const int                            aDegree    = myGeom->Degree();
-  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
-  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
-  const bool                           isRational = myGeom->IsRational();
+  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD2>();
+  }
+  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+
+  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                           isRational     = myGeom->IsRational();
+  if (isRational && aWeightsHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD2>();
+  }
+  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+
+  const int  aDegree    = myGeom->Degree();
+  const bool isPeriodic = myGeom->IsPeriodic();
 
   if (myCache.IsNull())
   {
-    myCache = new BSplCLib_Cache(aDegree,
-                                 myGeom->IsPeriodic(),
-                                 aFlatKnots,
-                                 aPoles->Array1(),
-                                 isRational ? &aWeights->Array1() : nullptr);
+    myCache = new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
   }
 
-  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
-  {
-    const SpanRange& aRange = mySpanRanges.Value(iRange);
-
-    myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
-                        aFlatKnots,
-                        aPoles->Array1(),
-                        isRational ? &aWeights->Array1() : nullptr);
-
-    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
-    {
+  iterateSpanBlocks(
+    mySpanRanges,
+    myParams,
+    [&](double theParam) { myCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
+    // Cache evaluation
+    [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2;
-      myCache->D2Local(myParams.Value(i).LocalParam, aPoint, aD1, aD2);
-      aResults.ChangeValue(i + 1) = {aPoint, aD1, aD2};
-    }
-  }
+      myCache->D2Local(theLocalParam, aPoint, aD1, aD2);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2};
+    },
+    // Direct evaluation
+    [&](int theIdx, double theParam, int theSpanIdx) {
+      gp_Pnt aPoint;
+      gp_Vec aD1, aD2;
+      BSplCLib::D2(theParam,
+                   theSpanIdx,
+                   aDegree,
+                   isPeriodic,
+                   aPoles,
+                   aWeights,
+                   aFlatKnots,
+                   nullptr,
+                   aPoint,
+                   aD1,
+                   aD2);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2};
+    });
 
   return aResults;
 }
@@ -407,38 +503,58 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BSplineCurve::EvaluateGri
   }
   const TColStd_Array1OfReal& aFlatKnots = aFlatKnotsHandle->Array1();
 
-  // Get poles and weights handles directly from geometry
-  const int                            aDegree    = myGeom->Degree();
-  const Handle(TColgp_HArray1OfPnt)&   aPoles     = myGeom->HArrayPoles();
-  const Handle(TColStd_HArray1OfReal)& aWeights   = myGeom->HArrayWeights();
-  const bool                           isRational = myGeom->IsRational();
+  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD3>();
+  }
+  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+
+  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                           isRational     = myGeom->IsRational();
+  if (isRational && aWeightsHandle.IsNull())
+  {
+    return NCollection_Array1<GeomGridEval::CurveD3>();
+  }
+  const TColStd_Array1OfReal* aWeights = isRational ? &aWeightsHandle->Array1() : nullptr;
+
+  const int  aDegree    = myGeom->Degree();
+  const bool isPeriodic = myGeom->IsPeriodic();
 
   if (myCache.IsNull())
   {
-    myCache = new BSplCLib_Cache(aDegree,
-                                 myGeom->IsPeriodic(),
-                                 aFlatKnots,
-                                 aPoles->Array1(),
-                                 isRational ? &aWeights->Array1() : nullptr);
+    myCache = new BSplCLib_Cache(aDegree, isPeriodic, aFlatKnots, aPoles, aWeights);
   }
 
-  for (int iRange = 0; iRange < mySpanRanges.Size(); ++iRange)
-  {
-    const SpanRange& aRange = mySpanRanges.Value(iRange);
-
-    myCache->BuildCache(myParams.Value(aRange.StartIdx).Param,
-                        aFlatKnots,
-                        aPoles->Array1(),
-                        isRational ? &aWeights->Array1() : nullptr);
-
-    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
-    {
+  iterateSpanBlocks(
+    mySpanRanges,
+    myParams,
+    [&](double theParam) { myCache->BuildCache(theParam, aFlatKnots, aPoles, aWeights); },
+    // Cache evaluation
+    [&](int theIdx, double theLocalParam) {
       gp_Pnt aPoint;
       gp_Vec aD1, aD2, aD3;
-      myCache->D3Local(myParams.Value(i).LocalParam, aPoint, aD1, aD2, aD3);
-      aResults.ChangeValue(i + 1) = {aPoint, aD1, aD2, aD3};
-    }
-  }
+      myCache->D3Local(theLocalParam, aPoint, aD1, aD2, aD3);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2, aD3};
+    },
+    // Direct evaluation
+    [&](int theIdx, double theParam, int theSpanIdx) {
+      gp_Pnt aPoint;
+      gp_Vec aD1, aD2, aD3;
+      BSplCLib::D3(theParam,
+                   theSpanIdx,
+                   aDegree,
+                   isPeriodic,
+                   aPoles,
+                   aWeights,
+                   aFlatKnots,
+                   nullptr,
+                   aPoint,
+                   aD1,
+                   aD2,
+                   aD3);
+      aResults.ChangeValue(theIdx + 1) = {aPoint, aD1, aD2, aD3};
+    });
 
   return aResults;
 }
