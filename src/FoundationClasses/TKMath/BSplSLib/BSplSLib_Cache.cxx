@@ -48,74 +48,119 @@ static void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWei
                                 int                                  theVDerivMax,
                                 Standard_Real*                       theResultArray)
 {
-  Standard_Real* const   aPolesArray  = ConvertArray(thePolesWeights);
-  const Standard_Integer aDimension   = theIsRational ? 4 : 3;
-  const Standard_Integer aCacheCols   = thePolesWeights->RowLength();
-  const auto [aMinDegree, aMaxDegree] = std::minmax(theParamsU.Degree, theParamsV.Degree);
-  const auto [aMinParam, aMaxParam]   = (theParamsU.Degree > theParamsV.Degree)
-                                          ? std::make_pair(theLocalV, theLocalU)
-                                          : std::make_pair(theLocalU, theLocalV);
+  Standard_Real* const   aPolesArray = ConvertArray(thePolesWeights);
+  const Standard_Integer aDimension  = theIsRational ? 4 : 3;
+  const Standard_Integer aCacheCols  = thePolesWeights->RowLength();
 
-  // Determine actual max derivatives to calculate based on degrees
-  const auto [aMinDeriv, aMaxDeriv] = std::minmax(theUDerivMax, theVDerivMax);
+  const bool isMaxU = (theParamsU.Degree > theParamsV.Degree);
+  const auto [aMinParam, aMaxParam] =
+    isMaxU ? std::make_pair(theLocalV, theLocalU) : std::make_pair(theLocalU, theLocalV);
 
+  // Determine derivatives to calculate along each direction
+  const int aMaxDeriv = isMaxU ? theUDerivMax : theVDerivMax;
+  const int aMinDeriv = isMaxU ? theVDerivMax : theUDerivMax;
+
+  // Stride between rows in the result array (corresponds to one step in MaxParam direction)
+  // For full grid (required by RationalDerivative), stride is (aMinDeriv + 1) points.
+  const int aRowStride = (aMinDeriv + 1) * aDimension;
+
+  // clang-format off
   // Transient coefficients array size:
-  // (UDerivMax + 1) * CacheCols  for the first evaluation (along max degree parameter)
-  // (VDerivMax + 1) * Dimension for the second evaluation (along min degree parameter)
-  NCollection_LocalArray<Standard_Real> aTransientCoeffs(
-    std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
+  // (aMaxDeriv + 1) * CacheCols  for the first evaluation (along max degree parameter)
+  // (aMinDeriv + 1) * Dimension for the second evaluation (along min degree parameter)
+  NCollection_LocalArray<Standard_Real> aTransientCoeffs(std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
+  // clang-format on
 
   // Calculate intermediate values and derivatives of bivariate polynomial along variable with
   // maximal degree
   PLib::EvalPolynomial(aMaxParam,
                        aMaxDeriv,
-                       aMaxDegree,
+                       isMaxU ? theParamsU.Degree : theParamsV.Degree,
                        aCacheCols,
                        aPolesArray[0],
                        aTransientCoeffs[0]);
 
-  // Calculate derivatives along variable with minimal degree
+  // Block 0: Evaluate derivatives along variable with minimal degree for D0_max
+  // Produces (0,0), (0,1)...(0, aMinDeriv)
+  // Writes to offset 0
   PLib::EvalPolynomial(aMinParam,
                        aMinDeriv,
-                       aMinDegree,
+                       isMaxU ? theParamsV.Degree : theParamsU.Degree,
                        aDimension,
                        aTransientCoeffs[0],
                        theResultArray[0]);
 
-  if (theUDerivMax > 0 || theVDerivMax > 0)
+  if (aMaxDeriv > 0)
   {
-    // If theMaxUDeriv is 1, and theMinUDeriv is 0 for example, but still need to calculate
-    // The second part of cross derivative.
-    const int anUDeriv = (theParamsU.Degree > theParamsV.Degree) ? theUDerivMax : theVDerivMax;
+    // Block 1: Evaluate derivatives along variable with minimal degree for D1_max
+    // Writes to offset aRowStride (start of second row)
+    // If Rational, we need full row (up to aMinDeriv).
+    // If Not Rational, we can optimize: we strictly need (1,0) and (1,1).
+    // D1Local calls with (1,1) -> aMinDeriv=1. We need up to 1.
+    // D2Local calls with (2,2) -> aMinDeriv=2. We need up to 1 for mixed D2.
+    // So usually min(aMinDeriv, 1) is sufficient for non-rational.
+    const int aDeriv = theIsRational ? aMinDeriv : std::min(aMinDeriv, 1);
 
-    // Calculate derivative along variable with maximal degree and mixed derivative
     PLib::EvalPolynomial(aMinParam,
-                         anUDeriv,
-                         aMinDegree,
+                         aDeriv,
+                         isMaxU ? theParamsV.Degree : theParamsU.Degree,
                          aDimension,
                          aTransientCoeffs[aCacheCols],
-                         theResultArray[3 * aDimension]);
+                         theResultArray[aRowStride]);
 
-    if (theUDerivMax > 1 || theVDerivMax > 1)
+    if (aMaxDeriv > 1)
     {
-      // Calculate second derivative along variable with maximal degree
-      PLib::NoDerivativeEvalPolynomial(aMinParam,
-                                       aMinDegree,
-                                       aDimension,
-                                       aMinDegree * aDimension,
-                                       aTransientCoeffs[aCacheCols << 1],
-                                       theResultArray[6 * aDimension]);
+      // Block 2: Evaluate derivatives along variable with minimal degree for D2_max
+      // Writes to offset 2 * aRowStride (start of third row)
+      // If Rational, full row.
+      // If Not Rational, we only need (2,0) for standard D2.
+      const int aDeriv2 = theIsRational ? aMinDeriv : 0;
+
+      if (aDeriv2 == 0)
+      {
+        PLib::NoDerivativeEvalPolynomial(aMinParam,
+                                         isMaxU ? theParamsV.Degree : theParamsU.Degree,
+                                         aDimension,
+                                         (isMaxU ? theParamsV.Degree : theParamsU.Degree)
+                                           * aDimension,
+                                         aTransientCoeffs[aCacheCols << 1],
+                                         theResultArray[aRowStride << 1]);
+      }
+      else
+      {
+        PLib::EvalPolynomial(aMinParam,
+                             aDeriv2,
+                             isMaxU ? theParamsV.Degree : theParamsU.Degree,
+                             aDimension,
+                             aTransientCoeffs[aCacheCols << 1],
+                             theResultArray[aRowStride << 1]);
+      }
     }
   }
 
   if (theIsRational)
   {
-    BSplSLib::RationalDerivative(theUDerivMax,
-                                 theVDerivMax,
-                                 theUDerivMax,
-                                 theVDerivMax,
-                                 theResultArray[0],
-                                 theResultArray[0]); // Overwrite in place
+    if (isMaxU)
+    {
+      BSplSLib::RationalDerivative(theUDerivMax,
+                                   theVDerivMax,
+                                   theUDerivMax,
+                                   theVDerivMax,
+                                   theResultArray[0],
+                                   theResultArray[0]);
+    }
+    else
+    {
+      // If V is max degree, our result array is V-major (transposed relative to what
+      // RationalDerivative expects) We swap U/V arguments to trick RationalDerivative into
+      // processing it correctly.
+      BSplSLib::RationalDerivative(theVDerivMax,
+                                   theUDerivMax,
+                                   theVDerivMax,
+                                   theUDerivMax,
+                                   theResultArray[0],
+                                   theResultArray[0]);
+    }
   }
 }
 
@@ -297,26 +342,34 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
   const Standard_Integer aShift2    = aDimension << 1;
   const Standard_Integer aShift3    = aShift2 + aDimension;
   const Standard_Integer aShift4    = aShift3 + aDimension;
-  const Standard_Integer aShift5    = aShift4 + aDimension;
+  const Standard_Integer aShift6    = 6 * aDimension;
 
   thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
 
   // Derivatives are stored consecutively: D0, DU, DV, DUU, DVV, DUV
+  // If Max=U:
+  // [0]=P, [Dim]=DV, [2Dim]=DVV
+  // [3Dim]=DU, [4Dim]=DUV
+  // [6Dim]=DUU
   if (myParamsU.Degree > myParamsV.Degree)
   {
     theTangentV.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
     theCurvatureV.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
     theTangentU.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
     theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
-    theCurvatureU.SetCoord(aPntDeriv[aShift5], aPntDeriv[aShift5 + 1], aPntDeriv[aShift5 + 2]);
+    theCurvatureU.SetCoord(aPntDeriv[aShift6], aPntDeriv[aShift6 + 1], aPntDeriv[aShift6 + 2]);
   }
   else
   {
+    // If Max=V:
+    // [0]=P, [Dim]=DU, [2Dim]=DUU
+    // [3Dim]=DV, [4Dim]=DUV (actually DVU but symmetric)
+    // [6Dim]=DVV
     theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
     theCurvatureU.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
     theTangentV.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
     theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
-    theCurvatureV.SetCoord(aPntDeriv[aShift5], aPntDeriv[aShift5 + 1], aPntDeriv[aShift5 + 2]);
+    theCurvatureV.SetCoord(aPntDeriv[aShift6], aPntDeriv[aShift6 + 1], aPntDeriv[aShift6 + 2]);
   }
 
   const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
