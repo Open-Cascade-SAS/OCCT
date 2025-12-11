@@ -205,10 +205,21 @@ void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt& thePoint) con
 void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt& thePoint) const
 {
   // theLocalParam is already computed as (param - SpanStart) / SpanLength
-  Standard_Real aPntDeriv[4];
-  calculateDerivativeLocal(theLocalParam, 0, aPntDeriv);
+  Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
+  Standard_Real  aPoint[4];
 
-  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
+  PLib::NoDerivativeEvalPolynomial(theLocalParam,
+                                   myParams.Degree,
+                                   myRowLength,
+                                   myParams.Degree * myRowLength,
+                                   aPolesArray[0],
+                                   aPoint[0]);
+
+  thePoint.SetCoord(aPoint[0], aPoint[1], aPoint[2]);
+  if (myIsRational)
+  {
+    thePoint.ChangeCoord().Divide(aPoint[3]);
+  }
 }
 
 void BSplCLib_Cache::D1(const Standard_Real& theParameter,

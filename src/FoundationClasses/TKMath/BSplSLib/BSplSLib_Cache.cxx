@@ -250,21 +250,39 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
 
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
-  Standard_Real aPntDeriv[4]; // Result storage for D0
-  EvaluatePolynomials(myPolesWeights,
-                      myParamsU,
-                      myParamsV,
-                      myIsRational,
-                      theLocalU,
-                      theLocalV,
-                      0,
-                      0,
-                      aPntDeriv);
+  Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
+  Standard_Real  aPoint[4];
 
-  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
+  const int  aDimension               = myIsRational ? 4 : 3;
+  const int  aCacheCols               = myPolesWeights->RowLength();
+  const bool isMaxU                   = (myParamsU.Degree > myParamsV.Degree);
+  const auto [aMinDegree, aMaxDegree] = std::minmax(myParamsU.Degree, myParamsV.Degree);
+  const auto [aMinParam, aMaxParam] =
+    isMaxU ? std::make_pair(theLocalV, theLocalU) : std::make_pair(theLocalU, theLocalV);
+
+  // Array for intermediate results
+  NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols);
+
+  // Calculate intermediate value of cached polynomial along variable with maximal degree
+  PLib::NoDerivativeEvalPolynomial(aMaxParam,
+                                   aMaxDegree,
+                                   aCacheCols,
+                                   aMaxDegree * aCacheCols,
+                                   aPolesArray[0],
+                                   aTransientCoeffs[0]);
+
+  // Calculate total value along variable with minimal degree
+  PLib::NoDerivativeEvalPolynomial(aMinParam,
+                                   aMinDegree,
+                                   aDimension,
+                                   aDimension * aMinDegree,
+                                   aTransientCoeffs[0],
+                                   aPoint[0]);
+
+  thePoint.SetCoord(aPoint[0], aPoint[1], aPoint[2]);
   if (myIsRational)
   {
-    thePoint.ChangeCoord().Divide(aPntDeriv[3]);
+    thePoint.ChangeCoord().Divide(aPoint[3]);
   }
 }
 
@@ -287,26 +305,33 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
                       1,
                       aPntDeriv);
 
-  const Standard_Integer aDimension = myIsRational ? 4 : 3;
-  const Standard_Integer aShift     = aDimension; // Shift for first derivatives
+  // After RationalDerivative (for rational surfaces), the output dimension is 3 (not 4)
+  // because weights have been processed out
+  const Standard_Integer aDimension = 3;
 
   thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
 
   // Tangents are stored after the point coordinates
-  // Order: D0, DU, DV (if U max degree, else D0, DV, DU)
+  // Order depends on which parameter has higher degree
+  // If U degree > V degree: layout is [P, DV, DU, ...]
+  // If V degree >= U degree: layout is [P, DU, DV, ...]
   if (myParamsU.Degree > myParamsV.Degree)
   {
-    theTangentV.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
-    theTangentU.SetCoord(aPntDeriv[aShift + aDimension],
-                         aPntDeriv[aShift + aDimension + 1],
-                         aPntDeriv[aShift + aDimension + 2]);
+    theTangentV.SetCoord(aPntDeriv[aDimension],
+                         aPntDeriv[aDimension + 1],
+                         aPntDeriv[aDimension + 2]);
+    theTangentU.SetCoord(aPntDeriv[aDimension << 1],
+                         aPntDeriv[(aDimension << 1) + 1],
+                         aPntDeriv[(aDimension << 1) + 2]);
   }
   else
   {
-    theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
-    theTangentV.SetCoord(aPntDeriv[aShift + aDimension],
-                         aPntDeriv[aShift + aDimension + 1],
-                         aPntDeriv[aShift + aDimension + 2]);
+    theTangentU.SetCoord(aPntDeriv[aDimension],
+                         aPntDeriv[aDimension + 1],
+                         aPntDeriv[aDimension + 2]);
+    theTangentV.SetCoord(aPntDeriv[aDimension << 1],
+                         aPntDeriv[(aDimension << 1) + 1],
+                         aPntDeriv[(aDimension << 1) + 2]);
   }
 
   const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
@@ -337,7 +362,9 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
                       2,
                       aPntDeriv);
 
-  const Standard_Integer aDimension = myIsRational ? 4 : 3;
+  // After RationalDerivative (for rational surfaces), the output dimension is 3 (not 4)
+  // because weights have been processed out
+  const Standard_Integer aDimension = 3;
   const Standard_Integer aShift     = aDimension; // Shift for first derivatives
   const Standard_Integer aShift2    = aDimension << 1;
   const Standard_Integer aShift3    = aShift2 + aDimension;
@@ -346,8 +373,8 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
 
   thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
 
-  // Derivatives are stored consecutively: D0, DU, DV, DUU, DVV, DUV
-  // If Max=U:
+  // Derivatives are stored consecutively
+  // If Max=U (U degree > V degree):
   // [0]=P, [Dim]=DV, [2Dim]=DVV
   // [3Dim]=DU, [4Dim]=DUV
   // [6Dim]=DUU
@@ -361,9 +388,9 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
   }
   else
   {
-    // If Max=V:
+    // If Max=V (V degree >= U degree):
     // [0]=P, [Dim]=DU, [2Dim]=DUU
-    // [3Dim]=DV, [4Dim]=DUV (actually DVU but symmetric)
+    // [3Dim]=DV, [4Dim]=DUV (DVU is symmetric)
     // [6Dim]=DVV
     theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
     theCurvatureU.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
