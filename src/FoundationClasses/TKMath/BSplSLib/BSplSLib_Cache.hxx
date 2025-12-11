@@ -147,8 +147,8 @@ public:
 
 private:
   // copying is prohibited
-  BSplSLib_Cache(const BSplSLib_Cache&);
-  void operator=(const BSplSLib_Cache&);
+  BSplSLib_Cache(const BSplSLib_Cache&) = delete;
+  void operator=(const BSplSLib_Cache&) = delete;
 
 private:
   // clang-format off

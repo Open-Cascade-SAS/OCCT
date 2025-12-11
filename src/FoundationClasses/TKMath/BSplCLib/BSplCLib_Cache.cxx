@@ -21,6 +21,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
+//==================================================================================================
+
 BSplCLib_Cache::BSplCLib_Cache(
   const Standard_Integer&     theDegree,
   const Standard_Boolean&     thePeriodic,
@@ -32,6 +34,8 @@ BSplCLib_Cache::BSplCLib_Cache(
       myRowLength(myIsRational ? 3 : 2)
 {
 }
+
+//==================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
   const Standard_Integer&     theDegree,
@@ -45,10 +49,14 @@ BSplCLib_Cache::BSplCLib_Cache(
 {
 }
 
+//==================================================================================================
+
 Standard_Boolean BSplCLib_Cache::IsCacheValid(Standard_Real theParameter) const
 {
   return myParams.IsCacheValid(theParameter);
 }
+
+//==================================================================================================
 
 void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
                                 const TColStd_Array1OfReal& theFlatKnots,
@@ -106,13 +114,15 @@ void BSplCLib_Cache::BuildCache(const Standard_Real&        theParameter,
                        aPolesWeights);
 }
 
-void BSplCLib_Cache::CalculateDerivative(const Standard_Real&    theParameter,
-                                         const Standard_Integer& theDerivative,
-                                         Standard_Real&          theDerivArray) const
+//==================================================================================================
+
+void BSplCLib_Cache::calculateDerivative(double         theParameter,
+                                         int            theDerivative,
+                                         Standard_Real* theDerivArray) const
 {
-  Standard_Real aLocalParam = myParams.PeriodicNormalization(theParameter);
-  aLocalParam               = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
-  calculateDerivativeLocal(aLocalParam, theDerivative, &theDerivArray);
+  double aLocalParam = myParams.PeriodicNormalization(theParameter);
+  aLocalParam        = (aLocalParam - myParams.SpanStart) / myParams.SpanLength;
+  calculateDerivativeLocal(aLocalParam, theDerivative, theDerivArray);
 }
 
 //==================================================================================================
@@ -172,6 +182,8 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
   }
 }
 
+//==================================================================================================
+
 void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt2d& thePoint) const
 {
   Standard_Real aNewParameter = myParams.PeriodicNormalization(theParameter);
@@ -192,6 +204,8 @@ void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt2d& thePoint) c
   if (myIsRational)
     thePoint.ChangeCoord().Divide(aPoint[2]);
 }
+
+//==================================================================================================
 
 void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt& thePoint) const
 {
@@ -229,7 +243,7 @@ void BSplCLib_Cache::D1(const Standard_Real& theParameter,
   Standard_Integer aDimension = myRowLength;
   Standard_Real    aPntDeriv[8]; // result storage (point and derivative coordinates)
 
-  this->CalculateDerivative(theParameter, 1, aPntDeriv[0]);
+  calculateDerivative(theParameter, 1, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
     aDimension -= 1;
 
@@ -266,7 +280,7 @@ void BSplCLib_Cache::D2(const Standard_Real& theParameter,
   Standard_Integer aDimension = myRowLength;
   Standard_Real    aPntDeriv[12]; // result storage (point and derivatives coordinates)
 
-  this->CalculateDerivative(theParameter, 2, aPntDeriv[0]);
+  calculateDerivative(theParameter, 2, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
     aDimension -= 1;
 
@@ -311,7 +325,7 @@ void BSplCLib_Cache::D3(const Standard_Real& theParameter,
   Standard_Integer aDimension = myRowLength;
   Standard_Real    aPntDeriv[16]; // result storage (point and derivatives coordinates)
 
-  this->CalculateDerivative(theParameter, 3, aPntDeriv[0]);
+  calculateDerivative(theParameter, 3, aPntDeriv);
   if (myIsRational) // the size of aPntDeriv was changed by PLib::RationalDerivative
     aDimension -= 1;
 

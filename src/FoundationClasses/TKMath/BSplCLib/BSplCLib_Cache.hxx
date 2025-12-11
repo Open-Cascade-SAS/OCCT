@@ -160,15 +160,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 protected:
-  //! Fills array of derivatives in the selected point of the curve
-  //! \param[in]  theParameter  parameter of the calculation
-  //! \param[in]  theDerivative maximal derivative to be calculated (computes all derivatives lesser
-  //! than specified) \param[out] theDerivArray result array of derivatives (with size
-  //! (theDerivative+1)*(PntDim+1),
-  //!                           where PntDim = 2 or 3 is a dimension of the curve)
-  void CalculateDerivative(const Standard_Real&    theParameter,
-                           const Standard_Integer& theDerivative,
-                           Standard_Real&          theDerivArray) const;
+  //! Fills array of derivatives in the selected point of the curve.
+  //! @param[in]  theParameter  parameter of the calculation
+  //! @param[in]  theDerivative maximal derivative to be calculated (computes all derivatives
+  //!                           lesser than specified)
+  //! @param[out] theDerivArray result array of derivatives with size (theDerivative+1)*(PntDim+1),
+  //!                           where PntDim = 2 or 3 is a dimension of the curve
+  void calculateDerivative(double         theParameter,
+                           int            theDerivative,
+                           Standard_Real* theDerivArray) const;
 
   //! Fills array of derivatives using pre-computed local parameter.
   //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
@@ -179,8 +179,8 @@ protected:
                                 Standard_Real* theDerivArray) const;
 
   // copying is prohibited
-  BSplCLib_Cache(const BSplCLib_Cache&);
-  void operator=(const BSplCLib_Cache&);
+  BSplCLib_Cache(const BSplCLib_Cache&) = delete;
+  void operator=(const BSplCLib_Cache&) = delete;
 
 private:
   // clang-format off

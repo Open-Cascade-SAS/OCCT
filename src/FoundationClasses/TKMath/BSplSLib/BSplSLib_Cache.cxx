@@ -19,14 +19,45 @@
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
+#include <utility>
+
 IMPLEMENT_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
 
+namespace
+{
+
 //! Converts handle of array of Standard_Real into the pointer to Standard_Real
-static Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArray)
+Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArray)
 {
   const TColStd_Array2OfReal& anArray = theHArray->Array2();
   return (Standard_Real*)&(anArray(anArray.LowerRow(), anArray.LowerCol()));
 }
+
+//==================================================================================================
+
+//! Computes local UV parameters from global UV parameters for BSplSLib cache.
+//! BSplSLib uses different convention for span parameters than BSplCLib
+//! (Start is in the middle of the span and length is half-span).
+//! @param[in] theU global U parameter value
+//! @param[in] theV global V parameter value
+//! @param[in] theParamsU cache parameters for U direction
+//! @param[in] theParamsV cache parameters for V direction
+//! @return pair of local parameters (U, V) in [-1, 1] range
+const std::pair<double, double> toLocalParams(double                      theU,
+                                              double                      theV,
+                                              const BSplCLib_CacheParams& theParamsU,
+                                              const BSplCLib_CacheParams& theParamsV)
+{
+  const double aNewU        = theParamsU.PeriodicNormalization(theU);
+  const double aNewV        = theParamsV.PeriodicNormalization(theV);
+  const double aSpanLengthU = 0.5 * theParamsU.SpanLength;
+  const double aSpanStartU  = theParamsU.SpanStart + aSpanLengthU;
+  const double aSpanLengthV = 0.5 * theParamsV.SpanLength;
+  const double aSpanStartV  = theParamsV.SpanStart + aSpanLengthV;
+  return {(aNewU - aSpanStartU) / aSpanLengthU, (aNewV - aSpanStartV) / aSpanLengthV};
+}
+
+//==================================================================================================
 
 //! Evaluates the polynomials and their derivatives.
 //! @param[in] thePolesWeights handle to the array of poles and weights
@@ -38,15 +69,15 @@ static Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArra
 //! @param[in] theUDerivMax maximum U derivative
 //! @param[in] theVDerivMax maximum V derivative
 //! @param[out] theResultArray array to store the results
-static void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
-                                const BSplCLib_CacheParams&          theParamsU,
-                                const BSplCLib_CacheParams&          theParamsV,
-                                const Standard_Boolean               theIsRational,
-                                double                               theLocalU,
-                                double                               theLocalV,
-                                int                                  theUDerivMax,
-                                int                                  theVDerivMax,
-                                Standard_Real*                       theResultArray)
+void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
+                         const BSplCLib_CacheParams&          theParamsU,
+                         const BSplCLib_CacheParams&          theParamsV,
+                         const Standard_Boolean               theIsRational,
+                         double                               theLocalU,
+                         double                               theLocalV,
+                         int                                  theUDerivMax,
+                         int                                  theVDerivMax,
+                         Standard_Real*                       theResultArray)
 {
   Standard_Real* const   aPolesArray = ConvertArray(thePolesWeights);
   const Standard_Integer aDimension  = theIsRational ? 4 : 3;
@@ -163,6 +194,9 @@ static void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWei
     }
   }
 }
+} // namespace
+
+//==================================================================================================
 
 BSplSLib_Cache::BSplSLib_Cache(const Standard_Integer&     theDegreeU,
                                const Standard_Boolean&     thePeriodicU,
@@ -181,11 +215,15 @@ BSplSLib_Cache::BSplSLib_Cache(const Standard_Integer&     theDegreeU,
   myPolesWeights = new TColStd_HArray2OfReal(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
 }
 
+//==================================================================================================
+
 Standard_Boolean BSplSLib_Cache::IsCacheValid(Standard_Real theParameterU,
                                               Standard_Real theParameterV) const
 {
   return myParamsU.IsCacheValid(theParameterU) && myParamsV.IsCacheValid(theParameterV);
 }
+
+//==================================================================================================
 
 void BSplSLib_Cache::BuildCache(const Standard_Real&        theParameterU,
                                 const Standard_Real&        theParameterV,
@@ -227,26 +265,17 @@ void BSplSLib_Cache::BuildCache(const Standard_Real&        theParameterU,
                        myPolesWeights->ChangeArray2());
 }
 
+//==================================================================================================
+
 void BSplSLib_Cache::D0(const Standard_Real& theU,
                         const Standard_Real& theV,
                         gp_Pnt&              thePoint) const
 {
-  Standard_Real aNewU = myParamsU.PeriodicNormalization(theU);
-  Standard_Real aNewV = myParamsV.PeriodicNormalization(theV);
-
-  // BSplSLib uses different convention for span parameters than BSplCLib
-  // (Start is in the middle of the span and length is half-span),
-  // thus we need to amend them here
-  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
-  const Standard_Real aSpanStartU  = myParamsU.SpanStart + aSpanLengthU;
-  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
-  const Standard_Real aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
-
-  const Standard_Real aLocalU = (aNewU - aSpanStartU) / aSpanLengthU;
-  const Standard_Real aLocalV = (aNewV - aSpanStartV) / aSpanLengthV;
-
+  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
   D0Local(aLocalU, aLocalV, thePoint);
 }
+
+//==================================================================================================
 
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
@@ -408,28 +437,19 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
   theCurvatureUV.Multiply(anInvU * anInvV);
 }
 
+//==================================================================================================
+
 void BSplSLib_Cache::D1(const Standard_Real& theU,
                         const Standard_Real& theV,
                         gp_Pnt&              thePoint,
                         gp_Vec&              theTangentU,
                         gp_Vec&              theTangentV) const
 {
-  Standard_Real aNewU = myParamsU.PeriodicNormalization(theU);
-  Standard_Real aNewV = myParamsV.PeriodicNormalization(theV);
-
-  // BSplSLib uses different convention for span parameters than BSplCLib
-  // (Start is in the middle of the span and length is half-span),
-  // thus we need to amend them here
-  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
-  const Standard_Real aSpanStartU  = myParamsU.SpanStart + aSpanLengthU;
-  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
-  const Standard_Real aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
-
-  const Standard_Real aLocalU = (aNewU - aSpanStartU) / aSpanLengthU;
-  const Standard_Real aLocalV = (aNewV - aSpanStartV) / aSpanLengthV;
-
+  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
   D1Local(aLocalU, aLocalV, thePoint, theTangentU, theTangentV);
 }
+
+//==================================================================================================
 
 void BSplSLib_Cache::D2(const Standard_Real& theU,
                         const Standard_Real& theV,
@@ -440,20 +460,7 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
                         gp_Vec&              theCurvatureV,
                         gp_Vec&              theCurvatureUV) const
 {
-  Standard_Real aNewU = myParamsU.PeriodicNormalization(theU);
-  Standard_Real aNewV = myParamsV.PeriodicNormalization(theV);
-
-  // BSplSLib uses different convention for span parameters than BSplCLib
-  // (Start is in the middle of the span and length is half-span),
-  // thus we need to amend them here
-  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
-  const Standard_Real aSpanStartU  = myParamsU.SpanStart + aSpanLengthU;
-  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
-  const Standard_Real aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
-
-  const Standard_Real aLocalU = (aNewU - aSpanStartU) / aSpanLengthU;
-  const Standard_Real aLocalV = (aNewV - aSpanStartV) / aSpanLengthV;
-
+  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
   D2Local(aLocalU,
           aLocalV,
           thePoint,
