@@ -171,6 +171,12 @@ void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
 
   if (theIsRational)
   {
+    // RationalDerivative is NOT safe for in-place operation because it reads 4-component data
+    // and writes 3-component data to potentially overlapping memory locations.
+    // We need a separate temporary storage for the output.
+    const int                             aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
+    NCollection_LocalArray<Standard_Real> aTempStorage(aResultSize);
+
     if (isMaxU)
     {
       BSplSLib::RationalDerivative(theUDerivMax,
@@ -178,7 +184,7 @@ void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
                                    theUDerivMax,
                                    theVDerivMax,
                                    theResultArray[0],
-                                   theResultArray[0]);
+                                   aTempStorage[0]);
     }
     else
     {
@@ -190,7 +196,13 @@ void EvaluatePolynomials(const Handle(TColStd_HArray2OfReal)& thePolesWeights,
                                    theVDerivMax,
                                    theUDerivMax,
                                    theResultArray[0],
-                                   theResultArray[0]);
+                                   aTempStorage[0]);
+    }
+
+    // Copy results back to the output array
+    for (int i = 0; i < aResultSize; ++i)
+    {
+      theResultArray[i] = aTempStorage[i];
     }
   }
 }
@@ -280,7 +292,7 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
   Standard_Real* aPolesArray = ConvertArray(myPolesWeights);
-  Standard_Real  aPoint[4];
+  Standard_Real  aPoint[4]   = {};
 
   const int  aDimension               = myIsRational ? 4 : 3;
   const int  aCacheCols               = myPolesWeights->RowLength();
@@ -323,7 +335,7 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
                              gp_Vec& theTangentU,
                              gp_Vec& theTangentV) const
 {
-  Standard_Real aPntDeriv[16]; // Result storage for D1
+  Standard_Real aPntDeriv[16] = {}; // Result storage for D1, zero-initialized
   EvaluatePolynomials(myPolesWeights,
                       myParamsU,
                       myParamsV,
@@ -380,7 +392,7 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
                              gp_Vec& theCurvatureV,
                              gp_Vec& theCurvatureUV) const
 {
-  Standard_Real aPntDeriv[36]; // Result storage for D2
+  Standard_Real aPntDeriv[36] = {}; // Result storage for D2, zero-initialized
   EvaluatePolynomials(myPolesWeights,
                       myParamsU,
                       myParamsV,
