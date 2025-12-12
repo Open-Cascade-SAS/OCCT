@@ -1,0 +1,14 @@
+CompileFlags:
+  # 强制 clangd 进入 cl.exe 兼容模式
+  Add: [--driver-mode=cl]
+  
+  # 如果你的 json 里是绝对路径的 cl.exe，通常不需要额外配置
+  # 但如果遇到不知名 flag 报错，可以在这里移除
+  # Remove: [/SomeWeirdFlag]
+
+Diagnostics:
+  # OCCT 是老牌项目，可能会有很多不符合现代 Clang 规范的代码
+  # 可以屏蔽一些非错误的警告，让界面清爽点
+  Suppress: 
+    - "unknown-pragmas"
+    - "unused-variable"
