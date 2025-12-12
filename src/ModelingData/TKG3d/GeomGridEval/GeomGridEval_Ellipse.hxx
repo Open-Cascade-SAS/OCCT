@@ -44,6 +44,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Ellipse(const GeomGridEval_Ellipse&) = delete;
+  GeomGridEval_Ellipse& operator=(const GeomGridEval_Ellipse&) = delete;
+  GeomGridEval_Ellipse(GeomGridEval_Ellipse&&) = delete;
+  GeomGridEval_Ellipse& operator=(GeomGridEval_Ellipse&&) = delete;
+
   //! Set parameter values.
   //! @param theParams array of parameter values
   Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);

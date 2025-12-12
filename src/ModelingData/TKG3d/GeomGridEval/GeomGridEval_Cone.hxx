@@ -48,6 +48,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Cone(const GeomGridEval_Cone&) = delete;
+  GeomGridEval_Cone& operator=(const GeomGridEval_Cone&) = delete;
+  GeomGridEval_Cone(GeomGridEval_Cone&&) = delete;
+  GeomGridEval_Cone& operator=(GeomGridEval_Cone&&) = delete;
+
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values (angle)
   //! @param theVParams array of V parameter values (linear along ruling)

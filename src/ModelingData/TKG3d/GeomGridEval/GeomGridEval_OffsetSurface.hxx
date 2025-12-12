@@ -55,6 +55,12 @@ public:
     }
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_OffsetSurface(const GeomGridEval_OffsetSurface&) = delete;
+  GeomGridEval_OffsetSurface& operator=(const GeomGridEval_OffsetSurface&) = delete;
+  GeomGridEval_OffsetSurface(GeomGridEval_OffsetSurface&&) = delete;
+  GeomGridEval_OffsetSurface& operator=(GeomGridEval_OffsetSurface&&) = delete;
+
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values

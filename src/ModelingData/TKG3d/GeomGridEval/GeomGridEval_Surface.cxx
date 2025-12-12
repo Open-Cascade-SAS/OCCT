@@ -47,40 +47,40 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   {
     case GeomAbs_Plane: {
       Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
-      myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
+      myEvaluator.emplace<GeomGridEval_Plane>(aGeomPlane);
       break;
     }
     case GeomAbs_Cylinder: {
       Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface.Cylinder());
-      myEvaluator                              = GeomGridEval_Cylinder(aGeomCyl);
+      myEvaluator.emplace<GeomGridEval_Cylinder>(aGeomCyl);
       break;
     }
     case GeomAbs_Sphere: {
       Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
-      myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
+      myEvaluator.emplace<GeomGridEval_Sphere>(aGeomSphere);
       break;
     }
     case GeomAbs_Cone: {
       Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface.Cone());
-      myEvaluator                           = GeomGridEval_Cone(aGeomCone);
+      myEvaluator.emplace<GeomGridEval_Cone>(aGeomCone);
       break;
     }
     case GeomAbs_Torus: {
       Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface.Torus());
-      myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
+      myEvaluator.emplace<GeomGridEval_Torus>(aGeomTorus);
       break;
     }
     case GeomAbs_BezierSurface: {
-      myEvaluator = GeomGridEval_BezierSurface(theSurface.Bezier());
+      myEvaluator.emplace<GeomGridEval_BezierSurface>(theSurface.Bezier());
       break;
     }
     case GeomAbs_BSplineSurface: {
-      myEvaluator = GeomGridEval_BSplineSurface(theSurface.BSpline());
+      myEvaluator.emplace<GeomGridEval_BSplineSurface>(theSurface.BSpline());
       break;
     }
     default: {
       // Fallback: store reference for OtherSurface
-      myEvaluator = GeomGridEval_OtherSurface(theSurface);
+      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
       break;
     }
   }
@@ -92,7 +92,7 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
 {
   if (theSurface.IsNull())
   {
-    myEvaluator   = std::monostate{};
+    myEvaluator.emplace<std::monostate>();
     mySurfaceType = GeomAbs_OtherSurface;
     return;
   }
@@ -100,48 +100,48 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   if (auto aPlane = Handle(Geom_Plane)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_Plane;
-    myEvaluator   = GeomGridEval_Plane(aPlane);
+    myEvaluator.emplace<GeomGridEval_Plane>(aPlane);
   }
   else if (auto aCyl = Handle(Geom_CylindricalSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_Cylinder;
-    myEvaluator   = GeomGridEval_Cylinder(aCyl);
+    myEvaluator.emplace<GeomGridEval_Cylinder>(aCyl);
   }
   else if (auto aSphere = Handle(Geom_SphericalSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_Sphere;
-    myEvaluator   = GeomGridEval_Sphere(aSphere);
+    myEvaluator.emplace<GeomGridEval_Sphere>(aSphere);
   }
   else if (auto aCone = Handle(Geom_ConicalSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_Cone;
-    myEvaluator   = GeomGridEval_Cone(aCone);
+    myEvaluator.emplace<GeomGridEval_Cone>(aCone);
   }
   else if (auto aTorus = Handle(Geom_ToroidalSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_Torus;
-    myEvaluator   = GeomGridEval_Torus(aTorus);
+    myEvaluator.emplace<GeomGridEval_Torus>(aTorus);
   }
   else if (auto aBezier = Handle(Geom_BezierSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_BezierSurface;
-    myEvaluator   = GeomGridEval_BezierSurface(aBezier);
+    myEvaluator.emplace<GeomGridEval_BezierSurface>(aBezier);
   }
   else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_BSplineSurface;
-    myEvaluator   = GeomGridEval_BSplineSurface(aBSpline);
+    myEvaluator.emplace<GeomGridEval_BSplineSurface>(aBSpline);
   }
   else if (auto anOffset = Handle(Geom_OffsetSurface)::DownCast(theSurface))
   {
     mySurfaceType = GeomAbs_OffsetSurface;
-    myEvaluator   = GeomGridEval_OffsetSurface(anOffset);
+    myEvaluator.emplace<GeomGridEval_OffsetSurface>(anOffset);
   }
   else
   {
     // Unknown surface type - set uninitialized
     // All known Geom_Surface types are handled above
-    myEvaluator   = std::monostate{};
+    myEvaluator.emplace<std::monostate>();
     mySurfaceType = GeomAbs_OtherSurface;
   }
 }

@@ -43,6 +43,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Circle(const GeomGridEval_Circle&) = delete;
+  GeomGridEval_Circle& operator=(const GeomGridEval_Circle&) = delete;
+  GeomGridEval_Circle(GeomGridEval_Circle&&) = delete;
+  GeomGridEval_Circle& operator=(GeomGridEval_Circle&&) = delete;
+
   //! Set parameters for grid evaluation (by const reference).
   //! @param theParams array of parameter values (angles in radians)
   Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);

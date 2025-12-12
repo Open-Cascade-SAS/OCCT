@@ -47,6 +47,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Cylinder(const GeomGridEval_Cylinder&) = delete;
+  GeomGridEval_Cylinder& operator=(const GeomGridEval_Cylinder&) = delete;
+  GeomGridEval_Cylinder(GeomGridEval_Cylinder&&) = delete;
+  GeomGridEval_Cylinder& operator=(GeomGridEval_Cylinder&&) = delete;
+
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values (angle)
   //! @param theVParams array of V parameter values (height)

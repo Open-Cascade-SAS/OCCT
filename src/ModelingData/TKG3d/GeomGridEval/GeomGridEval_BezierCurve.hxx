@@ -44,6 +44,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_BezierCurve(const GeomGridEval_BezierCurve&) = delete;
+  GeomGridEval_BezierCurve& operator=(const GeomGridEval_BezierCurve&) = delete;
+  GeomGridEval_BezierCurve(GeomGridEval_BezierCurve&&) = delete;
+  GeomGridEval_BezierCurve& operator=(GeomGridEval_BezierCurve&&) = delete;
+
   //! Set parameter values.
   //! @param theParams array of parameter values
   Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);

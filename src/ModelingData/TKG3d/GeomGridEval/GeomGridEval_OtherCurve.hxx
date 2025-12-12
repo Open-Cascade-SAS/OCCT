@@ -49,6 +49,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_OtherCurve(const GeomGridEval_OtherCurve&) = delete;
+  GeomGridEval_OtherCurve& operator=(const GeomGridEval_OtherCurve&) = delete;
+  GeomGridEval_OtherCurve(GeomGridEval_OtherCurve&&) = delete;
+  GeomGridEval_OtherCurve& operator=(GeomGridEval_OtherCurve&&) = delete;
+
   //! Set parameters for grid evaluation (by const reference).
   //! @param theParams array of parameter values
   Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);

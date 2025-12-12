@@ -47,44 +47,44 @@ void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
   {
     case GeomAbs_Line: {
       Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
-      myEvaluator                 = GeomGridEval_Line(aGeomLine);
+      myEvaluator.emplace<GeomGridEval_Line>(aGeomLine);
       break;
     }
     case GeomAbs_Circle: {
       Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
-      myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
+      myEvaluator.emplace<GeomGridEval_Circle>(aGeomCircle);
       break;
     }
     case GeomAbs_Ellipse: {
       Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve.Ellipse());
-      myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
+      myEvaluator.emplace<GeomGridEval_Ellipse>(aGeomEllipse);
       break;
     }
     case GeomAbs_Hyperbola: {
       Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve.Hyperbola());
-      myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
+      myEvaluator.emplace<GeomGridEval_Hyperbola>(aGeomHyperbola);
       break;
     }
     case GeomAbs_Parabola: {
       Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve.Parabola());
-      myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
+      myEvaluator.emplace<GeomGridEval_Parabola>(aGeomParabola);
       break;
     }
     case GeomAbs_BezierCurve: {
-      myEvaluator = GeomGridEval_BezierCurve(theCurve.Bezier());
+      myEvaluator.emplace<GeomGridEval_BezierCurve>(theCurve.Bezier());
       break;
     }
     case GeomAbs_BSplineCurve: {
-      myEvaluator = GeomGridEval_BSplineCurve(theCurve.BSpline());
+      myEvaluator.emplace<GeomGridEval_BSplineCurve>(theCurve.BSpline());
       break;
     }
     case GeomAbs_OffsetCurve: {
-      myEvaluator = GeomGridEval_OffsetCurve(theCurve.OffsetCurve());
+      myEvaluator.emplace<GeomGridEval_OffsetCurve>(theCurve.OffsetCurve());
       break;
     }
     default: {
       // Fallback: store reference for OtherCurve
-      myEvaluator = GeomGridEval_OtherCurve(theCurve);
+      myEvaluator.emplace<GeomGridEval_OtherCurve>(theCurve);
       break;
     }
   }
@@ -96,7 +96,7 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
 {
   if (theCurve.IsNull())
   {
-    myEvaluator = std::monostate{};
+    myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
     return;
   }
@@ -104,48 +104,48 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   if (auto aLine = Handle(Geom_Line)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_Line;
-    myEvaluator = GeomGridEval_Line(aLine);
+    myEvaluator.emplace<GeomGridEval_Line>(aLine);
   }
   else if (auto aCircle = Handle(Geom_Circle)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_Circle;
-    myEvaluator = GeomGridEval_Circle(aCircle);
+    myEvaluator.emplace<GeomGridEval_Circle>(aCircle);
   }
   else if (auto anEllipse = Handle(Geom_Ellipse)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_Ellipse;
-    myEvaluator = GeomGridEval_Ellipse(anEllipse);
+    myEvaluator.emplace<GeomGridEval_Ellipse>(anEllipse);
   }
   else if (auto aHyperbola = Handle(Geom_Hyperbola)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_Hyperbola;
-    myEvaluator = GeomGridEval_Hyperbola(aHyperbola);
+    myEvaluator.emplace<GeomGridEval_Hyperbola>(aHyperbola);
   }
   else if (auto aParabola = Handle(Geom_Parabola)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_Parabola;
-    myEvaluator = GeomGridEval_Parabola(aParabola);
+    myEvaluator.emplace<GeomGridEval_Parabola>(aParabola);
   }
   else if (auto aBezier = Handle(Geom_BezierCurve)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_BezierCurve;
-    myEvaluator = GeomGridEval_BezierCurve(aBezier);
+    myEvaluator.emplace<GeomGridEval_BezierCurve>(aBezier);
   }
   else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_BSplineCurve;
-    myEvaluator = GeomGridEval_BSplineCurve(aBSpline);
+    myEvaluator.emplace<GeomGridEval_BSplineCurve>(aBSpline);
   }
   else if (auto anOffset = Handle(Geom_OffsetCurve)::DownCast(theCurve))
   {
     myCurveType = GeomAbs_OffsetCurve;
-    myEvaluator = GeomGridEval_OffsetCurve(anOffset);
+    myEvaluator.emplace<GeomGridEval_OffsetCurve>(anOffset);
   }
   else
   {
     // Unknown curve type - set uninitialized
     // All known Geom_Curve types are handled above
-    myEvaluator = std::monostate{};
+    myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
   }
 }

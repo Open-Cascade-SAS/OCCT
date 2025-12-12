@@ -45,6 +45,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Plane(const GeomGridEval_Plane&) = delete;
+  GeomGridEval_Plane& operator=(const GeomGridEval_Plane&) = delete;
+  GeomGridEval_Plane(GeomGridEval_Plane&&) = delete;
+  GeomGridEval_Plane& operator=(GeomGridEval_Plane&&) = delete;
+
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values

@@ -84,6 +84,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Surface(const GeomGridEval_Surface&) = delete;
+  GeomGridEval_Surface& operator=(const GeomGridEval_Surface&) = delete;
+  GeomGridEval_Surface(GeomGridEval_Surface&&) = delete;
+  GeomGridEval_Surface& operator=(GeomGridEval_Surface&&) = delete;
+
   //! Initialize from adaptor reference (auto-detects surface type).
   //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
   //! For other adaptors, stores reference for fallback evaluation.

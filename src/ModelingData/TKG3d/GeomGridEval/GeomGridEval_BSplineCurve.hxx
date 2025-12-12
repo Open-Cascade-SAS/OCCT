@@ -48,6 +48,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_BSplineCurve(const GeomGridEval_BSplineCurve&) = delete;
+  GeomGridEval_BSplineCurve& operator=(const GeomGridEval_BSplineCurve&) = delete;
+  GeomGridEval_BSplineCurve(GeomGridEval_BSplineCurve&&) = delete;
+  GeomGridEval_BSplineCurve& operator=(GeomGridEval_BSplineCurve&&) = delete;
+
   //! Parameter value with pre-computed span index and local parameter.
   struct ParamWithSpan
   {

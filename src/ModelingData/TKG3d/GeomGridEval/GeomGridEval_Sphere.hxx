@@ -47,6 +47,12 @@ public:
   {
   }
 
+  //! Non-copyable and non-movable.
+  GeomGridEval_Sphere(const GeomGridEval_Sphere&) = delete;
+  GeomGridEval_Sphere& operator=(const GeomGridEval_Sphere&) = delete;
+  GeomGridEval_Sphere(GeomGridEval_Sphere&&) = delete;
+  GeomGridEval_Sphere& operator=(GeomGridEval_Sphere&&) = delete;
+
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values (longitude)
   //! @param theVParams array of V parameter values (latitude)
