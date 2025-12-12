@@ -35,18 +35,13 @@ Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArray)
 
 //==================================================================================================
 
-//! Computes local UV parameters from global UV parameters for BSplSLib cache.
+//! Computes local UV parameters for D0 evaluation (no derivative scaling needed).
 //! BSplSLib uses different convention for span parameters than BSplCLib
 //! (Start is in the middle of the span and length is half-span).
-//! @param[in] theU global U parameter value
-//! @param[in] theV global V parameter value
-//! @param[in] theParamsU cache parameters for U direction
-//! @param[in] theParamsV cache parameters for V direction
-//! @return pair of local parameters (U, V) in [-1, 1] range
-const std::pair<double, double> toLocalParams(double                      theU,
-                                              double                      theV,
-                                              const BSplCLib_CacheParams& theParamsU,
-                                              const BSplCLib_CacheParams& theParamsV)
+std::pair<double, double> toLocalParamsD0(double                      theU,
+                                          double                      theV,
+                                          const BSplCLib_CacheParams& theParamsU,
+                                          const BSplCLib_CacheParams& theParamsV)
 {
   const double aNewU        = theParamsU.PeriodicNormalization(theU);
   const double aNewV        = theParamsV.PeriodicNormalization(theV);
@@ -55,6 +50,29 @@ const std::pair<double, double> toLocalParams(double                      theU,
   const double aSpanLengthV = 0.5 * theParamsV.SpanLength;
   const double aSpanStartV  = theParamsV.SpanStart + aSpanLengthV;
   return {(aNewU - aSpanStartU) / aSpanLengthU, (aNewV - aSpanStartV) / aSpanLengthV};
+}
+
+//! Computes local UV parameters and inverse span lengths for derivative evaluation.
+//! The same inverse values are used for both parameter transformation and derivative scaling
+//! to maintain numerical consistency with the original implementation.
+std::pair<double, double> toLocalParams(double                      theU,
+                                        double                      theV,
+                                        const BSplCLib_CacheParams& theParamsU,
+                                        const BSplCLib_CacheParams& theParamsV,
+                                        double&                     theInvU,
+                                        double&                     theInvV)
+{
+  const double aNewU        = theParamsU.PeriodicNormalization(theU);
+  const double aNewV        = theParamsV.PeriodicNormalization(theV);
+  const double aSpanLengthU = 0.5 * theParamsU.SpanLength;
+  const double aSpanStartU  = theParamsU.SpanStart + aSpanLengthU;
+  const double aSpanLengthV = 0.5 * theParamsV.SpanLength;
+  const double aSpanStartV  = theParamsV.SpanStart + aSpanLengthV;
+  // Compute inverses once and reuse for both parameter transformation and derivative scaling
+  // to maintain numerical consistency with the original implementation
+  theInvU = 1.0 / aSpanLengthU;
+  theInvV = 1.0 / aSpanLengthV;
+  return {(aNewU - aSpanStartU) * theInvU, (aNewV - aSpanStartV) * theInvV};
 }
 
 //==================================================================================================
@@ -283,7 +301,7 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
                         const Standard_Real& theV,
                         gp_Pnt&              thePoint) const
 {
-  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
+  const auto [aLocalU, aLocalV] = toLocalParamsD0(theU, theV, myParamsU, myParamsV);
   D0Local(aLocalU, aLocalV, thePoint);
 }
 
@@ -461,8 +479,47 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
                         gp_Vec&              theTangentU,
                         gp_Vec&              theTangentV) const
 {
-  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
-  D1Local(aLocalU, aLocalV, thePoint, theTangentU, theTangentV);
+  // Use the same inverse values for both parameter transformation and derivative scaling
+  // to maintain numerical consistency with the original implementation
+  double       anInvU = 0.0, anInvV = 0.0;
+  const auto   [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
+
+  Standard_Real aPntDeriv[16] = {};
+  EvaluatePolynomials(myPolesWeights,
+                      myParamsU,
+                      myParamsV,
+                      myIsRational,
+                      aLocalU,
+                      aLocalV,
+                      1,
+                      1,
+                      aPntDeriv);
+
+  const Standard_Integer aDimension = 3;
+  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
+
+  if (myParamsU.Degree > myParamsV.Degree)
+  {
+    theTangentV.SetCoord(aPntDeriv[aDimension],
+                         aPntDeriv[aDimension + 1],
+                         aPntDeriv[aDimension + 2]);
+    theTangentU.SetCoord(aPntDeriv[aDimension << 1],
+                         aPntDeriv[(aDimension << 1) + 1],
+                         aPntDeriv[(aDimension << 1) + 2]);
+  }
+  else
+  {
+    theTangentU.SetCoord(aPntDeriv[aDimension],
+                         aPntDeriv[aDimension + 1],
+                         aPntDeriv[aDimension + 2]);
+    theTangentV.SetCoord(aPntDeriv[aDimension << 1],
+                         aPntDeriv[(aDimension << 1) + 1],
+                         aPntDeriv[(aDimension << 1) + 2]);
+  }
+
+  // Scale derivatives using the same inverse values used for parameter transformation
+  theTangentU.Multiply(anInvU);
+  theTangentV.Multiply(anInvV);
 }
 
 //==================================================================================================
@@ -476,13 +533,52 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
                         gp_Vec&              theCurvatureV,
                         gp_Vec&              theCurvatureUV) const
 {
-  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV);
-  D2Local(aLocalU,
-          aLocalV,
-          thePoint,
-          theTangentU,
-          theTangentV,
-          theCurvatureU,
-          theCurvatureV,
-          theCurvatureUV);
+  // Use the same inverse values for both parameter transformation and derivative scaling
+  // to maintain numerical consistency with the original implementation
+  double       anInvU = 0.0, anInvV = 0.0;
+  const auto   [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
+
+  Standard_Real aPntDeriv[36] = {};
+  EvaluatePolynomials(myPolesWeights,
+                      myParamsU,
+                      myParamsV,
+                      myIsRational,
+                      aLocalU,
+                      aLocalV,
+                      2,
+                      2,
+                      aPntDeriv);
+
+  const Standard_Integer aDimension = 3;
+  const Standard_Integer aShift     = aDimension;
+  const Standard_Integer aShift2    = aDimension << 1;
+  const Standard_Integer aShift3    = aShift2 + aDimension;
+  const Standard_Integer aShift4    = aShift3 + aDimension;
+  const Standard_Integer aShift6    = 6 * aDimension;
+
+  thePoint.SetCoord(aPntDeriv[0], aPntDeriv[1], aPntDeriv[2]);
+
+  if (myParamsU.Degree > myParamsV.Degree)
+  {
+    theTangentV.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theCurvatureV.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
+    theTangentU.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
+    theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
+    theCurvatureU.SetCoord(aPntDeriv[aShift6], aPntDeriv[aShift6 + 1], aPntDeriv[aShift6 + 2]);
+  }
+  else
+  {
+    theTangentU.SetCoord(aPntDeriv[aShift], aPntDeriv[aShift + 1], aPntDeriv[aShift + 2]);
+    theCurvatureU.SetCoord(aPntDeriv[aShift2], aPntDeriv[aShift2 + 1], aPntDeriv[aShift2 + 2]);
+    theTangentV.SetCoord(aPntDeriv[aShift3], aPntDeriv[aShift3 + 1], aPntDeriv[aShift3 + 2]);
+    theCurvatureUV.SetCoord(aPntDeriv[aShift4], aPntDeriv[aShift4 + 1], aPntDeriv[aShift4 + 2]);
+    theCurvatureV.SetCoord(aPntDeriv[aShift6], aPntDeriv[aShift6 + 1], aPntDeriv[aShift6 + 2]);
+  }
+
+  // Scale derivatives using the same inverse values used for parameter transformation
+  theTangentU.Multiply(anInvU);
+  theTangentV.Multiply(anInvV);
+  theCurvatureU.Multiply(anInvU * anInvU);
+  theCurvatureV.Multiply(anInvV * anInvV);
+  theCurvatureUV.Multiply(anInvU * anInvV);
 }
