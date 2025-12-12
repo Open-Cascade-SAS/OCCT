@@ -22,6 +22,7 @@
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Geom_Hyperbola.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
@@ -30,6 +31,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
@@ -236,13 +238,33 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 
   mySurfPnts = new TColgp_HArray2OfPnt(0, myusample, 0, myvsample);
 
+  // Build UV parameter arrays for batch evaluation
+  TColStd_Array1OfReal aUParams(0, myusample);
+  TColStd_Array1OfReal aVParams(0, myvsample);
+
   Standard_Real aSU = aMinU;
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
   {
-    Standard_Real aSV = aMinV;
-    for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+    aUParams.SetValue(aSUI, aSU);
+  }
+  Standard_Real aSV = aMinV;
+  for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+  {
+    aVParams.SetValue(aSVI, aSV);
+  }
+
+  // Use batch grid evaluation for optimized surface point computation
+  GeomGridEval_Surface anEvaluator;
+  anEvaluator.Initialize(myS);
+  anEvaluator.SetUVParams(aUParams, aVParams);
+
+  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+
+  for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++)
+  {
+    for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++)
     {
-      mySurfPnts->ChangeValue(aSUI, aSVI) = myS->Value(aSU, aSV);
+      mySurfPnts->ChangeValue(aSUI, aSVI) = aGrid.Value(aSUI, aSVI);
     }
   }
 }

@@ -8,6 +8,7 @@ set(OCCT_TKG3d_LIST_OF_PACKAGES
   Adaptor3d
   LProp3d
   TopAbs
+  GeomGridEval
   GProp
   GeomHash
 )

@@ -1,0 +1,124 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <gtest/gtest.h>
+
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomGridEval_Torus.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+#include <cmath>
+
+namespace
+{
+const double THE_TOLERANCE = 1e-10;
+
+TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+{
+  TColStd_Array1OfReal aParams(1, theNbPoints);
+  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  for (int i = 1; i <= theNbPoints; ++i)
+  {
+    aParams.SetValue(i, theFirst + (i - 1) * aStep);
+  }
+  return aParams;
+}
+} // namespace
+
+TEST(GeomGridEval_TorusTest, BasicEvaluation)
+{
+  // Torus: Major=10, Minor=2, Center(0,0,0), Z-axis
+  Handle(Geom_ToroidalSurface) aTorus =
+    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
+
+  GeomGridEval_Torus anEval(aTorus);
+  EXPECT_FALSE(anEval.Geometry().IsNull());
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Major
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Minor
+  anEval.SetUVParams(aUParams, aVParams);
+
+  EXPECT_EQ(anEval.NbUParams(), 9);
+  EXPECT_EQ(anEval.NbVParams(), 9);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  EXPECT_EQ(aGrid.RowLength(), 9);
+  EXPECT_EQ(aGrid.ColLength(), 9);
+
+  // Verify points
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 9; ++iV)
+    {
+      gp_Pnt aExpected = aTorus->Value(aUParams.Value(iU), aVParams.Value(iV));
+      EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_TorusTest, DerivativeD1)
+{
+  Handle(Geom_ToroidalSurface) aTorus =
+    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
+  GeomGridEval_Torus anEval(aTorus);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 9; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V;
+      aTorus->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_TorusTest, DerivativeD2)
+{
+  Handle(Geom_ToroidalSurface) aTorus =
+    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
+  GeomGridEval_Torus anEval(aTorus);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  for (int iU = 1; iU <= 9; ++iU)
+  {
+    for (int iV = 1; iV <= 9; ++iV)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      aTorus->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(iU, iV).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
