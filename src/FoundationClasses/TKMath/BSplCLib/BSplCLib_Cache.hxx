@@ -122,22 +122,65 @@ public:
                           gp_Vec&              theCurvature,
                           gp_Vec&              theTorsion) const;
 
+  //! Calculates the 3D point using pre-computed local parameter in [0, 1] range.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the result of calculation (the point on the curve)
+  Standard_EXPORT void D0Local(double theLocalParam, gp_Pnt& thePoint) const;
+
+  //! Calculates the 3D point and first derivative using pre-computed local parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  Standard_EXPORT void D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& theTangent) const;
+
+  //! Calculates the 3D point, first and second derivatives using pre-computed local parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  //! @param[out] theCurvature  second derivative (curvature vector)
+  Standard_EXPORT void D2Local(double  theLocalParam,
+                               gp_Pnt& thePoint,
+                               gp_Vec& theTangent,
+                               gp_Vec& theCurvature) const;
+
+  //! Calculates the 3D point, first, second and third derivatives using pre-computed local
+  //! parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  //! @param[out] theCurvature  second derivative (curvature vector)
+  //! @param[out] theTorsion    third derivative (torsion vector)
+  Standard_EXPORT void D3Local(double  theLocalParam,
+                               gp_Pnt& thePoint,
+                               gp_Vec& theTangent,
+                               gp_Vec& theCurvature,
+                               gp_Vec& theTorsion) const;
+
   DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 protected:
-  //! Fills array of derivatives in the selected point of the curve
-  //! \param[in]  theParameter  parameter of the calculation
-  //! \param[in]  theDerivative maximal derivative to be calculated (computes all derivatives lesser
-  //! than specified) \param[out] theDerivArray result array of derivatives (with size
-  //! (theDerivative+1)*(PntDim+1),
-  //!                           where PntDim = 2 or 3 is a dimension of the curve)
-  void CalculateDerivative(const Standard_Real&    theParameter,
-                           const Standard_Integer& theDerivative,
-                           Standard_Real&          theDerivArray) const;
+  //! Fills array of derivatives in the selected point of the curve.
+  //! @param[in]  theParameter  parameter of the calculation
+  //! @param[in]  theDerivative maximal derivative to be calculated (computes all derivatives
+  //!                           lesser than specified)
+  //! @param[out] theDerivArray result array of derivatives with size (theDerivative+1)*(PntDim+1),
+  //!                           where PntDim = 2 or 3 is a dimension of the curve
+  void calculateDerivative(double         theParameter,
+                           int            theDerivative,
+                           Standard_Real* theDerivArray) const;
+
+  //! Fills array of derivatives using pre-computed local parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[in]  theDerivative maximal derivative to be calculated (1, 2, or 3)
+  //! @param[out] theDerivArray result array of derivatives
+  void calculateDerivativeLocal(double         theLocalParam,
+                                int            theDerivative,
+                                Standard_Real* theDerivArray) const;
 
   // copying is prohibited
-  BSplCLib_Cache(const BSplCLib_Cache&);
-  void operator=(const BSplCLib_Cache&);
+  BSplCLib_Cache(const BSplCLib_Cache&) = delete;
+  void operator=(const BSplCLib_Cache&) = delete;
 
 private:
   // clang-format off
