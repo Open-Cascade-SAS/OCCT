@@ -375,10 +375,11 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
                          aPntDeriv[(aDimension << 1) + 2]);
   }
 
-  const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
-  const Standard_Real anInvV = 2.0 * myParamsV.InvSpanLength;
-  theTangentU.Multiply(anInvU);
-  theTangentV.Multiply(anInvV);
+  // Use direct division for better numerical stability with very small span lengths
+  const Standard_Real aSpanLengthU = 0.5 * myParamsU.SpanLength;
+  const Standard_Real aSpanLengthV = 0.5 * myParamsV.SpanLength;
+  theTangentU.Divide(aSpanLengthU);
+  theTangentV.Divide(aSpanLengthV);
 }
 
 //==================================================================================================
@@ -440,13 +441,16 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
     theCurvatureV.SetCoord(aPntDeriv[aShift6], aPntDeriv[aShift6 + 1], aPntDeriv[aShift6 + 2]);
   }
 
-  const Standard_Real anInvU = 2.0 * myParamsU.InvSpanLength;
-  const Standard_Real anInvV = 2.0 * myParamsV.InvSpanLength;
-  theTangentU.Multiply(anInvU);
-  theTangentV.Multiply(anInvV);
-  theCurvatureU.Multiply(anInvU * anInvU);
-  theCurvatureV.Multiply(anInvV * anInvV);
-  theCurvatureUV.Multiply(anInvU * anInvV);
+  // Use direct division for better numerical stability with very small span lengths
+  const Standard_Real aSpanLengthU  = 0.5 * myParamsU.SpanLength;
+  const Standard_Real aSpanLengthV  = 0.5 * myParamsV.SpanLength;
+  const Standard_Real aSpanLengthU2 = aSpanLengthU * aSpanLengthU;
+  const Standard_Real aSpanLengthV2 = aSpanLengthV * aSpanLengthV;
+  theTangentU.Divide(aSpanLengthU);
+  theTangentV.Divide(aSpanLengthV);
+  theCurvatureU.Divide(aSpanLengthU2);
+  theCurvatureV.Divide(aSpanLengthV2);
+  theCurvatureUV.Divide(aSpanLengthU * aSpanLengthV);
 }
 
 //==================================================================================================

@@ -32,10 +32,9 @@ struct BSplCLib_CacheParams
   const int SpanIndexMin; ///< minimal index of span
   const int SpanIndexMax; ///< maximal index of span
 
-  double SpanStart;     ///< parameter for the frst point of the span
-  double SpanLength;    ///< length of the span
-  double InvSpanLength; ///< inverse of the span length
-  int    SpanIndex;     ///< index of the span
+  double SpanStart;  ///< parameter for the frst point of the span
+  double SpanLength; ///< length of the span
+  int    SpanIndex;  ///< index of the span
 
   //! Constructor, prepares data structures for caching.
   //! \param theDegree     degree of the B-spline (or Bezier)
@@ -50,7 +49,6 @@ struct BSplCLib_CacheParams
         SpanIndexMax(theFlatKnots.Upper() - theDegree - 1),
         SpanStart(0.0),
         SpanLength(0.0),
-        InvSpanLength(0.0),
         SpanIndex(0)
   {
   }
@@ -114,9 +112,8 @@ struct BSplCLib_CacheParams
                               IsPeriodic,
                               SpanIndex,
                               theParameter);
-    SpanStart     = theFlatKnots.Value(SpanIndex);
-    SpanLength    = theFlatKnots.Value(SpanIndex + 1) - SpanStart;
-    InvSpanLength = 1.0 / SpanLength;
+    SpanStart  = theFlatKnots.Value(SpanIndex);
+    SpanLength = theFlatKnots.Value(SpanIndex + 1) - SpanStart;
   }
 
   // copying is prohibited

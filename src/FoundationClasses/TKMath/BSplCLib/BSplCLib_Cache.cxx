@@ -162,10 +162,12 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
                        aPntDeriv[0]);
 
   // Unnormalize derivatives since those are computed normalized
+  // Use division by SpanLength instead of multiplication by precomputed inverse
+  // for better numerical stability with very small span lengths
   Standard_Real aFactor = 1.0;
   for (int deriv = 1; deriv <= aDerivative; deriv++)
   {
-    aFactor *= myParams.InvSpanLength;
+    aFactor /= myParams.SpanLength;
     for (int ind = 0; ind < aDimension; ind++)
     {
       aPntDeriv[aDimension * deriv + ind] *= aFactor;
