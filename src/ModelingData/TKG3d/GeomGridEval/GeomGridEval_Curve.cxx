@@ -97,6 +97,73 @@ void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
 
 //==================================================================================================
 
+void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
+{
+  // Try to downcast to GeomAdaptor_Curve to get underlying Geom_Curve
+  const GeomAdaptor_Curve* aGeomAdaptor = dynamic_cast<const GeomAdaptor_Curve*>(&theCurve);
+  if (aGeomAdaptor != nullptr)
+  {
+    const Handle(Geom_Curve)& aGeomCurve = aGeomAdaptor->Curve();
+    if (!aGeomCurve.IsNull())
+    {
+      Initialize(aGeomCurve);
+      return;
+    }
+  }
+
+  // For non-GeomAdaptor or when Geom_Curve is not available,
+  // use ShallowCopy to create a Handle for the evaluator
+  myCurveType = theCurve.GetType();
+
+  switch (myCurveType)
+  {
+    case GeomAbs_Line: {
+      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
+      myEvaluator                 = GeomGridEval_Line(aGeomLine);
+      break;
+    }
+    case GeomAbs_Circle: {
+      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
+      myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
+      break;
+    }
+    case GeomAbs_Ellipse: {
+      Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve.Ellipse());
+      myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
+      break;
+    }
+    case GeomAbs_Hyperbola: {
+      Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve.Hyperbola());
+      myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
+      break;
+    }
+    case GeomAbs_Parabola: {
+      Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve.Parabola());
+      myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
+      break;
+    }
+    case GeomAbs_BezierCurve: {
+      myEvaluator = GeomGridEval_BezierCurve(theCurve.Bezier());
+      break;
+    }
+    case GeomAbs_BSplineCurve: {
+      myEvaluator = GeomGridEval_BSplineCurve(theCurve.BSpline());
+      break;
+    }
+    case GeomAbs_OffsetCurve: {
+      myEvaluator = GeomGridEval_OffsetCurve(theCurve.OffsetCurve());
+      break;
+    }
+    default: {
+      // Fallback: use ShallowCopy to create a handle for OtherCurve
+      myEvaluator = GeomGridEval_OtherCurve(theCurve.ShallowCopy());
+      break;
+    }
+  }
+}
+
+//==================================================================================================
+
 void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
 {
   if (theCurve.IsNull())

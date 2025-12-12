@@ -83,9 +83,15 @@ public:
   {
   }
 
-  //! Initialize from adaptor (auto-detects curve type).
+  //! Initialize from adaptor handle (auto-detects curve type).
   //! @param theCurve curve adaptor to evaluate
   Standard_EXPORT void Initialize(const Handle(Adaptor3d_Curve)& theCurve);
+
+  //! Initialize from adaptor reference (auto-detects curve type).
+  //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
+  //! For other adaptors, uses ShallowCopy() for fallback evaluation.
+  //! @param theCurve curve adaptor reference to evaluate
+  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve);
 
   //! Initialize from geometry handle (auto-detects curve type).
   //! @param theCurve geometry to evaluate

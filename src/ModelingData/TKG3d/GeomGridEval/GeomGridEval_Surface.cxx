@@ -112,6 +112,69 @@ void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurfac
 
 //==================================================================================================
 
+void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
+{
+  // Try to downcast to GeomAdaptor_Surface to get underlying Geom_Surface
+  const GeomAdaptor_Surface* aGeomAdaptor = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
+  if (aGeomAdaptor != nullptr)
+  {
+    const Handle(Geom_Surface)& aGeomSurf = aGeomAdaptor->Surface();
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+  }
+
+  // For non-GeomAdaptor or when Geom_Surface is not available,
+  // use ShallowCopy to create a Handle for the evaluator
+  mySurfaceType = theSurface.GetType();
+
+  switch (mySurfaceType)
+  {
+    case GeomAbs_Plane: {
+      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
+      myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface.Cylinder());
+      myEvaluator                              = GeomGridEval_Cylinder(aGeomCyl);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
+      myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
+      break;
+    }
+    case GeomAbs_Cone: {
+      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface.Cone());
+      myEvaluator                           = GeomGridEval_Cone(aGeomCone);
+      break;
+    }
+    case GeomAbs_Torus: {
+      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface.Torus());
+      myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
+      break;
+    }
+    case GeomAbs_BezierSurface: {
+      myEvaluator = GeomGridEval_BezierSurface(theSurface.Bezier());
+      break;
+    }
+    case GeomAbs_BSplineSurface: {
+      myEvaluator = GeomGridEval_BSplineSurface(theSurface.BSpline());
+      break;
+    }
+    default: {
+      // Fallback: use ShallowCopy to create a handle for OtherSurface
+      myEvaluator = GeomGridEval_OtherSurface(theSurface.ShallowCopy());
+      break;
+    }
+  }
+}
+
+//==================================================================================================
+
 void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
 {
   if (theSurface.IsNull())
