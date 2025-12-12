@@ -241,10 +241,9 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
   // Ellipse is not directly supported, so it should use OtherCurve fallback
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anEllipse);
+  GeomAdaptor_Curve anAdaptor(anEllipse);
 
-  GeomGridEval_OtherCurve anEval(anAdaptor->ShallowCopy());
-  EXPECT_FALSE(anEval.Curve().IsNull());
+  GeomGridEval_OtherCurve anEval(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   anEval.SetParams(aParams);
@@ -266,7 +265,7 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
 TEST(GeomGridEval_CurveTest, LineDispatch)
 {
   Handle(Geom_Line)         aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
+  GeomAdaptor_Curve anAdaptor(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -290,7 +289,7 @@ TEST(GeomGridEval_CurveTest, LineDispatch)
 TEST(GeomGridEval_CurveTest, CircleDispatch)
 {
   Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
+  GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -313,7 +312,7 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
 TEST(GeomGridEval_CurveTest, BSplineDispatch)
 {
   Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  GeomAdaptor_Curve anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -337,7 +336,7 @@ TEST(GeomGridEval_CurveTest, EllipseDispatch)
 {
   Handle(Geom_Ellipse) anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anEllipse);
+  GeomAdaptor_Curve anAdaptor(anEllipse);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -361,7 +360,7 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
 {
   Handle(Geom_Hyperbola) aHypr =
     new Geom_Hyperbola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aHypr);
+  GeomAdaptor_Curve anAdaptor(aHypr);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -384,7 +383,7 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
 TEST(GeomGridEval_CurveTest, ParabolaDispatch)
 {
   Handle(Geom_Parabola) aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aParab);
+  GeomAdaptor_Curve anAdaptor(aParab);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -413,7 +412,7 @@ TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
   Handle(Geom_BezierCurve)  aBezier   = new Geom_BezierCurve(aPoles);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aBezier);
+  GeomAdaptor_Curve anAdaptor(aBezier);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -438,7 +437,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveFallbackDispatch)
   // Offset curve is not optimized, should use fallback
   Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+  GeomAdaptor_Curve anAdaptor(anOffset);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -488,7 +487,7 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
 TEST(GeomGridEval_CurveTest, EmptyParams)
 {
   Handle(Geom_Line)         aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomLine);
+  GeomAdaptor_Curve anAdaptor(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -782,7 +781,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 {
   Handle(Geom_Circle) aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aGeomCircle);
+  GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -806,7 +805,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 {
   Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  GeomAdaptor_Curve anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -858,11 +857,11 @@ TEST(GeomGridEval_CircleTest, DerivativeD3)
 TEST(GeomGridEval_OffsetCurveTest, DerivativeD3)
 {
   // Offset curve from a circle
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aCircle, 0.5, gp::DZ());
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+  Handle(Geom_Circle)      aCircle  = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  Handle(Geom_OffsetCurve) anOffset = new Geom_OffsetCurve(aCircle, 0.5, gp::DZ());
+  GeomAdaptor_Curve        anAdaptor(anOffset);
 
-  GeomGridEval_OtherCurve anEval(anAdaptor->ShallowCopy());
+  GeomGridEval_OtherCurve anEval(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   anEval.SetParams(aParams);
@@ -874,7 +873,7 @@ TEST(GeomGridEval_OffsetCurveTest, DerivativeD3)
   {
     gp_Pnt aPnt;
     gp_Vec aD1, aD2, aD3;
-    anAdaptor->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    anAdaptor.D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
     EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
@@ -887,7 +886,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
   // Offset curve via unified dispatcher
   Handle(Geom_Line)         aLine     = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   Handle(Geom_OffsetCurve)  anOffset  = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(anOffset);
+  GeomAdaptor_Curve anAdaptor(anOffset);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -903,7 +902,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
   {
     gp_Pnt aPnt;
     gp_Vec aD1, aD2, aD3;
-    anAdaptor->D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
+    anAdaptor.D3(aParams.Value(i), aPnt, aD1, aD2, aD3);
     EXPECT_NEAR(aGrid.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aGrid.Value(i).D1 - aD1).Magnitude(), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aGrid.Value(i).D2 - aD2).Magnitude(), 0.0, THE_TOLERANCE);
@@ -914,7 +913,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
 {
   Handle(Geom_BSplineCurve) aCurve    = CreateSimpleBSpline();
-  Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(aCurve);
+  GeomAdaptor_Curve anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);

@@ -84,13 +84,11 @@ public:
   {
   }
 
-  //! Initialize from adaptor handle (auto-detects surface type).
-  //! @param theSurface surface adaptor to evaluate
-  Standard_EXPORT void Initialize(const Handle(Adaptor3d_Surface)& theSurface);
-
   //! Initialize from adaptor reference (auto-detects surface type).
   //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
-  //! For other adaptors, uses ShallowCopy() for fallback evaluation.
+  //! For other adaptors, stores reference for fallback evaluation.
+  //! @note The surface adaptor reference must remain valid during the lifetime
+  //!       of this evaluator when using fallback evaluation.
   //! @param theSurface surface adaptor reference to evaluate
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
 

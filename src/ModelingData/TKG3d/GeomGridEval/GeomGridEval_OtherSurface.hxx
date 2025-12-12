@@ -20,13 +20,17 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
+#include <functional>
 
 //! @brief Fallback evaluator for unknown surface types.
 //!
 //! Uses Adaptor3d_Surface::D0 for point-by-point evaluation.
 //! This is the slowest evaluator but handles any surface type.
+//!
+//! @note The surface adaptor reference must remain valid during the lifetime
+//!       of this evaluator. The evaluator does not take ownership.
 //!
 //! Usage:
 //! @code
@@ -39,9 +43,9 @@ class GeomGridEval_OtherSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with surface adaptor.
-  //! @param theSurface handle to surface adaptor
-  GeomGridEval_OtherSurface(const Handle(Adaptor3d_Surface)& theSurface)
+  //! Constructor with surface adaptor reference.
+  //! @param theSurface reference to surface adaptor (must remain valid)
+  GeomGridEval_OtherSurface(const Adaptor3d_Surface& theSurface)
       : mySurface(theSurface)
   {
   }
@@ -52,8 +56,8 @@ public:
   Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
                                    const TColStd_Array1OfReal& theVParams);
 
-  //! Returns the surface adaptor handle.
-  const Handle(Adaptor3d_Surface)& Surface() const { return mySurface; }
+  //! Returns the surface adaptor reference.
+  const Adaptor3d_Surface& Surface() const { return mySurface.get(); }
 
   //! Returns number of U parameters.
   int NbUParams() const { return myUParams.Size(); }
@@ -90,9 +94,9 @@ public:
   Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
 
 private:
-  Handle(Adaptor3d_Surface)  mySurface;
-  NCollection_Array1<double> myUParams;
-  NCollection_Array1<double> myVParams;
+  std::reference_wrapper<const Adaptor3d_Surface> mySurface;
+  NCollection_Array1<double>                      myUParams;
+  NCollection_Array1<double>                      myVParams;
 };
 
 #endif // _GeomGridEval_OtherSurface_HeaderFile

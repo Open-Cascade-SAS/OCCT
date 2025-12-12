@@ -166,7 +166,7 @@ void BRepMesh_DefaultRangeSplitter::computeLengths(Standard_Real& theLengthU,
   aVParams.SetValue(THE_NB_PARAMS, myRangeV.second);
 
   GeomGridEval_Surface anEvaluator;
-  anEvaluator.Initialize(GetSurface());
+  anEvaluator.Initialize(*GetSurface());
   anEvaluator.SetUVParams(aUParams, aVParams);
 
   const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();

@@ -19,13 +19,17 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
+#include <functional>
 
 //! @brief Fallback evaluator for unknown curve types.
 //!
 //! Uses Adaptor3d_Curve::D0 for point-by-point evaluation.
 //! This is the slowest evaluator but handles any curve type.
+//!
+//! @note The curve adaptor reference must remain valid during the lifetime
+//!       of this evaluator. The evaluator does not take ownership.
 //!
 //! Usage:
 //! @code
@@ -38,9 +42,9 @@ class GeomGridEval_OtherCurve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with curve adaptor.
-  //! @param theCurve handle to curve adaptor
-  GeomGridEval_OtherCurve(const Handle(Adaptor3d_Curve)& theCurve)
+  //! Constructor with curve adaptor reference.
+  //! @param theCurve reference to curve adaptor (must remain valid)
+  GeomGridEval_OtherCurve(const Adaptor3d_Curve& theCurve)
       : myCurve(theCurve)
   {
   }
@@ -53,8 +57,8 @@ public:
   //! @param theParams array of parameter values to move
   void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
 
-  //! Returns the curve adaptor handle.
-  const Handle(Adaptor3d_Curve)& Curve() const { return myCurve; }
+  //! Returns the curve adaptor reference.
+  const Adaptor3d_Curve& Curve() const { return myCurve.get(); }
 
   //! Returns number of parameters.
   int NbParams() const { return myParams.Size(); }
@@ -87,8 +91,8 @@ public:
   Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
 
 private:
-  Handle(Adaptor3d_Curve)    myCurve;
-  NCollection_Array1<double> myParams;
+  std::reference_wrapper<const Adaptor3d_Curve> myCurve;
+  NCollection_Array1<double>                    myParams;
 };
 
 #endif // _GeomGridEval_OtherCurve_HeaderFile

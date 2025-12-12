@@ -286,10 +286,9 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
   // Cylinder is not directly supported, should use fallback
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCyl);
+  GeomAdaptor_Surface anAdaptor(aCyl);
 
-  GeomGridEval_OtherSurface anEval(anAdaptor->ShallowCopy());
-  EXPECT_FALSE(anEval.Surface().IsNull());
+  GeomGridEval_OtherSurface anEval(anAdaptor);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
@@ -314,8 +313,8 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
-  Handle(Geom_Plane)          aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(GeomAdaptor_Surface) anAdaptor  = new GeomAdaptor_Surface(aGeomPlane);
+  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -343,7 +342,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 {
   Handle(Geom_SphericalSurface) aGeomSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aGeomSphere);
+  GeomAdaptor_Surface anAdaptor(aGeomSphere);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -370,7 +369,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
   Handle(Geom_BSplineSurface) aSurf     = CreateSimpleBSplineSurface();
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
+  GeomAdaptor_Surface anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -402,7 +401,7 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
   Handle(Geom_BezierSurface)  aBezier   = new Geom_BezierSurface(aPoles);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aBezier);
+  GeomAdaptor_Surface anAdaptor(aBezier);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -428,7 +427,7 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
 {
   Handle(Geom_CylindricalSurface) aCyl =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCyl);
+  GeomAdaptor_Surface anAdaptor(aCyl);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -456,7 +455,7 @@ TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 {
   Handle(Geom_ToroidalSurface) aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aTorus);
+  GeomAdaptor_Surface anAdaptor(aTorus);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -484,7 +483,7 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 {
   Handle(Geom_ConicalSurface) aCone =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4, 1.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aCone);
+  GeomAdaptor_Surface anAdaptor(aCone);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -516,7 +515,7 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
   Handle(Geom_SurfaceOfRevolution) aRevSurf =
     new Geom_SurfaceOfRevolution(aLine, gp::OZ()); // Revolving around Z -> Cylinder-like
 
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aRevSurf);
+  GeomAdaptor_Surface anAdaptor(aRevSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -575,8 +574,8 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 
 TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
-  Handle(Geom_Plane)          aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(GeomAdaptor_Surface) anAdaptor  = new GeomAdaptor_Surface(aGeomPlane);
+  Handle(Geom_Plane)  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -942,7 +941,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 {
   Handle(Geom_SphericalSurface) aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSphere);
+  GeomAdaptor_Surface anAdaptor(aSphere);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -970,8 +969,8 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
-  Handle(Geom_BSplineSurface) aSurf     = CreateSimpleBSplineSurface();
-  Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(aSurf);
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomAdaptor_Surface         anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -1195,10 +1194,10 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
 {
   Handle(Geom_ToroidalSurface) aTorus =
     new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 1.0);
-  Handle(GeomAdaptor_Surface) anAdaptorHandle = new GeomAdaptor_Surface(aTorus);
+  GeomAdaptor_Surface anAdaptor(aTorus);
 
   GeomGridEval_Surface anEval;
-  anEval.Initialize(anAdaptorHandle);
+  anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -1206,15 +1205,14 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
 
-  GeomAdaptor_Surface anAdaptor(aTorus);
   for (int iU = 1; iU <= 9; ++iU)
   {
     for (int iV = 1; iV <= 9; ++iV)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      aTorus->D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U,
+                 aD3V, aD3UUV, aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);

@@ -25,78 +25,6 @@
 
 //==================================================================================================
 
-void GeomGridEval_Curve::Initialize(const Handle(Adaptor3d_Curve)& theCurve)
-{
-  if (theCurve.IsNull())
-  {
-    myEvaluator = std::monostate{};
-    myCurveType = GeomAbs_OtherCurve;
-    return;
-  }
-
-  Handle(GeomAdaptor_Curve) aGeomAdaptor = Handle(GeomAdaptor_Curve)::DownCast(theCurve);
-  if (!aGeomAdaptor.IsNull())
-  {
-    Initialize(aGeomAdaptor->Curve());
-    return;
-  }
-
-  myCurveType = theCurve->GetType();
-
-  switch (myCurveType)
-  {
-    case GeomAbs_Line: {
-      // Create Handle(Geom_Line) from gp_Lin
-      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve->Line());
-      myEvaluator                 = GeomGridEval_Line(aGeomLine);
-      break;
-    }
-    case GeomAbs_Circle: {
-      // Create Handle(Geom_Circle) from gp_Circ
-      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve->Circle());
-      myEvaluator                     = GeomGridEval_Circle(aGeomCircle);
-      break;
-    }
-    case GeomAbs_Ellipse: {
-      // Create Handle(Geom_Ellipse) from gp_Elips
-      Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve->Ellipse());
-      myEvaluator                       = GeomGridEval_Ellipse(aGeomEllipse);
-      break;
-    }
-    case GeomAbs_Hyperbola: {
-      // Create Handle(Geom_Hyperbola) from gp_Hypr
-      Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve->Hyperbola());
-      myEvaluator                           = GeomGridEval_Hyperbola(aGeomHyperbola);
-      break;
-    }
-    case GeomAbs_Parabola: {
-      // Create Handle(Geom_Parabola) from gp_Parab
-      Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve->Parabola());
-      myEvaluator                         = GeomGridEval_Parabola(aGeomParabola);
-      break;
-    }
-    case GeomAbs_BezierCurve: {
-      myEvaluator = GeomGridEval_BezierCurve(theCurve->Bezier());
-      break;
-    }
-    case GeomAbs_BSplineCurve: {
-      myEvaluator = GeomGridEval_BSplineCurve(theCurve->BSpline());
-      break;
-    }
-    case GeomAbs_OffsetCurve: {
-      myEvaluator = GeomGridEval_OffsetCurve(theCurve->OffsetCurve());
-      break;
-    }
-    default: {
-      // Fallback: use OtherCurve. Taking handle directly.
-      myEvaluator = GeomGridEval_OtherCurve(theCurve);
-      break;
-    }
-  }
-}
-
-//==================================================================================================
-
 void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 {
   // Try to downcast to GeomAdaptor_Curve to get underlying Geom_Curve
@@ -112,7 +40,7 @@ void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
   }
 
   // For non-GeomAdaptor or when Geom_Curve is not available,
-  // use ShallowCopy to create a Handle for the evaluator
+  // use reference for the evaluator
   myCurveType = theCurve.GetType();
 
   switch (myCurveType)
@@ -155,8 +83,8 @@ void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
       break;
     }
     default: {
-      // Fallback: use ShallowCopy to create a handle for OtherCurve
-      myEvaluator = GeomGridEval_OtherCurve(theCurve.ShallowCopy());
+      // Fallback: store reference for OtherCurve
+      myEvaluator = GeomGridEval_OtherCurve(theCurve);
       break;
     }
   }
@@ -215,10 +143,10 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
   }
   else
   {
-    // Create adaptor for general curves
-    Handle(GeomAdaptor_Curve) anAdaptor = new GeomAdaptor_Curve(theCurve);
-    myCurveType                         = anAdaptor->GetType();
-    myEvaluator                         = GeomGridEval_OtherCurve(anAdaptor);
+    // Unknown curve type - set uninitialized
+    // All known Geom_Curve types are handled above
+    myEvaluator = std::monostate{};
+    myCurveType = GeomAbs_OtherCurve;
   }
 }
 

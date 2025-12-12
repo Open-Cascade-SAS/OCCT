@@ -28,7 +28,7 @@ void GeomGridEval_OtherCurve::SetParams(const TColStd_Array1OfReal& theParams)
 
 NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid() const
 {
-  if (myCurve.IsNull() || myParams.IsEmpty())
+  if (myParams.IsEmpty())
   {
     return NCollection_Array1<gp_Pnt>();
   }
@@ -37,7 +37,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid() const
 
   for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
   {
-    aResult.SetValue(i, myCurve->Value(myParams.Value(i)));
+    aResult.SetValue(i, myCurve.get().Value(myParams.Value(i)));
   }
 
   return aResult;
@@ -47,7 +47,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid() const
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD1() const
 {
-  if (myCurve.IsNull() || myParams.IsEmpty())
+  if (myParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
@@ -58,7 +58,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD
   {
     gp_Pnt aPoint;
     gp_Vec aD1;
-    myCurve->D1(myParams.Value(i), aPoint, aD1);
+    myCurve.get().D1(myParams.Value(i), aPoint, aD1);
     aResult.ChangeValue(i) = {aPoint, aD1};
   }
 
@@ -69,7 +69,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD2() const
 {
-  if (myCurve.IsNull() || myParams.IsEmpty())
+  if (myParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
@@ -80,7 +80,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD
   {
     gp_Pnt aPoint;
     gp_Vec aD1, aD2;
-    myCurve->D2(myParams.Value(i), aPoint, aD1, aD2);
+    myCurve.get().D2(myParams.Value(i), aPoint, aD1, aD2);
     aResult.ChangeValue(i) = {aPoint, aD1, aD2};
   }
 
@@ -91,7 +91,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD3() const
 {
-  if (myCurve.IsNull() || myParams.IsEmpty())
+  if (myParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
@@ -102,7 +102,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
   {
     gp_Pnt aPoint;
     gp_Vec aD1, aD2, aD3;
-    myCurve->D3(myParams.Value(i), aPoint, aD1, aD2, aD3);
+    myCurve.get().D3(myParams.Value(i), aPoint, aD1, aD2, aD3);
     aResult.ChangeValue(i) = {aPoint, aD1, aD2, aD3};
   }
 
@@ -113,7 +113,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
 
 NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(int theN) const
 {
-  if (myCurve.IsNull() || myParams.IsEmpty() || theN < 1)
+  if (myParams.IsEmpty() || theN < 1)
   {
     return NCollection_Array1<gp_Vec>();
   }
@@ -150,7 +150,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(int theN) con
     // For orders > 3, use adaptor DN method
     for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
     {
-      aResult.SetValue(i, myCurve->DN(myParams.Value(i), theN));
+      aResult.SetValue(i, myCurve.get().DN(myParams.Value(i), theN));
     }
   }
   return aResult;

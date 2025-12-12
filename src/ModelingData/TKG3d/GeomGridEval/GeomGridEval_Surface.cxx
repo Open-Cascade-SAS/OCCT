@@ -25,93 +25,6 @@
 
 //==================================================================================================
 
-void GeomGridEval_Surface::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
-{
-  if (theSurface.IsNull())
-  {
-    myEvaluator   = std::monostate{};
-    mySurfaceType = GeomAbs_OtherSurface;
-    return;
-  }
-
-  // Check if it is a GeomAdaptor_Surface
-  Handle(GeomAdaptor_Surface) aGeomAdaptor = Handle(GeomAdaptor_Surface)::DownCast(theSurface);
-  if (!aGeomAdaptor.IsNull())
-  {
-    Initialize(aGeomAdaptor->Surface());
-    return;
-  }
-
-  mySurfaceType = theSurface->GetType();
-
-  switch (mySurfaceType)
-  {
-    case GeomAbs_Plane: {
-      // Create Handle(Geom_Plane) from gp_Pln
-      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface->Plane());
-      myEvaluator                   = GeomGridEval_Plane(aGeomPlane);
-      break;
-    }
-    case GeomAbs_Cylinder: {
-      // Create Handle(Geom_CylindricalSurface) from gp_Cylinder
-      Handle(Geom_CylindricalSurface) aGeomCyl =
-        new Geom_CylindricalSurface(theSurface->Cylinder());
-      myEvaluator = GeomGridEval_Cylinder(aGeomCyl);
-      break;
-    }
-    case GeomAbs_Sphere: {
-      // Create Handle(Geom_SphericalSurface) from gp_Sphere
-      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface->Sphere());
-      myEvaluator                               = GeomGridEval_Sphere(aGeomSphere);
-      break;
-    }
-    case GeomAbs_Cone: {
-      // Create Handle(Geom_ConicalSurface) from gp_Cone
-      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface->Cone());
-      myEvaluator                           = GeomGridEval_Cone(aGeomCone);
-      break;
-    }
-    case GeomAbs_Torus: {
-      // Create Handle(Geom_ToroidalSurface) from gp_Torus
-      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface->Torus());
-      myEvaluator                             = GeomGridEval_Torus(aGeomTorus);
-      break;
-    }
-    case GeomAbs_BezierSurface: {
-      myEvaluator = GeomGridEval_BezierSurface(theSurface->Bezier());
-      break;
-    }
-    case GeomAbs_BSplineSurface: {
-      myEvaluator = GeomGridEval_BSplineSurface(theSurface->BSpline());
-      break;
-    }
-    case GeomAbs_OffsetSurface: {
-      // Create Handle(Geom_OffsetSurface)
-      // Note: Adaptor3d_Surface does not expose an OffsetSurface() method returning
-      // Geom_OffsetSurface directly It exposes BasisSurface() and Offset value. So we have to
-      // reconstruct it or rely on fallback if we can't reconstruct perfectly. But
-      // GeomGridEval_OffsetSurface takes Handle(Geom_OffsetSurface). So we must create a NEW
-      // Geom_OffsetSurface from the adaptor's data. This might be expensive or lose some data if
-      // the adaptor was complex. Ideally, we should only support Offset if we started from
-      // Geom_OffsetSurface (via handle init). For pure adaptors, we might fallback or try to
-      // reconstruct. Let's reconstruct for now as it fits the pattern. But wait, BasisSurface()
-      // returns Adaptor3d_Surface. Geom_OffsetSurface needs Geom_Surface. We can't easily convert
-      // Adaptor3d_Surface back to Geom_Surface without loss or complexity. So for pure Adaptor
-      // initialization, OffsetSurface support is tricky. We will fallback to OtherSurface for now
-      // in this switch case, UNLESS we can safely cast. But we can't.
-      myEvaluator = GeomGridEval_OtherSurface(theSurface->ShallowCopy());
-      break;
-    }
-    default: {
-      // Fallback: use OtherSurface.
-      myEvaluator = GeomGridEval_OtherSurface(theSurface);
-      break;
-    }
-  }
-}
-
-//==================================================================================================
-
 void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 {
   // Try to downcast to GeomAdaptor_Surface to get underlying Geom_Surface
@@ -127,7 +40,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   }
 
   // For non-GeomAdaptor or when Geom_Surface is not available,
-  // use ShallowCopy to create a Handle for the evaluator
+  // use reference for the evaluator
   mySurfaceType = theSurface.GetType();
 
   switch (mySurfaceType)
@@ -166,8 +79,8 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       break;
     }
     default: {
-      // Fallback: use ShallowCopy to create a handle for OtherSurface
-      myEvaluator = GeomGridEval_OtherSurface(theSurface.ShallowCopy());
+      // Fallback: store reference for OtherSurface
+      myEvaluator = GeomGridEval_OtherSurface(theSurface);
       break;
     }
   }
@@ -226,10 +139,10 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   }
   else
   {
-    // Create adaptor for general surfaces (without copying geometry)
-    Handle(GeomAdaptor_Surface) anAdaptor = new GeomAdaptor_Surface(theSurface);
-    mySurfaceType                         = anAdaptor->GetType();
-    myEvaluator                           = GeomGridEval_OtherSurface(anAdaptor);
+    // Unknown surface type - set uninitialized
+    // All known Geom_Surface types are handled above
+    myEvaluator   = std::monostate{};
+    mySurfaceType = GeomAbs_OtherSurface;
   }
 }
 
