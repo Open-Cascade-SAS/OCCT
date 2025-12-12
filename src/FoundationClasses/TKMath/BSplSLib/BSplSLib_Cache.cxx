@@ -481,8 +481,8 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
 {
   // Use the same inverse values for both parameter transformation and derivative scaling
   // to maintain numerical consistency with the original implementation
-  double       anInvU = 0.0, anInvV = 0.0;
-  const auto   [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
+  double anInvU = 0.0, anInvV = 0.0;
+  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
 
   Standard_Real aPntDeriv[16] = {};
   EvaluatePolynomials(myPolesWeights,
@@ -535,8 +535,8 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
 {
   // Use the same inverse values for both parameter transformation and derivative scaling
   // to maintain numerical consistency with the original implementation
-  double       anInvU = 0.0, anInvV = 0.0;
-  const auto   [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
+  double anInvU = 0.0, anInvV = 0.0;
+  const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
 
   Standard_Real aPntDeriv[36] = {};
   EvaluatePolynomials(myPolesWeights,
