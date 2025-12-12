@@ -194,35 +194,25 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(int theN) co
   }
 
   // Get poles and weights from geometry
-  const TColgp_Array1OfPnt&  aPoles   = myGeom->Poles();
+  const TColgp_Array1OfPnt&   aPoles   = myGeom->Poles();
   const TColStd_Array1OfReal* aWeights = myGeom->Weights();
 
-  // Bezier knots: [0, 1] with multiplicities [degree+1, degree+1]
-  TColStd_Array1OfReal aKnots(1, 2);
-  aKnots.SetValue(1, 0.0);
-  aKnots.SetValue(2, 1.0);
+  // Use pre-defined flat knots from BSplCLib
+  TColStd_Array1OfReal aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
 
-  TColStd_Array1OfInteger aMults(1, 2);
-  aMults.SetValue(1, aDegree + 1);
-  aMults.SetValue(2, aDegree + 1);
-
-  // Bezier has a single span, index is 1
-  const int  aSpanIndex = 1;
-  const bool isPeriodic = myGeom->IsPeriodic();
-
-  // Use BSplCLib::DN directly
+  // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = 1; i <= aNb; ++i)
   {
     gp_Vec aDN;
     BSplCLib::DN(myParams.Value(i),
                  theN,
-                 aSpanIndex,
+                 0, // span index (single span for Bezier with flat knots)
                  aDegree,
-                 isPeriodic,
+                 false, // not periodic
                  aPoles,
                  aWeights,
-                 aKnots,
-                 &aMults,
+                 aFlatKnots,
+                 nullptr, // no multiplicities with flat knots
                  aDN);
     aResult.SetValue(i, aDN);
   }

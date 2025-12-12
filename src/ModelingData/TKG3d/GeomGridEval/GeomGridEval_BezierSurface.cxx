@@ -283,31 +283,15 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(int theNU,
   }
 
   // Get poles and weights from geometry
-  const TColgp_Array2OfPnt&   aPoles   = myGeom->Poles();
-  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
+  const TColgp_Array2OfPnt&   aPoles     = myGeom->Poles();
+  const TColStd_Array2OfReal* aWeights   = myGeom->Weights();
+  const bool                  isRational = (aWeights != nullptr);
 
-  // Bezier knots: [0, 1] with multiplicities [degree+1, degree+1]
-  TColStd_Array1OfReal aUKnots(1, 2);
-  aUKnots.SetValue(1, 0.0);
-  aUKnots.SetValue(2, 1.0);
-  TColStd_Array1OfReal aVKnots(1, 2);
-  aVKnots.SetValue(1, 0.0);
-  aVKnots.SetValue(2, 1.0);
+  // Use pre-defined flat knots from BSplCLib
+  TColStd_Array1OfReal aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree), 1, 2 * (aUDegree + 1));
+  TColStd_Array1OfReal aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree), 1, 2 * (aVDegree + 1));
 
-  TColStd_Array1OfInteger aUMults(1, 2);
-  aUMults.SetValue(1, aUDegree + 1);
-  aUMults.SetValue(2, aUDegree + 1);
-
-  TColStd_Array1OfInteger aVMults(1, 2);
-  aVMults.SetValue(1, aVDegree + 1);
-  aVMults.SetValue(2, aVDegree + 1);
-
-  // Bezier has a single span, index is 1
-  const int  aSpanIndex  = 1;
-  const bool isURational = myGeom->IsURational();
-  const bool isVRational = myGeom->IsVRational();
-
-  // Use BSplSLib::DN directly
+  // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = 0; i < aNbU; ++i)
   {
     const double aU = myUParams.Value(i);
@@ -318,18 +302,18 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(int theNU,
                    myVParams.Value(j),
                    theNU,
                    theNV,
-                   aSpanIndex,
-                   aSpanIndex,
+                   0, // U span index (single span for Bezier with flat knots)
+                   0, // V span index (single span for Bezier with flat knots)
                    aPoles,
                    aWeights,
-                   aUKnots,
-                   aVKnots,
-                   &aUMults,
-                   &aVMults,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr, // no U multiplicities with flat knots
+                   nullptr, // no V multiplicities with flat knots
                    aUDegree,
                    aVDegree,
-                   isURational,
-                   isVRational,
+                   isRational,
+                   isRational,
                    false, // not U-periodic
                    false, // not V-periodic
                    aDN);
