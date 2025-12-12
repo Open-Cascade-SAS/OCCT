@@ -29,7 +29,7 @@ if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise /wd26812")
   # suppress warning on using portable non-secure functions in favor of non-portable secure ones
   # prevent min() and max() macros from Windows.h
-  add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DNOMINMAX)
+  add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
 else()
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
   set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fexceptions")
@@ -218,6 +218,11 @@ if (CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
   # Optimize size of binaries
   set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
   set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
+endif()
+
+if (WIN32)
+  # prevent Windows.h from redefining std::min/std::max
+  add_definitions(-DNOMINMAX)
 endif()
 
 if (BUILD_RELEASE_DISABLE_EXCEPTIONS)
