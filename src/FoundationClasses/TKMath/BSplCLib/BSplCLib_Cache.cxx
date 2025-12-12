@@ -131,8 +131,7 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
                                               int            theDerivative,
                                               Standard_Real* theDerivArray) const
 {
-  const int      aDimension  = myRowLength;
-  Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
+  const int aDimension = myRowLength;
 
   // Temporary container. The maximal size of this container is defined by:
   //    1) maximal derivative for cache evaluation, which is 3, plus one row for function values,
@@ -158,7 +157,7 @@ void BSplCLib_Cache::calculateDerivativeLocal(double         theLocalParam,
                        aDerivative,
                        myParams.Degree,
                        aDimension,
-                       aPolesArray[0],
+                       myPolesWeightsBuffer[0],
                        aPntDeriv[0]);
 
   // Unnormalize derivatives since those are computed normalized
@@ -221,14 +220,13 @@ void BSplCLib_Cache::D0(const Standard_Real& theParameter, gp_Pnt& thePoint) con
 void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt& thePoint) const
 {
   // theLocalParam is already computed as (param - SpanStart) / SpanLength
-  Standard_Real* aPolesArray = const_cast<Standard_Real*>(myPolesWeightsBuffer);
-  Standard_Real  aPoint[4];
+  Standard_Real aPoint[4];
 
   PLib::NoDerivativeEvalPolynomial(theLocalParam,
                                    myParams.Degree,
                                    myRowLength,
                                    myParams.Degree * myRowLength,
-                                   aPolesArray[0],
+                                   myPolesWeightsBuffer[0],
                                    aPoint[0]);
 
   thePoint.SetCoord(aPoint[0], aPoint[1], aPoint[2]);
