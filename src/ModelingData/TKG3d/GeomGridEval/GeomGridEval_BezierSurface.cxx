@@ -192,7 +192,20 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   const int                                aNbV = myVParams.Size();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
-  // D3 uses direct geometry evaluation
+  // Get degrees and create Bezier flat knots
+  const int aUDegree = myGeom->UDegree();
+  const int aVDegree = myGeom->VDegree();
+
+  TColStd_Array1OfReal aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree), 1, 2 * (aUDegree + 1));
+  TColStd_Array1OfReal aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree), 1, 2 * (aVDegree + 1));
+
+  // Get poles and weights
+  const TColgp_Array2OfPnt&   aPoles     = myGeom->Poles();
+  const TColStd_Array2OfReal* aWeights   = myGeom->Weights();
+  const bool                  isRational = (aWeights != nullptr);
+
+  // D3 evaluation using BSplSLib::D3 directly
+  // Bezier surface is single span (span index = 0), non-periodic
   for (int i = 0; i < aNbU; ++i)
   {
     const double aU = myUParams.Value(i);
@@ -200,18 +213,34 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
     {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      myGeom->D3(aU,
-                 myVParams.Value(j),
-                 aPoint,
-                 aD1U,
-                 aD1V,
-                 aD2U,
-                 aD2V,
-                 aD2UV,
-                 aD3U,
-                 aD3V,
-                 aD3UUV,
-                 aD3UVV);
+
+      BSplSLib::D3(aU,
+                   myVParams.Value(j),
+                   0, // U span index (single span for Bezier)
+                   0, // V span index (single span for Bezier)
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr, // U multiplicities (nullptr for flat knots)
+                   nullptr, // V multiplicities (nullptr for flat knots)
+                   aUDegree,
+                   aVDegree,
+                   isRational,
+                   isRational,
+                   false, // not U periodic
+                   false, // not V periodic
+                   aPoint,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
+
       aResult.ChangeValue(i + 1, j + 1) =
         {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
