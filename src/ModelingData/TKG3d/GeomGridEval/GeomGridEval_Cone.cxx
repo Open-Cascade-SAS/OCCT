@@ -440,3 +440,191 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Cone::EvaluateGridD3() con
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Cone::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // For cone P(u,v) = C + K(v) * DirU(u) + v*cos(Ang)*Z
+  // where K(v) = RefRadius + v*sin(Ang), DirU(u) = cos(u)*X + sin(u)*Y
+  //
+  // V is linear, so:
+  //   - All derivatives with NV >= 2 are zero
+  //   - D_{0,1} = sin(Ang)*DirU + cos(Ang)*Z (constant)
+  //   - D_{nu,1} = sin(Ang) * d^nu(DirU)/du^nu for nu >= 1
+  //   - D_{nu,0} = K(v) * d^nu(DirU)/du^nu
+  //
+  // DirU derivatives cycle with period 4:
+  //   phase 0: cos(u)*X + sin(u)*Y      = DirU
+  //   phase 1: -sin(u)*X + cos(u)*Y     = DirU'
+  //   phase 2: -cos(u)*X - sin(u)*Y     = -DirU
+  //   phase 3: sin(u)*X - cos(u)*Y      = -DirU'
+
+  // All derivatives with NV >= 2 are zero (V is linear)
+  if (theNV >= 2)
+  {
+    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
+    for (int iU = 1; iU <= aNbU; ++iU)
+    {
+      for (int iV = 1; iV <= aNbV; ++iV)
+      {
+        aResult.SetValue(iU, iV, aZeroVec);
+      }
+    }
+    return aResult;
+  }
+
+  // Extract cone data
+  const gp_Cone& aCone      = myGeom->Cone();
+  const gp_Dir&  aXDir      = aCone.Position().XDirection();
+  const gp_Dir&  aYDir      = aCone.Position().YDirection();
+  const gp_Dir&  aZDir      = aCone.Position().Direction();
+  const double   aRefRadius = aCone.RefRadius();
+  const double   aSemiAngle = aCone.SemiAngle();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
+
+  const double sinAng = std::sin(aSemiAngle);
+  const double cosAng = std::cos(aSemiAngle);
+
+  // Phase for U derivatives (period 4)
+  const int aPhaseU = theNU % 4;
+
+  if (theNV == 0)
+  {
+    // Pure U derivative: D_{nu,0} = K(v) * d^nu(DirU)/du^nu
+    // Pre-compute K(v)
+    NCollection_Array1<double> aKv(1, aNbV);
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = myVParams.Value(iV);
+      aKv.SetValue(iV, aRefRadius + v * sinAng);
+    }
+
+    for (int iU = 1; iU <= aNbU; ++iU)
+    {
+      const double u    = myUParams.Value(iU);
+      const double cosU = std::cos(u);
+      const double sinU = std::sin(u);
+
+      // Compute d^nu(DirU)/du^nu based on phase
+      double dirDnX, dirDnY, dirDnZ;
+      switch (aPhaseU)
+      {
+        case 0: // cos(u)*X + sin(u)*Y
+          dirDnX = cosU * aXX + sinU * aYX;
+          dirDnY = cosU * aXY + sinU * aYY;
+          dirDnZ = cosU * aXZ + sinU * aYZ;
+          break;
+        case 1: // -sin(u)*X + cos(u)*Y
+          dirDnX = -sinU * aXX + cosU * aYX;
+          dirDnY = -sinU * aXY + cosU * aYY;
+          dirDnZ = -sinU * aXZ + cosU * aYZ;
+          break;
+        case 2: // -cos(u)*X - sin(u)*Y
+          dirDnX = -cosU * aXX - sinU * aYX;
+          dirDnY = -cosU * aXY - sinU * aYY;
+          dirDnZ = -cosU * aXZ - sinU * aYZ;
+          break;
+        case 3: // sin(u)*X - cos(u)*Y
+        default:
+          dirDnX = sinU * aXX - cosU * aYX;
+          dirDnY = sinU * aXY - cosU * aYY;
+          dirDnZ = sinU * aXZ - cosU * aYZ;
+          break;
+      }
+
+      for (int iV = 1; iV <= aNbV; ++iV)
+      {
+        const double K = aKv.Value(iV);
+        aResult.SetValue(iU, iV, gp_Vec(K * dirDnX, K * dirDnY, K * dirDnZ));
+      }
+    }
+  }
+  else // theNV == 1
+  {
+    // Mixed derivative: D_{nu,1} = sin(Ang) * d^nu(DirU)/du^nu for nu >= 1
+    // Special case: D_{0,1} = sin(Ang)*DirU + cos(Ang)*Z
+
+    for (int iU = 1; iU <= aNbU; ++iU)
+    {
+      const double u    = myUParams.Value(iU);
+      const double cosU = std::cos(u);
+      const double sinU = std::sin(u);
+
+      double resX, resY, resZ;
+
+      if (theNU == 0)
+      {
+        // D_{0,1} = sin(Ang)*DirU + cos(Ang)*Z
+        const double dirUX = cosU * aXX + sinU * aYX;
+        const double dirUY = cosU * aXY + sinU * aYY;
+        const double dirUZ = cosU * aXZ + sinU * aYZ;
+
+        resX = sinAng * dirUX + cosAng * aZX;
+        resY = sinAng * dirUY + cosAng * aZY;
+        resZ = sinAng * dirUZ + cosAng * aZZ;
+      }
+      else
+      {
+        // D_{nu,1} = sin(Ang) * d^nu(DirU)/du^nu
+        double dirDnX, dirDnY, dirDnZ;
+        switch (aPhaseU)
+        {
+          case 0:
+            dirDnX = cosU * aXX + sinU * aYX;
+            dirDnY = cosU * aXY + sinU * aYY;
+            dirDnZ = cosU * aXZ + sinU * aYZ;
+            break;
+          case 1:
+            dirDnX = -sinU * aXX + cosU * aYX;
+            dirDnY = -sinU * aXY + cosU * aYY;
+            dirDnZ = -sinU * aXZ + cosU * aYZ;
+            break;
+          case 2:
+            dirDnX = -cosU * aXX - sinU * aYX;
+            dirDnY = -cosU * aXY - sinU * aYY;
+            dirDnZ = -cosU * aXZ - sinU * aYZ;
+            break;
+          case 3:
+          default:
+            dirDnX = sinU * aXX - cosU * aYX;
+            dirDnY = sinU * aXY - cosU * aYY;
+            dirDnZ = sinU * aXZ - cosU * aYZ;
+            break;
+        }
+        resX = sinAng * dirDnX;
+        resY = sinAng * dirDnY;
+        resZ = sinAng * dirDnZ;
+      }
+
+      // Result is constant in V
+      const gp_Vec aVec(resX, resY, resZ);
+      for (int iV = 1; iV <= aNbV; ++iV)
+      {
+        aResult.SetValue(iU, iV, aVec);
+      }
+    }
+  }
+
+  return aResult;
+}

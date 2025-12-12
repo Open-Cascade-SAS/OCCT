@@ -219,3 +219,50 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // For Bezier surfaces, derivatives become zero when order exceeds degree in that direction
+  const int aUDegree = myGeom->UDegree();
+  const int aVDegree = myGeom->VDegree();
+
+  if (theNU > aUDegree || theNV > aVDegree)
+  {
+    // All derivatives are zero
+    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
+    for (int i = 1; i <= aNbU; ++i)
+    {
+      for (int j = 1; j <= aNbV; ++j)
+      {
+        aResult.SetValue(i, j, aZeroVec);
+      }
+    }
+    return aResult;
+  }
+
+  // Use geometry DN method for all requested derivatives
+  for (int i = 0; i < aNbU; ++i)
+  {
+    const double aU = myUParams.Value(i);
+    for (int j = 0; j < aNbV; ++j)
+    {
+      const gp_Vec aDN = myGeom->DN(aU, myVParams.Value(j), theNU, theNV);
+      aResult.SetValue(i + 1, j + 1, aDN);
+    }
+  }
+
+  return aResult;
+}

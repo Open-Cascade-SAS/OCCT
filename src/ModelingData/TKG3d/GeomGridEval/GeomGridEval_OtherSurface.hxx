@@ -82,6 +82,13 @@ public:
   //!         or empty array if surface is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
 
+  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! Uses Adaptor3d_Surface::DN for evaluation.
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 2D array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
+
 private:
   Handle(Adaptor3d_Surface)  mySurface;
   NCollection_Array1<double> myUParams;

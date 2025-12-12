@@ -123,6 +123,12 @@ public:
   //! @return 2D array of SurfD3 (1-based indexing)
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
 
+  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 2D array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
+
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 

@@ -734,3 +734,71 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
 
   return aResults;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myRawUParams.IsEmpty() || myRawVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  prepare();
+
+  const int aNbUParams = myUParams.Size();
+  const int aNbVParams = myVParams.Size();
+
+  if (aNbUParams == 0 || aNbVParams == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbUParams, 1, aNbVParams);
+
+  // For B-spline surfaces, derivatives become zero when order exceeds degree in that direction
+  const int aUDegree = myGeom->UDegree();
+  const int aVDegree = myGeom->VDegree();
+
+  if (theNU > aUDegree || theNV > aVDegree)
+  {
+    // All derivatives are zero
+    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
+    for (int i = 1; i <= aNbUParams; ++i)
+    {
+      for (int j = 1; j <= aNbVParams; ++j)
+      {
+        aResult.SetValue(i, j, aZeroVec);
+      }
+    }
+    return aResult;
+  }
+
+  // Use geometry DN method for all requested derivatives
+  const int aNbUSpans = myUSpanRanges.Size();
+  const int aNbVSpans = myVSpanRanges.Size();
+
+  for (int iURange = 0; iURange < aNbUSpans; ++iURange)
+  {
+    const auto& aURange = myUSpanRanges.Value(iURange);
+
+    for (int iVRange = 0; iVRange < aNbVSpans; ++iVRange)
+    {
+      const auto& aVRange = myVSpanRanges.Value(iVRange);
+
+      for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
+      {
+        const double aUParam = myUParams.Value(iu).Param;
+
+        for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
+        {
+          const gp_Vec aDN = myGeom->DN(aUParam, myVParams.Value(iv).Param, theNU, theNV);
+          aResult.SetValue(iu + 1, iv + 1, aDN);
+        }
+      }
+    }
+  }
+
+  return aResult;
+}

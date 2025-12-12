@@ -71,6 +71,16 @@ public:
   //! @return array of CurveD3 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
+  //! Evaluate Nth derivative at all grid points.
+  //! Ellipse has cyclic derivatives with period 4:
+  //! D1 = -MajR * sin(u) * X + MinR * cos(u) * Y
+  //! D2 = -MajR * cos(u) * X - MinR * sin(u) * Y
+  //! D3 = MajR * sin(u) * X - MinR * cos(u) * Y
+  //! D4 = MajR * cos(u) * X + MinR * sin(u) * Y = D0, then repeats
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
+
 private:
   Handle(Geom_Ellipse)       myGeom;
   NCollection_Array1<double> myParams;

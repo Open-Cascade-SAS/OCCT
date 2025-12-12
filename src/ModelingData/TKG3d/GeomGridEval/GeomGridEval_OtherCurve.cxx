@@ -108,3 +108,50 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(int theN) const
+{
+  if (myCurve.IsNull() || myParams.IsEmpty() || theN < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  NCollection_Array1<gp_Vec> aResult(myParams.Lower(), myParams.Upper());
+
+  // Reuse existing grid evaluators for orders 1-3
+  if (theN == 1)
+  {
+    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = EvaluateGridD1();
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      aResult.SetValue(i, aD1Grid.Value(i).D1);
+    }
+  }
+  else if (theN == 2)
+  {
+    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid = EvaluateGridD2();
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      aResult.SetValue(i, aD2Grid.Value(i).D2);
+    }
+  }
+  else if (theN == 3)
+  {
+    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid = EvaluateGridD3();
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      aResult.SetValue(i, aD3Grid.Value(i).D3);
+    }
+  }
+  else
+  {
+    // For orders > 3, use adaptor DN method
+    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    {
+      aResult.SetValue(i, myCurve->DN(myParams.Value(i), theN));
+    }
+  }
+  return aResult;
+}

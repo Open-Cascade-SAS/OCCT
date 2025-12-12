@@ -204,6 +204,42 @@ public:
     return aResult;
   }
 
+  //! Evaluate Nth derivative at all grid points.
+  //! For a line: D1 = Direction, DN = 0 for N > 1.
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const
+  {
+    if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+    {
+      return NCollection_Array1<gp_Vec>();
+    }
+
+    NCollection_Array1<gp_Vec> aResult(myParams.Lower(), myParams.Upper());
+
+    if (theN == 1)
+    {
+      // D1 is constant for a line (the direction)
+      const gp_Dir& aDir = myGeom->Lin().Direction();
+      const gp_Vec  aD1(aDir.X(), aDir.Y(), aDir.Z());
+      for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+      {
+        aResult.SetValue(i, aD1);
+      }
+    }
+    else
+    {
+      // All higher derivatives are zero for a line
+      const gp_Vec aZero(0, 0, 0);
+      for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+      {
+        aResult.SetValue(i, aZero);
+      }
+    }
+    return aResult;
+  }
+
 private:
   Handle(Geom_Line)          myGeom;
   NCollection_Array1<double> myParams;

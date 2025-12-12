@@ -168,3 +168,65 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(int theN) const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  const int                  aNb = myParams.Size();
+  NCollection_Array1<gp_Vec> aResult(1, aNb);
+
+  // Reuse existing grid evaluators for orders 1-3
+  if (theN == 1)
+  {
+    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = EvaluateGridD1();
+    for (int i = 1; i <= aNb; ++i)
+    {
+      aResult.SetValue(i, aD1Grid.Value(i).D1);
+    }
+  }
+  else if (theN == 2)
+  {
+    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid = EvaluateGridD2();
+    for (int i = 1; i <= aNb; ++i)
+    {
+      aResult.SetValue(i, aD2Grid.Value(i).D2);
+    }
+  }
+  else if (theN == 3)
+  {
+    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid = EvaluateGridD3();
+    for (int i = 1; i <= aNb; ++i)
+    {
+      aResult.SetValue(i, aD3Grid.Value(i).D3);
+    }
+  }
+  else
+  {
+    // For orders > 3, check if derivative exists (depends on degree)
+    // A Bezier of degree n has DN = 0 for N > n
+    const int aDegree = myGeom->Degree();
+    if (theN > aDegree)
+    {
+      const gp_Vec aZero(0.0, 0.0, 0.0);
+      for (int i = 1; i <= aNb; ++i)
+      {
+        aResult.SetValue(i, aZero);
+      }
+    }
+    else
+    {
+      // Use geometry DN method for higher orders
+      for (int i = 1; i <= aNb; ++i)
+      {
+        aResult.SetValue(i, myGeom->DN(myParams.Value(i), theN));
+      }
+    }
+  }
+  return aResult;
+}

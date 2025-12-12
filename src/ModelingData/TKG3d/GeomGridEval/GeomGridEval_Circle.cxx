@@ -215,3 +215,68 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Circle::EvaluateGridD3() 
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_Circle::EvaluateGridDN(int theN) const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  NCollection_Array1<gp_Vec> aResult(myParams.Lower(), myParams.Upper());
+
+  const gp_Circ& aCirc   = myGeom->Circ();
+  const gp_Dir&  aXDir   = aCirc.Position().XDirection();
+  const gp_Dir&  aYDir   = aCirc.Position().YDirection();
+  const double   aRadius = aCirc.Radius();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  // Circle derivatives are cyclic with period 4:
+  // D1 = R * (-sin(u) * X + cos(u) * Y)  -> coefficients: (-sin, cos)
+  // D2 = R * (-cos(u) * X - sin(u) * Y)  -> coefficients: (-cos, -sin)
+  // D3 = R * (sin(u) * X - cos(u) * Y)   -> coefficients: (sin, -cos)
+  // D4 = R * (cos(u) * X + sin(u) * Y)   -> coefficients: (cos, sin) = D0
+  const int aPhase = (theN - 1) % 4; // 0->D1, 1->D2, 2->D3, 3->D4
+
+  for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+  {
+    const double u    = myParams.Value(i);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    double aCoeffX, aCoeffY;
+    switch (aPhase)
+    {
+      case 0: // D1, D5, D9, ...
+        aCoeffX = -sinU;
+        aCoeffY = cosU;
+        break;
+      case 1: // D2, D6, D10, ...
+        aCoeffX = -cosU;
+        aCoeffY = -sinU;
+        break;
+      case 2: // D3, D7, D11, ...
+        aCoeffX = sinU;
+        aCoeffY = -cosU;
+        break;
+      default: // D4, D8, D12, ... (case 3)
+        aCoeffX = cosU;
+        aCoeffY = sinU;
+        break;
+    }
+
+    aResult.SetValue(i,
+                     gp_Vec(aRadius * (aCoeffX * aXX + aCoeffY * aYX),
+                            aRadius * (aCoeffX * aXY + aCoeffY * aYY),
+                            aRadius * (aCoeffX * aXZ + aCoeffY * aYZ)));
+  }
+  return aResult;
+}

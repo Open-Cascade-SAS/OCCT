@@ -470,3 +470,186 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3() co
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // For torus P(u,v) = C + K(v)*DirU(u) + r*sin(v)*Z
+  // where K(v) = R + r*cos(v), DirU(u) = cos(u)*X + sin(u)*Y
+  //
+  // Both U and V derivatives are cyclic with period 4:
+  //
+  // d^n(DirU)/du^n cycles: cos->-sin->-cos->sin (phase = n % 4)
+  // d^n(cos(v))/dv^n cycles: cos->-sin->-cos->sin (phase = n % 4)
+  // d^n(sin(v))/dv^n cycles: sin->cos->-sin->-cos (phase = n % 4)
+  //
+  // The partial derivative D_{nu,nv} involves:
+  // - d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
+  // - d^nu(DirU)/du^nu
+  // - d^nv(r*sin(v))/dv^nv = r * d^nv(sin(v))/dv^nv (only contributes when nu == 0)
+
+  // Extract torus data
+  const gp_Torus& aTorus       = myGeom->Torus();
+  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir        = aTorus.Position().Direction();
+  const double    aMajorRadius = aTorus.MajorRadius();
+  const double    aMinorRadius = aTorus.MinorRadius();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
+
+  // Phase for U derivatives (period 4)
+  const int aPhaseU = theNU % 4;
+  // Phase for V derivatives (period 4)
+  const int aPhaseV = theNV % 4;
+
+  // Pre-compute V-dependent values
+  NCollection_Array1<double> aCosV(1, aNbV);
+  NCollection_Array1<double> aSinV(1, aNbV);
+  for (int iV = 1; iV <= aNbV; ++iV)
+  {
+    const double v = myVParams.Value(iV);
+    aCosV.SetValue(iV, std::cos(v));
+    aSinV.SetValue(iV, std::sin(v));
+  }
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u    = myUParams.Value(iU);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // Compute d^nu(DirU)/du^nu based on phase
+    double dirDnX, dirDnY, dirDnZ;
+    switch (aPhaseU)
+    {
+      case 0: // cos(u)*X + sin(u)*Y
+        dirDnX = cosU * aXX + sinU * aYX;
+        dirDnY = cosU * aXY + sinU * aYY;
+        dirDnZ = cosU * aXZ + sinU * aYZ;
+        break;
+      case 1: // -sin(u)*X + cos(u)*Y
+        dirDnX = -sinU * aXX + cosU * aYX;
+        dirDnY = -sinU * aXY + cosU * aYY;
+        dirDnZ = -sinU * aXZ + cosU * aYZ;
+        break;
+      case 2: // -cos(u)*X - sin(u)*Y
+        dirDnX = -cosU * aXX - sinU * aYX;
+        dirDnY = -cosU * aXY - sinU * aYY;
+        dirDnZ = -cosU * aXZ - sinU * aYZ;
+        break;
+      case 3: // sin(u)*X - cos(u)*Y
+      default:
+        dirDnX = sinU * aXX - cosU * aYX;
+        dirDnY = sinU * aXY - cosU * aYY;
+        dirDnZ = sinU * aXZ - cosU * aYZ;
+        break;
+    }
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double cosV = aCosV.Value(iV);
+      const double sinV = aSinV.Value(iV);
+
+      // Compute d^nv(cos(v))/dv^nv based on phase
+      double dCosV;
+      switch (aPhaseV)
+      {
+        case 0:
+          dCosV = cosV;
+          break;
+        case 1:
+          dCosV = -sinV;
+          break;
+        case 2:
+          dCosV = -cosV;
+          break;
+        case 3:
+        default:
+          dCosV = sinV;
+          break;
+      }
+
+      // Compute d^nv(sin(v))/dv^nv based on phase
+      double dSinV;
+      switch (aPhaseV)
+      {
+        case 0:
+          dSinV = sinV;
+          break;
+        case 1:
+          dSinV = cosV;
+          break;
+        case 2:
+          dSinV = -sinV;
+          break;
+        case 3:
+        default:
+          dSinV = -cosV;
+          break;
+      }
+
+      // For the general derivative D_{nu,nv}:
+      // - If nv == 0: D = K(v) * d^nu(DirU) where K = R + r*cos(v)
+      //   But NU >= 1, so K is just multiplied
+      // - If nv >= 1 and nu == 0: D = d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
+      //   where d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
+      // - If nv >= 1 and nu >= 1: D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
+      //   (The Z term vanishes because it doesn't depend on U)
+
+      double resX, resY, resZ;
+
+      if (theNV == 0)
+      {
+        // Pure U derivative: K(v) * d^nu(DirU)/du^nu
+        const double K = aMajorRadius + aMinorRadius * cosV;
+        resX           = K * dirDnX;
+        resY           = K * dirDnY;
+        resZ           = K * dirDnZ;
+      }
+      else if (theNU == 0)
+      {
+        // Pure V derivative with nu=0: d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
+        // where d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
+        // and DirU = dirDnX, dirDnY, dirDnZ when aPhaseU = 0
+        const double dK = aMinorRadius * dCosV;
+        resX            = dK * dirDnX + aMinorRadius * dSinV * aZX;
+        resY            = dK * dirDnY + aMinorRadius * dSinV * aZY;
+        resZ            = dK * dirDnZ + aMinorRadius * dSinV * aZZ;
+      }
+      else
+      {
+        // Mixed derivative with both nu >= 1 and nv >= 1:
+        // D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
+        const double coeff = aMinorRadius * dCosV;
+        resX               = coeff * dirDnX;
+        resY               = coeff * dirDnY;
+        resZ               = coeff * dirDnZ;
+      }
+
+      aResult.SetValue(iU, iV, gp_Vec(resX, resY, resZ));
+    }
+  }
+
+  return aResult;
+}

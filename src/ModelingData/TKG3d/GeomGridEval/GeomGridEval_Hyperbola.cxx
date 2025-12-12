@@ -228,3 +228,60 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(int theN) const
+{
+  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  const int                  aNb = myParams.Size();
+  NCollection_Array1<gp_Vec> aResult(1, aNb);
+
+  const gp_Hypr& aHypr = myGeom->Hypr();
+  const gp_Dir&  aXDir = aHypr.XAxis().Direction();
+  const gp_Dir&  aYDir = aHypr.YAxis().Direction();
+  const double   aMajR = aHypr.MajorRadius();
+  const double   aMinR = aHypr.MinorRadius();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  // Hyperbola derivatives are cyclic with period 2:
+  // D0 = MajR * cosh(u) * X + MinR * sinh(u) * Y  -> coefficients: (cosh, sinh)
+  // D1 = MajR * sinh(u) * X + MinR * cosh(u) * Y  -> coefficients: (sinh, cosh)
+  // D2 = D0, D3 = D1, etc.
+  const bool isOdd = (theN % 2) == 1;
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const double u     = myParams.Value(i);
+    const double coshU = std::cosh(u);
+    const double sinhU = std::sinh(u);
+
+    if (isOdd)
+    {
+      // Odd derivatives (D1, D3, D5, ...): coefficients (sinh, cosh)
+      aResult.SetValue(i,
+                       gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+                              aMajR * sinhU * aXY + aMinR * coshU * aYY,
+                              aMajR * sinhU * aXZ + aMinR * coshU * aYZ));
+    }
+    else
+    {
+      // Even derivatives (D2, D4, D6, ...): coefficients (cosh, sinh) = D0
+      aResult.SetValue(i,
+                       gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
+                              aMajR * coshU * aXY + aMinR * sinhU * aYY,
+                              aMajR * coshU * aXZ + aMinR * sinhU * aYZ));
+    }
+  }
+  return aResult;
+}

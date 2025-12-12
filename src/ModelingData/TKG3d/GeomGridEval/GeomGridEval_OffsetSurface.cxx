@@ -332,3 +332,32 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // Use geometry DN method for all requested derivatives
+  for (int i = 1; i <= aNbU; ++i)
+  {
+    const double aU = myUParams.Value(i);
+    for (int j = 1; j <= aNbV; ++j)
+    {
+      const gp_Vec aDN = myGeom->DN(aU, myVParams.Value(j), theNU, theNV);
+      aResult.SetValue(i, j, aDN);
+    }
+  }
+
+  return aResult;
+}

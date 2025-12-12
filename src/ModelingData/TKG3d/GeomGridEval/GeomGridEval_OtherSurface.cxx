@@ -150,3 +150,33 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
 
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (mySurface.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // Use adaptor DN method for all requested derivatives
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u = myUParams.Value(iU);
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v   = myVParams.Value(iV);
+      const gp_Vec aDN = mySurface->DN(u, v, theNU, theNV);
+      aResult.SetValue(iU, iV, aDN);
+    }
+  }
+
+  return aResult;
+}

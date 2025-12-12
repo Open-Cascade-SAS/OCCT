@@ -16,6 +16,7 @@
 
 #include <Geom_Plane.hxx>
 #include <GeomGridEval.hxx>
+#include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -282,6 +283,51 @@ public:
                                        aZero,
                                        aZero,
                                        aZero};
+      }
+    }
+    return aResult;
+  }
+
+  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! For a plane: D1U = XDir, D1V = YDir, all others = 0.
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 2D array of derivative vectors (1-based indexing)
+  NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const
+  {
+    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+        || (theNU + theNV) < 1)
+    {
+      return NCollection_Array2<gp_Vec>();
+    }
+
+    const int aNbU = myUParams.Size();
+    const int aNbV = myVParams.Size();
+
+    NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+    // For a plane, only D1U (1,0) and D1V (0,1) are non-zero
+    gp_Vec aDerivative(0, 0, 0);
+
+    if (theNU == 1 && theNV == 0)
+    {
+      // D1U = XDir
+      const gp_Dir& aXDir = myGeom->Pln().Position().XDirection();
+      aDerivative         = gp_Vec(aXDir.X(), aXDir.Y(), aXDir.Z());
+    }
+    else if (theNU == 0 && theNV == 1)
+    {
+      // D1V = YDir
+      const gp_Dir& aYDir = myGeom->Pln().Position().YDirection();
+      aDerivative         = gp_Vec(aYDir.X(), aYDir.Y(), aYDir.Z());
+    }
+    // All other derivatives are zero
+
+    for (int iU = 1; iU <= aNbU; ++iU)
+    {
+      for (int iV = 1; iV <= aNbV; ++iV)
+      {
+        aResult.SetValue(iU, iV, aDerivative);
       }
     }
     return aResult;

@@ -80,6 +80,17 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
+  //! Evaluate Nth derivative at all grid points.
+  //! Circle has cyclic derivatives with period 4:
+  //! D1 = R * (-sin(u) * X + cos(u) * Y)
+  //! D2 = R * (-cos(u) * X - sin(u) * Y)
+  //! D3 = R * (sin(u) * X - cos(u) * Y)
+  //! D4 = R * (cos(u) * X + sin(u) * Y) = D0, then repeats
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing),
+  //!         or empty array if geometry is null or no parameters set
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
+
 private:
   Handle(Geom_Circle)        myGeom;
   NCollection_Array1<double> myParams;

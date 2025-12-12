@@ -82,6 +82,16 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
 
+  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! For a cylinder:
+  //! - U derivatives are cyclic (period 4): D_nU = R * (cyclic trig)
+  //! - V derivatives: D1V = ZDir, higher = 0
+  //! - Mixed: D_{nu,nv} = 0 for nv > 1
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 2D array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
+
 private:
   Handle(Geom_CylindricalSurface) myGeom;
   NCollection_Array1<double>      myUParams;

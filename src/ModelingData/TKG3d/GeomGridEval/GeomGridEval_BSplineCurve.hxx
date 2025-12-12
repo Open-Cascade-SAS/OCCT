@@ -106,6 +106,13 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
+  //! Evaluate Nth derivative at all grid points.
+  //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
+  //! For orders > 3, uses geometry DN method.
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
+
 private:
   //! Find span index for a parameter value.
   int locateSpan(double theParam, const TColStd_Array1OfReal& theFlatKnots) const;

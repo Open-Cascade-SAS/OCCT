@@ -71,6 +71,15 @@ public:
   //! @return array of CurveD3 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
+  //! Evaluate Nth derivative at all grid points.
+  //! Parabola: P = Center + (u^2/4F) * X + u * Y
+  //! D1 = (u/2F) * X + Y (depends on u)
+  //! D2 = (1/2F) * X (constant)
+  //! DN = 0 for N >= 3
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
+
 private:
   Handle(Geom_Parabola)      myGeom;
   NCollection_Array1<double> myParams;

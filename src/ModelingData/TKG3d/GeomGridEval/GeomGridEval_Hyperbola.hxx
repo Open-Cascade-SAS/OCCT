@@ -71,6 +71,15 @@ public:
   //! @return array of CurveD3 (1-based indexing)
   Standard_EXPORT NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const;
 
+  //! Evaluate Nth derivative at all grid points.
+  //! Hyperbola has cyclic derivatives with period 2:
+  //! D1 = MajR * sinh(u) * X + MinR * cosh(u) * Y
+  //! D2 = MajR * cosh(u) * X + MinR * sinh(u) * Y = D0
+  //! D3 = D1, D4 = D0, etc.
+  //! @param theN derivative order (N >= 1)
+  //! @return array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const;
+
 private:
   Handle(Geom_Hyperbola)     myGeom;
   NCollection_Array1<double> myParams;

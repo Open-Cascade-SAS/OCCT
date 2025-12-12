@@ -334,3 +334,129 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Cylinder::EvaluateGridD3()
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Cylinder::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // For cylinder P(u,v) = C + R*(cos(u)*X + sin(u)*Y) + v*Z:
+  // - V derivatives: only D_{0,1} = Z is non-zero, all D_{nu,nv} = 0 for nv >= 2
+  // - Mixed derivatives D_{nu,1} = 0 for nu >= 1 (Z term has no U dependence)
+  // - Pure U derivatives cycle with period 4
+
+  if (theNV > 1)
+  {
+    // All derivatives with NV >= 2 are zero (v is linear)
+    const gp_Vec aZero(0.0, 0.0, 0.0);
+    for (int iU = 1; iU <= aNbU; ++iU)
+    {
+      for (int iV = 1; iV <= aNbV; ++iV)
+      {
+        aResult.SetValue(iU, iV, aZero);
+      }
+    }
+    return aResult;
+  }
+
+  if (theNV == 1)
+  {
+    if (theNU == 0)
+    {
+      // D_{0,1} = Z (constant)
+      const gp_Dir& aZDir = myGeom->Cylinder().Position().Direction();
+      const gp_Vec  aD1V(aZDir.X(), aZDir.Y(), aZDir.Z());
+      for (int iU = 1; iU <= aNbU; ++iU)
+      {
+        for (int iV = 1; iV <= aNbV; ++iV)
+        {
+          aResult.SetValue(iU, iV, aD1V);
+        }
+      }
+    }
+    else
+    {
+      // D_{nu,1} = 0 for nu >= 1 (mixed derivatives are zero)
+      const gp_Vec aZero(0.0, 0.0, 0.0);
+      for (int iU = 1; iU <= aNbU; ++iU)
+      {
+        for (int iV = 1; iV <= aNbV; ++iV)
+        {
+          aResult.SetValue(iU, iV, aZero);
+        }
+      }
+    }
+    return aResult;
+  }
+
+  // Pure U derivatives (theNV == 0, theNU >= 1)
+  // Cyclic with period 4:
+  // Phase 0: cos*X + sin*Y, Phase 1: -sin*X + cos*Y
+  // Phase 2: -cos*X - sin*Y, Phase 3: sin*X - cos*Y
+
+  const gp_Cylinder& aCyl    = myGeom->Cylinder();
+  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
+  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
+  const double       aRadius = aCyl.Radius();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+
+  const int aPhase = theNU % 4;
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u    = myUParams.Value(iU);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    double aCoeffX, aCoeffY;
+    switch (aPhase)
+    {
+      case 0:
+        aCoeffX = cosU;
+        aCoeffY = sinU;
+        break;
+      case 1:
+        aCoeffX = -sinU;
+        aCoeffY = cosU;
+        break;
+      case 2:
+        aCoeffX = -cosU;
+        aCoeffY = -sinU;
+        break;
+      case 3:
+        aCoeffX = sinU;
+        aCoeffY = -cosU;
+        break;
+      default:
+        aCoeffX = 0.0;
+        aCoeffY = 0.0;
+        break;
+    }
+
+    const gp_Vec aDerivative(aRadius * (aCoeffX * aXX + aCoeffY * aYX),
+                             aRadius * (aCoeffX * aXY + aCoeffY * aYY),
+                             aRadius * (aCoeffX * aXZ + aCoeffY * aYZ));
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      aResult.SetValue(iU, iV, aDerivative);
+    }
+  }
+  return aResult;
+}

@@ -271,3 +271,22 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3() c
     },
     myEvaluator);
 }
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(int theN) const
+{
+  return std::visit(
+    [theN](const auto& theEval) -> NCollection_Array1<gp_Vec> {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return NCollection_Array1<gp_Vec>();
+      }
+      else
+      {
+        return theEval.EvaluateGridDN(theN);
+      }
+    },
+    myEvaluator);
+}

@@ -434,3 +434,145 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Sphere::EvaluateGridD3() c
   }
   return aResult;
 }
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Sphere::EvaluateGridDN(int theNU, int theNV) const
+{
+  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  // For sphere, derivatives are cyclic with period 4 in both U and V
+  // P(u,v) = C + R * (cosV*cosU*X + cosV*sinU*Y + sinV*Z)
+  // The derivative pattern depends on (NU % 4, NV % 4)
+
+  const gp_Sphere& aSph    = myGeom->Sphere();
+  const gp_Dir&    aXDir   = aSph.Position().XDirection();
+  const gp_Dir&    aYDir   = aSph.Position().YDirection();
+  const gp_Dir&    aZDir   = aSph.Position().Direction();
+  const double     aRadius = aSph.Radius();
+
+  const double aXX = aXDir.X();
+  const double aXY = aXDir.Y();
+  const double aXZ = aXDir.Z();
+  const double aYX = aYDir.X();
+  const double aYY = aYDir.Y();
+  const double aYZ = aYDir.Z();
+  const double aZX = aZDir.X();
+  const double aZY = aZDir.Y();
+  const double aZZ = aZDir.Z();
+
+  // Cyclic phases for U and V (period 4)
+  // Phase 0: cos, Phase 1: -sin, Phase 2: -cos, Phase 3: sin
+  const int aPhaseU = theNU % 4;
+  const int aPhaseV = theNV % 4;
+
+  // Pre-compute V-dependent values
+  NCollection_Array1<double> aCosV(1, aNbV);
+  NCollection_Array1<double> aSinV(1, aNbV);
+  for (int iV = 1; iV <= aNbV; ++iV)
+  {
+    const double v = myVParams.Value(iV);
+    aCosV.SetValue(iV, std::cos(v));
+    aSinV.SetValue(iV, std::sin(v));
+  }
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double u    = myUParams.Value(iU);
+    const double cosU = std::cos(u);
+    const double sinU = std::sin(u);
+
+    // U-phase coefficients for X and Y directions
+    double aCoeffUX, aCoeffUY;
+    switch (aPhaseU)
+    {
+      case 0:
+        aCoeffUX = cosU;
+        aCoeffUY = sinU;
+        break;
+      case 1:
+        aCoeffUX = -sinU;
+        aCoeffUY = cosU;
+        break;
+      case 2:
+        aCoeffUX = -cosU;
+        aCoeffUY = -sinU;
+        break;
+      case 3:
+        aCoeffUX = sinU;
+        aCoeffUY = -cosU;
+        break;
+      default:
+        aCoeffUX = 0.0;
+        aCoeffUY = 0.0;
+        break;
+    }
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double cosV = aCosV.Value(iV);
+      const double sinV = aSinV.Value(iV);
+
+      // V-phase coefficients: determines contribution of XY-plane vs Z-axis
+      // d^nv/dv^nv (cosV * XYterm + sinV * Z)
+      double aCoeffVXY, aCoeffVZ;
+      switch (aPhaseV)
+      {
+        case 0:
+          aCoeffVXY = cosV;
+          aCoeffVZ  = sinV;
+          break;
+        case 1:
+          aCoeffVXY = -sinV;
+          aCoeffVZ  = cosV;
+          break;
+        case 2:
+          aCoeffVXY = -cosV;
+          aCoeffVZ  = -sinV;
+          break;
+        case 3:
+          aCoeffVXY = sinV;
+          aCoeffVZ  = -cosV;
+          break;
+        default:
+          aCoeffVXY = 0.0;
+          aCoeffVZ  = 0.0;
+          break;
+      }
+
+      // Combined coefficient: R * VCoeff_XY * (UCoeffX * X + UCoeffY * Y) + R * VCoeff_Z * Z
+      // But Z only appears in the V-derivative chain, not U
+      // For pure U derivatives (NV=0): Z term is sinV (phase 0 for V)
+      // For mixed derivatives: need both components
+
+      const double aXYTerm = aCoeffVXY * (aCoeffUX * aXX + aCoeffUY * aYX);
+      const double aXYTermY = aCoeffVXY * (aCoeffUX * aXY + aCoeffUY * aYY);
+      const double aXYTermZ = aCoeffVXY * (aCoeffUX * aXZ + aCoeffUY * aYZ);
+
+      // Z contribution only if NU == 0 (no U derivative on Z term)
+      double aZTerm = 0.0, aZTermY = 0.0, aZTermZ = 0.0;
+      if (theNU == 0)
+      {
+        aZTerm  = aCoeffVZ * aZX;
+        aZTermY = aCoeffVZ * aZY;
+        aZTermZ = aCoeffVZ * aZZ;
+      }
+
+      aResult.SetValue(iU,
+                       iV,
+                       gp_Vec(aRadius * (aXYTerm + aZTerm),
+                              aRadius * (aXYTermY + aZTermY),
+                              aRadius * (aXYTermZ + aZTermZ)));
+    }
+  }
+  return aResult;
+}
