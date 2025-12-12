@@ -776,10 +776,15 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(int theNU
   }
 
   // Get surface data for direct BSplSLib::DN call
-  const TColStd_Array1OfReal&    aUKnots = myGeom->UKnots();
-  const TColStd_Array1OfReal&    aVKnots = myGeom->VKnots();
-  const TColStd_Array1OfInteger& aUMults = myGeom->UMultiplicities();
-  const TColStd_Array1OfInteger& aVMults = myGeom->VMultiplicities();
+  // Use flat knots with nullptr multiplicities (like D1/D2/D3 methods)
+  const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
+  const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
+  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull())
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+  const TColStd_Array1OfReal& aUFlatKnots = aUFlatKnotsHandle->Array1();
+  const TColStd_Array1OfReal& aVFlatKnots = aVFlatKnotsHandle->Array1();
 
   const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
   if (aPolesHandle.IsNull())
@@ -822,10 +827,10 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(int theNU
                        aVRange.SpanIndex,
                        aPoles,
                        aWeights,
-                       aUKnots,
-                       aVKnots,
-                       &aUMults,
-                       &aVMults,
+                       aUFlatKnots,
+                       aVFlatKnots,
+                       nullptr,
+                       nullptr,
                        aUDegree,
                        aVDegree,
                        isURational,

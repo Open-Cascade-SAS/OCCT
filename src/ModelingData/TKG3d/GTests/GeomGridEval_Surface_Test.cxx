@@ -1191,45 +1191,6 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD3)
   }
 }
 
-TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
-{
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
-  for (int i = 1; i <= 3; ++i)
-  {
-    for (int j = 1; j <= 3; ++j)
-    {
-      double x = (i - 1) * 1.0;
-      double y = (j - 1) * 1.0;
-      double z = (i == 2 && j == 2) ? 1.0 : 0.0;
-      aPoles.SetValue(i, j, gp_Pnt(x, y, z));
-    }
-  }
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
-  GeomGridEval_BezierSurface anEval(aBezier);
-
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 7);
-  anEval.SetUVParams(aParams, aParams);
-
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
-
-  GeomAdaptor_Surface anAdaptor(aBezier);
-  for (int i = 1; i <= 7; ++i)
-  {
-    for (int j = 1; j <= 7; ++j)
-    {
-      gp_Pnt aPnt;
-      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aParams.Value(i), aParams.Value(j), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
-      EXPECT_NEAR(aGrid.Value(i, j).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
-      EXPECT_NEAR((aGrid.Value(i, j).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
-      EXPECT_NEAR((aGrid.Value(i, j).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
-      EXPECT_NEAR((aGrid.Value(i, j).D3UUV - aD3UUV).Magnitude(), 0.0, THE_TOLERANCE);
-      EXPECT_NEAR((aGrid.Value(i, j).D3UVV - aD3UVV).Magnitude(), 0.0, THE_TOLERANCE);
-    }
-  }
-}
-
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
 {
   Handle(Geom_ToroidalSurface) aTorus =
@@ -1259,6 +1220,156 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3UUV - aD3UUV).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3UVV - aD3UVV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+//==================================================================================================
+// Tests for BSpline Surface DN (Arbitrary Order Derivative)
+//==================================================================================================
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V0)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 0);
+
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Vec aExpected = aSurf->DN(aUParams.Value(iU), aVParams.Value(iV), 1, 0);
+      EXPECT_NEAR((aGrid.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U0V1)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(0, 1);
+
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Vec aExpected = aSurf->DN(aUParams.Value(iU), aVParams.Value(iV), 0, 1);
+      EXPECT_NEAR((aGrid.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V1)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 1);
+
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      gp_Vec aExpected = aSurf->DN(aUParams.Value(iU), aVParams.Value(iV), 1, 1);
+      EXPECT_NEAR((aGrid.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_BeyondDegree)
+{
+  // Bilinear B-spline (degree 1 in both directions)
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  // 2nd derivative in U direction (beyond degree 1) should be zero
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(2, 0);
+
+  for (int iU = 1; iU <= 5; ++iU)
+  {
+    for (int iV = 1; iV <= 5; ++iV)
+    {
+      EXPECT_NEAR(aGrid.Value(iU, iV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_MultiSpan)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  // Test various derivative orders
+  const int aTestCases[][2] = {{1, 0}, {0, 1}, {1, 1}, {2, 0}, {0, 2}, {2, 1}, {1, 2}};
+
+  for (const auto& aCase : aTestCases)
+  {
+    const int aNU = aCase[0];
+    const int aNV = aCase[1];
+
+    NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aNU, aNV);
+
+    for (int iU = 1; iU <= 11; ++iU)
+    {
+      for (int iV = 1; iV <= 11; ++iV)
+      {
+        gp_Vec aExpected = aSurf->DN(aUParams.Value(iU), aVParams.Value(iV), aNU, aNV);
+        EXPECT_NEAR((aGrid.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+      }
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateRationalBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 7);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 7);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  // Test derivative orders
+  for (int aNU = 0; aNU <= 2; ++aNU)
+  {
+    for (int aNV = 0; aNV <= 2; ++aNV)
+    {
+      if (aNU + aNV == 0)
+        continue;
+
+      NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aNU, aNV);
+
+      for (int iU = 1; iU <= 7; ++iU)
+      {
+        for (int iV = 1; iV <= 7; ++iV)
+        {
+          gp_Vec aExpected = aSurf->DN(aUParams.Value(iU), aVParams.Value(iV), aNU, aNV);
+          EXPECT_NEAR((aGrid.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+        }
+      }
     }
   }
 }

@@ -127,16 +127,23 @@ inline void computeOffsetD2(gp_Pnt&       theP,
   gp_Vec aDnDv((aNv.XYZ() - aNorm * nDotNv) / aNMag);
 
   // Second derivatives of unit normal
-  // d²n/du² = (Nuu - n*(n.Nuu) - 2*(dn/du)*(n.Nu)) / |N|
-  // d²n/dv² = (Nvv - n*(n.Nvv) - 2*(dn/dv)*(n.Nv)) / |N|
-  // d²n/dudv = (Nuv - n*(n.Nuv) - (dn/du)*(n.Nv) - (dn/dv)*(n.Nu)) / |N|
+  // d²n/du² = (Nuu - n*(n.Nuu) - 2*(n.Nu)*(dn/du) - n*(dn/du.Nu)) / |N|
+  // d²n/dv² = (Nvv - n*(n.Nvv) - 2*(n.Nv)*(dn/dv) - n*(dn/dv.Nv)) / |N|
+  // d²n/dudv = (Nuv - n*(n.Nuv) - (n.Nu)*(dn/dv) - (n.Nv)*(dn/du) - n*(dn/du.Nv) - n*(dn/dv.Nu)) / |N|
   double nDotNuu = aNorm.Dot(aNuu.XYZ());
   double nDotNvv = aNorm.Dot(aNvv.XYZ());
   double nDotNuv = aNorm.Dot(aNuv.XYZ());
 
-  gp_Vec aD2nDu2((aNuu.XYZ() - aNorm * nDotNuu - 2.0 * nDotNu * aDnDu.XYZ()) / aNMag);
-  gp_Vec aD2nDv2((aNvv.XYZ() - aNorm * nDotNvv - 2.0 * nDotNv * aDnDv.XYZ()) / aNMag);
-  gp_Vec aD2nDuDv((aNuv.XYZ() - aNorm * nDotNuv - nDotNv * aDnDu.XYZ() - nDotNu * aDnDv.XYZ()) / aNMag);
+  double dnDuDotNu = aDnDu.Dot(aNu);
+  double dnDvDotNv = aDnDv.Dot(aNv);
+  double dnDuDotNv = aDnDu.Dot(aNv);
+  double dnDvDotNu = aDnDv.Dot(aNu);
+
+  gp_Vec aD2nDu2((aNuu.XYZ() - aNorm * nDotNuu - 2.0 * nDotNu * aDnDu.XYZ() - aNorm * dnDuDotNu) / aNMag);
+  gp_Vec aD2nDv2((aNvv.XYZ() - aNorm * nDotNvv - 2.0 * nDotNv * aDnDv.XYZ() - aNorm * dnDvDotNv) / aNMag);
+  gp_Vec aD2nDuDv(
+    (aNuv.XYZ() - aNorm * nDotNuv - nDotNu * aDnDv.XYZ() - nDotNv * aDnDu.XYZ() - aNorm * dnDuDotNv - aNorm * dnDvDotNu)
+    / aNMag);
 
   // Apply offset corrections
   theD1U += theOffset * aDnDu;
@@ -215,34 +222,62 @@ inline void computeOffsetD3(gp_Pnt&       theP,
   gp_Vec aDnDv((aNv.XYZ() - aNorm * nDotNv) / aNMag);
 
   // Second derivatives of unit normal
+  // d²n/du² = (Nuu - n*(n.Nuu) - 2*(n.Nu)*(dn/du) - n*(dn/du.Nu)) / |N|
+  // d²n/dv² = (Nvv - n*(n.Nvv) - 2*(n.Nv)*(dn/dv) - n*(dn/dv.Nv)) / |N|
+  // d²n/dudv = (Nuv - n*(n.Nuv) - (n.Nu)*(dn/dv) - (n.Nv)*(dn/du) - n*(dn/du.Nv) - n*(dn/dv.Nu)) / |N|
   double nDotNuu = aNorm.Dot(aNuu.XYZ());
   double nDotNvv = aNorm.Dot(aNvv.XYZ());
   double nDotNuv = aNorm.Dot(aNuv.XYZ());
 
-  gp_Vec aD2nDu2((aNuu.XYZ() - aNorm * nDotNuu - 2.0 * nDotNu * aDnDu.XYZ()) / aNMag);
-  gp_Vec aD2nDv2((aNvv.XYZ() - aNorm * nDotNvv - 2.0 * nDotNv * aDnDv.XYZ()) / aNMag);
-  gp_Vec aD2nDuDv((aNuv.XYZ() - aNorm * nDotNuv - nDotNv * aDnDu.XYZ() - nDotNu * aDnDv.XYZ()) / aNMag);
+  double dnDuDotNu = aDnDu.Dot(aNu);
+  double dnDvDotNv = aDnDv.Dot(aNv);
+  double dnDuDotNv = aDnDu.Dot(aNv);
+  double dnDvDotNu = aDnDv.Dot(aNu);
+
+  gp_Vec aD2nDu2((aNuu.XYZ() - aNorm * nDotNuu - 2.0 * nDotNu * aDnDu.XYZ() - aNorm * dnDuDotNu) / aNMag);
+  gp_Vec aD2nDv2((aNvv.XYZ() - aNorm * nDotNvv - 2.0 * nDotNv * aDnDv.XYZ() - aNorm * dnDvDotNv) / aNMag);
+  gp_Vec aD2nDuDv(
+    (aNuv.XYZ() - aNorm * nDotNuv - nDotNu * aDnDv.XYZ() - nDotNv * aDnDu.XYZ() - aNorm * dnDuDotNv - aNorm * dnDvDotNu)
+    / aNMag);
 
   // Third derivatives of unit normal
-  // d³n/du³ = (Nuuu - n*(n.Nuuu) - 3*(dn/du)*(n.Nuu) - 3*(d²n/du²)*(n.Nu)) / |N|
-  // d³n/dv³ = (Nvvv - n*(n.Nvvv) - 3*(dn/dv)*(n.Nvv) - 3*(d²n/dv²)*(n.Nv)) / |N|
-  // d³n/du²dv = (Nuuv - n*(n.Nuuv) - 2*(dn/du)*(n.Nuv) - (dn/dv)*(n.Nuu) - 2*(d²n/dudv)*(n.Nu) -
-  // (d²n/du²)*(n.Nv)) / |N| d³n/dudv² = (Nuvv - n*(n.Nuvv) - (dn/du)*(n.Nvv) - 2*(dn/dv)*(n.Nuv) -
-  // (d²n/du²)*(n.Nv) - 2*(d²n/dudv)*(n.Nv)) / |N|
+  // Full formula with all terms from the chain rule:
+  // d³n/du³ = (Nuuu - n*(n.Nuuu) - 3*(n.Nuu)*(dn/du) - 3*(n.Nu)*(d²n/du²)
+  //           - 3*n*(dn/du.Nuu) - 3*n*(d²n/du².Nu)) / |N|
   double nDotNuuu = aNorm.Dot(aNuuu.XYZ());
   double nDotNvvv = aNorm.Dot(aNvvv.XYZ());
   double nDotNuuv = aNorm.Dot(aNuuv.XYZ());
   double nDotNuvv = aNorm.Dot(aNuvv.XYZ());
 
-  gp_Vec aD3nDu3(
-    (aNuuu.XYZ() - aNorm * nDotNuuu - 3.0 * nDotNuu * aDnDu.XYZ() - 3.0 * nDotNu * aD2nDu2.XYZ()) / aNMag);
-  gp_Vec aD3nDv3(
-    (aNvvv.XYZ() - aNorm * nDotNvvv - 3.0 * nDotNvv * aDnDv.XYZ() - 3.0 * nDotNv * aD2nDv2.XYZ()) / aNMag);
+  double dnDuDotNuu  = aDnDu.Dot(aNuu);
+  double dnDvDotNvv  = aDnDv.Dot(aNvv);
+  double d2nDu2DotNu = aD2nDu2.Dot(aNu);
+  double d2nDv2DotNv = aD2nDv2.Dot(aNv);
+
+  // Mixed terms for third order mixed derivatives
+  double dnDuDotNuv   = aDnDu.Dot(aNuv);
+  double dnDvDotNuu   = aDnDv.Dot(aNuu);
+  double dnDuDotNvv   = aDnDu.Dot(aNvv);
+  double dnDvDotNuv   = aDnDv.Dot(aNuv);
+  double d2nDuDvDotNu = aD2nDuDv.Dot(aNu);
+  double d2nDuDvDotNv = aD2nDuDv.Dot(aNv);
+  double d2nDu2DotNv  = aD2nDu2.Dot(aNv);
+  double d2nDv2DotNu  = aD2nDv2.Dot(aNu);
+
+  // d³n/du³: includes term -3*(dn/du.Nu)*dn/du from differentiating 2*(n.Nu)*dn/du
+  gp_Vec aD3nDu3((aNuuu.XYZ() - aNorm * nDotNuuu - 3.0 * nDotNuu * aDnDu.XYZ() - 3.0 * nDotNu * aD2nDu2.XYZ()
+                  - 3.0 * dnDuDotNu * aDnDu.XYZ() - 3.0 * aNorm * dnDuDotNuu - 3.0 * aNorm * d2nDu2DotNu)
+                 / aNMag);
+  gp_Vec aD3nDv3((aNvvv.XYZ() - aNorm * nDotNvvv - 3.0 * nDotNvv * aDnDv.XYZ() - 3.0 * nDotNv * aD2nDv2.XYZ()
+                  - 3.0 * dnDvDotNv * aDnDv.XYZ() - 3.0 * aNorm * dnDvDotNvv - 3.0 * aNorm * d2nDv2DotNv)
+                 / aNMag);
   gp_Vec aD3nDu2Dv((aNuuv.XYZ() - aNorm * nDotNuuv - 2.0 * nDotNuv * aDnDu.XYZ() - nDotNuu * aDnDv.XYZ()
-                    - 2.0 * nDotNu * aD2nDuDv.XYZ() - nDotNv * aD2nDu2.XYZ())
+                    - 2.0 * nDotNu * aD2nDuDv.XYZ() - nDotNv * aD2nDu2.XYZ() - 2.0 * aNorm * dnDuDotNuv
+                    - aNorm * dnDvDotNuu - 2.0 * aNorm * d2nDuDvDotNu - aNorm * d2nDu2DotNv)
                    / aNMag);
   gp_Vec aD3nDuDv2((aNuvv.XYZ() - aNorm * nDotNuvv - nDotNvv * aDnDu.XYZ() - 2.0 * nDotNuv * aDnDv.XYZ()
-                    - nDotNu * aD2nDv2.XYZ() - 2.0 * nDotNv * aD2nDuDv.XYZ())
+                    - nDotNu * aD2nDv2.XYZ() - 2.0 * nDotNv * aD2nDuDv.XYZ() - aNorm * dnDuDotNvv
+                    - 2.0 * aNorm * dnDvDotNuv - aNorm * d2nDv2DotNu - 2.0 * aNorm * d2nDuDvDotNv)
                    / aNMag);
 
   // Apply offset corrections

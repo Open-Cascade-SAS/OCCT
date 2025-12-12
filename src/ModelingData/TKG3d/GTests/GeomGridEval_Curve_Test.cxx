@@ -936,3 +936,156 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
     EXPECT_NEAR((aGrid.Value(i).D3 - aD3).Magnitude(), 0.0, THE_TOLERANCE);
   }
 }
+
+//==================================================================================================
+// Tests for BSpline Curve DN (Arbitrary Order Derivative)
+//==================================================================================================
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order1)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(1);
+
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Vec aExpected = aCurve->DN(aParams.Value(i), 1);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order2)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(2);
+
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Vec aExpected = aCurve->DN(aParams.Value(i), 2);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order3)
+{
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(3);
+
+  for (int i = 1; i <= 11; ++i)
+  {
+    gp_Vec aExpected = aCurve->DN(aParams.Value(i), 3);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_BeyondDegree)
+{
+  // Cubic B-spline (degree 3), 4th derivative should be zero
+  Handle(Geom_BSplineCurve) aCurve = CreateSimpleBSpline();
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(4);
+
+  for (int i = 1; i <= 11; ++i)
+  {
+    EXPECT_NEAR(aGrid.Value(i).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_RationalCurve)
+{
+  // Create a rational B-spline (NURBS)
+  TColgp_Array1OfPnt   aPoles(1, 4);
+  TColStd_Array1OfReal aWeights(1, 4);
+
+  aPoles.SetValue(1, gp_Pnt(1, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 1, 0));
+  aPoles.SetValue(3, gp_Pnt(0, 1, 0));
+  aPoles.SetValue(4, gp_Pnt(-1, 1, 0));
+
+  aWeights.SetValue(1, 1.0);
+  aWeights.SetValue(2, 1.0 / std::sqrt(2.0));
+  aWeights.SetValue(3, 1.0);
+  aWeights.SetValue(4, 1.0 / std::sqrt(2.0));
+
+  TColStd_Array1OfReal    aKnots(1, 2);
+  TColStd_Array1OfInteger aMults(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 4);
+
+  Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
+  anEval.SetParams(aParams);
+
+  // Test DN for orders 1, 2, 3
+  for (int aOrder = 1; aOrder <= 3; ++aOrder)
+  {
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+
+    for (int i = 1; i <= 21; ++i)
+    {
+      gp_Vec aExpected = aCurve->DN(aParams.Value(i), aOrder);
+      EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_MultiSpan)
+{
+  // Create a multi-span B-spline (degree 3, with internal knot)
+  TColgp_Array1OfPnt aPoles(1, 6);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(2, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(3, 0, 0));
+  aPoles.SetValue(5, gp_Pnt(4, -1, 0));
+  aPoles.SetValue(6, gp_Pnt(5, 0, 0));
+
+  TColStd_Array1OfReal    aKnots(1, 3);
+  TColStd_Array1OfInteger aMults(1, 3);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 0.5);
+  aKnots.SetValue(3, 1.0);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 2);
+  aMults.SetValue(3, 4);
+
+  Handle(Geom_BSplineCurve) aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  GeomGridEval_BSplineCurve anEval(aCurve);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 31);
+  anEval.SetParams(aParams);
+
+  // Test DN for orders 1, 2, 3
+  for (int aOrder = 1; aOrder <= 3; ++aOrder)
+  {
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+
+    for (int i = 1; i <= 31; ++i)
+    {
+      gp_Vec aExpected = aCurve->DN(aParams.Value(i), aOrder);
+      EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}

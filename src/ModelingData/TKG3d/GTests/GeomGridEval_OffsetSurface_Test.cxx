@@ -16,6 +16,7 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomGridEval_OffsetSurface.hxx>
 #include <GeomGridEval_Surface.hxx>
 #include <gp_Ax2.hxx>
@@ -153,4 +154,216 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
   EXPECT_EQ(aGrid.ColLength(), 3);
 
   EXPECT_NEAR(aGrid.Value(1, 1).Z(), 5.0, THE_TOLERANCE);
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD2)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      anOffset->D2(aUParams.Value(i), aVParams.Value(j), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+
+      EXPECT_NEAR(aGrid.Value(i, j).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD3)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+
+  GeomAdaptor_Surface anAdaptor(anOffset);
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Pnt aPnt;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      anAdaptor.D3(aUParams.Value(i), aVParams.Value(j), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
+                   aD3U, aD3V, aD3UUV, aD3UVV);
+
+      EXPECT_NEAR(aGrid.Value(i, j).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D3UUV - aD3UUV).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGrid.Value(i, j).D3UVV - aD3UVV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V0)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 0);
+
+  // Use Geom_OffsetSurface::DN as reference (GeomAdaptor_Surface::DN doesn't
+  // properly handle offset surfaces - it returns base surface derivatives)
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Vec aExpected = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 1, 0);
+      EXPECT_NEAR((aGrid.Value(i, j) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U0V1)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(0, 1);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Vec aExpected = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 0, 1);
+      EXPECT_NEAR((aGrid.Value(i, j) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V1)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 1);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Vec aExpected = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 1, 1);
+      EXPECT_NEAR((aGrid.Value(i, j) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U2V0)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(2, 0);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      gp_Vec aExpected = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 2, 0);
+      EXPECT_NEAR((aGrid.Value(i, j) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
+{
+  // Plane offset - simpler case for testing
+  Handle(Geom_Plane)         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 10.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
+  anEval.SetUVParams(aUParams, aVParams);
+
+  // Test DN(1,0) and DN(0,1) - use Geom_OffsetSurface::DN as reference
+  NCollection_Array2<gp_Vec> aGridU = anEval.EvaluateGridDN(1, 0);
+  NCollection_Array2<gp_Vec> aGridV = anEval.EvaluateGridDN(0, 1);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 5; ++j)
+    {
+      gp_Vec aExpectedU = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 1, 0);
+      gp_Vec aExpectedV = anOffset->DN(aUParams.Value(i), aVParams.Value(j), 0, 1);
+      EXPECT_NEAR((aGridU.Value(i, j) - aExpectedU).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aGridV.Value(i, j) - aExpectedV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+
+  // For a plane offset, 2nd and higher derivatives should be zero
+  NCollection_Array2<gp_Vec> aGrid2U = anEval.EvaluateGridDN(2, 0);
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 5; ++j)
+    {
+      EXPECT_NEAR(aGrid2U.Value(i, j).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
 }

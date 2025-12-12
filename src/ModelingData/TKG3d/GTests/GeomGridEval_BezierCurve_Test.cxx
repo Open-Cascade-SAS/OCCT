@@ -178,3 +178,129 @@ TEST(GeomGridEval_BezierCurveTest, RationalEvaluation)
     EXPECT_NEAR(aGrid.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }
+
+TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order1)
+{
+  TColgp_Array1OfPnt aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
+
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve anEval(aBezier);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(1);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Vec aExpected = aBezier->DN(aParams.Value(i), 1);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order2)
+{
+  TColgp_Array1OfPnt aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
+
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve anEval(aBezier);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(2);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Vec aExpected = aBezier->DN(aParams.Value(i), 2);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order3)
+{
+  TColgp_Array1OfPnt aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
+
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve anEval(aBezier);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetParams(aParams);
+
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(3);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Vec aExpected = aBezier->DN(aParams.Value(i), 3);
+    EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierCurveTest, DerivativeDN_BeyondDegree)
+{
+  // Cubic Bezier (degree 3), test DN for N > 3 should return zero vectors
+  TColgp_Array1OfPnt aPoles(1, 4);
+  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
+  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
+  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
+
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles);
+  GeomGridEval_BezierCurve anEval(aBezier);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  anEval.SetParams(aParams);
+
+  // 4th derivative of cubic Bezier should be zero
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(4);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    EXPECT_NEAR(aGrid.Value(i).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierCurveTest, DerivativeDN_RationalCurve)
+{
+  // Rational Bezier curve (quarter circle)
+  TColgp_Array1OfPnt   aPoles(1, 3);
+  TColStd_Array1OfReal aWeights(1, 3);
+
+  aPoles.SetValue(1, gp_Pnt(1, 0, 0));
+  aPoles.SetValue(2, gp_Pnt(1, 1, 0));
+  aPoles.SetValue(3, gp_Pnt(0, 1, 0));
+
+  aWeights.SetValue(1, 1.0);
+  aWeights.SetValue(2, 1.0 / std::sqrt(2.0));
+  aWeights.SetValue(3, 1.0);
+
+  Handle(Geom_BezierCurve) aBezier = new Geom_BezierCurve(aPoles, aWeights);
+  GeomGridEval_BezierCurve anEval(aBezier);
+
+  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
+  anEval.SetParams(aParams);
+
+  // Test DN for orders 1, 2
+  for (int aOrder = 1; aOrder <= 2; ++aOrder)
+  {
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+
+    for (int i = 1; i <= 11; ++i)
+    {
+      gp_Vec aExpected = aBezier->DN(aParams.Value(i), aOrder);
+      EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
