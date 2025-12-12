@@ -47,7 +47,7 @@ public:
 
   //! Set parameters for grid evaluation (by const reference).
   //! @param theParams array of parameter values
-  void SetParams(const TColStd_Array1OfReal& theParams);
+  Standard_EXPORT void SetParams(const TColStd_Array1OfReal& theParams);
 
   //! Set parameters for grid evaluation (by move).
   //! @param theParams array of parameter values to move
