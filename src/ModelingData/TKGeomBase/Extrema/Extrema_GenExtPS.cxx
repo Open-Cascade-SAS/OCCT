@@ -847,11 +847,10 @@ void Extrema_GenExtPS::BuildTree()
   Standard_Real PasV = myvsup - myvmin;
   Standard_Real U0   = PasU / myusample / 100.;
   Standard_Real V0   = PasV / myvsample / 100.;
-  gp_Pnt        P1;
-  PasU = (PasU - U0) / (myusample - 1);
-  PasV = (PasV - V0) / (myvsample - 1);
-  U0   = U0 / 2. + myumin;
-  V0   = V0 / 2. + myvmin;
+  PasU               = (PasU - U0) / (myusample - 1);
+  PasV               = (PasV - V0) / (myvsample - 1);
+  U0                 = U0 / 2. + myumin;
+  V0                 = V0 / 2. + myvmin;
 
   // build grid of parametric points
   myUParams = new TColStd_HArray1OfReal(1, myusample);
@@ -871,47 +870,22 @@ void Extrema_GenExtPS::BuildTree()
 
   mySphereArray = new Bnd_HArray1OfSphere(0, myusample * myvsample);
 
-  bool isGridEvalUsed = false;
-  if (myS->GetType() == GeomAbs_BSplineSurface)
-  {
-    Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
-    if (!aBspl.IsNull())
-    {
-      GeomGridEval_BSplineSurface aGridEval(aBspl);
-      aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+  // Use unified grid evaluator for all surface types (optimized for BSpline, Bezier, etc.)
+  GeomGridEval_Surface aGridEval;
+  aGridEval.Initialize(myS);
+  aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
 
-      NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
-      isGridEvalUsed                         = !aGridPoints.IsEmpty();
-      if (isGridEvalUsed)
-      {
-        for (NoU = 1; NoU <= myusample; NoU++)
-        {
-          for (NoV = 1; NoV <= myvsample; NoV++)
-          {
-            const gp_Pnt& aP1 = aGridPoints.Value(NoU, NoV);
-            Bnd_Sphere    aSph(aP1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
-            aFiller.Add(i, aSph);
-            mySphereArray->SetValue(i, aSph);
-            i++;
-          }
-        }
-      }
-    }
-  }
+  const NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
 
-  // Fallback to standard evaluation
-  if (!isGridEvalUsed)
+  for (NoU = 1; NoU <= myusample; NoU++)
   {
-    for (NoU = 1; NoU <= myusample; NoU++)
+    for (NoV = 1; NoV <= myvsample; NoV++)
     {
-      for (NoV = 1; NoV <= myvsample; NoV++)
-      {
-        P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
-        Bnd_Sphere aSph(P1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
-        aFiller.Add(i, aSph);
-        mySphereArray->SetValue(i, aSph);
-        i++;
-      }
+      const gp_Pnt& aP1 = aGridPoints.Value(NoU, NoV);
+      Bnd_Sphere    aSph(aP1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
+      aFiller.Add(i, aSph);
+      mySphereArray->SetValue(i, aSph);
+      i++;
     }
   }
   aFiller.Fill();
