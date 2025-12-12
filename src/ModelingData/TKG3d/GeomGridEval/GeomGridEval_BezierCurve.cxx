@@ -181,52 +181,50 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(int theN) co
   const int                  aNb = myParams.Size();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
-  // Reuse existing grid evaluators for orders 1-3
-  if (theN == 1)
+  // For Bezier curves, derivatives become zero when order exceeds degree
+  const int aDegree = myGeom->Degree();
+  if (theN > aDegree)
   {
-    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = EvaluateGridD1();
+    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
     for (int i = 1; i <= aNb; ++i)
     {
-      aResult.SetValue(i, aD1Grid.Value(i).D1);
+      aResult.SetValue(i, aZeroVec);
     }
+    return aResult;
   }
-  else if (theN == 2)
+
+  // Get poles and weights from geometry
+  const TColgp_Array1OfPnt&  aPoles   = myGeom->Poles();
+  const TColStd_Array1OfReal* aWeights = myGeom->Weights();
+
+  // Bezier knots: [0, 1] with multiplicities [degree+1, degree+1]
+  TColStd_Array1OfReal aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+
+  TColStd_Array1OfInteger aMults(1, 2);
+  aMults.SetValue(1, aDegree + 1);
+  aMults.SetValue(2, aDegree + 1);
+
+  // Bezier has a single span, index is 1
+  const int  aSpanIndex = 1;
+  const bool isPeriodic = myGeom->IsPeriodic();
+
+  // Use BSplCLib::DN directly
+  for (int i = 1; i <= aNb; ++i)
   {
-    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid = EvaluateGridD2();
-    for (int i = 1; i <= aNb; ++i)
-    {
-      aResult.SetValue(i, aD2Grid.Value(i).D2);
-    }
-  }
-  else if (theN == 3)
-  {
-    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid = EvaluateGridD3();
-    for (int i = 1; i <= aNb; ++i)
-    {
-      aResult.SetValue(i, aD3Grid.Value(i).D3);
-    }
-  }
-  else
-  {
-    // For orders > 3, check if derivative exists (depends on degree)
-    // A Bezier of degree n has DN = 0 for N > n
-    const int aDegree = myGeom->Degree();
-    if (theN > aDegree)
-    {
-      const gp_Vec aZero(0.0, 0.0, 0.0);
-      for (int i = 1; i <= aNb; ++i)
-      {
-        aResult.SetValue(i, aZero);
-      }
-    }
-    else
-    {
-      // Use geometry DN method for higher orders
-      for (int i = 1; i <= aNb; ++i)
-      {
-        aResult.SetValue(i, myGeom->DN(myParams.Value(i), theN));
-      }
-    }
+    gp_Vec aDN;
+    BSplCLib::DN(myParams.Value(i),
+                 theN,
+                 aSpanIndex,
+                 aDegree,
+                 isPeriodic,
+                 aPoles,
+                 aWeights,
+                 aKnots,
+                 &aMults,
+                 aDN);
+    aResult.SetValue(i, aDN);
   }
   return aResult;
 }

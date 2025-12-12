@@ -775,7 +775,26 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(int theNU
     return aResult;
   }
 
-  // Use geometry DN method for all requested derivatives
+  // Get surface data for direct BSplSLib::DN call
+  const TColStd_Array1OfReal&    aUKnots = myGeom->UKnots();
+  const TColStd_Array1OfReal&    aVKnots = myGeom->VKnots();
+  const TColStd_Array1OfInteger& aUMults = myGeom->UMultiplicities();
+  const TColStd_Array1OfInteger& aVMults = myGeom->VMultiplicities();
+
+  const Handle(TColgp_HArray2OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+  const TColgp_Array2OfPnt& aPoles = aPolesHandle->Array2();
+
+  const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
+  const bool                  isURational = myGeom->IsURational();
+  const bool                  isVRational = myGeom->IsVRational();
+  const bool                  isUPeriodic = myGeom->IsUPeriodic();
+  const bool                  isVPeriodic = myGeom->IsVPeriodic();
+
+  // Use BSplSLib::DN directly with pre-computed span indices
   const int aNbUSpans = myUSpanRanges.Size();
   const int aNbVSpans = myVSpanRanges.Size();
 
@@ -789,11 +808,31 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(int theNU
 
       for (int iu = aURange.StartIdx; iu < aURange.EndIdx; ++iu)
       {
-        const double aUParam = myUParams.Value(iu).Param;
+        const double aUParam   = myUParams.Value(iu).Param;
+        const int    aUSpanIdx = aURange.SpanIndex;
 
         for (int iv = aVRange.StartIdx; iv < aVRange.EndIdx; ++iv)
         {
-          const gp_Vec aDN = myGeom->DN(aUParam, myVParams.Value(iv).Param, theNU, theNV);
+          gp_Vec aDN;
+          BSplSLib::DN(aUParam,
+                       myVParams.Value(iv).Param,
+                       theNU,
+                       theNV,
+                       aUSpanIdx,
+                       aVRange.SpanIndex,
+                       aPoles,
+                       aWeights,
+                       aUKnots,
+                       aVKnots,
+                       &aUMults,
+                       &aVMults,
+                       aUDegree,
+                       aVDegree,
+                       isURational,
+                       isVRational,
+                       isUPeriodic,
+                       isVPeriodic,
+                       aDN);
           aResult.SetValue(iu + 1, iv + 1, aDN);
         }
       }

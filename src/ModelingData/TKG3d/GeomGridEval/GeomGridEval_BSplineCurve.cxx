@@ -578,51 +578,57 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(int theN) c
   const int                  aNbParams = myParams.Size();
   NCollection_Array1<gp_Vec> aResult(1, aNbParams);
 
-  // Reuse existing grid evaluators for orders 1-3
-  if (theN == 1)
+  // For B-spline curves, derivatives become zero when order exceeds degree
+  const int aDegree = myGeom->Degree();
+  if (theN > aDegree)
   {
-    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = EvaluateGridD1();
+    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
     for (int i = 1; i <= aNbParams; ++i)
     {
-      aResult.SetValue(i, aD1Grid.Value(i).D1);
+      aResult.SetValue(i, aZeroVec);
     }
+    return aResult;
   }
-  else if (theN == 2)
+
+  // Get curve data for direct BSplCLib::DN call
+  const Handle(TColgp_HArray1OfPnt)& aPolesHandle = myGeom->HArrayPoles();
+  if (aPolesHandle.IsNull())
   {
-    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid = EvaluateGridD2();
-    for (int i = 1; i <= aNbParams; ++i)
-    {
-      aResult.SetValue(i, aD2Grid.Value(i).D2);
-    }
+    return NCollection_Array1<gp_Vec>();
   }
-  else if (theN == 3)
+  const TColgp_Array1OfPnt& aPoles = aPolesHandle->Array1();
+
+  const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
+  const bool                           isRational     = myGeom->IsRational();
+  const TColStd_Array1OfReal*          aWeights = (isRational && !aWeightsHandle.IsNull())
+                                                    ? &aWeightsHandle->Array1()
+                                                    : nullptr;
+
+  const TColStd_Array1OfReal&    aKnots = myGeom->Knots();
+  const TColStd_Array1OfInteger& aMults = myGeom->Multiplicities();
+  const bool                     isPeriodic = myGeom->IsPeriodic();
+
+  // Use BSplCLib::DN directly with pre-computed span indices
+  const int aNbRanges = mySpanRanges.Size();
+  for (int iRange = 0; iRange < aNbRanges; ++iRange)
   {
-    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid = EvaluateGridD3();
-    for (int i = 1; i <= aNbParams; ++i)
+    const auto& aRange   = mySpanRanges.Value(iRange);
+    const int   aSpanIdx = aRange.SpanIndex;
+
+    for (int i = aRange.StartIdx; i < aRange.EndIdx; ++i)
     {
-      aResult.SetValue(i, aD3Grid.Value(i).D3);
-    }
-  }
-  else
-  {
-    // For orders > 3, check if derivative exists (depends on degree)
-    // A B-spline of degree n has DN = 0 for N > n
-    const int aDegree = myGeom->Degree();
-    if (theN > aDegree)
-    {
-      const gp_Vec aZero(0.0, 0.0, 0.0);
-      for (int i = 1; i <= aNbParams; ++i)
-      {
-        aResult.SetValue(i, aZero);
-      }
-    }
-    else
-    {
-      // Use geometry DN method for higher orders
-      for (int i = 1; i <= aNbParams; ++i)
-      {
-        aResult.SetValue(i, myGeom->DN(myParams.Value(i - 1).Param, theN));
-      }
+      gp_Vec aDN;
+      BSplCLib::DN(myParams.Value(i).Param,
+                   theN,
+                   aSpanIdx,
+                   aDegree,
+                   isPeriodic,
+                   aPoles,
+                   aWeights,
+                   aKnots,
+                   &aMults,
+                   aDN);
+      aResult.SetValue(i + 1, aDN);
     }
   }
   return aResult;
