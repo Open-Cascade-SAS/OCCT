@@ -41,6 +41,10 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_BSplineSurface.cxx
   GeomGridEval_OtherSurface.hxx
   GeomGridEval_OtherSurface.cxx
+  GeomGridEval_SurfaceOfRevolution.hxx
+  GeomGridEval_SurfaceOfRevolution.cxx
+  GeomGridEval_SurfaceOfExtrusion.hxx
+  GeomGridEval_SurfaceOfExtrusion.cxx
   GeomGridEval_Surface.hxx
   GeomGridEval_Surface.cxx
 )

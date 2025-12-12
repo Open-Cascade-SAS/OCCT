@@ -25,6 +25,8 @@
 #include <GeomGridEval_OtherSurface.hxx>
 #include <GeomGridEval_Plane.hxx>
 #include <GeomGridEval_Sphere.hxx>
+#include <GeomGridEval_SurfaceOfExtrusion.hxx>
+#include <GeomGridEval_SurfaceOfRevolution.hxx>
 #include <GeomGridEval_Torus.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
@@ -66,16 +68,18 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible surface evaluators.
-  using EvaluatorVariant = std::variant<std::monostate,              // Uninitialized state
-                                        GeomGridEval_Plane,          // Plane surface
-                                        GeomGridEval_Cylinder,       // Cylindrical surface
-                                        GeomGridEval_Sphere,         // Spherical surface
-                                        GeomGridEval_Cone,           // Conical surface
-                                        GeomGridEval_Torus,          // Toroidal surface
-                                        GeomGridEval_BezierSurface,  // Bezier surface
-                                        GeomGridEval_BSplineSurface, // B-spline surface
-                                        GeomGridEval_OffsetSurface,  // Offset surface
-                                        GeomGridEval_OtherSurface>;  // Fallback for other types
+  using EvaluatorVariant = std::variant<std::monostate,                   // Uninitialized state
+                                        GeomGridEval_Plane,               // Plane surface
+                                        GeomGridEval_Cylinder,            // Cylindrical surface
+                                        GeomGridEval_Sphere,              // Spherical surface
+                                        GeomGridEval_Cone,                // Conical surface
+                                        GeomGridEval_Torus,               // Toroidal surface
+                                        GeomGridEval_BezierSurface,       // Bezier surface
+                                        GeomGridEval_BSplineSurface,      // B-spline surface
+                                        GeomGridEval_OffsetSurface,       // Offset surface
+                                        GeomGridEval_SurfaceOfRevolution, // Surface of revolution
+                                        GeomGridEval_SurfaceOfExtrusion,  // Surface of extrusion
+                                        GeomGridEval_OtherSurface>; // Fallback for other types
 
   //! Default constructor - uninitialized state.
   GeomGridEval_Surface()
@@ -85,10 +89,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Surface(const GeomGridEval_Surface&) = delete;
+  GeomGridEval_Surface(const GeomGridEval_Surface&)            = delete;
   GeomGridEval_Surface& operator=(const GeomGridEval_Surface&) = delete;
-  GeomGridEval_Surface(GeomGridEval_Surface&&) = delete;
-  GeomGridEval_Surface& operator=(GeomGridEval_Surface&&) = delete;
+  GeomGridEval_Surface(GeomGridEval_Surface&&)                 = delete;
+  GeomGridEval_Surface& operator=(GeomGridEval_Surface&&)      = delete;
 
   //! Initialize from adaptor reference (auto-detects surface type).
   //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.

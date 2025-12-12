@@ -21,6 +21,8 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_Hyperbola_Test.cxx
   GeomGridEval_Parabola_Test.cxx
   GeomGridEval_Surface_Test.cxx
+  GeomGridEval_SurfaceOfExtrusion_Test.cxx
+  GeomGridEval_SurfaceOfRevolution_Test.cxx
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx

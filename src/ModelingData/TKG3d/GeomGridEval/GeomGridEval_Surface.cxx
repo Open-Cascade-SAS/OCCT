@@ -21,6 +21,8 @@
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 
 //==================================================================================================
@@ -76,6 +78,43 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     }
     case GeomAbs_BSplineSurface: {
       myEvaluator.emplace<GeomGridEval_BSplineSurface>(theSurface.BSpline());
+      break;
+    }
+    case GeomAbs_SurfaceOfRevolution: {
+      // Need to get the underlying Geom_SurfaceOfRevolution
+      // For GeomAdaptor_Surface, we can try to get it from the adaptor
+      const GeomAdaptor_Surface* aGeomAdaptor =
+        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
+      if (aGeomAdaptor != nullptr)
+      {
+        Handle(Geom_SurfaceOfRevolution) aRevSurf =
+          Handle(Geom_SurfaceOfRevolution)::DownCast(aGeomAdaptor->Surface());
+        if (!aRevSurf.IsNull())
+        {
+          myEvaluator.emplace<GeomGridEval_SurfaceOfRevolution>(aRevSurf);
+          break;
+        }
+      }
+      // Fallback to OtherSurface if we can't get the Geom_SurfaceOfRevolution
+      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
+      break;
+    }
+    case GeomAbs_SurfaceOfExtrusion: {
+      // Need to get the underlying Geom_SurfaceOfLinearExtrusion
+      const GeomAdaptor_Surface* aGeomAdaptor =
+        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
+      if (aGeomAdaptor != nullptr)
+      {
+        Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
+          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aGeomAdaptor->Surface());
+        if (!anExtSurf.IsNull())
+        {
+          myEvaluator.emplace<GeomGridEval_SurfaceOfExtrusion>(anExtSurf);
+          break;
+        }
+      }
+      // Fallback to OtherSurface if we can't get the Geom_SurfaceOfLinearExtrusion
+      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
       break;
     }
     default: {
@@ -136,6 +175,16 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
   {
     mySurfaceType = GeomAbs_OffsetSurface;
     myEvaluator.emplace<GeomGridEval_OffsetSurface>(anOffset);
+  }
+  else if (auto aRevolution = Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_SurfaceOfRevolution;
+    myEvaluator.emplace<GeomGridEval_SurfaceOfRevolution>(aRevolution);
+  }
+  else if (auto anExtrusion = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface))
+  {
+    mySurfaceType = GeomAbs_SurfaceOfExtrusion;
+    myEvaluator.emplace<GeomGridEval_SurfaceOfExtrusion>(anExtrusion);
   }
   else
   {
