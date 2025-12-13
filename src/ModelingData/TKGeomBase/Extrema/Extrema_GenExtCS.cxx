@@ -260,11 +260,12 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 
   const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
 
+  // aGrid is 1-based, mySurfPnts is 0-based - adjust indexing
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++)
   {
     for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++)
     {
-      mySurfPnts->ChangeValue(aSUI, aSVI) = aGrid.Value(aSUI, aSVI);
+      mySurfPnts->ChangeValue(aSUI, aSVI) = aGrid.Value(aSUI + 1, aSVI + 1);
     }
   }
 }
