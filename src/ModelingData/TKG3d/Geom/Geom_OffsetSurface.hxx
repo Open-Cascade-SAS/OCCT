@@ -391,68 +391,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 
 private:
-  //! Recalculate D1 values of base surface into D0 value of offset surface
-  void calculateD0(const Standard_Real theU,
-                   const Standard_Real theV,
-                   gp_Pnt&             theValue,
-                   const gp_Vec&       theD1U,
-                   const gp_Vec&       theD1V) const;
-
-  //! Recalculate D2 values of base surface into D1 values of offset surface
-  void calculateD1(const Standard_Real theU,
-                   const Standard_Real theV,
-                   gp_Pnt&             theValue,
-                   gp_Vec&             theD1U,
-                   gp_Vec&             theD1V,
-                   const gp_Vec&       theD2U,
-                   const gp_Vec&       theD2V,
-                   const gp_Vec&       theD2UV) const;
-
-  //! Recalculate D3 values of base surface into D2 values of offset surface
-  void calculateD2(const Standard_Real theU,
-                   const Standard_Real theV,
-                   gp_Pnt&             theValue,
-                   gp_Vec&             theD1U,
-                   gp_Vec&             theD1V,
-                   gp_Vec&             theD2U,
-                   gp_Vec&             theD2V,
-                   gp_Vec&             theD2UV,
-                   const gp_Vec&       theD3U,
-                   const gp_Vec&       theD3V,
-                   const gp_Vec&       theD3UUV,
-                   const gp_Vec&       theD3UVV) const;
-
-  //! Recalculate D3 values of base surface into D3 values of offset surface
-  void calculateD3(const Standard_Real theU,
-                   const Standard_Real theV,
-                   gp_Pnt&             theValue,
-                   gp_Vec&             theD1U,
-                   gp_Vec&             theD1V,
-                   gp_Vec&             theD2U,
-                   gp_Vec&             theD2V,
-                   gp_Vec&             theD2UV,
-                   gp_Vec&             theD3U,
-                   gp_Vec&             theD3V,
-                   gp_Vec&             theD3UUV,
-                   gp_Vec&             theD3UVV) const;
-
-  //! Calculate DN of offset surface based on derivatives of base surface
-  gp_Vec calculateDN(const Standard_Real    theU,
-                     const Standard_Real    theV,
-                     const Standard_Integer theNu,
-                     const Standard_Integer theNv,
-                     const gp_Vec&          theD1U,
-                     const gp_Vec&          theD1V) const;
-
-  //! Replace zero derivative by the corresponding derivative in a near point.
-  //! Return true, if the derivative was replaced.
-  Standard_Boolean replaceDerivative(const Standard_Real theU,
-                                     const Standard_Real theV,
-                                     gp_Vec&             theDU,
-                                     gp_Vec&             theDV,
-                                     const Standard_Real theSquareTol) const;
-
-private:
   Handle(Geom_Surface)                    basisSurf;
   Handle(Geom_Surface)                    equivSurf;
   Standard_Real                           offsetValue;
