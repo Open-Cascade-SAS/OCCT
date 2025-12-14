@@ -51,6 +51,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_NullValue.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
@@ -58,85 +59,6 @@
 static const Standard_Real PosTol = Precision::PConfusion() / 2;
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
-
-namespace
-{
-//! Adjusts derivative values at singular points where the tangent is zero.
-//! @param theBasisAdaptor adaptor for the basis curve
-//! @param theMaxDerivative maximum derivative order to adjust
-//! @param theU parameter value
-//! @param theD1 first derivative (modified)
-//! @param theD2 second derivative (modified)
-//! @param theD3 third derivative (modified)
-//! @param theD4 fourth derivative (modified)
-//! @return true if direction was changed
-bool AdjustDerivative(const Handle(Geom2dAdaptor_Curve)& theBasisAdaptor,
-                      int                                theMaxDerivative,
-                      double                             theU,
-                      gp_Vec2d&                          theD1,
-                      gp_Vec2d&                          theD2,
-                      gp_Vec2d&                          theD3,
-                      gp_Vec2d&                          theD4)
-{
-  static const double aTol           = gp::Resolution();
-  static const double aMinStep       = 1e-7;
-  static const int    aMaxDerivOrder = 3;
-
-  bool         isDirectionChange = false;
-  const double anUinfium         = theBasisAdaptor->FirstParameter();
-  const double anUsupremum       = theBasisAdaptor->LastParameter();
-
-  static const double DivisionFactor = 1.e-3;
-  double              du;
-  if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
-  {
-    du = 0.0;
-  }
-  else
-  {
-    du = anUsupremum - anUinfium;
-  }
-
-  const double aDelta = std::max(du * DivisionFactor, aMinStep);
-
-  // Derivative is approximated by Taylor-series
-  int      anIndex = 1; // Derivative order
-  gp_Vec2d V;
-
-  do
-  {
-    V = theBasisAdaptor->DN(theU, ++anIndex);
-  } while ((V.SquareMagnitude() <= aTol) && anIndex < aMaxDerivOrder);
-
-  double u;
-
-  if (theU - anUinfium < aDelta)
-  {
-    u = theU + aDelta;
-  }
-  else
-  {
-    u = theU - aDelta;
-  }
-
-  gp_Pnt2d P1, P2;
-  theBasisAdaptor->D0(std::min(theU, u), P1);
-  theBasisAdaptor->D0(std::max(theU, u), P2);
-
-  gp_Vec2d V1(P1, P2);
-  isDirectionChange  = V.Dot(V1) < 0.0;
-  const double aSign = isDirectionChange ? -1.0 : 1.0;
-
-  theD1               = V * aSign;
-  gp_Vec2d* aDeriv[3] = {&theD2, &theD3, &theD4};
-  for (int i = 1; i < theMaxDerivative; i++)
-  {
-    *(aDeriv[i - 1]) = theBasisAdaptor->DN(theU, anIndex + i) * aSign;
-  }
-
-  return isDirectionChange;
-}
-} // namespace
 
 //=================================================================================================
 
@@ -750,9 +672,13 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
-      gp_Vec2d    aD1;
-      anOffsetData.BasisAdaptor->D1(U, P, aD1);
-      Geom2d_OffsetUtils::CalculateD0(P, aD1, anOffsetData.Offset);
+      if (!Geom2d_OffsetUtils::EvaluateD0(U,
+                                          anOffsetData.BasisAdaptor.get(),
+                                          anOffsetData.Offset,
+                                          P))
+      {
+        throw Standard_NullValue("Geom2dAdaptor_Curve::D0: Unable to calculate offset point");
+      }
       break;
     }
 
@@ -795,9 +721,14 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) co
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
-      gp_Vec2d    aD2;
-      anOffsetData.BasisAdaptor->D2(U, P, V, aD2);
-      Geom2d_OffsetUtils::CalculateD1(P, V, aD2, anOffsetData.Offset);
+      if (!Geom2d_OffsetUtils::EvaluateD1(U,
+                                          anOffsetData.BasisAdaptor.get(),
+                                          anOffsetData.Offset,
+                                          P,
+                                          V))
+      {
+        throw Standard_NullValue("Geom2dAdaptor_Curve::D1: Unable to calculate offset D1");
+      }
       break;
     }
 
@@ -840,18 +771,15 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, g
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
-      gp_Vec2d    aD3;
-      anOffsetData.BasisAdaptor->D3(U, P, V1, V2, aD3);
-
-      bool isDirectionChange = false;
-      if (V1.SquareMagnitude() <= gp::Resolution())
+      if (!Geom2d_OffsetUtils::EvaluateD2(U,
+                                          anOffsetData.BasisAdaptor.get(),
+                                          anOffsetData.Offset,
+                                          P,
+                                          V1,
+                                          V2))
       {
-        gp_Vec2d aDummyD4;
-        isDirectionChange =
-          AdjustDerivative(anOffsetData.BasisAdaptor, 3, U, V1, V2, aD3, aDummyD4);
+        throw Standard_NullValue("Geom2dAdaptor_Curve::D2: Unable to calculate offset D2");
       }
-
-      Geom2d_OffsetUtils::CalculateD2(P, V1, V2, aD3, isDirectionChange, anOffsetData.Offset);
       break;
     }
 
@@ -898,16 +826,16 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
-      anOffsetData.BasisAdaptor->D3(U, P, V1, V2, V3);
-      gp_Vec2d aD4 = anOffsetData.BasisAdaptor->DN(U, 4);
-
-      bool isDirectionChange = false;
-      if (V1.SquareMagnitude() <= gp::Resolution())
+      if (!Geom2d_OffsetUtils::EvaluateD3(U,
+                                          anOffsetData.BasisAdaptor.get(),
+                                          anOffsetData.Offset,
+                                          P,
+                                          V1,
+                                          V2,
+                                          V3))
       {
-        isDirectionChange = AdjustDerivative(anOffsetData.BasisAdaptor, 4, U, V1, V2, V3, aD4);
+        throw Standard_NullValue("Geom2dAdaptor_Curve::D3: Unable to calculate offset D3");
       }
-
-      Geom2d_OffsetUtils::CalculateD3(P, V1, V2, V3, aD4, isDirectionChange, anOffsetData.Offset);
       break;
     }
 
