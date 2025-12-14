@@ -87,41 +87,14 @@ void IntCurveSurface_Inter::DoSurface(const TheSurface&   surface,
                                       Bnd_Box&            boxSurface,
                                       Standard_Real&      gap)
 {
-  Standard_Integer iU = 0, iV = 0;
-  Standard_Real    U = 0., V = 0;
-  // modified by NIZHNY-MKK  Mon Oct  3 17:38:45 2005
-  //   Standard_Real dU = fabs(u1-u0)/50., dV = fabs(v1-v0)/50.;
-  Standard_Real dU = (u1 - u0) / 50., dV = (v1 - v0) / 50.;
-  gp_Pnt        aPnt;
-
-  for (iU = 0; iU < 50; iU++)
-  {
-
-    if (iU == 0)
-      U = u0;
-    else if (iU == 49)
-      U = u1;
-    else
-      U = u0 + dU * ((Standard_Real)iU);
-
-    for (iV = 0; iV < 50; iV++)
-    {
-
-      if (iV == 0)
-        V = v0;
-      else if (iV == 49)
-        V = v1;
-      else
-        V = v0 + dV * ((Standard_Real)iV);
-
-      TheSurfaceTool::D0(surface, U, V, aPnt);
-      boxSurface.Add(aPnt);
-      pntsOnSurface.SetValue(iU + 1, iV + 1, aPnt);
-    }
-  }
-  Standard_Real Ures = TheSurfaceTool::UResolution(surface, dU);
-  Standard_Real Vres = TheSurfaceTool::VResolution(surface, dV);
-  gap                = std::max(Ures, Vres);
+  IntCurveSurface_InterUtils::DoSurface<TheSurface, TheSurfaceTool>(surface,
+                                                                    u0,
+                                                                    u1,
+                                                                    v0,
+                                                                    v1,
+                                                                    pntsOnSurface,
+                                                                    boxSurface,
+                                                                    gap);
 }
 
 //=================================================================================================
@@ -137,101 +110,16 @@ void IntCurveSurface_Inter::DoNewBounds(const TheSurface&           surface,
                                         const TColStd_Array1OfReal& Z,
                                         TColStd_Array1OfReal&       Bounds)
 {
-  Bounds.SetValue(1, u0);
-  Bounds.SetValue(2, u1);
-  Bounds.SetValue(3, v0);
-  Bounds.SetValue(4, v1);
-
-  Standard_Boolean isUClosed =
-    (TheSurfaceTool::IsUClosed(surface) || TheSurfaceTool::IsUPeriodic(surface));
-  Standard_Boolean isVClosed =
-    (TheSurfaceTool::IsVClosed(surface) || TheSurfaceTool::IsVPeriodic(surface));
-  Standard_Boolean checkU = (isUClosed) ? Standard_False : Standard_True;
-  Standard_Boolean checkV = (isVClosed) ? Standard_False : Standard_True;
-
-  Standard_Integer i = 0, j = 0, k = 0, iU = 0, iV = 0;
-  Standard_Integer iUmin = 50, iVmin = 50, iUmax = 1, iVmax = 1;
-
-  for (i = 1; i <= 2; i++)
-  {
-    for (j = 1; j <= 2; j++)
-    {
-      for (k = 1; k <= 2; k++)
-      {
-        gp_Pnt           aPoint(X(i), Y(j), Z(k));
-        Standard_Real    DistMin = 1.e+100;
-        Standard_Integer diU = 0, diV = 0;
-        for (iU = 1; iU <= 50; iU++)
-        {
-          for (iV = 1; iV <= 50; iV++)
-          {
-            const gp_Pnt  aP   = pntsOnSurface.Value(iU, iV);
-            Standard_Real dist = aP.SquareDistance(aPoint);
-            if (dist < DistMin)
-            {
-              DistMin = dist;
-              diU     = iU;
-              diV     = iV;
-            }
-          }
-        }
-        if (diU > 0 && diU < iUmin)
-          iUmin = diU;
-        if (diU > 0 && diU > iUmax)
-          iUmax = diU;
-        if (diV > 0 && diV < iVmin)
-          iVmin = diV;
-        if (diV > 0 && diV > iVmax)
-          iVmax = diV;
-      }
-    }
-  }
-
-  // modified by NIZHNY-MKK  Mon Oct  3 17:38:43 2005
-  //   Standard_Real dU = fabs(u1-u0)/50., dV = fabs(v1-v0)/50.;
-  Standard_Real dU = (u1 - u0) / 50., dV = (v1 - v0) / 50.;
-
-  Standard_Real USmin = u0 + dU * ((Standard_Real)(iUmin - 1));
-  Standard_Real USmax = u0 + dU * ((Standard_Real)(iUmax - 1));
-  Standard_Real VSmin = v0 + dV * ((Standard_Real)(iVmin - 1));
-  Standard_Real VSmax = v0 + dV * ((Standard_Real)(iVmax - 1));
-
-  if (USmin > USmax)
-  {
-    Standard_Real tmp = USmax;
-    USmax             = USmin;
-    USmin             = tmp;
-  }
-  if (VSmin > VSmax)
-  {
-    Standard_Real tmp = VSmax;
-    VSmax             = VSmin;
-    VSmin             = tmp;
-  }
-
-  USmin -= 1.5 * dU;
-  if (USmin < u0)
-    USmin = u0;
-  USmax += 1.5 * dU;
-  if (USmax > u1)
-    USmax = u1;
-  VSmin -= 1.5 * dV;
-  if (VSmin < v0)
-    VSmin = v0;
-  VSmax += 1.5 * dV;
-  if (VSmax > v1)
-    VSmax = v1;
-
-  if (checkU)
-  {
-    Bounds.SetValue(1, USmin);
-    Bounds.SetValue(2, USmax);
-  }
-  if (checkV)
-  {
-    Bounds.SetValue(3, VSmin);
-    Bounds.SetValue(4, VSmax);
-  }
+  IntCurveSurface_InterUtils::DoNewBounds<TheSurface, TheSurfaceTool>(surface,
+                                                                      u0,
+                                                                      u1,
+                                                                      v0,
+                                                                      v1,
+                                                                      pntsOnSurface,
+                                                                      X,
+                                                                      Y,
+                                                                      Z,
+                                                                      Bounds);
 }
 
 //=======================================================================
