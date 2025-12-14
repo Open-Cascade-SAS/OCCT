@@ -115,17 +115,17 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx
   HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter_0.cxx
   HLRBRep_ThePolygonOfInterCSurf.hxx
-  HLRBRep_ThePolygonOfInterCSurf_0.cxx
+  HLRBRep_ThePolygonOfInterCSurf.cxx
   HLRBRep_ThePolygonToolOfInterCSurf.hxx
   HLRBRep_ThePolygonToolOfInterCSurf_0.cxx
   HLRBRep_ThePolyhedronOfInterCSurf.hxx
-  HLRBRep_ThePolyhedronOfInterCSurf_0.cxx
+  HLRBRep_ThePolyhedronOfInterCSurf.cxx
   HLRBRep_ThePolyhedronToolOfInterCSurf.hxx
   HLRBRep_ThePolyhedronToolOfInterCSurf_0.cxx
   HLRBRep_TheProjPCurOfCInter.hxx
   HLRBRep_TheProjPCurOfCInter_0.cxx
   HLRBRep_TheQuadCurvExactInterCSurf.hxx
-  HLRBRep_TheQuadCurvExactInterCSurf_0.cxx
+  HLRBRep_TheQuadCurvExactInterCSurf.cxx
   HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx
   HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf_0.cxx
   HLRBRep_VertexList.cxx

@@ -25,7 +25,7 @@
 #include <HLRBRep_SurfaceTool.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#include "IntCurveSurface_PolyhedronUtils.pxx"
+#include "../../TKGeomAlgo/IntCurveSurface/IntCurveSurface_PolyhedronUtils.pxx"
 
 #define LONGUEUR_MINI_EDGE_TRIANGLE 1e-15
 

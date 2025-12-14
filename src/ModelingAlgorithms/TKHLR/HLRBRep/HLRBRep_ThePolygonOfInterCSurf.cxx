@@ -20,7 +20,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <HLRBRep_LineTool.hxx>
-#include "IntCurveSurface_PolygonUtils.pxx"
+#include "../../TKGeomAlgo/IntCurveSurface/IntCurveSurface_PolygonUtils.pxx"
 #include <Standard_OutOfRange.hxx>
 
 //==================================================================================================
