@@ -18,6 +18,7 @@
 #include <BSplSLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Curve.hxx>
+#include "Geom_ExtrusionUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
@@ -136,11 +137,7 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(Standard_Real& U1,
 
 void Geom_SurfaceOfLinearExtrusion::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 {
-  // P = C(U) + V * direction
-  XYZ aP;
-  basisCurve->D0(U, P);
-  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
-  P.SetXYZ(aP);
+  Geom_ExtrusionUtils::D0(U, V, *basisCurve, direction, P);
 }
 
 //=================================================================================================
@@ -151,13 +148,7 @@ void Geom_SurfaceOfLinearExtrusion::D1(const Standard_Real U,
                                        Vec&                D1U,
                                        Vec&                D1V) const
 {
-  // P = C(U) + V * direction
-  // D1U = C'(U), D1V = direction
-  XYZ aP;
-  basisCurve->D1(U, P, D1U);
-  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
-  P.SetXYZ(aP);
-  D1V = direction;
+  Geom_ExtrusionUtils::D1(U, V, *basisCurve, direction, P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -171,16 +162,7 @@ void Geom_SurfaceOfLinearExtrusion::D2(const Standard_Real U,
                                        Vec&                D2V,
                                        Vec&                D2UV) const
 {
-  // P = C(U) + V * direction
-  // D1U = C'(U), D1V = direction
-  // D2U = C''(U), D2V = 0, D2UV = 0
-  XYZ aP;
-  basisCurve->D2(U, P, D1U, D2U);
-  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
-  P.SetXYZ(aP);
-  D1V  = direction;
-  D2V  = Vec(0.0, 0.0, 0.0);
-  D2UV = Vec(0.0, 0.0, 0.0);
+  Geom_ExtrusionUtils::D2(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
@@ -198,17 +180,7 @@ void Geom_SurfaceOfLinearExtrusion::D3(const Standard_Real U,
                                        Vec&                D3UUV,
                                        Vec&                D3UVV) const
 {
-  // All V derivatives of order > 1 are zero
-  XYZ aP;
-  basisCurve->D3(U, P, D1U, D2U, D3U);
-  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
-  P.SetXYZ(aP);
-  D1V   = direction;
-  D2V   = Vec(0.0, 0.0, 0.0);
-  D2UV  = Vec(0.0, 0.0, 0.0);
-  D3V   = Vec(0.0, 0.0, 0.0);
-  D3UUV = Vec(0.0, 0.0, 0.0);
-  D3UVV = Vec(0.0, 0.0, 0.0);
+  Geom_ExtrusionUtils::D3(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
@@ -219,20 +191,7 @@ Vec Geom_SurfaceOfLinearExtrusion::DN(const Standard_Real    U,
                                       const Standard_Integer Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
-  if (Nv > 1)
-  {
-    return Vec(0.0, 0.0, 0.0);
-  }
-  if (Nv == 1)
-  {
-    if (Nu == 0)
-    {
-      return direction;
-    }
-    return Vec(0.0, 0.0, 0.0);
-  }
-  // Nv == 0
-  return basisCurve->DN(U, Nu);
+  return Geom_ExtrusionUtils::DN(U, *basisCurve, direction, Nu, Nv);
 }
 
 //=================================================================================================

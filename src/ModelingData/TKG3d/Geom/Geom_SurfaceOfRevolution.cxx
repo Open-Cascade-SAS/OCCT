@@ -20,6 +20,7 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
+#include "Geom_RevolutionUtils.pxx"
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -37,8 +38,6 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
-
-#include <cmath>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 
@@ -60,32 +59,6 @@ typedef gp_Pnt                   Pnt;
 typedef gp_Trsf                  Trsf;
 typedef gp_Vec                   Vec;
 typedef gp_XYZ                   XYZ;
-
-namespace
-{
-//! Shifts a point by offset along axis.
-inline void shiftPoint(const XYZ& theLoc, const XYZ& theAxis, const XYZ& thePoint, XYZ& theShift)
-{
-  theShift = thePoint - theLoc;
-  double aScalar = theShift.Dot(theAxis);
-  theShift.SetLinearForm(-aScalar, theAxis, theShift);
-}
-
-//! Rotates point around axis.
-inline void rotatePoint(const double theSin,
-                        const double theCos,
-                        const XYZ&   theLoc,
-                        const XYZ&   theAxis,
-                        const XYZ&   thePoint,
-                        XYZ&         theResult)
-{
-  XYZ aShift;
-  shiftPoint(theLoc, theAxis, thePoint, aShift);
-  XYZ aCross = theAxis.Crossed(aShift);
-  theResult.SetLinearForm(theCos - 1.0, aShift, theSin, aCross, thePoint);
-}
-
-} // namespace
 
 //=================================================================================================
 
@@ -248,12 +221,7 @@ void Geom_SurfaceOfRevolution::Bounds(Standard_Real& U1,
 
 void Geom_SurfaceOfRevolution::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 {
-  const double aSin = std::sin(U);
-  const double aCos = std::cos(U);
-  basisCurve->D0(V, P);
-  XYZ aRes;
-  rotatePoint(aSin, aCos, loc.XYZ(), direction.XYZ(), P.XYZ(), aRes);
-  P.SetXYZ(aRes);
+  Geom_RevolutionUtils::D0(U, V, *basisCurve, loc.XYZ(), direction.XYZ(), P);
 }
 
 //=================================================================================================
@@ -264,32 +232,7 @@ void Geom_SurfaceOfRevolution::D1(const Standard_Real U,
                                   Vec&                D1U,
                                   Vec&                D1V) const
 {
-  const double aSin = std::sin(U);
-  const double aCos = std::cos(U);
-  Vec          aD1V;
-  basisCurve->D1(V, P, aD1V);
-
-  const XYZ& aLoc  = loc.XYZ();
-  const XYZ& aAxis = direction.XYZ();
-  const XYZ& aPnt  = P.XYZ();
-
-  // Rotate point
-  XYZ aRes;
-  rotatePoint(aSin, aCos, aLoc, aAxis, aPnt, aRes);
-  P.SetXYZ(aRes);
-
-  // D1U: derivative of rotation with respect to U
-  XYZ aShift;
-  shiftPoint(aLoc, aAxis, aPnt, aShift);
-  XYZ aCross = aAxis.Crossed(aShift);
-  XYZ aD1Ures;
-  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
-  D1U.SetXYZ(aD1Ures);
-
-  // D1V: rotate the curve derivative
-  XYZ aD1Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD1V.XYZ(), aD1Vres);
-  D1V.SetXYZ(aD1Vres);
+  Geom_RevolutionUtils::D1(U, V, *basisCurve, loc.XYZ(), direction.XYZ(), P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -303,52 +246,7 @@ void Geom_SurfaceOfRevolution::D2(const Standard_Real U,
                                   Vec&                D2V,
                                   Vec&                D2UV) const
 {
-  const double aSin = std::sin(U);
-  const double aCos = std::cos(U);
-  Vec          aD1V, aD2V;
-  basisCurve->D2(V, P, aD1V, aD2V);
-
-  const XYZ& aLoc  = loc.XYZ();
-  const XYZ& aAxis = direction.XYZ();
-  const XYZ& aPnt  = P.XYZ();
-
-  // Rotate point
-  XYZ aRes;
-  rotatePoint(aSin, aCos, aLoc, aAxis, aPnt, aRes);
-  P.SetXYZ(aRes);
-
-  // Compute shift and cross for derivatives
-  XYZ aShift;
-  shiftPoint(aLoc, aAxis, aPnt, aShift);
-  XYZ aCross = aAxis.Crossed(aShift);
-
-  // D1U: -sin*shift + cos*cross
-  XYZ aD1Ures;
-  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
-  D1U.SetXYZ(aD1Ures);
-
-  // D2U: -cos*shift - sin*cross
-  XYZ aD2Ures;
-  aD2Ures.SetLinearForm(-aCos, aShift, -aSin, aCross);
-  D2U.SetXYZ(aD2Ures);
-
-  // D1V: rotate the curve derivative
-  XYZ aD1Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD1V.XYZ(), aD1Vres);
-  D1V.SetXYZ(aD1Vres);
-
-  // D2V: rotate the second curve derivative
-  XYZ aD2Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD2V.XYZ(), aD2Vres);
-  D2V.SetXYZ(aD2Vres);
-
-  // D2UV: derivative of D1V with respect to U
-  XYZ aD1VShift;
-  shiftPoint(XYZ(0, 0, 0), aAxis, aD1V.XYZ(), aD1VShift);
-  XYZ aD1VCross = aAxis.Crossed(aD1VShift);
-  XYZ aD2UVres;
-  aD2UVres.SetLinearForm(-aSin, aD1VShift, aCos, aD1VCross);
-  D2UV.SetXYZ(aD2UVres);
+  Geom_RevolutionUtils::D2(U, V, *basisCurve, loc.XYZ(), direction.XYZ(), P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
@@ -366,75 +264,8 @@ void Geom_SurfaceOfRevolution::D3(const Standard_Real U,
                                   Vec&                D3UUV,
                                   Vec&                D3UVV) const
 {
-  const double aSin = std::sin(U);
-  const double aCos = std::cos(U);
-  Vec          aD1V, aD2V, aD3V;
-  basisCurve->D3(V, P, aD1V, aD2V, aD3V);
-
-  const XYZ& aLoc  = loc.XYZ();
-  const XYZ& aAxis = direction.XYZ();
-  const XYZ& aPnt  = P.XYZ();
-
-  // Rotate point
-  XYZ aRes;
-  rotatePoint(aSin, aCos, aLoc, aAxis, aPnt, aRes);
-  P.SetXYZ(aRes);
-
-  // Compute shift and cross for point derivatives
-  XYZ aShift;
-  shiftPoint(aLoc, aAxis, aPnt, aShift);
-  XYZ aCross = aAxis.Crossed(aShift);
-
-  // D1U: -sin*shift + cos*cross
-  XYZ aD1Ures;
-  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
-  D1U.SetXYZ(aD1Ures);
-
-  // D2U: -cos*shift - sin*cross
-  XYZ aD2Ures;
-  aD2Ures.SetLinearForm(-aCos, aShift, -aSin, aCross);
-  D2U.SetXYZ(aD2Ures);
-
-  // D3U: sin*shift - cos*cross
-  XYZ aD3Ures;
-  aD3Ures.SetLinearForm(aSin, aShift, -aCos, aCross);
-  D3U.SetXYZ(aD3Ures);
-
-  // D1V: rotate the curve derivative
-  XYZ aD1Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD1V.XYZ(), aD1Vres);
-  D1V.SetXYZ(aD1Vres);
-
-  // D2V: rotate the second curve derivative
-  XYZ aD2Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD2V.XYZ(), aD2Vres);
-  D2V.SetXYZ(aD2Vres);
-
-  // D3V: rotate the third curve derivative
-  XYZ aD3Vres;
-  rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aD3V.XYZ(), aD3Vres);
-  D3V.SetXYZ(aD3Vres);
-
-  // D2UV: derivative of D1V with respect to U
-  XYZ aD1VShift;
-  shiftPoint(XYZ(0, 0, 0), aAxis, aD1V.XYZ(), aD1VShift);
-  XYZ aD1VCross = aAxis.Crossed(aD1VShift);
-  XYZ aD2UVres;
-  aD2UVres.SetLinearForm(-aSin, aD1VShift, aCos, aD1VCross);
-  D2UV.SetXYZ(aD2UVres);
-
-  // D3UUV: second derivative of D1V with respect to U
-  XYZ aD3UUVres;
-  aD3UUVres.SetLinearForm(-aCos, aD1VShift, -aSin, aD1VCross);
-  D3UUV.SetXYZ(aD3UUVres);
-
-  // D3UVV: derivative of D2V with respect to U
-  XYZ aD2VShift;
-  shiftPoint(XYZ(0, 0, 0), aAxis, aD2V.XYZ(), aD2VShift);
-  XYZ aD2VCross = aAxis.Crossed(aD2VShift);
-  XYZ aD3UVVres;
-  aD3UVVres.SetLinearForm(-aSin, aD2VShift, aCos, aD2VCross);
-  D3UVV.SetXYZ(aD3UVVres);
+  Geom_RevolutionUtils::D3(U, V, *basisCurve, loc.XYZ(), direction.XYZ(),
+                           P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
@@ -445,52 +276,7 @@ Vec Geom_SurfaceOfRevolution::DN(const Standard_Real    U,
                                  const Standard_Integer Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
-
-  const double aSin = std::sin(U);
-  const double aCos = std::cos(U);
-  const XYZ&   aAxis = direction.XYZ();
-
-  // Get curve derivative of order Nv
-  Vec aDNv = basisCurve->DN(V, Nv);
-
-  // For pure V derivatives (Nu == 0), just rotate the curve derivative
-  if (Nu == 0)
-  {
-    XYZ aRes;
-    rotatePoint(aSin, aCos, XYZ(0, 0, 0), aAxis, aDNv.XYZ(), aRes);
-    return Vec(aRes);
-  }
-
-  // For mixed derivatives, we need to differentiate the rotation Nu times
-  // Shift and cross for V derivative
-  XYZ aShift;
-  shiftPoint(XYZ(0, 0, 0), aAxis, aDNv.XYZ(), aShift);
-  XYZ aCross = aAxis.Crossed(aShift);
-
-  // The pattern of derivatives of rotation with respect to U:
-  // d^0/dU^0 = (cos-1)*shift + sin*cross
-  // d^1/dU^1 = -sin*shift + cos*cross
-  // d^2/dU^2 = -cos*shift - sin*cross
-  // d^3/dU^3 = sin*shift - cos*cross
-  // d^4/dU^4 = cos*shift + sin*cross = d^0 (cyclic with period 4)
-  const int aPhase = Nu % 4;
-  XYZ       aRes;
-  switch (aPhase)
-  {
-    case 0:
-      aRes.SetLinearForm(aCos - 1.0, aShift, aSin, aCross);
-      break;
-    case 1:
-      aRes.SetLinearForm(-aSin, aShift, aCos, aCross);
-      break;
-    case 2:
-      aRes.SetLinearForm(-aCos, aShift, -aSin, aCross);
-      break;
-    case 3:
-      aRes.SetLinearForm(aSin, aShift, -aCos, aCross);
-      break;
-  }
-  return Vec(aRes);
+  return Geom_RevolutionUtils::DN(U, V, *basisCurve, loc.XYZ(), direction.XYZ(), Nu, Nv);
 }
 
 //=================================================================================================

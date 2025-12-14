@@ -40,6 +40,7 @@ set(OCCT_Geom_FILES
   Geom_ElementarySurface.hxx
   Geom_Ellipse.cxx
   Geom_Ellipse.hxx
+  Geom_ExtrusionUtils.pxx
   Geom_Geometry.cxx
   Geom_Geometry.hxx
   Geom_HSequenceOfBSplineSurface.hxx
@@ -62,6 +63,7 @@ set(OCCT_Geom_FILES
   Geom_Point.hxx
   Geom_RectangularTrimmedSurface.cxx
   Geom_RectangularTrimmedSurface.hxx
+  Geom_RevolutionUtils.pxx
   Geom_SequenceOfBSplineSurface.hxx
   Geom_SphericalSurface.cxx
   Geom_SphericalSurface.hxx

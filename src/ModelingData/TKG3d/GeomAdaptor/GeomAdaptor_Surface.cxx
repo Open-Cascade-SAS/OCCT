@@ -23,7 +23,9 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
+#include "../Geom/Geom_ExtrusionUtils.pxx"
 #include "../Geom/Geom_OsculatingSurface.pxx"
+#include "../Geom/Geom_RevolutionUtils.pxx"
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
@@ -165,253 +167,137 @@ namespace
 // Tolerance for considering derivative to be null
 static const double THE_D1_MAG_TOL = 1.e-9;
 
-//! Helper to shift the point for extrusion surface
-inline void shiftExtrusionPoint(const double theV, const gp_Dir& theDir, gp_Pnt& theValue)
-{
-  theValue.SetXYZ(theValue.XYZ() + theV * theDir.XYZ());
-}
-
 //! Extrusion surface D0 evaluation
-inline void extrusionD0(const double       theU,
-                        const double       theV,
+inline void extrusionD0(const double                   theU,
+                        const double                   theV,
                         const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&      theDir,
-                        gp_Pnt&            theValue)
+                        const gp_Dir&                  theDir,
+                        gp_Pnt&                        theValue)
 {
-  theBasis->D0(theU, theValue);
-  shiftExtrusionPoint(theV, theDir, theValue);
+  Geom_ExtrusionUtils::D0(theU, theV, *theBasis, theDir, theValue);
 }
 
 //! Extrusion surface D1 evaluation
-inline void extrusionD1(const double       theU,
-                        const double       theV,
+inline void extrusionD1(const double                   theU,
+                        const double                   theV,
                         const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&      theDir,
-                        gp_Pnt&            theValue,
-                        gp_Vec&            theD1U,
-                        gp_Vec&            theD1V)
+                        const gp_Dir&                  theDir,
+                        gp_Pnt&                        theValue,
+                        gp_Vec&                        theD1U,
+                        gp_Vec&                        theD1V)
 {
-  theBasis->D1(theU, theValue, theD1U);
-  theD1V = theDir;
-  shiftExtrusionPoint(theV, theDir, theValue);
+  Geom_ExtrusionUtils::D1(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V);
 }
 
 //! Extrusion surface D2 evaluation
-inline void extrusionD2(const double       theU,
-                        const double       theV,
+inline void extrusionD2(const double                   theU,
+                        const double                   theV,
                         const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&      theDir,
-                        gp_Pnt&            theValue,
-                        gp_Vec&            theD1U,
-                        gp_Vec&            theD1V,
-                        gp_Vec&            theD2U,
-                        gp_Vec&            theD2V,
-                        gp_Vec&            theD2UV)
+                        const gp_Dir&                  theDir,
+                        gp_Pnt&                        theValue,
+                        gp_Vec&                        theD1U,
+                        gp_Vec&                        theD1V,
+                        gp_Vec&                        theD2U,
+                        gp_Vec&                        theD2V,
+                        gp_Vec&                        theD2UV)
 {
-  theBasis->D2(theU, theValue, theD1U, theD2U);
-  theD1V = theDir;
-  theD2V.SetCoord(0.0, 0.0, 0.0);
-  theD2UV.SetCoord(0.0, 0.0, 0.0);
-  shiftExtrusionPoint(theV, theDir, theValue);
+  Geom_ExtrusionUtils::D2(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
 }
 
 //! Extrusion surface D3 evaluation
-inline void extrusionD3(const double       theU,
-                        const double       theV,
+inline void extrusionD3(const double                   theU,
+                        const double                   theV,
                         const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&      theDir,
-                        gp_Pnt&            theValue,
-                        gp_Vec&            theD1U,
-                        gp_Vec&            theD1V,
-                        gp_Vec&            theD2U,
-                        gp_Vec&            theD2V,
-                        gp_Vec&            theD2UV,
-                        gp_Vec&            theD3U,
-                        gp_Vec&            theD3V,
-                        gp_Vec&            theD3UUV,
-                        gp_Vec&            theD3UVV)
+                        const gp_Dir&                  theDir,
+                        gp_Pnt&                        theValue,
+                        gp_Vec&                        theD1U,
+                        gp_Vec&                        theD1V,
+                        gp_Vec&                        theD2U,
+                        gp_Vec&                        theD2V,
+                        gp_Vec&                        theD2UV,
+                        gp_Vec&                        theD3U,
+                        gp_Vec&                        theD3V,
+                        gp_Vec&                        theD3UUV,
+                        gp_Vec&                        theD3UVV)
 {
-  theBasis->D3(theU, theValue, theD1U, theD2U, theD3U);
-  theD1V = theDir;
-  theD2V.SetCoord(0.0, 0.0, 0.0);
-  theD2UV.SetCoord(0.0, 0.0, 0.0);
-  theD3V.SetCoord(0.0, 0.0, 0.0);
-  theD3UUV.SetCoord(0.0, 0.0, 0.0);
-  theD3UVV.SetCoord(0.0, 0.0, 0.0);
-  shiftExtrusionPoint(theV, theDir, theValue);
+  Geom_ExtrusionUtils::D3(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
 }
 
 //! Extrusion surface DN evaluation
-inline gp_Vec extrusionDN(const double       theU,
+inline gp_Vec extrusionDN(const double                   theU,
                           const Handle(Adaptor3d_Curve)& theBasis,
-                          const gp_Dir&      theDir,
-                          int                theDerU,
-                          int                theDerV)
+                          const gp_Dir&                  theDir,
+                          int                            theDerU,
+                          int                            theDerV)
 {
-  if (theDerV == 0)
-    return theBasis->DN(theU, theDerU);
-  else if (theDerU == 0 && theDerV == 1)
-    return gp_Vec(theDir);
-  return gp_Vec(0.0, 0.0, 0.0);
+  return Geom_ExtrusionUtils::DN(theU, *theBasis, theDir, theDerU, theDerV);
 }
 
 //! Revolution surface D0 evaluation
-inline void revolutionD0(const double       theU,
-                         const double       theV,
+inline void revolutionD0(const double                   theU,
+                         const double                   theV,
                          const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&      theAxis,
-                         gp_Pnt&            theValue)
+                         const gp_Ax1&                  theAxis,
+                         gp_Pnt&                        theValue)
 {
-  theBasis->D0(theV, theValue);
-  gp_Trsf aRotation;
-  aRotation.SetRotation(theAxis, theU);
-  theValue.Transform(aRotation);
+  Geom_RevolutionUtils::D0(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue);
 }
 
 //! Revolution surface D1 evaluation
-inline void revolutionD1(const double       theU,
-                         const double       theV,
+inline void revolutionD1(const double                   theU,
+                         const double                   theV,
                          const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&      theAxis,
-                         gp_Pnt&            theValue,
-                         gp_Vec&            theD1U,
-                         gp_Vec&            theD1V)
+                         const gp_Ax1&                  theAxis,
+                         gp_Pnt&                        theValue,
+                         gp_Vec&                        theD1U,
+                         gp_Vec&                        theD1V)
 {
-  theBasis->D1(theV, theValue, theD1V);
-  // Vector from center of rotation to the point on rotated curve
-  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
-  theD1U = gp_Vec(theAxis.Direction().XYZ().Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(theAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
+  Geom_RevolutionUtils::D1(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V);
 }
 
 //! Revolution surface D2 evaluation
-inline void revolutionD2(const double       theU,
-                         const double       theV,
+inline void revolutionD2(const double                   theU,
+                         const double                   theV,
                          const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&      theAxis,
-                         gp_Pnt&            theValue,
-                         gp_Vec&            theD1U,
-                         gp_Vec&            theD1V,
-                         gp_Vec&            theD2U,
-                         gp_Vec&            theD2V,
-                         gp_Vec&            theD2UV)
+                         const gp_Ax1&                  theAxis,
+                         gp_Pnt&                        theValue,
+                         gp_Vec&                        theD1U,
+                         gp_Vec&                        theD1V,
+                         gp_Vec&                        theD2U,
+                         gp_Vec&                        theD2V,
+                         gp_Vec&                        theD2UV)
 {
-  theBasis->D2(theV, theValue, theD1V, theD2V);
-  // Vector from center of rotation to the point on rotated curve
-  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
-  const gp_XYZ& aDir = theAxis.Direction().XYZ();
-  theD1U = gp_Vec(aDir.Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-  theD2U = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
-  theD2UV = gp_Vec(aDir.Crossed(theD1V.XYZ()));
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(theAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
-  theD2U.Transform(aRotation);
-  theD2V.Transform(aRotation);
-  theD2UV.Transform(aRotation);
+  Geom_RevolutionUtils::D2(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
 }
 
 //! Revolution surface D3 evaluation
-inline void revolutionD3(const double       theU,
-                         const double       theV,
+inline void revolutionD3(const double                   theU,
+                         const double                   theV,
                          const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&      theAxis,
-                         gp_Pnt&            theValue,
-                         gp_Vec&            theD1U,
-                         gp_Vec&            theD1V,
-                         gp_Vec&            theD2U,
-                         gp_Vec&            theD2V,
-                         gp_Vec&            theD2UV,
-                         gp_Vec&            theD3U,
-                         gp_Vec&            theD3V,
-                         gp_Vec&            theD3UUV,
-                         gp_Vec&            theD3UVV)
+                         const gp_Ax1&                  theAxis,
+                         gp_Pnt&                        theValue,
+                         gp_Vec&                        theD1U,
+                         gp_Vec&                        theD1V,
+                         gp_Vec&                        theD2U,
+                         gp_Vec&                        theD2V,
+                         gp_Vec&                        theD2UV,
+                         gp_Vec&                        theD3U,
+                         gp_Vec&                        theD3V,
+                         gp_Vec&                        theD3UUV,
+                         gp_Vec&                        theD3UVV)
 {
-  theBasis->D3(theV, theValue, theD1V, theD2V, theD3V);
-  // Vector from center of rotation to the point on rotated curve
-  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
-  const gp_XYZ& aDir = theAxis.Direction().XYZ();
-  theD1U = gp_Vec(aDir.Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-  theD2U = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
-  theD2UV = gp_Vec(aDir.Crossed(theD1V.XYZ()));
-  theD3U = -theD1U;
-  theD3UUV = gp_Vec(aDir.Dot(theD1V.XYZ()) * aDir - theD1V.XYZ());
-  theD3UVV = gp_Vec(aDir.Crossed(theD2V.XYZ()));
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(theAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
-  theD2U.Transform(aRotation);
-  theD2V.Transform(aRotation);
-  theD2UV.Transform(aRotation);
-  theD3U.Transform(aRotation);
-  theD3V.Transform(aRotation);
-  theD3UUV.Transform(aRotation);
-  theD3UVV.Transform(aRotation);
+  Geom_RevolutionUtils::D3(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
 }
 
 //! Revolution surface DN evaluation
-inline gp_Vec revolutionDN(const double       theU,
-                           const double       theV,
+inline gp_Vec revolutionDN(const double                   theU,
+                           const double                   theV,
                            const Handle(Adaptor3d_Curve)& theBasis,
-                           const gp_Ax1&      theAxis,
-                           int                theDerU,
-                           int                theDerV)
+                           const gp_Ax1&                  theAxis,
+                           int                            theDerU,
+                           int                            theDerV)
 {
-  gp_Trsf aRotation;
-  aRotation.SetRotation(theAxis, theU);
-
-  gp_Pnt aP;
-  gp_Vec aDV;
-  gp_Vec aResult;
-  if (theDerU == 0)
-  {
-    aResult = theBasis->DN(theV, theDerV);
-  }
-  else
-  {
-    if (theDerV == 0)
-    {
-      theBasis->D0(theV, aP);
-      aDV = gp_Vec(aP.XYZ() - theAxis.Location().XYZ());
-    }
-    else
-    {
-      aDV = theBasis->DN(theV, theDerV);
-    }
-
-    const gp_XYZ& aDir = theAxis.Direction().XYZ();
-    if (theDerU % 4 == 1)
-      aResult = gp_Vec(aDir.Crossed(aDV.XYZ()));
-    else if (theDerU % 4 == 2)
-      aResult = gp_Vec(aDir.Dot(aDV.XYZ()) * aDir - aDV.XYZ());
-    else if (theDerU % 4 == 3)
-      aResult = gp_Vec(aDir.Crossed(aDV.XYZ())) * (-1.0);
-    else
-      aResult = gp_Vec(aDV.XYZ() - aDir.Dot(aDV.XYZ()) * aDir);
-  }
-
-  aResult.Transform(aRotation);
-  return aResult;
+  return Geom_RevolutionUtils::DN(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theDerU, theDerV);
 }
 
 //! Check if vector has infinite coordinates
