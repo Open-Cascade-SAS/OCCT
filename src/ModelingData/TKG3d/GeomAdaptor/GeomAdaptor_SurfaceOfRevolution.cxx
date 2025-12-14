@@ -61,21 +61,19 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
   aCopy->myHaveAxis = myHaveAxis;
   aCopy->myAxeRev   = myAxeRev;
 
-  aCopy->mySurface        = mySurface;
-  aCopy->myUFirst         = myUFirst;
-  aCopy->myULast          = myULast;
-  aCopy->myVFirst         = myVFirst;
-  aCopy->myVLast          = myVLast;
-  aCopy->myTolU           = myTolU;
-  aCopy->myTolV           = myTolV;
-  aCopy->myBSplineSurface = myBSplineSurface;
-
+  aCopy->mySurface     = mySurface;
+  aCopy->myUFirst      = myUFirst;
+  aCopy->myULast       = myULast;
+  aCopy->myVFirst      = myVFirst;
+  aCopy->myVLast       = myVLast;
+  aCopy->myTolU        = myTolU;
+  aCopy->myTolV        = myTolV;
   aCopy->mySurfaceType = mySurfaceType;
 
   // Copy surface data variant - for revolution, shallow copy of basis curve is sufficient
-  if (const auto* aRevData = std::get_if<GeomAdaptor_RevolutionSurfaceData>(&mySurfaceData))
+  if (const auto* aRevData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&mySurfaceData))
   {
-    GeomAdaptor_RevolutionSurfaceData aNewData;
+    GeomAdaptor_Surface::RevolutionData aNewData;
     if (!aRevData->BasisCurve.IsNull())
     {
       aNewData.BasisCurve = aRevData->BasisCurve->ShallowCopy();
@@ -106,7 +104,7 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   mySurfaceType = GeomAbs_SurfaceOfRevolution;
 
   // Populate the surface data variant for revolution evaluation
-  GeomAdaptor_RevolutionSurfaceData aRevData;
+  GeomAdaptor_Surface::RevolutionData aRevData;
   aRevData.BasisCurve = myBasisCurve;
   aRevData.Axis       = myAxis;
   mySurfaceData       = std::move(aRevData);

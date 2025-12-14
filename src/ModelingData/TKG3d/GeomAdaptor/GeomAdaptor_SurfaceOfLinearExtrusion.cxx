@@ -62,21 +62,19 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
   aCopy->myDirection = myDirection;
   aCopy->myHaveDir   = myHaveDir;
 
-  aCopy->mySurface        = mySurface;
-  aCopy->myUFirst         = myUFirst;
-  aCopy->myULast          = myULast;
-  aCopy->myVFirst         = myVFirst;
-  aCopy->myVLast          = myVLast;
-  aCopy->myTolU           = myTolU;
-  aCopy->myTolV           = myTolV;
-  aCopy->myBSplineSurface = myBSplineSurface;
-
+  aCopy->mySurface     = mySurface;
+  aCopy->myUFirst      = myUFirst;
+  aCopy->myULast       = myULast;
+  aCopy->myVFirst      = myVFirst;
+  aCopy->myVLast       = myVLast;
+  aCopy->myTolU        = myTolU;
+  aCopy->myTolV        = myTolV;
   aCopy->mySurfaceType = mySurfaceType;
 
   // Copy surface data variant - for extrusion, shallow copy of basis curve is sufficient
-  if (const auto* anExtData = std::get_if<GeomAdaptor_ExtrusionSurfaceData>(&mySurfaceData))
+  if (const auto* anExtData = std::get_if<GeomAdaptor_Surface::ExtrusionData>(&mySurfaceData))
   {
-    GeomAdaptor_ExtrusionSurfaceData aNewData;
+    GeomAdaptor_Surface::ExtrusionData aNewData;
     if (!anExtData->BasisCurve.IsNull())
     {
       aNewData.BasisCurve = anExtData->BasisCurve->ShallowCopy();
@@ -107,7 +105,7 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const gp_Dir& V)
   mySurfaceType = GeomAbs_SurfaceOfExtrusion;
 
   // Populate the surface data variant for extrusion evaluation
-  GeomAdaptor_ExtrusionSurfaceData anExtData;
+  GeomAdaptor_Surface::ExtrusionData anExtData;
   anExtData.BasisCurve = myBasisCurve;
   anExtData.Direction  = myDirection;
   mySurfaceData        = std::move(anExtData);

@@ -34,60 +34,6 @@ class Geom_OsculatingSurface;
 
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 
-//! Internal structure for extrusion surface evaluation data.
-struct GeomAdaptor_ExtrusionSurfaceData
-{
-  Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
-  gp_Dir                  Direction;  //!< Extrusion direction
-};
-
-//! Internal structure for revolution surface evaluation data.
-struct GeomAdaptor_RevolutionSurfaceData
-{
-  Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
-  gp_Ax1                  Axis;       //!< Rotation axis
-};
-
-//! Custom deleter for Geom_OsculatingSurface to allow incomplete type in header.
-struct GeomAdaptor_OsculatingSurfaceDeleter
-{
-  Standard_EXPORT void operator()(Geom_OsculatingSurface* thePtr) const;
-};
-
-//! Internal structure for offset surface evaluation data.
-struct GeomAdaptor_OffsetSurfaceData
-{
-  Handle(GeomAdaptor_Surface) BasisAdaptor; //!< Adaptor for basis surface
-  double                      Offset;       //!< Offset distance
-  std::unique_ptr<Geom_OsculatingSurface, GeomAdaptor_OsculatingSurfaceDeleter>
-    OsculatingSurface; //!< Osculating surface for singular cases
-
-  //! Default constructor
-  GeomAdaptor_OffsetSurfaceData()
-      : Offset(0.0)
-  {
-  }
-
-  //! Copy constructor - copies osculating surface if present
-  Standard_EXPORT GeomAdaptor_OffsetSurfaceData(const GeomAdaptor_OffsetSurfaceData& theOther);
-
-  //! Move constructor
-  GeomAdaptor_OffsetSurfaceData(GeomAdaptor_OffsetSurfaceData&& theOther) = default;
-
-  //! Copy assignment operator
-  Standard_EXPORT GeomAdaptor_OffsetSurfaceData& operator=(
-    const GeomAdaptor_OffsetSurfaceData& theOther);
-
-  //! Move assignment operator
-  GeomAdaptor_OffsetSurfaceData& operator=(GeomAdaptor_OffsetSurfaceData&& theOther) = default;
-};
-
-//! Variant type for surface-specific evaluation data.
-using GeomAdaptor_SurfaceDataVariant = std::variant<std::monostate,
-                                                    GeomAdaptor_ExtrusionSurfaceData,
-                                                    GeomAdaptor_RevolutionSurfaceData,
-                                                    GeomAdaptor_OffsetSurfaceData>;
-
 //! An interface between the services provided by any
 //! surface from the package Geom and those required
 //! of the surface by algorithms which use it.
@@ -99,6 +45,63 @@ using GeomAdaptor_SurfaceDataVariant = std::variant<std::monostate,
 class GeomAdaptor_Surface : public Adaptor3d_Surface
 {
   DEFINE_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
+public:
+  //! Internal structure for extrusion surface evaluation data.
+  struct ExtrusionData
+  {
+    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_Dir                  Direction;  //!< Extrusion direction
+  };
+
+  //! Internal structure for revolution surface evaluation data.
+  struct RevolutionData
+  {
+    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_Ax1                  Axis;       //!< Rotation axis
+  };
+
+  //! Custom deleter for Geom_OsculatingSurface to allow incomplete type in header.
+  struct OsculatingSurfaceDeleter
+  {
+    Standard_EXPORT void operator()(Geom_OsculatingSurface* thePtr) const;
+  };
+
+  //! Internal structure for offset surface evaluation data.
+  struct OffsetData
+  {
+    Handle(GeomAdaptor_Surface) BasisAdaptor; //!< Adaptor for basis surface
+    double                      Offset = 0.0; //!< Offset distance
+    std::unique_ptr<Geom_OsculatingSurface, OsculatingSurfaceDeleter>
+      OsculatingSurface; //!< Osculating surface for singular cases
+
+    OffsetData()                               = default;
+    Standard_EXPORT OffsetData(const OffsetData& theOther);
+    Standard_EXPORT OffsetData& operator=(const OffsetData& theOther);
+    OffsetData(OffsetData&&)                   = default;
+    OffsetData& operator=(OffsetData&&)        = default;
+  };
+
+  //! Internal structure for Bezier surface cache data.
+  struct BezierData
+  {
+    mutable Handle(BSplSLib_Cache) Cache; //!< Cached data for evaluation
+  };
+
+  //! Internal structure for BSpline surface cache data.
+  struct BSplineData
+  {
+    Handle(Geom_BSplineSurface)    Surface; //!< BSpline surface to prevent downcasts
+    mutable Handle(BSplSLib_Cache) Cache;   //!< Cached data for evaluation
+  };
+
+  //! Variant type for surface-specific evaluation data.
+  using SurfaceDataVariant = std::variant<std::monostate,
+                                          ExtrusionData,
+                                          RevolutionData,
+                                          OffsetData,
+                                          BezierData,
+                                          BSplineData>;
+
 public:
   GeomAdaptor_Surface()
       : myUFirst(0.),
@@ -401,12 +404,8 @@ protected:
   Standard_Real        myVLast;
   Standard_Real        myTolU;
   Standard_Real        myTolV;
-
-  Handle(Geom_BSplineSurface)    myBSplineSurface; ///< B-spline representation to prevent downcasts
-  mutable Handle(BSplSLib_Cache) mySurfaceCache;   ///< Cached data for B-spline or Bezier surface
-
-  GeomAbs_SurfaceType            mySurfaceType;
-  GeomAdaptor_SurfaceDataVariant mySurfaceData; ///< Surface-specific evaluation data (offset, extrusion, revolution)
+  GeomAbs_SurfaceType  mySurfaceType;
+  SurfaceDataVariant   mySurfaceData; ///< Surface-specific evaluation data
 };
 
 #endif // _GeomAdaptor_Surface_HeaderFile
