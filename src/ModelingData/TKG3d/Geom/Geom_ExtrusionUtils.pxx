@@ -14,7 +14,6 @@
 #ifndef _Geom_ExtrusionUtils_HeaderFile
 #define _Geom_ExtrusionUtils_HeaderFile
 
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
@@ -37,17 +36,17 @@ namespace Geom_ExtrusionUtils
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
-//! @param theDir Extrusion direction
+//! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theP [out] Evaluated point
 template <typename CurveType>
 inline void D0(const double     theU,
                const double     theV,
                const CurveType& theBasis,
-               const gp_Dir&    theDir,
+               const gp_XYZ&    theDir,
                gp_Pnt&          theP)
 {
   theBasis.D0(theU, theP);
-  theP.SetXYZ(theP.XYZ() + theV * theDir.XYZ());
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
 }
 
 //! Evaluates point and first derivatives on extrusion surface.
@@ -55,7 +54,7 @@ inline void D0(const double     theU,
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
-//! @param theDir Extrusion direction
+//! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theP [out] Evaluated point
 //! @param theD1U [out] First derivative with respect to U
 //! @param theD1V [out] First derivative with respect to V
@@ -63,14 +62,14 @@ template <typename CurveType>
 inline void D1(const double     theU,
                const double     theV,
                const CurveType& theBasis,
-               const gp_Dir&    theDir,
+               const gp_XYZ&    theDir,
                gp_Pnt&          theP,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V)
 {
   theBasis.D1(theU, theP, theD1U);
-  theP.SetXYZ(theP.XYZ() + theV * theDir.XYZ());
-  theD1V = theDir;
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
 }
 
 //! Evaluates point, first and second derivatives on extrusion surface.
@@ -78,7 +77,7 @@ inline void D1(const double     theU,
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
-//! @param theDir Extrusion direction
+//! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theP [out] Evaluated point
 //! @param theD1U [out] First derivative with respect to U
 //! @param theD1V [out] First derivative with respect to V
@@ -89,7 +88,7 @@ template <typename CurveType>
 inline void D2(const double     theU,
                const double     theV,
                const CurveType& theBasis,
-               const gp_Dir&    theDir,
+               const gp_XYZ&    theDir,
                gp_Pnt&          theP,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V,
@@ -98,8 +97,8 @@ inline void D2(const double     theU,
                gp_Vec&          theD2UV)
 {
   theBasis.D2(theU, theP, theD1U, theD2U);
-  theP.SetXYZ(theP.XYZ() + theV * theDir.XYZ());
-  theD1V = theDir;
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
   theD2V.SetCoord(0.0, 0.0, 0.0);
   theD2UV.SetCoord(0.0, 0.0, 0.0);
 }
@@ -109,7 +108,7 @@ inline void D2(const double     theU,
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
-//! @param theDir Extrusion direction
+//! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theP [out] Evaluated point
 //! @param theD1U [out] First derivative with respect to U
 //! @param theD1V [out] First derivative with respect to V
@@ -124,7 +123,7 @@ template <typename CurveType>
 inline void D3(const double     theU,
                const double     theV,
                const CurveType& theBasis,
-               const gp_Dir&    theDir,
+               const gp_XYZ&    theDir,
                gp_Pnt&          theP,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V,
@@ -137,8 +136,8 @@ inline void D3(const double     theU,
                gp_Vec&          theD3UVV)
 {
   theBasis.D3(theU, theP, theD1U, theD2U, theD3U);
-  theP.SetXYZ(theP.XYZ() + theV * theDir.XYZ());
-  theD1V = theDir;
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
   theD2V.SetCoord(0.0, 0.0, 0.0);
   theD2UV.SetCoord(0.0, 0.0, 0.0);
   theD3V.SetCoord(0.0, 0.0, 0.0);
@@ -150,14 +149,14 @@ inline void D3(const double     theU,
 //! @tparam CurveType Type supporting DN(param, order) method
 //! @param theU Parameter along the basis curve
 //! @param theBasis Basis curve
-//! @param theDir Extrusion direction
+//! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theDerU Derivative order with respect to U
 //! @param theDerV Derivative order with respect to V
 //! @return The derivative vector
 template <typename CurveType>
 inline gp_Vec DN(const double     theU,
                  const CurveType& theBasis,
-                 const gp_Dir&    theDir,
+                 const gp_XYZ&    theDir,
                  const int        theDerU,
                  const int        theDerV)
 {

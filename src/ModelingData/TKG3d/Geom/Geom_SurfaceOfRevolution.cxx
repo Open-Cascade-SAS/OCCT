@@ -73,7 +73,6 @@ Handle(Geom_Geometry) Geom_SurfaceOfRevolution::Copy() const
 Geom_SurfaceOfRevolution::Geom_SurfaceOfRevolution(const Handle(Geom_Curve)& C, const Ax1& A1)
     : loc(A1.Location())
 {
-
   direction = A1.Direction();
   SetBasisCurve(C);
 }

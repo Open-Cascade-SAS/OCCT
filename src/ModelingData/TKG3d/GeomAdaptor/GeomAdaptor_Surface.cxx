@@ -112,6 +112,9 @@ GeomAdaptor_Surface::OffsetData& GeomAdaptor_Surface::OffsetData::operator=(
   return *this;
 }
 
+namespace
+{
+
 //=================================================================================================
 
 GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
@@ -159,206 +162,6 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
     }
   }
   return GeomAbs_CN;
-}
-
-namespace
-{
-
-//! Extrusion surface D0 evaluation
-inline void extrusionD0(const double                   theU,
-                        const double                   theV,
-                        const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&                  theDir,
-                        gp_Pnt&                        theValue)
-{
-  Geom_ExtrusionUtils::D0(theU, theV, *theBasis, theDir, theValue);
-}
-
-//! Extrusion surface D1 evaluation
-inline void extrusionD1(const double                   theU,
-                        const double                   theV,
-                        const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&                  theDir,
-                        gp_Pnt&                        theValue,
-                        gp_Vec&                        theD1U,
-                        gp_Vec&                        theD1V)
-{
-  Geom_ExtrusionUtils::D1(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V);
-}
-
-//! Extrusion surface D2 evaluation
-inline void extrusionD2(const double                   theU,
-                        const double                   theV,
-                        const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&                  theDir,
-                        gp_Pnt&                        theValue,
-                        gp_Vec&                        theD1U,
-                        gp_Vec&                        theD1V,
-                        gp_Vec&                        theD2U,
-                        gp_Vec&                        theD2V,
-                        gp_Vec&                        theD2UV)
-{
-  Geom_ExtrusionUtils::D2(theU,
-                          theV,
-                          *theBasis,
-                          theDir,
-                          theValue,
-                          theD1U,
-                          theD1V,
-                          theD2U,
-                          theD2V,
-                          theD2UV);
-}
-
-//! Extrusion surface D3 evaluation
-inline void extrusionD3(const double                   theU,
-                        const double                   theV,
-                        const Handle(Adaptor3d_Curve)& theBasis,
-                        const gp_Dir&                  theDir,
-                        gp_Pnt&                        theValue,
-                        gp_Vec&                        theD1U,
-                        gp_Vec&                        theD1V,
-                        gp_Vec&                        theD2U,
-                        gp_Vec&                        theD2V,
-                        gp_Vec&                        theD2UV,
-                        gp_Vec&                        theD3U,
-                        gp_Vec&                        theD3V,
-                        gp_Vec&                        theD3UUV,
-                        gp_Vec&                        theD3UVV)
-{
-  Geom_ExtrusionUtils::D3(theU,
-                          theV,
-                          *theBasis,
-                          theDir,
-                          theValue,
-                          theD1U,
-                          theD1V,
-                          theD2U,
-                          theD2V,
-                          theD2UV,
-                          theD3U,
-                          theD3V,
-                          theD3UUV,
-                          theD3UVV);
-}
-
-//! Extrusion surface DN evaluation
-inline gp_Vec extrusionDN(const double                   theU,
-                          const Handle(Adaptor3d_Curve)& theBasis,
-                          const gp_Dir&                  theDir,
-                          int                            theDerU,
-                          int                            theDerV)
-{
-  return Geom_ExtrusionUtils::DN(theU, *theBasis, theDir, theDerU, theDerV);
-}
-
-//! Revolution surface D0 evaluation
-inline void revolutionD0(const double                   theU,
-                         const double                   theV,
-                         const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&                  theAxis,
-                         gp_Pnt&                        theValue)
-{
-  Geom_RevolutionUtils::D0(theU,
-                           theV,
-                           *theBasis,
-                           theAxis.Location().XYZ(),
-                           theAxis.Direction().XYZ(),
-                           theValue);
-}
-
-//! Revolution surface D1 evaluation
-inline void revolutionD1(const double                   theU,
-                         const double                   theV,
-                         const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&                  theAxis,
-                         gp_Pnt&                        theValue,
-                         gp_Vec&                        theD1U,
-                         gp_Vec&                        theD1V)
-{
-  Geom_RevolutionUtils::D1(theU,
-                           theV,
-                           *theBasis,
-                           theAxis.Location().XYZ(),
-                           theAxis.Direction().XYZ(),
-                           theValue,
-                           theD1U,
-                           theD1V);
-}
-
-//! Revolution surface D2 evaluation
-inline void revolutionD2(const double                   theU,
-                         const double                   theV,
-                         const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&                  theAxis,
-                         gp_Pnt&                        theValue,
-                         gp_Vec&                        theD1U,
-                         gp_Vec&                        theD1V,
-                         gp_Vec&                        theD2U,
-                         gp_Vec&                        theD2V,
-                         gp_Vec&                        theD2UV)
-{
-  Geom_RevolutionUtils::D2(theU,
-                           theV,
-                           *theBasis,
-                           theAxis.Location().XYZ(),
-                           theAxis.Direction().XYZ(),
-                           theValue,
-                           theD1U,
-                           theD1V,
-                           theD2U,
-                           theD2V,
-                           theD2UV);
-}
-
-//! Revolution surface D3 evaluation
-inline void revolutionD3(const double                   theU,
-                         const double                   theV,
-                         const Handle(Adaptor3d_Curve)& theBasis,
-                         const gp_Ax1&                  theAxis,
-                         gp_Pnt&                        theValue,
-                         gp_Vec&                        theD1U,
-                         gp_Vec&                        theD1V,
-                         gp_Vec&                        theD2U,
-                         gp_Vec&                        theD2V,
-                         gp_Vec&                        theD2UV,
-                         gp_Vec&                        theD3U,
-                         gp_Vec&                        theD3V,
-                         gp_Vec&                        theD3UUV,
-                         gp_Vec&                        theD3UVV)
-{
-  Geom_RevolutionUtils::D3(theU,
-                           theV,
-                           *theBasis,
-                           theAxis.Location().XYZ(),
-                           theAxis.Direction().XYZ(),
-                           theValue,
-                           theD1U,
-                           theD1V,
-                           theD2U,
-                           theD2V,
-                           theD2UV,
-                           theD3U,
-                           theD3V,
-                           theD3UUV,
-                           theD3UVV);
-}
-
-//! Revolution surface DN evaluation
-inline gp_Vec revolutionDN(const double                   theU,
-                           const double                   theV,
-                           const Handle(Adaptor3d_Curve)& theBasis,
-                           const gp_Ax1&                  theAxis,
-                           int                            theDerU,
-                           int                            theDerV)
-{
-  return Geom_RevolutionUtils::DN(theU,
-                                  theV,
-                                  *theBasis,
-                                  theAxis.Location().XYZ(),
-                                  theAxis.Direction().XYZ(),
-                                  theDerU,
-                                  theDerV);
 }
 
 //! Check and throw if vectors have infinite coordinates
@@ -463,6 +266,8 @@ inline void offsetD1(const double                           theU,
   }
 }
 
+//=================================================================================================
+
 //! Offset surface D2 evaluation
 inline void offsetD2(const double                           theU,
                      const double                           theV,
@@ -495,6 +300,8 @@ inline void offsetD2(const double                           theU,
   throw Standard_NumericError(
     "GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
 }
+
+//=================================================================================================
 
 //! Offset surface D3 evaluation
 inline void offsetD3(const double                           theU,
@@ -541,6 +348,8 @@ inline void offsetD3(const double                           theU,
   throw Standard_NumericError(
     "GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
 }
+
+//=================================================================================================
 
 //! Offset surface DN evaluation
 inline gp_Vec offsetDN(const double                           theU,
@@ -590,7 +399,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
     GeomAdaptor_Surface::RevolutionData aNewData;
     aNewData.BasisCurve =
       Handle(GeomAdaptor_Curve)::DownCast(aRevolutionData->BasisCurve->ShallowCopy());
-    aNewData.Axis        = aRevolutionData->Axis;
+    aNewData.AxisLoc     = aRevolutionData->AxisLoc;
+    aNewData.AxisDir     = aRevolutionData->AxisDir;
     aCopy->mySurfaceData = aNewData;
   }
   else if (auto* anOffsetData = std::get_if<GeomAdaptor_Surface::OffsetData>(&mySurfaceData))
@@ -664,10 +474,11 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       mySurfaceType = GeomAbs_SurfaceOfRevolution;
       Handle(Geom_SurfaceOfRevolution) aRevSurf =
         Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
-      // Populate revolution surface data
+      // Populate revolution surface data with XYZ for fast evaluation
       GeomAdaptor_Surface::RevolutionData aRevData;
       aRevData.BasisCurve = new GeomAdaptor_Curve(aRevSurf->BasisCurve());
-      aRevData.Axis       = gp_Ax1(aRevSurf->Location(), aRevSurf->Direction());
+      aRevData.AxisLoc    = aRevSurf->Location().XYZ();
+      aRevData.AxisDir    = aRevSurf->Direction().XYZ();
       mySurfaceData       = aRevData;
     }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
@@ -675,10 +486,10 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       mySurfaceType = GeomAbs_SurfaceOfExtrusion;
       Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
         Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
-      // Populate extrusion surface data
+      // Populate extrusion surface data with XYZ for fast evaluation
       GeomAdaptor_Surface::ExtrusionData anExtData;
       anExtData.BasisCurve = new GeomAdaptor_Curve(anExtSurf->BasisCurve());
-      anExtData.Direction  = anExtSurf->Direction();
+      anExtData.Direction  = anExtSurf->Direction().XYZ();
       mySurfaceData        = anExtData;
     }
     else if (TheType == STANDARD_TYPE(Geom_BezierSurface))
@@ -1244,13 +1055,13 @@ void GeomAdaptor_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pn
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      extrusionD0(U, V, anExtData.BasisCurve, anExtData.Direction, P);
+      Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P);
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      revolutionD0(U, V, aRevData.BasisCurve, aRevData.Axis, P);
+      Geom_RevolutionUtils::D0(U, V, *aRevData.BasisCurve, aRevData.AxisLoc, aRevData.AxisDir, P);
       break;
     }
 
@@ -1321,13 +1132,20 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      extrusionD1(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V);
+      Geom_ExtrusionUtils::D1(u, v, *anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V);
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      revolutionD1(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V);
+      Geom_RevolutionUtils::D1(u,
+                               v,
+                               *aRevData.BasisCurve,
+                               aRevData.AxisLoc,
+                               aRevData.AxisDir,
+                               P,
+                               D1U,
+                               D1V);
       break;
     }
 
@@ -1401,13 +1219,32 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      extrusionD2(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V, D2U, D2V, D2UV);
+      Geom_ExtrusionUtils::D2(u,
+                              v,
+                              *anExtData.BasisCurve,
+                              anExtData.Direction,
+                              P,
+                              D1U,
+                              D1V,
+                              D2U,
+                              D2V,
+                              D2UV);
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      revolutionD2(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V, D2U, D2V, D2UV);
+      Geom_RevolutionUtils::D2(u,
+                               v,
+                               *aRevData.BasisCurve,
+                               aRevData.AxisLoc,
+                               aRevData.AxisDir,
+                               P,
+                               D1U,
+                               D1V,
+                               D2U,
+                               D2V,
+                               D2UV);
       break;
     }
 
@@ -1495,39 +1332,40 @@ void GeomAdaptor_Surface::D3(const Standard_Real U,
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      extrusionD3(u,
-                  v,
-                  anExtData.BasisCurve,
-                  anExtData.Direction,
-                  P,
-                  D1U,
-                  D1V,
-                  D2U,
-                  D2V,
-                  D2UV,
-                  D3U,
-                  D3V,
-                  D3UUV,
-                  D3UVV);
+      Geom_ExtrusionUtils::D3(u,
+                              v,
+                              *anExtData.BasisCurve,
+                              anExtData.Direction,
+                              P,
+                              D1U,
+                              D1V,
+                              D2U,
+                              D2V,
+                              D2UV,
+                              D3U,
+                              D3V,
+                              D3UUV,
+                              D3UVV);
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      revolutionD3(u,
-                   v,
-                   aRevData.BasisCurve,
-                   aRevData.Axis,
-                   P,
-                   D1U,
-                   D1V,
-                   D2U,
-                   D2V,
-                   D2UV,
-                   D3U,
-                   D3V,
-                   D3UUV,
-                   D3UVV);
+      Geom_RevolutionUtils::D3(u,
+                               v,
+                               *aRevData.BasisCurve,
+                               aRevData.AxisLoc,
+                               aRevData.AxisDir,
+                               P,
+                               D1U,
+                               D1V,
+                               D2U,
+                               D2V,
+                               D2UV,
+                               D3U,
+                               D3V,
+                               D3UUV,
+                               D3UVV);
       break;
     }
 
@@ -1591,12 +1429,18 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      return extrusionDN(u, anExtData.BasisCurve, anExtData.Direction, Nu, Nv);
+      return Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv);
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      return revolutionDN(u, v, aRevData.BasisCurve, aRevData.Axis, Nu, Nv);
+      return Geom_RevolutionUtils::DN(u,
+                                      v,
+                                      *aRevData.BasisCurve,
+                                      aRevData.AxisLoc,
+                                      aRevData.AxisDir,
+                                      Nu,
+                                      Nv);
     }
 
     case GeomAbs_OffsetSurface: {

@@ -23,6 +23,7 @@
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
+#include <gp_XYZ.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
@@ -50,14 +51,15 @@ public:
   struct ExtrusionData
   {
     Handle(GeomAdaptor_Curve) BasisCurve; //!< Adaptor for basis curve
-    gp_Dir                    Direction;  //!< Extrusion direction
+    gp_XYZ                    Direction;  //!< Extrusion direction XYZ (normalized)
   };
 
   //! Internal structure for revolution surface evaluation data.
   struct RevolutionData
   {
     Handle(GeomAdaptor_Curve) BasisCurve; //!< Adaptor for basis curve
-    gp_Ax1                    Axis;       //!< Rotation axis
+    gp_XYZ                    AxisLoc;    //!< Axis location XYZ
+    gp_XYZ                    AxisDir;    //!< Axis direction XYZ (normalized)
   };
 
   //! Custom deleter for Geom_OsculatingSurface to allow incomplete type in header.

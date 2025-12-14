@@ -20,9 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Geom_SweptSurface.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard_Integer.hxx>
+
 class Geom_Curve;
 class gp_Ax1;
 class gp_Dir;

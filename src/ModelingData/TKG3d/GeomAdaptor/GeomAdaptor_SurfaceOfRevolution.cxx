@@ -80,7 +80,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
       aNewData.BasisCurve =
         Handle(GeomAdaptor_Curve)::DownCast(aRevData->BasisCurve->ShallowCopy());
     }
-    aNewData.Axis        = aRevData->Axis;
+    aNewData.AxisLoc     = aRevData->AxisLoc;
+    aNewData.AxisDir     = aRevData->AxisDir;
     aCopy->mySurfaceData = std::move(aNewData);
   }
 
@@ -108,7 +109,8 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   // Populate the surface data variant for revolution evaluation
   GeomAdaptor_Surface::RevolutionData aRevData;
   aRevData.BasisCurve = myBasisCurve;
-  aRevData.Axis       = myAxis;
+  aRevData.AxisLoc    = myAxis.Location().XYZ();
+  aRevData.AxisDir    = myAxis.Direction().XYZ();
   mySurfaceData       = std::move(aRevData);
 
   // Eval myAxeRev : axe of revolution ( Determination de Ox).

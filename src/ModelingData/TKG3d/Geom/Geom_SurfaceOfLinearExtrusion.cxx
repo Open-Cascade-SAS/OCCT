@@ -137,7 +137,7 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(Standard_Real& U1,
 
 void Geom_SurfaceOfLinearExtrusion::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 {
-  Geom_ExtrusionUtils::D0(U, V, *basisCurve, direction, P);
+  Geom_ExtrusionUtils::D0(U, V, *basisCurve, direction.XYZ(), P);
 }
 
 //=================================================================================================
@@ -148,7 +148,7 @@ void Geom_SurfaceOfLinearExtrusion::D1(const Standard_Real U,
                                        Vec&                D1U,
                                        Vec&                D1V) const
 {
-  Geom_ExtrusionUtils::D1(U, V, *basisCurve, direction, P, D1U, D1V);
+  Geom_ExtrusionUtils::D1(U, V, *basisCurve, direction.XYZ(), P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -162,7 +162,7 @@ void Geom_SurfaceOfLinearExtrusion::D2(const Standard_Real U,
                                        Vec&                D2V,
                                        Vec&                D2UV) const
 {
-  Geom_ExtrusionUtils::D2(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV);
+  Geom_ExtrusionUtils::D2(U, V, *basisCurve, direction.XYZ(), P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
@@ -181,7 +181,7 @@ void Geom_SurfaceOfLinearExtrusion::D3(const Standard_Real U,
                                        Vec&                D3UVV) const
 {
   Geom_ExtrusionUtils::
-    D3(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    D3(U, V, *basisCurve, direction.XYZ(), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
@@ -192,7 +192,7 @@ Vec Geom_SurfaceOfLinearExtrusion::DN(const Standard_Real U,
                                       const Standard_Integer Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
-  return Geom_ExtrusionUtils::DN(U, *basisCurve, direction, Nu, Nv);
+  return Geom_ExtrusionUtils::DN(U, *basisCurve, direction.XYZ(), Nu, Nv);
 }
 
 //=================================================================================================

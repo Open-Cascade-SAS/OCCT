@@ -14,12 +14,9 @@
 #ifndef _Geom_RevolutionUtils_HeaderFile
 #define _Geom_RevolutionUtils_HeaderFile
 
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <Precision.hxx>
 
 #include <cmath>
 

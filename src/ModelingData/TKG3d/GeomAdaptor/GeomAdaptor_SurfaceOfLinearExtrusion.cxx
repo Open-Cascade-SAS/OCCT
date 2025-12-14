@@ -109,7 +109,7 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const gp_Dir& V)
   // Populate the surface data variant for extrusion evaluation
   GeomAdaptor_Surface::ExtrusionData anExtData;
   anExtData.BasisCurve = myBasisCurve;
-  anExtData.Direction  = myDirection;
+  anExtData.Direction  = myDirection.XYZ();
   mySurfaceData        = std::move(anExtData);
 }
 
