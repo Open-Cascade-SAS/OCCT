@@ -52,7 +52,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-#include "../Geom/Geom_OffsetUtils.pxx"
+#include "../Geom/Geom_OffsetCurveUtils.pxx"
 
 // #include <GeomConvert_BSplineCurveKnotSplitting.hxx>
 static const Standard_Real PosTol = Precision::PConfusion() / 2;
@@ -610,7 +610,7 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       gp_Vec      aD1;
       anOffsetData.BasisAdaptor->D1(U, P, aD1);
-      Geom_OffsetUtils::CalculateD0(P, aD1, anOffsetData.Direction, anOffsetData.Offset);
+      Geom_OffsetCurveUtils::CalculateD0(P, aD1, anOffsetData.Direction, anOffsetData.Offset);
       break;
     }
 
@@ -646,7 +646,7 @@ void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       gp_Vec      aD2;
       anOffsetData.BasisAdaptor->D2(U, P, V, aD2);
-      Geom_OffsetUtils::CalculateD1(P, V, aD2, anOffsetData.Direction, anOffsetData.Offset);
+      Geom_OffsetCurveUtils::CalculateD1(P, V, aD2, anOffsetData.Direction, anOffsetData.Offset);
       break;
     }
 
@@ -682,13 +682,13 @@ void GeomAdaptor_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       gp_Vec      aD3;
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, aD3);
-      Geom_OffsetUtils::CalculateD2(P,
-                                    V1,
-                                    V2,
-                                    aD3,
-                                    anOffsetData.Direction,
-                                    anOffsetData.Offset,
-                                    false);
+      Geom_OffsetCurveUtils::CalculateD2(P,
+                                         V1,
+                                         V2,
+                                         aD3,
+                                         anOffsetData.Direction,
+                                         anOffsetData.Offset,
+                                         false);
       break;
     }
 
@@ -728,14 +728,14 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, V3);
       gp_Vec aD4 = anOffsetData.BasisAdaptor->DN(U, 4);
-      Geom_OffsetUtils::CalculateD3(P,
-                                    V1,
-                                    V2,
-                                    V3,
-                                    aD4,
-                                    anOffsetData.Direction,
-                                    anOffsetData.Offset,
-                                    false);
+      Geom_OffsetCurveUtils::CalculateD3(P,
+                                         V1,
+                                         V2,
+                                         V3,
+                                         aD4,
+                                         anOffsetData.Direction,
+                                         anOffsetData.Offset,
+                                         false);
       break;
     }
 

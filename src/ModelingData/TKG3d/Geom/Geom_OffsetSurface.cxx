@@ -35,6 +35,7 @@
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>
+#include "Geom_OffsetSurfaceUtils.pxx"
 #include "Geom_OsculatingSurface.pxx"
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -115,130 +116,10 @@ static Standard_Boolean shiftPoint(const Standard_Real         theUStart,
   return Standard_True;
 }
 
-// auxiliary function for computing derivatives at singular points
-template <class SurfType>
-static void computeDerivatives(Standard_Integer                   theMaxOrder,
-                               Standard_Integer                   theMinOrder,
-                               const Standard_Real                theU,
-                               const Standard_Real                theV,
-                               const SurfType&                    theBasisSurf,
-                               const Standard_Integer             theNU,
-                               const Standard_Integer             theNV,
-                               const Standard_Boolean             theAlongU,
-                               const Standard_Boolean             theAlongV,
-                               const Handle(Geom_BSplineSurface)& theL,
-                               TColgp_Array2OfVec&                theDerNUV,
-                               TColgp_Array2OfVec&                theDerSurf)
-{
-  Standard_Integer i, j;
-  gp_Pnt           P;
-  gp_Vec           DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
-
-  if (theAlongU || theAlongV)
-  {
-    theMaxOrder = 0;
-    TColgp_Array2OfVec DerSurfL(0, theMaxOrder + theNU + 1, 0, theMaxOrder + theNV + 1);
-    switch (theMinOrder)
-    {
-      case 1:
-        theL->D1(theU, theV, P, DL1U, DL1V);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
-        break;
-      case 2:
-        theL->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
-        DerSurfL.SetValue(1, 1, DL2UV);
-        DerSurfL.SetValue(2, 0, DL2U);
-        DerSurfL.SetValue(0, 2, DL2V);
-        break;
-      case 3:
-        theL->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
-        DerSurfL.SetValue(1, 1, DL2UV);
-        DerSurfL.SetValue(2, 0, DL2U);
-        DerSurfL.SetValue(0, 2, DL2V);
-        DerSurfL.SetValue(3, 0, DL3U);
-        DerSurfL.SetValue(2, 1, DL3UUV);
-        DerSurfL.SetValue(1, 2, DL3UVV);
-        DerSurfL.SetValue(0, 3, DL3V);
-        break;
-      default:
-        break;
-    }
-
-    if (theNU <= theNV)
-    {
-      for (i = 0; i <= theMaxOrder + 1 + theNU; i++)
-        for (j = i; j <= theMaxOrder + theNV + 1; j++)
-          if (i + j > theMinOrder)
-          {
-            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-            if (i != j && j <= theNU + 1)
-            {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
-            }
-          }
-    }
-    else
-    {
-      for (j = 0; j <= theMaxOrder + 1 + theNV; j++)
-        for (i = j; i <= theMaxOrder + theNU + 1; i++)
-          if (i + j > theMinOrder)
-          {
-            DerSurfL.SetValue(i, j, theL->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-            if (i != j && i <= theNV + 1)
-            {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theL->DN(theU, theV, j, i));
-            }
-          }
-    }
-    for (i = 0; i <= theMaxOrder + theNU; i++)
-      for (j = 0; j <= theMaxOrder + theNV; j++)
-      {
-        if (theAlongU)
-          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurfL, theDerSurf));
-        if (theAlongV)
-          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf, DerSurfL));
-      }
-  }
-  else
-  {
-    for (i = 0; i <= theMaxOrder + theNU + 1; i++)
-    {
-      for (j = i; j <= theMaxOrder + theNV + 1; j++)
-      {
-        if (i + j > theMinOrder)
-        {
-          theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-          if (i != j && j <= theDerSurf.UpperRow() && i <= theDerSurf.UpperCol())
-          {
-            theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-          }
-        }
-      }
-    }
-    for (i = 0; i <= theMaxOrder + theNU; i++)
-      for (j = 0; j <= theMaxOrder + theNV; j++)
-        theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
-  }
-}
-
-inline Standard_Boolean IsInfiniteCoord(const gp_Vec& theVec)
-{
-  return Precision::IsInfinite(theVec.X()) || Precision::IsInfinite(theVec.Y())
-         || Precision::IsInfinite(theVec.Z());
-}
-
 inline void CheckInfinite(const gp_Vec& theVecU, const gp_Vec& theVecV)
 {
-  if (IsInfiniteCoord(theVecU) || IsInfiniteCoord(theVecV))
+  if (Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecU)
+      || Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecV))
   {
     throw Standard_NumericError("Geom_OffsetSurface: Evaluation of infinite parameters");
   }
@@ -1266,26 +1147,13 @@ void Geom_OffsetSurface::calculateD0(const Standard_Real theU,
                                      const gp_Vec&       theD1U,
                                      const gp_Vec&       theD1V) const
 {
-  // Normalize derivatives before normal calculation because it gives more stable result.
-  // There will be normalized only derivatives greater than 1.0 to avoid differences in last
-  // significant digit
-  gp_Vec        aD1U(theD1U);
-  gp_Vec        aD1V(theD1V);
-  Standard_Real aD1UNorm2 = aD1U.SquareMagnitude();
-  Standard_Real aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  // Try non-singular case first using utility function
+  if (Geom_OffsetSurfaceUtils::CalculateD0(theValue, theD1U, theD1V, offsetValue))
   {
-    // Non singular case. Simple computations.
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + offsetValue * aNorm.XYZ());
+    return;
   }
-  else
+
+  // Singular case - use osculating surface approach
   {
     const Standard_Integer MaxOrder = 3;
 
@@ -1308,18 +1176,18 @@ void Geom_OffsetSurface::calculateD0(const Standard_Real theU,
 
     DerSurf.SetValue(1, 0, theD1U);
     DerSurf.SetValue(0, 1, theD1V);
-    computeDerivatives(MaxOrder,
-                       1,
-                       theU,
-                       theV,
-                       basisSurf,
-                       0,
-                       0,
-                       AlongU,
-                       AlongV,
-                       L,
-                       DerNUV,
-                       DerSurf);
+    Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                                1,
+                                                theU,
+                                                theV,
+                                                basisSurf,
+                                                0,
+                                                0,
+                                                AlongU,
+                                                AlongV,
+                                                L,
+                                                DerNUV,
+                                                DerSurf);
 
     gp_Dir             Normal;
     CSLib_NormalStatus NStatus = CSLib_Singular;
@@ -1363,77 +1231,30 @@ void Geom_OffsetSurface::calculateD1(const Standard_Real theU,
                                      const gp_Vec&       theD2V,
                                      const gp_Vec&       theD2UV) const
 {
-  // Check offset side.
+  // Try non-singular case first using utility function
+  if (Geom_OffsetSurfaceUtils::CalculateD1(theValue,
+                                           theD1U,
+                                           theD1V,
+                                           theD2U,
+                                           theD2V,
+                                           theD2UV,
+                                           offsetValue))
+  {
+    return;
+  }
+
+  // Singular case - use osculating surface approach
   Handle(Geom_BSplineSurface) L;
   Standard_Boolean            isOpposite = Standard_False;
   Standard_Boolean            AlongU     = Standard_False;
   Standard_Boolean            AlongV     = Standard_False;
-
-  // Normalize derivatives before normal calculation because it gives more stable result.
-  // There will be normalized only derivatives greater than 1.0 to avoid differences in last
-  // significant digit
-  gp_Vec        aD1U(theD1U);
-  gp_Vec        aD1V(theD1V);
-  Standard_Real aD1UNorm2 = aD1U.SquareMagnitude();
-  Standard_Real aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  Standard_Boolean isSingular = Standard_False;
-  Standard_Integer MaxOrder   = 0;
-  gp_Vec           aNorm      = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() <= THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  if (myOscSurf)
   {
-    if (myOscSurf)
-    {
-      AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
-      AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
-    }
-
-    MaxOrder   = 3;
-    isSingular = Standard_True;
+    AlongU = myOscSurf->UOscSurf(theU, theV, isOpposite, L);
+    AlongV = myOscSurf->VOscSurf(theU, theV, isOpposite, L);
   }
-
-  const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
-
-  if (!isSingular)
-  {
-    // AlongU or AlongV leads to more complex D1 computation
-    // Try to compute D0 and D1 much simpler
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + offsetValue * aSign * aNorm.XYZ());
-
-    gp_Vec        aN0(aNorm.XYZ()), aN1U, aN1V;
-    Standard_Real aScale = (theD1U ^ theD1V).Dot(aN0);
-    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
-              - theD1U.Z() * theD2UV.Y());
-    aN1U.SetY((theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
-               - theD1U.Z() * theD2UV.X())
-              * -1.0);
-    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
-              - theD1U.Y() * theD2UV.X());
-    Standard_Real aScaleU = aN1U.Dot(aN0);
-    aN1U.Subtract(aScaleU * aN0);
-    aN1U /= aScale;
-
-    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
-              - theD2V.Y() * theD1U.Z());
-    aN1V.SetY((theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
-               - theD2V.X() * theD1U.Z())
-              * -1.0);
-    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
-              - theD2V.X() * theD1U.Y());
-    Standard_Real aScaleV = aN1V.Dot(aN0);
-    aN1V.Subtract(aScaleV * aN0);
-    aN1V /= aScale;
-
-    theD1U += offsetValue * aSign * aN1U;
-    theD1V += offsetValue * aSign * aN1V;
-
-    return;
-  }
+  const Standard_Real    aSign    = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
+  const Standard_Integer MaxOrder = 3;
 
   Standard_Integer   OrderU, OrderV;
   TColgp_Array2OfVec DerNUV(0, MaxOrder + 1, 0, MaxOrder + 1);
@@ -1446,7 +1267,18 @@ void Geom_OffsetSurface::calculateD1(const Standard_Real theU,
   DerSurf.SetValue(1, 1, theD2UV);
   DerSurf.SetValue(2, 0, theD2U);
   DerSurf.SetValue(0, 2, theD2V);
-  computeDerivatives(MaxOrder, 2, theU, theV, basisSurf, 1, 1, AlongU, AlongV, L, DerNUV, DerSurf);
+  Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                              2,
+                                              theU,
+                                              theV,
+                                              basisSurf,
+                                              1,
+                                              1,
+                                              AlongU,
+                                              AlongV,
+                                              L,
+                                              DerNUV,
+                                              DerSurf);
 
   gp_Dir             Normal;
   CSLib_NormalStatus NStatus;
@@ -1472,18 +1304,18 @@ void Geom_OffsetSurface::calculateD1(const Standard_Real theU,
     {
       DerSurf.SetValue(1, 0, aNewDU);
       DerSurf.SetValue(0, 1, aNewDV);
-      computeDerivatives(MaxOrder,
-                         2,
-                         theU,
-                         theV,
-                         basisSurf,
-                         1,
-                         1,
-                         AlongU,
-                         AlongV,
-                         L,
-                         DerNUV,
-                         DerSurf);
+      Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                                  2,
+                                                  theU,
+                                                  theV,
+                                                  basisSurf,
+                                                  1,
+                                                  1,
+                                                  AlongU,
+                                                  AlongV,
+                                                  L,
+                                                  DerNUV,
+                                                  DerSurf);
       CSLib::Normal(MaxOrder,
                     DerNUV,
                     THE_D1_MAG_TOL,
@@ -1557,7 +1389,18 @@ void Geom_OffsetSurface::calculateD2(const Standard_Real theU,
   }
   const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
 
-  computeDerivatives(MaxOrder, 3, theU, theV, basisSurf, 2, 2, AlongU, AlongV, L, DerNUV, DerSurf);
+  Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                              3,
+                                              theU,
+                                              theV,
+                                              basisSurf,
+                                              2,
+                                              2,
+                                              AlongU,
+                                              AlongV,
+                                              L,
+                                              DerNUV,
+                                              DerSurf);
 
   CSLib::Normal(MaxOrder,
                 DerNUV,
@@ -1635,7 +1478,18 @@ void Geom_OffsetSurface::calculateD3(const Standard_Real theU,
   }
   const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
 
-  computeDerivatives(MaxOrder, 3, theU, theV, basisSurf, 3, 3, AlongU, AlongV, L, DerNUV, DerSurf);
+  Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                              3,
+                                              theU,
+                                              theV,
+                                              basisSurf,
+                                              3,
+                                              3,
+                                              AlongU,
+                                              AlongV,
+                                              L,
+                                              DerNUV,
+                                              DerSurf);
 
   CSLib::Normal(MaxOrder,
                 DerNUV,
@@ -1710,18 +1564,18 @@ gp_Vec Geom_OffsetSurface::calculateDN(const Standard_Real    theU,
   }
   const Standard_Real aSign = ((AlongV || AlongU) && isOpposite) ? -1. : 1.;
 
-  computeDerivatives(MaxOrder,
-                     1,
-                     theU,
-                     theV,
-                     basisSurf,
-                     theNu,
-                     theNv,
-                     AlongU,
-                     AlongV,
-                     L,
-                     DerNUV,
-                     DerSurf);
+  Geom_OffsetSurfaceUtils::ComputeDerivatives(MaxOrder,
+                                              1,
+                                              theU,
+                                              theV,
+                                              basisSurf,
+                                              theNu,
+                                              theNv,
+                                              AlongU,
+                                              AlongV,
+                                              L,
+                                              DerNUV,
+                                              DerSurf);
 
   CSLib::Normal(MaxOrder,
                 DerNUV,

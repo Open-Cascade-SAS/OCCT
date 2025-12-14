@@ -23,7 +23,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <Geom_OffsetUtils.pxx>
+#include <Geom_OffsetCurveUtils.pxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -245,7 +245,7 @@ void Geom_OffsetCurve::D0(const Standard_Real theU, gp_Pnt& theP) const
 {
   gp_Vec aD1;
   basisCurve->D1(theU, theP, aD1);
-  Geom_OffsetUtils::CalculateD0(theP, aD1, direction, offsetValue);
+  Geom_OffsetCurveUtils::CalculateD0(theP, aD1, direction, offsetValue);
 }
 
 //==================================================================================================
@@ -254,7 +254,7 @@ void Geom_OffsetCurve::D1(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV1)
 {
   gp_Vec aD2;
   basisCurve->D2(theU, theP, theV1, aD2);
-  Geom_OffsetUtils::CalculateD1(theP, theV1, aD2, direction, offsetValue);
+  Geom_OffsetCurveUtils::CalculateD1(theP, theV1, aD2, direction, offsetValue);
 }
 
 //==================================================================================================
@@ -274,7 +274,13 @@ void Geom_OffsetCurve::D2(const Standard_Real theU,
     isDirectionChange = adjustDerivative(3, theU, theV1, theV2, aD3, aDummyD4);
   }
 
-  Geom_OffsetUtils::CalculateD2(theP, theV1, theV2, aD3, direction, offsetValue, isDirectionChange);
+  Geom_OffsetCurveUtils::CalculateD2(theP,
+                                     theV1,
+                                     theV2,
+                                     aD3,
+                                     direction,
+                                     offsetValue,
+                                     isDirectionChange);
 }
 
 //==================================================================================================
@@ -294,14 +300,14 @@ void Geom_OffsetCurve::D3(const Standard_Real theU,
     isDirectionChange = adjustDerivative(4, theU, theV1, theV2, theV3, aD4);
   }
 
-  Geom_OffsetUtils::CalculateD3(theP,
-                                theV1,
-                                theV2,
-                                theV3,
-                                aD4,
-                                direction,
-                                offsetValue,
-                                isDirectionChange);
+  Geom_OffsetCurveUtils::CalculateD3(theP,
+                                     theV1,
+                                     theV2,
+                                     theV3,
+                                     aD4,
+                                     direction,
+                                     offsetValue,
+                                     isDirectionChange);
 }
 
 //==================================================================================================

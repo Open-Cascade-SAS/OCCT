@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom_OffsetUtils_HeaderFile
-#define _Geom_OffsetUtils_HeaderFile
+#ifndef _Geom_OffsetCurveUtils_HeaderFile
+#define _Geom_OffsetCurveUtils_HeaderFile
 
 #include <gp.hxx>
 #include <gp_Dir.hxx>
@@ -32,7 +32,7 @@
 //! Mathematical basis:
 //! P(u) = p(u) + Offset * N / ||N||
 //! where N = p'(u) ^ Direction is the local normal direction
-namespace Geom_OffsetUtils
+namespace Geom_OffsetCurveUtils
 {
 
 //! Calculates D0 (point) for 3D offset curve.
@@ -50,7 +50,7 @@ inline void CalculateD0(gp_Pnt&       theValue,
   double R    = Ndir.Modulus();
   if (R <= gp::Resolution())
   {
-    throw Standard_NullValue("Geom_OffsetUtils: Undefined normal vector "
+    throw Standard_NullValue("Geom_OffsetCurveUtils: Undefined normal vector "
                              "because tangent vector has zero-magnitude!");
   }
 
@@ -86,7 +86,7 @@ inline void CalculateD1(gp_Pnt&       theValue,
   {
     if (R2 <= gp::Resolution())
     {
-      throw Standard_NullValue("Geom_OffsetUtils::CalculateD1: Null derivative");
+      throw Standard_NullValue("Geom_OffsetCurveUtils::CalculateD1: Null derivative");
     }
     // We try another computation but the stability is not very good.
     DNdir.Multiply(R);
@@ -147,7 +147,7 @@ inline void CalculateD2(gp_Pnt&       theValue,
   {
     if (R4 <= gp::Resolution())
     {
-      throw Standard_NullValue("Geom_OffsetUtils::CalculateD2: Null derivative");
+      throw Standard_NullValue("Geom_OffsetCurveUtils::CalculateD2: Null derivative");
     }
     // We try another computation but the stability is not very good
     // dixit ISG.
@@ -238,7 +238,7 @@ inline void CalculateD3(gp_Pnt&       theValue,
   {
     if (R6 <= gp::Resolution())
     {
-      throw Standard_NullValue("Geom_OffsetUtils::CalculateD3: Null derivative");
+      throw Standard_NullValue("Geom_OffsetCurveUtils::CalculateD3: Null derivative");
     }
     // V3 = P"' (U) :
     D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * Dr / R2));
@@ -290,6 +290,6 @@ inline void CalculateD3(gp_Pnt&       theValue,
   theD3.Add(gp_Vec(D3Ndir));
 }
 
-} // namespace Geom_OffsetUtils
+} // namespace Geom_OffsetCurveUtils
 
-#endif // _Geom_OffsetUtils_HeaderFile
+#endif // _Geom_OffsetCurveUtils_HeaderFile

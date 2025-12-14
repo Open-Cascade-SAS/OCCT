@@ -24,6 +24,7 @@
 #include <GeomAdaptor_Surface.hxx>
 
 #include "../Geom/Geom_ExtrusionUtils.pxx"
+#include "../Geom/Geom_OffsetSurfaceUtils.pxx"
 #include "../Geom/Geom_OsculatingSurface.pxx"
 #include "../Geom/Geom_RevolutionUtils.pxx"
 
@@ -162,9 +163,6 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
 
 namespace
 {
-
-// Tolerance for considering derivative to be null
-static const double THE_D1_MAG_TOL = 1.e-9;
 
 //! Extrusion surface D0 evaluation
 inline void extrusionD0(const double                   theU,
@@ -363,17 +361,11 @@ inline gp_Vec revolutionDN(const double                   theU,
                                   theDerV);
 }
 
-//! Check if vector has infinite coordinates
-inline bool isInfiniteCoord(const gp_Vec& theVec)
-{
-  return Precision::IsInfinite(theVec.X()) || Precision::IsInfinite(theVec.Y())
-         || Precision::IsInfinite(theVec.Z());
-}
-
 //! Check and throw if vectors have infinite coordinates
 inline void checkInfinite(const gp_Vec& theVecU, const gp_Vec& theVecV)
 {
-  if (isInfiniteCoord(theVecU) || isInfiniteCoord(theVecV))
+  if (Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecU)
+      || Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecV))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Evaluation of infinite parameters");
   }
@@ -389,80 +381,40 @@ inline void offsetD0(const double                           theU,
   theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
   checkInfinite(aD1U, aD1V);
 
-  // Normalize derivatives for stable normal calculation
-  double aD1UNorm2 = aD1U.SquareMagnitude();
-  double aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  // Try non-singular case first using utility function
+  if (Geom_OffsetSurfaceUtils::CalculateD0(theValue, aD1U, aD1V, theData.Offset))
   {
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
+    return;
   }
-  else
+
+  // Singular case - use CSLib for normal calculation
+  Geom_OffsetSurfaceUtils::OsculatingInfo aOscInfo;
+  Handle(Geom_BSplineSurface)             aL;
+  if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
   {
-    // Singular case - use CSLib for normal calculation
-    Handle(Geom_BSplineSurface) aL;
-    bool                        isOpposite = false;
-    bool                        AlongU     = false;
-    bool                        AlongV     = false;
-    if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
-    {
-      AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
-      AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, isOpposite, aL);
-    }
-    const double aSign = ((AlongV || AlongU) && isOpposite) ? -1.0 : 1.0;
-
-    double aUMin, aUMax, aVMin, aVMax;
-    theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
-    aUMin = theData.BasisAdaptor->FirstUParameter();
-    aUMax = theData.BasisAdaptor->LastUParameter();
-    aVMin = theData.BasisAdaptor->FirstVParameter();
-    aVMax = theData.BasisAdaptor->LastVParameter();
-
-    gp_Dir             aNormal;
-    CSLib_NormalStatus aNStatus;
-    CSLib::Normal(aD1U, aD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
-    if (aNStatus != CSLib_Defined)
-    {
-      // Try with higher derivatives
-      constexpr int      MaxOrder = 3;
-      TColgp_Array2OfVec aDerNUV(0, MaxOrder, 0, MaxOrder);
-      aDerNUV.SetValue(1, 0, aD1U);
-      aDerNUV.SetValue(0, 1, aD1V);
-      for (int i = 0; i <= MaxOrder; ++i)
-      {
-        for (int j = 0; j <= MaxOrder; ++j)
-        {
-          if (i + j > 1 && i + j <= MaxOrder)
-            aDerNUV.SetValue(i, j, theData.BasisAdaptor->DN(theU, theV, i, j));
-        }
-      }
-      int OrderU, OrderV;
-      CSLib::Normal(MaxOrder,
-                    aDerNUV,
-                    THE_D1_MAG_TOL,
-                    theU,
-                    theV,
-                    aUMin,
-                    aUMax,
-                    aVMin,
-                    aVMax,
-                    aNStatus,
-                    aNormal,
-                    OrderU,
-                    OrderV);
-    }
-
-    if (aNStatus != CSLib_Defined)
-      throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate normal");
-
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNormal.XYZ());
+    aOscInfo.AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
+    aOscInfo.AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
   }
+
+  gp_Dir             aNormal;
+  CSLib_NormalStatus aNStatus;
+  Geom_OffsetSurfaceUtils::ComputeSingularNormal(3,
+                                                 theU,
+                                                 theV,
+                                                 theData.BasisAdaptor->FirstUParameter(),
+                                                 theData.BasisAdaptor->LastUParameter(),
+                                                 theData.BasisAdaptor->FirstVParameter(),
+                                                 theData.BasisAdaptor->LastVParameter(),
+                                                 aD1U,
+                                                 aD1V,
+                                                 theData.BasisAdaptor,
+                                                 aNormal,
+                                                 aNStatus);
+
+  if (aNStatus != CSLib_Defined)
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate normal");
+
+  theValue.SetXYZ(theValue.XYZ() + theData.Offset * aOscInfo.Sign() * aNormal.XYZ());
 }
 
 //! Offset surface D1 evaluation
@@ -477,74 +429,37 @@ inline void offsetD1(const double                           theU,
   theData.BasisAdaptor->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
   checkInfinite(theD1U, theD1V);
 
-  // Normalize derivatives for stable normal calculation
-  gp_Vec aD1U(theD1U), aD1V(theD1V);
-  double aD1UNorm2 = aD1U.SquareMagnitude();
-  double aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  gp_Vec aNorm      = aD1U.Crossed(aD1V);
-  bool   isSingular = (aNorm.SquareMagnitude() <= THE_D1_MAG_TOL * THE_D1_MAG_TOL);
-
-  Handle(Geom_BSplineSurface) aL;
-  bool                        isOpposite = false;
-  bool                        AlongU     = false;
-  bool                        AlongV     = false;
-  if (isSingular && theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
+  // Try non-singular case first using utility function
+  if (Geom_OffsetSurfaceUtils::CalculateD1(theValue,
+                                           theD1U,
+                                           theD1V,
+                                           aD2U,
+                                           aD2V,
+                                           aD2UV,
+                                           theData.Offset))
   {
-    AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
-    AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, isOpposite, aL);
+    return;
   }
-  const double aSign = ((AlongV || AlongU) && isOpposite) ? -1.0 : 1.0;
 
-  if (!isSingular)
+  // Singular case - simplified handling
+  Geom_OffsetSurfaceUtils::OsculatingInfo aOscInfo;
+  Handle(Geom_BSplineSurface)             aL;
+  if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
   {
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNorm.XYZ());
+    aOscInfo.AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
+    aOscInfo.AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
+  }
 
-    // Compute derivative of normal
-    gp_Vec aN0(aNorm.XYZ()), aN1U, aN1V;
-    double aScale = (theD1U ^ theD1V).Dot(aN0);
-    aN1U.SetX(aD2U.Y() * theD1V.Z() + theD1U.Y() * aD2UV.Z() - aD2U.Z() * theD1V.Y()
-              - theD1U.Z() * aD2UV.Y());
-    aN1U.SetY(-(aD2U.X() * theD1V.Z() + theD1U.X() * aD2UV.Z() - aD2U.Z() * theD1V.X()
-                - theD1U.Z() * aD2UV.X()));
-    aN1U.SetZ(aD2U.X() * theD1V.Y() + theD1U.X() * aD2UV.Y() - aD2U.Y() * theD1V.X()
-              - theD1U.Y() * aD2UV.X());
-    double aScaleU = aN1U.Dot(aN0);
-    aN1U.Subtract(aScaleU * aN0);
-    aN1U /= aScale;
-
-    aN1V.SetX(aD2UV.Y() * theD1V.Z() + aD2V.Z() * theD1U.Y() - aD2UV.Z() * theD1V.Y()
-              - aD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(aD2UV.X() * theD1V.Z() + aD2V.Z() * theD1U.X() - aD2UV.Z() * theD1V.X()
-                - aD2V.X() * theD1U.Z()));
-    aN1V.SetZ(aD2UV.X() * theD1V.Y() + aD2V.Y() * theD1U.X() - aD2UV.Y() * theD1V.X()
-              - aD2V.X() * theD1U.Y());
-    double aScaleV = aN1V.Dot(aN0);
-    aN1V.Subtract(aScaleV * aN0);
-    aN1V /= aScale;
-
-    theD1U += theData.Offset * aSign * aN1U;
-    theD1V += theData.Offset * aSign * aN1V;
+  gp_Dir             aNormal;
+  CSLib_NormalStatus aNStatus;
+  CSLib::Normal(theD1U, theD1V, Geom_OffsetSurfaceUtils::THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
+  if (aNStatus == CSLib_Defined)
+  {
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aOscInfo.Sign() * aNormal.XYZ());
   }
   else
   {
-    // Singular case - simplified handling
-    gp_Dir             aNormal;
-    CSLib_NormalStatus aNStatus;
-    CSLib::Normal(theD1U, theD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
-    if (aNStatus == CSLib_Defined)
-    {
-      theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNormal.XYZ());
-    }
-    else
-    {
-      throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
-    }
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
   }
 }
 
@@ -564,56 +479,21 @@ inline void offsetD2(const double                           theU,
     ->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
   checkInfinite(theD1U, theD1V);
 
-  // Normalize derivatives for stable normal calculation
-  gp_Vec aD1U(theD1U), aD1V(theD1V);
-  double aD1UNorm2 = aD1U.SquareMagnitude();
-  double aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  // Try non-singular case first using utility function (D2 uses same D1 computation for offset)
+  if (Geom_OffsetSurfaceUtils::CalculateD2(theValue,
+                                           theD1U,
+                                           theD1V,
+                                           theD2U,
+                                           theD2V,
+                                           theD2UV,
+                                           theData.Offset))
   {
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
-
-    // Simplified D2 - add offset along normal for D1
-    gp_Vec aN0(aNorm.XYZ());
-    double aScale = (theD1U ^ theD1V).Dot(aN0);
-
-    gp_Vec aN1U;
-    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
-              - theD1U.Z() * theD2UV.Y());
-    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
-                - theD1U.Z() * theD2UV.X()));
-    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
-              - theD1U.Y() * theD2UV.X());
-    double aScaleU = aN1U.Dot(aN0);
-    aN1U.Subtract(aScaleU * aN0);
-    aN1U /= aScale;
-
-    gp_Vec aN1V;
-    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
-              - theD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
-                - theD2V.X() * theD1U.Z()));
-    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
-              - theD2V.X() * theD1U.Y());
-    double aScaleV = aN1V.Dot(aN0);
-    aN1V.Subtract(aScaleV * aN0);
-    aN1V /= aScale;
-
-    theD1U += theData.Offset * aN1U;
-    theD1V += theData.Offset * aN1V;
-    // D2 derivatives are approximations - keeping basis values for now
+    // D2 derivatives are approximations - keeping basis values
+    return;
   }
-  else
-  {
-    throw Standard_NumericError(
-      "GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
-  }
+
+  throw Standard_NumericError(
+    "GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
 }
 
 //! Offset surface D3 evaluation
@@ -645,56 +525,21 @@ inline void offsetD3(const double                           theU,
                            theD3UVV);
   checkInfinite(theD1U, theD1V);
 
-  // Normalize derivatives for stable normal calculation
-  gp_Vec aD1U(theD1U), aD1V(theD1V);
-  double aD1UNorm2 = aD1U.SquareMagnitude();
-  double aD1VNorm2 = aD1V.SquareMagnitude();
-  if (aD1UNorm2 > 1.0)
-    aD1U /= std::sqrt(aD1UNorm2);
-  if (aD1VNorm2 > 1.0)
-    aD1V /= std::sqrt(aD1VNorm2);
-
-  gp_Vec aNorm = aD1U.Crossed(aD1V);
-  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  // Try non-singular case first using utility function (D3 uses same D1 computation for offset)
+  if (Geom_OffsetSurfaceUtils::CalculateD2(theValue,
+                                           theD1U,
+                                           theD1V,
+                                           theD2U,
+                                           theD2V,
+                                           theD2UV,
+                                           theData.Offset))
   {
-    aNorm.Normalize();
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
-
-    // Add offset contribution to D1
-    gp_Vec aN0(aNorm.XYZ());
-    double aScale = (theD1U ^ theD1V).Dot(aN0);
-
-    gp_Vec aN1U;
-    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
-              - theD1U.Z() * theD2UV.Y());
-    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
-                - theD1U.Z() * theD2UV.X()));
-    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
-              - theD1U.Y() * theD2UV.X());
-    double aScaleU = aN1U.Dot(aN0);
-    aN1U.Subtract(aScaleU * aN0);
-    aN1U /= aScale;
-
-    gp_Vec aN1V;
-    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
-              - theD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
-                - theD2V.X() * theD1U.Z()));
-    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
-              - theD2V.X() * theD1U.Y());
-    double aScaleV = aN1V.Dot(aN0);
-    aN1V.Subtract(aScaleV * aN0);
-    aN1V /= aScale;
-
-    theD1U += theData.Offset * aN1U;
-    theD1V += theData.Offset * aN1V;
     // Higher derivatives are approximations - keeping basis values
+    return;
   }
-  else
-  {
-    throw Standard_NumericError(
-      "GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
-  }
+
+  throw Standard_NumericError(
+    "GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
 }
 
 //! Offset surface DN evaluation

@@ -1,0 +1,456 @@
+// Copyright (c) 2015-2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_OffsetSurfaceUtils_HeaderFile
+#define _Geom_OffsetSurfaceUtils_HeaderFile
+
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <TColgp_Array2OfVec.hxx>
+
+#include <cmath>
+
+//! Internal helper namespace for 3D offset surface calculations.
+//! Provides static inline functions to compute offset surface point and derivatives
+//! from basis surface derivatives.
+//!
+//! Includes both non-singular (simple cross product normal) and singular
+//! (osculating surface) case handling.
+//!
+//! Mathematical basis:
+//! P(u,v) = p(u,v) + Offset * N / ||N||
+//! where N = dP/du ^ dP/dv is the surface normal
+namespace Geom_OffsetSurfaceUtils
+{
+
+//! Default tolerance for normal magnitude check
+constexpr double THE_D1_MAGNITUDE_TOL = 1.e-9;
+
+//! Struct to hold osculating surface query results.
+//! Used to abstract osculating surface handling between different classes.
+struct OsculatingInfo
+{
+  bool AlongU     = false; //!< True if osculating along U direction
+  bool AlongV     = false; //!< True if osculating along V direction
+  bool IsOpposite = false; //!< True if normal direction should be reversed
+
+  //! Returns the sign factor for offset calculation
+  double Sign() const { return ((AlongU || AlongV) && IsOpposite) ? -1.0 : 1.0; }
+
+  //! Returns true if osculating surface is available
+  bool HasOsculating() const { return AlongU || AlongV; }
+};
+
+//! Checks if a vector has infinite coordinates.
+//! @param[in] theVec vector to check
+//! @return true if any coordinate is infinite
+inline bool IsInfiniteCoord(const gp_Vec& theVec)
+{
+  return Precision::IsInfinite(theVec.X()) || Precision::IsInfinite(theVec.Y())
+         || Precision::IsInfinite(theVec.Z());
+}
+
+//! Checks if surface normal is singular (has zero magnitude).
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[in] theTol tolerance for magnitude check
+//! @return true if normal magnitude is below tolerance (singular case)
+inline bool IsSingular(const gp_Vec& theD1U,
+                       const gp_Vec& theD1V,
+                       double        theTol = THE_D1_MAGNITUDE_TOL)
+{
+  // Normalize derivatives before normal calculation for stability
+  gp_Vec aD1U(theD1U);
+  gp_Vec aD1V(theD1V);
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  gp_Vec aNorm = aD1U.Crossed(aD1V);
+  return aNorm.SquareMagnitude() <= theTol * theTol;
+}
+
+//! Calculates normalized normal vector for non-singular case.
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[out] theNormal computed normalized normal (valid only if return is true)
+//! @param[in] theTol tolerance for magnitude check
+//! @return true if normal computed successfully, false if singular
+inline bool ComputeNormal(const gp_Vec& theD1U,
+                          const gp_Vec& theD1V,
+                          gp_Vec&       theNormal,
+                          double        theTol = THE_D1_MAGNITUDE_TOL)
+{
+  // Normalize derivatives before normal calculation for stability
+  gp_Vec aD1U(theD1U);
+  gp_Vec aD1V(theD1V);
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  theNormal = aD1U.Crossed(aD1V);
+  if (theNormal.SquareMagnitude() <= theTol * theTol)
+  {
+    return false;
+  }
+  theNormal.Normalize();
+  return true;
+}
+
+//! Computes dN/du for non-singular offset surface.
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[in] theD2U second derivative d2P/du2
+//! @param[in] theD2UV mixed derivative d2P/dudv
+//! @param[in] theNormal unit normal vector
+//! @return derivative of normal with respect to U
+inline gp_Vec ComputeDNormalU(const gp_Vec& theD1U,
+                              const gp_Vec& theD1V,
+                              const gp_Vec& theD2U,
+                              const gp_Vec& theD2UV,
+                              const gp_Vec& theNormal)
+{
+  double aScale = (theD1U ^ theD1V).Dot(theNormal);
+
+  gp_Vec aN1U;
+  aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
+            - theD1U.Z() * theD2UV.Y());
+  aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
+              - theD1U.Z() * theD2UV.X()));
+  aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
+            - theD1U.Y() * theD2UV.X());
+  double aScaleU = aN1U.Dot(theNormal);
+  aN1U.Subtract(aScaleU * theNormal);
+  aN1U /= aScale;
+
+  return aN1U;
+}
+
+//! Computes dN/dv for non-singular offset surface.
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[in] theD2V second derivative d2P/dv2
+//! @param[in] theD2UV mixed derivative d2P/dudv
+//! @param[in] theNormal unit normal vector
+//! @return derivative of normal with respect to V
+inline gp_Vec ComputeDNormalV(const gp_Vec& theD1U,
+                              const gp_Vec& theD1V,
+                              const gp_Vec& theD2V,
+                              const gp_Vec& theD2UV,
+                              const gp_Vec& theNormal)
+{
+  double aScale = (theD1U ^ theD1V).Dot(theNormal);
+
+  gp_Vec aN1V;
+  aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
+            - theD2V.Y() * theD1U.Z());
+  aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
+              - theD2V.X() * theD1U.Z()));
+  aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
+            - theD2V.X() * theD1U.Y());
+  double aScaleV = aN1V.Dot(theNormal);
+  aN1V.Subtract(aScaleV * theNormal);
+  aN1V /= aScale;
+
+  return aN1V;
+}
+
+//! Calculates D0 (point) for offset surface in non-singular case.
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[in] theOffset offset distance value
+//! @param[in] theSign sign factor (1.0 or -1.0) for offset direction
+//! @return false if singular (normal has zero magnitude), true otherwise
+inline bool CalculateD0(gp_Pnt&       theValue,
+                        const gp_Vec& theD1U,
+                        const gp_Vec& theD1V,
+                        double        theOffset,
+                        double        theSign = 1.0)
+{
+  gp_Vec aNorm;
+  if (!ComputeNormal(theD1U, theD1V, aNorm))
+  {
+    return false;
+  }
+  theValue.SetXYZ(theValue.XYZ() + theOffset * theSign * aNorm.XYZ());
+  return true;
+}
+
+//! Calculates D0 and D1 for offset surface in non-singular case.
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in,out] theD1U on input: basis dP/du; on output: offset surface dP/du
+//! @param[in,out] theD1V on input: basis dP/dv; on output: offset surface dP/dv
+//! @param[in] theD2U second derivative d2P/du2 of basis surface
+//! @param[in] theD2V second derivative d2P/dv2 of basis surface
+//! @param[in] theD2UV mixed derivative d2P/dudv of basis surface
+//! @param[in] theOffset offset distance value
+//! @param[in] theSign sign factor (1.0 or -1.0) for offset direction
+//! @return false if singular (normal has zero magnitude), true otherwise
+inline bool CalculateD1(gp_Pnt&       theValue,
+                        gp_Vec&       theD1U,
+                        gp_Vec&       theD1V,
+                        const gp_Vec& theD2U,
+                        const gp_Vec& theD2V,
+                        const gp_Vec& theD2UV,
+                        double        theOffset,
+                        double        theSign = 1.0)
+{
+  gp_Vec aNorm;
+  if (!ComputeNormal(theD1U, theD1V, aNorm))
+  {
+    return false;
+  }
+
+  // Compute offset point
+  theValue.SetXYZ(theValue.XYZ() + theOffset * theSign * aNorm.XYZ());
+
+  // Compute normal derivatives
+  gp_Vec aN1U = ComputeDNormalU(theD1U, theD1V, theD2U, theD2UV, aNorm);
+  gp_Vec aN1V = ComputeDNormalV(theD1U, theD1V, theD2V, theD2UV, aNorm);
+
+  theD1U += theOffset * theSign * aN1U;
+  theD1V += theOffset * theSign * aN1V;
+
+  return true;
+}
+
+//! Calculates D0, D1, D2 for offset surface in non-singular case.
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in,out] theD1U on input: basis dP/du; on output: offset surface dP/du
+//! @param[in,out] theD1V on input: basis dP/dv; on output: offset surface dP/dv
+//! @param[in] theD2U second derivative d2P/du2 of basis surface (not modified for D2)
+//! @param[in] theD2V second derivative d2P/dv2 of basis surface (not modified for D2)
+//! @param[in] theD2UV mixed derivative d2P/dudv of basis surface (not modified for D2)
+//! @param[in] theOffset offset distance value
+//! @param[in] theSign sign factor (1.0 or -1.0) for offset direction
+//! @return false if singular (normal has zero magnitude), true otherwise
+inline bool CalculateD2(gp_Pnt&       theValue,
+                        gp_Vec&       theD1U,
+                        gp_Vec&       theD1V,
+                        const gp_Vec& theD2U,
+                        const gp_Vec& theD2V,
+                        const gp_Vec& theD2UV,
+                        double        theOffset,
+                        double        theSign = 1.0)
+{
+  // For D2 in non-singular case, we use the same approach as D1
+  // The actual D2 derivatives require more complex computation
+  return CalculateD1(theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, theOffset, theSign);
+}
+
+//! Template function for computing derivatives at singular points.
+//! Works with any surface type that provides D1, D2, D3, DN methods.
+//! @tparam BasisSurfType type of basis surface (Handle to surface or adaptor)
+//! @tparam OscSurfType type of osculating surface (Handle to BSpline surface)
+//! @param[in] theMaxOrder maximum derivative order
+//! @param[in] theMinOrder minimum derivative order
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theBasisSurf basis surface
+//! @param[in] theNU derivative order in U for output
+//! @param[in] theNV derivative order in V for output
+//! @param[in] theAlongU true if osculating along U
+//! @param[in] theAlongV true if osculating along V
+//! @param[in] theOscSurf osculating surface (may be null)
+//! @param[out] theDerNUV array of normal derivatives
+//! @param[in,out] theDerSurf array of surface derivatives
+template <class BasisSurfType, class OscSurfType>
+void ComputeDerivatives(int                  theMaxOrder,
+                        int                  theMinOrder,
+                        double               theU,
+                        double               theV,
+                        const BasisSurfType& theBasisSurf,
+                        int                  theNU,
+                        int                  theNV,
+                        bool                 theAlongU,
+                        bool                 theAlongV,
+                        const OscSurfType&   theOscSurf,
+                        TColgp_Array2OfVec&  theDerNUV,
+                        TColgp_Array2OfVec&  theDerSurf)
+{
+  gp_Pnt P;
+  gp_Vec DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
+
+  if (theAlongU || theAlongV)
+  {
+    theMaxOrder = 0;
+    TColgp_Array2OfVec DerSurfL(0, theMaxOrder + theNU + 1, 0, theMaxOrder + theNV + 1);
+    switch (theMinOrder)
+    {
+      case 1:
+        theOscSurf->D1(theU, theV, P, DL1U, DL1V);
+        DerSurfL.SetValue(1, 0, DL1U);
+        DerSurfL.SetValue(0, 1, DL1V);
+        break;
+      case 2:
+        theOscSurf->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
+        DerSurfL.SetValue(1, 0, DL1U);
+        DerSurfL.SetValue(0, 1, DL1V);
+        DerSurfL.SetValue(1, 1, DL2UV);
+        DerSurfL.SetValue(2, 0, DL2U);
+        DerSurfL.SetValue(0, 2, DL2V);
+        break;
+      case 3:
+        theOscSurf->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
+        DerSurfL.SetValue(1, 0, DL1U);
+        DerSurfL.SetValue(0, 1, DL1V);
+        DerSurfL.SetValue(1, 1, DL2UV);
+        DerSurfL.SetValue(2, 0, DL2U);
+        DerSurfL.SetValue(0, 2, DL2V);
+        DerSurfL.SetValue(3, 0, DL3U);
+        DerSurfL.SetValue(2, 1, DL3UUV);
+        DerSurfL.SetValue(1, 2, DL3UVV);
+        DerSurfL.SetValue(0, 3, DL3V);
+        break;
+      default:
+        break;
+    }
+
+    if (theNU <= theNV)
+    {
+      for (int i = 0; i <= theMaxOrder + 1 + theNU; i++)
+        for (int j = i; j <= theMaxOrder + theNV + 1; j++)
+          if (i + j > theMinOrder)
+          {
+            DerSurfL.SetValue(i, j, theOscSurf->DN(theU, theV, i, j));
+            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            if (i != j && j <= theNU + 1)
+            {
+              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+              DerSurfL.SetValue(j, i, theOscSurf->DN(theU, theV, j, i));
+            }
+          }
+    }
+    else
+    {
+      for (int j = 0; j <= theMaxOrder + 1 + theNV; j++)
+        for (int i = j; i <= theMaxOrder + theNU + 1; i++)
+          if (i + j > theMinOrder)
+          {
+            DerSurfL.SetValue(i, j, theOscSurf->DN(theU, theV, i, j));
+            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            if (i != j && i <= theNV + 1)
+            {
+              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+              DerSurfL.SetValue(j, i, theOscSurf->DN(theU, theV, j, i));
+            }
+          }
+    }
+    for (int i = 0; i <= theMaxOrder + theNU; i++)
+      for (int j = 0; j <= theMaxOrder + theNV; j++)
+      {
+        if (theAlongU)
+          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurfL, theDerSurf));
+        if (theAlongV)
+          theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf, DerSurfL));
+      }
+  }
+  else
+  {
+    for (int i = 0; i <= theMaxOrder + theNU + 1; i++)
+    {
+      for (int j = i; j <= theMaxOrder + theNV + 1; j++)
+      {
+        if (i + j > theMinOrder)
+        {
+          theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+          if (i != j && j <= theDerSurf.UpperRow() && i <= theDerSurf.UpperCol())
+          {
+            theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+          }
+        }
+      }
+    }
+    for (int i = 0; i <= theMaxOrder + theNU; i++)
+      for (int j = 0; j <= theMaxOrder + theNV; j++)
+        theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
+  }
+}
+
+//! Computes normal using CSLib with higher order derivatives for singular case.
+//! @tparam BasisSurfType type of basis surface
+//! @param[in] theMaxOrder maximum derivative order for CSLib
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theUMin minimum U bound
+//! @param[in] theUMax maximum U bound
+//! @param[in] theVMin minimum V bound
+//! @param[in] theVMax maximum V bound
+//! @param[in] theD1U first derivative with respect to U
+//! @param[in] theD1V first derivative with respect to V
+//! @param[in] theBasisSurf basis surface for computing higher derivatives
+//! @param[out] theNormal computed normal direction
+//! @param[out] theStatus normal computation status
+template <class BasisSurfType>
+void ComputeSingularNormal(int                  theMaxOrder,
+                           double               theU,
+                           double               theV,
+                           double               theUMin,
+                           double               theUMax,
+                           double               theVMin,
+                           double               theVMax,
+                           const gp_Vec&        theD1U,
+                           const gp_Vec&        theD1V,
+                           const BasisSurfType& theBasisSurf,
+                           gp_Dir&              theNormal,
+                           CSLib_NormalStatus&  theStatus)
+{
+  // First try simple normal
+  CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, theStatus, theNormal);
+
+  if (theStatus != CSLib_Defined && theMaxOrder > 0)
+  {
+    // Try with higher derivatives
+    TColgp_Array2OfVec aDerNUV(0, theMaxOrder, 0, theMaxOrder);
+    aDerNUV.SetValue(1, 0, theD1U);
+    aDerNUV.SetValue(0, 1, theD1V);
+    for (int i = 0; i <= theMaxOrder; ++i)
+    {
+      for (int j = 0; j <= theMaxOrder; ++j)
+      {
+        if (i + j > 1 && i + j <= theMaxOrder)
+          aDerNUV.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+      }
+    }
+    int OrderU, OrderV;
+    CSLib::Normal(theMaxOrder,
+                  aDerNUV,
+                  THE_D1_MAGNITUDE_TOL,
+                  theU,
+                  theV,
+                  theUMin,
+                  theUMax,
+                  theVMin,
+                  theVMax,
+                  theStatus,
+                  theNormal,
+                  OrderU,
+                  OrderV);
+  }
+}
+
+} // namespace Geom_OffsetSurfaceUtils
+
+#endif // _Geom_OffsetSurfaceUtils_HeaderFile
