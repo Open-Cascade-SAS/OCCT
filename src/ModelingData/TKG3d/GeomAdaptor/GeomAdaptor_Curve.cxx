@@ -775,25 +775,23 @@ gp_Vec GeomAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N) co
     }
 
     case GeomAbs_OffsetCurve: {
-      // Use cached adaptor data for derivatives N <= 3
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
-      gp_Pnt      aPnt;
-      gp_Vec      aDummy, aDN;
-      switch (N)
+      gp_Vec      aDN;
+      if (!Geom_OffsetCurveUtils::EvaluateDN(U,
+                                             anOffsetData.BasisAdaptor.get(),
+                                             anOffsetData.Direction,
+                                             anOffsetData.Offset,
+                                             N,
+                                             aDN))
       {
-        case 1:
-          D1(U, aPnt, aDN);
-          return aDN;
-        case 2:
-          D2(U, aPnt, aDummy, aDN);
-          return aDN;
-        case 3:
-          D3(U, aPnt, aDummy, aDummy, aDN);
-          return aDN;
-        default:
-          // For higher derivatives, use basis adaptor
-          return anOffsetData.BasisAdaptor->DN(U, N);
+        if (N > 3)
+        {
+          throw Standard_NotImplemented(
+            "GeomAdaptor_Curve::DN: Derivative order > 3 not supported");
+        }
+        throw Standard_NullValue("GeomAdaptor_Curve::DN: Unable to calculate offset DN");
       }
+      return aDN;
     }
 
     default: // to eliminate gcc warning

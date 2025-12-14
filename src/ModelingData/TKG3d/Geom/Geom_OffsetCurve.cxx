@@ -303,30 +303,19 @@ void Geom_OffsetCurve::D3(const Standard_Real theU,
 
 gp_Vec Geom_OffsetCurve::DN(const Standard_Real U, const Standard_Integer N) const
 {
-  Standard_RangeError_Raise_if(N < 1,
-                               "Exception: "
-                               "Geom_OffsetCurve::DN(...). N<1.");
+  Standard_RangeError_Raise_if(N < 1, "Exception: Geom_OffsetCurve::DN(...). N<1.");
 
-  gp_Vec VN, Vtemp;
-  gp_Pnt Ptemp;
-  switch (N)
+  gp_Vec aVN;
+  if (!Geom_OffsetCurveUtils::EvaluateDN(U, basisCurve.get(), direction, offsetValue, N, aVN))
   {
-    case 1:
-      D1(U, Ptemp, VN);
-      break;
-    case 2:
-      D2(U, Ptemp, Vtemp, VN);
-      break;
-    case 3:
-      D3(U, Ptemp, Vtemp, Vtemp, VN);
-      break;
-    default:
-      throw Standard_NotImplemented(
-        "Exception: "
-        "Derivative order is greater than 3. Cannot compute of derivative.");
+    if (N > 3)
+    {
+      throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
+                                    "Cannot compute of derivative.");
+    }
+    throw Standard_NullValue("Geom_OffsetCurve::DN: Unable to calculate offset DN");
   }
-
-  return VN;
+  return aVN;
 }
 
 //==================================================================================================

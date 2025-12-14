@@ -489,6 +489,40 @@ bool EvaluateD3(double                theU,
   return CalculateD3(theValue, theD1, theD2, theD3, aD4, theDir, theOffset, isDirectionChange);
 }
 
+//! Template function for DN evaluation of offset curve.
+//! Handles derivatives up to order 3 using D1/D2/D3 methods.
+//!
+//! @tparam BasisCurveType type of basis curve (must have D1, D2, D3 methods)
+//! @param[in] theU parameter value
+//! @param[in] theBasisCurve basis curve
+//! @param[in] theDir offset reference direction
+//! @param[in] theOffset offset distance
+//! @param[in] theN derivative order (must be >= 1)
+//! @param[out] theDN computed N-th derivative
+//! @return true if evaluation succeeded (N <= 3), false if N > 3 or computation failed
+template <typename BasisCurveType>
+bool EvaluateDN(double                theU,
+                const BasisCurveType& theBasisCurve,
+                const gp_Dir&         theDir,
+                double                theOffset,
+                int                   theN,
+                gp_Vec&               theDN)
+{
+  gp_Pnt aPnt;
+  gp_Vec aDummy;
+  switch (theN)
+  {
+    case 1:
+      return EvaluateD1(theU, theBasisCurve, theDir, theOffset, aPnt, theDN);
+    case 2:
+      return EvaluateD2(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, theDN);
+    case 3:
+      return EvaluateD3(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, aDummy, theDN);
+    default:
+      return false; // N > 3 not supported
+  }
+}
+
 } // namespace Geom_OffsetCurveUtils
 
 #endif // _Geom_OffsetCurveUtils_HeaderFile
