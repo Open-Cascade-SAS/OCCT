@@ -41,16 +41,6 @@ class Geom2dAdaptor_Curve;
 
 DEFINE_STANDARD_HANDLE(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
-//! Internal structure for 2D offset curve evaluation data.
-struct Geom2dAdaptor_OffsetCurveData
-{
-  Handle(Geom2dAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
-  double                      Offset;       //!< Offset distance
-};
-
-//! Variant type for 2D curve-specific evaluation data.
-using Geom2dAdaptor_CurveDataVariant = std::variant<std::monostate, Geom2dAdaptor_OffsetCurveData>;
-
 //! An interface between the services provided by any
 //! curve from the package Geom2d and those required
 //! of the curve by algorithms which use it.
@@ -61,6 +51,17 @@ using Geom2dAdaptor_CurveDataVariant = std::variant<std::monostate, Geom2dAdapto
 class Geom2dAdaptor_Curve : public Adaptor2d_Curve2d
 {
   DEFINE_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
+public:
+  //! Internal structure for 2D offset curve evaluation data.
+  struct OffsetData
+  {
+    Handle(Geom2dAdaptor_Curve) BasisAdaptor;  //!< Adaptor for basis curve
+    double                      Offset = 0.0;  //!< Offset distance
+  };
+
+  //! Variant type for 2D curve-specific evaluation data.
+  using CurveDataVariant = std::variant<std::monostate, OffsetData>;
+
 public:
   Standard_EXPORT Geom2dAdaptor_Curve();
 
@@ -231,7 +232,7 @@ protected:
 
   Handle(Geom2d_BSplineCurve)    myBSplineCurve; ///< B-spline representation to prevent castings
   mutable Handle(BSplCLib_Cache) myCurveCache;   ///< Cached data for B-spline or Bezier curve
-  Geom2dAdaptor_CurveDataVariant myCurveData;    ///< Curve-specific evaluation data (offset, etc.)
+  CurveDataVariant               myCurveData;    ///< Curve-specific evaluation data (offset, etc.)
 };
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile

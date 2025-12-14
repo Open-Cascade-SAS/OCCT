@@ -49,15 +49,15 @@ public:
   //! Internal structure for extrusion surface evaluation data.
   struct ExtrusionData
   {
-    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
-    gp_Dir                  Direction;  //!< Extrusion direction
+    Handle(GeomAdaptor_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_Dir                    Direction;  //!< Extrusion direction
   };
 
   //! Internal structure for revolution surface evaluation data.
   struct RevolutionData
   {
-    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
-    gp_Ax1                  Axis;       //!< Rotation axis
+    Handle(GeomAdaptor_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_Ax1                    Axis;       //!< Rotation axis
   };
 
   //! Custom deleter for Geom_OsculatingSurface to allow incomplete type in header.

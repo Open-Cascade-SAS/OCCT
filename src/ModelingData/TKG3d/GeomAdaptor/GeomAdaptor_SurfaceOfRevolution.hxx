@@ -19,6 +19,7 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
+class GeomAdaptor_Curve;
 class gp_Pln;
 class gp_Cylinder;
 class gp_Cone;
@@ -174,10 +175,10 @@ public:
   Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
 
 private:
-  Handle(Adaptor3d_Curve) myBasisCurve; ///< revolved curve
-  gp_Ax1                  myAxis;       ///< axis of revolution
-  Standard_Boolean        myHaveAxis;   ///< whether axis of revolution is initialized
-  gp_Ax3                  myAxeRev;     ///< auxiliary trihedron according to the curve position
+  Handle(GeomAdaptor_Curve) myBasisCurve; ///< revolved curve
+  gp_Ax1                    myAxis;       ///< axis of revolution
+  Standard_Boolean          myHaveAxis;   ///< whether axis of revolution is initialized
+  gp_Ax3                    myAxeRev;     ///< auxiliary trihedron according to the curve position
 };
 
 #endif // _GeomAdaptor_SurfaceOfRevolution_HeaderFile

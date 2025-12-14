@@ -17,6 +17,7 @@
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax3.hxx>
 #include <Standard_NoSuchObject.hxx>
 
@@ -57,7 +58,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
 
   if (!myBasisCurve.IsNull())
   {
-    aCopy->myBasisCurve = myBasisCurve->ShallowCopy();
+    aCopy->myBasisCurve = Handle(GeomAdaptor_Curve)::DownCast(myBasisCurve->ShallowCopy());
   }
   aCopy->myDirection = myDirection;
   aCopy->myHaveDir   = myHaveDir;
@@ -77,7 +78,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
     GeomAdaptor_Surface::ExtrusionData aNewData;
     if (!anExtData->BasisCurve.IsNull())
     {
-      aNewData.BasisCurve = anExtData->BasisCurve->ShallowCopy();
+      aNewData.BasisCurve = Handle(GeomAdaptor_Curve)::DownCast(anExtData->BasisCurve->ShallowCopy());
     }
     aNewData.Direction   = anExtData->Direction;
     aCopy->mySurfaceData = std::move(aNewData);
@@ -90,7 +91,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
 
 void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const Handle(Adaptor3d_Curve)& C)
 {
-  myBasisCurve = C;
+  myBasisCurve = Handle(GeomAdaptor_Curve)::DownCast(C);
   if (myHaveDir)
     Load(myDirection);
 }
@@ -190,7 +191,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::VTrim(const Stan
                                                                       const Standard_Real Last,
                                                                       const Standard_Real Tol) const
 {
-  Handle(Adaptor3d_Curve)                      HC = BasisCurve()->Trim(First, Last, Tol);
+  Handle(GeomAdaptor_Curve) HC = Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
   Handle(GeomAdaptor_SurfaceOfLinearExtrusion) HR =
     new GeomAdaptor_SurfaceOfLinearExtrusion(GeomAdaptor_SurfaceOfLinearExtrusion(HC, myDirection));
   return HR;

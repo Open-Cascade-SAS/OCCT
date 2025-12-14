@@ -630,15 +630,17 @@ Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
   if (auto* anExtrusionData = std::get_if<GeomAdaptor_Surface::ExtrusionData>(&mySurfaceData))
   {
     GeomAdaptor_Surface::ExtrusionData aNewData;
-    aNewData.BasisCurve = anExtrusionData->BasisCurve->ShallowCopy();
-    aNewData.Direction  = anExtrusionData->Direction;
+    aNewData.BasisCurve =
+      Handle(GeomAdaptor_Curve)::DownCast(anExtrusionData->BasisCurve->ShallowCopy());
+    aNewData.Direction   = anExtrusionData->Direction;
     aCopy->mySurfaceData = aNewData;
   }
   else if (auto* aRevolutionData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&mySurfaceData))
   {
     GeomAdaptor_Surface::RevolutionData aNewData;
-    aNewData.BasisCurve = aRevolutionData->BasisCurve->ShallowCopy();
-    aNewData.Axis       = aRevolutionData->Axis;
+    aNewData.BasisCurve =
+      Handle(GeomAdaptor_Curve)::DownCast(aRevolutionData->BasisCurve->ShallowCopy());
+    aNewData.Axis        = aRevolutionData->Axis;
     aCopy->mySurfaceData = aNewData;
   }
   else if (auto* anOffsetData = std::get_if<GeomAdaptor_Surface::OffsetData>(&mySurfaceData))

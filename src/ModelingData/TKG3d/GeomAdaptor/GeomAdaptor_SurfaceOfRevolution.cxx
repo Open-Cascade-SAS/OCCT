@@ -17,6 +17,7 @@
 #include <GeomAdaptor_SurfaceOfRevolution.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <ElCLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 
@@ -55,7 +56,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
 
   if (!myBasisCurve.IsNull())
   {
-    aCopy->myBasisCurve = myBasisCurve->ShallowCopy();
+    aCopy->myBasisCurve = Handle(GeomAdaptor_Curve)::DownCast(myBasisCurve->ShallowCopy());
   }
   aCopy->myAxis     = myAxis;
   aCopy->myHaveAxis = myHaveAxis;
@@ -76,7 +77,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
     GeomAdaptor_Surface::RevolutionData aNewData;
     if (!aRevData->BasisCurve.IsNull())
     {
-      aNewData.BasisCurve = aRevData->BasisCurve->ShallowCopy();
+      aNewData.BasisCurve = Handle(GeomAdaptor_Curve)::DownCast(aRevData->BasisCurve->ShallowCopy());
     }
     aNewData.Axis        = aRevData->Axis;
     aCopy->mySurfaceData = std::move(aNewData);
@@ -89,7 +90,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
 
 void GeomAdaptor_SurfaceOfRevolution::Load(const Handle(Adaptor3d_Curve)& C)
 {
-  myBasisCurve = C;
+  myBasisCurve = Handle(GeomAdaptor_Curve)::DownCast(C);
   if (myHaveAxis)
     Load(myAxis); // to evaluate the new myAxeRev.
 }
@@ -291,7 +292,7 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::VTrim(const Standard_
                                                                  const Standard_Real Last,
                                                                  const Standard_Real Tol) const
 {
-  Handle(Adaptor3d_Curve)                 HC = BasisCurve()->Trim(First, Last, Tol);
+  Handle(GeomAdaptor_Curve) HC = Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
   Handle(GeomAdaptor_SurfaceOfRevolution) HR =
     new GeomAdaptor_SurfaceOfRevolution(GeomAdaptor_SurfaceOfRevolution(HC, myAxis));
   return HR;

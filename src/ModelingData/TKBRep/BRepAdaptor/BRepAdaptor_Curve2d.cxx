@@ -45,15 +45,15 @@ Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
   aCopy->myBSplineCurve = myBSplineCurve;
 
   // Copy offset curve data if present
-  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_OffsetCurveData>(&myCurveData))
+  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_Curve::OffsetData>(&myCurveData))
   {
-    Geom2dAdaptor_OffsetCurveData aNewData;
+    Geom2dAdaptor_Curve::OffsetData aNewData;
     if (!anOffsetData->BasisAdaptor.IsNull())
     {
       aNewData.BasisAdaptor =
         Handle(Geom2dAdaptor_Curve)::DownCast(anOffsetData->BasisAdaptor->ShallowCopy());
     }
-    aNewData.Offset  = anOffsetData->Offset;
+    aNewData.Offset    = anOffsetData->Offset;
     aCopy->myCurveData = std::move(aNewData);
   }
 

@@ -19,6 +19,7 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
+class GeomAdaptor_Curve;
 class gp_Pln;
 class gp_Cylinder;
 class gp_Cone;
@@ -161,9 +162,9 @@ public:
   Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
 
 private:
-  Handle(Adaptor3d_Curve) myBasisCurve; ///< extruded curve
-  gp_Dir                  myDirection;  ///< direction of extrusion
-  Standard_Boolean        myHaveDir;    ///< whether the direction of extrusion is initialized
+  Handle(GeomAdaptor_Curve) myBasisCurve; ///< extruded curve
+  gp_Dir                    myDirection;  ///< direction of extrusion
+  Standard_Boolean          myHaveDir;    ///< whether the direction of extrusion is initialized
 };
 
 #endif // _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile

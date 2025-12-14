@@ -151,9 +151,9 @@ Handle(Adaptor2d_Curve2d) Geom2dAdaptor_Curve::ShallowCopy() const
   aCopy->myBSplineCurve = myBSplineCurve;
 
   // Copy offset curve data if present
-  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_OffsetCurveData>(&myCurveData))
+  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_Curve::OffsetData>(&myCurveData))
   {
-    Geom2dAdaptor_OffsetCurveData aNewData;
+    Geom2dAdaptor_Curve::OffsetData aNewData;
     if (!anOffsetData->BasisAdaptor.IsNull())
     {
       aNewData.BasisAdaptor =
@@ -353,7 +353,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
       // Create nested adaptor for base curve and store offset data
       Handle(Geom2d_Curve) aBaseCurve = anOffsetCurve->BasisCurve();
 
-      Geom2dAdaptor_OffsetCurveData anOffsetData;
+      Geom2dAdaptor_Curve::OffsetData anOffsetData;
       anOffsetData.BasisAdaptor = new Geom2dAdaptor_Curve(aBaseCurve, UFirst, ULast);
       anOffsetData.Offset       = anOffsetCurve->Offset();
       myCurveData               = std::move(anOffsetData);
@@ -711,7 +711,7 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
     }
 
     case GeomAbs_OffsetCurve: {
-      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      const auto& anOffsetData = std::get<Geom2dAdaptor_Curve::OffsetData>(myCurveData);
       gp_Vec2d    aD1;
       anOffsetData.BasisAdaptor->D1(U, P, aD1);
       Geom2d_OffsetUtils::CalculateD0(P, aD1, anOffsetData.Offset);
@@ -747,7 +747,7 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) co
     }
 
     case GeomAbs_OffsetCurve: {
-      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      const auto& anOffsetData = std::get<Geom2dAdaptor_Curve::OffsetData>(myCurveData);
       gp_Vec2d    aD2;
       anOffsetData.BasisAdaptor->D2(U, P, V, aD2);
       Geom2d_OffsetUtils::CalculateD1(P, V, aD2, anOffsetData.Offset);
@@ -783,7 +783,7 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, g
     }
 
     case GeomAbs_OffsetCurve: {
-      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      const auto& anOffsetData = std::get<Geom2dAdaptor_Curve::OffsetData>(myCurveData);
       gp_Vec2d    aD3;
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, aD3);
 
@@ -832,7 +832,7 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
     }
 
     case GeomAbs_OffsetCurve: {
-      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      const auto& anOffsetData = std::get<Geom2dAdaptor_Curve::OffsetData>(myCurveData);
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, V3);
       gp_Vec2d aD4 = anOffsetData.BasisAdaptor->DN(U, 4);
 
@@ -886,7 +886,7 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N
           D3(U, aPnt, aDummy, aDummy, aDN);
           break;
         default: {
-          const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+          const auto& anOffsetData = std::get<Geom2dAdaptor_Curve::OffsetData>(myCurveData);
           aDN                      = anOffsetData.BasisAdaptor->DN(U, N);
         }
       }
