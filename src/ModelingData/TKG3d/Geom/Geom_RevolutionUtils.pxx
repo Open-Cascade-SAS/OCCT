@@ -1,4 +1,4 @@
-// Copyright (c) 2024 OPEN CASCADE SAS
+// Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -340,11 +340,13 @@ inline gp_Vec DN(const double     theU,
   const double aCos = std::cos(theU);
 
   gp_XYZ aDV;
+  gp_XYZ aPntXYZ; // Store original point to avoid redundant curve evaluation
   if (theDerV == 0)
   {
     gp_Pnt aP;
     theBasis.D0(theV, aP);
-    aDV = aP.XYZ() - theLoc;
+    aPntXYZ = aP.XYZ();
+    aDV = aPntXYZ - theLoc;
   }
   else
   {
@@ -363,7 +365,7 @@ inline gp_Vec DN(const double     theU,
     gp_XYZ aShift;
     if (theDerV == 0)
     {
-      ShiftPoint(theLoc, theAxis, theBasis.Value(theV).XYZ(), aShift);
+      ShiftPoint(theLoc, theAxis, aPntXYZ, aShift);
     }
     else
     {
