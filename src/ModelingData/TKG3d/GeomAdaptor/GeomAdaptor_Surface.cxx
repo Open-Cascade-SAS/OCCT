@@ -172,8 +172,12 @@ inline void offsetD0(const double                           theU,
                      gp_Pnt&                                theValue)
 {
   const auto& anOscQuery = theData.OsculatingSurface;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(theU, theV, theData.BasisAdaptor, theData.Offset,
-                                           anOscQuery, theValue))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD0(theU,
+                                           theV,
+                                           theData.BasisAdaptor,
+                                           theData.Offset,
+                                           anOscQuery,
+                                           theValue))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D0");
   }
@@ -189,8 +193,14 @@ inline void offsetD1(const double                           theU,
                      gp_Vec&                                theD1V)
 {
   const auto& anOscQuery = theData.OsculatingSurface;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD1(theU, theV, theData.BasisAdaptor, theData.Offset,
-                                           anOscQuery, theValue, theD1U, theD1V))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD1(theU,
+                                           theV,
+                                           theData.BasisAdaptor,
+                                           theData.Offset,
+                                           anOscQuery,
+                                           theValue,
+                                           theD1U,
+                                           theD1V))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
   }
@@ -209,9 +219,17 @@ inline void offsetD2(const double                           theU,
                      gp_Vec&                                theD2UV)
 {
   const auto& anOscQuery = theData.OsculatingSurface;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD2(theU, theV, theData.BasisAdaptor, theData.Offset,
-                                           anOscQuery, theValue, theD1U, theD1V,
-                                           theD2U, theD2V, theD2UV))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD2(theU,
+                                           theV,
+                                           theData.BasisAdaptor,
+                                           theData.Offset,
+                                           anOscQuery,
+                                           theValue,
+                                           theD1U,
+                                           theD1V,
+                                           theD2U,
+                                           theD2V,
+                                           theD2UV))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D2");
   }
@@ -234,10 +252,21 @@ inline void offsetD3(const double                           theU,
                      gp_Vec&                                theD3UVV)
 {
   const auto& anOscQuery = theData.OsculatingSurface;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD3(theU, theV, theData.BasisAdaptor, theData.Offset,
-                                           anOscQuery, theValue, theD1U, theD1V,
-                                           theD2U, theD2V, theD2UV,
-                                           theD3U, theD3V, theD3UUV, theD3UVV))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD3(theU,
+                                           theV,
+                                           theData.BasisAdaptor,
+                                           theData.Offset,
+                                           anOscQuery,
+                                           theValue,
+                                           theD1U,
+                                           theD1V,
+                                           theD2U,
+                                           theD2V,
+                                           theD2UV,
+                                           theD3U,
+                                           theD3V,
+                                           theD3UUV,
+                                           theD3UVV))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D3");
   }
@@ -250,14 +279,19 @@ inline gp_Vec offsetDN(const double                           theU,
                        int                                    theNu,
                        int                                    theNv)
 {
-  if (theNu + theNv == 0)
+  gp_Vec aResult;
+  if (!Geom_OffsetSurfaceUtils::EvaluateDN(theU,
+                                           theV,
+                                           theNu,
+                                           theNv,
+                                           theData.BasisAdaptor.get(),
+                                           theData.Offset,
+                                           theData.OsculatingSurface.get(),
+                                           aResult))
   {
-    gp_Pnt aP;
-    offsetD0(theU, theV, theData, aP);
-    return gp_Vec(aP.XYZ());
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset DN");
   }
-  // For higher derivatives, use basis adaptor
-  return theData.BasisAdaptor->DN(theU, theV, theNu, theNv);
+  return aResult;
 }
 
 } // end of anonymous namespace
