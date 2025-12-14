@@ -608,11 +608,14 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
-      Geom_OffsetCurveUtils::EvaluateD0(U,
-                                        anOffsetData.BasisAdaptor.get(),
-                                        anOffsetData.Direction,
-                                        anOffsetData.Offset,
-                                        P);
+      if (!Geom_OffsetCurveUtils::EvaluateD0(U,
+                                             anOffsetData.BasisAdaptor.get(),
+                                             anOffsetData.Direction,
+                                             anOffsetData.Offset,
+                                             P))
+      {
+        throw Standard_NullValue("GeomAdaptor_Curve::D0: Unable to calculate offset point");
+      }
       break;
     }
 
@@ -646,12 +649,15 @@ void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
-      Geom_OffsetCurveUtils::EvaluateD1(U,
-                                        anOffsetData.BasisAdaptor.get(),
-                                        anOffsetData.Direction,
-                                        anOffsetData.Offset,
-                                        P,
-                                        V);
+      if (!Geom_OffsetCurveUtils::EvaluateD1(U,
+                                             anOffsetData.BasisAdaptor.get(),
+                                             anOffsetData.Direction,
+                                             anOffsetData.Offset,
+                                             P,
+                                             V))
+      {
+        throw Standard_NullValue("GeomAdaptor_Curve::D1: Unable to calculate offset D1");
+      }
       break;
     }
 
@@ -685,13 +691,16 @@ void GeomAdaptor_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
-      Geom_OffsetCurveUtils::EvaluateD2(U,
-                                        anOffsetData.BasisAdaptor.get(),
-                                        anOffsetData.Direction,
-                                        anOffsetData.Offset,
-                                        P,
-                                        V1,
-                                        V2);
+      if (!Geom_OffsetCurveUtils::EvaluateD2(U,
+                                             anOffsetData.BasisAdaptor.get(),
+                                             anOffsetData.Direction,
+                                             anOffsetData.Offset,
+                                             P,
+                                             V1,
+                                             V2))
+      {
+        throw Standard_NullValue("GeomAdaptor_Curve::D2: Unable to calculate offset D2");
+      }
       break;
     }
 
@@ -729,14 +738,17 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
 
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
-      Geom_OffsetCurveUtils::EvaluateD3(U,
-                                        anOffsetData.BasisAdaptor.get(),
-                                        anOffsetData.Direction,
-                                        anOffsetData.Offset,
-                                        P,
-                                        V1,
-                                        V2,
-                                        V3);
+      if (!Geom_OffsetCurveUtils::EvaluateD3(U,
+                                             anOffsetData.BasisAdaptor.get(),
+                                             anOffsetData.Direction,
+                                             anOffsetData.Offset,
+                                             P,
+                                             V1,
+                                             V2,
+                                             V3))
+      {
+        throw Standard_NullValue("GeomAdaptor_Curve::D3: Unable to calculate offset D3");
+      }
       break;
     }
 
