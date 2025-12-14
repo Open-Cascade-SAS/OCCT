@@ -34,6 +34,7 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Intf_PIType.hxx>
 #include <Intf_SectionPoint.hxx>
@@ -988,6 +989,121 @@ void DoNewBounds(const SurfaceType&          theSurface,
     theBounds.SetValue(3, VSmin);
     theBounds.SetValue(4, VSmax);
   }
+}
+
+//! Compute intersection point with parameter validation and transition computation.
+//! Returns true if the point is valid and should be appended.
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @param[out] thePoint The computed intersection point (valid only if returns true)
+template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
+bool ComputeAppendPoint(const CurveType&                    theCurve,
+                        const Standard_Real                 theLw,
+                        const SurfaceType&                  theSurface,
+                        const Standard_Real                 theSu,
+                        const Standard_Real                 theSv,
+                        IntCurveSurface_IntersectionPoint&  thePoint)
+{
+  Standard_Real W0 = CurveTool::FirstParameter(theCurve);
+  Standard_Real W1 = CurveTool::LastParameter(theCurve);
+  Standard_Real U0 = SurfaceTool::FirstUParameter(theSurface);
+  Standard_Real U1 = SurfaceTool::LastUParameter(theSurface);
+  Standard_Real V0 = SurfaceTool::FirstVParameter(theSurface);
+  Standard_Real V1 = SurfaceTool::LastVParameter(theSurface);
+
+  Standard_Real w = theLw, u = theSu, v = theSv;
+
+  GeomAbs_CurveType aCType = CurveTool::GetType(theCurve);
+
+  if (CurveTool::IsPeriodic(theCurve) || aCType == GeomAbs_Circle || aCType == GeomAbs_Ellipse)
+  {
+    w = ElCLib::InPeriod(w, W0, W0 + CurveTool::Period(theCurve));
+  }
+
+  if ((W0 - w) >= THE_TOLTANGENCY || (w - W1) >= THE_TOLTANGENCY)
+    return false;
+
+  GeomAbs_SurfaceType aSType = SurfaceTool::GetType(theSurface);
+  if (SurfaceTool::IsUPeriodic(theSurface) || aSType == GeomAbs_Cylinder || aSType == GeomAbs_Cone
+      || aSType == GeomAbs_Sphere)
+  {
+    u = ElCLib::InPeriod(u, U0, U0 + SurfaceTool::UPeriod(theSurface));
+  }
+
+  if (SurfaceTool::IsVPeriodic(theSurface))
+  {
+    v = ElCLib::InPeriod(v, V0, V0 + SurfaceTool::VPeriod(theSurface));
+  }
+
+  if ((U0 - u) >= THE_TOLTANGENCY || (u - U1) >= THE_TOLTANGENCY)
+    return false;
+  if ((V0 - v) >= THE_TOLTANGENCY || (v - V1) >= THE_TOLTANGENCY)
+    return false;
+
+  IntCurveSurface_TransitionOnCurve TransOnCurve;
+  ComputeTransitions<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
+                                                                      w,
+                                                                      TransOnCurve,
+                                                                      theSurface,
+                                                                      u,
+                                                                      v);
+  gp_Pnt P(CurveTool::Value(theCurve, w));
+  thePoint = IntCurveSurface_IntersectionPoint(P, u, v, w, TransOnCurve);
+  return true;
+}
+
+//! Process analytical intersection of conic with quadric.
+//! Returns status and computes intersection points.
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @param[out] theIsParallel Set to true if curve is parallel or in quadric
+//! @param[out] thePoints Vector of computed intersection points
+//! @return true if the operation was done successfully
+template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
+bool ProcessIntAna(const CurveType&                                theCurve,
+                   const SurfaceType&                              theSurface,
+                   const IntAna_IntConicQuad&                      theIntAna,
+                   Standard_Boolean&                               theIsParallel,
+                   NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+{
+  theIsParallel = Standard_False;
+  thePoints.Clear();
+
+  if (!theIntAna.IsDone())
+  {
+    return false;
+  }
+
+  if (theIntAna.IsInQuadric() || theIntAna.IsParallel())
+  {
+    theIsParallel = Standard_True;
+    return true;
+  }
+
+  Standard_Integer nbp = theIntAna.NbPoints();
+  Standard_Real    u, v, w;
+  for (Standard_Integer i = 1; i <= nbp; i++)
+  {
+    gp_Pnt P(theIntAna.Point(i));
+    w = theIntAna.ParamOnConic(i);
+    ComputeParamsOnQuadric<SurfaceType, SurfaceTool>(theSurface, P, u, v);
+
+    IntCurveSurface_IntersectionPoint aPoint;
+    if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
+                                                                           w,
+                                                                           theSurface,
+                                                                           u,
+                                                                           v,
+                                                                           aPoint))
+    {
+      thePoints.Append(aPoint);
+    }
+  }
+  return true;
 }
 
 } // namespace IntCurveSurface_InterUtils

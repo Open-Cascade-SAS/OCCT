@@ -1245,54 +1245,17 @@ void IntCurveSurface_Inter::AppendPoint(const TheCurve&     curve,
                                         const Standard_Real su,
                                         const Standard_Real sv)
 {
-
-  Standard_Real W0 = TheCurveTool::FirstParameter(curve);
-  Standard_Real W1 = TheCurveTool::LastParameter(curve);
-  Standard_Real U0 = TheSurfaceTool::FirstUParameter(surface);
-  Standard_Real U1 = TheSurfaceTool::LastUParameter(surface);
-  Standard_Real V0 = TheSurfaceTool::FirstVParameter(surface);
-  Standard_Real V1 = TheSurfaceTool::LastVParameter(surface);
-  //-- Test si la courbe est periodique
-  Standard_Real w = lw, u = su, v = sv;
-
-  GeomAbs_CurveType aCType = TheCurveTool::GetType(curve);
-
-  if (TheCurveTool::IsPeriodic(curve) || aCType == GeomAbs_Circle || aCType == GeomAbs_Ellipse)
+  IntCurveSurface_IntersectionPoint aPoint;
+  if (IntCurveSurface_InterUtils::
+        ComputeAppendPoint<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(curve,
+                                                                               lw,
+                                                                               surface,
+                                                                               su,
+                                                                               sv,
+                                                                               aPoint))
   {
-    w = ElCLib::InPeriod(w, W0, W0 + TheCurveTool::Period(curve));
+    Append(aPoint);
   }
-
-  if ((W0 - w) >= TOLTANGENCY || (w - W1) >= TOLTANGENCY)
-    return;
-
-  GeomAbs_SurfaceType aSType = TheSurfaceTool::GetType(surface);
-  if (TheSurfaceTool::IsUPeriodic(surface) || aSType == GeomAbs_Cylinder || aSType == GeomAbs_Cone
-      || aSType == GeomAbs_Sphere)
-  {
-    u = ElCLib::InPeriod(u, U0, U0 + TheSurfaceTool::UPeriod(surface));
-  }
-
-  if (TheSurfaceTool::IsVPeriodic(surface))
-  {
-    v = ElCLib::InPeriod(v, V0, V0 + TheSurfaceTool::VPeriod(surface));
-  }
-
-  if ((U0 - u) >= TOLTANGENCY || (u - U1) >= TOLTANGENCY)
-    return;
-  if ((V0 - v) >= TOLTANGENCY || (v - V1) >= TOLTANGENCY)
-    return;
-
-  IntCurveSurface_TransitionOnCurve TransOnCurve;
-  IntCurveSurface_InterUtils::
-    ComputeTransitions<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(curve,
-                                                                           w,
-                                                                           TransOnCurve,
-                                                                           surface,
-                                                                           u,
-                                                                           v);
-  gp_Pnt                            P(TheCurveTool::Value(curve, w));
-  IntCurveSurface_IntersectionPoint IP(P, u, v, w, TransOnCurve);
-  Append(IP); //-- invoque la methode de IntCurveSurface_Intersection.
 }
 
 //=================================================================================================
