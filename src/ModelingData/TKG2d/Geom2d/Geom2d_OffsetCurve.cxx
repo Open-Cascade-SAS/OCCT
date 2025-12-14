@@ -252,25 +252,17 @@ gp_Vec2d Geom2d_OffsetCurve::DN(const Standard_Real U, const Standard_Integer N)
 {
   Standard_RangeError_Raise_if(N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
 
-  gp_Vec2d VN, VBidon;
-  gp_Pnt2d PBidon;
-  switch (N)
+  gp_Vec2d aVN;
+  if (!Geom2d_OffsetUtils::EvaluateDN(U, basisCurve.get(), offsetValue, N, aVN))
   {
-    case 1:
-      D1(U, PBidon, VN);
-      break;
-    case 2:
-      D2(U, PBidon, VBidon, VN);
-      break;
-    case 3:
-      D3(U, PBidon, VBidon, VBidon, VN);
-      break;
-    default:
+    if (N > 3)
+    {
       throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
                                     "Cannot compute of derivative.");
+    }
+    throw Standard_NullValue("Geom2d_OffsetCurve::DN: Unable to calculate offset DN");
   }
-
-  return VN;
+  return aVN;
 }
 
 //==================================================================================================

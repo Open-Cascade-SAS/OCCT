@@ -859,30 +859,26 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N
       {
         return std::get<BSplineData>(myCurveData).Curve->LocalDN(U, aStart, aFinish, N);
       }
-      else
-        return myCurve->DN(U, N);
+      return myCurve->DN(U, N);
     }
 
     case GeomAbs_OffsetCurve: {
       Standard_RangeError_Raise_if(N < 1, "Geom2dAdaptor_Curve::DN(): N < 1");
 
-      gp_Pnt2d aPnt;
-      gp_Vec2d aDummy, aDN;
-      switch (N)
+      const auto& anOffsetData = std::get<OffsetData>(myCurveData);
+      gp_Vec2d    aDN;
+      if (!Geom2d_OffsetUtils::EvaluateDN(U,
+                                          anOffsetData.BasisAdaptor.get(),
+                                          anOffsetData.Offset,
+                                          N,
+                                          aDN))
       {
-        case 1:
-          D1(U, aPnt, aDN);
-          break;
-        case 2:
-          D2(U, aPnt, aDummy, aDN);
-          break;
-        case 3:
-          D3(U, aPnt, aDummy, aDummy, aDN);
-          break;
-        default: {
-          const auto& anOffsetData = std::get<OffsetData>(myCurveData);
-          aDN                      = anOffsetData.BasisAdaptor->DN(U, N);
+        if (N > 3)
+        {
+          throw Standard_NotImplemented(
+            "Geom2dAdaptor_Curve::DN: Derivative order > 3 not supported");
         }
+        throw Standard_NullValue("Geom2dAdaptor_Curve::DN: Unable to calculate offset DN");
       }
       return aDN;
     }
