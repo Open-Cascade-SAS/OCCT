@@ -38,16 +38,15 @@ Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
 {
   Handle(BRepAdaptor_Curve2d) aCopy = new BRepAdaptor_Curve2d();
 
-  aCopy->myCurve        = myCurve;
-  aCopy->myTypeCurve    = myTypeCurve;
-  aCopy->myFirst        = myFirst;
-  aCopy->myLast         = myLast;
-  aCopy->myBSplineCurve = myBSplineCurve;
+  aCopy->myCurve     = myCurve;
+  aCopy->myTypeCurve = myTypeCurve;
+  aCopy->myFirst     = myFirst;
+  aCopy->myLast      = myLast;
 
-  // Copy offset curve data if present
-  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_Curve::OffsetData>(&myCurveData))
+  // Copy curve-specific data based on variant type
+  if (const auto* anOffsetData = std::get_if<OffsetData>(&myCurveData))
   {
-    Geom2dAdaptor_Curve::OffsetData aNewData;
+    OffsetData aNewData;
     if (!anOffsetData->BasisAdaptor.IsNull())
     {
       aNewData.BasisAdaptor =
@@ -55,6 +54,16 @@ Handle(Adaptor2d_Curve2d) BRepAdaptor_Curve2d::ShallowCopy() const
     }
     aNewData.Offset    = anOffsetData->Offset;
     aCopy->myCurveData = std::move(aNewData);
+  }
+  else if (const auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
+  {
+    BSplineData aNewData;
+    aNewData.Curve     = aBSplineData->Curve;
+    aCopy->myCurveData = std::move(aNewData);
+  }
+  else if (std::holds_alternative<BezierData>(myCurveData))
+  {
+    aCopy->myCurveData = BezierData{};
   }
 
   return aCopy;

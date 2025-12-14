@@ -59,8 +59,21 @@ public:
     double                      Offset = 0.0;  //!< Offset distance
   };
 
+  //! Internal structure for Bezier curve evaluation data.
+  struct BezierData
+  {
+    mutable Handle(BSplCLib_Cache) Cache;  //!< Cached data for evaluation
+  };
+
+  //! Internal structure for BSpline curve evaluation data.
+  struct BSplineData
+  {
+    Handle(Geom2d_BSplineCurve)    Curve;  //!< BSpline curve to prevent downcasts
+    mutable Handle(BSplCLib_Cache) Cache;  //!< Cached data for evaluation
+  };
+
   //! Variant type for 2D curve-specific evaluation data.
-  using CurveDataVariant = std::variant<std::monostate, OffsetData>;
+  using CurveDataVariant = std::variant<std::monostate, OffsetData, BezierData, BSplineData>;
 
 public:
   Standard_EXPORT Geom2dAdaptor_Curve();
@@ -229,10 +242,7 @@ protected:
   GeomAbs_CurveType    myTypeCurve;
   Standard_Real        myFirst;
   Standard_Real        myLast;
-
-  Handle(Geom2d_BSplineCurve)    myBSplineCurve; ///< B-spline representation to prevent castings
-  mutable Handle(BSplCLib_Cache) myCurveCache;   ///< Cached data for B-spline or Bezier curve
-  CurveDataVariant               myCurveData;    ///< Curve-specific evaluation data (offset, etc.)
+  CurveDataVariant     myCurveData;  ///< Curve-specific evaluation data (BSpline, Bezier, offset)
 };
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile
