@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <gp_Ax3.hxx>
-#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_SurfaceOfLinearExtrusion, GeomAdaptor_Surface)
@@ -73,9 +72,17 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
   aCopy->myBSplineSurface = myBSplineSurface;
 
   aCopy->mySurfaceType = mySurfaceType;
-  if (!myNestedEvaluator.IsNull())
+
+  // Copy surface data variant - for extrusion, shallow copy of basis curve is sufficient
+  if (const auto* anExtData = std::get_if<GeomAdaptor_ExtrusionSurfaceData>(&mySurfaceData))
   {
-    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+    GeomAdaptor_ExtrusionSurfaceData aNewData;
+    if (!anExtData->BasisCurve.IsNull())
+    {
+      aNewData.BasisCurve = anExtData->BasisCurve->ShallowCopy();
+    }
+    aNewData.Direction   = anExtData->Direction;
+    aCopy->mySurfaceData = std::move(aNewData);
   }
 
   return aCopy;
@@ -97,8 +104,13 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const gp_Dir& V)
   myHaveDir   = Standard_True;
   myDirection = V;
 
-  mySurfaceType     = GeomAbs_SurfaceOfExtrusion;
-  myNestedEvaluator = new GeomEvaluator_SurfaceOfExtrusion(myBasisCurve, myDirection);
+  mySurfaceType = GeomAbs_SurfaceOfExtrusion;
+
+  // Populate the surface data variant for extrusion evaluation
+  GeomAdaptor_ExtrusionSurfaceData anExtData;
+  anExtData.BasisCurve = myBasisCurve;
+  anExtData.Direction  = myDirection;
+  mySurfaceData        = std::move(anExtData);
 }
 
 //=================================================================================================

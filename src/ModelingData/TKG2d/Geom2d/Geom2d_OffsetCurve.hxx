@@ -23,7 +23,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Standard_Integer.hxx>
-#include <Geom2dEvaluator_OffsetCurve.hxx>
 
 class gp_Pnt2d;
 class gp_Vec2d;
@@ -293,12 +292,27 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_OffsetCurve, Geom2d_Curve)
 
-protected:
 private:
-  Handle(Geom2d_Curve)                basisCurve;
-  Standard_Real                       offsetValue;
-  GeomAbs_Shape                       myBasisCurveContinuity;
-  Handle(Geom2dEvaluator_OffsetCurve) myEvaluator;
+  //! Adjusts derivatives at singular points where first derivative has zero magnitude.
+  //! Uses higher-order derivatives to determine direction.
+  //! @param[in] theMaxDerivative maximum derivative order to compute
+  //! @param[in] theU parameter value
+  //! @param[in,out] theD1 first derivative (adjusted)
+  //! @param[in,out] theD2 second derivative (adjusted)
+  //! @param[in,out] theD3 third derivative (adjusted)
+  //! @param[in,out] theD4 fourth derivative (adjusted)
+  //! @return true if direction was changed
+  bool adjustDerivative(int       theMaxDerivative,
+                        double    theU,
+                        gp_Vec2d& theD1,
+                        gp_Vec2d& theD2,
+                        gp_Vec2d& theD3,
+                        gp_Vec2d& theD4) const;
+
+private:
+  Handle(Geom2d_Curve) basisCurve;
+  double               offsetValue;
+  GeomAbs_Shape        myBasisCurveContinuity;
 };
 
 #endif // _Geom2d_OffsetCurve_HeaderFile

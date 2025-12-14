@@ -34,11 +34,12 @@
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_OffsetUtils.pxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
-#include <Geom2dEvaluator_OffsetCurve.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <gp.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
@@ -58,6 +59,85 @@ static const Standard_Real PosTol = Precision::PConfusion() / 2;
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
+namespace
+{
+//! Adjusts derivative values at singular points where the tangent is zero.
+//! @param theBasisAdaptor adaptor for the basis curve
+//! @param theMaxDerivative maximum derivative order to adjust
+//! @param theU parameter value
+//! @param theD1 first derivative (modified)
+//! @param theD2 second derivative (modified)
+//! @param theD3 third derivative (modified)
+//! @param theD4 fourth derivative (modified)
+//! @return true if direction was changed
+bool AdjustDerivative(const Handle(Geom2dAdaptor_Curve)& theBasisAdaptor,
+                      int                                theMaxDerivative,
+                      double                             theU,
+                      gp_Vec2d&                          theD1,
+                      gp_Vec2d&                          theD2,
+                      gp_Vec2d&                          theD3,
+                      gp_Vec2d&                          theD4)
+{
+  static const double aTol           = gp::Resolution();
+  static const double aMinStep       = 1e-7;
+  static const int    aMaxDerivOrder = 3;
+
+  bool         isDirectionChange = false;
+  const double anUinfium         = theBasisAdaptor->FirstParameter();
+  const double anUsupremum       = theBasisAdaptor->LastParameter();
+
+  static const double DivisionFactor = 1.e-3;
+  double              du;
+  if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+  {
+    du = 0.0;
+  }
+  else
+  {
+    du = anUsupremum - anUinfium;
+  }
+
+  const double aDelta = std::max(du * DivisionFactor, aMinStep);
+
+  // Derivative is approximated by Taylor-series
+  int      anIndex = 1; // Derivative order
+  gp_Vec2d V;
+
+  do
+  {
+    V = theBasisAdaptor->DN(theU, ++anIndex);
+  } while ((V.SquareMagnitude() <= aTol) && anIndex < aMaxDerivOrder);
+
+  double u;
+
+  if (theU - anUinfium < aDelta)
+  {
+    u = theU + aDelta;
+  }
+  else
+  {
+    u = theU - aDelta;
+  }
+
+  gp_Pnt2d P1, P2;
+  theBasisAdaptor->D0(std::min(theU, u), P1);
+  theBasisAdaptor->D0(std::max(theU, u), P2);
+
+  gp_Vec2d      V1(P1, P2);
+  isDirectionChange   = V.Dot(V1) < 0.0;
+  const double  aSign = isDirectionChange ? -1.0 : 1.0;
+
+  theD1               = V * aSign;
+  gp_Vec2d* aDeriv[3] = {&theD2, &theD3, &theD4};
+  for (int i = 1; i < theMaxDerivative; i++)
+  {
+    *(aDeriv[i - 1]) = theBasisAdaptor->DN(theU, anIndex + i) * aSign;
+  }
+
+  return isDirectionChange;
+}
+} // namespace
+
 //=================================================================================================
 
 Handle(Adaptor2d_Curve2d) Geom2dAdaptor_Curve::ShallowCopy() const
@@ -69,9 +149,18 @@ Handle(Adaptor2d_Curve2d) Geom2dAdaptor_Curve::ShallowCopy() const
   aCopy->myFirst        = myFirst;
   aCopy->myLast         = myLast;
   aCopy->myBSplineCurve = myBSplineCurve;
-  if (!myNestedEvaluator.IsNull())
+
+  // Copy offset curve data if present
+  if (const auto* anOffsetData = std::get_if<Geom2dAdaptor_OffsetCurveData>(&myCurveData))
   {
-    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+    Geom2dAdaptor_OffsetCurveData aNewData;
+    if (!anOffsetData->BasisAdaptor.IsNull())
+    {
+      aNewData.BasisAdaptor =
+        Handle(Geom2dAdaptor_Curve)::DownCast(anOffsetData->BasisAdaptor->ShallowCopy());
+    }
+    aNewData.Offset  = anOffsetData->Offset;
+    aCopy->myCurveData = std::move(aNewData);
   }
 
   return aCopy;
@@ -202,7 +291,7 @@ void Geom2dAdaptor_Curve::Reset()
   myTypeCurve = GeomAbs_OtherCurve;
   myCurve.Nullify();
   myCurveCache.Nullify();
-  myNestedEvaluator.Nullify();
+  myCurveData = std::monostate{};
   myBSplineCurve.Nullify();
   myFirst = myLast = 0.0;
 }
@@ -220,7 +309,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
   if (myCurve != C)
   {
     myCurve = C;
-    myNestedEvaluator.Nullify();
+    myCurveData = std::monostate{};
     myBSplineCurve.Nullify();
 
     Handle(Standard_Type) TheType = C->DynamicType();
@@ -261,10 +350,13 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
     {
       myTypeCurve                              = GeomAbs_OffsetCurve;
       Handle(Geom2d_OffsetCurve) anOffsetCurve = Handle(Geom2d_OffsetCurve)::DownCast(myCurve);
-      // Create nested adaptor for base curve
-      Handle(Geom2d_Curve)        aBaseCurve   = anOffsetCurve->BasisCurve();
-      Handle(Geom2dAdaptor_Curve) aBaseAdaptor = new Geom2dAdaptor_Curve(aBaseCurve);
-      myNestedEvaluator = new Geom2dEvaluator_OffsetCurve(aBaseAdaptor, anOffsetCurve->Offset());
+      // Create nested adaptor for base curve and store offset data
+      Handle(Geom2d_Curve) aBaseCurve = anOffsetCurve->BasisCurve();
+
+      Geom2dAdaptor_OffsetCurveData anOffsetData;
+      anOffsetData.BasisAdaptor = new Geom2dAdaptor_Curve(aBaseCurve, UFirst, ULast);
+      anOffsetData.Offset       = anOffsetCurve->Offset();
+      myCurveData               = std::move(anOffsetData);
     }
     else
     {
@@ -618,9 +710,13 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
       break;
     }
 
-    case GeomAbs_OffsetCurve:
-      myNestedEvaluator->D0(U, P);
+    case GeomAbs_OffsetCurve: {
+      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      gp_Vec2d    aD1;
+      anOffsetData.BasisAdaptor->D1(U, P, aD1);
+      Geom2d_OffsetUtils::CalculateD0(P, aD1, anOffsetData.Offset);
       break;
+    }
 
     default:
       myCurve->D0(U, P);
@@ -650,9 +746,13 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) co
       break;
     }
 
-    case GeomAbs_OffsetCurve:
-      myNestedEvaluator->D1(U, P, V);
+    case GeomAbs_OffsetCurve: {
+      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      gp_Vec2d    aD2;
+      anOffsetData.BasisAdaptor->D2(U, P, V, aD2);
+      Geom2d_OffsetUtils::CalculateD1(P, V, aD2, anOffsetData.Offset);
       break;
+    }
 
     default:
       myCurve->D1(U, P, V);
@@ -682,9 +782,22 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, g
       break;
     }
 
-    case GeomAbs_OffsetCurve:
-      myNestedEvaluator->D2(U, P, V1, V2);
+    case GeomAbs_OffsetCurve: {
+      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      gp_Vec2d    aD3;
+      anOffsetData.BasisAdaptor->D3(U, P, V1, V2, aD3);
+
+      bool isDirectionChange = false;
+      if (V1.SquareMagnitude() <= gp::Resolution())
+      {
+        gp_Vec2d aDummyD4;
+        isDirectionChange =
+          AdjustDerivative(anOffsetData.BasisAdaptor, 3, U, V1, V2, aD3, aDummyD4);
+      }
+
+      Geom2d_OffsetUtils::CalculateD2(P, V1, V2, aD3, isDirectionChange, anOffsetData.Offset);
       break;
+    }
 
     default:
       myCurve->D2(U, P, V1, V2);
@@ -718,9 +831,20 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
       break;
     }
 
-    case GeomAbs_OffsetCurve:
-      myNestedEvaluator->D3(U, P, V1, V2, V3);
+    case GeomAbs_OffsetCurve: {
+      const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+      anOffsetData.BasisAdaptor->D3(U, P, V1, V2, V3);
+      gp_Vec2d aD4 = anOffsetData.BasisAdaptor->DN(U, 4);
+
+      bool isDirectionChange = false;
+      if (V1.SquareMagnitude() <= gp::Resolution())
+      {
+        isDirectionChange = AdjustDerivative(anOffsetData.BasisAdaptor, 4, U, V1, V2, V3, aD4);
+      }
+
+      Geom2d_OffsetUtils::CalculateD3(P, V1, V2, V3, aD4, isDirectionChange, anOffsetData.Offset);
       break;
+    }
 
     default:
       myCurve->D3(U, P, V1, V2, V3);
@@ -745,9 +869,29 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N
       break;
     }
 
-    case GeomAbs_OffsetCurve:
-      return myNestedEvaluator->DN(U, N);
-      break;
+    case GeomAbs_OffsetCurve: {
+      Standard_RangeError_Raise_if(N < 1, "Geom2dAdaptor_Curve::DN(): N < 1");
+
+      gp_Pnt2d aPnt;
+      gp_Vec2d aDummy, aDN;
+      switch (N)
+      {
+        case 1:
+          D1(U, aPnt, aDN);
+          break;
+        case 2:
+          D2(U, aPnt, aDummy, aDN);
+          break;
+        case 3:
+          D3(U, aPnt, aDummy, aDummy, aDN);
+          break;
+        default: {
+          const auto& anOffsetData = std::get<Geom2dAdaptor_OffsetCurveData>(myCurveData);
+          aDN                      = anOffsetData.BasisAdaptor->DN(U, N);
+        }
+      }
+      return aDN;
+    }
 
     default: // to eliminate gcc warning
       break;

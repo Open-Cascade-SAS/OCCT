@@ -18,12 +18,16 @@
 
 #include <Extrema_GenExtPS.hxx>
 
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_HArray1OfSphere.hxx>
 #include <Bnd_Sphere.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Extrema_POnSurfParams.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_IsoType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>

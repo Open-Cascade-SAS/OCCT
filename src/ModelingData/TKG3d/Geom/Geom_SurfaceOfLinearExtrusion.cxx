@@ -22,7 +22,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir.hxx>
@@ -68,11 +67,9 @@ Handle(Geom_Geometry) Geom_SurfaceOfLinearExtrusion::Copy() const
 Geom_SurfaceOfLinearExtrusion::Geom_SurfaceOfLinearExtrusion(const Handle(Geom_Curve)& C,
                                                              const Dir&                V)
 {
-
-  basisCurve  = Handle(Geom_Curve)::DownCast(C->Copy()); // Copy 10-03-93
-  direction   = V;
-  smooth      = C->Continuity();
-  myEvaluator = new GeomEvaluator_SurfaceOfExtrusion(basisCurve, direction);
+  basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
+  direction  = V;
+  smooth     = C->Continuity();
 }
 
 //=================================================================================================
@@ -95,9 +92,7 @@ Standard_Real Geom_SurfaceOfLinearExtrusion::UReversedParameter(const Standard_R
 
 void Geom_SurfaceOfLinearExtrusion::VReverse()
 {
-
   direction.Reverse();
-  myEvaluator->SetDirection(direction);
 }
 
 //=================================================================================================
@@ -113,17 +108,14 @@ Standard_Real Geom_SurfaceOfLinearExtrusion::VReversedParameter(const Standard_R
 void Geom_SurfaceOfLinearExtrusion::SetDirection(const Dir& V)
 {
   direction = V;
-  myEvaluator->SetDirection(direction);
 }
 
 //=================================================================================================
 
 void Geom_SurfaceOfLinearExtrusion::SetBasisCurve(const Handle(Geom_Curve)& C)
 {
-
-  smooth      = C->Continuity();
-  basisCurve  = Handle(Geom_Curve)::DownCast(C->Copy()); // Copy 10-03-93
-  myEvaluator = new GeomEvaluator_SurfaceOfExtrusion(basisCurve, direction);
+  smooth     = C->Continuity();
+  basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
 }
 
 //=================================================================================================
@@ -144,7 +136,11 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(Standard_Real& U1,
 
 void Geom_SurfaceOfLinearExtrusion::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 {
-  myEvaluator->D0(U, V, P);
+  // P = C(U) + V * direction
+  XYZ aP;
+  basisCurve->D0(U, P);
+  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
+  P.SetXYZ(aP);
 }
 
 //=================================================================================================
@@ -155,7 +151,13 @@ void Geom_SurfaceOfLinearExtrusion::D1(const Standard_Real U,
                                        Vec&                D1U,
                                        Vec&                D1V) const
 {
-  myEvaluator->D1(U, V, P, D1U, D1V);
+  // P = C(U) + V * direction
+  // D1U = C'(U), D1V = direction
+  XYZ aP;
+  basisCurve->D1(U, P, D1U);
+  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
+  P.SetXYZ(aP);
+  D1V = direction;
 }
 
 //=================================================================================================
@@ -169,7 +171,16 @@ void Geom_SurfaceOfLinearExtrusion::D2(const Standard_Real U,
                                        Vec&                D2V,
                                        Vec&                D2UV) const
 {
-  myEvaluator->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+  // P = C(U) + V * direction
+  // D1U = C'(U), D1V = direction
+  // D2U = C''(U), D2V = 0, D2UV = 0
+  XYZ aP;
+  basisCurve->D2(U, P, D1U, D2U);
+  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
+  P.SetXYZ(aP);
+  D1V  = direction;
+  D2V  = Vec(0.0, 0.0, 0.0);
+  D2UV = Vec(0.0, 0.0, 0.0);
 }
 
 //=================================================================================================
@@ -187,17 +198,41 @@ void Geom_SurfaceOfLinearExtrusion::D3(const Standard_Real U,
                                        Vec&                D3UUV,
                                        Vec&                D3UVV) const
 {
-  myEvaluator->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  // All V derivatives of order > 1 are zero
+  XYZ aP;
+  basisCurve->D3(U, P, D1U, D2U, D3U);
+  aP.SetLinearForm(V, direction.XYZ(), P.XYZ());
+  P.SetXYZ(aP);
+  D1V   = direction;
+  D2V   = Vec(0.0, 0.0, 0.0);
+  D2UV  = Vec(0.0, 0.0, 0.0);
+  D3V   = Vec(0.0, 0.0, 0.0);
+  D3UUV = Vec(0.0, 0.0, 0.0);
+  D3UVV = Vec(0.0, 0.0, 0.0);
 }
 
 //=================================================================================================
 
 Vec Geom_SurfaceOfLinearExtrusion::DN(const Standard_Real    U,
-                                      const Standard_Real    V,
+                                      const Standard_Real,
                                       const Standard_Integer Nu,
                                       const Standard_Integer Nv) const
 {
-  return myEvaluator->DN(U, V, Nu, Nv);
+  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
+  if (Nv > 1)
+  {
+    return Vec(0.0, 0.0, 0.0);
+  }
+  if (Nv == 1)
+  {
+    if (Nu == 0)
+    {
+      return direction;
+    }
+    return Vec(0.0, 0.0, 0.0);
+  }
+  // Nv == 0
+  return basisCurve->DN(U, Nu);
 }
 
 //=================================================================================================
@@ -243,10 +278,8 @@ Standard_Boolean Geom_SurfaceOfLinearExtrusion::IsCNv(const Standard_Integer) co
 
 void Geom_SurfaceOfLinearExtrusion::Transform(const Trsf& T)
 {
-
   direction.Transform(T);
   basisCurve->Transform(T);
-  myEvaluator->SetDirection(direction);
 }
 
 //=================================================================================================

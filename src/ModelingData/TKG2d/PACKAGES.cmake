@@ -6,6 +6,5 @@ set(OCCT_TKG2d_LIST_OF_PACKAGES
   Adaptor2d
   Geom2dLProp
   Geom2dAdaptor
-  Geom2dEvaluator
   Geom2dHash
 )

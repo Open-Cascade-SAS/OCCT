@@ -1,5 +1,4 @@
-// Created on: 2015-09-21
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2015-2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,48 +11,72 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dEvaluator.hxx>
+#ifndef _Geom2d_OffsetUtils_HeaderFile
+#define _Geom2d_OffsetUtils_HeaderFile
+
+#include <gp.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 #include <Standard_NullValue.hxx>
 
-//=================================================================================================
+#include <cmath>
 
-void Geom2dEvaluator::CalculateD0(gp_Pnt2d&           theValue,
-                                  const gp_Vec2d&     theD1,
-                                  const Standard_Real theOffset)
+//! Internal helper namespace for 2D offset curve calculations.
+//! Provides static inline functions to compute offset curve point and derivatives
+//! from basis curve derivatives.
+//!
+//! These functions are used by Geom2d_OffsetCurve and Geom2dAdaptor_Curve.
+//!
+//! Mathematical basis:
+//! P(u) = p(u) + Offset * N / ||N||
+//! where N = (p'(u).Y, -p'(u).X) is the normal direction (rotated tangent by 90 degrees)
+namespace Geom2d_OffsetUtils
+{
+
+//! Calculates D0 (point) for 2D offset curve.
+//! @param[in,out] theValue on input: basis curve point; on output: offset point
+//! @param[in] theD1 first derivative of basis curve at the point
+//! @param[in] theOffset offset distance value
+//! @throw Standard_NullValue if tangent vector has zero magnitude
+inline void CalculateD0(gp_Pnt2d& theValue, const gp_Vec2d& theD1, double theOffset)
 {
   if (theD1.SquareMagnitude() <= gp::Resolution())
-    throw Standard_NullValue("Geom2dEvaluator: Undefined normal vector "
+  {
+    throw Standard_NullValue("Geom2d_OffsetUtils: Undefined normal vector "
                              "because tangent vector has zero-magnitude!");
+  }
 
   gp_Dir2d aNormal(theD1.Y(), -theD1.X());
   theValue.ChangeCoord().Add(aNormal.XY() * theOffset);
 }
 
-//=================================================================================================
-
-void Geom2dEvaluator::CalculateD1(gp_Pnt2d&           theValue,
-                                  gp_Vec2d&           theD1,
-                                  const gp_Vec2d&     theD2,
-                                  const Standard_Real theOffset)
+//! Calculates D0 and D1 for 2D offset curve.
+//! @param[in,out] theValue on input: basis curve point; on output: offset point
+//! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
+//! @param[in] theD2 second derivative of basis curve
+//! @param[in] theOffset offset distance value
+//! @throw Standard_NullValue if derivatives result in null computation
+inline void CalculateD1(gp_Pnt2d& theValue, gp_Vec2d& theD1, const gp_Vec2d& theD2, double theOffset)
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ Z|| and Ndir = P' ^ Z
 
   // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-  gp_XY         Ndir(theD1.Y(), -theD1.X());
-  gp_XY         DNdir(theD2.Y(), -theD2.X());
-  Standard_Real R2 = Ndir.SquareModulus();
-  Standard_Real R  = std::sqrt(R2);
-  Standard_Real R3 = R * R2;
-  Standard_Real Dr = Ndir.Dot(DNdir);
+  gp_XY  Ndir(theD1.Y(), -theD1.X());
+  gp_XY  DNdir(theD2.Y(), -theD2.X());
+  double R2 = Ndir.SquareModulus();
+  double R  = std::sqrt(R2);
+  double R3 = R * R2;
+  double Dr = Ndir.Dot(DNdir);
   if (R3 <= gp::Resolution())
   {
     if (R2 <= gp::Resolution())
-      throw Standard_NullValue("Geom2dEvaluator_OffsetCurve: Null derivative");
+    {
+      throw Standard_NullValue("Geom2d_OffsetUtils::CalculateD1: Null derivative");
+    }
     // We try another computation but the stability is not very good.
     DNdir.Multiply(R);
     DNdir.Subtract(Ndir.Multiplied(Dr / R));
@@ -73,14 +96,20 @@ void Geom2dEvaluator::CalculateD1(gp_Pnt2d&           theValue,
   theD1.Add(gp_Vec2d(DNdir));
 }
 
-//=================================================================================================
-
-void Geom2dEvaluator::CalculateD2(gp_Pnt2d&              theValue,
-                                  gp_Vec2d&              theD1,
-                                  gp_Vec2d&              theD2,
-                                  const gp_Vec2d&        theD3,
-                                  const Standard_Boolean theIsDirChange,
-                                  const Standard_Real    theOffset)
+//! Calculates D0, D1, D2 for 2D offset curve.
+//! @param[in,out] theValue on input: basis curve point; on output: offset point
+//! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
+//! @param[in,out] theD2 on input: second derivative of basis; on output: offset curve D2
+//! @param[in] theD3 third derivative of basis curve
+//! @param[in] theIsDirChange flag indicating direction change at singular point
+//! @param[in] theOffset offset distance value
+//! @throw Standard_NullValue if derivatives result in null computation
+inline void CalculateD2(gp_Pnt2d&       theValue,
+                        gp_Vec2d&       theD1,
+                        gp_Vec2d&       theD2,
+                        const gp_Vec2d& theD3,
+                        bool            theIsDirChange,
+                        double          theOffset)
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ Z|| and Ndir = P' ^ Z
@@ -90,20 +119,22 @@ void Geom2dEvaluator::CalculateD2(gp_Pnt2d&              theValue,
   // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
   //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
 
-  gp_XY         Ndir(theD1.Y(), -theD1.X());
-  gp_XY         DNdir(theD2.Y(), -theD2.X());
-  gp_XY         D2Ndir(theD3.Y(), -theD3.X());
-  Standard_Real R2  = Ndir.SquareModulus();
-  Standard_Real R   = std::sqrt(R2);
-  Standard_Real R3  = R2 * R;
-  Standard_Real R4  = R2 * R2;
-  Standard_Real R5  = R3 * R2;
-  Standard_Real Dr  = Ndir.Dot(DNdir);
-  Standard_Real D2r = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
+  gp_XY  Ndir(theD1.Y(), -theD1.X());
+  gp_XY  DNdir(theD2.Y(), -theD2.X());
+  gp_XY  D2Ndir(theD3.Y(), -theD3.X());
+  double R2  = Ndir.SquareModulus();
+  double R   = std::sqrt(R2);
+  double R3  = R2 * R;
+  double R4  = R2 * R2;
+  double R5  = R3 * R2;
+  double Dr  = Ndir.Dot(DNdir);
+  double D2r = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
   if (R5 <= gp::Resolution())
   {
     if (R4 <= gp::Resolution())
-      throw Standard_NullValue("Geom2dEvaluator: Null derivative");
+    {
+      throw Standard_NullValue("Geom2d_OffsetUtils::CalculateD2: Null derivative");
+    }
     // We try another computation but the stability is not very good dixit ISG.
     //  V2 = P" (U) :
     D2Ndir.Subtract(DNdir.Multiplied(2.0 * Dr / R2));
@@ -135,19 +166,28 @@ void Geom2dEvaluator::CalculateD2(gp_Pnt2d&              theValue,
   theD1.Add(gp_Vec2d(DNdir));
   // P"(u) :
   if (theIsDirChange)
+  {
     theD2.Reverse();
+  }
   theD2.Add(gp_Vec2d(D2Ndir));
 }
 
-//=================================================================================================
-
-void Geom2dEvaluator::CalculateD3(gp_Pnt2d&              theValue,
-                                  gp_Vec2d&              theD1,
-                                  gp_Vec2d&              theD2,
-                                  gp_Vec2d&              theD3,
-                                  const gp_Vec2d&        theD4,
-                                  const Standard_Boolean theIsDirChange,
-                                  const Standard_Real    theOffset)
+//! Calculates D0, D1, D2, D3 for 2D offset curve.
+//! @param[in,out] theValue on input: basis curve point; on output: offset point
+//! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
+//! @param[in,out] theD2 on input: second derivative of basis; on output: offset curve D2
+//! @param[in,out] theD3 on input: third derivative of basis; on output: offset curve D3
+//! @param[in] theD4 fourth derivative of basis curve
+//! @param[in] theIsDirChange flag indicating direction change at singular point
+//! @param[in] theOffset offset distance value
+//! @throw Standard_NullValue if derivatives result in null computation
+inline void CalculateD3(gp_Pnt2d&       theValue,
+                        gp_Vec2d&       theD1,
+                        gp_Vec2d&       theD2,
+                        gp_Vec2d&       theD3,
+                        const gp_Vec2d& theD4,
+                        bool            theIsDirChange,
+                        double          theOffset)
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ Z|| and Ndir = P' ^ Z
@@ -162,25 +202,27 @@ void Geom2dEvaluator::CalculateD3(gp_Pnt2d&              theValue,
   //          (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
   //          (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
 
-  gp_XY         Ndir(theD1.Y(), -theD1.X());
-  gp_XY         DNdir(theD2.Y(), -theD2.X());
-  gp_XY         D2Ndir(theD3.Y(), -theD3.X());
-  gp_XY         D3Ndir(theD4.Y(), -theD4.X());
-  Standard_Real R2  = Ndir.SquareModulus();
-  Standard_Real R   = std::sqrt(R2);
-  Standard_Real R3  = R2 * R;
-  Standard_Real R4  = R2 * R2;
-  Standard_Real R5  = R3 * R2;
-  Standard_Real R6  = R3 * R3;
-  Standard_Real R7  = R5 * R2;
-  Standard_Real Dr  = Ndir.Dot(DNdir);
-  Standard_Real D2r = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
-  Standard_Real D3r = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
+  gp_XY  Ndir(theD1.Y(), -theD1.X());
+  gp_XY  DNdir(theD2.Y(), -theD2.X());
+  gp_XY  D2Ndir(theD3.Y(), -theD3.X());
+  gp_XY  D3Ndir(theD4.Y(), -theD4.X());
+  double R2  = Ndir.SquareModulus();
+  double R   = std::sqrt(R2);
+  double R3  = R2 * R;
+  double R4  = R2 * R2;
+  double R5  = R3 * R2;
+  double R6  = R3 * R3;
+  double R7  = R5 * R2;
+  double Dr  = Ndir.Dot(DNdir);
+  double D2r = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
+  double D3r = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
 
   if (R7 <= gp::Resolution())
   {
     if (R6 <= gp::Resolution())
-      throw Standard_NullValue("Geom2dEvaluator: Null derivative");
+    {
+      throw Standard_NullValue("Geom2d_OffsetUtils::CalculateD3: Null derivative");
+    }
     // We try another computation but the stability is not very good dixit ISG.
     //  V3 = P"' (U) :
     D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * theOffset * Dr / R2));
@@ -225,6 +267,12 @@ void Geom2dEvaluator::CalculateD3(gp_Pnt2d&              theValue,
   theD2.Add(gp_Vec2d(D2Ndir));
   // P"'(u)
   if (theIsDirChange)
+  {
     theD3.Reverse();
-  theD3.Add(gp_Vec2d(D2Ndir));
+  }
+  theD3.Add(gp_Vec2d(D3Ndir));
 }
+
+} // namespace Geom2d_OffsetUtils
+
+#endif // _Geom2d_OffsetUtils_HeaderFile

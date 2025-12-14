@@ -20,13 +20,14 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <BSplCLib_Cache.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dEvaluator_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
+#include <variant>
 
 class gp_Vec2d;
 class gp_Lin2d;
@@ -36,6 +37,19 @@ class gp_Hypr2d;
 class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
+class Geom2dAdaptor_Curve;
+
+DEFINE_STANDARD_HANDLE(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
+
+//! Internal structure for 2D offset curve evaluation data.
+struct Geom2dAdaptor_OffsetCurveData
+{
+  Handle(Geom2dAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
+  double                      Offset;       //!< Offset distance
+};
+
+//! Variant type for 2D curve-specific evaluation data.
+using Geom2dAdaptor_CurveDataVariant = std::variant<std::monostate, Geom2dAdaptor_OffsetCurveData>;
 
 //! An interface between the services provided by any
 //! curve from the package Geom2d and those required
@@ -215,11 +229,9 @@ protected:
   Standard_Real        myFirst;
   Standard_Real        myLast;
 
-  Handle(Geom2d_BSplineCurve)    myBSplineCurve;    ///< B-spline representation to prevent castings
-  mutable Handle(BSplCLib_Cache) myCurveCache;      ///< Cached data for B-spline or Bezier curve
-  Handle(Geom2dEvaluator_Curve)  myNestedEvaluator; ///< Calculates value of offset curve
+  Handle(Geom2d_BSplineCurve)    myBSplineCurve; ///< B-spline representation to prevent castings
+  mutable Handle(BSplCLib_Cache) myCurveCache;   ///< Cached data for B-spline or Bezier curve
+  Geom2dAdaptor_CurveDataVariant myCurveData;    ///< Curve-specific evaluation data (offset, etc.)
 };
-
-DEFINE_STANDARD_HANDLE(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile

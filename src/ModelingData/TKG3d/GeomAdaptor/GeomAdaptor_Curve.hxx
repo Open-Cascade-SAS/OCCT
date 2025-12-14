@@ -21,12 +21,25 @@
 #include <BSplCLib_Cache.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomEvaluator_Curve.hxx>
+#include <gp_Dir.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <variant>
+
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Curve, Adaptor3d_Curve)
+
+//! Internal structure for offset curve evaluation data.
+struct GeomAdaptor_OffsetCurveData
+{
+  Handle(GeomAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
+  double                    Offset;       //!< Offset distance
+  gp_Dir                    Direction;    //!< Offset direction
+};
+
+//! Variant type for curve-specific evaluation data.
+using GeomAdaptor_CurveDataVariant = std::variant<std::monostate, GeomAdaptor_OffsetCurveData>;
 
 //! This class provides an interface between the services provided by any
 //! curve from the package Geom and those required of the curve by algorithms which use it.
@@ -250,9 +263,9 @@ private:
   Standard_Real      myFirst;
   Standard_Real      myLast;
 
-  Handle(Geom_BSplineCurve)      myBSplineCurve;    ///< B-spline representation to prevent castings
-  mutable Handle(BSplCLib_Cache) myCurveCache;      ///< Cached data for B-spline or Bezier curve
-  Handle(GeomEvaluator_Curve)    myNestedEvaluator; ///< Calculates value of offset curve
+  Handle(Geom_BSplineCurve)      myBSplineCurve; ///< B-spline representation to prevent castings
+  mutable Handle(BSplCLib_Cache) myCurveCache;   ///< Cached data for B-spline or Bezier curve
+  GeomAdaptor_CurveDataVariant   myCurveData;    ///< Curve-specific evaluation data (offset, etc.)
 };
 
 #endif // _GeomAdaptor_Curve_HeaderFile

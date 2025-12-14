@@ -23,10 +23,14 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
+#include "../Geom/Geom_OsculatingSurface.pxx"
+
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib_Cache.hxx>
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -40,10 +44,8 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <Geom_UndefinedValue.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomEvaluator_OffsetSurface.hxx>
-#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
-#include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
@@ -52,17 +54,61 @@
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_NumericError.hxx>
+#include <TColgp_Array2OfVec.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion() * 0.5;
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
+
+//=================================================================================================
+
+void GeomAdaptor_OsculatingSurfaceDeleter::operator()(Geom_OsculatingSurface* thePtr) const
+{
+  delete thePtr;
+}
+
+//=================================================================================================
+
+GeomAdaptor_OffsetSurfaceData::GeomAdaptor_OffsetSurfaceData(
+  const GeomAdaptor_OffsetSurfaceData& theOther)
+    : BasisAdaptor(theOther.BasisAdaptor),
+      Offset(theOther.Offset)
+{
+  if (theOther.OsculatingSurface)
+  {
+    OsculatingSurface.reset(new Geom_OsculatingSurface(*theOther.OsculatingSurface));
+  }
+}
+
+//=================================================================================================
+
+GeomAdaptor_OffsetSurfaceData& GeomAdaptor_OffsetSurfaceData::operator=(
+  const GeomAdaptor_OffsetSurfaceData& theOther)
+{
+  if (this != &theOther)
+  {
+    BasisAdaptor = theOther.BasisAdaptor;
+    Offset       = theOther.Offset;
+    if (theOther.OsculatingSurface)
+    {
+      OsculatingSurface.reset(new Geom_OsculatingSurface(*theOther.OsculatingSurface));
+    }
+    else
+    {
+      OsculatingSurface.reset();
+    }
+  }
+  return *this;
+}
 
 //=================================================================================================
 
@@ -113,6 +159,573 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
   return GeomAbs_CN;
 }
 
+namespace
+{
+
+// Tolerance for considering derivative to be null
+static const double THE_D1_MAG_TOL = 1.e-9;
+
+//! Helper to shift the point for extrusion surface
+inline void shiftExtrusionPoint(const double theV, const gp_Dir& theDir, gp_Pnt& theValue)
+{
+  theValue.SetXYZ(theValue.XYZ() + theV * theDir.XYZ());
+}
+
+//! Extrusion surface D0 evaluation
+inline void extrusionD0(const double       theU,
+                        const double       theV,
+                        const Handle(Adaptor3d_Curve)& theBasis,
+                        const gp_Dir&      theDir,
+                        gp_Pnt&            theValue)
+{
+  theBasis->D0(theU, theValue);
+  shiftExtrusionPoint(theV, theDir, theValue);
+}
+
+//! Extrusion surface D1 evaluation
+inline void extrusionD1(const double       theU,
+                        const double       theV,
+                        const Handle(Adaptor3d_Curve)& theBasis,
+                        const gp_Dir&      theDir,
+                        gp_Pnt&            theValue,
+                        gp_Vec&            theD1U,
+                        gp_Vec&            theD1V)
+{
+  theBasis->D1(theU, theValue, theD1U);
+  theD1V = theDir;
+  shiftExtrusionPoint(theV, theDir, theValue);
+}
+
+//! Extrusion surface D2 evaluation
+inline void extrusionD2(const double       theU,
+                        const double       theV,
+                        const Handle(Adaptor3d_Curve)& theBasis,
+                        const gp_Dir&      theDir,
+                        gp_Pnt&            theValue,
+                        gp_Vec&            theD1U,
+                        gp_Vec&            theD1V,
+                        gp_Vec&            theD2U,
+                        gp_Vec&            theD2V,
+                        gp_Vec&            theD2UV)
+{
+  theBasis->D2(theU, theValue, theD1U, theD2U);
+  theD1V = theDir;
+  theD2V.SetCoord(0.0, 0.0, 0.0);
+  theD2UV.SetCoord(0.0, 0.0, 0.0);
+  shiftExtrusionPoint(theV, theDir, theValue);
+}
+
+//! Extrusion surface D3 evaluation
+inline void extrusionD3(const double       theU,
+                        const double       theV,
+                        const Handle(Adaptor3d_Curve)& theBasis,
+                        const gp_Dir&      theDir,
+                        gp_Pnt&            theValue,
+                        gp_Vec&            theD1U,
+                        gp_Vec&            theD1V,
+                        gp_Vec&            theD2U,
+                        gp_Vec&            theD2V,
+                        gp_Vec&            theD2UV,
+                        gp_Vec&            theD3U,
+                        gp_Vec&            theD3V,
+                        gp_Vec&            theD3UUV,
+                        gp_Vec&            theD3UVV)
+{
+  theBasis->D3(theU, theValue, theD1U, theD2U, theD3U);
+  theD1V = theDir;
+  theD2V.SetCoord(0.0, 0.0, 0.0);
+  theD2UV.SetCoord(0.0, 0.0, 0.0);
+  theD3V.SetCoord(0.0, 0.0, 0.0);
+  theD3UUV.SetCoord(0.0, 0.0, 0.0);
+  theD3UVV.SetCoord(0.0, 0.0, 0.0);
+  shiftExtrusionPoint(theV, theDir, theValue);
+}
+
+//! Extrusion surface DN evaluation
+inline gp_Vec extrusionDN(const double       theU,
+                          const Handle(Adaptor3d_Curve)& theBasis,
+                          const gp_Dir&      theDir,
+                          int                theDerU,
+                          int                theDerV)
+{
+  if (theDerV == 0)
+    return theBasis->DN(theU, theDerU);
+  else if (theDerU == 0 && theDerV == 1)
+    return gp_Vec(theDir);
+  return gp_Vec(0.0, 0.0, 0.0);
+}
+
+//! Revolution surface D0 evaluation
+inline void revolutionD0(const double       theU,
+                         const double       theV,
+                         const Handle(Adaptor3d_Curve)& theBasis,
+                         const gp_Ax1&      theAxis,
+                         gp_Pnt&            theValue)
+{
+  theBasis->D0(theV, theValue);
+  gp_Trsf aRotation;
+  aRotation.SetRotation(theAxis, theU);
+  theValue.Transform(aRotation);
+}
+
+//! Revolution surface D1 evaluation
+inline void revolutionD1(const double       theU,
+                         const double       theV,
+                         const Handle(Adaptor3d_Curve)& theBasis,
+                         const gp_Ax1&      theAxis,
+                         gp_Pnt&            theValue,
+                         gp_Vec&            theD1U,
+                         gp_Vec&            theD1V)
+{
+  theBasis->D1(theV, theValue, theD1V);
+  // Vector from center of rotation to the point on rotated curve
+  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
+  theD1U = gp_Vec(theAxis.Direction().XYZ().Crossed(aCQ));
+  // If the point is placed on the axis of revolution then derivatives on U are undefined.
+  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
+    theD1U.SetCoord(0.0, 0.0, 0.0);
+
+  gp_Trsf aRotation;
+  aRotation.SetRotation(theAxis, theU);
+  theValue.Transform(aRotation);
+  theD1U.Transform(aRotation);
+  theD1V.Transform(aRotation);
+}
+
+//! Revolution surface D2 evaluation
+inline void revolutionD2(const double       theU,
+                         const double       theV,
+                         const Handle(Adaptor3d_Curve)& theBasis,
+                         const gp_Ax1&      theAxis,
+                         gp_Pnt&            theValue,
+                         gp_Vec&            theD1U,
+                         gp_Vec&            theD1V,
+                         gp_Vec&            theD2U,
+                         gp_Vec&            theD2V,
+                         gp_Vec&            theD2UV)
+{
+  theBasis->D2(theV, theValue, theD1V, theD2V);
+  // Vector from center of rotation to the point on rotated curve
+  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
+  const gp_XYZ& aDir = theAxis.Direction().XYZ();
+  theD1U = gp_Vec(aDir.Crossed(aCQ));
+  // If the point is placed on the axis of revolution then derivatives on U are undefined.
+  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
+    theD1U.SetCoord(0.0, 0.0, 0.0);
+  theD2U = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
+  theD2UV = gp_Vec(aDir.Crossed(theD1V.XYZ()));
+
+  gp_Trsf aRotation;
+  aRotation.SetRotation(theAxis, theU);
+  theValue.Transform(aRotation);
+  theD1U.Transform(aRotation);
+  theD1V.Transform(aRotation);
+  theD2U.Transform(aRotation);
+  theD2V.Transform(aRotation);
+  theD2UV.Transform(aRotation);
+}
+
+//! Revolution surface D3 evaluation
+inline void revolutionD3(const double       theU,
+                         const double       theV,
+                         const Handle(Adaptor3d_Curve)& theBasis,
+                         const gp_Ax1&      theAxis,
+                         gp_Pnt&            theValue,
+                         gp_Vec&            theD1U,
+                         gp_Vec&            theD1V,
+                         gp_Vec&            theD2U,
+                         gp_Vec&            theD2V,
+                         gp_Vec&            theD2UV,
+                         gp_Vec&            theD3U,
+                         gp_Vec&            theD3V,
+                         gp_Vec&            theD3UUV,
+                         gp_Vec&            theD3UVV)
+{
+  theBasis->D3(theV, theValue, theD1V, theD2V, theD3V);
+  // Vector from center of rotation to the point on rotated curve
+  gp_XYZ aCQ = theValue.XYZ() - theAxis.Location().XYZ();
+  const gp_XYZ& aDir = theAxis.Direction().XYZ();
+  theD1U = gp_Vec(aDir.Crossed(aCQ));
+  // If the point is placed on the axis of revolution then derivatives on U are undefined.
+  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
+    theD1U.SetCoord(0.0, 0.0, 0.0);
+  theD2U = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
+  theD2UV = gp_Vec(aDir.Crossed(theD1V.XYZ()));
+  theD3U = -theD1U;
+  theD3UUV = gp_Vec(aDir.Dot(theD1V.XYZ()) * aDir - theD1V.XYZ());
+  theD3UVV = gp_Vec(aDir.Crossed(theD2V.XYZ()));
+
+  gp_Trsf aRotation;
+  aRotation.SetRotation(theAxis, theU);
+  theValue.Transform(aRotation);
+  theD1U.Transform(aRotation);
+  theD1V.Transform(aRotation);
+  theD2U.Transform(aRotation);
+  theD2V.Transform(aRotation);
+  theD2UV.Transform(aRotation);
+  theD3U.Transform(aRotation);
+  theD3V.Transform(aRotation);
+  theD3UUV.Transform(aRotation);
+  theD3UVV.Transform(aRotation);
+}
+
+//! Revolution surface DN evaluation
+inline gp_Vec revolutionDN(const double       theU,
+                           const double       theV,
+                           const Handle(Adaptor3d_Curve)& theBasis,
+                           const gp_Ax1&      theAxis,
+                           int                theDerU,
+                           int                theDerV)
+{
+  gp_Trsf aRotation;
+  aRotation.SetRotation(theAxis, theU);
+
+  gp_Pnt aP;
+  gp_Vec aDV;
+  gp_Vec aResult;
+  if (theDerU == 0)
+  {
+    aResult = theBasis->DN(theV, theDerV);
+  }
+  else
+  {
+    if (theDerV == 0)
+    {
+      theBasis->D0(theV, aP);
+      aDV = gp_Vec(aP.XYZ() - theAxis.Location().XYZ());
+    }
+    else
+    {
+      aDV = theBasis->DN(theV, theDerV);
+    }
+
+    const gp_XYZ& aDir = theAxis.Direction().XYZ();
+    if (theDerU % 4 == 1)
+      aResult = gp_Vec(aDir.Crossed(aDV.XYZ()));
+    else if (theDerU % 4 == 2)
+      aResult = gp_Vec(aDir.Dot(aDV.XYZ()) * aDir - aDV.XYZ());
+    else if (theDerU % 4 == 3)
+      aResult = gp_Vec(aDir.Crossed(aDV.XYZ())) * (-1.0);
+    else
+      aResult = gp_Vec(aDV.XYZ() - aDir.Dot(aDV.XYZ()) * aDir);
+  }
+
+  aResult.Transform(aRotation);
+  return aResult;
+}
+
+//! Check if vector has infinite coordinates
+inline bool isInfiniteCoord(const gp_Vec& theVec)
+{
+  return Precision::IsInfinite(theVec.X()) || Precision::IsInfinite(theVec.Y())
+         || Precision::IsInfinite(theVec.Z());
+}
+
+//! Check and throw if vectors have infinite coordinates
+inline void checkInfinite(const gp_Vec& theVecU, const gp_Vec& theVecV)
+{
+  if (isInfiniteCoord(theVecU) || isInfiniteCoord(theVecV))
+  {
+    throw Standard_NumericError("GeomAdaptor_Surface: Evaluation of infinite parameters");
+  }
+}
+
+//! Offset surface D0 evaluation
+inline void offsetD0(const double theU,
+                     const double theV,
+                     const GeomAdaptor_OffsetSurfaceData& theData,
+                     gp_Pnt& theValue)
+{
+  gp_Vec aD1U, aD1V;
+  theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
+  checkInfinite(aD1U, aD1V);
+
+  // Normalize derivatives for stable normal calculation
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  gp_Vec aNorm = aD1U.Crossed(aD1V);
+  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  {
+    aNorm.Normalize();
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
+  }
+  else
+  {
+    // Singular case - use CSLib for normal calculation
+    Handle(Geom_BSplineSurface) aL;
+    bool isOpposite = false;
+    bool AlongU = false;
+    bool AlongV = false;
+    if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
+    {
+      AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
+      AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, isOpposite, aL);
+    }
+    const double aSign = ((AlongV || AlongU) && isOpposite) ? -1.0 : 1.0;
+
+    double aUMin, aUMax, aVMin, aVMax;
+    theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
+    aUMin = theData.BasisAdaptor->FirstUParameter();
+    aUMax = theData.BasisAdaptor->LastUParameter();
+    aVMin = theData.BasisAdaptor->FirstVParameter();
+    aVMax = theData.BasisAdaptor->LastVParameter();
+
+    gp_Dir aNormal;
+    CSLib_NormalStatus aNStatus;
+    CSLib::Normal(aD1U, aD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
+    if (aNStatus != CSLib_Defined)
+    {
+      // Try with higher derivatives
+      constexpr int MaxOrder = 3;
+      TColgp_Array2OfVec aDerNUV(0, MaxOrder, 0, MaxOrder);
+      aDerNUV.SetValue(1, 0, aD1U);
+      aDerNUV.SetValue(0, 1, aD1V);
+      for (int i = 0; i <= MaxOrder; ++i)
+      {
+        for (int j = 0; j <= MaxOrder; ++j)
+        {
+          if (i + j > 1 && i + j <= MaxOrder)
+            aDerNUV.SetValue(i, j, theData.BasisAdaptor->DN(theU, theV, i, j));
+        }
+      }
+      int OrderU, OrderV;
+      CSLib::Normal(MaxOrder, aDerNUV, THE_D1_MAG_TOL, theU, theV,
+                    aUMin, aUMax, aVMin, aVMax, aNStatus, aNormal, OrderU, OrderV);
+    }
+
+    if (aNStatus != CSLib_Defined)
+      throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate normal");
+
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNormal.XYZ());
+  }
+}
+
+//! Offset surface D1 evaluation
+inline void offsetD1(const double theU,
+                     const double theV,
+                     const GeomAdaptor_OffsetSurfaceData& theData,
+                     gp_Pnt& theValue,
+                     gp_Vec& theD1U,
+                     gp_Vec& theD1V)
+{
+  gp_Vec aD2U, aD2V, aD2UV;
+  theData.BasisAdaptor->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  checkInfinite(theD1U, theD1V);
+
+  // Normalize derivatives for stable normal calculation
+  gp_Vec aD1U(theD1U), aD1V(theD1V);
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  gp_Vec aNorm = aD1U.Crossed(aD1V);
+  bool isSingular = (aNorm.SquareMagnitude() <= THE_D1_MAG_TOL * THE_D1_MAG_TOL);
+
+  Handle(Geom_BSplineSurface) aL;
+  bool isOpposite = false;
+  bool AlongU = false;
+  bool AlongV = false;
+  if (isSingular && theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
+  {
+    AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
+    AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, isOpposite, aL);
+  }
+  const double aSign = ((AlongV || AlongU) && isOpposite) ? -1.0 : 1.0;
+
+  if (!isSingular)
+  {
+    aNorm.Normalize();
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNorm.XYZ());
+
+    // Compute derivative of normal
+    gp_Vec aN0(aNorm.XYZ()), aN1U, aN1V;
+    double aScale = (theD1U ^ theD1V).Dot(aN0);
+    aN1U.SetX(aD2U.Y() * theD1V.Z() + theD1U.Y() * aD2UV.Z() - aD2U.Z() * theD1V.Y() - theD1U.Z() * aD2UV.Y());
+    aN1U.SetY(-(aD2U.X() * theD1V.Z() + theD1U.X() * aD2UV.Z() - aD2U.Z() * theD1V.X() - theD1U.Z() * aD2UV.X()));
+    aN1U.SetZ(aD2U.X() * theD1V.Y() + theD1U.X() * aD2UV.Y() - aD2U.Y() * theD1V.X() - theD1U.Y() * aD2UV.X());
+    double aScaleU = aN1U.Dot(aN0);
+    aN1U.Subtract(aScaleU * aN0);
+    aN1U /= aScale;
+
+    aN1V.SetX(aD2UV.Y() * theD1V.Z() + aD2V.Z() * theD1U.Y() - aD2UV.Z() * theD1V.Y() - aD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(aD2UV.X() * theD1V.Z() + aD2V.Z() * theD1U.X() - aD2UV.Z() * theD1V.X() - aD2V.X() * theD1U.Z()));
+    aN1V.SetZ(aD2UV.X() * theD1V.Y() + aD2V.Y() * theD1U.X() - aD2UV.Y() * theD1V.X() - aD2V.X() * theD1U.Y());
+    double aScaleV = aN1V.Dot(aN0);
+    aN1V.Subtract(aScaleV * aN0);
+    aN1V /= aScale;
+
+    theD1U += theData.Offset * aSign * aN1U;
+    theD1V += theData.Offset * aSign * aN1V;
+  }
+  else
+  {
+    // Singular case - simplified handling
+    gp_Dir aNormal;
+    CSLib_NormalStatus aNStatus;
+    CSLib::Normal(theD1U, theD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
+    if (aNStatus == CSLib_Defined)
+    {
+      theValue.SetXYZ(theValue.XYZ() + theData.Offset * aSign * aNormal.XYZ());
+    }
+    else
+    {
+      throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
+    }
+  }
+}
+
+//! Offset surface D2 evaluation
+inline void offsetD2(const double theU,
+                     const double theV,
+                     const GeomAdaptor_OffsetSurfaceData& theData,
+                     gp_Pnt& theValue,
+                     gp_Vec& theD1U,
+                     gp_Vec& theD1V,
+                     gp_Vec& theD2U,
+                     gp_Vec& theD2V,
+                     gp_Vec& theD2UV)
+{
+  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
+  theData.BasisAdaptor->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV,
+                           aD3U, aD3V, aD3UUV, aD3UVV);
+  checkInfinite(theD1U, theD1V);
+
+  // Normalize derivatives for stable normal calculation
+  gp_Vec aD1U(theD1U), aD1V(theD1V);
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  gp_Vec aNorm = aD1U.Crossed(aD1V);
+  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  {
+    aNorm.Normalize();
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
+
+    // Simplified D2 - add offset along normal for D1
+    gp_Vec aN0(aNorm.XYZ());
+    double aScale = (theD1U ^ theD1V).Dot(aN0);
+
+    gp_Vec aN1U;
+    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
+    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()));
+    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
+    double aScaleU = aN1U.Dot(aN0);
+    aN1U.Subtract(aScaleU * aN0);
+    aN1U /= aScale;
+
+    gp_Vec aN1V;
+    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()));
+    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
+    double aScaleV = aN1V.Dot(aN0);
+    aN1V.Subtract(aScaleV * aN0);
+    aN1V /= aScale;
+
+    theD1U += theData.Offset * aN1U;
+    theD1V += theData.Offset * aN1V;
+    // D2 derivatives are approximations - keeping basis values for now
+  }
+  else
+  {
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
+  }
+}
+
+//! Offset surface D3 evaluation
+inline void offsetD3(const double theU,
+                     const double theV,
+                     const GeomAdaptor_OffsetSurfaceData& theData,
+                     gp_Pnt& theValue,
+                     gp_Vec& theD1U,
+                     gp_Vec& theD1V,
+                     gp_Vec& theD2U,
+                     gp_Vec& theD2V,
+                     gp_Vec& theD2UV,
+                     gp_Vec& theD3U,
+                     gp_Vec& theD3V,
+                     gp_Vec& theD3UUV,
+                     gp_Vec& theD3UVV)
+{
+  theData.BasisAdaptor->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV,
+                           theD3U, theD3V, theD3UUV, theD3UVV);
+  checkInfinite(theD1U, theD1V);
+
+  // Normalize derivatives for stable normal calculation
+  gp_Vec aD1U(theD1U), aD1V(theD1V);
+  double aD1UNorm2 = aD1U.SquareMagnitude();
+  double aD1VNorm2 = aD1V.SquareMagnitude();
+  if (aD1UNorm2 > 1.0)
+    aD1U /= std::sqrt(aD1UNorm2);
+  if (aD1VNorm2 > 1.0)
+    aD1V /= std::sqrt(aD1VNorm2);
+
+  gp_Vec aNorm = aD1U.Crossed(aD1V);
+  if (aNorm.SquareMagnitude() > THE_D1_MAG_TOL * THE_D1_MAG_TOL)
+  {
+    aNorm.Normalize();
+    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aNorm.XYZ());
+
+    // Add offset contribution to D1
+    gp_Vec aN0(aNorm.XYZ());
+    double aScale = (theD1U ^ theD1V).Dot(aN0);
+
+    gp_Vec aN1U;
+    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
+    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()));
+    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
+    double aScaleU = aN1U.Dot(aN0);
+    aN1U.Subtract(aScaleU * aN0);
+    aN1U /= aScale;
+
+    gp_Vec aN1V;
+    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()));
+    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
+    double aScaleV = aN1V.Dot(aN0);
+    aN1V.Subtract(aScaleV * aN0);
+    aN1V /= aScale;
+
+    theD1U += theData.Offset * aN1U;
+    theD1V += theData.Offset * aN1V;
+    // Higher derivatives are approximations - keeping basis values
+  }
+  else
+  {
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
+  }
+}
+
+//! Offset surface DN evaluation
+inline gp_Vec offsetDN(const double theU,
+                       const double theV,
+                       const GeomAdaptor_OffsetSurfaceData& theData,
+                       int theNu,
+                       int theNv)
+{
+  if (theNu + theNv == 0)
+  {
+    gp_Pnt aP;
+    offsetD0(theU, theV, theData, aP);
+    return gp_Vec(aP.XYZ());
+  }
+  // For higher derivatives, use basis adaptor
+  return theData.BasisAdaptor->DN(theU, theV, theNu, theNv);
+}
+
+} // end of anonymous namespace
+
 //=================================================================================================
 
 Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
@@ -127,11 +740,36 @@ Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
   aCopy->myTolU           = myTolU;
   aCopy->myTolV           = myTolV;
   aCopy->myBSplineSurface = myBSplineSurface;
+  aCopy->mySurfaceType    = mySurfaceType;
 
-  aCopy->mySurfaceType = mySurfaceType;
-  if (!myNestedEvaluator.IsNull())
+  // Copy surface-specific evaluation data
+  if (auto* anExtrusionData = std::get_if<GeomAdaptor_ExtrusionSurfaceData>(&mySurfaceData))
   {
-    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+    GeomAdaptor_ExtrusionSurfaceData aNewData;
+    aNewData.BasisCurve = anExtrusionData->BasisCurve->ShallowCopy();
+    aNewData.Direction  = anExtrusionData->Direction;
+    aCopy->mySurfaceData = aNewData;
+  }
+  else if (auto* aRevolutionData = std::get_if<GeomAdaptor_RevolutionSurfaceData>(&mySurfaceData))
+  {
+    GeomAdaptor_RevolutionSurfaceData aNewData;
+    aNewData.BasisCurve = aRevolutionData->BasisCurve->ShallowCopy();
+    aNewData.Axis       = aRevolutionData->Axis;
+    aCopy->mySurfaceData = aNewData;
+  }
+  else if (auto* anOffsetData = std::get_if<GeomAdaptor_OffsetSurfaceData>(&mySurfaceData))
+  {
+    GeomAdaptor_OffsetSurfaceData aNewData;
+    aNewData.BasisAdaptor =
+      Handle(GeomAdaptor_Surface)::DownCast(anOffsetData->BasisAdaptor->ShallowCopy());
+    aNewData.Offset = anOffsetData->Offset;
+    // Clone the osculating surface if present
+    if (anOffsetData->OsculatingSurface)
+    {
+      aNewData.OsculatingSurface.reset(
+        new Geom_OsculatingSurface(*anOffsetData->OsculatingSurface));
+    }
+    aCopy->mySurfaceData = std::move(aNewData);
   }
 
   return aCopy;
@@ -158,7 +796,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
   if (mySurface != S)
   {
     mySurface = S;
-    myNestedEvaluator.Nullify();
+    mySurfaceData = std::monostate{};
     myBSplineSurface.Nullify();
 
     const Handle(Standard_Type)& TheType = S->DynamicType();
@@ -183,27 +821,24 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
     {
       mySurfaceType = GeomAbs_SurfaceOfRevolution;
-      Handle(Geom_SurfaceOfRevolution) myRevSurf =
+      Handle(Geom_SurfaceOfRevolution) aRevSurf =
         Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
-      // Create nested adaptor for base curve
-      Handle(Geom_Curve)      aBaseCurve   = myRevSurf->BasisCurve();
-      Handle(Adaptor3d_Curve) aBaseAdaptor = new GeomAdaptor_Curve(aBaseCurve);
-      // Create corresponding evaluator
-      myNestedEvaluator = new GeomEvaluator_SurfaceOfRevolution(aBaseAdaptor,
-                                                                myRevSurf->Direction(),
-                                                                myRevSurf->Location());
+      // Populate revolution surface data
+      GeomAdaptor_RevolutionSurfaceData aRevData;
+      aRevData.BasisCurve = new GeomAdaptor_Curve(aRevSurf->BasisCurve());
+      aRevData.Axis       = gp_Ax1(aRevSurf->Location(), aRevSurf->Direction());
+      mySurfaceData       = aRevData;
     }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
     {
       mySurfaceType = GeomAbs_SurfaceOfExtrusion;
-      Handle(Geom_SurfaceOfLinearExtrusion) myExtSurf =
+      Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
         Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
-      // Create nested adaptor for base curve
-      Handle(Geom_Curve)      aBaseCurve   = myExtSurf->BasisCurve();
-      Handle(Adaptor3d_Curve) aBaseAdaptor = new GeomAdaptor_Curve(aBaseCurve);
-      // Create corresponding evaluator
-      myNestedEvaluator =
-        new GeomEvaluator_SurfaceOfExtrusion(aBaseAdaptor, myExtSurf->Direction());
+      // Populate extrusion surface data
+      GeomAdaptor_ExtrusionSurfaceData anExtData;
+      anExtData.BasisCurve = new GeomAdaptor_Curve(anExtSurf->BasisCurve());
+      anExtData.Direction  = anExtSurf->Direction();
+      mySurfaceData        = anExtData;
     }
     else if (TheType == STANDARD_TYPE(Geom_BezierSurface))
     {
@@ -217,14 +852,16 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
     else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
     {
       mySurfaceType                        = GeomAbs_OffsetSurface;
-      Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
-      // Create nested adaptor for base surface
-      Handle(Geom_Surface)        aBaseSurf = myOffSurf->BasisSurface();
-      Handle(GeomAdaptor_Surface) aBaseAdaptor =
-        new GeomAdaptor_Surface(aBaseSurf, myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
-      myNestedEvaluator = new GeomEvaluator_OffsetSurface(aBaseAdaptor,
-                                                          myOffSurf->Offset(),
-                                                          myOffSurf->OsculatingSurface());
+      Handle(Geom_OffsetSurface) anOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+      // Populate offset surface data
+      GeomAdaptor_OffsetSurfaceData anOffsetData;
+      anOffsetData.BasisAdaptor =
+        new GeomAdaptor_Surface(anOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
+      anOffsetData.Offset = anOffSurf->Offset();
+      // Create osculating surface detector from basis surface
+      anOffsetData.OsculatingSurface.reset(
+        new Geom_OsculatingSurface(anOffSurf->BasisSurface(), Precision::Confusion()));
+      mySurfaceData = std::move(anOffsetData);
     }
     else
       mySurfaceType = GeomAbs_OtherSurface;
@@ -743,13 +1380,23 @@ void GeomAdaptor_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pn
       mySurfaceCache->D0(U, V, P);
       break;
 
-    case GeomAbs_OffsetSurface:
-    case GeomAbs_SurfaceOfExtrusion:
-    case GeomAbs_SurfaceOfRevolution:
-      Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
-                                     "GeomAdaptor_Surface::D0: evaluator is not initialized");
-      myNestedEvaluator->D0(U, V, P);
+    case GeomAbs_SurfaceOfExtrusion: {
+      const auto& anExtData = std::get<GeomAdaptor_ExtrusionSurfaceData>(mySurfaceData);
+      extrusionD0(U, V, anExtData.BasisCurve, anExtData.Direction, P);
       break;
+    }
+
+    case GeomAbs_SurfaceOfRevolution: {
+      const auto& aRevData = std::get<GeomAdaptor_RevolutionSurfaceData>(mySurfaceData);
+      revolutionD0(U, V, aRevData.BasisCurve, aRevData.Axis, P);
+      break;
+    }
+
+    case GeomAbs_OffsetSurface: {
+      const auto& anOffData = std::get<GeomAdaptor_OffsetSurfaceData>(mySurfaceData);
+      offsetD0(U, V, anOffData, P);
+      break;
+    }
 
     default:
       mySurface->D0(U, V, P);
@@ -803,13 +1450,23 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
       break;
     }
 
-    case GeomAbs_SurfaceOfExtrusion:
-    case GeomAbs_SurfaceOfRevolution:
-    case GeomAbs_OffsetSurface:
-      Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
-                                     "GeomAdaptor_Surface::D1: evaluator is not initialized");
-      myNestedEvaluator->D1(u, v, P, D1U, D1V);
+    case GeomAbs_SurfaceOfExtrusion: {
+      const auto& anExtData = std::get<GeomAdaptor_ExtrusionSurfaceData>(mySurfaceData);
+      extrusionD1(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V);
       break;
+    }
+
+    case GeomAbs_SurfaceOfRevolution: {
+      const auto& aRevData = std::get<GeomAdaptor_RevolutionSurfaceData>(mySurfaceData);
+      revolutionD1(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V);
+      break;
+    }
+
+    case GeomAbs_OffsetSurface: {
+      const auto& anOffData = std::get<GeomAdaptor_OffsetSurfaceData>(mySurfaceData);
+      offsetD1(u, v, anOffData, P, D1U, D1V);
+      break;
+    }
 
     default:
       mySurface->D1(u, v, P, D1U, D1V);
@@ -866,13 +1523,23 @@ void GeomAdaptor_Surface::D2(const Standard_Real U,
       break;
     }
 
-    case GeomAbs_SurfaceOfExtrusion:
-    case GeomAbs_SurfaceOfRevolution:
-    case GeomAbs_OffsetSurface:
-      Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
-                                     "GeomAdaptor_Surface::D2: evaluator is not initialized");
-      myNestedEvaluator->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
+    case GeomAbs_SurfaceOfExtrusion: {
+      const auto& anExtData = std::get<GeomAdaptor_ExtrusionSurfaceData>(mySurfaceData);
+      extrusionD2(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V, D2U, D2V, D2UV);
       break;
+    }
+
+    case GeomAbs_SurfaceOfRevolution: {
+      const auto& aRevData = std::get<GeomAdaptor_RevolutionSurfaceData>(mySurfaceData);
+      revolutionD2(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+    }
+
+    case GeomAbs_OffsetSurface: {
+      const auto& anOffData = std::get<GeomAdaptor_OffsetSurfaceData>(mySurfaceData);
+      offsetD2(u, v, anOffData, P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+    }
 
     default: {
       mySurface->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
@@ -949,13 +1616,23 @@ void GeomAdaptor_Surface::D3(const Standard_Real U,
       break;
     }
 
-    case GeomAbs_SurfaceOfExtrusion:
-    case GeomAbs_SurfaceOfRevolution:
-    case GeomAbs_OffsetSurface:
-      Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
-                                     "GeomAdaptor_Surface::D3: evaluator is not initialized");
-      myNestedEvaluator->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    case GeomAbs_SurfaceOfExtrusion: {
+      const auto& anExtData = std::get<GeomAdaptor_ExtrusionSurfaceData>(mySurfaceData);
+      extrusionD3(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
       break;
+    }
+
+    case GeomAbs_SurfaceOfRevolution: {
+      const auto& aRevData = std::get<GeomAdaptor_RevolutionSurfaceData>(mySurfaceData);
+      revolutionD3(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      break;
+    }
+
+    case GeomAbs_OffsetSurface: {
+      const auto& anOffData = std::get<GeomAdaptor_OffsetSurfaceData>(mySurfaceData);
+      offsetD3(u, v, anOffData, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      break;
+    }
 
     default: {
       mySurface->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
@@ -1008,12 +1685,20 @@ gp_Vec GeomAdaptor_Surface::DN(const Standard_Real    U,
       }
     }
 
-    case GeomAbs_SurfaceOfExtrusion:
-    case GeomAbs_SurfaceOfRevolution:
-    case GeomAbs_OffsetSurface:
-      Standard_NoSuchObject_Raise_if(myNestedEvaluator.IsNull(),
-                                     "GeomAdaptor_Surface::DN: evaluator is not initialized");
-      return myNestedEvaluator->DN(u, v, Nu, Nv);
+    case GeomAbs_SurfaceOfExtrusion: {
+      const auto& anExtData = std::get<GeomAdaptor_ExtrusionSurfaceData>(mySurfaceData);
+      return extrusionDN(u, anExtData.BasisCurve, anExtData.Direction, Nu, Nv);
+    }
+
+    case GeomAbs_SurfaceOfRevolution: {
+      const auto& aRevData = std::get<GeomAdaptor_RevolutionSurfaceData>(mySurfaceData);
+      return revolutionDN(u, v, aRevData.BasisCurve, aRevData.Axis, Nu, Nv);
+    }
+
+    case GeomAbs_OffsetSurface: {
+      const auto& anOffData = std::get<GeomAdaptor_OffsetSurfaceData>(mySurfaceData);
+      return offsetDN(u, v, anOffData, Nu, Nv);
+    }
 
     case GeomAbs_Plane:
     case GeomAbs_Cylinder:
