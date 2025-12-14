@@ -267,9 +267,8 @@ Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
                   ? Handle(Geom_Surface)()
                   : Handle(Geom_Surface)::DownCast(theOther.equivSurf->Copy())),
       offsetValue(theOther.offsetValue),
-      myOscSurf(theOther.myOscSurf
-                  ? std::make_unique<Geom_OsculatingSurface>(*theOther.myOscSurf)
-                  : nullptr),
+      myOscSurf(theOther.myOscSurf ? std::make_unique<Geom_OsculatingSurface>(*theOther.myOscSurf)
+                                   : nullptr),
       myBasisSurfContinuity(theOther.myBasisSurfContinuity)
 {
   // Deep copy without validation - source surface is already validated
@@ -410,9 +409,8 @@ void Geom_OffsetSurface::SetBasisSurface(const Handle(Geom_Surface)& S,
     // et aussi pour les singularite. Pour les surfaces osculatrices, on l'utilise pour
     // detecter si une iso est degeneree.
     constexpr Standard_Real Tol = Precision::Confusion(); // 0.0001;
-    myOscSurf = std::make_unique<Geom_OsculatingSurface>(aCheckingSurf, Tol);
+    myOscSurf                   = std::make_unique<Geom_OsculatingSurface>(aCheckingSurf, Tol);
   }
-
 }
 
 //=================================================================================================
@@ -1310,7 +1308,18 @@ void Geom_OffsetSurface::calculateD0(const Standard_Real theU,
 
     DerSurf.SetValue(1, 0, theD1U);
     DerSurf.SetValue(0, 1, theD1V);
-    computeDerivatives(MaxOrder, 1, theU, theV, basisSurf, 0, 0, AlongU, AlongV, L, DerNUV, DerSurf);
+    computeDerivatives(MaxOrder,
+                       1,
+                       theU,
+                       theV,
+                       basisSurf,
+                       0,
+                       0,
+                       AlongU,
+                       AlongV,
+                       L,
+                       DerNUV,
+                       DerSurf);
 
     gp_Dir             Normal;
     CSLib_NormalStatus NStatus = CSLib_Singular;

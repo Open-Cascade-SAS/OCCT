@@ -234,8 +234,8 @@ void GeomAdaptor_Curve::load(const Handle(Geom_Curve)& C,
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetCurve))
     {
-      myTypeCurve = GeomAbs_OffsetCurve;
-      Handle(Geom_OffsetCurve) anOffsetCurve = Handle(Geom_OffsetCurve)::DownCast(C);
+      myTypeCurve                               = GeomAbs_OffsetCurve;
+      Handle(Geom_OffsetCurve)    anOffsetCurve = Handle(Geom_OffsetCurve)::DownCast(C);
       GeomAdaptor_OffsetCurveData anOffsetData;
       anOffsetData.BasisAdaptor = new GeomAdaptor_Curve(anOffsetCurve->BasisCurve());
       anOffsetData.Offset       = anOffsetCurve->Offset();

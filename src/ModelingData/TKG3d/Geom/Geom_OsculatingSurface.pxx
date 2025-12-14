@@ -86,10 +86,7 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool UOscSurf(double                       theU,
-                double                       theV,
-                bool&                        theT,
-                Handle(Geom_BSplineSurface)& theL) const;
+  bool UOscSurf(double theU, double theV, bool& theT, Handle(Geom_BSplineSurface)& theL) const;
 
   //! If true, theL is the local osculating surface along V at point (U,V).
   //! @param theU U parameter
@@ -97,18 +94,15 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool VOscSurf(double                       theU,
-                double                       theV,
-                bool&                        theT,
-                Handle(Geom_BSplineSurface)& theL) const;
+  bool VOscSurf(double theU, double theV, bool& theT, Handle(Geom_BSplineSurface)& theL) const;
 
 private:
   //! Returns false if the osculating surface can't be built.
-  bool buildOsculatingSurface(double                               theParam,
-                              int                                  theUKnot,
-                              int                                  theVKnot,
-                              const Handle(Geom_BSplineSurface)&   theBS,
-                              Handle(Geom_BSplineSurface)&         theL) const;
+  bool buildOsculatingSurface(double                             theParam,
+                              int                                theUKnot,
+                              int                                theVKnot,
+                              const Handle(Geom_BSplineSurface)& theBS,
+                              Handle(Geom_BSplineSurface)&       theL) const;
 
   //! Returns true if the isoparametric is quasi-punctual.
   bool isQPunctual(const Handle(Geom_Surface)& theS,
@@ -121,12 +115,12 @@ private:
   void clearOsculFlags();
 
 private:
-  Handle(Geom_Surface)           myBasisSurf;
-  double                         myTol;
-  Geom_SequenceOfBSplineSurface  myOsculSurf1;
-  Geom_SequenceOfBSplineSurface  myOsculSurf2;
-  NCollection_Sequence<int>      myKdeg;
-  std::array<bool, 4>            myAlong;
+  Handle(Geom_Surface)          myBasisSurf;
+  double                        myTol;
+  Geom_SequenceOfBSplineSurface myOsculSurf1;
+  Geom_SequenceOfBSplineSurface myOsculSurf2;
+  NCollection_Sequence<int>     myKdeg;
+  std::array<bool, 4>           myAlong;
 };
 
 #endif // _Geom_OsculatingSurface_HeaderFile

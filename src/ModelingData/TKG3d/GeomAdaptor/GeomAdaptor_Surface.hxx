@@ -74,11 +74,11 @@ public:
     std::unique_ptr<Geom_OsculatingSurface, OsculatingSurfaceDeleter>
       OsculatingSurface; //!< Osculating surface for singular cases
 
-    OffsetData()                               = default;
-    Standard_EXPORT OffsetData(const OffsetData& theOther);
+    OffsetData() = default;
+    Standard_EXPORT             OffsetData(const OffsetData& theOther);
     Standard_EXPORT OffsetData& operator=(const OffsetData& theOther);
-    OffsetData(OffsetData&&)                   = default;
-    OffsetData& operator=(OffsetData&&)        = default;
+    OffsetData(OffsetData&&)            = default;
+    OffsetData& operator=(OffsetData&&) = default;
   };
 
   //! Internal structure for Bezier surface cache data.
@@ -95,12 +95,8 @@ public:
   };
 
   //! Variant type for surface-specific evaluation data.
-  using SurfaceDataVariant = std::variant<std::monostate,
-                                          ExtrusionData,
-                                          RevolutionData,
-                                          OffsetData,
-                                          BezierData,
-                                          BSplineData>;
+  using SurfaceDataVariant = std::
+    variant<std::monostate, ExtrusionData, RevolutionData, OffsetData, BezierData, BSplineData>;
 
 public:
   GeomAdaptor_Surface()

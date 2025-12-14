@@ -77,7 +77,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
     GeomAdaptor_Surface::RevolutionData aNewData;
     if (!aRevData->BasisCurve.IsNull())
     {
-      aNewData.BasisCurve = Handle(GeomAdaptor_Curve)::DownCast(aRevData->BasisCurve->ShallowCopy());
+      aNewData.BasisCurve =
+        Handle(GeomAdaptor_Curve)::DownCast(aRevData->BasisCurve->ShallowCopy());
     }
     aNewData.Axis        = aRevData->Axis;
     aCopy->mySurfaceData = std::move(aNewData);
@@ -292,7 +293,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::VTrim(const Standard_
                                                                  const Standard_Real Last,
                                                                  const Standard_Real Tol) const
 {
-  Handle(GeomAdaptor_Curve) HC = Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
+  Handle(GeomAdaptor_Curve) HC =
+    Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
   Handle(GeomAdaptor_SurfaceOfRevolution) HR =
     new GeomAdaptor_SurfaceOfRevolution(GeomAdaptor_SurfaceOfRevolution(HC, myAxis));
   return HR;

@@ -55,21 +55,21 @@ public:
   //! Internal structure for 2D offset curve evaluation data.
   struct OffsetData
   {
-    Handle(Geom2dAdaptor_Curve) BasisAdaptor;  //!< Adaptor for basis curve
-    double                      Offset = 0.0;  //!< Offset distance
+    Handle(Geom2dAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
+    double                      Offset = 0.0; //!< Offset distance
   };
 
   //! Internal structure for Bezier curve evaluation data.
   struct BezierData
   {
-    mutable Handle(BSplCLib_Cache) Cache;  //!< Cached data for evaluation
+    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
   };
 
   //! Internal structure for BSpline curve evaluation data.
   struct BSplineData
   {
-    Handle(Geom2d_BSplineCurve)    Curve;  //!< BSpline curve to prevent downcasts
-    mutable Handle(BSplCLib_Cache) Cache;  //!< Cached data for evaluation
+    Handle(Geom2d_BSplineCurve)    Curve; //!< BSpline curve to prevent downcasts
+    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
   };
 
   //! Variant type for 2D curve-specific evaluation data.
@@ -242,7 +242,7 @@ protected:
   GeomAbs_CurveType    myTypeCurve;
   Standard_Real        myFirst;
   Standard_Real        myLast;
-  CurveDataVariant     myCurveData;  ///< Curve-specific evaluation data (BSpline, Bezier, offset)
+  CurveDataVariant     myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset)
 };
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile

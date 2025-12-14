@@ -47,7 +47,7 @@ inline void ShiftPoint(const gp_XYZ& theLoc,
                        const gp_XYZ& thePoint,
                        gp_XYZ&       theShift)
 {
-  theShift = thePoint - theLoc;
+  theShift       = thePoint - theLoc;
   double aScalar = theShift.Dot(theAxis);
   theShift.SetLinearForm(-aScalar, theAxis, theShift);
 }
@@ -118,7 +118,7 @@ inline void D1(const double     theU,
 {
   const double aSin = std::sin(theU);
   const double aCos = std::cos(theU);
-  gp_Vec aD1V;
+  gp_Vec       aD1V;
   theBasis.D1(theV, theP, aD1V);
 
   const gp_XYZ& aPnt = theP.XYZ();
@@ -170,7 +170,7 @@ inline void D2(const double     theU,
 {
   const double aSin = std::sin(theU);
   const double aCos = std::cos(theU);
-  gp_Vec aD1V, aD2V;
+  gp_Vec       aD1V, aD2V;
   theBasis.D2(theV, theP, aD1V, aD2V);
 
   const gp_XYZ& aPnt = theP.XYZ();
@@ -250,7 +250,7 @@ inline void D3(const double     theU,
 {
   const double aSin = std::sin(theU);
   const double aCos = std::cos(theU);
-  gp_Vec aD1V, aD2V, aD3V;
+  gp_Vec       aD1V, aD2V, aD3V;
   theBasis.D3(theV, theP, aD1V, aD2V, aD3V);
 
   const gp_XYZ& aPnt = theP.XYZ();
@@ -346,7 +346,7 @@ inline gp_Vec DN(const double     theU,
     gp_Pnt aP;
     theBasis.D0(theV, aP);
     aPntXYZ = aP.XYZ();
-    aDV = aPntXYZ - theLoc;
+    aDV     = aPntXYZ - theLoc;
   }
   else
   {

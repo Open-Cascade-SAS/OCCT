@@ -78,7 +78,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
     GeomAdaptor_Surface::ExtrusionData aNewData;
     if (!anExtData->BasisCurve.IsNull())
     {
-      aNewData.BasisCurve = Handle(GeomAdaptor_Curve)::DownCast(anExtData->BasisCurve->ShallowCopy());
+      aNewData.BasisCurve =
+        Handle(GeomAdaptor_Curve)::DownCast(anExtData->BasisCurve->ShallowCopy());
     }
     aNewData.Direction   = anExtData->Direction;
     aCopy->mySurfaceData = std::move(aNewData);
@@ -191,7 +192,8 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::VTrim(const Stan
                                                                       const Standard_Real Last,
                                                                       const Standard_Real Tol) const
 {
-  Handle(GeomAdaptor_Curve) HC = Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
+  Handle(GeomAdaptor_Curve) HC =
+    Handle(GeomAdaptor_Curve)::DownCast(BasisCurve()->Trim(First, Last, Tol));
   Handle(GeomAdaptor_SurfaceOfLinearExtrusion) HR =
     new GeomAdaptor_SurfaceOfLinearExtrusion(GeomAdaptor_SurfaceOfLinearExtrusion(HC, myDirection));
   return HR;

@@ -88,7 +88,8 @@ Geom_OsculatingSurface& Geom_OsculatingSurface::operator=(const Geom_OsculatingS
 
 //=================================================================================================
 
-Geom_OsculatingSurface& Geom_OsculatingSurface::operator=(Geom_OsculatingSurface&& theOther) noexcept
+Geom_OsculatingSurface& Geom_OsculatingSurface::operator=(
+  Geom_OsculatingSurface&& theOther) noexcept
 {
   if (this != &theOther)
   {
@@ -110,10 +111,10 @@ Geom_OsculatingSurface& Geom_OsculatingSurface::operator=(Geom_OsculatingSurface
 void Geom_OsculatingSurface::Init(const Handle(Geom_Surface)& theBS, double theTol)
 {
   clearOsculFlags();
-  myTol                = theTol;
-  double TolMin        = 0.; // consider all singularities below Tol, not just above 1.e-12
-  bool   OsculSurf     = true;
-  myBasisSurf          = Handle(Geom_Surface)::DownCast(theBS->Copy());
+  myTol            = theTol;
+  double TolMin    = 0.; // consider all singularities below Tol, not just above 1.e-12
+  bool   OsculSurf = true;
+  myBasisSurf      = Handle(Geom_Surface)::DownCast(theBS->Copy());
   myOsculSurf1.Clear();
   myOsculSurf2.Clear();
   myKdeg.Clear();
@@ -496,7 +497,7 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
                                                     int                                theSUKnot,
                                                     int                                theSVKnot,
                                                     const Handle(Geom_BSplineSurface)& theBS,
-                                                    Handle(Geom_BSplineSurface)&       theBSpl) const
+                                                    Handle(Geom_BSplineSurface)& theBSpl) const
 {
   bool OsculSurf = true;
 #ifdef OCCT_DEBUG
@@ -574,8 +575,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
     //    end for polynomial grid
 
     //    building the cache
-    int    ULocalIndex, VLocalIndex;
-    double ucacheparameter, vcacheparameter, uspanlength, vspanlength;
+    int                ULocalIndex, VLocalIndex;
+    double             ucacheparameter, vcacheparameter, uspanlength, vspanlength;
     TColgp_Array2OfPnt NewPoles(1, theBS->NbUPoles(), 1, theBS->NbVPoles());
 
     int aUfKnotsLength = theBS->NbUPoles() + theBS->UDegree() + 1;

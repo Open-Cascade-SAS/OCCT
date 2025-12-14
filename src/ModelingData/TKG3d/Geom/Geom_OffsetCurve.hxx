@@ -300,8 +300,8 @@ private:
   //! @param[in,out] theD3 third derivative (adjusted)
   //! @param[in,out] theD4 fourth derivative (adjusted)
   //! @return true if direction was changed
-  bool adjustDerivative(int    theMaxDerivative,
-                        double theU,
+  bool adjustDerivative(int     theMaxDerivative,
+                        double  theU,
                         gp_Vec& theD1,
                         gp_Vec& theD2,
                         gp_Vec& theD3,

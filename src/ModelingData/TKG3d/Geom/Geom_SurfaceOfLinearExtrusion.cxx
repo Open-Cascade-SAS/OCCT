@@ -180,12 +180,13 @@ void Geom_SurfaceOfLinearExtrusion::D3(const Standard_Real U,
                                        Vec&                D3UUV,
                                        Vec&                D3UVV) const
 {
-  Geom_ExtrusionUtils::D3(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  Geom_ExtrusionUtils::
+    D3(U, V, *basisCurve, direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-Vec Geom_SurfaceOfLinearExtrusion::DN(const Standard_Real    U,
+Vec Geom_SurfaceOfLinearExtrusion::DN(const Standard_Real U,
                                       const Standard_Real,
                                       const Standard_Integer Nu,
                                       const Standard_Integer Nv) const

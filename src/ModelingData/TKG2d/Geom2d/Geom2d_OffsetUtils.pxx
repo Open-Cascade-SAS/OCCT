@@ -58,7 +58,10 @@ inline void CalculateD0(gp_Pnt2d& theValue, const gp_Vec2d& theD1, double theOff
 //! @param[in] theD2 second derivative of basis curve
 //! @param[in] theOffset offset distance value
 //! @throw Standard_NullValue if derivatives result in null computation
-inline void CalculateD1(gp_Pnt2d& theValue, gp_Vec2d& theD1, const gp_Vec2d& theD2, double theOffset)
+inline void CalculateD1(gp_Pnt2d&       theValue,
+                        gp_Vec2d&       theD1,
+                        const gp_Vec2d& theD2,
+                        double          theOffset)
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ Z|| and Ndir = P' ^ Z

@@ -246,7 +246,17 @@ void Geom_SurfaceOfRevolution::D2(const Standard_Real U,
                                   Vec&                D2V,
                                   Vec&                D2UV) const
 {
-  Geom_RevolutionUtils::D2(U, V, *basisCurve, loc.XYZ(), direction.XYZ(), P, D1U, D1V, D2U, D2V, D2UV);
+  Geom_RevolutionUtils::D2(U,
+                           V,
+                           *basisCurve,
+                           loc.XYZ(),
+                           direction.XYZ(),
+                           P,
+                           D1U,
+                           D1V,
+                           D2U,
+                           D2V,
+                           D2UV);
 }
 
 //=================================================================================================
@@ -264,8 +274,21 @@ void Geom_SurfaceOfRevolution::D3(const Standard_Real U,
                                   Vec&                D3UUV,
                                   Vec&                D3UVV) const
 {
-  Geom_RevolutionUtils::D3(U, V, *basisCurve, loc.XYZ(), direction.XYZ(),
-                           P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  Geom_RevolutionUtils::D3(U,
+                           V,
+                           *basisCurve,
+                           loc.XYZ(),
+                           direction.XYZ(),
+                           P,
+                           D1U,
+                           D1V,
+                           D2U,
+                           D2V,
+                           D2UV,
+                           D3U,
+                           D3V,
+                           D3UUV,
+                           D3UVV);
 }
 
 //=================================================================================================

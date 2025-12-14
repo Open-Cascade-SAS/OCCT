@@ -453,11 +453,11 @@ private:
                                      const Standard_Real theSquareTol) const;
 
 private:
-  Handle(Geom_Surface)                      basisSurf;
-  Handle(Geom_Surface)                      equivSurf;
-  Standard_Real                             offsetValue;
-  std::unique_ptr<Geom_OsculatingSurface>   myOscSurf;
-  GeomAbs_Shape                             myBasisSurfContinuity;
+  Handle(Geom_Surface)                    basisSurf;
+  Handle(Geom_Surface)                    equivSurf;
+  Standard_Real                           offsetValue;
+  std::unique_ptr<Geom_OsculatingSurface> myOscSurf;
+  GeomAbs_Shape                           myBasisSurfContinuity;
 };
 
 #endif // _Geom_OffsetSurface_HeaderFile

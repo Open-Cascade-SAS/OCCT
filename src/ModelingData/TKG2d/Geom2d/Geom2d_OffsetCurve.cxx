@@ -414,12 +414,12 @@ bool Geom2d_OffsetCurve::adjustDerivative(int       theMaxDerivative,
   basisCurve->D0(std::min(theU, u), P1);
   basisCurve->D0(std::max(theU, u), P2);
 
-  gp_Vec2d      V1(P1, P2);
-  isDirectionChange     = V.Dot(V1) < 0.0;
-  const double  aSign   = isDirectionChange ? -1.0 : 1.0;
+  gp_Vec2d V1(P1, P2);
+  isDirectionChange  = V.Dot(V1) < 0.0;
+  const double aSign = isDirectionChange ? -1.0 : 1.0;
 
-  theD1                 = V * aSign;
-  gp_Vec2d* aDeriv[3]   = {&theD2, &theD3, &theD4};
+  theD1               = V * aSign;
+  gp_Vec2d* aDeriv[3] = {&theD2, &theD3, &theD4};
   for (int i = 1; i < theMaxDerivative; i++)
   {
     *(aDeriv[i - 1]) = basisCurve->DN(theU, anIndex + i) * aSign;

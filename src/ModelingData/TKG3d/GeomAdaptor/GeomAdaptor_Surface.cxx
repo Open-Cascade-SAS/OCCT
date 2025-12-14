@@ -200,7 +200,16 @@ inline void extrusionD2(const double                   theU,
                         gp_Vec&                        theD2V,
                         gp_Vec&                        theD2UV)
 {
-  Geom_ExtrusionUtils::D2(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
+  Geom_ExtrusionUtils::D2(theU,
+                          theV,
+                          *theBasis,
+                          theDir,
+                          theValue,
+                          theD1U,
+                          theD1V,
+                          theD2U,
+                          theD2V,
+                          theD2UV);
 }
 
 //! Extrusion surface D3 evaluation
@@ -219,7 +228,20 @@ inline void extrusionD3(const double                   theU,
                         gp_Vec&                        theD3UUV,
                         gp_Vec&                        theD3UVV)
 {
-  Geom_ExtrusionUtils::D3(theU, theV, *theBasis, theDir, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+  Geom_ExtrusionUtils::D3(theU,
+                          theV,
+                          *theBasis,
+                          theDir,
+                          theValue,
+                          theD1U,
+                          theD1V,
+                          theD2U,
+                          theD2V,
+                          theD2UV,
+                          theD3U,
+                          theD3V,
+                          theD3UUV,
+                          theD3UVV);
 }
 
 //! Extrusion surface DN evaluation
@@ -239,7 +261,12 @@ inline void revolutionD0(const double                   theU,
                          const gp_Ax1&                  theAxis,
                          gp_Pnt&                        theValue)
 {
-  Geom_RevolutionUtils::D0(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue);
+  Geom_RevolutionUtils::D0(theU,
+                           theV,
+                           *theBasis,
+                           theAxis.Location().XYZ(),
+                           theAxis.Direction().XYZ(),
+                           theValue);
 }
 
 //! Revolution surface D1 evaluation
@@ -251,7 +278,14 @@ inline void revolutionD1(const double                   theU,
                          gp_Vec&                        theD1U,
                          gp_Vec&                        theD1V)
 {
-  Geom_RevolutionUtils::D1(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V);
+  Geom_RevolutionUtils::D1(theU,
+                           theV,
+                           *theBasis,
+                           theAxis.Location().XYZ(),
+                           theAxis.Direction().XYZ(),
+                           theValue,
+                           theD1U,
+                           theD1V);
 }
 
 //! Revolution surface D2 evaluation
@@ -266,7 +300,17 @@ inline void revolutionD2(const double                   theU,
                          gp_Vec&                        theD2V,
                          gp_Vec&                        theD2UV)
 {
-  Geom_RevolutionUtils::D2(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
+  Geom_RevolutionUtils::D2(theU,
+                           theV,
+                           *theBasis,
+                           theAxis.Location().XYZ(),
+                           theAxis.Direction().XYZ(),
+                           theValue,
+                           theD1U,
+                           theD1V,
+                           theD2U,
+                           theD2V,
+                           theD2UV);
 }
 
 //! Revolution surface D3 evaluation
@@ -285,7 +329,21 @@ inline void revolutionD3(const double                   theU,
                          gp_Vec&                        theD3UUV,
                          gp_Vec&                        theD3UVV)
 {
-  Geom_RevolutionUtils::D3(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, theD3U, theD3V, theD3UUV, theD3UVV);
+  Geom_RevolutionUtils::D3(theU,
+                           theV,
+                           *theBasis,
+                           theAxis.Location().XYZ(),
+                           theAxis.Direction().XYZ(),
+                           theValue,
+                           theD1U,
+                           theD1V,
+                           theD2U,
+                           theD2V,
+                           theD2UV,
+                           theD3U,
+                           theD3V,
+                           theD3UUV,
+                           theD3UVV);
 }
 
 //! Revolution surface DN evaluation
@@ -296,7 +354,13 @@ inline gp_Vec revolutionDN(const double                   theU,
                            int                            theDerU,
                            int                            theDerV)
 {
-  return Geom_RevolutionUtils::DN(theU, theV, *theBasis, theAxis.Location().XYZ(), theAxis.Direction().XYZ(), theDerU, theDerV);
+  return Geom_RevolutionUtils::DN(theU,
+                                  theV,
+                                  *theBasis,
+                                  theAxis.Location().XYZ(),
+                                  theAxis.Direction().XYZ(),
+                                  theDerU,
+                                  theDerV);
 }
 
 //! Check if vector has infinite coordinates
@@ -316,10 +380,10 @@ inline void checkInfinite(const gp_Vec& theVecU, const gp_Vec& theVecV)
 }
 
 //! Offset surface D0 evaluation
-inline void offsetD0(const double theU,
-                     const double theV,
+inline void offsetD0(const double                           theU,
+                     const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
-                     gp_Pnt& theValue)
+                     gp_Pnt&                                theValue)
 {
   gp_Vec aD1U, aD1V;
   theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
@@ -343,9 +407,9 @@ inline void offsetD0(const double theU,
   {
     // Singular case - use CSLib for normal calculation
     Handle(Geom_BSplineSurface) aL;
-    bool isOpposite = false;
-    bool AlongU = false;
-    bool AlongV = false;
+    bool                        isOpposite = false;
+    bool                        AlongU     = false;
+    bool                        AlongV     = false;
     if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
     {
       AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
@@ -360,13 +424,13 @@ inline void offsetD0(const double theU,
     aVMin = theData.BasisAdaptor->FirstVParameter();
     aVMax = theData.BasisAdaptor->LastVParameter();
 
-    gp_Dir aNormal;
+    gp_Dir             aNormal;
     CSLib_NormalStatus aNStatus;
     CSLib::Normal(aD1U, aD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
     if (aNStatus != CSLib_Defined)
     {
       // Try with higher derivatives
-      constexpr int MaxOrder = 3;
+      constexpr int      MaxOrder = 3;
       TColgp_Array2OfVec aDerNUV(0, MaxOrder, 0, MaxOrder);
       aDerNUV.SetValue(1, 0, aD1U);
       aDerNUV.SetValue(0, 1, aD1V);
@@ -379,8 +443,19 @@ inline void offsetD0(const double theU,
         }
       }
       int OrderU, OrderV;
-      CSLib::Normal(MaxOrder, aDerNUV, THE_D1_MAG_TOL, theU, theV,
-                    aUMin, aUMax, aVMin, aVMax, aNStatus, aNormal, OrderU, OrderV);
+      CSLib::Normal(MaxOrder,
+                    aDerNUV,
+                    THE_D1_MAG_TOL,
+                    theU,
+                    theV,
+                    aUMin,
+                    aUMax,
+                    aVMin,
+                    aVMax,
+                    aNStatus,
+                    aNormal,
+                    OrderU,
+                    OrderV);
     }
 
     if (aNStatus != CSLib_Defined)
@@ -391,12 +466,12 @@ inline void offsetD0(const double theU,
 }
 
 //! Offset surface D1 evaluation
-inline void offsetD1(const double theU,
-                     const double theV,
+inline void offsetD1(const double                           theU,
+                     const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
-                     gp_Pnt& theValue,
-                     gp_Vec& theD1U,
-                     gp_Vec& theD1V)
+                     gp_Pnt&                                theValue,
+                     gp_Vec&                                theD1U,
+                     gp_Vec&                                theD1V)
 {
   gp_Vec aD2U, aD2V, aD2UV;
   theData.BasisAdaptor->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
@@ -411,13 +486,13 @@ inline void offsetD1(const double theU,
   if (aD1VNorm2 > 1.0)
     aD1V /= std::sqrt(aD1VNorm2);
 
-  gp_Vec aNorm = aD1U.Crossed(aD1V);
-  bool isSingular = (aNorm.SquareMagnitude() <= THE_D1_MAG_TOL * THE_D1_MAG_TOL);
+  gp_Vec aNorm      = aD1U.Crossed(aD1V);
+  bool   isSingular = (aNorm.SquareMagnitude() <= THE_D1_MAG_TOL * THE_D1_MAG_TOL);
 
   Handle(Geom_BSplineSurface) aL;
-  bool isOpposite = false;
-  bool AlongU = false;
-  bool AlongV = false;
+  bool                        isOpposite = false;
+  bool                        AlongU     = false;
+  bool                        AlongV     = false;
   if (isSingular && theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
   {
     AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, isOpposite, aL);
@@ -433,16 +508,22 @@ inline void offsetD1(const double theU,
     // Compute derivative of normal
     gp_Vec aN0(aNorm.XYZ()), aN1U, aN1V;
     double aScale = (theD1U ^ theD1V).Dot(aN0);
-    aN1U.SetX(aD2U.Y() * theD1V.Z() + theD1U.Y() * aD2UV.Z() - aD2U.Z() * theD1V.Y() - theD1U.Z() * aD2UV.Y());
-    aN1U.SetY(-(aD2U.X() * theD1V.Z() + theD1U.X() * aD2UV.Z() - aD2U.Z() * theD1V.X() - theD1U.Z() * aD2UV.X()));
-    aN1U.SetZ(aD2U.X() * theD1V.Y() + theD1U.X() * aD2UV.Y() - aD2U.Y() * theD1V.X() - theD1U.Y() * aD2UV.X());
+    aN1U.SetX(aD2U.Y() * theD1V.Z() + theD1U.Y() * aD2UV.Z() - aD2U.Z() * theD1V.Y()
+              - theD1U.Z() * aD2UV.Y());
+    aN1U.SetY(-(aD2U.X() * theD1V.Z() + theD1U.X() * aD2UV.Z() - aD2U.Z() * theD1V.X()
+                - theD1U.Z() * aD2UV.X()));
+    aN1U.SetZ(aD2U.X() * theD1V.Y() + theD1U.X() * aD2UV.Y() - aD2U.Y() * theD1V.X()
+              - theD1U.Y() * aD2UV.X());
     double aScaleU = aN1U.Dot(aN0);
     aN1U.Subtract(aScaleU * aN0);
     aN1U /= aScale;
 
-    aN1V.SetX(aD2UV.Y() * theD1V.Z() + aD2V.Z() * theD1U.Y() - aD2UV.Z() * theD1V.Y() - aD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(aD2UV.X() * theD1V.Z() + aD2V.Z() * theD1U.X() - aD2UV.Z() * theD1V.X() - aD2V.X() * theD1U.Z()));
-    aN1V.SetZ(aD2UV.X() * theD1V.Y() + aD2V.Y() * theD1U.X() - aD2UV.Y() * theD1V.X() - aD2V.X() * theD1U.Y());
+    aN1V.SetX(aD2UV.Y() * theD1V.Z() + aD2V.Z() * theD1U.Y() - aD2UV.Z() * theD1V.Y()
+              - aD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(aD2UV.X() * theD1V.Z() + aD2V.Z() * theD1U.X() - aD2UV.Z() * theD1V.X()
+                - aD2V.X() * theD1U.Z()));
+    aN1V.SetZ(aD2UV.X() * theD1V.Y() + aD2V.Y() * theD1U.X() - aD2UV.Y() * theD1V.X()
+              - aD2V.X() * theD1U.Y());
     double aScaleV = aN1V.Dot(aN0);
     aN1V.Subtract(aScaleV * aN0);
     aN1V /= aScale;
@@ -453,7 +534,7 @@ inline void offsetD1(const double theU,
   else
   {
     // Singular case - simplified handling
-    gp_Dir aNormal;
+    gp_Dir             aNormal;
     CSLib_NormalStatus aNStatus;
     CSLib::Normal(theD1U, theD1V, THE_D1_MAG_TOL, aNStatus, aNormal);
     if (aNStatus == CSLib_Defined)
@@ -468,19 +549,19 @@ inline void offsetD1(const double theU,
 }
 
 //! Offset surface D2 evaluation
-inline void offsetD2(const double theU,
-                     const double theV,
+inline void offsetD2(const double                           theU,
+                     const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
-                     gp_Pnt& theValue,
-                     gp_Vec& theD1U,
-                     gp_Vec& theD1V,
-                     gp_Vec& theD2U,
-                     gp_Vec& theD2V,
-                     gp_Vec& theD2UV)
+                     gp_Pnt&                                theValue,
+                     gp_Vec&                                theD1U,
+                     gp_Vec&                                theD1V,
+                     gp_Vec&                                theD2U,
+                     gp_Vec&                                theD2V,
+                     gp_Vec&                                theD2UV)
 {
   gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  theData.BasisAdaptor->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV,
-                           aD3U, aD3V, aD3UUV, aD3UVV);
+  theData.BasisAdaptor
+    ->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
   checkInfinite(theD1U, theD1V);
 
   // Normalize derivatives for stable normal calculation
@@ -503,17 +584,23 @@ inline void offsetD2(const double theU,
     double aScale = (theD1U ^ theD1V).Dot(aN0);
 
     gp_Vec aN1U;
-    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
-    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()));
-    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
+    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
+              - theD1U.Z() * theD2UV.Y());
+    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
+                - theD1U.Z() * theD2UV.X()));
+    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
+              - theD1U.Y() * theD2UV.X());
     double aScaleU = aN1U.Dot(aN0);
     aN1U.Subtract(aScaleU * aN0);
     aN1U /= aScale;
 
     gp_Vec aN1V;
-    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()));
-    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
+    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
+              - theD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
+                - theD2V.X() * theD1U.Z()));
+    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
+              - theD2V.X() * theD1U.Y());
     double aScaleV = aN1V.Dot(aN0);
     aN1V.Subtract(aScaleV * aN0);
     aN1V /= aScale;
@@ -524,27 +611,38 @@ inline void offsetD2(const double theU,
   }
   else
   {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
+    throw Standard_NumericError(
+      "GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
   }
 }
 
 //! Offset surface D3 evaluation
-inline void offsetD3(const double theU,
-                     const double theV,
+inline void offsetD3(const double                           theU,
+                     const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
-                     gp_Pnt& theValue,
-                     gp_Vec& theD1U,
-                     gp_Vec& theD1V,
-                     gp_Vec& theD2U,
-                     gp_Vec& theD2V,
-                     gp_Vec& theD2UV,
-                     gp_Vec& theD3U,
-                     gp_Vec& theD3V,
-                     gp_Vec& theD3UUV,
-                     gp_Vec& theD3UVV)
+                     gp_Pnt&                                theValue,
+                     gp_Vec&                                theD1U,
+                     gp_Vec&                                theD1V,
+                     gp_Vec&                                theD2U,
+                     gp_Vec&                                theD2V,
+                     gp_Vec&                                theD2UV,
+                     gp_Vec&                                theD3U,
+                     gp_Vec&                                theD3V,
+                     gp_Vec&                                theD3UUV,
+                     gp_Vec&                                theD3UVV)
 {
-  theData.BasisAdaptor->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV,
-                           theD3U, theD3V, theD3UUV, theD3UVV);
+  theData.BasisAdaptor->D3(theU,
+                           theV,
+                           theValue,
+                           theD1U,
+                           theD1V,
+                           theD2U,
+                           theD2V,
+                           theD2UV,
+                           theD3U,
+                           theD3V,
+                           theD3UUV,
+                           theD3UVV);
   checkInfinite(theD1U, theD1V);
 
   // Normalize derivatives for stable normal calculation
@@ -567,17 +665,23 @@ inline void offsetD3(const double theU,
     double aScale = (theD1U ^ theD1V).Dot(aN0);
 
     gp_Vec aN1U;
-    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y() - theD1U.Z() * theD2UV.Y());
-    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X() - theD1U.Z() * theD2UV.X()));
-    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X() - theD1U.Y() * theD2UV.X());
+    aN1U.SetX(theD2U.Y() * theD1V.Z() + theD1U.Y() * theD2UV.Z() - theD2U.Z() * theD1V.Y()
+              - theD1U.Z() * theD2UV.Y());
+    aN1U.SetY(-(theD2U.X() * theD1V.Z() + theD1U.X() * theD2UV.Z() - theD2U.Z() * theD1V.X()
+                - theD1U.Z() * theD2UV.X()));
+    aN1U.SetZ(theD2U.X() * theD1V.Y() + theD1U.X() * theD2UV.Y() - theD2U.Y() * theD1V.X()
+              - theD1U.Y() * theD2UV.X());
     double aScaleU = aN1U.Dot(aN0);
     aN1U.Subtract(aScaleU * aN0);
     aN1U /= aScale;
 
     gp_Vec aN1V;
-    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y() - theD2V.Y() * theD1U.Z());
-    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X() - theD2V.X() * theD1U.Z()));
-    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X() - theD2V.X() * theD1U.Y());
+    aN1V.SetX(theD2UV.Y() * theD1V.Z() + theD2V.Z() * theD1U.Y() - theD2UV.Z() * theD1V.Y()
+              - theD2V.Y() * theD1U.Z());
+    aN1V.SetY(-(theD2UV.X() * theD1V.Z() + theD2V.Z() * theD1U.X() - theD2UV.Z() * theD1V.X()
+                - theD2V.X() * theD1U.Z()));
+    aN1V.SetZ(theD2UV.X() * theD1V.Y() + theD2V.Y() * theD1U.X() - theD2UV.Y() * theD1V.X()
+              - theD2V.X() * theD1U.Y());
     double aScaleV = aN1V.Dot(aN0);
     aN1V.Subtract(aScaleV * aN0);
     aN1V /= aScale;
@@ -588,16 +692,17 @@ inline void offsetD3(const double theU,
   }
   else
   {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
+    throw Standard_NumericError(
+      "GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
   }
 }
 
 //! Offset surface DN evaluation
-inline gp_Vec offsetDN(const double theU,
-                       const double theV,
+inline gp_Vec offsetDN(const double                           theU,
+                       const double                           theV,
                        const GeomAdaptor_Surface::OffsetData& theData,
-                       int theNu,
-                       int theNv)
+                       int                                    theNu,
+                       int                                    theNv)
 {
   if (theNu + theNv == 0)
   {
@@ -749,9 +854,14 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       Handle(Geom_OffsetSurface) anOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
       // Populate offset surface data
       GeomAdaptor_Surface::OffsetData anOffsetData;
-      anOffsetData.BasisAdaptor =
-        new GeomAdaptor_Surface(anOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
-      anOffsetData.Offset = anOffSurf->Offset();
+      anOffsetData.BasisAdaptor = new GeomAdaptor_Surface(anOffSurf->BasisSurface(),
+                                                          myUFirst,
+                                                          myULast,
+                                                          myVFirst,
+                                                          myVLast,
+                                                          myTolU,
+                                                          myTolV);
+      anOffsetData.Offset       = anOffSurf->Offset();
       // Create osculating surface detector from basis surface
       anOffsetData.OsculatingSurface.reset(
         new Geom_OsculatingSurface(anOffSurf->BasisSurface(), Precision::Confusion()));
@@ -773,8 +883,8 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const Standard_Integer  N = aBSpl->NbUKnots();
+      const auto&             aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      const Standard_Integer  N     = aBSpl->NbUKnots();
       TColStd_Array1OfReal    TK(1, N);
       TColStd_Array1OfInteger TM(1, N);
       aBSpl->UKnots(TK);
@@ -831,8 +941,8 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const Standard_Integer  N = aBSpl->NbVKnots();
+      const auto&             aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      const Standard_Integer  N     = aBSpl->NbVKnots();
       TColStd_Array1OfReal    TK(1, N);
       TColStd_Array1OfInteger TM(1, N);
       aBSpl->VKnots(TK);
@@ -889,11 +999,10 @@ Standard_Integer GeomAdaptor_Surface::NbUIntervals(const GeomAbs_Shape S) const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      GeomAdaptor_Curve myBasisCurve(
-        aBSpl->VIso(aBSpl->VKnot(aBSpl->FirstVKnotIndex())),
-        myUFirst,
-        myULast);
+      const auto&       aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      GeomAdaptor_Curve myBasisCurve(aBSpl->VIso(aBSpl->VKnot(aBSpl->FirstVKnotIndex())),
+                                     myUFirst,
+                                     myULast);
       return myBasisCurve.NbIntervals(S);
     }
     case GeomAbs_SurfaceOfExtrusion: {
@@ -948,11 +1057,10 @@ Standard_Integer GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      GeomAdaptor_Curve myBasisCurve(
-        aBSpl->UIso(aBSpl->UKnot(aBSpl->FirstUKnotIndex())),
-        myVFirst,
-        myVLast);
+      const auto&       aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      GeomAdaptor_Curve myBasisCurve(aBSpl->UIso(aBSpl->UKnot(aBSpl->FirstUKnotIndex())),
+                                     myVFirst,
+                                     myVLast);
       return myBasisCurve.NbIntervals(S);
     }
     case GeomAbs_SurfaceOfRevolution: {
@@ -1007,11 +1115,10 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      GeomAdaptor_Curve myBasisCurve(
-        aBSpl->VIso(aBSpl->VKnot(aBSpl->FirstVKnotIndex())),
-        myUFirst,
-        myULast);
+      const auto&       aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      GeomAdaptor_Curve myBasisCurve(aBSpl->VIso(aBSpl->VKnot(aBSpl->FirstVKnotIndex())),
+                                     myUFirst,
+                                     myULast);
       myBasisCurve.Intervals(T, S);
       return;
     }
@@ -1074,11 +1181,10 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
-      const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      GeomAdaptor_Curve myBasisCurve(
-        aBSpl->UIso(aBSpl->UKnot(aBSpl->FirstUKnotIndex())),
-        myVFirst,
-        myVLast);
+      const auto&       aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
+      GeomAdaptor_Curve myBasisCurve(aBSpl->UIso(aBSpl->UKnot(aBSpl->FirstUKnotIndex())),
+                                     myVFirst,
+                                     myVLast);
       myBasisCurve.Intervals(T, S);
       return;
     }
@@ -1222,10 +1328,10 @@ void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU, const Standard_
   if (mySurfaceType == GeomAbs_BezierSurface)
   {
     // Create cache for Bezier
-    auto& aBezData = std::get<BezierData>(mySurfaceData);
-    Handle(Geom_BezierSurface) aBezier = Handle(Geom_BezierSurface)::DownCast(mySurface);
-    Standard_Integer           aDegU   = aBezier->UDegree();
-    Standard_Integer           aDegV   = aBezier->VDegree();
+    auto&                      aBezData = std::get<BezierData>(mySurfaceData);
+    Handle(Geom_BezierSurface) aBezier  = Handle(Geom_BezierSurface)::DownCast(mySurface);
+    Standard_Integer           aDegU    = aBezier->UDegree();
+    Standard_Integer           aDegV    = aBezier->VDegree();
     TColStd_Array1OfReal       aFlatKnotsU(BSplCLib::FlatBezierKnots(aDegU), 1, 2 * (aDegU + 1));
     TColStd_Array1OfReal       aFlatKnotsV(BSplCLib::FlatBezierKnots(aDegV), 1, 2 * (aDegV + 1));
     if (aBezData.Cache.IsNull())
@@ -1544,13 +1650,39 @@ void GeomAdaptor_Surface::D3(const Standard_Real U,
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      extrusionD3(u, v, anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      extrusionD3(u,
+                  v,
+                  anExtData.BasisCurve,
+                  anExtData.Direction,
+                  P,
+                  D1U,
+                  D1V,
+                  D2U,
+                  D2V,
+                  D2UV,
+                  D3U,
+                  D3V,
+                  D3UUV,
+                  D3UVV);
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      revolutionD3(u, v, aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      revolutionD3(u,
+                   v,
+                   aRevData.BasisCurve,
+                   aRevData.Axis,
+                   P,
+                   D1U,
+                   D1V,
+                   D2U,
+                   D2V,
+                   D2UV,
+                   D3U,
+                   D3V,
+                   D3UUV,
+                   D3UVV);
       break;
     }
 
@@ -2036,12 +2168,10 @@ Standard_Boolean GeomAdaptor_Surface::IfUVBound(const Standard_Real    U,
                                                 const Standard_Integer USide,
                                                 const Standard_Integer VSide) const
 {
-  const auto&      aBSpl     = std::get<BSplineData>(mySurfaceData).Surface;
+  const auto&      aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
   Standard_Integer Ideb, Ifin;
-  Standard_Integer anUFKIndx = aBSpl->FirstUKnotIndex(),
-                   anULKIndx = aBSpl->LastUKnotIndex(),
-                   aVFKIndx  = aBSpl->FirstVKnotIndex(),
-                   aVLKIndx  = aBSpl->LastVKnotIndex();
+  Standard_Integer anUFKIndx = aBSpl->FirstUKnotIndex(), anULKIndx = aBSpl->LastUKnotIndex(),
+                   aVFKIndx = aBSpl->FirstVKnotIndex(), aVLKIndx = aBSpl->LastVKnotIndex();
   aBSpl->LocateU(U, PosTol, Ideb, Ifin, Standard_False);
   Standard_Boolean Local = (Ideb == Ifin);
   Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);

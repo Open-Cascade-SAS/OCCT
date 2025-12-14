@@ -259,7 +259,10 @@ void Geom_OffsetCurve::D1(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV1)
 
 //==================================================================================================
 
-void Geom_OffsetCurve::D2(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2) const
+void Geom_OffsetCurve::D2(const Standard_Real theU,
+                          gp_Pnt&             theP,
+                          gp_Vec&             theV1,
+                          gp_Vec&             theV2) const
 {
   gp_Vec aD3;
   basisCurve->D3(theU, theP, theV1, theV2, aD3);
@@ -454,12 +457,12 @@ bool Geom_OffsetCurve::adjustDerivative(int     theMaxDerivative,
   basisCurve->D0(std::min(theU, u), P1);
   basisCurve->D0(std::max(theU, u), P2);
 
-  gp_Vec       V1(P1, P2);
-  isDirectionChange   = V.Dot(V1) < 0.0;
-  const double aSign  = isDirectionChange ? -1.0 : 1.0;
+  gp_Vec V1(P1, P2);
+  isDirectionChange  = V.Dot(V1) < 0.0;
+  const double aSign = isDirectionChange ? -1.0 : 1.0;
 
-  theD1               = V * aSign;
-  gp_Vec* aDeriv[3]   = {&theD2, &theD3, &theD4};
+  theD1             = V * aSign;
+  gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
   for (int i = 1; i < theMaxDerivative; i++)
   {
     *(aDeriv[i - 1]) = basisCurve->DN(theU, anIndex + i) * aSign;
