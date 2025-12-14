@@ -1,0 +1,89 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef IntCurveSurface_PolygonToolUtils_pxx_HeaderFile
+#define IntCurveSurface_PolygonToolUtils_pxx_HeaderFile
+
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+
+//! Template utility functions for polygon tool operations.
+//! These functions provide a static interface over polygon instance methods.
+namespace IntCurveSurface_PolygonToolUtils
+{
+
+//! Returns the bounding box of the polygon.
+//! @tparam PolygonType Type of polygon (e.g., IntCurveSurface_ThePolygonOfHInter)
+//! @param[in] thePolygon The polygon to query
+//! @return Reference to the bounding box
+template <typename PolygonType>
+inline const Bnd_Box& Bounding(const PolygonType& thePolygon)
+{
+  return thePolygon.Bounding();
+}
+
+//! Returns the deflection over-estimation of the polygon.
+//! @tparam PolygonType Type of polygon
+//! @param[in] thePolygon The polygon to query
+//! @return The deflection value
+template <typename PolygonType>
+inline double DeflectionOverEstimation(const PolygonType& thePolygon)
+{
+  return thePolygon.DeflectionOverEstimation();
+}
+
+//! Returns whether the polygon is closed.
+//! @tparam PolygonType Type of polygon
+//! @param[in] thePolygon The polygon to query
+//! @return True if closed
+template <typename PolygonType>
+inline bool Closed(const PolygonType& thePolygon)
+{
+  return thePolygon.Closed();
+}
+
+//! Returns the number of segments in the polygon.
+//! @tparam PolygonType Type of polygon
+//! @param[in] thePolygon The polygon to query
+//! @return Number of segments
+template <typename PolygonType>
+inline int NbSegments(const PolygonType& thePolygon)
+{
+  return thePolygon.NbSegments();
+}
+
+//! Returns the beginning point of segment at given index.
+//! @tparam PolygonType Type of polygon
+//! @param[in] thePolygon The polygon to query
+//! @param[in] theIndex Segment index (1-based)
+//! @return Reference to the point
+template <typename PolygonType>
+inline const gp_Pnt& BeginOfSeg(const PolygonType& thePolygon, const int theIndex)
+{
+  return thePolygon.BeginOfSeg(theIndex);
+}
+
+//! Returns the end point of segment at given index.
+//! @tparam PolygonType Type of polygon
+//! @param[in] thePolygon The polygon to query
+//! @param[in] theIndex Segment index (1-based)
+//! @return Reference to the point
+template <typename PolygonType>
+inline const gp_Pnt& EndOfSeg(const PolygonType& thePolygon, const int theIndex)
+{
+  return thePolygon.EndOfSeg(theIndex);
+}
+
+} // namespace IntCurveSurface_PolygonToolUtils
+
+#endif // IntCurveSurface_PolygonToolUtils_pxx_HeaderFile

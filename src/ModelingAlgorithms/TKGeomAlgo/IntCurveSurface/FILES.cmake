@@ -14,9 +14,12 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_IntersectionSegment.hxx
   IntCurveSurface_Polygon.gxx
   IntCurveSurface_PolygonTool.lxx
+  IntCurveSurface_PolygonToolUtils.pxx
+  IntCurveSurface_PolygonUtils.pxx
   IntCurveSurface_Polyhedron.gxx
   IntCurveSurface_Polyhedron.lxx
   IntCurveSurface_PolyhedronTool.lxx
+  IntCurveSurface_PolyhedronUtils.pxx
   IntCurveSurface_QuadricCurveExactInter.gxx
   IntCurveSurface_SequenceOfPnt.hxx
   IntCurveSurface_SequenceOfSeg.hxx

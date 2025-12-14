@@ -1,0 +1,239 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef IntCurveSurface_PolyhedronUtils_pxx_HeaderFile
+#define IntCurveSurface_PolyhedronUtils_pxx_HeaderFile
+
+#include <Bnd_Box.hxx>
+#include <gp.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_Real.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+//! Utility functions for polyhedron discretization of surfaces.
+//! These template functions implement the core logic previously in IntCurveSurface_Polyhedron.gxx.
+namespace IntCurveSurface_PolyhedronUtils
+{
+
+//! Minimum edge length for valid triangles.
+constexpr double THE_MIN_EDGE_LENGTH_SQUARED = 1e-15;
+
+//! Initialize polyhedron with uniform UV sampling.
+//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface))
+//! @tparam SurfaceTool Tool class providing surface operations (D0, Value)
+//! @param[in]     theSurface       The surface to discretize
+//! @param[in]     theU0            First U parameter
+//! @param[in]     theV0            First V parameter
+//! @param[in]     theU1            Last U parameter
+//! @param[in]     theV1            Last V parameter
+//! @param[in]     theNbDeltaU      Number of U subdivisions
+//! @param[in]     theNbDeltaV      Number of V subdivisions
+//! @param[out]    thePnts          Array of sampled points (cast to gp_Pnt*)
+//! @param[out]    theU             Array of U parameters (cast to double*)
+//! @param[out]    theV             Array of V parameters (cast to double*)
+//! @param[out]    theIsOnBounds    Array of boundary flags (cast to bool*)
+//! @param[in,out] theBnd           Bounding box to update
+template <typename SurfaceType, typename SurfaceTool>
+void InitUniform(const SurfaceType& theSurface,
+                 const double       theU0,
+                 const double       theV0,
+                 const double       theU1,
+                 const double       theV1,
+                 const int          theNbDeltaU,
+                 const int          theNbDeltaV,
+                 gp_Pnt*            thePnts,
+                 double*            theU,
+                 double*            theV,
+                 Standard_Boolean*  theIsOnBounds,
+                 Bnd_Box&           theBnd)
+{
+  const double dU = (theU1 - theU0) / static_cast<double>(theNbDeltaU);
+  const double dV = (theV1 - theV0) / static_cast<double>(theNbDeltaV);
+
+  int    Index = 1;
+  double U     = theU0;
+
+  for (int i1 = 0; i1 <= theNbDeltaU; ++i1, U += dU)
+  {
+    double V = theV0;
+    for (int i2 = 0; i2 <= theNbDeltaV; ++i2, V += dV)
+    {
+      gp_Pnt TP;
+      SurfaceTool::D0(theSurface, U, V, TP);
+      thePnts[Index]       = TP;
+      theU[Index]          = U;
+      theV[Index]          = V;
+      theIsOnBounds[Index] = (i1 == 0 || i1 == theNbDeltaU || i2 == 0 || i2 == theNbDeltaV);
+      theBnd.Add(TP);
+      ++Index;
+    }
+  }
+}
+
+//! Initialize polyhedron with explicit UV parameter arrays.
+//! @tparam SurfaceType Type of surface
+//! @tparam SurfaceTool Tool class providing surface operations
+//! @param[in]     theSurface       The surface to discretize
+//! @param[in]     theUpars         Array of U parameters
+//! @param[in]     theVpars         Array of V parameters
+//! @param[in]     theNbDeltaU      Number of U subdivisions
+//! @param[in]     theNbDeltaV      Number of V subdivisions
+//! @param[out]    thePnts          Array of sampled points
+//! @param[out]    theU             Array of U parameters
+//! @param[out]    theV             Array of V parameters
+//! @param[out]    theIsOnBounds    Array of boundary flags
+//! @param[in,out] theBnd           Bounding box to update
+template <typename SurfaceType, typename SurfaceTool>
+void InitWithParams(const SurfaceType&          theSurface,
+                    const TColStd_Array1OfReal& theUpars,
+                    const TColStd_Array1OfReal& theVpars,
+                    const int                   theNbDeltaU,
+                    const int                   theNbDeltaV,
+                    gp_Pnt*                     thePnts,
+                    double*                     theU,
+                    double*                     theV,
+                    Standard_Boolean*           theIsOnBounds,
+                    Bnd_Box&                    theBnd)
+{
+  const int i0 = theUpars.Lower();
+  const int j0 = theVpars.Lower();
+  int       Index = 1;
+
+  for (int i1 = 0; i1 <= theNbDeltaU; ++i1)
+  {
+    const double U = theUpars(i1 + i0);
+    for (int i2 = 0; i2 <= theNbDeltaV; ++i2)
+    {
+      const double V = theVpars(i2 + j0);
+      gp_Pnt       TP;
+      SurfaceTool::D0(theSurface, U, V, TP);
+      thePnts[Index]       = TP;
+      theU[Index]          = U;
+      theV[Index]          = V;
+      theIsOnBounds[Index] = (i1 == 0 || i1 == theNbDeltaU || i2 == 0 || i2 == theNbDeltaV);
+      theBnd.Add(TP);
+      ++Index;
+    }
+  }
+}
+
+//! Calculate deflection on a single triangle.
+//! @tparam SurfaceType Type of surface
+//! @tparam SurfaceTool Tool class providing surface operations
+//! @param[in] theSurface   The surface
+//! @param[in] theP1        First vertex point
+//! @param[in] theP2        Second vertex point
+//! @param[in] theP3        Third vertex point
+//! @param[in] theU1        U parameter at first vertex
+//! @param[in] theV1        V parameter at first vertex
+//! @param[in] theU2        U parameter at second vertex
+//! @param[in] theV2        V parameter at second vertex
+//! @param[in] theU3        U parameter at third vertex
+//! @param[in] theV3        V parameter at third vertex
+//! @return Deflection value (distance from triangle center to surface)
+template <typename SurfaceType, typename SurfaceTool>
+double DeflectionOnTriangle(const SurfaceType& theSurface,
+                            const gp_Pnt&      theP1,
+                            const gp_Pnt&      theP2,
+                            const gp_Pnt&      theP3,
+                            const double       theU1,
+                            const double       theV1,
+                            const double       theU2,
+                            const double       theV2,
+                            const double       theU3,
+                            const double       theV3)
+{
+  // Check for degenerate triangles
+  if (theP1.SquareDistance(theP2) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+  if (theP1.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+  if (theP2.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+
+  // Compute normal vector
+  const gp_XYZ XYZ1 = theP2.XYZ() - theP1.XYZ();
+  const gp_XYZ XYZ2 = theP3.XYZ() - theP2.XYZ();
+  const gp_XYZ XYZ3 = theP1.XYZ() - theP3.XYZ();
+  gp_Vec       NormalVector((XYZ1 ^ XYZ2) + (XYZ2 ^ XYZ3) + (XYZ3 ^ XYZ1));
+
+  const double aNormLen = NormalVector.Magnitude();
+  if (aNormLen < gp::Resolution())
+    return 0.0;
+
+  NormalVector.Divide(aNormLen);
+
+  // Calculate center point on surface
+  const double u = (theU1 + theU2 + theU3) / 3.0;
+  const double v = (theV1 + theV2 + theV3) / 3.0;
+  const gp_Pnt P = SurfaceTool::Value(theSurface, u, v);
+
+  // Return distance from center to triangle plane
+  const gp_Vec P1P(theP1, P);
+  return std::abs(P1P.Dot(NormalVector));
+}
+
+//! Compute border deflection for a boundary isoline.
+//! @tparam SurfaceType Type of surface
+//! @tparam SurfaceTool Tool class providing surface operations
+//! @param[in] theSurface   The surface
+//! @param[in] theParameter Fixed parameter value (U or V depending on isUIso)
+//! @param[in] thePMin      Start of varying parameter range
+//! @param[in] thePMax      End of varying parameter range
+//! @param[in] theIsUIso    True if this is a U-isoline, false for V-isoline
+//! @param[in] theNbSamples Number of samples along the boundary
+//! @return Maximum deflection along the border
+template <typename SurfaceType, typename SurfaceTool>
+double ComputeBorderDeflection(const SurfaceType& theSurface,
+                               const double       theParameter,
+                               const double       thePMin,
+                               const double       thePMax,
+                               const bool         theIsUIso,
+                               const int          theNbSamples)
+{
+  const double aDelta      = (thePMax - thePMin) / theNbSamples;
+  double       aPar        = thePMin;
+  double       aDeflection = RealFirst();
+
+  for (int i = 0; i <= theNbSamples; ++i, aPar += aDelta)
+  {
+    gp_XYZ aP1, aP2, aPParMid;
+
+    if (theIsUIso)
+    {
+      aP1      = SurfaceTool::Value(theSurface, theParameter, aPar).XYZ();
+      aP2      = SurfaceTool::Value(theSurface, theParameter, aPar + aDelta).XYZ();
+      aPParMid = SurfaceTool::Value(theSurface, theParameter, aPar + aDelta / 2.0).XYZ();
+    }
+    else
+    {
+      aP1      = SurfaceTool::Value(theSurface, aPar, theParameter).XYZ();
+      aP2      = SurfaceTool::Value(theSurface, aPar + aDelta, theParameter).XYZ();
+      aPParMid = SurfaceTool::Value(theSurface, aPar + aDelta / 2.0, theParameter).XYZ();
+    }
+
+    const gp_XYZ aPMid = (aP2 + aP1) / 2.0;
+    const double aDist = (aPMid - aPParMid).Modulus();
+
+    if (aDist > aDeflection)
+      aDeflection = aDist;
+  }
+
+  return aDeflection;
+}
+
+} // namespace IntCurveSurface_PolyhedronUtils
+
+#endif // IntCurveSurface_PolyhedronUtils_pxx_HeaderFile
