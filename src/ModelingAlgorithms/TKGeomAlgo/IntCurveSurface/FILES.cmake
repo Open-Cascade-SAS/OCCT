@@ -12,14 +12,11 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_IntersectionPoint.lxx
   IntCurveSurface_IntersectionSegment.cxx
   IntCurveSurface_IntersectionSegment.hxx
-  IntCurveSurface_Polygon.gxx
   IntCurveSurface_PolygonTool.lxx
   IntCurveSurface_PolygonUtils.pxx
-  IntCurveSurface_Polyhedron.gxx
   IntCurveSurface_Polyhedron.lxx
   IntCurveSurface_PolyhedronTool.lxx
   IntCurveSurface_PolyhedronUtils.pxx
-  IntCurveSurface_QuadricCurveExactInter.gxx
   IntCurveSurface_QuadricCurveExactInterUtils.pxx
   IntCurveSurface_SequenceOfPnt.hxx
   IntCurveSurface_SequenceOfSeg.hxx
@@ -34,14 +31,14 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_ThePolygonOfHInter.hxx
   IntCurveSurface_ThePolygonOfHInter.cxx
   IntCurveSurface_ThePolygonToolOfHInter.hxx
-  IntCurveSurface_ThePolygonToolOfHInter_0.cxx
+  IntCurveSurface_ThePolygonToolOfHInter.cxx
   IntCurveSurface_ThePolyhedronOfHInter.hxx
   IntCurveSurface_ThePolyhedronOfHInter.cxx
   IntCurveSurface_ThePolyhedronToolOfHInter.hxx
-  IntCurveSurface_ThePolyhedronToolOfHInter_0.cxx
+  IntCurveSurface_ThePolyhedronToolOfHInter.cxx
   IntCurveSurface_TheQuadCurvExactHInter.hxx
   IntCurveSurface_TheQuadCurvExactHInter.cxx
   IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx
-  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter_0.cxx
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.cxx
   IntCurveSurface_TransitionOnCurve.hxx
 )
