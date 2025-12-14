@@ -369,6 +369,119 @@ bool AdjustDerivative(const CurveType& theCurve,
   return isDirectionChange;
 }
 
+//! Template function for D0 evaluation of offset curve.
+//! Gets D1 from basis curve and computes offset point.
+//!
+//! @tparam BasisCurveType type of basis curve (must have D1 method)
+//! @param[in] theU parameter value
+//! @param[in] theBasisCurve basis curve
+//! @param[in] theDir offset reference direction
+//! @param[in] theOffset offset distance
+//! @param[out] theValue computed offset point
+template <typename BasisCurveType>
+void EvaluateD0(double                theU,
+                const BasisCurveType& theBasisCurve,
+                const gp_Dir&         theDir,
+                double                theOffset,
+                gp_Pnt&               theValue)
+{
+  gp_Vec aD1;
+  theBasisCurve->D1(theU, theValue, aD1);
+  CalculateD0(theValue, aD1, theDir, theOffset);
+}
+
+//! Template function for D1 evaluation of offset curve.
+//! Gets D2 from basis curve and computes offset point and first derivative.
+//!
+//! @tparam BasisCurveType type of basis curve (must have D2 method)
+//! @param[in] theU parameter value
+//! @param[in] theBasisCurve basis curve
+//! @param[in] theDir offset reference direction
+//! @param[in] theOffset offset distance
+//! @param[out] theValue computed offset point
+//! @param[out] theD1 computed first derivative
+template <typename BasisCurveType>
+void EvaluateD1(double                theU,
+                const BasisCurveType& theBasisCurve,
+                const gp_Dir&         theDir,
+                double                theOffset,
+                gp_Pnt&               theValue,
+                gp_Vec&               theD1)
+{
+  gp_Vec aD2;
+  theBasisCurve->D2(theU, theValue, theD1, aD2);
+  CalculateD1(theValue, theD1, aD2, theDir, theOffset);
+}
+
+//! Template function for D2 evaluation of offset curve.
+//! Gets D3 from basis curve and computes offset point and derivatives.
+//! Handles singular points where first derivative is nearly zero.
+//!
+//! @tparam BasisCurveType type of basis curve (must have D3 and DN methods)
+//! @param[in] theU parameter value
+//! @param[in] theBasisCurve basis curve
+//! @param[in] theDir offset reference direction
+//! @param[in] theOffset offset distance
+//! @param[out] theValue computed offset point
+//! @param[out] theD1 computed first derivative
+//! @param[out] theD2 computed second derivative
+template <typename BasisCurveType>
+void EvaluateD2(double                theU,
+                const BasisCurveType& theBasisCurve,
+                const gp_Dir&         theDir,
+                double                theOffset,
+                gp_Pnt&               theValue,
+                gp_Vec&               theD1,
+                gp_Vec&               theD2)
+{
+  gp_Vec aD3;
+  theBasisCurve->D3(theU, theValue, theD1, theD2, aD3);
+
+  bool isDirectionChange = false;
+  if (theD1.SquareMagnitude() <= gp::Resolution())
+  {
+    gp_Vec aDummyD4;
+    isDirectionChange = AdjustDerivative(*theBasisCurve, 3, theU, theD1, theD2, aD3, aDummyD4);
+  }
+
+  CalculateD2(theValue, theD1, theD2, aD3, theDir, theOffset, isDirectionChange);
+}
+
+//! Template function for D3 evaluation of offset curve.
+//! Gets D3 and D4 from basis curve and computes offset point and derivatives.
+//! Handles singular points where first derivative is nearly zero.
+//!
+//! @tparam BasisCurveType type of basis curve (must have D3 and DN methods)
+//! @param[in] theU parameter value
+//! @param[in] theBasisCurve basis curve
+//! @param[in] theDir offset reference direction
+//! @param[in] theOffset offset distance
+//! @param[out] theValue computed offset point
+//! @param[out] theD1 computed first derivative
+//! @param[out] theD2 computed second derivative
+//! @param[out] theD3 computed third derivative
+template <typename BasisCurveType>
+void EvaluateD3(double                theU,
+                const BasisCurveType& theBasisCurve,
+                const gp_Dir&         theDir,
+                double                theOffset,
+                gp_Pnt&               theValue,
+                gp_Vec&               theD1,
+                gp_Vec&               theD2,
+                gp_Vec&               theD3)
+{
+  theBasisCurve->D3(theU, theValue, theD1, theD2, theD3);
+  gp_Vec aD4 = theBasisCurve->DN(theU, 4);
+
+  bool isDirectionChange = false;
+  if (theD1.SquareMagnitude() <= gp::Resolution())
+  {
+    isDirectionChange = AdjustDerivative(*theBasisCurve, 4, theU, theD1, theD2, theD3, aD4);
+  }
+
+  CalculateD3(theValue, theD1, theD2, theD3, aD4, theDir, theOffset, isDirectionChange);
+}
+
 } // namespace Geom_OffsetCurveUtils
 
 #endif // _Geom_OffsetCurveUtils_HeaderFile

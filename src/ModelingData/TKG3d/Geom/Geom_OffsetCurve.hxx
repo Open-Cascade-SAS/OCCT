@@ -291,23 +291,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetCurve, Geom_Curve)
 
 private:
-  //! Adjusts derivatives at singular points where first derivative has zero magnitude.
-  //! Uses higher-order derivatives to determine direction.
-  //! @param[in] theMaxDerivative maximum derivative order to compute
-  //! @param[in] theU parameter value
-  //! @param[in,out] theD1 first derivative (adjusted)
-  //! @param[in,out] theD2 second derivative (adjusted)
-  //! @param[in,out] theD3 third derivative (adjusted)
-  //! @param[in,out] theD4 fourth derivative (adjusted)
-  //! @return true if direction was changed
-  bool adjustDerivative(int     theMaxDerivative,
-                        double  theU,
-                        gp_Vec& theD1,
-                        gp_Vec& theD2,
-                        gp_Vec& theD3,
-                        gp_Vec& theD4) const;
-
-private:
   Handle(Geom_Curve) basisCurve;
   gp_Dir             direction;
   double             offsetValue;
