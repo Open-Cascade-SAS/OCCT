@@ -290,6 +290,85 @@ inline void CalculateD3(gp_Pnt&       theValue,
   theD3.Add(gp_Vec(D3Ndir));
 }
 
+//! Adjusts derivatives at singular points where the first derivative is nearly zero.
+//! Uses Taylor series approximation to find a valid tangent direction.
+//! @tparam CurveType type supporting D0, DN methods (Geom_Curve or adaptor)
+//! @param[in] theCurve basis curve for derivative evaluation
+//! @param[in] theMaxDerivative maximum derivative order to compute (3 or 4)
+//! @param[in] theU parameter value
+//! @param[in,out] theD1 first derivative (will be adjusted)
+//! @param[in,out] theD2 second derivative (will be adjusted)
+//! @param[in,out] theD3 third derivative (will be adjusted)
+//! @param[in,out] theD4 fourth derivative (will be adjusted if theMaxDerivative >= 4)
+//! @return true if direction change detected
+template <typename CurveType>
+bool AdjustDerivative(const CurveType& theCurve,
+                      int              theMaxDerivative,
+                      double           theU,
+                      gp_Vec&          theD1,
+                      gp_Vec&          theD2,
+                      gp_Vec&          theD3,
+                      gp_Vec&          theD4)
+{
+  static const double aTol           = gp::Resolution();
+  static const double aMinStep       = 1e-7;
+  static const int    aMaxDerivOrder = 3;
+
+  bool         isDirectionChange = false;
+  const double anUinfium         = theCurve.FirstParameter();
+  const double anUsupremum       = theCurve.LastParameter();
+
+  static const double DivisionFactor = 1.e-3;
+  double              du;
+  if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
+  {
+    du = 0.0;
+  }
+  else
+  {
+    du = anUsupremum - anUinfium;
+  }
+
+  const double aDelta = std::max(du * DivisionFactor, aMinStep);
+
+  // Derivative is approximated by Taylor-series
+  int    anIndex = 1; // Derivative order
+  gp_Vec V;
+
+  do
+  {
+    V = theCurve.DN(theU, ++anIndex);
+  } while ((V.SquareMagnitude() <= aTol) && anIndex < aMaxDerivOrder);
+
+  double u;
+
+  if (theU - anUinfium < aDelta)
+  {
+    u = theU + aDelta;
+  }
+  else
+  {
+    u = theU - aDelta;
+  }
+
+  gp_Pnt P1, P2;
+  theCurve.D0(std::min(theU, u), P1);
+  theCurve.D0(std::max(theU, u), P2);
+
+  gp_Vec V1(P1, P2);
+  isDirectionChange  = V.Dot(V1) < 0.0;
+  const double aSign = isDirectionChange ? -1.0 : 1.0;
+
+  theD1             = V * aSign;
+  gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
+  for (int i = 1; i < theMaxDerivative; i++)
+  {
+    *(aDeriv[i - 1]) = theCurve.DN(theU, anIndex + i) * aSign;
+  }
+
+  return isDirectionChange;
+}
+
 } // namespace Geom_OffsetCurveUtils
 
 #endif // _Geom_OffsetCurveUtils_HeaderFile

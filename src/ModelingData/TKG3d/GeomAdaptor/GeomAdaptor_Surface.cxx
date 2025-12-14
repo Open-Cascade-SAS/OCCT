@@ -164,63 +164,23 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
   return GeomAbs_CN;
 }
 
-//! Check and throw if vectors have infinite coordinates
-inline void checkInfinite(const gp_Vec& theVecU, const gp_Vec& theVecV)
-{
-  if (Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecU)
-      || Geom_OffsetSurfaceUtils::IsInfiniteCoord(theVecV))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Evaluation of infinite parameters");
-  }
-}
-
-//! Offset surface D0 evaluation
+//! Offset surface D0 evaluation with retry mechanism for singular points.
+//! Uses template utility that shifts point towards center when normal calculation fails.
 inline void offsetD0(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue)
 {
-  gp_Vec aD1U, aD1V;
-  theData.BasisAdaptor->D1(theU, theV, theValue, aD1U, aD1V);
-  checkInfinite(aD1U, aD1V);
-
-  // Try non-singular case first using utility function
-  if (Geom_OffsetSurfaceUtils::CalculateD0(theValue, aD1U, aD1V, theData.Offset))
+  const auto& anOscQuery = theData.OsculatingSurface;
+  if (!Geom_OffsetSurfaceUtils::EvaluateD0(theU, theV, theData.BasisAdaptor, theData.Offset,
+                                           anOscQuery, theValue))
   {
-    return;
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D0");
   }
-
-  // Singular case - use CSLib for normal calculation
-  Geom_OffsetSurfaceUtils::OsculatingInfo aOscInfo;
-  Handle(Geom_BSplineSurface)             aL;
-  if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
-  {
-    aOscInfo.AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
-    aOscInfo.AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
-  }
-
-  gp_Dir             aNormal;
-  CSLib_NormalStatus aNStatus;
-  Geom_OffsetSurfaceUtils::ComputeSingularNormal(3,
-                                                 theU,
-                                                 theV,
-                                                 theData.BasisAdaptor->FirstUParameter(),
-                                                 theData.BasisAdaptor->LastUParameter(),
-                                                 theData.BasisAdaptor->FirstVParameter(),
-                                                 theData.BasisAdaptor->LastVParameter(),
-                                                 aD1U,
-                                                 aD1V,
-                                                 theData.BasisAdaptor,
-                                                 aNormal,
-                                                 aNStatus);
-
-  if (aNStatus != CSLib_Defined)
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate normal");
-
-  theValue.SetXYZ(theValue.XYZ() + theData.Offset * aOscInfo.Sign() * aNormal.XYZ());
 }
 
-//! Offset surface D1 evaluation
+//! Offset surface D1 evaluation with retry mechanism for singular points.
+//! Uses template utility that shifts point towards center when normal calculation fails.
 inline void offsetD1(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -228,47 +188,16 @@ inline void offsetD1(const double                           theU,
                      gp_Vec&                                theD1U,
                      gp_Vec&                                theD1V)
 {
-  gp_Vec aD2U, aD2V, aD2UV;
-  theData.BasisAdaptor->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
-  checkInfinite(theD1U, theD1V);
-
-  // Try non-singular case first using utility function
-  if (Geom_OffsetSurfaceUtils::CalculateD1(theValue,
-                                           theD1U,
-                                           theD1V,
-                                           aD2U,
-                                           aD2V,
-                                           aD2UV,
-                                           theData.Offset))
-  {
-    return;
-  }
-
-  // Singular case - simplified handling
-  Geom_OffsetSurfaceUtils::OsculatingInfo aOscInfo;
-  Handle(Geom_BSplineSurface)             aL;
-  if (theData.OsculatingSurface && theData.OsculatingSurface->HasOscSurf())
-  {
-    aOscInfo.AlongU = theData.OsculatingSurface->UOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
-    aOscInfo.AlongV = theData.OsculatingSurface->VOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
-  }
-
-  gp_Dir             aNormal;
-  CSLib_NormalStatus aNStatus;
-  CSLib::Normal(theD1U, theD1V, Geom_OffsetSurfaceUtils::THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
-  if (aNStatus == CSLib_Defined)
-  {
-    theValue.SetXYZ(theValue.XYZ() + theData.Offset * aOscInfo.Sign() * aNormal.XYZ());
-  }
-  else
+  const auto& anOscQuery = theData.OsculatingSurface;
+  if (!Geom_OffsetSurfaceUtils::EvaluateD1(theU, theV, theData.BasisAdaptor, theData.Offset,
+                                           anOscQuery, theValue, theD1U, theD1V))
   {
     throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
   }
 }
 
-//=================================================================================================
-
-//! Offset surface D2 evaluation
+//! Offset surface D2 evaluation with retry mechanism for singular points.
+//! Uses template utility that shifts point towards center when normal calculation fails.
 inline void offsetD2(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -279,31 +208,17 @@ inline void offsetD2(const double                           theU,
                      gp_Vec&                                theD2V,
                      gp_Vec&                                theD2UV)
 {
-  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  theData.BasisAdaptor
-    ->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-  checkInfinite(theD1U, theD1V);
-
-  // Try non-singular case first using utility function (D2 uses same D1 computation for offset)
-  if (Geom_OffsetSurfaceUtils::CalculateD2(theValue,
-                                           theD1U,
-                                           theD1V,
-                                           theD2U,
-                                           theD2V,
-                                           theD2UV,
-                                           theData.Offset))
+  const auto& anOscQuery = theData.OsculatingSurface;
+  if (!Geom_OffsetSurfaceUtils::EvaluateD2(theU, theV, theData.BasisAdaptor, theData.Offset,
+                                           anOscQuery, theValue, theD1U, theD1V,
+                                           theD2U, theD2V, theD2UV))
   {
-    // D2 derivatives are approximations - keeping basis values
-    return;
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D2");
   }
-
-  throw Standard_NumericError(
-    "GeomAdaptor_Surface: Unable to calculate offset D2 at singular point");
 }
 
-//=================================================================================================
-
-//! Offset surface D3 evaluation
+//! Offset surface D3 evaluation with retry mechanism for singular points.
+//! Uses template utility that shifts point towards center when normal calculation fails.
 inline void offsetD3(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -318,38 +233,15 @@ inline void offsetD3(const double                           theU,
                      gp_Vec&                                theD3UUV,
                      gp_Vec&                                theD3UVV)
 {
-  theData.BasisAdaptor->D3(theU,
-                           theV,
-                           theValue,
-                           theD1U,
-                           theD1V,
-                           theD2U,
-                           theD2V,
-                           theD2UV,
-                           theD3U,
-                           theD3V,
-                           theD3UUV,
-                           theD3UVV);
-  checkInfinite(theD1U, theD1V);
-
-  // Try non-singular case first using utility function (D3 uses same D1 computation for offset)
-  if (Geom_OffsetSurfaceUtils::CalculateD2(theValue,
-                                           theD1U,
-                                           theD1V,
-                                           theD2U,
-                                           theD2V,
-                                           theD2UV,
-                                           theData.Offset))
+  const auto& anOscQuery = theData.OsculatingSurface;
+  if (!Geom_OffsetSurfaceUtils::EvaluateD3(theU, theV, theData.BasisAdaptor, theData.Offset,
+                                           anOscQuery, theValue, theD1U, theD1V,
+                                           theD2U, theD2V, theD2UV,
+                                           theD3U, theD3V, theD3UUV, theD3UVV))
   {
-    // Higher derivatives are approximations - keeping basis values
-    return;
+    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D3");
   }
-
-  throw Standard_NumericError(
-    "GeomAdaptor_Surface: Unable to calculate offset D3 at singular point");
 }
-
-//=================================================================================================
 
 //! Offset surface DN evaluation
 inline gp_Vec offsetDN(const double                           theU,

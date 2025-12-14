@@ -682,13 +682,27 @@ void GeomAdaptor_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       gp_Vec      aD3;
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, aD3);
+
+      bool isDirectionChange = false;
+      if (V1.SquareMagnitude() <= gp::Resolution())
+      {
+        gp_Vec aDummyD4;
+        isDirectionChange = Geom_OffsetCurveUtils::AdjustDerivative(*anOffsetData.BasisAdaptor,
+                                                                    3,
+                                                                    U,
+                                                                    V1,
+                                                                    V2,
+                                                                    aD3,
+                                                                    aDummyD4);
+      }
+
       Geom_OffsetCurveUtils::CalculateD2(P,
                                          V1,
                                          V2,
                                          aD3,
                                          anOffsetData.Direction,
                                          anOffsetData.Offset,
-                                         false);
+                                         isDirectionChange);
       break;
     }
 
@@ -728,6 +742,14 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
       const auto& anOffsetData = std::get<GeomAdaptor_OffsetCurveData>(myCurveData);
       anOffsetData.BasisAdaptor->D3(U, P, V1, V2, V3);
       gp_Vec aD4 = anOffsetData.BasisAdaptor->DN(U, 4);
+
+      bool isDirectionChange = false;
+      if (V1.SquareMagnitude() <= gp::Resolution())
+      {
+        isDirectionChange =
+          Geom_OffsetCurveUtils::AdjustDerivative(*anOffsetData.BasisAdaptor, 4, U, V1, V2, V3, aD4);
+      }
+
       Geom_OffsetCurveUtils::CalculateD3(P,
                                          V1,
                                          V2,
@@ -735,7 +757,7 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
                                          aD4,
                                          anOffsetData.Direction,
                                          anOffsetData.Offset,
-                                         false);
+                                         isDirectionChange);
       break;
     }
 
