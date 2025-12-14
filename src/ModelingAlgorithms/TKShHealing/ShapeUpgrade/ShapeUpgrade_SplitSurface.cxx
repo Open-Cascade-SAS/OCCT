@@ -22,6 +22,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <gp_Ax1.hxx>
 #include <Precision.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_CompositeSurface.hxx>
