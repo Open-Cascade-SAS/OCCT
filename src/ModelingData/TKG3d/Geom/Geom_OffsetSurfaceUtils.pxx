@@ -390,7 +390,97 @@ void ComputeDerivatives(int                  theMaxOrder,
   }
 }
 
+//! Attempts to replace a zero derivative by stepping away and recomputing.
+//! This handles CSLib_InfinityOfSolutions case where one derivative is zero.
+//!
+//! @tparam BasisSurfType type of basis surface (must have D1 method)
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theUMin minimum U bound
+//! @param[in] theUMax maximum U bound
+//! @param[in] theVMin minimum V bound
+//! @param[in] theVMax maximum V bound
+//! @param[in,out] theDU first derivative with respect to U
+//! @param[in,out] theDV first derivative with respect to V
+//! @param[in] theSquareTol squared tolerance for zero check
+//! @param[in] theBasisSurf basis surface for computing derivatives
+//! @return true if derivative was successfully replaced
+template <class BasisSurfType>
+bool ReplaceDerivative(double               theU,
+                       double               theV,
+                       double               theUMin,
+                       double               theUMax,
+                       double               theVMin,
+                       double               theVMax,
+                       gp_Vec&              theDU,
+                       gp_Vec&              theDV,
+                       double               theSquareTol,
+                       const BasisSurfType& theBasisSurf)
+{
+  bool isReplaceDU = theDU.SquareMagnitude() < theSquareTol;
+  bool isReplaceDV = theDV.SquareMagnitude() < theSquareTol;
+  bool isReplaced  = false;
+
+  // Only handle case where exactly one derivative is zero
+  if (isReplaceDU != isReplaceDV)
+  {
+    // Calculate step along non-zero derivative
+    double aStep;
+    if (isReplaceDV)
+    {
+      aStep = Precision::Confusion() * theDU.Magnitude();
+      if (aStep > theUMax - theUMin)
+        aStep = (theUMax - theUMin) / 100.;
+    }
+    else
+    {
+      aStep = Precision::Confusion() * theDV.Magnitude();
+      if (aStep > theVMax - theVMin)
+        aStep = (theVMax - theVMin) / 100.;
+    }
+
+    gp_Pnt aP;
+    gp_Vec aDU, aDV;
+
+    // Step away from current parametric coordinates and calculate derivatives once again.
+    // Replace zero derivative by the obtained.
+    for (double aStepSign = -1.0; aStepSign <= 1.0 && !isReplaced; aStepSign += 2.0)
+    {
+      double aU = theU;
+      double aV = theV;
+
+      if (isReplaceDV)
+      {
+        aU = theU + aStepSign * aStep;
+        if (aU < theUMin || aU > theUMax)
+          continue;
+      }
+      else
+      {
+        aV = theV + aStepSign * aStep;
+        if (aV < theVMin || aV > theVMax)
+          continue;
+      }
+
+      theBasisSurf->D1(aU, aV, aP, aDU, aDV);
+
+      if (isReplaceDU && aDU.SquareMagnitude() > theSquareTol)
+      {
+        theDU      = aDU;
+        isReplaced = true;
+      }
+      if (isReplaceDV && aDV.SquareMagnitude() > theSquareTol)
+      {
+        theDV      = aDV;
+        isReplaced = true;
+      }
+    }
+  }
+  return isReplaced;
+}
+
 //! Computes normal using CSLib with higher order derivatives for singular case.
+//! Includes handling for CSLib_InfinityOfSolutions using ReplaceDerivative.
 //! @tparam BasisSurfType type of basis surface
 //! @param[in] theMaxOrder maximum derivative order for CSLib
 //! @param[in] theU U parameter
@@ -449,6 +539,26 @@ void ComputeSingularNormal(int                  theMaxOrder,
                   theNormal,
                   OrderU,
                   OrderV);
+
+    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
+    if (theStatus == CSLib_InfinityOfSolutions)
+    {
+      gp_Vec aNewDU = theD1U;
+      gp_Vec aNewDV = theD1V;
+      if (ReplaceDerivative(theU,
+                            theV,
+                            theUMin,
+                            theUMax,
+                            theVMin,
+                            theVMax,
+                            aNewDU,
+                            aNewDV,
+                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
+                            theBasisSurf))
+      {
+        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, theStatus, theNormal);
+      }
+    }
   }
 }
 
@@ -552,35 +662,98 @@ bool EvaluateD0(double                  theU,
       return false;
     }
 
-    // Try non-singular case first
-    OsculatingInfo aOscInfo;
+    // Get osculating surface info
+    OsculatingInfo              aOscInfo;
+    Handle(Geom_BSplineSurface) aOscSurf;
     if (theOscQuery)
     {
-      Handle(Geom_BSplineSurface) aL;
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aL);
+      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
+    // Try non-singular case first
     if (CalculateD0(theValue, aD1U, aD1V, theOffset, aOscInfo.Sign()))
     {
       return true;
     }
 
-    // Singular case - try using CSLib for normal calculation
+    // Singular case - use higher order derivatives with osculating surface
+    constexpr int      aMaxOrder = 3;
+    TColgp_Array2OfVec aDerNUV(0, aMaxOrder, 0, aMaxOrder);
+    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + 1, 0, aMaxOrder + 1);
+
+    aDerSurf.SetValue(1, 0, aD1U);
+    aDerSurf.SetValue(0, 1, aD1V);
+
+    // Use ComputeDerivatives which handles osculating surface properly
+    if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
+    {
+      ComputeDerivatives(aMaxOrder,
+                         1,
+                         theU,
+                         theV,
+                         theBasisSurf,
+                         0,
+                         0,
+                         aOscInfo.AlongU,
+                         aOscInfo.AlongV,
+                         aOscSurf,
+                         aDerNUV,
+                         aDerSurf);
+    }
+    else
+    {
+      Handle(Geom_BSplineSurface) aDummy;
+      ComputeDerivatives(aMaxOrder,
+                         1,
+                         theU,
+                         theV,
+                         theBasisSurf,
+                         0,
+                         0,
+                         false,
+                         false,
+                         aDummy,
+                         aDerNUV,
+                         aDerSurf);
+    }
+
     gp_Dir             aNormal;
     CSLib_NormalStatus aNStatus;
-    ComputeSingularNormal(3,
-                          theU,
-                          theV,
-                          aUMin,
-                          aUMax,
-                          aVMin,
-                          aVMax,
-                          aD1U,
-                          aD1V,
-                          theBasisSurf,
-                          aNormal,
-                          aNStatus);
+    int                OrderU, OrderV;
+    CSLib::Normal(aMaxOrder,
+                  aDerNUV,
+                  THE_D1_MAGNITUDE_TOL,
+                  theU,
+                  theV,
+                  aUMin,
+                  aUMax,
+                  aVMin,
+                  aVMax,
+                  aNStatus,
+                  aNormal,
+                  OrderU,
+                  OrderV);
+
+    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
+    if (aNStatus == CSLib_InfinityOfSolutions)
+    {
+      gp_Vec aNewDU = aD1U;
+      gp_Vec aNewDV = aD1V;
+      if (ReplaceDerivative(theU,
+                            theV,
+                            aUMin,
+                            aUMax,
+                            aVMin,
+                            aVMax,
+                            aNewDU,
+                            aNewDV,
+                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
+                            theBasisSurf))
+      {
+        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
+      }
+    }
 
     if (aNStatus == CSLib_Defined)
     {
