@@ -2,6 +2,7 @@
 set(OCCT_TKBO_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKBO_GTests_FILES
+  BRepAlgoAPI_BuilderAlgo_Test.cxx
   BRepAlgoAPI_Cut_Test.cxx
   BRepAlgoAPI_Cut_Test_1.cxx
   BRepAlgoAPI_Fuse_Test.cxx

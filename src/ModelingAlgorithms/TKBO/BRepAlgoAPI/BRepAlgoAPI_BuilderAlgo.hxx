@@ -70,6 +70,18 @@ public: //! @name Constructors
   //! Constructor with prepared Filler object
   Standard_EXPORT BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& thePF);
 
+  //! Copy constructor is not allowed
+  BRepAlgoAPI_BuilderAlgo(const BRepAlgoAPI_BuilderAlgo&) = delete;
+
+  //! Move constructor is not allowed
+  BRepAlgoAPI_BuilderAlgo(BRepAlgoAPI_BuilderAlgo&&) = delete;
+
+  //! Copy assignment is not allowed
+  BRepAlgoAPI_BuilderAlgo& operator=(const BRepAlgoAPI_BuilderAlgo&) = delete;
+
+  //! Move assignment is not allowed
+  BRepAlgoAPI_BuilderAlgo& operator=(BRepAlgoAPI_BuilderAlgo&&) = delete;
+
 public: //! @name Setting/Getting data for the algorithm
   //! Sets the arguments
   void SetArguments(const TopTools_ListOfShape& theLS) { myArguments = theLS; }
