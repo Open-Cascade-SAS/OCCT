@@ -434,9 +434,9 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
       {
         occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        fu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
-        fu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
-        ptch->Func(fu1, fu2);
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        ptch->SetFunc(ffu1, ffu2);
         break;
       }
     }
@@ -523,8 +523,8 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
       {
         occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
-        occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
+        const occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        const occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
         ptch->SetFunc(ffu1, ffu2);
         break;
       }

@@ -166,15 +166,10 @@ double IntPatch_PolyhedronBVH::Center(const int theIndex, const int theAxis) con
 
 void IntPatch_PolyhedronBVH::Swap(const int theIndex1, const int theIndex2)
 {
-  if (theIndex1 == theIndex2)
+  if (theIndex1 != theIndex2)
   {
-    return;
+    std::swap(myIndexMap.ChangeValue(theIndex1), myIndexMap.ChangeValue(theIndex2));
   }
-
-  // Swap indices in the mapping
-  const int aTmp = myIndexMap.Value(theIndex1);
-  myIndexMap.SetValue(theIndex1, myIndexMap.Value(theIndex2));
-  myIndexMap.SetValue(theIndex2, aTmp);
 }
 
 //==================================================================================================
