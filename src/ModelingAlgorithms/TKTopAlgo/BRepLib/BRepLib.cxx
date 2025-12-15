@@ -371,7 +371,8 @@ Standard_Boolean BRepLib::BuildCurve3d(const TopoDS_Edge&     AnEdge,
     if (!BRep_Tool::Degenerated(AnEdge))
     {
       jj = 0;
-      for (ii = 0; ii < 3; ii++)
+      // BRep_Tool::CurveOnSurface expects Index >= 1, so start from 1.
+      for (ii = 1; ii < 3; ii++)
       {
         BRep_Tool::CurveOnSurface(TopoDS::Edge(AnEdge),
                                   Curve2dPtr,
