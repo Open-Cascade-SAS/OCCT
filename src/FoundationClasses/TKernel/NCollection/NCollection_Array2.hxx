@@ -92,7 +92,8 @@ public:
         myLowerRow(1),
         mySizeRow(0),
         myLowerCol(1),
-        mySizeCol(0)
+        mySizeCol(0),
+        myFirst2D(nullptr)
   {
   }
 
@@ -109,6 +110,7 @@ public:
         myLowerCol(theColLower),
         mySizeCol(theColUpper - theColLower + 1)
   {
+    updateFirst2D();
   }
 
   //! Constructor
@@ -126,6 +128,7 @@ public:
         myLowerCol(theColLower),
         mySizeCol(theColUpper - theColLower + 1)
   {
+    updateFirst2D();
   }
 
   //! Copy constructor
@@ -136,20 +139,23 @@ public:
         myLowerCol(theOther.LowerCol()),
         mySizeCol(theOther.NbColumns())
   {
+    updateFirst2D();
   }
 
   //! Move constructor
   NCollection_Array2(NCollection_Array2&& theOther) noexcept
       : NCollection_Array1<TheItemType>(std::forward<NCollection_Array2>(theOther)),
-        myLowerRow(theOther.LowerRow()),
-        mySizeRow(theOther.NbRows()),
-        myLowerCol(theOther.LowerCol()),
-        mySizeCol(theOther.NbColumns())
+        myLowerRow(theOther.myLowerRow),
+        mySizeRow(theOther.mySizeRow),
+        myLowerCol(theOther.myLowerCol),
+        mySizeCol(theOther.mySizeCol),
+        myFirst2D(theOther.myFirst2D)
   {
     theOther.myLowerRow = 1;
     theOther.mySizeRow  = 0;
     theOther.myLowerCol = 1;
     theOther.mySizeCol  = 0;
+    theOther.myFirst2D  = nullptr;
   }
 
   //! C array-based constructor
@@ -167,6 +173,7 @@ public:
         myLowerCol(theColLower),
         mySizeCol(theColUpper - theColLower + 1)
   {
+    updateFirst2D();
   }
 
   //! Size (number of items)
@@ -206,21 +213,31 @@ public:
   }
 
   //! Updates lower row
-  void UpdateLowerRow(const Standard_Integer theLowerRow) noexcept { myLowerRow = theLowerRow; }
+  void UpdateLowerRow(const Standard_Integer theLowerRow) noexcept
+  {
+    myLowerRow = theLowerRow;
+    updateFirst2D();
+  }
 
   //! Updates lower column
-  void UpdateLowerCol(const Standard_Integer theLowerCol) noexcept { myLowerCol = theLowerCol; }
+  void UpdateLowerCol(const Standard_Integer theLowerCol) noexcept
+  {
+    myLowerCol = theLowerCol;
+    updateFirst2D();
+  }
 
   //! Updates upper row
   void UpdateUpperRow(const Standard_Integer theUpperRow) noexcept
   {
     myLowerRow = myLowerRow - UpperRow() + theUpperRow;
+    updateFirst2D();
   }
 
   //! Updates upper column
   void UpdateUpperCol(const Standard_Integer theUpperCol) noexcept
   {
     myLowerCol = myLowerCol - UpperCol() + theUpperCol;
+    updateFirst2D();
   }
 
   //! Assignment
@@ -249,10 +266,12 @@ public:
     mySizeRow           = theOther.mySizeRow;
     myLowerCol          = theOther.myLowerCol;
     mySizeCol           = theOther.mySizeCol;
+    myFirst2D           = theOther.myFirst2D;
     theOther.myLowerRow = 1;
     theOther.mySizeRow  = 0;
     theOther.myLowerCol = 1;
     theOther.mySizeCol  = 0;
+    theOther.myFirst2D  = nullptr;
     return *this;
   }
 
@@ -276,22 +295,25 @@ public:
   //! Constant value access
   const_reference Value(const Standard_Integer theRow, const Standard_Integer theCol) const
   {
-    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
-    return NCollection_Array1<TheItemType>::at(aPos);
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theRow - myLowerRow) >= mySizeRow
+                                   || static_cast<size_t>(theCol - myLowerCol) >= mySizeCol,
+                                 "NCollection_Array2::Value");
+    return myFirst2D[theRow * static_cast<Standard_Integer>(mySizeCol) + theCol];
   }
 
-  //! operator() - alias to ChangeValue
+  //! operator() - alias to Value
   const_reference operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
   {
-    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
-    return NCollection_Array1<TheItemType>::at(aPos);
+    return Value(theRow, theCol);
   }
 
   //! Variable value access
   reference ChangeValue(const Standard_Integer theRow, const Standard_Integer theCol)
   {
-    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
-    return NCollection_Array1<TheItemType>::at(aPos);
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theRow - myLowerRow) >= mySizeRow
+                                   || static_cast<size_t>(theCol - myLowerCol) >= mySizeCol,
+                                 "NCollection_Array2::ChangeValue");
+    return myFirst2D[theRow * static_cast<Standard_Integer>(mySizeCol) + theCol];
   }
 
   //! operator() - alias to ChangeValue
@@ -305,15 +327,20 @@ public:
                 const Standard_Integer theCol,
                 const TheItemType&     theItem)
   {
-    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
-    NCollection_Array1<TheItemType>::at(aPos) = theItem;
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theRow - myLowerRow) >= mySizeRow
+                                   || static_cast<size_t>(theCol - myLowerCol) >= mySizeCol,
+                                 "NCollection_Array2::SetValue");
+    myFirst2D[theRow * static_cast<Standard_Integer>(mySizeCol) + theCol] = theItem;
   }
 
   //! SetValue
   void SetValue(const Standard_Integer theRow, const Standard_Integer theCol, TheItemType&& theItem)
   {
-    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
-    NCollection_Array1<TheItemType>::at(aPos) = std::forward<TheItemType>(theItem);
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theRow - myLowerRow) >= mySizeRow
+                                   || static_cast<size_t>(theCol - myLowerCol) >= mySizeCol,
+                                 "NCollection_Array2::SetValue");
+    myFirst2D[theRow * static_cast<Standard_Integer>(mySizeCol) + theCol] =
+      std::forward<TheItemType>(theItem);
   }
 
   //! Resizes the array to specified bounds.
@@ -342,6 +369,7 @@ public:
       mySizeCol  = theColUpper - theColLower + 1;
       myLowerRow = theRowLower;
       myLowerCol = theColLower;
+      updateFirst2D();
       return;
     }
     const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
@@ -355,27 +383,38 @@ public:
       BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       false);
-    mySizeRow        = aNewNbRows;
-    mySizeCol        = aNewNbCols;
-    myLowerRow       = theRowLower;
-    myLowerCol       = theColLower;
-    size_t aOldInter = 0;
+    mySizeRow  = aNewNbRows;
+    mySizeCol  = aNewNbCols;
+    myLowerRow = theRowLower;
+    myLowerCol = theColLower;
+    updateFirst2D();
+    const Standard_Integer aLower    = this->Lower();
+    size_t                 aOldInter = 0;
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
-        NCollection_Array1<TheItemType>::at(aRowIter * aNewNbCols + aColIter) =
+        NCollection_Array1<TheItemType>::at(
+          aLower + static_cast<Standard_Integer>(aRowIter * aNewNbCols + aColIter)) =
           std::move(anOldPointer[aOldInter++]);
       }
     }
   }
 
 protected:
+  //! Computes and sets myFirst2D for O(1) 2D indexed access.
+  void updateFirst2D() noexcept
+  {
+    myFirst2D =
+      this->myPointer - myLowerCol - myLowerRow * static_cast<Standard_Integer>(mySizeCol);
+  }
+
   // ---------- PROTECTED FIELDS -----------
   Standard_Integer myLowerRow;
   size_t           mySizeRow;
   Standard_Integer myLowerCol;
   size_t           mySizeCol;
+  pointer          myFirst2D = nullptr; //!< Virtual pointer for O(1) 2D indexed access
 
   // ----------- FRIEND CLASSES ------------
   friend iterator;

@@ -97,7 +97,9 @@ public:
   // Constructors
   NCollection_Array1() noexcept
       : myLowerBound(1),
-        mySize(0)
+        mySize(0),
+        myPointer(nullptr),
+        myFirst(nullptr)
   {
   }
 
@@ -112,6 +114,7 @@ public:
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
     construct(0, mySize);
+    updateFirst();
   }
 
   explicit NCollection_Array1(const allocator_type&  theAlloc,
@@ -120,6 +123,7 @@ public:
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(nullptr),
+        myFirst(nullptr),
         myIsOwner(false),
         myAllocator(theAlloc)
   {
@@ -130,6 +134,7 @@ public:
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
     construct(0, mySize);
+    updateFirst();
   }
 
   explicit NCollection_Array1(const_reference        theBegin,
@@ -139,21 +144,26 @@ public:
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
+        myFirst(nullptr),
         myIsOwner(!theUseBuffer)
   {
     if (!myIsOwner)
     {
+      updateFirst();
       return;
     }
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
     construct(0, mySize);
+    updateFirst();
   }
 
   //! Copy constructor
   NCollection_Array1(const NCollection_Array1& theOther)
       : myLowerBound(theOther.myLowerBound),
-        mySize(theOther.mySize)
+        mySize(theOther.mySize),
+        myPointer(nullptr),
+        myFirst(nullptr)
   {
     if (mySize == 0)
     {
@@ -162,6 +172,7 @@ public:
     myPointer = myAllocator.allocate(mySize);
     myIsOwner = true;
     copyConstruct(theOther.myPointer, mySize);
+    updateFirst();
   }
 
   //! Move constructor
@@ -169,10 +180,12 @@ public:
       : myLowerBound(theOther.myLowerBound),
         mySize(theOther.mySize),
         myPointer(theOther.myPointer),
+        myFirst(theOther.myFirst),
         myIsOwner(theOther.myIsOwner)
   {
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
+    theOther.myFirst      = nullptr;
     theOther.mySize       = 0;
     theOther.myLowerBound = 1;
   }
@@ -247,9 +260,11 @@ public:
     myLowerBound          = theOther.myLowerBound;
     mySize                = theOther.mySize;
     myPointer             = theOther.myPointer;
+    myFirst               = theOther.myFirst;
     myIsOwner             = theOther.myIsOwner;
     theOther.myIsOwner    = false;
     theOther.myPointer    = nullptr;
+    theOther.myFirst      = nullptr;
     theOther.mySize       = 0;
     theOther.myLowerBound = 1;
     return *this;
@@ -284,9 +299,9 @@ public:
   //! Constant value access
   const_reference Value(const Standard_Integer theIndex) const
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::Value");
-    return myPointer[aPos];
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theIndex - myLowerBound) >= mySize,
+                                 "NCollection_Array1::Value");
+    return myFirst[theIndex];
   }
 
   //! operator() - alias to Value
@@ -298,9 +313,9 @@ public:
   //! Variable value access
   reference ChangeValue(const Standard_Integer theIndex)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::ChangeValue");
-    return myPointer[aPos];
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theIndex - myLowerBound) >= mySize,
+                                 "NCollection_Array1::ChangeValue");
+    return myFirst[theIndex];
   }
 
   //! operator() - alias to ChangeValue
@@ -312,26 +327,31 @@ public:
   //! Set value
   void SetValue(const Standard_Integer theIndex, const value_type& theItem)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
-    myPointer[aPos] = theItem;
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theIndex - myLowerBound) >= mySize,
+                                 "NCollection_Array1::SetValue");
+    myFirst[theIndex] = theItem;
   }
 
   //! Set value
   void SetValue(const Standard_Integer theIndex, value_type&& theItem)
   {
-    const size_t aPos = theIndex - myLowerBound;
-    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::SetValue");
-    myPointer[aPos] = std::forward<value_type>(theItem);
+    Standard_OutOfRange_Raise_if(static_cast<size_t>(theIndex - myLowerBound) >= mySize,
+                                 "NCollection_Array1::SetValue");
+    myFirst[theIndex] = std::forward<value_type>(theItem);
   }
 
   //! Changes the lowest bound. Do not move data
-  void UpdateLowerBound(const Standard_Integer theLower) noexcept { myLowerBound = theLower; }
+  void UpdateLowerBound(const Standard_Integer theLower) noexcept
+  {
+    myLowerBound = theLower;
+    updateFirst();
+  }
 
   //! Changes the upper bound. Do not move data
   void UpdateUpperBound(const Standard_Integer theUpper) noexcept
   {
     myLowerBound = myLowerBound - Upper() + theUpper;
+    updateFirst();
   }
 
   //! Resizes the array to specified bounds.
@@ -350,6 +370,7 @@ public:
     if (aNewSize == mySize)
     {
       myLowerBound = theLower;
+      updateFirst();
       return;
     }
     if (myIsOwner)
@@ -383,6 +404,7 @@ public:
     }
     mySize    = aNewSize;
     myIsOwner = true;
+    updateFirst();
   }
 
   bool IsDeletable() const noexcept { return myIsOwner; }
@@ -391,17 +413,11 @@ public:
   friend const_iterator;
 
 protected:
-  const_reference at(const size_t theIndex) const
-  {
-    Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_Array1::at");
-    return myPointer[theIndex];
-  }
+  //! Direct access without bounds checking (for internal use by derived classes).
+  const_reference at(const Standard_Integer theIndex) const noexcept { return myFirst[theIndex]; }
 
-  reference at(const size_t theIndex)
-  {
-    Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_Array1::at");
-    return myPointer[theIndex];
-  }
+  //! Direct access without bounds checking (for internal use by derived classes).
+  reference at(const Standard_Integer theIndex) noexcept { return myFirst[theIndex]; }
 
 protected:
   template <typename U = TheItemType>
@@ -452,12 +468,16 @@ protected:
     }
   }
 
+  //! Computes and sets myFirst from myPointer and myLowerBound.
+  void updateFirst() noexcept { myFirst = myPointer - myLowerBound; }
+
   // ---------- PROTECTED FIELDS -----------
   Standard_Integer myLowerBound;
   size_t           mySize;
   pointer          myPointer = nullptr;
-  bool             myIsOwner = false;
-  allocator_type   myAllocator;
+  pointer myFirst = nullptr; //!< Virtual pointer for O(1) indexed access (myPointer - myLowerBound)
+  bool    myIsOwner = false;
+  allocator_type myAllocator;
 };
 
 #endif
