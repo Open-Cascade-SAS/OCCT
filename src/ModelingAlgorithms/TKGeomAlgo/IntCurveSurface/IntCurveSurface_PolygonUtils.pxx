@@ -1,0 +1,206 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef IntCurveSurface_PolygonUtils_pxx_HeaderFile
+#define IntCurveSurface_PolygonUtils_pxx_HeaderFile
+
+#include <Bnd_Box.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
+//! Utility functions for polygon discretization of curves.
+//! These template functions implement the core logic previously in IntCurveSurface_Polygon.gxx.
+namespace IntCurveSurface_PolygonUtils
+{
+
+//! Initialize polygon with uniform parameter sampling.
+//! Samples theNbPntIn points along the curve from theBinf to theBsup with equal parameter spacing.
+//! Computes the bounding box and estimates the maximum deflection.
+//! @tparam CurveType Type of curve (e.g., Handle(Adaptor3d_Curve) or gp_Lin)
+//! @tparam CurveTool Tool class providing curve operations (D0, Value, FirstParameter, etc.)
+//! @param[in]     theCurve       The curve to discretize
+//! @param[in]     theBinf        First parameter value
+//! @param[in]     theBsup        Last parameter value
+//! @param[in]     theNbPntIn     Number of sample points
+//! @param[in,out] thePnts        Array to store sampled points (must be pre-allocated)
+//! @param[in,out] theBnd         Bounding box to update
+//! @param[out]    theDeflection  Estimated maximum deflection
+template <typename CurveType, typename CurveTool>
+void InitUniform(const CurveType&    theCurve,
+                 const double        theBinf,
+                 const double        theBsup,
+                 const int           theNbPntIn,
+                 TColgp_Array1OfPnt& thePnts,
+                 Bnd_Box&            theBnd,
+                 double&             theDeflection)
+{
+  const double du = (theBsup - theBinf) / static_cast<double>(theNbPntIn - 1);
+  double       u  = theBinf;
+  gp_Pnt       P;
+
+  for (int i = 1; i <= theNbPntIn; ++i)
+  {
+    CurveTool::D0(theCurve, u, P);
+    theBnd.Add(P);
+    thePnts.SetValue(i, P);
+    u += du;
+  }
+
+  // Calculate deflection estimate by measuring distance from midpoints to chord lines
+  theDeflection = 0.0;
+  if (theNbPntIn > 3)
+  {
+    u = theBinf + du * 0.5;
+    for (int i = 1; i < theNbPntIn; ++i)
+    {
+      const gp_Pnt  Pm = CurveTool::Value(theCurve, u);
+      const gp_Pnt& P1 = thePnts.Value(i);
+      const gp_Pnt& P2 = thePnts.Value(i + 1);
+      const gp_Lin  L(P1, gp_Dir(gp_Vec(P1, P2)));
+      const double  t = L.Distance(Pm);
+      if (t > theDeflection)
+      {
+        theDeflection = t;
+      }
+      u += du;
+    }
+    theBnd.Enlarge(1.5 * theDeflection);
+  }
+  else
+  {
+    theBnd.Enlarge(1e-10);
+  }
+}
+
+//! Initialize polygon with explicit parameter array.
+//! Samples points at the specified parameter values and stores them for later lookup.
+//! @tparam CurveType Type of curve (e.g., Handle(Adaptor3d_Curve) or gp_Lin)
+//! @tparam CurveTool Tool class providing curve operations
+//! @param[in]     theCurve       The curve to discretize
+//! @param[in]     theUpars       Array of parameter values
+//! @param[in]     theNbPntIn     Number of sample points
+//! @param[in,out] thePnts        Array to store sampled points (must be pre-allocated)
+//! @param[in,out] theBnd         Bounding box to update
+//! @param[out]    theDeflection  Estimated maximum deflection
+//! @param[out]    theParams      Handle to store copy of parameters (created internally)
+template <typename CurveType, typename CurveTool>
+void InitWithParams(const CurveType&               theCurve,
+                    const TColStd_Array1OfReal&    theUpars,
+                    const int                      theNbPntIn,
+                    TColgp_Array1OfPnt&            thePnts,
+                    Bnd_Box&                       theBnd,
+                    double&                        theDeflection,
+                    Handle(TColStd_HArray1OfReal)& theParams)
+{
+  theParams    = new TColStd_HArray1OfReal(1, theUpars.Length());
+  const int i0 = theUpars.Lower() - 1;
+  gp_Pnt    P;
+
+  for (int i = 1; i <= theNbPntIn; ++i)
+  {
+    theParams->SetValue(i, theUpars(i + i0));
+    CurveTool::D0(theCurve, theUpars(i + i0), P);
+    theBnd.Add(P);
+    thePnts.SetValue(i, P);
+  }
+
+  // Calculate deflection estimate
+  theDeflection = 0.0;
+  if (theNbPntIn > 3)
+  {
+    for (int i = 1; i < theNbPntIn; ++i)
+    {
+      const double  u  = 0.5 * (theUpars(i0 + i) + theUpars(i0 + i + 1));
+      const gp_Pnt  Pm = CurveTool::Value(theCurve, u);
+      const gp_Pnt& P1 = thePnts.Value(i);
+      const gp_Pnt& P2 = thePnts.Value(i + 1);
+      const gp_Lin  L(P1, gp_Dir(gp_Vec(P1, P2)));
+      const double  t = L.Distance(Pm);
+      if (t > theDeflection)
+      {
+        theDeflection = t;
+      }
+    }
+    theBnd.Enlarge(1.5 * theDeflection);
+  }
+  else
+  {
+    theBnd.Enlarge(1e-10);
+  }
+}
+
+//! Compute approximate parameter on curve for a given polygon segment and position.
+//! This is a non-template function as it only operates on stored data.
+//! @param[in] theIndex       Segment index (1-based)
+//! @param[in] theParamOnLine Position along segment [0,1]
+//! @param[in] theBinf        First parameter of polygon range
+//! @param[in] theBsup        Last parameter of polygon range
+//! @param[in] theNbPntIn     Number of points in polygon
+//! @param[in] theParams      Optional explicit parameter array (may be null for uniform)
+//! @return Approximate parameter value on the curve
+inline double ApproxParamOnCurve(int                                  theIndex,
+                                 double                               theParamOnLine,
+                                 const double                         theBinf,
+                                 const double                         theBsup,
+                                 const int                            theNbPntIn,
+                                 const Handle(TColStd_HArray1OfReal)& theParams)
+{
+  if (theParamOnLine < 0.0 || theParamOnLine > 1.0)
+  {
+#ifdef OCCT_DEBUG
+    std::cout << " ParamOnLine  =  " << theParamOnLine << "  avec Index = " << theIndex
+              << "  dans IntCurveSurface_Polygon::ApproxParamOnCurve" << std::endl;
+#endif
+    return theBinf + (theParamOnLine * (theBsup - theBinf)) / static_cast<double>(theNbPntIn - 1);
+  }
+
+  int    Index       = theIndex;
+  double ParamOnLine = theParamOnLine;
+
+#ifdef OCCT_DEBUG
+  if (Index > theNbPntIn)
+  {
+    std::cout << "OutOfRange Polygon::ApproxParamOnCurve " << std::endl;
+  }
+#endif
+
+  if ((Index == theNbPntIn) && (ParamOnLine == 0.0))
+  {
+    Index--;
+    ParamOnLine = 1.0;
+  }
+
+  double du, u;
+  if (theParams.IsNull())
+  {
+    du = (theBsup - theBinf) / static_cast<double>(theNbPntIn - 1);
+    u  = theBinf + du * static_cast<double>(Index - 1);
+  }
+  else
+  {
+    du = theParams->Value(Index + 1) - theParams->Value(Index);
+    u  = theParams->Value(Index);
+  }
+
+  u += du * ParamOnLine;
+  return u;
+}
+
+} // namespace IntCurveSurface_PolygonUtils
+
+#endif // IntCurveSurface_PolygonUtils_pxx_HeaderFile

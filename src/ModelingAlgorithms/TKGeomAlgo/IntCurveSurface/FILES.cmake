@@ -3,8 +3,8 @@ set(OCCT_IntCurveSurface_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_HInter.hxx
-  IntCurveSurface_HInter_0.cxx
-  IntCurveSurface_Inter.gxx
+  IntCurveSurface_HInter.cxx
+  IntCurveSurface_Inter.pxx
   IntCurveSurface_Intersection.cxx
   IntCurveSurface_Intersection.hxx
   IntCurveSurface_IntersectionPoint.cxx
@@ -12,12 +12,10 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_IntersectionPoint.lxx
   IntCurveSurface_IntersectionSegment.cxx
   IntCurveSurface_IntersectionSegment.hxx
-  IntCurveSurface_Polygon.gxx
-  IntCurveSurface_PolygonTool.lxx
-  IntCurveSurface_Polyhedron.gxx
-  IntCurveSurface_Polyhedron.lxx
-  IntCurveSurface_PolyhedronTool.lxx
-  IntCurveSurface_QuadricCurveExactInter.gxx
+  IntCurveSurface_InterUtils.pxx
+  IntCurveSurface_PolygonUtils.pxx
+  IntCurveSurface_PolyhedronUtils.pxx
+  IntCurveSurface_QuadricCurveExactInterUtils.pxx
   IntCurveSurface_SequenceOfPnt.hxx
   IntCurveSurface_SequenceOfSeg.hxx
   IntCurveSurface_TheCSFunctionOfHInter.hxx
@@ -29,16 +27,16 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_TheInterferenceOfHInter.hxx
   IntCurveSurface_TheInterferenceOfHInter_0.cxx
   IntCurveSurface_ThePolygonOfHInter.hxx
-  IntCurveSurface_ThePolygonOfHInter_0.cxx
+  IntCurveSurface_ThePolygonOfHInter.cxx
   IntCurveSurface_ThePolygonToolOfHInter.hxx
-  IntCurveSurface_ThePolygonToolOfHInter_0.cxx
+  IntCurveSurface_ThePolygonToolOfHInter.cxx
   IntCurveSurface_ThePolyhedronOfHInter.hxx
-  IntCurveSurface_ThePolyhedronOfHInter_0.cxx
+  IntCurveSurface_ThePolyhedronOfHInter.cxx
   IntCurveSurface_ThePolyhedronToolOfHInter.hxx
-  IntCurveSurface_ThePolyhedronToolOfHInter_0.cxx
+  IntCurveSurface_ThePolyhedronToolOfHInter.cxx
   IntCurveSurface_TheQuadCurvExactHInter.hxx
-  IntCurveSurface_TheQuadCurvExactHInter_0.cxx
+  IntCurveSurface_TheQuadCurvExactHInter.cxx
   IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx
-  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter_0.cxx
+  IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.cxx
   IntCurveSurface_TransitionOnCurve.hxx
 )

@@ -148,7 +148,7 @@ public:
                                              const Standard_Integer Index2) const;
 
   //! This method returns a border deflection.
-  Standard_Real GetBorderDeflection() const;
+  Standard_Real GetBorderDeflection() const { return TheBorderDeflection; }
 
   Standard_EXPORT void Dump() const;
 
@@ -187,21 +187,5 @@ private:
   Standard_Real            TheBorderDeflection;
   Standard_Address         C_MyIsOnBounds;
 };
-
-#define ThePSurface Handle(Adaptor3d_Surface)
-#define ThePSurface_hxx <Adaptor3d_Surface.hxx>
-#define ThePSurfaceTool Adaptor3d_HSurfaceTool
-#define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
-#define IntCurveSurface_Polyhedron IntCurveSurface_ThePolyhedronOfHInter
-#define IntCurveSurface_Polyhedron_hxx <IntCurveSurface_ThePolyhedronOfHInter.hxx>
-
-#include <IntCurveSurface_Polyhedron.lxx>
-
-#undef ThePSurface
-#undef ThePSurface_hxx
-#undef ThePSurfaceTool
-#undef ThePSurfaceTool_hxx
-#undef IntCurveSurface_Polyhedron
-#undef IntCurveSurface_Polyhedron_hxx
 
 #endif // _IntCurveSurface_ThePolyhedronOfHInter_HeaderFile
