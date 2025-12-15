@@ -2379,7 +2379,6 @@ Standard_Boolean BRepMesh_Delaun::UseEdge(const Standard_Integer /*theIndex*/)
 Handle(IMeshData::MapOfInteger) BRepMesh_Delaun::getEdgesByType(
   const BRepMesh_DegreeOfFreedom theEdgeType) const
 {
-  Handle(NCollection_IncAllocator)  anAlloc = new NCollection_IncAllocator;
   Handle(IMeshData::MapOfInteger)   aResult = new IMeshData::MapOfInteger;
   IMeshData::IteratorOfMapOfInteger anEdgeIt(myMeshData->LinksOfDomain());
 

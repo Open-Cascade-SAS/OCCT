@@ -114,6 +114,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
 
   // Use temporary allocator for the local fence map
   Handle(NCollection_IncAllocator) anAllocTmp = new NCollection_IncAllocator;
+  TColStd_MapOfInteger             aMFaces(1, anAllocTmp);
 
   NCollection_List<BOPDS_ListOfPaveBlock>::Iterator aItB(aMBlocks);
   for (; aItB.More(); aItB.Next())
@@ -123,14 +124,12 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
     if (aNbPB < 2)
       continue;
 
-    // Reset the allocator
+    aMFaces.Clear();
     anAllocTmp->Reset(false);
     // New common block
     Handle(BOPDS_CommonBlock) aCB;
     // Faces of the common block
     TColStd_ListOfInteger aLFaces;
-    // Fence map to avoid duplicates in the list of faces of the common block
-    TColStd_MapOfInteger aMFaces(1, anAllocTmp);
 
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next())
@@ -1315,6 +1314,10 @@ void BOPAlgo_FillIn3DParts::Perform()
   // 2. Fill maps of edges and faces of the solid
 
   Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
+  // Temporary allocator for per-iteration data in the classification loop.
+  // Using separate allocator allows reclaiming memory via Reset() at each iteration,
+  // preventing memory accumulation when processing many faces.
+  Handle(NCollection_IncAllocator) aTmpAlloc = new NCollection_IncAllocator;
 
   BOPAlgo_VectorOfShapeBox& aVShapeBox = *myVShapeBox;
 
@@ -1380,6 +1383,9 @@ void BOPAlgo_FillIn3DParts::Perform()
   // Fence map to avoid processing of the same faces twice
   TopTools_MapOfShape aMFDone(1, anAlloc);
 
+  // Per-iteration list for connexity block faces (uses temporary allocator)
+  TopTools_ListOfShape aLCBF(aTmpAlloc);
+
   Message_ProgressScope aPSLoop(aPSOuter.Next(), NULL, aNbFP);
   for (k = 0; k < aNbFP; ++k, aPSLoop.Next())
   {
@@ -1387,6 +1393,9 @@ void BOPAlgo_FillIn3DParts::Perform()
     {
       return;
     }
+    aLCBF.Clear();
+    aTmpAlloc->Reset(false);
+
     Standard_Integer   nFP = aIVec(k);
     const TopoDS_Face& aFP = (*(TopoDS_Face*)&aVShapeBox(nFP).Shape());
     if (!aMFDone.Add(aFP))
@@ -1395,7 +1404,6 @@ void BOPAlgo_FillIn3DParts::Perform()
     // Make connexity blocks of faces, avoiding passing through the
     // borders of the solid. It helps to reduce significantly the
     // number of classified faces.
-    TopTools_ListOfShape aLCBF(anAlloc);
     // The most appropriate face for classification
     TopoDS_Face aFaceToClassify;
     MakeConnexityBlock(aFP, aMSE, aMEFP, aMFDone, aLCBF, aFaceToClassify);

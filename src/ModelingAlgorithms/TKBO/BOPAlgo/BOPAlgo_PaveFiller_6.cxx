@@ -740,10 +740,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
-    // Reset temporary allocator to reclaim memory from previous iteration.
-    // This prevents memory accumulation when processing many Face-Face pairs.
-    // All per-iteration collections must be cleared after Reset to invalidate old pointers.
-    aTmpAllocator->Reset(false);
     aMVOnIn.Clear();
     aMVCommon.Clear();
     aMPBOnIn.Clear();
@@ -755,6 +751,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aMVStick.Clear();
     aMVEF.Clear();
     aMVBounds.Clear();
+    aTmpAllocator->Reset(false);
     //
     myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMVCommon, aMPBOnIn, aMPBCommon);
     myDS->SharedEdges(nF1, nF2, aLSE, aTmpAllocator);
