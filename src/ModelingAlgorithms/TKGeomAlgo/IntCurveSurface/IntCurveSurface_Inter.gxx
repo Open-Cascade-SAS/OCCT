@@ -129,63 +129,15 @@ void IntCurveSurface_Inter::DoNewBounds(const TheSurface&           surface,
 void IntCurveSurface_Inter::Perform(const TheCurve& curve, const TheSurface& surface)
 {
   ResetFields();
-  done                    = Standard_True;
-  Standard_Integer NbUOnS = TheSurfaceTool::NbUIntervals(surface, GeomAbs_C2);
-  Standard_Integer NbVOnS = TheSurfaceTool::NbVIntervals(surface, GeomAbs_C2);
-  Standard_Real    U0, U1, V0, V1;
+  done = Standard_True;
 
-  if (NbUOnS > 1)
-  {
-    TColStd_Array1OfReal TabU(1, NbUOnS + 1);
-    TheSurfaceTool::UIntervals(surface, TabU, GeomAbs_C2);
-    for (Standard_Integer iu = 1; iu <= NbUOnS; iu++)
-    {
-      U0 = TabU.Value(iu);
-      U1 = TabU.Value(iu + 1);
-      if (NbVOnS > 1)
-      {
-        TColStd_Array1OfReal TabV(1, NbVOnS + 1);
-        TheSurfaceTool::VIntervals(surface, TabV, GeomAbs_C2);
-        for (Standard_Integer iv = 1; iv <= NbVOnS; iv++)
-        {
-          // More than one interval on U and V param space.
-          V0 = TabV.Value(iv);
-          V1 = TabV.Value(iv + 1);
-          Perform(curve, surface, U0, V0, U1, V1);
-        }
-      }
-      else
-      {
-        // More than one interval only on U param space.
-        V0 = TheSurfaceTool::FirstVParameter(surface);
-        V1 = TheSurfaceTool::LastVParameter(surface);
-        Perform(curve, surface, U0, V0, U1, V1);
-      }
-    }
-  }
-  else if (NbVOnS > 1)
-  {
-    // More than one interval only on V param space.
-    U0 = TheSurfaceTool::FirstUParameter(surface);
-    U1 = TheSurfaceTool::LastUParameter(surface);
-    TColStd_Array1OfReal TabV(1, NbVOnS + 1);
-    TheSurfaceTool::VIntervals(surface, TabV, GeomAbs_C2);
-    for (Standard_Integer iv = 1; iv <= NbVOnS; iv++)
-    {
-      V0 = TabV.Value(iv);
-      V1 = TabV.Value(iv + 1);
-      Perform(curve, surface, U0, V0, U1, V1);
-    }
-  }
-  else
-  {
-    // One interval on U and V param space.
-    V0 = TheSurfaceTool::FirstVParameter(surface);
-    V1 = TheSurfaceTool::LastVParameter(surface);
-    U0 = TheSurfaceTool::FirstUParameter(surface);
-    U1 = TheSurfaceTool::LastUParameter(surface);
+  NCollection_Vector<IntCurveSurface_InterUtils::UVBounds> aIntervals;
+  IntCurveSurface_InterUtils::DecomposeSurfaceIntervals<TheSurface, TheSurfaceTool>(surface,
+                                                                                     aIntervals);
 
-    Perform(curve, surface, U0, V0, U1, V1);
+  for (const IntCurveSurface_InterUtils::UVBounds& aBounds : aIntervals)
+  {
+    Perform(curve, surface, aBounds.U0, aBounds.V0, aBounds.U1, aBounds.V1);
   }
 }
 
@@ -198,18 +150,9 @@ void IntCurveSurface_Inter::Perform(const TheCurve&     curve,
                                     const Standard_Real U2,
                                     const Standard_Real V2)
 {
-  // Protection from double type overflow.
-  // This may happen inside square magnitude computation based on normal,
-  // which was computed on bound parameters (bug26525).
+  // Protection from double type overflow (bug26525).
   Standard_Real UU1 = U1, UU2 = U2, VV1 = V1, VV2 = V2;
-  if (U1 < -1.0e50)
-    UU1 = -1.0e50;
-  if (U2 > 1.0e50)
-    UU2 = 1.0e50;
-  if (V1 < -1.0e50)
-    VV1 = -1.0e50;
-  if (V2 > 1.0e50)
-    VV2 = 1.0e50;
+  IntCurveSurface_InterUtils::ClampUVParameters(UU1, UU2, VV1, VV2);
 
   GeomAbs_CurveType CurveType = TheCurveTool::GetType(curve);
 

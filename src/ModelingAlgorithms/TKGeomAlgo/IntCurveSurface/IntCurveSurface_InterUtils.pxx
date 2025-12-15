@@ -1394,6 +1394,115 @@ void ProcessSortedPoints(ExactInterType&                                        
   }
 }
 
+//! Structure to hold UV parameter bounds.
+struct UVBounds
+{
+  Standard_Real U0;
+  Standard_Real U1;
+  Standard_Real V0;
+  Standard_Real V1;
+
+  UVBounds()
+      : U0(0.),
+        U1(0.),
+        V0(0.),
+        V1(0.)
+  {
+  }
+
+  UVBounds(Standard_Real theU0, Standard_Real theU1, Standard_Real theV0, Standard_Real theV1)
+      : U0(theU0),
+        U1(theU1),
+        V0(theV0),
+        V1(theV1)
+  {
+  }
+};
+
+//! Decompose surface into UV intervals based on C2 continuity.
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+template <typename SurfaceType, typename SurfaceTool>
+void DecomposeSurfaceIntervals(const SurfaceType&            theSurface,
+                               NCollection_Vector<UVBounds>& theIntervals)
+{
+  theIntervals.Clear();
+
+  Standard_Integer NbUOnS = SurfaceTool::NbUIntervals(theSurface, GeomAbs_C2);
+  Standard_Integer NbVOnS = SurfaceTool::NbVIntervals(theSurface, GeomAbs_C2);
+
+  if (NbUOnS > 1)
+  {
+    TColStd_Array1OfReal TabU(1, NbUOnS + 1);
+    SurfaceTool::UIntervals(theSurface, TabU, GeomAbs_C2);
+
+    for (Standard_Integer iu = 1; iu <= NbUOnS; iu++)
+    {
+      Standard_Real U0 = TabU.Value(iu);
+      Standard_Real U1 = TabU.Value(iu + 1);
+
+      if (NbVOnS > 1)
+      {
+        TColStd_Array1OfReal TabV(1, NbVOnS + 1);
+        SurfaceTool::VIntervals(theSurface, TabV, GeomAbs_C2);
+        for (Standard_Integer iv = 1; iv <= NbVOnS; iv++)
+        {
+          Standard_Real V0 = TabV.Value(iv);
+          Standard_Real V1 = TabV.Value(iv + 1);
+          theIntervals.Append(UVBounds(U0, U1, V0, V1));
+        }
+      }
+      else
+      {
+        Standard_Real V0 = SurfaceTool::FirstVParameter(theSurface);
+        Standard_Real V1 = SurfaceTool::LastVParameter(theSurface);
+        theIntervals.Append(UVBounds(U0, U1, V0, V1));
+      }
+    }
+  }
+  else if (NbVOnS > 1)
+  {
+    Standard_Real U0 = SurfaceTool::FirstUParameter(theSurface);
+    Standard_Real U1 = SurfaceTool::LastUParameter(theSurface);
+
+    TColStd_Array1OfReal TabV(1, NbVOnS + 1);
+    SurfaceTool::VIntervals(theSurface, TabV, GeomAbs_C2);
+
+    for (Standard_Integer iv = 1; iv <= NbVOnS; iv++)
+    {
+      Standard_Real V0 = TabV.Value(iv);
+      Standard_Real V1 = TabV.Value(iv + 1);
+      theIntervals.Append(UVBounds(U0, U1, V0, V1));
+    }
+  }
+  else
+  {
+    Standard_Real U0 = SurfaceTool::FirstUParameter(theSurface);
+    Standard_Real U1 = SurfaceTool::LastUParameter(theSurface);
+    Standard_Real V0 = SurfaceTool::FirstVParameter(theSurface);
+    Standard_Real V1 = SurfaceTool::LastVParameter(theSurface);
+    theIntervals.Append(UVBounds(U0, U1, V0, V1));
+  }
+}
+
+//! Clamp UV parameters to prevent double overflow.
+//! Protection from double type overflow in square magnitude computation.
+inline void ClampUVParameters(Standard_Real& theU1,
+                              Standard_Real& theU2,
+                              Standard_Real& theV1,
+                              Standard_Real& theV2)
+{
+  constexpr Standard_Real THE_PARAM_LIMIT = 1.0e50;
+  if (theU1 < -THE_PARAM_LIMIT)
+    theU1 = -THE_PARAM_LIMIT;
+  if (theU2 > THE_PARAM_LIMIT)
+    theU2 = THE_PARAM_LIMIT;
+  if (theV1 < -THE_PARAM_LIMIT)
+    theV1 = -THE_PARAM_LIMIT;
+  if (theV2 > THE_PARAM_LIMIT)
+    theV2 = THE_PARAM_LIMIT;
+}
+
 } // namespace IntCurveSurface_InterUtils
 
 #endif // IntCurveSurface_InterUtils_HeaderFile
