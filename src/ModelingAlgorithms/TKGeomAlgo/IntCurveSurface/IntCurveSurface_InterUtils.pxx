@@ -31,6 +31,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
 #include <IntAna_IntConicQuad.hxx>
+#include <IntAna_IntLinTorus.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
@@ -38,6 +39,9 @@
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Intf_PIType.hxx>
 #include <Intf_SectionPoint.hxx>
+#include <Intf_TangentZone.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Plane.hxx>
 #include <TColgp_Array2OfPnt.hxx>
@@ -1104,6 +1108,290 @@ bool ProcessIntAna(const CurveType&                                theCurve,
     }
   }
   return true;
+}
+
+//! Perform intersection between curve and quadric surface.
+//! Uses exact quadric-curve intersection algorithm.
+//! @tparam QuadCurvExactType The exact quadric-curve intersection type
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @param[out] thePoints Vector of computed intersection points
+template <typename QuadCurvExactType,
+          typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool>
+void PerformCurveQuadric(const CurveType&                                      theCurve,
+                         const SurfaceType&                                    theSurface,
+                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+{
+  thePoints.Clear();
+
+  QuadCurvExactType QuadCurv(theSurface, theCurve);
+  if (QuadCurv.IsDone())
+  {
+    Standard_Integer NbRoots = QuadCurv.NbRoots();
+    Standard_Real    u, v, w;
+    for (Standard_Integer i = 1; i <= NbRoots; i++)
+    {
+      w = QuadCurv.Root(i);
+      ComputeParamsOnQuadric<SurfaceType, SurfaceTool>(theSurface, CurveTool::Value(theCurve, w), u, v);
+
+      IntCurveSurface_IntersectionPoint aPoint;
+      if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
+                                                                             w,
+                                                                             theSurface,
+                                                                             u,
+                                                                             v,
+                                                                             aPoint))
+      {
+        thePoints.Append(aPoint);
+      }
+    }
+  }
+}
+
+//! Process line-torus intersection.
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @return true if intersection was processed successfully, false if fallback is needed
+template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
+bool ProcessLinTorus(const gp_Lin&                                          theLine,
+                     const CurveType&                                       theCurve,
+                     const SurfaceType&                                     theSurface,
+                     NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+{
+  thePoints.Clear();
+
+  IntAna_IntLinTorus intlintorus(theLine, SurfaceTool::Torus(theSurface));
+  if (!intlintorus.IsDone())
+  {
+    return false;
+  }
+
+  Standard_Integer nbp = intlintorus.NbPoints();
+  Standard_Real    fi, theta, w;
+  for (Standard_Integer i = 1; i <= nbp; i++)
+  {
+    w = intlintorus.ParamOnLine(i);
+    intlintorus.ParamOnTorus(i, fi, theta);
+
+    IntCurveSurface_IntersectionPoint aPoint;
+    if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
+                                                                            w,
+                                                                            theSurface,
+                                                                            fi,
+                                                                            theta,
+                                                                            aPoint))
+    {
+      thePoints.Append(aPoint);
+    }
+  }
+  return true;
+}
+
+//! Structure to hold sorted intersection start points.
+struct SortedStartPoints
+{
+  NCollection_Vector<Standard_Real> TabU;
+  NCollection_Vector<Standard_Real> TabV;
+  NCollection_Vector<Standard_Real> TabW;
+
+  void Clear()
+  {
+    TabU.Clear();
+    TabV.Clear();
+    TabW.Clear();
+  }
+
+  Standard_Integer Size() const { return TabU.Size(); }
+
+  void Append(Standard_Real theU, Standard_Real theV, Standard_Real theW)
+  {
+    TabU.Append(theU);
+    TabV.Append(theV);
+    TabW.Append(theW);
+  }
+};
+
+//! Collect section points from interference and convert to parameters.
+//! @tparam InterferenceType The interference type
+//! @tparam PolyhedronType The polyhedron type
+//! @tparam PolygonType The polygon type
+template <typename InterferenceType, typename PolyhedronType, typename PolygonType>
+void CollectInterferencePoints(const InterferenceType& theInterference,
+                               const PolyhedronType&   thePolyhedron,
+                               const PolygonType&      thePolygon,
+                               SortedStartPoints&      thePoints)
+{
+  thePoints.Clear();
+
+  Standard_Integer NbSectionPoints = theInterference.NbSectionPoints();
+  Standard_Integer NbTangentZones  = theInterference.NbTangentZones();
+
+  Standard_Real u, v, w;
+
+  for (Standard_Integer i = 1; i <= NbSectionPoints; i++)
+  {
+    const Intf_SectionPoint& SP = theInterference.PntValue(i);
+    SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
+    thePoints.Append(u, v, w);
+  }
+
+  for (Standard_Integer i = 1; i <= NbTangentZones; i++)
+  {
+    const Intf_TangentZone& TZ     = theInterference.ZoneValue(i);
+    Standard_Integer        nbpnts = TZ.NumberOfPoints();
+    for (Standard_Integer j = 1; j <= nbpnts; j++)
+    {
+      const Intf_SectionPoint& SP = TZ.GetPoint(j);
+      SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
+      thePoints.Append(u, v, w);
+    }
+  }
+}
+
+//! Sort start points by W, then U, then V parameters.
+//! Uses bubble sort to eliminate duplicates.
+inline void SortStartPoints(SortedStartPoints& thePoints)
+{
+  Standard_Integer NbStartPoints = thePoints.Size();
+  if (NbStartPoints == 0)
+    return;
+
+  Standard_Real ptol = 10 * Precision::PConfusion();
+
+  // Sort by W
+  Standard_Boolean Triok;
+  do
+  {
+    Triok = Standard_True;
+    for (Standard_Integer i = 1; i < NbStartPoints; i++)
+    {
+      Standard_Integer im1 = i - 1;
+      if (thePoints.TabW(i) < thePoints.TabW(im1))
+      {
+        std::swap(thePoints.TabW.ChangeValue(i), thePoints.TabW.ChangeValue(im1));
+        std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
+        std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
+        Triok = Standard_False;
+      }
+    }
+  } while (!Triok);
+
+  // Sort by U for same W
+  do
+  {
+    Triok = Standard_True;
+    for (Standard_Integer i = 1; i < NbStartPoints; i++)
+    {
+      Standard_Integer im1 = i - 1;
+      if ((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
+      {
+        thePoints.TabW.ChangeValue(i) = thePoints.TabW(im1);
+        if (thePoints.TabU(i) < thePoints.TabU(im1))
+        {
+          std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
+          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
+          Triok = Standard_False;
+        }
+      }
+    }
+  } while (!Triok);
+
+  // Sort by V for same W and U
+  do
+  {
+    Triok = Standard_True;
+    for (Standard_Integer i = 1; i < NbStartPoints; i++)
+    {
+      Standard_Integer im1 = i - 1;
+      if (((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
+          && ((thePoints.TabU(i) - thePoints.TabU(im1)) < ptol))
+      {
+        thePoints.TabU.ChangeValue(i) = thePoints.TabU(im1);
+        if (thePoints.TabV(i) < thePoints.TabV(im1))
+        {
+          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
+          Triok = Standard_False;
+        }
+      }
+    }
+  } while (!Triok);
+}
+
+//! Process sorted start points through exact intersection.
+//! @tparam ExactInterType The exact intersection type
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+template <typename ExactInterType,
+          typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool>
+void ProcessSortedPoints(ExactInterType&                                        theExactInter,
+                         math_FunctionSetRoot&                                  theRsnld,
+                         const SortedStartPoints&                               thePoints,
+                         const Standard_Real                                    theU0,
+                         const Standard_Real                                    theU1,
+                         const Standard_Real                                    theV0,
+                         const Standard_Real                                    theV1,
+                         const Standard_Real                                    theWinf,
+                         const Standard_Real                                    theWsup,
+                         const CurveType&                                       theCurve,
+                         const SurfaceType&                                     theSurface,
+                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& theResult)
+{
+  theResult.Clear();
+
+  Standard_Integer NbStartPoints = thePoints.Size();
+  if (NbStartPoints == 0)
+    return;
+
+  Standard_Real ptol = 10 * Precision::PConfusion();
+  Standard_Real su = 0, sv = 0, sw = 0;
+
+  for (Standard_Integer i = 0; i < NbStartPoints; i++)
+  {
+    Standard_Real u = thePoints.TabU(i);
+    Standard_Real v = thePoints.TabV(i);
+    Standard_Real w = thePoints.TabW(i);
+
+    if (i == 0)
+    {
+      su = u - 1;
+    }
+
+    if (std::abs(u - su) > ptol || std::abs(v - sv) > ptol || std::abs(w - sw) > ptol)
+    {
+      theExactInter.Perform(u, v, w, theRsnld, theU0, theU1, theV0, theV1, theWinf, theWsup);
+      if (theExactInter.IsDone() && !theExactInter.IsEmpty())
+      {
+        w = theExactInter.ParameterOnCurve();
+        theExactInter.ParameterOnSurface(u, v);
+
+        IntCurveSurface_IntersectionPoint aPoint;
+        if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
+                                                                                w,
+                                                                                theSurface,
+                                                                                u,
+                                                                                v,
+                                                                                aPoint))
+        {
+          theResult.Append(aPoint);
+        }
+      }
+    }
+    su = thePoints.TabU(i);
+    sv = thePoints.TabV(i);
+    sw = thePoints.TabW(i);
+  }
 }
 
 } // namespace IntCurveSurface_InterUtils
