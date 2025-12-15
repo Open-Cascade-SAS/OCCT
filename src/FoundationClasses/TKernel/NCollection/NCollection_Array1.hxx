@@ -413,11 +413,11 @@ public:
   friend const_iterator;
 
 protected:
-  //! Direct access without bounds checking (for internal use by derived classes).
-  const_reference at(const Standard_Integer theIndex) const noexcept { return myFirst[theIndex]; }
+  //! Direct 0-based access without bounds checking (for iterator and internal use).
+  const_reference at(const size_t theIndex) const noexcept { return myPointer[theIndex]; }
 
-  //! Direct access without bounds checking (for internal use by derived classes).
-  reference at(const Standard_Integer theIndex) noexcept { return myFirst[theIndex]; }
+  //! Direct 0-based access without bounds checking (for iterator and internal use).
+  reference at(const size_t theIndex) noexcept { return myPointer[theIndex]; }
 
 protected:
   template <typename U = TheItemType>

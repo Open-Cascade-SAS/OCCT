@@ -388,14 +388,12 @@ public:
     myLowerRow = theRowLower;
     myLowerCol = theColLower;
     updateFirst2D();
-    const Standard_Integer aLower    = this->Lower();
-    size_t                 aOldInter = 0;
+    size_t aOldInter = 0;
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
-        NCollection_Array1<TheItemType>::at(
-          aLower + static_cast<Standard_Integer>(aRowIter * aNewNbCols + aColIter)) =
+        NCollection_Array1<TheItemType>::at(aRowIter * aNewNbCols + aColIter) =
           std::move(anOldPointer[aOldInter++]);
       }
     }
