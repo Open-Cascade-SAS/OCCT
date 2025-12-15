@@ -3,7 +3,7 @@ set(OCCT_IntCurveSurface_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_HInter.hxx
-  IntCurveSurface_HInter_0.cxx
+  IntCurveSurface_HInter.cxx
   IntCurveSurface_Inter.pxx
   IntCurveSurface_Intersection.cxx
   IntCurveSurface_Intersection.hxx

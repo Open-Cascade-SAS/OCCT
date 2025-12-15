@@ -61,7 +61,7 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_IntConicCurveOfCInter.hxx
   HLRBRep_IntConicCurveOfCInter_0.cxx
   HLRBRep_InterCSurf.hxx
-  HLRBRep_InterCSurf_0.cxx
+  HLRBRep_InterCSurf.cxx
   HLRBRep_InternalAlgo.cxx
   HLRBRep_InternalAlgo.hxx
   HLRBRep_Intersector.cxx
