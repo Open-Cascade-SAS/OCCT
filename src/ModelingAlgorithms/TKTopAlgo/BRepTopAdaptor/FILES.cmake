@@ -9,7 +9,6 @@ set(OCCT_BRepTopAdaptor_FILES
   BRepTopAdaptor_HVertex.hxx
   BRepTopAdaptor_HVertex.lxx
   BRepTopAdaptor_MapOfShapeTool.hxx
-  BRepTopAdaptor_SeqOfPtr.hxx
   BRepTopAdaptor_Tool.cxx
   BRepTopAdaptor_Tool.hxx
   BRepTopAdaptor_TopolTool.cxx

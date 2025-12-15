@@ -404,7 +404,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
       gp_Pnt2d             anInitPnt(0., 0.);
       //
       PClass.Init(anInitPnt);
-      TabClass.Append((void*)new CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+      TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       BadWire = 1;
       TabOrien.Append(-1);
     }
@@ -506,8 +506,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         if (FlecheV < Toluv)
           FlecheV = Toluv;
 
-        TabClass.Append(
-          (void*)new CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabClass.Append(CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
         //
         if (std::abs(aS) < Precision::SquareConfusion())
         {
@@ -534,8 +533,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const Standard_Real TolUV
         TabOrien.Append(-1);
         TColgp_Array1OfPnt2d PPClass(1, 2);
         SeqPnt2d.Clear();
-        TabClass.Append(
-          (void*)new CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabClass.Append(CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       }
     } // else if(WireIsNotEmpty)
   } // for(; aExpF.More();  aExpF.Next()) {
@@ -649,7 +647,7 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
       Standard_Integer n, cur, TabOrien_n;
       for (n = 1; n <= nbtabclass; n++)
       {
-        cur        = ((CSLib_Class2d*)TabClass(n))->SiDans(Puv);
+        cur        = TabClass(n).SiDans(Puv);
         TabOrien_n = TabOrien(n);
 
         if (cur == 1)
@@ -809,7 +807,7 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
     {
       for (Standard_Integer n = 1; n <= nbtabclass; n++)
       {
-        Standard_Integer cur = ((CSLib_Class2d*)TabClass(n))->SiDans_OnMode(Puv, Tol);
+        Standard_Integer cur = TabClass(n).SiDans_OnMode(Puv, Tol);
         if (cur == 1)
         {
           if (TabOrien(n) == 0)
@@ -890,13 +888,5 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
 
 IntTools_FClass2d::~IntTools_FClass2d()
 {
-  Standard_Integer nbtabclass = TabClass.Length();
-  for (Standard_Integer d = 1; d <= nbtabclass; d++)
-  {
-    if (TabClass(d))
-    {
-      delete ((CSLib_Class2d*)TabClass(d));
-      TabClass(d) = NULL;
-    }
-  }
+  TabClass.Clear();
 }
