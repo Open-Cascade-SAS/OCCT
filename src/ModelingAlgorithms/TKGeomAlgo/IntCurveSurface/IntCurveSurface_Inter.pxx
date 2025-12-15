@@ -1,0 +1,908 @@
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef IntCurveSurface_Inter_PXX
+#define IntCurveSurface_Inter_PXX
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <Bnd_BoundSortBox.hxx>
+#include <Bnd_Box.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <IntAna_IntConicQuad.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <Intf_Tool.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <NCollection_Vector.hxx>
+#include <Precision.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
+#include "IntCurveSurface_InterUtils.pxx"
+
+namespace IntCurveSurface_InterImpl
+{
+
+constexpr double THE_TOLTANGENCY       = 0.00000001;
+constexpr double THE_TOLERANCE_ANGULAIRE = 1.e-12;
+constexpr double THE_TOLERANCE         = 0.00000001;
+constexpr int    THE_NBSAMPLESONCIRCLE  = 32;
+constexpr int    THE_NBSAMPLESONELLIPSE = 32;
+constexpr int    THE_NBSAMPLESONPARAB   = 16;
+constexpr int    THE_NBSAMPLESONHYPR    = 32;
+
+//! Perform intersection decomposing surface by C2 intervals.
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @tparam PerformBoundsFunc Callback type for Perform with bounds
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename ResetFunc,
+          typename PerformBoundsFunc>
+void Perform(const CurveType&   theCurve,
+             const SurfaceType& theSurface,
+             bool&              theDone,
+             ResetFunc          theReset,
+             PerformBoundsFunc  thePerformBounds)
+{
+  theReset();
+  theDone = true;
+
+  NCollection_Vector<IntCurveSurface_InterUtils::UVBounds> aIntervals;
+  IntCurveSurface_InterUtils::DecomposeSurfaceIntervals<SurfaceType, SurfaceTool>(theSurface,
+                                                                                   aIntervals);
+
+  for (const IntCurveSurface_InterUtils::UVBounds& aBounds : aIntervals)
+  {
+    thePerformBounds(theCurve, theSurface, aBounds.U0, aBounds.V0, aBounds.U1, aBounds.V1);
+  }
+}
+
+//! Perform intersection with given UV bounds.
+//! @tparam CurveType The curve type
+//! @tparam CurveTool The curve tool class
+//! @tparam SurfaceType The surface type
+//! @tparam SurfaceTool The surface tool class
+//! @tparam PolygonType The polygon type
+//! @tparam PerformConicFunc Callback for conic surface intersection
+//! @tparam InternalPerformFunc Callback for internal perform
+//! @tparam InternalPerformQuadricFunc Callback for quadric perform
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PerformConicFunc,
+          typename InternalPerformFunc,
+          typename InternalPerformQuadricFunc>
+void PerformBounds(const CurveType&           theCurve,
+                   const SurfaceType&         theSurface,
+                   const Standard_Real        theU1,
+                   const Standard_Real        theV1,
+                   const Standard_Real        theU2,
+                   const Standard_Real        theV2,
+                   PerformConicFunc           thePerformConic,
+                   InternalPerformFunc        theInternalPerform,
+                   InternalPerformQuadricFunc theInternalPerformQuadric)
+{
+  // Protection from double type overflow (bug26525).
+  Standard_Real UU1 = theU1, UU2 = theU2, VV1 = theV1, VV2 = theV2;
+  IntCurveSurface_InterUtils::ClampUVParameters(UU1, UU2, VV1, VV2);
+
+  GeomAbs_CurveType aCurveType = CurveTool::GetType(theCurve);
+
+  switch (aCurveType)
+  {
+    case GeomAbs_Line:
+      thePerformConic(CurveTool::Line(theCurve), theCurve, theSurface, UU1, VV1, UU2, VV2);
+      break;
+    case GeomAbs_Circle:
+      thePerformConic(CurveTool::Circle(theCurve), theCurve, theSurface, UU1, VV1, UU2, VV2);
+      break;
+    case GeomAbs_Ellipse:
+      thePerformConic(CurveTool::Ellipse(theCurve), theCurve, theSurface, UU1, VV1, UU2, VV2);
+      break;
+    case GeomAbs_Parabola:
+      thePerformConic(CurveTool::Parabola(theCurve), theCurve, theSurface, UU1, VV1, UU2, VV2);
+      break;
+    case GeomAbs_Hyperbola:
+      thePerformConic(CurveTool::Hyperbola(theCurve), theCurve, theSurface, UU1, VV1, UU2, VV2);
+      break;
+    default: {
+      Standard_Integer    nbIntervalsOnCurve = CurveTool::NbIntervals(theCurve, GeomAbs_C2);
+      GeomAbs_SurfaceType aSurfaceType       = SurfaceTool::GetType(theSurface);
+      if ((aSurfaceType != GeomAbs_Plane) && (aSurfaceType != GeomAbs_Cylinder)
+          && (aSurfaceType != GeomAbs_Cone) && (aSurfaceType != GeomAbs_Sphere))
+      {
+        if (nbIntervalsOnCurve > 1)
+        {
+          TColStd_Array1OfReal TabW(1, nbIntervalsOnCurve + 1);
+          CurveTool::Intervals(theCurve, TabW, GeomAbs_C2);
+          for (Standard_Integer i = 1; i <= nbIntervalsOnCurve; i++)
+          {
+            Standard_Real u1 = TabW.Value(i);
+            Standard_Real u2 = TabW.Value(i + 1);
+
+            Handle(TColStd_HArray1OfReal) aPars;
+            Standard_Real                 defl  = 0.1;
+            Standard_Integer              NbMin = 10;
+            CurveTool::SamplePars(theCurve, u1, u2, defl, NbMin, aPars);
+
+            PolygonType polygon(theCurve, aPars->Array1());
+            theInternalPerform(theCurve, polygon, theSurface, UU1, VV1, UU2, VV2);
+          }
+        }
+        else
+        {
+          Standard_Real u1 = CurveTool::FirstParameter(theCurve);
+          Standard_Real u2 = CurveTool::LastParameter(theCurve);
+
+          Handle(TColStd_HArray1OfReal) aPars;
+          Standard_Real                 defl  = 0.1;
+          Standard_Integer              NbMin = 10;
+          CurveTool::SamplePars(theCurve, u1, u2, defl, NbMin, aPars);
+
+          PolygonType polygon(theCurve, aPars->Array1());
+          theInternalPerform(theCurve, polygon, theSurface, UU1, VV1, UU2, VV2);
+        }
+      }
+      else
+      {
+        theInternalPerformQuadric(theCurve, theSurface);
+      }
+    }
+  }
+}
+
+//! Perform with polygon, creating polyhedron internally.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename ResetFunc,
+          typename PerformPolyFunc>
+void PerformPolygon(const CurveType&   theCurve,
+                    const PolygonType& thePolygon,
+                    const SurfaceType& theSurface,
+                    bool&              theDone,
+                    ResetFunc          theReset,
+                    PerformPolyFunc    thePerformPoly)
+{
+  theReset();
+  theDone = true;
+  Standard_Real u1 = SurfaceTool::FirstUParameter(theSurface);
+  Standard_Real v1 = SurfaceTool::FirstVParameter(theSurface);
+  Standard_Real u2 = SurfaceTool::LastUParameter(theSurface);
+  Standard_Real v2 = SurfaceTool::LastVParameter(theSurface);
+  Standard_Integer nbsu = SurfaceTool::NbSamplesU(theSurface, u1, u2);
+  Standard_Integer nbsv = SurfaceTool::NbSamplesV(theSurface, v1, v2);
+  if (nbsu > 40)
+    nbsu = 40;
+  if (nbsv > 40)
+    nbsv = 40;
+  PolyhedronType polyhedron(theSurface, nbsu, nbsv, u1, v1, u2, v2);
+  thePerformPoly(theCurve, thePolygon, theSurface, polyhedron);
+}
+
+//! Perform with polyhedron, creating polygon internally.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename ResetFunc,
+          typename PerformPolyFunc>
+void PerformPolyhedron(const CurveType&      theCurve,
+                       const SurfaceType&    theSurface,
+                       const PolyhedronType& thePolyhedron,
+                       bool&                 theDone,
+                       ResetFunc             theReset,
+                       PerformPolyFunc       thePerformPoly)
+{
+  theReset();
+  theDone = true;
+  Standard_Real  u1 = CurveTool::FirstParameter(theCurve);
+  Standard_Real  u2 = CurveTool::LastParameter(theCurve);
+  PolygonType    polygon(theCurve, CurveTool::NbSamples(theCurve, u1, u2));
+  thePerformPoly(theCurve, polygon, theSurface, thePolyhedron);
+}
+
+//! Perform with both polygon and polyhedron provided.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename ResetFunc,
+          typename InternalPerformFunc>
+void PerformPolygonPolyhedron(const CurveType&      theCurve,
+                              const PolygonType&    thePolygon,
+                              const SurfaceType&    theSurface,
+                              const PolyhedronType& thePolyhedron,
+                              bool&                 theDone,
+                              ResetFunc             theReset,
+                              InternalPerformFunc   theInternalPerform)
+{
+  theReset();
+  theDone = true;
+  Standard_Real u1 = SurfaceTool::FirstUParameter(theSurface);
+  Standard_Real v1 = SurfaceTool::FirstVParameter(theSurface);
+  Standard_Real u2 = SurfaceTool::LastUParameter(theSurface);
+  Standard_Real v2 = SurfaceTool::LastVParameter(theSurface);
+  theInternalPerform(theCurve, thePolygon, theSurface, thePolyhedron, u1, v1, u2, v2);
+}
+
+//! Perform with polygon, polyhedron and bounding sort box.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename ResetFunc,
+          typename InternalPerformBSBFunc>
+void PerformPolygonPolyhedronBSB(const CurveType&      theCurve,
+                                 const PolygonType&    thePolygon,
+                                 const SurfaceType&    theSurface,
+                                 const PolyhedronType& thePolyhedron,
+                                 Bnd_BoundSortBox&     theBSB,
+                                 bool&                 theDone,
+                                 ResetFunc             theReset,
+                                 InternalPerformBSBFunc theInternalPerform)
+{
+  theReset();
+  theDone = true;
+  Standard_Real u1 = SurfaceTool::FirstUParameter(theSurface);
+  Standard_Real v1 = SurfaceTool::FirstVParameter(theSurface);
+  Standard_Real u2 = SurfaceTool::LastUParameter(theSurface);
+  Standard_Real v2 = SurfaceTool::LastVParameter(theSurface);
+  theInternalPerform(theCurve, thePolygon, theSurface, thePolyhedron, u1, v1, u2, v2, theBSB);
+}
+
+//! Internal perform with interference from BSB.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename InterferenceType,
+          typename CSFunctionType,
+          typename ExactInterType,
+          typename AppendFunc>
+void InternalPerformBSB(const CurveType&      theCurve,
+                        const PolygonType&    thePolygon,
+                        const SurfaceType&    theSurface,
+                        const PolyhedronType& thePolyhedron,
+                        const Standard_Real   theU0,
+                        const Standard_Real   theV0,
+                        const Standard_Real   theU1,
+                        const Standard_Real   theV1,
+                        Bnd_BoundSortBox&     theBSB,
+                        AppendFunc            theAppend)
+{
+  InterferenceType interference(thePolygon, thePolyhedron, theBSB);
+  CSFunctionType   theicsfunction(theSurface, theCurve);
+  ExactInterType   intersectionExacte(theicsfunction, THE_TOLTANGENCY);
+  math_FunctionSetRoot rsnld(intersectionExacte.Function());
+
+  Standard_Real winf = thePolygon.InfParameter();
+  Standard_Real wsup = thePolygon.SupParameter();
+
+  IntCurveSurface_InterUtils::SortedStartPoints aStartPoints;
+  IntCurveSurface_InterUtils::CollectInterferencePoints<InterferenceType,
+                                                         PolyhedronType,
+                                                         PolygonType>(interference,
+                                                                      thePolyhedron,
+                                                                      thePolygon,
+                                                                      aStartPoints);
+  IntCurveSurface_InterUtils::SortStartPoints(aStartPoints);
+
+  NCollection_Vector<IntCurveSurface_IntersectionPoint> aResultPoints;
+  IntCurveSurface_InterUtils::ProcessSortedPoints<ExactInterType,
+                                                   CurveType,
+                                                   CurveTool,
+                                                   SurfaceType,
+                                                   SurfaceTool>(intersectionExacte,
+                                                                rsnld,
+                                                                aStartPoints,
+                                                                theU0,
+                                                                theU1,
+                                                                theV0,
+                                                                theV1,
+                                                                winf,
+                                                                wsup,
+                                                                theCurve,
+                                                                theSurface,
+                                                                aResultPoints);
+
+  for (const IntCurveSurface_IntersectionPoint& aPoint : aResultPoints)
+  {
+    theAppend(aPoint);
+  }
+}
+
+//! Internal perform without BSB.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename InterferenceType,
+          typename CSFunctionType,
+          typename ExactInterType,
+          typename AppendFunc>
+void InternalPerform(const CurveType&      theCurve,
+                     const PolygonType&    thePolygon,
+                     const SurfaceType&    theSurface,
+                     const PolyhedronType& thePolyhedron,
+                     const Standard_Real   theU0,
+                     const Standard_Real   theV0,
+                     const Standard_Real   theU1,
+                     const Standard_Real   theV1,
+                     AppendFunc            theAppend)
+{
+  InterferenceType interference(thePolygon, thePolyhedron);
+  CSFunctionType   theicsfunction(theSurface, theCurve);
+  ExactInterType   intersectionExacte(theicsfunction, THE_TOLTANGENCY);
+  math_FunctionSetRoot rsnld(intersectionExacte.Function());
+
+  Standard_Real winf = thePolygon.InfParameter();
+  Standard_Real wsup = thePolygon.SupParameter();
+
+  IntCurveSurface_InterUtils::SortedStartPoints aStartPoints;
+  IntCurveSurface_InterUtils::CollectInterferencePoints<InterferenceType,
+                                                         PolyhedronType,
+                                                         PolygonType>(interference,
+                                                                      thePolyhedron,
+                                                                      thePolygon,
+                                                                      aStartPoints);
+  IntCurveSurface_InterUtils::SortStartPoints(aStartPoints);
+
+  NCollection_Vector<IntCurveSurface_IntersectionPoint> aResultPoints;
+  IntCurveSurface_InterUtils::ProcessSortedPoints<ExactInterType,
+                                                   CurveType,
+                                                   CurveTool,
+                                                   SurfaceType,
+                                                   SurfaceTool>(intersectionExacte,
+                                                                rsnld,
+                                                                aStartPoints,
+                                                                theU0,
+                                                                theU1,
+                                                                theV0,
+                                                                theV1,
+                                                                winf,
+                                                                wsup,
+                                                                theCurve,
+                                                                theSurface,
+                                                                aResultPoints);
+
+  for (const IntCurveSurface_IntersectionPoint& aPoint : aResultPoints)
+  {
+    theAppend(aPoint);
+  }
+}
+
+//! Internal perform for curve-quadric intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename QuadCurvExactInterType,
+          typename AppendFunc>
+void InternalPerformCurveQuadric(const CurveType&   theCurve,
+                                 const SurfaceType& theSurface,
+                                 AppendFunc         theAppend)
+{
+  NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+
+  IntCurveSurface_InterUtils::PerformCurveQuadric<QuadCurvExactInterType,
+                                                   CurveType,
+                                                   CurveTool,
+                                                   SurfaceType,
+                                                   SurfaceTool>(theCurve, theSurface, aPoints);
+
+  for (const IntCurveSurface_IntersectionPoint& aPoint : aPoints)
+  {
+    theAppend(aPoint);
+  }
+}
+
+//! Internal perform with polygon and UV bounds, creating polyhedron as needed.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename QuadCurvExactInterType,
+          typename InternalPerformPolyFunc,
+          typename AppendFunc>
+void InternalPerformPolygonBounds(const CurveType&        theCurve,
+                                  const PolygonType&      thePolygon,
+                                  const SurfaceType&      theSurface,
+                                  const Standard_Real     theU1,
+                                  const Standard_Real     theV1,
+                                  const Standard_Real     theU2,
+                                  const Standard_Real     theV2,
+                                  InternalPerformPolyFunc theInternalPerformPoly,
+                                  AppendFunc              theAppend)
+{
+  GeomAbs_SurfaceType aSurfaceType = SurfaceTool::GetType(theSurface);
+  if ((aSurfaceType != GeomAbs_Plane) && (aSurfaceType != GeomAbs_Cylinder)
+      && (aSurfaceType != GeomAbs_Cone) && (aSurfaceType != GeomAbs_Sphere))
+  {
+    if (aSurfaceType != GeomAbs_BSplineSurface)
+    {
+      Standard_Integer nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
+      Standard_Integer nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
+      if (nbsu > 40)
+        nbsu = 40;
+      if (nbsv > 40)
+        nbsv = 40;
+      PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
+      theInternalPerformPoly(theCurve, thePolygon, theSurface, polyhedron, theU1, theV1, theU2, theV2);
+    }
+    else
+    {
+      Handle(Adaptor3d_Surface) aS = SurfaceTool::UTrim(theSurface, theU1, theU2, 1.e-9);
+      aS = aS->VTrim(theV1, theV2, 1.e-9);
+      Handle(Adaptor3d_TopolTool) aTopTool = new Adaptor3d_TopolTool(aS);
+      Standard_Real defl = 0.1;
+      aTopTool->SamplePnts(defl, 10, 10);
+
+      Standard_Integer nbpu = aTopTool->NbSamplesU();
+      Standard_Integer nbpv = aTopTool->NbSamplesV();
+      TColStd_Array1OfReal Upars(1, nbpu), Vpars(1, nbpv);
+      aTopTool->UParameters(Upars);
+      aTopTool->VParameters(Vpars);
+
+      PolyhedronType polyhedron(theSurface, Upars, Vpars);
+      theInternalPerformPoly(theCurve, thePolygon, theSurface, polyhedron, theU1, theV1, theU2, theV2);
+    }
+  }
+  else
+  {
+    InternalPerformCurveQuadric<CurveType,
+                                 CurveTool,
+                                 SurfaceType,
+                                 SurfaceTool,
+                                 QuadCurvExactInterType>(theCurve, theSurface, theAppend);
+  }
+}
+
+//! Perform conic (line) surface intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename AppendIntAnaFunc,
+          typename InternalPerformPolyFunc,
+          typename AppendFunc>
+void PerformConicSurfLine(const gp_Lin&           theLine,
+                          const CurveType&        theCurve,
+                          const SurfaceType&      theSurface,
+                          const Standard_Real     theU1,
+                          const Standard_Real     theV1,
+                          const Standard_Real     theU2,
+                          const Standard_Real     theV2,
+                          AppendIntAnaFunc        theAppendIntAna,
+                          InternalPerformPolyFunc theInternalPerformPoly,
+                          AppendFunc              theAppend)
+{
+  GeomAbs_SurfaceType aSurfaceType  = SurfaceTool::GetType(theSurface);
+  Standard_Boolean   isAnaProcessed = Standard_True;
+
+  switch (aSurfaceType)
+  {
+    case GeomAbs_Plane: {
+      IntAna_IntConicQuad LinPlane(theLine, SurfaceTool::Plane(theSurface), THE_TOLERANCE_ANGULAIRE);
+      theAppendIntAna(theCurve, theSurface, LinPlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      IntAna_IntConicQuad LinCylinder(theLine, SurfaceTool::Cylinder(theSurface));
+      theAppendIntAna(theCurve, theSurface, LinCylinder);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      IntAna_IntConicQuad LinSphere(theLine, SurfaceTool::Sphere(theSurface));
+      theAppendIntAna(theCurve, theSurface, LinSphere);
+      break;
+    }
+    case GeomAbs_Torus: {
+      NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+      if (IntCurveSurface_InterUtils::ProcessLinTorus<CurveType, CurveTool, SurfaceType, SurfaceTool>(
+            theLine, theCurve, theSurface, aPoints))
+      {
+        for (const IntCurveSurface_IntersectionPoint& aPoint : aPoints)
+        {
+          theAppend(aPoint);
+        }
+      }
+      else
+        isAnaProcessed = Standard_False;
+      break;
+    }
+    case GeomAbs_Cone: {
+      constexpr Standard_Real correction = 1.E+5 * Precision::Angular();
+      gp_Cone cn = SurfaceTool::Cone(theSurface);
+      if (std::abs(cn.SemiAngle()) < M_PI / 2.0 - correction)
+      {
+        IntAna_IntConicQuad LinCone(theLine, cn);
+        theAppendIntAna(theCurve, theSurface, LinCone);
+      }
+      else
+        isAnaProcessed = Standard_False;
+      break;
+    }
+    default:
+      isAnaProcessed = Standard_False;
+  }
+
+  if (!isAnaProcessed)
+  {
+    Standard_Integer nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
+    Standard_Integer nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
+
+    Standard_Boolean U1inf = Precision::IsInfinite(theU1);
+    Standard_Boolean U2inf = Precision::IsInfinite(theU2);
+    Standard_Boolean V1inf = Precision::IsInfinite(theV1);
+    Standard_Boolean V2inf = Precision::IsInfinite(theV2);
+
+    Standard_Real U1new = theU1, U2new = theU2, V1new = theV1, V2new = theV2;
+    Standard_Boolean NoIntersection = Standard_False;
+
+    if (U1inf || U2inf || V1inf || V2inf)
+    {
+      if (aSurfaceType == GeomAbs_SurfaceOfExtrusion)
+      {
+        IntCurveSurface_InterUtils::EstLimForInfExtr<SurfaceType, SurfaceTool>(
+          theLine, theSurface, Standard_False, nbsu,
+          U1inf, U2inf, V1inf, V2inf,
+          U1new, U2new, V1new, V2new, NoIntersection);
+      }
+      else if (aSurfaceType == GeomAbs_SurfaceOfRevolution)
+      {
+        IntCurveSurface_InterUtils::EstLimForInfRevl<SurfaceType, SurfaceTool>(
+          theLine, theSurface,
+          U1inf, U2inf, V1inf, V2inf,
+          U1new, U2new, V1new, V2new, NoIntersection);
+      }
+      else if (aSurfaceType == GeomAbs_OffsetSurface)
+      {
+        IntCurveSurface_InterUtils::EstLimForInfOffs<SurfaceType, SurfaceTool>(
+          theLine, theSurface, nbsu,
+          U1inf, U2inf, V1inf, V2inf,
+          U1new, U2new, V1new, V2new, NoIntersection);
+      }
+      else
+      {
+        IntCurveSurface_InterUtils::EstLimForInfSurf(U1new, U2new, V1new, V2new);
+      }
+    }
+
+    if (NoIntersection)
+      return;
+
+    if (nbsu < 20)
+      nbsu = 20;
+    if (nbsv < 20)
+      nbsv = 20;
+
+    PolyhedronType polyhedron(theSurface, nbsu, nbsv, U1new, V1new, U2new, V2new);
+    Intf_Tool bndTool;
+    Bnd_Box boxLine;
+    bndTool.LinBox(theLine, polyhedron.Bounding(), boxLine);
+
+    for (Standard_Integer nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
+    {
+      Standard_Real pinf = bndTool.BeginParam(nbseg);
+      Standard_Real psup = bndTool.EndParam(nbseg);
+      if ((psup - pinf) < 1e-10)
+      {
+        pinf -= 1e-10;
+        psup += 1e-10;
+      }
+      PolygonType polygon(theCurve, pinf, psup, 2);
+      theInternalPerformPoly(theCurve, polygon, theSurface, polyhedron, U1new, V1new, U2new, V2new);
+    }
+  }
+}
+
+//! Perform conic (circle) surface intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename AppendIntAnaFunc,
+          typename InternalPerformFunc>
+void PerformConicSurfCircle(const gp_Circ&          theCircle,
+                            const CurveType&        theCurve,
+                            const SurfaceType&      theSurface,
+                            const Standard_Real     theU1,
+                            const Standard_Real     theV1,
+                            const Standard_Real     theU2,
+                            const Standard_Real     theV2,
+                            AppendIntAnaFunc        theAppendIntAna,
+                            InternalPerformFunc     theInternalPerform)
+{
+  GeomAbs_SurfaceType aSurfaceType = SurfaceTool::GetType(theSurface);
+  switch (aSurfaceType)
+  {
+    case GeomAbs_Plane: {
+      IntAna_IntConicQuad CircPlane(theCircle, SurfaceTool::Plane(theSurface),
+                                    THE_TOLERANCE_ANGULAIRE, THE_TOLERANCE);
+      theAppendIntAna(theCurve, theSurface, CircPlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      IntAna_IntConicQuad CircCylinder(theCircle, SurfaceTool::Cylinder(theSurface));
+      theAppendIntAna(theCurve, theSurface, CircCylinder);
+      break;
+    }
+    case GeomAbs_Cone: {
+      IntAna_IntConicQuad CircCone(theCircle, SurfaceTool::Cone(theSurface));
+      theAppendIntAna(theCurve, theSurface, CircCone);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      IntAna_IntConicQuad CircSphere(theCircle, SurfaceTool::Sphere(theSurface));
+      theAppendIntAna(theCurve, theSurface, CircSphere);
+      break;
+    }
+    default: {
+      PolygonType polygon(theCurve, THE_NBSAMPLESONCIRCLE);
+      theInternalPerform(theCurve, polygon, theSurface, theU1, theV1, theU2, theV2);
+    }
+  }
+}
+
+//! Perform conic (ellipse) surface intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename AppendIntAnaFunc,
+          typename InternalPerformFunc>
+void PerformConicSurfEllipse(const gp_Elips&         theEllipse,
+                             const CurveType&        theCurve,
+                             const SurfaceType&      theSurface,
+                             const Standard_Real     theU1,
+                             const Standard_Real     theV1,
+                             const Standard_Real     theU2,
+                             const Standard_Real     theV2,
+                             AppendIntAnaFunc        theAppendIntAna,
+                             InternalPerformFunc     theInternalPerform)
+{
+  GeomAbs_SurfaceType aSurfaceType = SurfaceTool::GetType(theSurface);
+  switch (aSurfaceType)
+  {
+    case GeomAbs_Plane: {
+      IntAna_IntConicQuad EllipsePlane(theEllipse, SurfaceTool::Plane(theSurface),
+                                       THE_TOLERANCE_ANGULAIRE, THE_TOLERANCE);
+      theAppendIntAna(theCurve, theSurface, EllipsePlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      IntAna_IntConicQuad EllipseCylinder(theEllipse, SurfaceTool::Cylinder(theSurface));
+      theAppendIntAna(theCurve, theSurface, EllipseCylinder);
+      break;
+    }
+    case GeomAbs_Cone: {
+      IntAna_IntConicQuad EllipseCone(theEllipse, SurfaceTool::Cone(theSurface));
+      theAppendIntAna(theCurve, theSurface, EllipseCone);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      IntAna_IntConicQuad EllipseSphere(theEllipse, SurfaceTool::Sphere(theSurface));
+      theAppendIntAna(theCurve, theSurface, EllipseSphere);
+      break;
+    }
+    default: {
+      PolygonType polygon(theCurve, THE_NBSAMPLESONELLIPSE);
+      theInternalPerform(theCurve, polygon, theSurface, theU1, theV1, theU2, theV2);
+    }
+  }
+}
+
+//! Perform conic (parabola) surface intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename AppendIntAnaFunc,
+          typename InternalPerformPolyFunc>
+void PerformConicSurfParabola(const gp_Parab&         theParab,
+                              const CurveType&        theCurve,
+                              const SurfaceType&      theSurface,
+                              const Standard_Real     theU1,
+                              const Standard_Real     theV1,
+                              const Standard_Real     theU2,
+                              const Standard_Real     theV2,
+                              AppendIntAnaFunc        theAppendIntAna,
+                              InternalPerformPolyFunc theInternalPerformPoly)
+{
+  GeomAbs_SurfaceType aSurfaceType = SurfaceTool::GetType(theSurface);
+  switch (aSurfaceType)
+  {
+    case GeomAbs_Plane: {
+      IntAna_IntConicQuad ParabPlane(theParab, SurfaceTool::Plane(theSurface), THE_TOLERANCE_ANGULAIRE);
+      theAppendIntAna(theCurve, theSurface, ParabPlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      IntAna_IntConicQuad ParabCylinder(theParab, SurfaceTool::Cylinder(theSurface));
+      theAppendIntAna(theCurve, theSurface, ParabCylinder);
+      break;
+    }
+    case GeomAbs_Cone: {
+      IntAna_IntConicQuad ParabCone(theParab, SurfaceTool::Cone(theSurface));
+      theAppendIntAna(theCurve, theSurface, ParabCone);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      IntAna_IntConicQuad ParabSphere(theParab, SurfaceTool::Sphere(theSurface));
+      theAppendIntAna(theCurve, theSurface, ParabSphere);
+      break;
+    }
+    default: {
+      Standard_Integer nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
+      Standard_Integer nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
+      if (nbsu > 40)
+        nbsu = 40;
+      if (nbsv > 40)
+        nbsv = 40;
+      PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
+      Intf_Tool bndTool;
+      Bnd_Box boxParab;
+      bndTool.ParabBox(theParab, polyhedron.Bounding(), boxParab);
+      for (Standard_Integer nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
+      {
+        PolygonType polygon(theCurve,
+                            bndTool.BeginParam(nbseg),
+                            bndTool.EndParam(nbseg),
+                            THE_NBSAMPLESONPARAB);
+        theInternalPerformPoly(theCurve, polygon, theSurface, polyhedron, theU1, theV1, theU2, theV2);
+      }
+    }
+  }
+}
+
+//! Perform conic (hyperbola) surface intersection.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename PolygonType,
+          typename PolyhedronType,
+          typename AppendIntAnaFunc,
+          typename InternalPerformPolyFunc>
+void PerformConicSurfHyperbola(const gp_Hypr&          theHypr,
+                               const CurveType&        theCurve,
+                               const SurfaceType&      theSurface,
+                               const Standard_Real     theU1,
+                               const Standard_Real     theV1,
+                               const Standard_Real     theU2,
+                               const Standard_Real     theV2,
+                               AppendIntAnaFunc        theAppendIntAna,
+                               InternalPerformPolyFunc theInternalPerformPoly)
+{
+  GeomAbs_SurfaceType aSurfaceType = SurfaceTool::GetType(theSurface);
+  switch (aSurfaceType)
+  {
+    case GeomAbs_Plane: {
+      IntAna_IntConicQuad HyprPlane(theHypr, SurfaceTool::Plane(theSurface), THE_TOLERANCE_ANGULAIRE);
+      theAppendIntAna(theCurve, theSurface, HyprPlane);
+      break;
+    }
+    case GeomAbs_Cylinder: {
+      IntAna_IntConicQuad HyprCylinder(theHypr, SurfaceTool::Cylinder(theSurface));
+      theAppendIntAna(theCurve, theSurface, HyprCylinder);
+      break;
+    }
+    case GeomAbs_Cone: {
+      IntAna_IntConicQuad HyprCone(theHypr, SurfaceTool::Cone(theSurface));
+      theAppendIntAna(theCurve, theSurface, HyprCone);
+      break;
+    }
+    case GeomAbs_Sphere: {
+      IntAna_IntConicQuad HyprSphere(theHypr, SurfaceTool::Sphere(theSurface));
+      theAppendIntAna(theCurve, theSurface, HyprSphere);
+      break;
+    }
+    default: {
+      Standard_Integer nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
+      Standard_Integer nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
+      if (nbsu > 40)
+        nbsu = 40;
+      if (nbsv > 40)
+        nbsv = 40;
+      PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
+      Intf_Tool bndTool;
+      Bnd_Box boxHypr;
+      bndTool.HyprBox(theHypr, polyhedron.Bounding(), boxHypr);
+      for (Standard_Integer nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
+      {
+        PolygonType polygon(theCurve,
+                            bndTool.BeginParam(nbseg),
+                            bndTool.EndParam(nbseg),
+                            THE_NBSAMPLESONHYPR);
+        theInternalPerformPoly(theCurve, polygon, theSurface, polyhedron, theU1, theV1, theU2, theV2);
+      }
+    }
+  }
+}
+
+//! Append analytical intersection results.
+template <typename CurveType,
+          typename CurveTool,
+          typename SurfaceType,
+          typename SurfaceTool,
+          typename AppendFunc>
+void AppendIntAna(const CurveType&           theCurve,
+                  const SurfaceType&         theSurface,
+                  const IntAna_IntConicQuad& theIntAna,
+                  bool&                      theIsParallel,
+                  AppendFunc                 theAppend)
+{
+  Standard_Boolean aIsParallel = Standard_False;
+  NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+
+  if (IntCurveSurface_InterUtils::ProcessIntAna<CurveType, CurveTool, SurfaceType, SurfaceTool>(
+        theCurve, theSurface, theIntAna, aIsParallel, aPoints))
+  {
+    if (aIsParallel)
+    {
+      theIsParallel = true;
+    }
+    else
+    {
+      for (const IntCurveSurface_IntersectionPoint& aPoint : aPoints)
+      {
+        theAppend(aPoint);
+      }
+    }
+  }
+}
+
+} // namespace IntCurveSurface_InterImpl
+
+#endif // IntCurveSurface_Inter_PXX

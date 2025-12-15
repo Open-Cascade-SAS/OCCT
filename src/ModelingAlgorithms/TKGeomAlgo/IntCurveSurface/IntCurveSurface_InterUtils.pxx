@@ -32,6 +32,7 @@
 #include <gp_Vec.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <IntAna_IntLinTorus.hxx>
+#include <IntAna_Quadric.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
