@@ -107,8 +107,8 @@ void InitWithParams(const SurfaceType&          theSurface,
                     Standard_Boolean*           theIsOnBounds,
                     Bnd_Box&                    theBnd)
 {
-  const int i0 = theUpars.Lower();
-  const int j0 = theVpars.Lower();
+  const int i0    = theUpars.Lower();
+  const int j0    = theVpars.Lower();
   int       Index = 1;
 
   for (int i1 = 0; i1 <= theNbDeltaU; ++i1)

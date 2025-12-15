@@ -28,7 +28,7 @@
 
 IntCurveSurface_TheQuadCurvExactHInter::IntCurveSurface_TheQuadCurvExactHInter(
   const Handle(Adaptor3d_Surface)& S,
-  const Handle(Adaptor3d_Curve)& C)
+  const Handle(Adaptor3d_Curve)&   C)
     : nbpnts(-1),
       nbintv(-1)
 {

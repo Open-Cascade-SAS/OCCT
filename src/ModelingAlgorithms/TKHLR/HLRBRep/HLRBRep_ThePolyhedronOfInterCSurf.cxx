@@ -185,13 +185,13 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(const Standard_Address&     Surface
   FillBounding();
 
   // Compute border deflection
-  TheBorderDeflection     = RealFirst();
-  Standard_Integer i0     = Upars.Lower();
-  Standard_Integer j0     = Vpars.Lower();
-  Standard_Real    U0     = Upars(i0);
-  Standard_Real    V0     = Vpars(j0);
-  Standard_Real    U1     = Upars(Upars.Upper());
-  Standard_Real    V1     = Vpars(Vpars.Upper());
+  TheBorderDeflection = RealFirst();
+  Standard_Integer i0 = Upars.Lower();
+  Standard_Integer j0 = Vpars.Lower();
+  Standard_Real    U0 = Upars(i0);
+  Standard_Real    V0 = Vpars(j0);
+  Standard_Real    U1 = Upars(Upars.Upper());
+  Standard_Real    V1 = Vpars(Vpars.Upper());
   Standard_Real    aDeflection;
 
   aDeflection = ComputeBorderDeflection(Surface, U0, V0, V1, Standard_True);
@@ -213,8 +213,9 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(const Standard_Address&     Surface
 
 //==================================================================================================
 
-Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(const Standard_Address& Surface,
-                                                                      const Standard_Integer Triang) const
+Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(
+  const Standard_Address& Surface,
+  const Standard_Integer  Triang) const
 {
   Standard_Integer i1, i2, i3;
   Triangle(Triang, i1, i2, i3);
@@ -224,17 +225,9 @@ Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(const Stan
   gp_Pnt        P2 = Point(i2, u2, v2);
   gp_Pnt        P3 = Point(i3, u3, v3);
 
-  return IntCurveSurface_PolyhedronUtils::
-    DeflectionOnTriangle<Standard_Address, HLRBRep_SurfaceTool>(Surface,
-                                                                P1,
-                                                                P2,
-                                                                P3,
-                                                                u1,
-                                                                v1,
-                                                                u2,
-                                                                v2,
-                                                                u3,
-                                                                v3);
+  return IntCurveSurface_PolyhedronUtils::DeflectionOnTriangle<
+    Standard_Address,
+    HLRBRep_SurfaceTool>(Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
 }
 
 //==================================================================================================
@@ -248,13 +241,13 @@ Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::ComputeBorderDeflection(
 {
   Standard_Integer aNbSamples = isUIso ? nbdeltaV : nbdeltaU;
 
-  return IntCurveSurface_PolyhedronUtils::
-    ComputeBorderDeflection<Standard_Address, HLRBRep_SurfaceTool>(Surface,
-                                                                   Parameter,
-                                                                   PMin,
-                                                                   PMax,
-                                                                   isUIso,
-                                                                   aNbSamples);
+  return IntCurveSurface_PolyhedronUtils::ComputeBorderDeflection<Standard_Address,
+                                                                  HLRBRep_SurfaceTool>(Surface,
+                                                                                       Parameter,
+                                                                                       PMin,
+                                                                                       PMax,
+                                                                                       isUIso,
+                                                                                       aNbSamples);
 }
 
 //==================================================================================================

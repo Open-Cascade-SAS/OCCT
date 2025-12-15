@@ -106,19 +106,19 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                                                  const Standard_Real              U1,
                                                  const Standard_Real              V1)
 {
-  IntCurveSurface_PolyhedronUtils::
-    InitUniform<Handle(Adaptor3d_Surface), Adaptor3d_HSurfaceTool>(Surface,
-                                                                   U0,
-                                                                   V0,
-                                                                   U1,
-                                                                   V1,
-                                                                   nbdeltaU,
-                                                                   nbdeltaV,
-                                                                   (gp_Pnt*)C_MyPnts,
-                                                                   (Standard_Real*)C_MyU,
-                                                                   (Standard_Real*)C_MyV,
-                                                                   (Standard_Boolean*)C_MyIsOnBounds,
-                                                                   TheBnd);
+  IntCurveSurface_PolyhedronUtils::InitUniform<Handle(Adaptor3d_Surface), Adaptor3d_HSurfaceTool>(
+    Surface,
+    U0,
+    V0,
+    U1,
+    V1,
+    nbdeltaU,
+    nbdeltaV,
+    (gp_Pnt*)C_MyPnts,
+    (Standard_Real*)C_MyU,
+    (Standard_Real*)C_MyV,
+    (Standard_Boolean*)C_MyIsOnBounds,
+    TheBnd);
 
   // Calculate triangle deflections
   Standard_Real    tol         = 0.0;
@@ -134,7 +134,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
   FillBounding();
 
   // Compute border deflection
-  TheBorderDeflection        = RealFirst();
+  TheBorderDeflection = RealFirst();
   Standard_Real aDeflection;
 
   aDeflection = ComputeBorderDeflection(Surface, U0, V0, V1, Standard_True);
@@ -160,18 +160,18 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                                                  const TColStd_Array1OfReal&      Upars,
                                                  const TColStd_Array1OfReal&      Vpars)
 {
-  IntCurveSurface_PolyhedronUtils::
-    InitWithParams<Handle(Adaptor3d_Surface), Adaptor3d_HSurfaceTool>(
-      Surface,
-      Upars,
-      Vpars,
-      nbdeltaU,
-      nbdeltaV,
-      (gp_Pnt*)C_MyPnts,
-      (Standard_Real*)C_MyU,
-      (Standard_Real*)C_MyV,
-      (Standard_Boolean*)C_MyIsOnBounds,
-      TheBnd);
+  IntCurveSurface_PolyhedronUtils::InitWithParams<Handle(Adaptor3d_Surface),
+                                                  Adaptor3d_HSurfaceTool>(
+    Surface,
+    Upars,
+    Vpars,
+    nbdeltaU,
+    nbdeltaV,
+    (gp_Pnt*)C_MyPnts,
+    (Standard_Real*)C_MyU,
+    (Standard_Real*)C_MyV,
+    (Standard_Boolean*)C_MyIsOnBounds,
+    TheBnd);
 
   // Calculate triangle deflections
   Standard_Real    tol         = 0.0;
@@ -187,13 +187,13 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
   FillBounding();
 
   // Compute border deflection
-  TheBorderDeflection     = RealFirst();
-  Standard_Integer i0     = Upars.Lower();
-  Standard_Integer j0     = Vpars.Lower();
-  Standard_Real    U0     = Upars(i0);
-  Standard_Real    V0     = Vpars(j0);
-  Standard_Real    U1     = Upars(Upars.Upper());
-  Standard_Real    V1     = Vpars(Vpars.Upper());
+  TheBorderDeflection = RealFirst();
+  Standard_Integer i0 = Upars.Lower();
+  Standard_Integer j0 = Vpars.Lower();
+  Standard_Real    U0 = Upars(i0);
+  Standard_Real    V0 = Vpars(j0);
+  Standard_Real    U1 = Upars(Upars.Upper());
+  Standard_Real    V1 = Vpars(Vpars.Upper());
   Standard_Real    aDeflection;
 
   aDeflection = ComputeBorderDeflection(Surface, U0, V0, V1, Standard_True);
@@ -227,17 +227,9 @@ Standard_Real IntCurveSurface_ThePolyhedronOfHInter::DeflectionOnTriangle(
   gp_Pnt        P2 = Point(i2, u2, v2);
   gp_Pnt        P3 = Point(i3, u3, v3);
 
-  return IntCurveSurface_PolyhedronUtils::
-    DeflectionOnTriangle<Handle(Adaptor3d_Surface), Adaptor3d_HSurfaceTool>(Surface,
-                                                                           P1,
-                                                                           P2,
-                                                                           P3,
-                                                                           u1,
-                                                                           v1,
-                                                                           u2,
-                                                                           v2,
-                                                                           u3,
-                                                                           v3);
+  return IntCurveSurface_PolyhedronUtils::DeflectionOnTriangle<
+    Handle(Adaptor3d_Surface),
+    Adaptor3d_HSurfaceTool>(Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
 }
 
 //==================================================================================================
@@ -251,13 +243,14 @@ Standard_Real IntCurveSurface_ThePolyhedronOfHInter::ComputeBorderDeflection(
 {
   Standard_Integer aNbSamples = isUIso ? nbdeltaV : nbdeltaU;
 
-  return IntCurveSurface_PolyhedronUtils::
-    ComputeBorderDeflection<Handle(Adaptor3d_Surface), Adaptor3d_HSurfaceTool>(Surface,
-                                                                              Parameter,
-                                                                              PMin,
-                                                                              PMax,
-                                                                              isUIso,
-                                                                              aNbSamples);
+  return IntCurveSurface_PolyhedronUtils::ComputeBorderDeflection<Handle(Adaptor3d_Surface),
+                                                                  Adaptor3d_HSurfaceTool>(
+    Surface,
+    Parameter,
+    PMin,
+    PMax,
+    isUIso,
+    aNbSamples);
 }
 
 //==================================================================================================
@@ -362,7 +355,7 @@ Standard_Integer IntCurveSurface_ThePolyhedronOfHInter::TriConnex(const Standard
                                                                   const Standard_Integer Pivot,
                                                                   const Standard_Integer Pedge,
                                                                   Standard_Integer&      TriCon,
-                                                                  Standard_Integer&      OtherP) const
+                                                                  Standard_Integer& OtherP) const
 {
   Standard_Integer Pivotm1    = Pivot - 1;
   Standard_Integer nbdeltaVp1 = nbdeltaV + 1;
@@ -580,7 +573,7 @@ Standard_Integer IntCurveSurface_ThePolyhedronOfHInter::TriConnex(const Standard
 
 void IntCurveSurface_ThePolyhedronOfHInter::PlaneEquation(const Standard_Integer Triang,
                                                           gp_XYZ&                NormalVector,
-                                                          Standard_Real&         PolarDistance) const
+                                                          Standard_Real& PolarDistance) const
 {
   Standard_Integer i1, i2, i3;
   Triangle(Triang, i1, i2, i3);
@@ -714,8 +707,9 @@ void IntCurveSurface_ThePolyhedronOfHInter::Point(const Standard_Integer Index, 
 
 //==================================================================================================
 
-Standard_Boolean IntCurveSurface_ThePolyhedronOfHInter::IsOnBound(const Standard_Integer Index1,
-                                                                  const Standard_Integer Index2) const
+Standard_Boolean IntCurveSurface_ThePolyhedronOfHInter::IsOnBound(
+  const Standard_Integer Index1,
+  const Standard_Integer Index2) const
 {
   Standard_Boolean* CMyIsOnBounds = (Standard_Boolean*)C_MyIsOnBounds;
   Standard_Integer  aDiff         = std::abs(Index1 - Index2);

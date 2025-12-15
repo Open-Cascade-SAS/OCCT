@@ -107,8 +107,8 @@ void InitWithParams(const CurveType&               theCurve,
                     double&                        theDeflection,
                     Handle(TColStd_HArray1OfReal)& theParams)
 {
-  theParams        = new TColStd_HArray1OfReal(1, theUpars.Length());
-  const int i0     = theUpars.Lower() - 1;
+  theParams    = new TColStd_HArray1OfReal(1, theUpars.Length());
+  const int i0 = theUpars.Lower() - 1;
   gp_Pnt    P;
 
   for (int i = 1; i <= theNbPntIn; ++i)

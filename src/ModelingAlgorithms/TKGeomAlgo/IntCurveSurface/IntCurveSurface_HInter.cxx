@@ -40,15 +40,15 @@
 #include "IntCurveSurface_Inter.pxx"
 
 // Type aliases for readability
-using TheCurve       = Handle(Adaptor3d_Curve);
-using TheCurveTool   = IntCurveSurface_TheHCurveTool;
-using TheSurface     = Handle(Adaptor3d_Surface);
-using TheSurfaceTool = Adaptor3d_HSurfaceTool;
-using ThePolygon     = IntCurveSurface_ThePolygonOfHInter;
-using ThePolyhedron  = IntCurveSurface_ThePolyhedronOfHInter;
-using TheInterference = IntCurveSurface_TheInterferenceOfHInter;
-using TheCSFunction  = IntCurveSurface_TheCSFunctionOfHInter;
-using TheExactInter  = IntCurveSurface_TheExactHInter;
+using TheCurve              = Handle(Adaptor3d_Curve);
+using TheCurveTool          = IntCurveSurface_TheHCurveTool;
+using TheSurface            = Handle(Adaptor3d_Surface);
+using TheSurfaceTool        = Adaptor3d_HSurfaceTool;
+using ThePolygon            = IntCurveSurface_ThePolygonOfHInter;
+using ThePolyhedron         = IntCurveSurface_ThePolyhedronOfHInter;
+using TheInterference       = IntCurveSurface_TheInterferenceOfHInter;
+using TheCSFunction         = IntCurveSurface_TheCSFunctionOfHInter;
+using TheExactInter         = IntCurveSurface_TheExactHInter;
 using TheQuadCurvExactInter = IntCurveSurface_TheQuadCurvExactHInter;
 
 //==================================================================================================
@@ -66,8 +66,14 @@ void IntCurveSurface_HInter::DoSurface(const TheSurface&   surface,
                                        Bnd_Box&            boxSurface,
                                        Standard_Real&      gap)
 {
-  IntCurveSurface_InterUtils::DoSurface<TheSurface, TheSurfaceTool>(
-    surface, u0, u1, v0, v1, pntsOnSurface, boxSurface, gap);
+  IntCurveSurface_InterUtils::DoSurface<TheSurface, TheSurfaceTool>(surface,
+                                                                    u0,
+                                                                    u1,
+                                                                    v0,
+                                                                    v1,
+                                                                    pntsOnSurface,
+                                                                    boxSurface,
+                                                                    gap);
 }
 
 //==================================================================================================
@@ -83,8 +89,16 @@ void IntCurveSurface_HInter::DoNewBounds(const TheSurface&           surface,
                                          const TColStd_Array1OfReal& Z,
                                          TColStd_Array1OfReal&       Bounds)
 {
-  IntCurveSurface_InterUtils::DoNewBounds<TheSurface, TheSurfaceTool>(
-    surface, u0, u1, v0, v1, pntsOnSurface, X, Y, Z, Bounds);
+  IntCurveSurface_InterUtils::DoNewBounds<TheSurface, TheSurfaceTool>(surface,
+                                                                      u0,
+                                                                      u1,
+                                                                      v0,
+                                                                      v1,
+                                                                      pntsOnSurface,
+                                                                      X,
+                                                                      Y,
+                                                                      Z,
+                                                                      Bounds);
 }
 
 //==================================================================================================
@@ -113,50 +127,47 @@ void IntCurveSurface_HInter::Perform(const TheCurve&     curve,
                                      const Standard_Real U2,
                                      const Standard_Real V2)
 {
-  IntCurveSurface_InterImpl::PerformBounds<TheCurve,
-                                           TheCurveTool,
-                                           TheSurface,
-                                           TheSurfaceTool,
-                                           ThePolygon>(
-    curve,
-    surface,
-    U1,
-    V1,
-    U2,
-    V2,
-    [this](const auto& conic, const TheCurve& c, const TheSurface& s,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->PerformConicSurf(conic, c, s, u1, v1, u2, v2);
-    },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, u1, v1, u2, v2);
-    },
-    [this](const TheCurve& c, const TheSurface& s) {
-      this->InternalPerformCurveQuadric(c, s);
-    });
+  IntCurveSurface_InterImpl::
+    PerformBounds<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool, ThePolygon>(
+      curve,
+      surface,
+      U1,
+      V1,
+      U2,
+      V2,
+      [this](const auto&       conic,
+             const TheCurve&   c,
+             const TheSurface& s,
+             Standard_Real     u1,
+             Standard_Real     v1,
+             Standard_Real     u2,
+             Standard_Real     v2) { this->PerformConicSurf(conic, c, s, u1, v1, u2, v2); },
+      [this](const TheCurve&   c,
+             const ThePolygon& p,
+             const TheSurface& s,
+             Standard_Real     u1,
+             Standard_Real     v1,
+             Standard_Real     u2,
+             Standard_Real     v2) { this->InternalPerform(c, p, s, u1, v1, u2, v2); },
+      [this](const TheCurve& c, const TheSurface& s) { this->InternalPerformCurveQuadric(c, s); });
 }
 
 //==================================================================================================
 
-void IntCurveSurface_HInter::Perform(const TheCurve&    curve,
-                                     const ThePolygon&  polygon,
-                                     const TheSurface&  surface)
+void IntCurveSurface_HInter::Perform(const TheCurve&   curve,
+                                     const ThePolygon& polygon,
+                                     const TheSurface& surface)
 {
-  IntCurveSurface_InterImpl::PerformPolygon<TheCurve,
-                                            TheCurveTool,
-                                            TheSurface,
-                                            TheSurfaceTool,
-                                            ThePolygon,
-                                            ThePolyhedron>(
-    curve,
-    polygon,
-    surface,
-    done,
-    [this]() { this->ResetFields(); },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph) {
-      this->Perform(c, p, s, ph);
-    });
+  IntCurveSurface_InterImpl::
+    PerformPolygon<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool, ThePolygon, ThePolyhedron>(
+      curve,
+      polygon,
+      surface,
+      done,
+      [this]() { this->ResetFields(); },
+      [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph) {
+        this->Perform(c, p, s, ph);
+      });
 }
 
 //==================================================================================================
@@ -200,10 +211,14 @@ void IntCurveSurface_HInter::Perform(const TheCurve&      curve,
     polyhedron,
     done,
     [this]() { this->ResetFields(); },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2);
-    });
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); });
 }
 
 //==================================================================================================
@@ -227,11 +242,15 @@ void IntCurveSurface_HInter::Perform(const TheCurve&      curve,
     BndBSB,
     done,
     [this]() { this->ResetFields(); },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2,
-           Bnd_BoundSortBox& bsb) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2, bsb);
-    });
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2,
+           Bnd_BoundSortBox&    bsb) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2, bsb); });
 }
 
 //==================================================================================================
@@ -337,10 +356,14 @@ void IntCurveSurface_HInter::InternalPerform(const TheCurve&     curve,
     V1,
     U2,
     V2,
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2);
-    },
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); },
     [this](const IntCurveSurface_IntersectionPoint& pt) { this->Append(pt); });
 }
 
@@ -370,10 +393,14 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Lin&       Line,
     [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2);
-    },
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); },
     [this](const IntCurveSurface_IntersectionPoint& pt) { this->Append(pt); });
 }
 
@@ -387,25 +414,25 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Circ&      Circle,
                                               const Standard_Real U2,
                                               const Standard_Real V2)
 {
-  IntCurveSurface_InterImpl::PerformConicSurfCircle<TheCurve,
-                                                    TheCurveTool,
-                                                    TheSurface,
-                                                    TheSurfaceTool,
-                                                    ThePolygon>(
-    Circle,
-    curve,
-    surface,
-    U1,
-    V1,
-    U2,
-    V2,
-    [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
-      this->AppendIntAna(c, s, ana);
-    },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, u1, v1, u2, v2);
-    });
+  IntCurveSurface_InterImpl::
+    PerformConicSurfCircle<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool, ThePolygon>(
+      Circle,
+      curve,
+      surface,
+      U1,
+      V1,
+      U2,
+      V2,
+      [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+        this->AppendIntAna(c, s, ana);
+      },
+      [this](const TheCurve&   c,
+             const ThePolygon& p,
+             const TheSurface& s,
+             Standard_Real     u1,
+             Standard_Real     v1,
+             Standard_Real     u2,
+             Standard_Real     v2) { this->InternalPerform(c, p, s, u1, v1, u2, v2); });
 }
 
 //==================================================================================================
@@ -418,25 +445,25 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Elips&     Ellipse,
                                               const Standard_Real U2,
                                               const Standard_Real V2)
 {
-  IntCurveSurface_InterImpl::PerformConicSurfEllipse<TheCurve,
-                                                     TheCurveTool,
-                                                     TheSurface,
-                                                     TheSurfaceTool,
-                                                     ThePolygon>(
-    Ellipse,
-    curve,
-    surface,
-    U1,
-    V1,
-    U2,
-    V2,
-    [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
-      this->AppendIntAna(c, s, ana);
-    },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, u1, v1, u2, v2);
-    });
+  IntCurveSurface_InterImpl::
+    PerformConicSurfEllipse<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool, ThePolygon>(
+      Ellipse,
+      curve,
+      surface,
+      U1,
+      V1,
+      U2,
+      V2,
+      [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+        this->AppendIntAna(c, s, ana);
+      },
+      [this](const TheCurve&   c,
+             const ThePolygon& p,
+             const TheSurface& s,
+             Standard_Real     u1,
+             Standard_Real     v1,
+             Standard_Real     u2,
+             Standard_Real     v2) { this->InternalPerform(c, p, s, u1, v1, u2, v2); });
 }
 
 //==================================================================================================
@@ -465,10 +492,14 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Parab&     Parab,
     [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2);
-    });
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); });
 }
 
 //==================================================================================================
@@ -497,10 +528,14 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Hypr&      Hypr,
     [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph,
-           Standard_Real u1, Standard_Real v1, Standard_Real u2, Standard_Real v2) {
-      this->InternalPerform(c, p, s, ph, u1, v1, u2, v2);
-    });
+    [this](const TheCurve&      c,
+           const ThePolygon&    p,
+           const TheSurface&    s,
+           const ThePolyhedron& ph,
+           Standard_Real        u1,
+           Standard_Real        v1,
+           Standard_Real        u2,
+           Standard_Real        v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); });
 }
 
 //==================================================================================================
@@ -526,8 +561,13 @@ void IntCurveSurface_HInter::AppendPoint(const TheCurve&     curve,
                                          const Standard_Real sv)
 {
   IntCurveSurface_IntersectionPoint aPoint;
-  if (IntCurveSurface_InterUtils::ComputeAppendPoint<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(
-        curve, lw, surface, su, sv, aPoint))
+  if (IntCurveSurface_InterUtils::
+        ComputeAppendPoint<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(curve,
+                                                                               lw,
+                                                                               surface,
+                                                                               su,
+                                                                               sv,
+                                                                               aPoint))
   {
     Append(aPoint);
   }

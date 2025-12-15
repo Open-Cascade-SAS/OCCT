@@ -1004,12 +1004,12 @@ void DoNewBounds(const SurfaceType&          theSurface,
 //! @tparam SurfaceTool The surface tool class
 //! @param[out] thePoint The computed intersection point (valid only if returns true)
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ComputeAppendPoint(const CurveType&                    theCurve,
-                        const Standard_Real                 theLw,
-                        const SurfaceType&                  theSurface,
-                        const Standard_Real                 theSu,
-                        const Standard_Real                 theSv,
-                        IntCurveSurface_IntersectionPoint&  thePoint)
+bool ComputeAppendPoint(const CurveType&                   theCurve,
+                        const Standard_Real                theLw,
+                        const SurfaceType&                 theSurface,
+                        const Standard_Real                theSu,
+                        const Standard_Real                theSv,
+                        IntCurveSurface_IntersectionPoint& thePoint)
 {
   Standard_Real W0 = CurveTool::FirstParameter(theCurve);
   Standard_Real W1 = CurveTool::LastParameter(theCurve);
@@ -1049,11 +1049,11 @@ bool ComputeAppendPoint(const CurveType&                    theCurve,
 
   IntCurveSurface_TransitionOnCurve TransOnCurve;
   ComputeTransitions<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
-                                                                      w,
-                                                                      TransOnCurve,
-                                                                      theSurface,
-                                                                      u,
-                                                                      v);
+                                                                     w,
+                                                                     TransOnCurve,
+                                                                     theSurface,
+                                                                     u,
+                                                                     v);
   gp_Pnt P(CurveTool::Value(theCurve, w));
   thePoint = IntCurveSurface_IntersectionPoint(P, u, v, w, TransOnCurve);
   return true;
@@ -1069,10 +1069,10 @@ bool ComputeAppendPoint(const CurveType&                    theCurve,
 //! @param[out] thePoints Vector of computed intersection points
 //! @return true if the operation was done successfully
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ProcessIntAna(const CurveType&                                theCurve,
-                   const SurfaceType&                              theSurface,
-                   const IntAna_IntConicQuad&                      theIntAna,
-                   Standard_Boolean&                               theIsParallel,
+bool ProcessIntAna(const CurveType&                                       theCurve,
+                   const SurfaceType&                                     theSurface,
+                   const IntAna_IntConicQuad&                             theIntAna,
+                   Standard_Boolean&                                      theIsParallel,
                    NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   theIsParallel = Standard_False;
@@ -1124,8 +1124,8 @@ template <typename QuadCurvExactType,
           typename CurveTool,
           typename SurfaceType,
           typename SurfaceTool>
-void PerformCurveQuadric(const CurveType&                                      theCurve,
-                         const SurfaceType&                                    theSurface,
+void PerformCurveQuadric(const CurveType&                                       theCurve,
+                         const SurfaceType&                                     theSurface,
                          NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
@@ -1138,7 +1138,10 @@ void PerformCurveQuadric(const CurveType&                                      t
     for (Standard_Integer i = 1; i <= NbRoots; i++)
     {
       w = QuadCurv.Root(i);
-      ComputeParamsOnQuadric<SurfaceType, SurfaceTool>(theSurface, CurveTool::Value(theCurve, w), u, v);
+      ComputeParamsOnQuadric<SurfaceType, SurfaceTool>(theSurface,
+                                                       CurveTool::Value(theCurve, w),
+                                                       u,
+                                                       v);
 
       IntCurveSurface_IntersectionPoint aPoint;
       if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
@@ -1183,11 +1186,11 @@ bool ProcessLinTorus(const gp_Lin&                                          theL
 
     IntCurveSurface_IntersectionPoint aPoint;
     if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
-                                                                            w,
-                                                                            theSurface,
-                                                                            fi,
-                                                                            theta,
-                                                                            aPoint))
+                                                                           w,
+                                                                           theSurface,
+                                                                           fi,
+                                                                           theta,
+                                                                           aPoint))
     {
       thePoints.Append(aPoint);
     }
@@ -1379,11 +1382,11 @@ void ProcessSortedPoints(ExactInterType&                                        
 
         IntCurveSurface_IntersectionPoint aPoint;
         if (ComputeAppendPoint<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
-                                                                                w,
-                                                                                theSurface,
-                                                                                u,
-                                                                                v,
-                                                                                aPoint))
+                                                                               w,
+                                                                               theSurface,
+                                                                               u,
+                                                                               v,
+                                                                               aPoint))
         {
           theResult.Append(aPoint);
         }

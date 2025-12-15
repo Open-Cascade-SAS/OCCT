@@ -69,12 +69,12 @@ HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&    
 void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve)
 {
   IntCurveSurface_PolygonUtils::InitUniform<gp_Lin, HLRBRep_LineTool>(Curve,
-                                                                     Binf,
-                                                                     Bsup,
-                                                                     NbPntIn,
-                                                                     ThePnts,
-                                                                     TheBnd,
-                                                                     TheDeflection);
+                                                                      Binf,
+                                                                      Bsup,
+                                                                      NbPntIn,
+                                                                      ThePnts,
+                                                                      TheBnd,
+                                                                      TheDeflection);
   ClosedPolygon = Standard_False;
 }
 
@@ -83,26 +83,27 @@ void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve)
 void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve, const TColStd_Array1OfReal& Upars)
 {
   IntCurveSurface_PolygonUtils::InitWithParams<gp_Lin, HLRBRep_LineTool>(Curve,
-                                                                        Upars,
-                                                                        NbPntIn,
-                                                                        ThePnts,
-                                                                        TheBnd,
-                                                                        TheDeflection,
-                                                                        myParams);
+                                                                         Upars,
+                                                                         NbPntIn,
+                                                                         ThePnts,
+                                                                         TheBnd,
+                                                                         TheDeflection,
+                                                                         myParams);
   ClosedPolygon = Standard_False;
 }
 
 //==================================================================================================
 
-Standard_Real HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(const Standard_Integer Index,
-                                                                 const Standard_Real ParamOnLine) const
+Standard_Real HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(
+  const Standard_Integer Index,
+  const Standard_Real    ParamOnLine) const
 {
   return IntCurveSurface_PolygonUtils::ApproxParamOnCurve(Index,
-                                                         ParamOnLine,
-                                                         Binf,
-                                                         Bsup,
-                                                         NbPntIn,
-                                                         myParams);
+                                                          ParamOnLine,
+                                                          Binf,
+                                                          Bsup,
+                                                          NbPntIn,
+                                                          myParams);
 }
 
 //==================================================================================================

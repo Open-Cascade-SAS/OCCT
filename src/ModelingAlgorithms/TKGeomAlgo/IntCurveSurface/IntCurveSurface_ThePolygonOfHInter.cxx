@@ -87,14 +87,14 @@ void IntCurveSurface_ThePolygonOfHInter::Init(const Handle(Adaptor3d_Curve)& Cur
 void IntCurveSurface_ThePolygonOfHInter::Init(const Handle(Adaptor3d_Curve)& Curve,
                                               const TColStd_Array1OfReal&    Upars)
 {
-  IntCurveSurface_PolygonUtils::
-    InitWithParams<Handle(Adaptor3d_Curve), IntCurveSurface_TheHCurveTool>(Curve,
-                                                                          Upars,
-                                                                          NbPntIn,
-                                                                          ThePnts,
-                                                                          TheBnd,
-                                                                          TheDeflection,
-                                                                          myParams);
+  IntCurveSurface_PolygonUtils::InitWithParams<Handle(Adaptor3d_Curve),
+                                               IntCurveSurface_TheHCurveTool>(Curve,
+                                                                              Upars,
+                                                                              NbPntIn,
+                                                                              ThePnts,
+                                                                              TheBnd,
+                                                                              TheDeflection,
+                                                                              myParams);
   ClosedPolygon = Standard_False;
 }
 
@@ -105,11 +105,11 @@ Standard_Real IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(
   const Standard_Real    ParamOnLine) const
 {
   return IntCurveSurface_PolygonUtils::ApproxParamOnCurve(Index,
-                                                         ParamOnLine,
-                                                         Binf,
-                                                         Bsup,
-                                                         NbPntIn,
-                                                         myParams);
+                                                          ParamOnLine,
+                                                          Binf,
+                                                          Bsup,
+                                                          NbPntIn,
+                                                          myParams);
 }
 
 //==================================================================================================

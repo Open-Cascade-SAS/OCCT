@@ -94,13 +94,13 @@ void PerformIntersection(const SurfaceType&      theSurface,
     double U1 = anIntervals.Value(ii);
     double U2 = anIntervals.Value(ii + 1);
 
-    math_FunctionSample aSample(U1, U2, CurveTool::NbSamples(theCurve, U1, U2));
-    QuadCurvFuncType    aFunction(aQuadric, theCurve);
+    math_FunctionSample   aSample(U1, U2, CurveTool::NbSamples(theCurve, U1, U2));
+    QuadCurvFuncType      aFunction(aQuadric, theCurve);
     math_FunctionAllRoots aRoots(aFunction, aSample, EPSX, EPSDIST, EPSNUL);
 
     if (aRoots.IsDone())
     {
-      int aNbPoints    = aRoots.NbPoints();
+      int aNbPoints   = aRoots.NbPoints();
       int aNbRootIntv = aRoots.NbIntervals();
 
       for (int i = 1; i <= aNbPoints; i++)
