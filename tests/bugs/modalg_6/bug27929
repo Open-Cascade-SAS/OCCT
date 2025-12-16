@@ -6,7 +6,7 @@ puts ""
 # Methods D0 and D1 for trimmed offset surface return different values if the surface has osculating surface
 ######################################################
 
-set Toler 1.0e-12
+set Toler 1.0e-14
 
 restore [locate_data_file bug27929_f1.brep] f1
 mksurface os1 f1

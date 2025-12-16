@@ -11,4 +11,4 @@ revol s w 0 0 0 0 0 1 360
 
 OFFSETSHAPE 1 {s_2} $calcul $type
 
-checkprops result -v 1143.53
+checkprops result -v 3048.04

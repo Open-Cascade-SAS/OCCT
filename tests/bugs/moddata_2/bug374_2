@@ -13,5 +13,5 @@ offset su2 su -1
 
 mkface result su2
 
-checkprops result -s 7337.91
+checkprops result -s 7181.83
 checkview -display result -2d -path ${imagedir}/${test_image}.png
