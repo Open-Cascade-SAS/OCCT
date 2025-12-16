@@ -1550,7 +1550,7 @@ Standard_Boolean BRepMesh_Delaun::isVertexInsidePolygon(
     aPrevVertexDir = aCurVertexDir;
   }
 
-  if (std::abs(Angle2PI - aTotalAng) > Precision::Angular())
+  if (std::abs(std::abs(aTotalAng) - Angle2PI) > Precision::Angular())
     return Standard_False;
 
   return Standard_True;
