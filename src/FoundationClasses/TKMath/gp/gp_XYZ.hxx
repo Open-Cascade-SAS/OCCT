@@ -67,10 +67,21 @@ public:
   //! theIndex = 2 => Y is modified
   //! theIndex = 3 => Z is modified
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    (&x)[theIndex - 1] = theXi;
+    if (theIndex == 1)
+    {
+      x = theXi;
+    }
+    else if (theIndex == 2)
+    {
+      y = theXi;
+    }
+    else
+    {
+      z = theXi;
+    }
   }
 
   //! Assigns the given value to the X coordinate
@@ -88,16 +99,32 @@ public:
   //! theIndex = 3 => Z is returned
   //!
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
-  Standard_Real Coord(const Standard_Integer theIndex) const
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    else if (theIndex == 2)
+    {
+      return y;
+    }
+    return z;
   }
 
-  Standard_Real& ChangeCoord(const Standard_Integer theIndex)
+  constexpr Standard_Real& ChangeCoord(const Standard_Integer theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    else if (theIndex == 2)
+    {
+      return y;
+    }
+    return z;
   }
 
   constexpr void Coord(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept
