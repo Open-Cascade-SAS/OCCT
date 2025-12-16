@@ -149,8 +149,7 @@ private:
 };
 
 constexpr Standard_Integer THE_DRAW_BUFFERS0[]   = {GL_COLOR_ATTACHMENT0};
-constexpr Standard_Integer THE_DRAW_BUFFERS01[]  = {GL_COLOR_ATTACHMENT0,
-                                                    GL_COLOR_ATTACHMENT0 + 1};
+constexpr Standard_Integer THE_DRAW_BUFFERS01[]  = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 1};
 constexpr Standard_Integer THE_DRAW_BUFFERS012[] = {GL_COLOR_ATTACHMENT0,
                                                     GL_COLOR_ATTACHMENT0 + 1,
                                                     GL_COLOR_ATTACHMENT0 + 2};
