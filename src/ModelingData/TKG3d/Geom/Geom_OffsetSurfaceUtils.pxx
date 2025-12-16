@@ -238,642 +238,6 @@ inline bool CalculateD1(gp_Pnt&       theValue,
   return true;
 }
 
-//! Computes second derivative of normal dN^2/du^2 for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2U second derivative d2P/du2
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3U third derivative d3P/du3
-//! @param[in] theD3UUV mixed derivative d3P/du2dv
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1U first derivative of normal with respect to U
-//! @return second derivative of normal with respect to U
-inline gp_Vec ComputeD2NormalU(const gp_Vec& theD1U,
-                               const gp_Vec& theD1V,
-                               const gp_Vec& theD2U,
-                               const gp_Vec& theD2UV,
-                               const gp_Vec& theD3U,
-                               const gp_Vec& theD3UUV,
-                               const gp_Vec& theNormal,
-                               double        theScale,
-                               const gp_Vec& theAN1U)
-{
-  // Compute d(N x D1V)/du contribution
-  gp_Vec aN2U;
-  aN2U.SetX(theD3U.Y() * theD1V.Z() + 2.0 * theD2U.Y() * theD2UV.Z() + theD1U.Y() * theD3UUV.Z()
-            - theD3U.Z() * theD1V.Y() - 2.0 * theD2U.Z() * theD2UV.Y() - theD1U.Z() * theD3UUV.Y());
-  aN2U.SetY(-(theD3U.X() * theD1V.Z() + 2.0 * theD2U.X() * theD2UV.Z() + theD1U.X() * theD3UUV.Z()
-              - theD3U.Z() * theD1V.X() - 2.0 * theD2U.Z() * theD2UV.X()
-              - theD1U.Z() * theD3UUV.X()));
-  aN2U.SetZ(theD3U.X() * theD1V.Y() + 2.0 * theD2U.X() * theD2UV.Y() + theD1U.X() * theD3UUV.Y()
-            - theD3U.Y() * theD1V.X() - 2.0 * theD2U.Y() * theD2UV.X() - theD1U.Y() * theD3UUV.X());
-
-  // Project out normal component and scale
-  double aScaleU2 = aN2U.Dot(theNormal) + 2.0 * theAN1U.Dot(theAN1U) * theScale;
-  aN2U.Subtract(aScaleU2 * theNormal);
-  aN2U.Subtract(2.0 * theAN1U.Dot(theNormal) * theAN1U * theScale);
-  aN2U /= theScale;
-
-  return aN2U;
-}
-
-//! Computes second derivative of normal dN^2/dv^2 for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3V third derivative d3P/dv3
-//! @param[in] theD3UVV mixed derivative d3P/dudv2
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1V first derivative of normal with respect to V
-//! @return second derivative of normal with respect to V
-inline gp_Vec ComputeD2NormalV(const gp_Vec& theD1U,
-                               const gp_Vec& theD1V,
-                               const gp_Vec& theD2V,
-                               const gp_Vec& theD2UV,
-                               const gp_Vec& theD3V,
-                               const gp_Vec& theD3UVV,
-                               const gp_Vec& theNormal,
-                               double        theScale,
-                               const gp_Vec& theAN1V)
-{
-  // Compute d(D1U x N)/dv contribution
-  gp_Vec aN2V;
-  aN2V.SetX(theD3UVV.Y() * theD1V.Z() + 2.0 * theD2UV.Y() * theD2V.Z() + theD1U.Y() * theD3V.Z()
-            - theD3UVV.Z() * theD1V.Y() - 2.0 * theD2UV.Z() * theD2V.Y() - theD1U.Z() * theD3V.Y());
-  aN2V.SetY(-(theD3UVV.X() * theD1V.Z() + 2.0 * theD2UV.X() * theD2V.Z() + theD1U.X() * theD3V.Z()
-              - theD3UVV.Z() * theD1V.X() - 2.0 * theD2UV.Z() * theD2V.X()
-              - theD1U.Z() * theD3V.X()));
-  aN2V.SetZ(theD3UVV.X() * theD1V.Y() + 2.0 * theD2UV.X() * theD2V.Y() + theD1U.X() * theD3V.Y()
-            - theD3UVV.Y() * theD1V.X() - 2.0 * theD2UV.Y() * theD2V.X() - theD1U.Y() * theD3V.X());
-
-  // Project out normal component and scale
-  double aScaleV2 = aN2V.Dot(theNormal) + 2.0 * theAN1V.Dot(theAN1V) * theScale;
-  aN2V.Subtract(aScaleV2 * theNormal);
-  aN2V.Subtract(2.0 * theAN1V.Dot(theNormal) * theAN1V * theScale);
-  aN2V /= theScale;
-
-  return aN2V;
-}
-
-//! Computes mixed second derivative of normal dN^2/dudv for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2U second derivative d2P/du2
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3UUV mixed derivative d3P/du2dv
-//! @param[in] theD3UVV mixed derivative d3P/dudv2
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1U first derivative of normal with respect to U
-//! @param[in] theAN1V first derivative of normal with respect to V
-//! @return mixed second derivative of normal
-inline gp_Vec ComputeD2NormalUV(const gp_Vec& theD1U,
-                                const gp_Vec& theD1V,
-                                const gp_Vec& theD2U,
-                                const gp_Vec& theD2V,
-                                const gp_Vec& theD2UV,
-                                const gp_Vec& theD3UUV,
-                                const gp_Vec& theD3UVV,
-                                const gp_Vec& theNormal,
-                                double        theScale,
-                                const gp_Vec& theAN1U,
-                                const gp_Vec& theAN1V)
-{
-  // Compute d^2(D1U x D1V)/dudv contribution
-  gp_Vec aN2UV;
-  aN2UV.SetX(theD3UUV.Y() * theD1V.Z() + theD2U.Y() * theD2V.Z() + theD2UV.Y() * theD2UV.Z()
-             + theD1U.Y() * theD3UVV.Z() - theD3UUV.Z() * theD1V.Y() - theD2U.Z() * theD2V.Y()
-             - theD2UV.Z() * theD2UV.Y() - theD1U.Z() * theD3UVV.Y());
-  aN2UV.SetY(-(theD3UUV.X() * theD1V.Z() + theD2U.X() * theD2V.Z() + theD2UV.X() * theD2UV.Z()
-               + theD1U.X() * theD3UVV.Z() - theD3UUV.Z() * theD1V.X() - theD2U.Z() * theD2V.X()
-               - theD2UV.Z() * theD2UV.X() - theD1U.Z() * theD3UVV.X()));
-  aN2UV.SetZ(theD3UUV.X() * theD1V.Y() + theD2U.X() * theD2V.Y() + theD2UV.X() * theD2UV.Y()
-             + theD1U.X() * theD3UVV.Y() - theD3UUV.Y() * theD1V.X() - theD2U.Y() * theD2V.X()
-             - theD2UV.Y() * theD2UV.X() - theD1U.Y() * theD3UVV.X());
-
-  // Project out normal component and scale
-  double aScaleUV = aN2UV.Dot(theNormal) + 2.0 * theAN1U.Dot(theAN1V) * theScale;
-  aN2UV.Subtract(aScaleUV * theNormal);
-  aN2UV.Subtract((theAN1U.Dot(theNormal) * theAN1V + theAN1V.Dot(theNormal) * theAN1U) * theScale);
-  aN2UV /= theScale;
-
-  return aN2UV;
-}
-
-//! Computes third derivative of normal d^3N/du^3 for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2U second derivative d2P/du2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3U third derivative d3P/du3
-//! @param[in] theD3UUV mixed derivative d3P/du2dv
-//! @param[in] theD4U fourth derivative d4P/du4
-//! @param[in] theD4UUV mixed derivative d4P/du3dv
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1U first derivative of normal with respect to U
-//! @param[in] theAN2U second derivative of normal with respect to U
-//! @return third derivative of normal with respect to U
-inline gp_Vec ComputeD3NormalU(const gp_Vec& theD1U,
-                               const gp_Vec& theD1V,
-                               const gp_Vec& theD2U,
-                               const gp_Vec& theD2UV,
-                               const gp_Vec& theD3U,
-                               const gp_Vec& theD3UUV,
-                               const gp_Vec& theD4U,
-                               const gp_Vec& theD4UUV,
-                               const gp_Vec& theNormal,
-                               double        theScale,
-                               const gp_Vec& theAN1U,
-                               const gp_Vec& theAN2U)
-{
-  // Compute d^3(D1U x D1V)/du^3 = D4U x D1V + 3*D3U x D2UV + 3*D2U x D3UUV + D1U x D4UUV
-  gp_Vec aN3U;
-  aN3U.SetX(theD4U.Y() * theD1V.Z() + 3.0 * theD3U.Y() * theD2UV.Z()
-            + 3.0 * theD2U.Y() * theD3UUV.Z() + theD1U.Y() * theD4UUV.Z() - theD4U.Z() * theD1V.Y()
-            - 3.0 * theD3U.Z() * theD2UV.Y() - 3.0 * theD2U.Z() * theD3UUV.Y()
-            - theD1U.Z() * theD4UUV.Y());
-  aN3U.SetY(-(theD4U.X() * theD1V.Z() + 3.0 * theD3U.X() * theD2UV.Z()
-              + 3.0 * theD2U.X() * theD3UUV.Z() + theD1U.X() * theD4UUV.Z()
-              - theD4U.Z() * theD1V.X() - 3.0 * theD3U.Z() * theD2UV.X()
-              - 3.0 * theD2U.Z() * theD3UUV.X() - theD1U.Z() * theD4UUV.X()));
-  aN3U.SetZ(theD4U.X() * theD1V.Y() + 3.0 * theD3U.X() * theD2UV.Y()
-            + 3.0 * theD2U.X() * theD3UUV.Y() + theD1U.X() * theD4UUV.Y() - theD4U.Y() * theD1V.X()
-            - 3.0 * theD3U.Y() * theD2UV.X() - 3.0 * theD2U.Y() * theD3UUV.X()
-            - theD1U.Y() * theD4UUV.X());
-
-  // Project out normal component and apply corrections
-  // Following pattern: d^3N/du^3 requires corrections for N'u, N''uu interactions
-  double aN1UdotN  = theAN1U.Dot(theNormal);
-  double aN2UdotN  = theAN2U.Dot(theNormal);
-  double aN1Usq    = theAN1U.Dot(theAN1U);
-  double aN1UdotN2 = theAN1U.Dot(theAN2U);
-
-  double aScaleU3 =
-    aN3U.Dot(theNormal) + 3.0 * aN1UdotN2 * theScale + 3.0 * aN1Usq * aN1UdotN * theScale;
-  aN3U.Subtract(aScaleU3 * theNormal);
-  aN3U.Subtract(3.0 * (aN2UdotN * theAN1U + aN1UdotN * theAN2U) * theScale);
-  aN3U.Subtract(3.0 * aN1Usq * theAN1U * theScale);
-  aN3U /= theScale;
-
-  return aN3U;
-}
-
-//! Computes third derivative of normal d^3N/dv^3 for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3V third derivative d3P/dv3
-//! @param[in] theD3UVV mixed derivative d3P/dudv2
-//! @param[in] theD4V fourth derivative d4P/dv4
-//! @param[in] theD4UVV mixed derivative d4P/dudv3
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1V first derivative of normal with respect to V
-//! @param[in] theAN2V second derivative of normal with respect to V
-//! @return third derivative of normal with respect to V
-inline gp_Vec ComputeD3NormalV(const gp_Vec& theD1U,
-                               const gp_Vec& theD1V,
-                               const gp_Vec& theD2V,
-                               const gp_Vec& theD2UV,
-                               const gp_Vec& theD3V,
-                               const gp_Vec& theD3UVV,
-                               const gp_Vec& theD4V,
-                               const gp_Vec& theD4UVV,
-                               const gp_Vec& theNormal,
-                               double        theScale,
-                               const gp_Vec& theAN1V,
-                               const gp_Vec& theAN2V)
-{
-  // Compute d^3(D1U x D1V)/dv^3 = D4UVV x D1V + 3*D3UVV x D2V + 3*D2UV x D3V + D1U x D4V
-  gp_Vec aN3V;
-  aN3V.SetX(theD4UVV.Y() * theD1V.Z() + 3.0 * theD3UVV.Y() * theD2V.Z()
-            + 3.0 * theD2UV.Y() * theD3V.Z() + theD1U.Y() * theD4V.Z() - theD4UVV.Z() * theD1V.Y()
-            - 3.0 * theD3UVV.Z() * theD2V.Y() - 3.0 * theD2UV.Z() * theD3V.Y()
-            - theD1U.Z() * theD4V.Y());
-  aN3V.SetY(-(theD4UVV.X() * theD1V.Z() + 3.0 * theD3UVV.X() * theD2V.Z()
-              + 3.0 * theD2UV.X() * theD3V.Z() + theD1U.X() * theD4V.Z() - theD4UVV.Z() * theD1V.X()
-              - 3.0 * theD3UVV.Z() * theD2V.X() - 3.0 * theD2UV.Z() * theD3V.X()
-              - theD1U.Z() * theD4V.X()));
-  aN3V.SetZ(theD4UVV.X() * theD1V.Y() + 3.0 * theD3UVV.X() * theD2V.Y()
-            + 3.0 * theD2UV.X() * theD3V.Y() + theD1U.X() * theD4V.Y() - theD4UVV.Y() * theD1V.X()
-            - 3.0 * theD3UVV.Y() * theD2V.X() - 3.0 * theD2UV.Y() * theD3V.X()
-            - theD1U.Y() * theD4V.X());
-
-  // Project out normal component and apply corrections
-  double aN1VdotN  = theAN1V.Dot(theNormal);
-  double aN2VdotN  = theAN2V.Dot(theNormal);
-  double aN1Vsq    = theAN1V.Dot(theAN1V);
-  double aN1VdotN2 = theAN1V.Dot(theAN2V);
-
-  double aScaleV3 =
-    aN3V.Dot(theNormal) + 3.0 * aN1VdotN2 * theScale + 3.0 * aN1Vsq * aN1VdotN * theScale;
-  aN3V.Subtract(aScaleV3 * theNormal);
-  aN3V.Subtract(3.0 * (aN2VdotN * theAN1V + aN1VdotN * theAN2V) * theScale);
-  aN3V.Subtract(3.0 * aN1Vsq * theAN1V * theScale);
-  aN3V /= theScale;
-
-  return aN3V;
-}
-
-//! Computes mixed third derivative of normal d^3N/du^2dv for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2U second derivative d2P/du2
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3U third derivative d3P/du3
-//! @param[in] theD3UUV mixed derivative d3P/du2dv
-//! @param[in] theD3UVV mixed derivative d3P/dudv2
-//! @param[in] theD4UUV mixed derivative d4P/du3dv
-//! @param[in] theD4UUVV mixed derivative d4P/du2dv2
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1U first derivative of normal with respect to U
-//! @param[in] theAN1V first derivative of normal with respect to V
-//! @param[in] theAN2U second derivative of normal with respect to U
-//! @param[in] theAN2UV mixed second derivative of normal
-//! @return mixed third derivative of normal d^3N/du^2dv
-inline gp_Vec ComputeD3NormalUUV(const gp_Vec& theD1U,
-                                 const gp_Vec& theD1V,
-                                 const gp_Vec& theD2U,
-                                 const gp_Vec& theD2V,
-                                 const gp_Vec& theD2UV,
-                                 const gp_Vec& theD3U,
-                                 const gp_Vec& theD3UUV,
-                                 const gp_Vec& theD3UVV,
-                                 const gp_Vec& theD4UUV,
-                                 const gp_Vec& theD4UUVV,
-                                 const gp_Vec& theNormal,
-                                 double        theScale,
-                                 const gp_Vec& theAN1U,
-                                 const gp_Vec& theAN1V,
-                                 const gp_Vec& theAN2U,
-                                 const gp_Vec& theAN2UV)
-{
-  // Compute d^3(D1U x D1V)/du^2dv = D4UUV x D1V + 2*D3U x D2V + D3UUV x D2UV
-  //                                + 2*D2U x D3UVV + D2UV x D3UUV + D1U x D4UUVV
-  gp_Vec aN3UUV;
-  aN3UUV.SetX(
-    theD4UUV.Y() * theD1V.Z() + 2.0 * theD3U.Y() * theD2V.Z() + theD3UUV.Y() * theD2UV.Z()
-    + 2.0 * theD2U.Y() * theD3UVV.Z() + theD2UV.Y() * theD3UUV.Z() + theD1U.Y() * theD4UUVV.Z()
-    - theD4UUV.Z() * theD1V.Y() - 2.0 * theD3U.Z() * theD2V.Y() - theD3UUV.Z() * theD2UV.Y()
-    - 2.0 * theD2U.Z() * theD3UVV.Y() - theD2UV.Z() * theD3UUV.Y() - theD1U.Z() * theD4UUVV.Y());
-  aN3UUV.SetY(
-    -(theD4UUV.X() * theD1V.Z() + 2.0 * theD3U.X() * theD2V.Z() + theD3UUV.X() * theD2UV.Z()
-      + 2.0 * theD2U.X() * theD3UVV.Z() + theD2UV.X() * theD3UUV.Z() + theD1U.X() * theD4UUVV.Z()
-      - theD4UUV.Z() * theD1V.X() - 2.0 * theD3U.Z() * theD2V.X() - theD3UUV.Z() * theD2UV.X()
-      - 2.0 * theD2U.Z() * theD3UVV.X() - theD2UV.Z() * theD3UUV.X() - theD1U.Z() * theD4UUVV.X()));
-  aN3UUV.SetZ(
-    theD4UUV.X() * theD1V.Y() + 2.0 * theD3U.X() * theD2V.Y() + theD3UUV.X() * theD2UV.Y()
-    + 2.0 * theD2U.X() * theD3UVV.Y() + theD2UV.X() * theD3UUV.Y() + theD1U.X() * theD4UUVV.Y()
-    - theD4UUV.Y() * theD1V.X() - 2.0 * theD3U.Y() * theD2V.X() - theD3UUV.Y() * theD2UV.X()
-    - 2.0 * theD2U.Y() * theD3UVV.X() - theD2UV.Y() * theD3UUV.X() - theD1U.Y() * theD4UUVV.X());
-
-  // Project out normal component and apply corrections
-  double aN1UdotN   = theAN1U.Dot(theNormal);
-  double aN1VdotN   = theAN1V.Dot(theNormal);
-  double aN2UdotN   = theAN2U.Dot(theNormal);
-  double aN2UVdotN  = theAN2UV.Dot(theNormal);
-  double aN1UdotN1V = theAN1U.Dot(theAN1V);
-  double aN1UdotN2U = theAN1U.Dot(theAN2U);
-  double aN1VdotN2U = theAN1V.Dot(theAN2U);
-  double aN1Usq     = theAN1U.Dot(theAN1U);
-
-  double aScaleUUV = aN3UUV.Dot(theNormal) + 2.0 * (aN1VdotN2U + aN1UdotN1V * aN1UdotN) * theScale
-                     + aN1UdotN2U * theScale + aN1Usq * aN1VdotN * theScale;
-  aN3UUV.Subtract(aScaleUUV * theNormal);
-  aN3UUV.Subtract((2.0 * aN2UVdotN * theAN1U + aN2UdotN * theAN1V + 2.0 * aN1VdotN * theAN2U
-                   + aN1UdotN * theAN2UV)
-                  * theScale);
-  aN3UUV.Subtract((2.0 * aN1UdotN1V * theAN1U + aN1Usq * theAN1V) * theScale);
-  aN3UUV /= theScale;
-
-  return aN3UUV;
-}
-
-//! Computes mixed third derivative of normal d^3N/dudv^2 for non-singular offset surface.
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theD2U second derivative d2P/du2
-//! @param[in] theD2V second derivative d2P/dv2
-//! @param[in] theD2UV mixed derivative d2P/dudv
-//! @param[in] theD3V third derivative d3P/dv3
-//! @param[in] theD3UUV mixed derivative d3P/du2dv
-//! @param[in] theD3UVV mixed derivative d3P/dudv2
-//! @param[in] theD4UVV mixed derivative d4P/dudv3
-//! @param[in] theD4UUVV mixed derivative d4P/du2dv2
-//! @param[in] theNormal unit normal vector
-//! @param[in] theScale scale factor (D1U ^ D1V).Dot(Normal)
-//! @param[in] theAN1U first derivative of normal with respect to U
-//! @param[in] theAN1V first derivative of normal with respect to V
-//! @param[in] theAN2V second derivative of normal with respect to V
-//! @param[in] theAN2UV mixed second derivative of normal
-//! @return mixed third derivative of normal d^3N/dudv^2
-inline gp_Vec ComputeD3NormalUVV(const gp_Vec& theD1U,
-                                 const gp_Vec& theD1V,
-                                 const gp_Vec& theD2U,
-                                 const gp_Vec& theD2V,
-                                 const gp_Vec& theD2UV,
-                                 const gp_Vec& theD3V,
-                                 const gp_Vec& theD3UUV,
-                                 const gp_Vec& theD3UVV,
-                                 const gp_Vec& theD4UVV,
-                                 const gp_Vec& theD4UUVV,
-                                 const gp_Vec& theNormal,
-                                 double        theScale,
-                                 const gp_Vec& theAN1U,
-                                 const gp_Vec& theAN1V,
-                                 const gp_Vec& theAN2V,
-                                 const gp_Vec& theAN2UV)
-{
-  // Compute d^3(D1U x D1V)/dudv^2 = D4UUVV x D1V + D3UUV x D2V + 2*D3UVV x D2UV
-  //                                + D2U x D3V + 2*D2UV x D3UVV + D1U x D4UVV
-  gp_Vec aN3UVV;
-  aN3UVV.SetX(
-    theD4UUVV.Y() * theD1V.Z() + theD3UUV.Y() * theD2V.Z() + 2.0 * theD3UVV.Y() * theD2UV.Z()
-    + theD2U.Y() * theD3V.Z() + 2.0 * theD2UV.Y() * theD3UVV.Z() + theD1U.Y() * theD4UVV.Z()
-    - theD4UUVV.Z() * theD1V.Y() - theD3UUV.Z() * theD2V.Y() - 2.0 * theD3UVV.Z() * theD2UV.Y()
-    - theD2U.Z() * theD3V.Y() - 2.0 * theD2UV.Z() * theD3UVV.Y() - theD1U.Z() * theD4UVV.Y());
-  aN3UVV.SetY(
-    -(theD4UUVV.X() * theD1V.Z() + theD3UUV.X() * theD2V.Z() + 2.0 * theD3UVV.X() * theD2UV.Z()
-      + theD2U.X() * theD3V.Z() + 2.0 * theD2UV.X() * theD3UVV.Z() + theD1U.X() * theD4UVV.Z()
-      - theD4UUVV.Z() * theD1V.X() - theD3UUV.Z() * theD2V.X() - 2.0 * theD3UVV.Z() * theD2UV.X()
-      - theD2U.Z() * theD3V.X() - 2.0 * theD2UV.Z() * theD3UVV.X() - theD1U.Z() * theD4UVV.X()));
-  aN3UVV.SetZ(
-    theD4UUVV.X() * theD1V.Y() + theD3UUV.X() * theD2V.Y() + 2.0 * theD3UVV.X() * theD2UV.Y()
-    + theD2U.X() * theD3V.Y() + 2.0 * theD2UV.X() * theD3UVV.Y() + theD1U.X() * theD4UVV.Y()
-    - theD4UUVV.Y() * theD1V.X() - theD3UUV.Y() * theD2V.X() - 2.0 * theD3UVV.Y() * theD2UV.X()
-    - theD2U.Y() * theD3V.X() - 2.0 * theD2UV.Y() * theD3UVV.X() - theD1U.Y() * theD4UVV.X());
-
-  // Project out normal component and apply corrections
-  double aN1UdotN   = theAN1U.Dot(theNormal);
-  double aN1VdotN   = theAN1V.Dot(theNormal);
-  double aN2VdotN   = theAN2V.Dot(theNormal);
-  double aN2UVdotN  = theAN2UV.Dot(theNormal);
-  double aN1UdotN1V = theAN1U.Dot(theAN1V);
-  double aN1UdotN2V = theAN1U.Dot(theAN2V);
-  double aN1VdotN2V = theAN1V.Dot(theAN2V);
-  double aN1Vsq     = theAN1V.Dot(theAN1V);
-
-  double aScaleUVV = aN3UVV.Dot(theNormal) + 2.0 * (aN1UdotN2V + aN1UdotN1V * aN1VdotN) * theScale
-                     + aN1VdotN2V * theScale + aN1Vsq * aN1UdotN * theScale;
-  aN3UVV.Subtract(aScaleUVV * theNormal);
-  aN3UVV.Subtract((2.0 * aN2UVdotN * theAN1V + aN2VdotN * theAN1U + 2.0 * aN1UdotN * theAN2V
-                   + aN1VdotN * theAN2UV)
-                  * theScale);
-  aN3UVV.Subtract((2.0 * aN1UdotN1V * theAN1V + aN1Vsq * theAN1U) * theScale);
-  aN3UVV /= theScale;
-
-  return aN3UVV;
-}
-
-//! Calculates D0, D1, D2 for offset surface in non-singular case.
-//! @param[in,out] theValue on input: basis surface point; on output: offset point
-//! @param[in,out] theD1U on input: basis dP/du; on output: offset surface dP/du
-//! @param[in,out] theD1V on input: basis dP/dv; on output: offset surface dP/dv
-//! @param[in,out] theD2U on input: basis d2P/du2; on output: offset surface d2P/du2
-//! @param[in,out] theD2V on input: basis d2P/dv2; on output: offset surface d2P/dv2
-//! @param[in,out] theD2UV on input: basis d2P/dudv; on output: offset surface d2P/dudv
-//! @param[in] theD3U third derivative d3P/du3 of basis surface
-//! @param[in] theD3V third derivative d3P/dv3 of basis surface
-//! @param[in] theD3UUV mixed derivative d3P/du2dv of basis surface
-//! @param[in] theD3UVV mixed derivative d3P/dudv2 of basis surface
-//! @param[in] theOffset offset distance value
-//! @param[in] theSign sign factor (1.0 or -1.0) for offset direction
-//! @return false if singular (normal has zero magnitude), true otherwise
-inline bool CalculateD2(gp_Pnt&       theValue,
-                        gp_Vec&       theD1U,
-                        gp_Vec&       theD1V,
-                        gp_Vec&       theD2U,
-                        gp_Vec&       theD2V,
-                        gp_Vec&       theD2UV,
-                        const gp_Vec& theD3U,
-                        const gp_Vec& theD3V,
-                        const gp_Vec& theD3UUV,
-                        const gp_Vec& theD3UVV,
-                        double        theOffset,
-                        double        theSign   = 1.0,
-                        gp_Vec*       theNormal = nullptr,
-                        gp_Vec*       theAN1U   = nullptr,
-                        gp_Vec*       theAN1V   = nullptr,
-                        gp_Vec*       theAN2U   = nullptr,
-                        gp_Vec*       theAN2V   = nullptr,
-                        gp_Vec*       theAN2UV  = nullptr)
-{
-  gp_Vec aNorm;
-  if (!ComputeNormal(theD1U, theD1V, aNorm))
-  {
-    return false;
-  }
-
-  // Compute offset point
-  theValue.SetXYZ(theValue.XYZ() + theOffset * theSign * aNorm.XYZ());
-
-  // Compute scale factor for derivative calculations
-  double aScale = (theD1U ^ theD1V).Dot(aNorm);
-
-  // Compute first derivatives of normal
-  gp_Vec aN1U = ComputeDNormalU(theD1U, theD1V, theD2U, theD2UV, aNorm);
-  gp_Vec aN1V = ComputeDNormalV(theD1U, theD1V, theD2V, theD2UV, aNorm);
-
-  // Compute second derivatives of normal
-  gp_Vec aN2U =
-    ComputeD2NormalU(theD1U, theD1V, theD2U, theD2UV, theD3U, theD3UUV, aNorm, aScale, aN1U);
-  gp_Vec aN2V =
-    ComputeD2NormalV(theD1U, theD1V, theD2V, theD2UV, theD3V, theD3UVV, aNorm, aScale, aN1V);
-  gp_Vec aN2UV = ComputeD2NormalUV(theD1U,
-                                   theD1V,
-                                   theD2U,
-                                   theD2V,
-                                   theD2UV,
-                                   theD3UUV,
-                                   theD3UVV,
-                                   aNorm,
-                                   aScale,
-                                   aN1U,
-                                   aN1V);
-
-  // Update first derivatives
-  theD1U += theOffset * theSign * aN1U;
-  theD1V += theOffset * theSign * aN1V;
-
-  // Update second derivatives
-  theD2U += theOffset * theSign * aN2U;
-  theD2V += theOffset * theSign * aN2V;
-  theD2UV += theOffset * theSign * aN2UV;
-
-  // Output intermediate values if requested (for D3 computation)
-  if (theNormal)
-    *theNormal = aNorm;
-  if (theAN1U)
-    *theAN1U = aN1U;
-  if (theAN1V)
-    *theAN1V = aN1V;
-  if (theAN2U)
-    *theAN2U = aN2U;
-  if (theAN2V)
-    *theAN2V = aN2V;
-  if (theAN2UV)
-    *theAN2UV = aN2UV;
-
-  return true;
-}
-
-//! Calculates D0, D1, D2, D3 for offset surface in non-singular case.
-//! Uses the same direct normal computation as D0, D1, D2 for consistency.
-//! Third derivatives of normal are computed using CSLib::DNNUV/DNNormal for simplicity.
-//! @param[in,out] theValue on input: basis surface point; on output: offset point
-//! @param[in,out] theD1U on input: basis dP/du; on output: offset surface dP/du
-//! @param[in,out] theD1V on input: basis dP/dv; on output: offset surface dP/dv
-//! @param[in,out] theD2U on input: basis d2P/du2; on output: offset surface d2P/du2
-//! @param[in,out] theD2V on input: basis d2P/dv2; on output: offset surface d2P/dv2
-//! @param[in,out] theD2UV on input: basis d2P/dudv; on output: offset surface d2P/dudv
-//! @param[in,out] theD3U on input: basis d3P/du3; on output: offset surface d3P/du3
-//! @param[in,out] theD3V on input: basis d3P/dv3; on output: offset surface d3P/dv3
-//! @param[in,out] theD3UUV on input: basis d3P/du2dv; on output: offset surface d3P/du2dv
-//! @param[in,out] theD3UVV on input: basis d3P/dudv2; on output: offset surface d3P/dudv2
-//! @param[in] theD4U fourth derivative d4P/du4 of basis surface
-//! @param[in] theD4V fourth derivative d4P/dv4 of basis surface
-//! @param[in] theD4UUV mixed derivative d4P/du3dv of basis surface
-//! @param[in] theD4UUVV mixed derivative d4P/du2dv2 of basis surface
-//! @param[in] theD4UVV mixed derivative d4P/dudv3 of basis surface
-//! @param[in] theOffset offset distance value
-//! @param[in] theSign sign factor (1.0 or -1.0) for offset direction
-//! @return false if singular (normal has zero magnitude), true otherwise
-inline bool CalculateD3(gp_Pnt&       theValue,
-                        gp_Vec&       theD1U,
-                        gp_Vec&       theD1V,
-                        gp_Vec&       theD2U,
-                        gp_Vec&       theD2V,
-                        gp_Vec&       theD2UV,
-                        gp_Vec&       theD3U,
-                        gp_Vec&       theD3V,
-                        gp_Vec&       theD3UUV,
-                        gp_Vec&       theD3UVV,
-                        const gp_Vec& theD4U,
-                        const gp_Vec& theD4V,
-                        const gp_Vec& theD4UUV,
-                        const gp_Vec& theD4UUVV,
-                        const gp_Vec& theD4UVV,
-                        double        theOffset,
-                        double        theSign = 1.0)
-{
-  gp_Vec aNorm;
-  if (!ComputeNormal(theD1U, theD1V, aNorm))
-  {
-    return false;
-  }
-
-  // Compute offset point
-  theValue.SetXYZ(theValue.XYZ() + theOffset * theSign * aNorm.XYZ());
-
-  // Compute scale factor for derivative calculations
-  double aScale = (theD1U ^ theD1V).Dot(aNorm);
-
-  // Compute first derivatives of normal
-  gp_Vec aN1U = ComputeDNormalU(theD1U, theD1V, theD2U, theD2UV, aNorm);
-  gp_Vec aN1V = ComputeDNormalV(theD1U, theD1V, theD2V, theD2UV, aNorm);
-
-  // Compute second derivatives of normal
-  gp_Vec aN2U =
-    ComputeD2NormalU(theD1U, theD1V, theD2U, theD2UV, theD3U, theD3UUV, aNorm, aScale, aN1U);
-  gp_Vec aN2V =
-    ComputeD2NormalV(theD1U, theD1V, theD2V, theD2UV, theD3V, theD3UVV, aNorm, aScale, aN1V);
-  gp_Vec aN2UV = ComputeD2NormalUV(theD1U,
-                                   theD1V,
-                                   theD2U,
-                                   theD2V,
-                                   theD2UV,
-                                   theD3UUV,
-                                   theD3UVV,
-                                   aNorm,
-                                   aScale,
-                                   aN1U,
-                                   aN1V);
-
-  // Compute third derivatives of normal using direct formulas
-  gp_Vec aN3U   = ComputeD3NormalU(theD1U,
-                                 theD1V,
-                                 theD2U,
-                                 theD2UV,
-                                 theD3U,
-                                 theD3UUV,
-                                 theD4U,
-                                 theD4UUV,
-                                 aNorm,
-                                 aScale,
-                                 aN1U,
-                                 aN2U);
-  gp_Vec aN3V   = ComputeD3NormalV(theD1U,
-                                 theD1V,
-                                 theD2V,
-                                 theD2UV,
-                                 theD3V,
-                                 theD3UVV,
-                                 theD4V,
-                                 theD4UVV,
-                                 aNorm,
-                                 aScale,
-                                 aN1V,
-                                 aN2V);
-  gp_Vec aN3UUV = ComputeD3NormalUUV(theD1U,
-                                     theD1V,
-                                     theD2U,
-                                     theD2V,
-                                     theD2UV,
-                                     theD3U,
-                                     theD3UUV,
-                                     theD3UVV,
-                                     theD4UUV,
-                                     theD4UUVV,
-                                     aNorm,
-                                     aScale,
-                                     aN1U,
-                                     aN1V,
-                                     aN2U,
-                                     aN2UV);
-  gp_Vec aN3UVV = ComputeD3NormalUVV(theD1U,
-                                     theD1V,
-                                     theD2U,
-                                     theD2V,
-                                     theD2UV,
-                                     theD3V,
-                                     theD3UUV,
-                                     theD3UVV,
-                                     theD4UVV,
-                                     theD4UUVV,
-                                     aNorm,
-                                     aScale,
-                                     aN1U,
-                                     aN1V,
-                                     aN2V,
-                                     aN2UV);
-
-  // Update first derivatives
-  theD1U += theOffset * theSign * aN1U;
-  theD1V += theOffset * theSign * aN1V;
-
-  // Update second derivatives
-  theD2U += theOffset * theSign * aN2U;
-  theD2V += theOffset * theSign * aN2V;
-  theD2UV += theOffset * theSign * aN2UV;
-
-  // Update third derivatives
-  theD3U += theOffset * theSign * aN3U;
-  theD3V += theOffset * theSign * aN3V;
-  theD3UUV += theOffset * theSign * aN3UUV;
-  theD3UVV += theOffset * theSign * aN3UVV;
-
-  return true;
-}
-
 //! Template function for computing derivatives at singular points.
 //! Works with any surface type that provides D1, D2, D3, DN methods.
 //! @tparam BasisSurfType type of basis surface (Handle to surface or adaptor)
@@ -1596,39 +960,28 @@ bool EvaluateD2(double                  theU,
       return false;
     }
 
-    // Get osculating surface info first (needed for sign in fast path)
+    // Check if singular using CSLib::Normal (matching original evaluator)
+    gp_Dir             aNormal;
+    CSLib_NormalStatus aNStatus;
+    CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
+
+    // MaxOrder = 0 for non-singular, 3 for singular (matching original)
+    const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
+
+    // Get osculating surface info
     OsculatingInfo              aOscInfo;
     Handle(Geom_BSplineSurface) aOscSurf;
-    if (theOscQuery)
+    if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
       aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
-    // Try non-singular case first (fast path using direct computation)
-    // This ensures consistency with D0 and D1 which also use direct computation
-    if (CalculateD2(theValue,
-                    theD1U,
-                    theD1V,
-                    theD2U,
-                    theD2V,
-                    theD2UV,
-                    aD3U,
-                    aD3V,
-                    aD3UUV,
-                    aD3UVV,
-                    theOffset,
-                    aOscInfo.Sign()))
-    {
-      return true;
-    }
-
-    // Singular case - use higher order derivatives with osculating surface
-    constexpr int aMaxOrder    = 3;
-    constexpr int aDerNUVSize  = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
-    constexpr int aDerSurfSize = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
-    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
-    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    // Setup derivative arrays
+    const int                          aDerNUVSize  = (aMaxOrder + 3) * (aMaxOrder + 3);
+    const int                          aDerSurfSize = (aMaxOrder + 4) * (aMaxOrder + 4);
+    NCollection_LocalArray<gp_Vec, 36> aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, 49> aDerSurfBuffer(aDerSurfSize);
     NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
 
@@ -1642,7 +995,7 @@ bool EvaluateD2(double                  theU,
     aDerSurf.SetValue(1, 2, aD3UVV);
     aDerSurf.SetValue(0, 3, aD3V);
 
-    // Use ComputeDerivatives for singular case
+    // Use ComputeDerivatives to populate DerNUV (matching original derivatives() call)
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
       ComputeDerivatives(aMaxOrder,
@@ -1675,9 +1028,8 @@ bool EvaluateD2(double                  theU,
                          aDerSurf);
     }
 
-    gp_Dir             aNormal;
-    CSLib_NormalStatus aNStatus;
-    int                aOrderU, aOrderV;
+    // Compute normal using CSLib (second call with MaxOrder, matching original)
+    int aOrderU, aOrderV;
     CSLib::Normal(aMaxOrder,
                   aDerNUV,
                   THE_D1_MAGNITUDE_TOL,
@@ -1719,7 +1071,7 @@ bool EvaluateD2(double                  theU,
       // Compute offset point
       theValue.SetXYZ(theValue.XYZ() + aSign * aNormal.XYZ());
 
-      // Compute D1 using CSLib
+      // Compute D1 using CSLib::DNNormal (matching original)
       theD1U =
         aDerSurf(1, 0).Added(CSLib::DNNormal(1, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD1V =
@@ -1730,7 +1082,7 @@ bool EvaluateD2(double                  theU,
       theD2V  = theBasisSurf->DN(theU, theV, 0, 2);
       theD2UV = theBasisSurf->DN(theU, theV, 1, 1);
 
-      // Add offset corrections
+      // Add offset corrections using CSLib::DNNormal (matching original)
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2V.Add(CSLib::DNNormal(0, 2, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2UV.Add(CSLib::DNNormal(1, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1820,51 +1172,29 @@ bool EvaluateD3(double                  theU,
       return false;
     }
 
-    // Get osculating surface info first (needed for sign in fast path)
+    // Check if singular using CSLib::Normal (matching original evaluator)
+    gp_Dir             aNormal;
+    CSLib_NormalStatus aNStatus;
+    CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
+
+    // MaxOrder = 0 for non-singular, 3 for singular (matching original)
+    const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
+
+    // Get osculating surface info
     OsculatingInfo              aOscInfo;
     Handle(Geom_BSplineSurface) aOscSurf;
-    if (theOscQuery)
+    if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
       aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
       aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
-    // Get fourth derivatives for CalculateD3
-    gp_Vec aD4U    = theBasisSurf->DN(theU, theV, 4, 0);
-    gp_Vec aD4V    = theBasisSurf->DN(theU, theV, 0, 4);
-    gp_Vec aD4UUV  = theBasisSurf->DN(theU, theV, 3, 1);
-    gp_Vec aD4UUVV = theBasisSurf->DN(theU, theV, 2, 2);
-    gp_Vec aD4UVV  = theBasisSurf->DN(theU, theV, 1, 3);
-
-    // Try non-singular case first (fast path using direct computation)
-    // This ensures consistency with D0, D1, D2 which also use direct computation
-    if (CalculateD3(theValue,
-                    theD1U,
-                    theD1V,
-                    theD2U,
-                    theD2V,
-                    theD2UV,
-                    theD3U,
-                    theD3V,
-                    theD3UUV,
-                    theD3UVV,
-                    aD4U,
-                    aD4V,
-                    aD4UUV,
-                    aD4UUVV,
-                    aD4UVV,
-                    theOffset,
-                    aOscInfo.Sign()))
-    {
-      return true;
-    }
-
-    // Singular case - use higher order derivatives with osculating surface
-    constexpr int aMaxOrder    = 3;
-    constexpr int aDerNUVSize  = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
-    constexpr int aDerSurfSize = (aMaxOrder + 5) * (aMaxOrder + 5); // 64
-    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
-    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    // Setup derivative arrays
+    // For D3: DerNUV needs (aMaxOrder + 4), DerSurf needs (aMaxOrder + 5)
+    const int                          aDerNUVSize  = (aMaxOrder + 4) * (aMaxOrder + 4);
+    const int                          aDerSurfSize = (aMaxOrder + 5) * (aMaxOrder + 5);
+    NCollection_LocalArray<gp_Vec, 49> aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, 64> aDerSurfBuffer(aDerSurfSize);
     NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 4, 0, aMaxOrder + 4);
 
@@ -1878,7 +1208,7 @@ bool EvaluateD3(double                  theU,
     aDerSurf.SetValue(1, 2, theD3UVV);
     aDerSurf.SetValue(0, 3, theD3V);
 
-    // Use ComputeDerivatives for singular case
+    // Use ComputeDerivatives to populate DerNUV (matching original derivatives() call)
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
       ComputeDerivatives(aMaxOrder,
@@ -1911,9 +1241,8 @@ bool EvaluateD3(double                  theU,
                          aDerSurf);
     }
 
-    gp_Dir             aNormal;
-    CSLib_NormalStatus aNStatus;
-    int                aOrderU, aOrderV;
+    // Compute normal using CSLib (second call with MaxOrder, matching original)
+    int aOrderU, aOrderV;
     CSLib::Normal(aMaxOrder,
                   aDerNUV,
                   THE_D1_MAGNITUDE_TOL,
@@ -1928,6 +1257,26 @@ bool EvaluateD3(double                  theU,
                   aOrderU,
                   aOrderV);
 
+    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
+    if (aNStatus == CSLib_InfinityOfSolutions)
+    {
+      gp_Vec aNewDU = theD1U;
+      gp_Vec aNewDV = theD1V;
+      if (ReplaceDerivative(theU,
+                            theV,
+                            aUMin,
+                            aUMax,
+                            aVMin,
+                            aVMax,
+                            aNewDU,
+                            aNewDV,
+                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
+                            theBasisSurf))
+      {
+        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
+      }
+    }
+
     if (aNStatus == CSLib_Defined)
     {
       const double aSign = theOffset * aOscInfo.Sign();
@@ -1935,13 +1284,13 @@ bool EvaluateD3(double                  theU,
       // Compute offset point
       theValue.SetXYZ(theValue.XYZ() + aSign * aNormal.XYZ());
 
-      // Compute D1 using CSLib
+      // Compute D1 using CSLib::DNNormal (matching original)
       theD1U =
         aDerSurf(1, 0).Added(CSLib::DNNormal(1, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD1V =
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
-      // For D2 and D3, re-fetch from basis surface
+      // For D2 and D3, re-fetch from basis surface (matching old evaluator behavior)
       theD2U   = theBasisSurf->DN(theU, theV, 2, 0);
       theD2V   = theBasisSurf->DN(theU, theV, 0, 2);
       theD2UV  = theBasisSurf->DN(theU, theV, 1, 1);
@@ -1950,7 +1299,7 @@ bool EvaluateD3(double                  theU,
       theD3UUV = theBasisSurf->DN(theU, theV, 2, 1);
       theD3UVV = theBasisSurf->DN(theU, theV, 1, 2);
 
-      // Add offset corrections
+      // Add offset corrections using CSLib::DNNormal (matching original)
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2V.Add(CSLib::DNNormal(0, 2, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2UV.Add(CSLib::DNNormal(1, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
