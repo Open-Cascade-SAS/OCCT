@@ -10,6 +10,8 @@ set(OCCT_IntPatch_FILES
   IntPatch_ArcFunction.cxx
   IntPatch_ArcFunction.hxx
   IntPatch_ArcFunction.lxx
+  IntPatch_BVHTraversal.cxx
+  IntPatch_BVHTraversal.hxx
   IntPatch_CSFunction.cxx
   IntPatch_CSFunction.hxx
   IntPatch_CurvIntSurf.hxx
@@ -54,6 +56,8 @@ set(OCCT_IntPatch_FILES
   IntPatch_Polygo.lxx
   IntPatch_Polyhedron.cxx
   IntPatch_Polyhedron.hxx
+  IntPatch_PolyhedronBVH.cxx
+  IntPatch_PolyhedronBVH.hxx
   IntPatch_PolyhedronTool.hxx
   IntPatch_PolyhedronTool.lxx
   IntPatch_PrmPrmIntersection.cxx
