@@ -63,61 +63,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_OffsetCurve, GeomEvaluator_Curve)
 
 private:
-  //! Recalculate D1 values of base curve into D0 value of offset curve
-  void CalculateD0(gp_Pnt& theValue, const gp_Vec& theD1) const;
-  //! Recalculate D2 values of base curve into D1 values of offset curve
-  void CalculateD1(gp_Pnt& theValue, gp_Vec& theD1, const gp_Vec& theD2) const;
-  //! Recalculate D3 values of base curve into D2 values of offset curve
-  void CalculateD2(gp_Pnt&                theValue,
-                   gp_Vec&                theD1,
-                   gp_Vec&                theD2,
-                   const gp_Vec&          theD3,
-                   const Standard_Boolean theIsDirChange) const;
-  //! Recalculate D3 values of base curve into D3 values of offset curve
-  void CalculateD3(gp_Pnt&                theValue,
-                   gp_Vec&                theD1,
-                   gp_Vec&                theD2,
-                   gp_Vec&                theD3,
-                   const gp_Vec&          theD4,
-                   const Standard_Boolean theIsDirChange) const;
-
-  //! Calculate value of base curve/adaptor
-  void BaseD0(const Standard_Real theU, gp_Pnt& theValue) const;
-  //! Calculate value and first derivatives of base curve/adaptor
-  void BaseD1(const Standard_Real theU, gp_Pnt& theValue, gp_Vec& theD1) const;
-  //! Calculate value, first and second derivatives of base curve/adaptor
-  void BaseD2(const Standard_Real theU, gp_Pnt& theValue, gp_Vec& theD1, gp_Vec& theD2) const;
-  //! Calculate value, first, second and third derivatives of base curve/adaptor
-  void BaseD3(const Standard_Real theU,
-              gp_Pnt&             theValue,
-              gp_Vec&             theD1,
-              gp_Vec&             theD2,
-              gp_Vec&             theD3) const;
-  //! Calculate value and derivatives till 4th of base curve/adaptor
-  void BaseD4(const Standard_Real theU,
-              gp_Pnt&             theValue,
-              gp_Vec&             theD1,
-              gp_Vec&             theD2,
-              gp_Vec&             theD3,
-              gp_Vec&             theD4) const;
-  //! Calculate N-th derivative of base curve/adaptor
-  gp_Vec BaseDN(const Standard_Real theU, const Standard_Integer theDeriv) const;
-
-  // Recalculate derivatives in the singular point
-  // Returns true if the direction of derivatives is changed
-  Standard_Boolean AdjustDerivative(const Standard_Integer theMaxDerivative,
-                                    const Standard_Real    theU,
-                                    gp_Vec&                theD1,
-                                    gp_Vec&                theD2,
-                                    gp_Vec&                theD3,
-                                    gp_Vec&                theD4) const;
-
-private:
   Handle(Geom_Curve)        myBaseCurve;
   Handle(GeomAdaptor_Curve) myBaseAdaptor;
 
-  Standard_Real myOffset;    ///< offset value
-  gp_Dir        myOffsetDir; ///< offset direction
+  Standard_Real myOffset;    //!< offset value
+  gp_Dir        myOffsetDir; //!< offset direction
 };
 
 DEFINE_STANDARD_HANDLE(GeomEvaluator_OffsetCurve, GeomEvaluator_Curve)

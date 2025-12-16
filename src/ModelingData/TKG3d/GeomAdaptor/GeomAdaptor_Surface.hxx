@@ -105,6 +105,22 @@ public:
     load(theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
 
+  //! Returns the parametric bounds of the surface.
+  //! @param[out] theU1 minimum U parameter
+  //! @param[out] theU2 maximum U parameter
+  //! @param[out] theV1 minimum V parameter
+  //! @param[out] theV2 maximum V parameter
+  void Bounds(Standard_Real& theU1,
+              Standard_Real& theU2,
+              Standard_Real& theV1,
+              Standard_Real& theV2) const
+  {
+    theU1 = FirstUParameter();
+    theU2 = LastUParameter();
+    theV1 = FirstVParameter();
+    theV2 = LastVParameter();
+  }
+
   const Handle(Geom_Surface)& Surface() const { return mySurface; }
 
   virtual Standard_Real FirstUParameter() const Standard_OVERRIDE { return myUFirst; }

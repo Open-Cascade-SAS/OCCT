@@ -15,8 +15,7 @@
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
 
 #include <Adaptor3d_Curve.hxx>
-#include <gp_Trsf.hxx>
-#include <Precision.hxx>
+#include <Geom_RevolutionUtils.pxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfRevolution, GeomEvaluator_Surface)
 
@@ -40,19 +39,19 @@ GeomEvaluator_SurfaceOfRevolution::GeomEvaluator_SurfaceOfRevolution(
 {
 }
 
+//==================================================================================================
+
 void GeomEvaluator_SurfaceOfRevolution::D0(const Standard_Real theU,
                                            const Standard_Real theV,
                                            gp_Pnt&             theValue) const
 {
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D0(theV, theValue);
+    Geom_RevolutionUtils::D0(theU, theV, *myBaseAdaptor, myRotAxis, theValue);
   else
-    myBaseCurve->D0(theV, theValue);
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(myRotAxis, theU);
-  theValue.Transform(aRotation);
+    Geom_RevolutionUtils::D0(theU, theV, *myBaseCurve, myRotAxis, theValue);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfRevolution::D1(const Standard_Real theU,
                                            const Standard_Real theV,
@@ -61,24 +60,12 @@ void GeomEvaluator_SurfaceOfRevolution::D1(const Standard_Real theU,
                                            gp_Vec&             theD1V) const
 {
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D1(theV, theValue, theD1V);
+    Geom_RevolutionUtils::D1(theU, theV, *myBaseAdaptor, myRotAxis, theValue, theD1U, theD1V);
   else
-    myBaseCurve->D1(theV, theValue, theD1V);
-
-  // vector from center of rotation to the point on rotated curve
-  gp_XYZ aCQ = theValue.XYZ() - myRotAxis.Location().XYZ();
-  theD1U     = gp_Vec(myRotAxis.Direction().XYZ().Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  // Manually set them to zero.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(myRotAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
+    Geom_RevolutionUtils::D1(theU, theV, *myBaseCurve, myRotAxis, theValue, theD1U, theD1V);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfRevolution::D2(const Standard_Real theU,
                                            const Standard_Real theV,
@@ -90,30 +77,30 @@ void GeomEvaluator_SurfaceOfRevolution::D2(const Standard_Real theU,
                                            gp_Vec&             theD2UV) const
 {
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D2(theV, theValue, theD1V, theD2V);
+    Geom_RevolutionUtils::D2(theU,
+                             theV,
+                             *myBaseAdaptor,
+                             myRotAxis,
+                             theValue,
+                             theD1U,
+                             theD1V,
+                             theD2U,
+                             theD2V,
+                             theD2UV);
   else
-    myBaseCurve->D2(theV, theValue, theD1V, theD2V);
-
-  // vector from center of rotation to the point on rotated curve
-  gp_XYZ        aCQ  = theValue.XYZ() - myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-  theD1U             = gp_Vec(aDir.Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  // Manually set them to zero.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-  theD2U  = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
-  theD2UV = gp_Vec(aDir.Crossed(theD1V.XYZ()));
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(myRotAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
-  theD2U.Transform(aRotation);
-  theD2V.Transform(aRotation);
-  theD2UV.Transform(aRotation);
+    Geom_RevolutionUtils::D2(theU,
+                             theV,
+                             *myBaseCurve,
+                             myRotAxis,
+                             theValue,
+                             theD1U,
+                             theD1V,
+                             theD2U,
+                             theD2V,
+                             theD2UV);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfRevolution::D3(const Standard_Real theU,
                                            const Standard_Real theV,
@@ -129,37 +116,38 @@ void GeomEvaluator_SurfaceOfRevolution::D3(const Standard_Real theU,
                                            gp_Vec&             theD3UVV) const
 {
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D3(theV, theValue, theD1V, theD2V, theD3V);
+    Geom_RevolutionUtils::D3(theU,
+                             theV,
+                             *myBaseAdaptor,
+                             myRotAxis,
+                             theValue,
+                             theD1U,
+                             theD1V,
+                             theD2U,
+                             theD2V,
+                             theD2UV,
+                             theD3U,
+                             theD3V,
+                             theD3UUV,
+                             theD3UVV);
   else
-    myBaseCurve->D3(theV, theValue, theD1V, theD2V, theD3V);
-
-  // vector from center of rotation to the point on rotated curve
-  gp_XYZ        aCQ  = theValue.XYZ() - myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-  theD1U             = gp_Vec(aDir.Crossed(aCQ));
-  // If the point is placed on the axis of revolution then derivatives on U are undefined.
-  // Manually set them to zero.
-  if (theD1U.SquareMagnitude() < Precision::SquareConfusion())
-    theD1U.SetCoord(0.0, 0.0, 0.0);
-  theD2U   = gp_Vec(aDir.Dot(aCQ) * aDir - aCQ);
-  theD2UV  = gp_Vec(aDir.Crossed(theD1V.XYZ()));
-  theD3U   = -theD1U;
-  theD3UUV = gp_Vec(aDir.Dot(theD1V.XYZ()) * aDir - theD1V.XYZ());
-  theD3UVV = gp_Vec(aDir.Crossed(theD2V.XYZ()));
-
-  gp_Trsf aRotation;
-  aRotation.SetRotation(myRotAxis, theU);
-  theValue.Transform(aRotation);
-  theD1U.Transform(aRotation);
-  theD1V.Transform(aRotation);
-  theD2U.Transform(aRotation);
-  theD2V.Transform(aRotation);
-  theD2UV.Transform(aRotation);
-  theD3U.Transform(aRotation);
-  theD3V.Transform(aRotation);
-  theD3UUV.Transform(aRotation);
-  theD3UVV.Transform(aRotation);
+    Geom_RevolutionUtils::D3(theU,
+                             theV,
+                             *myBaseCurve,
+                             myRotAxis,
+                             theValue,
+                             theD1U,
+                             theD1V,
+                             theD2U,
+                             theD2V,
+                             theD2UV,
+                             theD3U,
+                             theD3V,
+                             theD3UUV,
+                             theD3UVV);
 }
+
+//==================================================================================================
 
 gp_Vec GeomEvaluator_SurfaceOfRevolution::DN(const Standard_Real    theU,
                                              const Standard_Real    theV,
@@ -171,51 +159,13 @@ gp_Vec GeomEvaluator_SurfaceOfRevolution::DN(const Standard_Real    theU,
   Standard_RangeError_Raise_if(theDerU + theDerV < 1,
                                "GeomEvaluator_SurfaceOfRevolution::DN(): theDerU + theDerV < 1");
 
-  gp_Trsf aRotation;
-  aRotation.SetRotation(myRotAxis, theU);
-
-  gp_Pnt aP;
-  gp_Vec aDV;
-  gp_Vec aResult;
-  if (theDerU == 0)
-  {
-    if (!myBaseAdaptor.IsNull())
-      aResult = myBaseAdaptor->DN(theV, theDerV);
-    else
-      aResult = myBaseCurve->DN(theV, theDerV);
-  }
+  if (!myBaseAdaptor.IsNull())
+    return Geom_RevolutionUtils::DN(theU, theV, *myBaseAdaptor, myRotAxis, theDerU, theDerV);
   else
-  {
-    if (theDerV == 0)
-    {
-      if (!myBaseAdaptor.IsNull())
-        myBaseAdaptor->D0(theV, aP);
-      else
-        myBaseCurve->D0(theV, aP);
-      aDV = gp_Vec(aP.XYZ() - myRotAxis.Location().XYZ());
-    }
-    else
-    {
-      if (!myBaseAdaptor.IsNull())
-        aDV = myBaseAdaptor->DN(theV, theDerV);
-      else
-        aDV = myBaseCurve->DN(theV, theDerV);
-    }
-
-    const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-    if (theDerU % 4 == 1)
-      aResult = gp_Vec(aDir.Crossed(aDV.XYZ()));
-    else if (theDerU % 4 == 2)
-      aResult = gp_Vec(aDir.Dot(aDV.XYZ()) * aDir - aDV.XYZ());
-    else if (theDerU % 4 == 3)
-      aResult = gp_Vec(aDir.Crossed(aDV.XYZ())) * (-1.0);
-    else
-      aResult = gp_Vec(aDV.XYZ() - aDir.Dot(aDV.XYZ()) * aDir);
-  }
-
-  aResult.Transform(aRotation);
-  return aResult;
+    return Geom_RevolutionUtils::DN(theU, theV, *myBaseCurve, myRotAxis, theDerU, theDerV);
 }
+
+//==================================================================================================
 
 Handle(GeomEvaluator_Surface) GeomEvaluator_SurfaceOfRevolution::ShallowCopy() const
 {

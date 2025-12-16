@@ -79,13 +79,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfExtrusion, GeomEvaluator_Surface)
 
 private:
-  //! Shift the point along direction to the given distance (theShift)
-  void Shift(const Standard_Real theShift, gp_Pnt& thePoint) const
-  {
-    thePoint.ChangeCoord() += myDirection.XYZ() * theShift;
-  }
-
-private:
   Handle(Geom_Curve)      myBaseCurve;
   Handle(Adaptor3d_Curve) myBaseAdaptor;
 
