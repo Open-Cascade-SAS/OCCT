@@ -1,0 +1,396 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_RevolutionUtils_HeaderFile
+#define _Geom_RevolutionUtils_HeaderFile
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+
+#include <cmath>
+
+//! @file Geom_RevolutionUtils.pxx
+//! @brief Shared utility functions for surface of revolution evaluation.
+//!
+//! This file provides template functions for evaluating points and derivatives
+//! on surfaces of revolution. The functions are templated to work with both
+//! Geom_Curve (for Geom_SurfaceOfRevolution) and Adaptor3d_Curve
+//! (for GeomAdaptor_SurfaceOfRevolution).
+//!
+//! Revolution surface: P(U,V) = Rotation(Axis, U) * BasisCurve(V)
+//! where U is the rotation angle and V is the parameter along the basis curve.
+
+namespace Geom_RevolutionUtils
+{
+
+//! Computes the "shift" vector - projection of point onto plane perpendicular to axis.
+//! @param theLoc Location point of the axis
+//! @param theAxis Direction of the axis
+//! @param thePoint Point to shift
+//! @param theShift [out] Resulting shift vector
+inline void ShiftPoint(const gp_XYZ& theLoc,
+                       const gp_XYZ& theAxis,
+                       const gp_XYZ& thePoint,
+                       gp_XYZ&       theShift)
+{
+  theShift       = thePoint - theLoc;
+  double aScalar = theShift.Dot(theAxis);
+  theShift.SetLinearForm(-aScalar, theAxis, theShift);
+}
+
+//! Rotates a point around an axis by angle defined by sin/cos values.
+//! @param theSin Sine of the rotation angle
+//! @param theCos Cosine of the rotation angle
+//! @param theLoc Location point of the axis
+//! @param theAxis Direction of the axis
+//! @param thePoint Point to rotate
+//! @param theResult [out] Rotated point coordinates
+inline void RotatePoint(const double  theSin,
+                        const double  theCos,
+                        const gp_XYZ& theLoc,
+                        const gp_XYZ& theAxis,
+                        const gp_XYZ& thePoint,
+                        gp_XYZ&       theResult)
+{
+  gp_XYZ aShift;
+  ShiftPoint(theLoc, theAxis, thePoint, aShift);
+  gp_XYZ aCross = theAxis.Crossed(aShift);
+  theResult.SetLinearForm(theCos - 1.0, aShift, theSin, aCross, thePoint);
+}
+
+//! Evaluates point on surface of revolution.
+//! @tparam CurveType Type supporting D0(param, point) method
+//! @param theU Rotation angle parameter
+//! @param theV Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theLoc Location point of the rotation axis
+//! @param theAxis Direction of the rotation axis
+//! @param theP [out] Evaluated point
+template <typename CurveType>
+inline void D0(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theLoc,
+               const gp_XYZ&    theAxis,
+               gp_Pnt&          theP)
+{
+  const double aSin = std::sin(theU);
+  const double aCos = std::cos(theU);
+  theBasis.D0(theV, theP);
+  gp_XYZ aRes;
+  RotatePoint(aSin, aCos, theLoc, theAxis, theP.XYZ(), aRes);
+  theP.SetXYZ(aRes);
+}
+
+//! Evaluates point and first derivatives on surface of revolution.
+//! @tparam CurveType Type supporting D1(param, point, vec) method
+//! @param theU Rotation angle parameter
+//! @param theV Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theLoc Location point of the rotation axis
+//! @param theAxis Direction of the rotation axis
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U (rotation)
+//! @param theD1V [out] First derivative with respect to V (along curve)
+template <typename CurveType>
+inline void D1(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theLoc,
+               const gp_XYZ&    theAxis,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V)
+{
+  const double aSin = std::sin(theU);
+  const double aCos = std::cos(theU);
+  gp_Vec       aD1V;
+  theBasis.D1(theV, theP, aD1V);
+
+  const gp_XYZ& aPnt = theP.XYZ();
+
+  // Rotate point
+  gp_XYZ aRes;
+  RotatePoint(aSin, aCos, theLoc, theAxis, aPnt, aRes);
+  theP.SetXYZ(aRes);
+
+  // D1U: derivative of rotation with respect to U
+  gp_XYZ aShift;
+  ShiftPoint(theLoc, theAxis, aPnt, aShift);
+  gp_XYZ aCross = theAxis.Crossed(aShift);
+  gp_XYZ aD1Ures;
+  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
+  theD1U.SetXYZ(aD1Ures);
+
+  // D1V: rotate the curve derivative
+  gp_XYZ aD1Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD1V.XYZ(), aD1Vres);
+  theD1V.SetXYZ(aD1Vres);
+}
+
+//! Evaluates point, first and second derivatives on surface of revolution.
+//! @tparam CurveType Type supporting D2(param, point, vec, vec) method
+//! @param theU Rotation angle parameter
+//! @param theV Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theLoc Location point of the rotation axis
+//! @param theAxis Direction of the rotation axis
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U
+//! @param theD1V [out] First derivative with respect to V
+//! @param theD2U [out] Second derivative with respect to U
+//! @param theD2V [out] Second derivative with respect to V
+//! @param theD2UV [out] Mixed second derivative
+template <typename CurveType>
+inline void D2(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theLoc,
+               const gp_XYZ&    theAxis,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V,
+               gp_Vec&          theD2U,
+               gp_Vec&          theD2V,
+               gp_Vec&          theD2UV)
+{
+  const double aSin = std::sin(theU);
+  const double aCos = std::cos(theU);
+  gp_Vec       aD1V, aD2V;
+  theBasis.D2(theV, theP, aD1V, aD2V);
+
+  const gp_XYZ& aPnt = theP.XYZ();
+
+  // Rotate point
+  gp_XYZ aRes;
+  RotatePoint(aSin, aCos, theLoc, theAxis, aPnt, aRes);
+  theP.SetXYZ(aRes);
+
+  // Compute shift and cross for derivatives
+  gp_XYZ aShift;
+  ShiftPoint(theLoc, theAxis, aPnt, aShift);
+  gp_XYZ aCross = theAxis.Crossed(aShift);
+
+  // D1U: -sin*shift + cos*cross
+  gp_XYZ aD1Ures;
+  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
+  theD1U.SetXYZ(aD1Ures);
+
+  // D2U: -cos*shift - sin*cross
+  gp_XYZ aD2Ures;
+  aD2Ures.SetLinearForm(-aCos, aShift, -aSin, aCross);
+  theD2U.SetXYZ(aD2Ures);
+
+  // D1V: rotate the curve derivative
+  gp_XYZ aD1Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD1V.XYZ(), aD1Vres);
+  theD1V.SetXYZ(aD1Vres);
+
+  // D2V: rotate the second curve derivative
+  gp_XYZ aD2Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD2V.XYZ(), aD2Vres);
+  theD2V.SetXYZ(aD2Vres);
+
+  // D2UV: derivative of D1V with respect to U
+  gp_XYZ aD1VShift;
+  ShiftPoint(gp_XYZ(0, 0, 0), theAxis, aD1V.XYZ(), aD1VShift);
+  gp_XYZ aD1VCross = theAxis.Crossed(aD1VShift);
+  gp_XYZ aD2UVres;
+  aD2UVres.SetLinearForm(-aSin, aD1VShift, aCos, aD1VCross);
+  theD2UV.SetXYZ(aD2UVres);
+}
+
+//! Evaluates point and all derivatives up to third order on surface of revolution.
+//! @tparam CurveType Type supporting D3(param, point, vec, vec, vec) method
+//! @param theU Rotation angle parameter
+//! @param theV Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theLoc Location point of the rotation axis
+//! @param theAxis Direction of the rotation axis
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U
+//! @param theD1V [out] First derivative with respect to V
+//! @param theD2U [out] Second derivative with respect to U
+//! @param theD2V [out] Second derivative with respect to V
+//! @param theD2UV [out] Mixed second derivative
+//! @param theD3U [out] Third derivative with respect to U
+//! @param theD3V [out] Third derivative with respect to V
+//! @param theD3UUV [out] Mixed third derivative (UUV)
+//! @param theD3UVV [out] Mixed third derivative (UVV)
+template <typename CurveType>
+inline void D3(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theLoc,
+               const gp_XYZ&    theAxis,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V,
+               gp_Vec&          theD2U,
+               gp_Vec&          theD2V,
+               gp_Vec&          theD2UV,
+               gp_Vec&          theD3U,
+               gp_Vec&          theD3V,
+               gp_Vec&          theD3UUV,
+               gp_Vec&          theD3UVV)
+{
+  const double aSin = std::sin(theU);
+  const double aCos = std::cos(theU);
+  gp_Vec       aD1V, aD2V, aD3V;
+  theBasis.D3(theV, theP, aD1V, aD2V, aD3V);
+
+  const gp_XYZ& aPnt = theP.XYZ();
+
+  // Rotate point
+  gp_XYZ aRes;
+  RotatePoint(aSin, aCos, theLoc, theAxis, aPnt, aRes);
+  theP.SetXYZ(aRes);
+
+  // Compute shift and cross for point derivatives
+  gp_XYZ aShift;
+  ShiftPoint(theLoc, theAxis, aPnt, aShift);
+  gp_XYZ aCross = theAxis.Crossed(aShift);
+
+  // D1U: -sin*shift + cos*cross
+  gp_XYZ aD1Ures;
+  aD1Ures.SetLinearForm(-aSin, aShift, aCos, aCross);
+  theD1U.SetXYZ(aD1Ures);
+
+  // D2U: -cos*shift - sin*cross
+  gp_XYZ aD2Ures;
+  aD2Ures.SetLinearForm(-aCos, aShift, -aSin, aCross);
+  theD2U.SetXYZ(aD2Ures);
+
+  // D3U: sin*shift - cos*cross
+  gp_XYZ aD3Ures;
+  aD3Ures.SetLinearForm(aSin, aShift, -aCos, aCross);
+  theD3U.SetXYZ(aD3Ures);
+
+  // D1V: rotate the curve derivative
+  gp_XYZ aD1Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD1V.XYZ(), aD1Vres);
+  theD1V.SetXYZ(aD1Vres);
+
+  // D2V: rotate the second curve derivative
+  gp_XYZ aD2Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD2V.XYZ(), aD2Vres);
+  theD2V.SetXYZ(aD2Vres);
+
+  // D3V: rotate the third curve derivative
+  gp_XYZ aD3Vres;
+  RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aD3V.XYZ(), aD3Vres);
+  theD3V.SetXYZ(aD3Vres);
+
+  // D2UV: derivative of D1V with respect to U
+  gp_XYZ aD1VShift;
+  ShiftPoint(gp_XYZ(0, 0, 0), theAxis, aD1V.XYZ(), aD1VShift);
+  gp_XYZ aD1VCross = theAxis.Crossed(aD1VShift);
+  gp_XYZ aD2UVres;
+  aD2UVres.SetLinearForm(-aSin, aD1VShift, aCos, aD1VCross);
+  theD2UV.SetXYZ(aD2UVres);
+
+  // D3UUV: second derivative of D1V with respect to U
+  gp_XYZ aD3UUVres;
+  aD3UUVres.SetLinearForm(-aCos, aD1VShift, -aSin, aD1VCross);
+  theD3UUV.SetXYZ(aD3UUVres);
+
+  // D3UVV: derivative of D2V with respect to U
+  gp_XYZ aD2VShift;
+  ShiftPoint(gp_XYZ(0, 0, 0), theAxis, aD2V.XYZ(), aD2VShift);
+  gp_XYZ aD2VCross = theAxis.Crossed(aD2VShift);
+  gp_XYZ aD3UVVres;
+  aD3UVVres.SetLinearForm(-aSin, aD2VShift, aCos, aD2VCross);
+  theD3UVV.SetXYZ(aD3UVVres);
+}
+
+//! Evaluates N-th derivative on surface of revolution.
+//! @tparam CurveType Type supporting D0, D1, DN methods
+//! @param theU Rotation angle parameter
+//! @param theV Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theLoc Location point of the rotation axis
+//! @param theAxis Direction of the rotation axis
+//! @param theDerU Derivative order with respect to U
+//! @param theDerV Derivative order with respect to V
+//! @return The derivative vector
+template <typename CurveType>
+inline gp_Vec DN(const double     theU,
+                 const double     theV,
+                 const CurveType& theBasis,
+                 const gp_XYZ&    theLoc,
+                 const gp_XYZ&    theAxis,
+                 const int        theDerU,
+                 const int        theDerV)
+{
+  const double aSin = std::sin(theU);
+  const double aCos = std::cos(theU);
+
+  gp_XYZ aDV;
+  gp_XYZ aPntXYZ; // Store original point to avoid redundant curve evaluation
+  if (theDerV == 0)
+  {
+    gp_Pnt aP;
+    theBasis.D0(theV, aP);
+    aPntXYZ = aP.XYZ();
+    aDV     = aPntXYZ - theLoc;
+  }
+  else
+  {
+    aDV = theBasis.DN(theV, theDerV).XYZ();
+  }
+
+  gp_XYZ aResult;
+  if (theDerU == 0)
+  {
+    // Just rotate the curve derivative
+    RotatePoint(aSin, aCos, gp_XYZ(0, 0, 0), theAxis, aDV, aResult);
+  }
+  else
+  {
+    // Compute shift and cross for the V-derivative vector
+    gp_XYZ aShift;
+    if (theDerV == 0)
+    {
+      ShiftPoint(theLoc, theAxis, aPntXYZ, aShift);
+    }
+    else
+    {
+      ShiftPoint(gp_XYZ(0, 0, 0), theAxis, aDV, aShift);
+    }
+    gp_XYZ aCross = theAxis.Crossed(aShift);
+
+    // Apply U-derivative pattern (periodic with period 4)
+    switch (theDerU % 4)
+    {
+      case 1: // -sin*shift + cos*cross
+        aResult.SetLinearForm(-aSin, aShift, aCos, aCross);
+        break;
+      case 2: // -cos*shift - sin*cross
+        aResult.SetLinearForm(-aCos, aShift, -aSin, aCross);
+        break;
+      case 3: // sin*shift - cos*cross
+        aResult.SetLinearForm(aSin, aShift, -aCos, aCross);
+        break;
+      case 0: // cos*shift + sin*cross
+        aResult.SetLinearForm(aCos, aShift, aSin, aCross);
+        break;
+    }
+  }
+
+  return gp_Vec(aResult);
+}
+
+} // namespace Geom_RevolutionUtils
+
+#endif // _Geom_RevolutionUtils_HeaderFile

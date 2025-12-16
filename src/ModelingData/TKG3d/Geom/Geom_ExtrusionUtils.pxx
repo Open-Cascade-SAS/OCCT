@@ -1,0 +1,172 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_ExtrusionUtils_HeaderFile
+#define _Geom_ExtrusionUtils_HeaderFile
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+
+//! @file Geom_ExtrusionUtils.pxx
+//! @brief Shared utility functions for extrusion surface evaluation.
+//!
+//! This file provides template functions for evaluating points and derivatives
+//! on linear extrusion surfaces. The functions are templated to work with both
+//! Geom_Curve (for Geom_SurfaceOfLinearExtrusion) and Adaptor3d_Curve
+//! (for GeomAdaptor_SurfaceOfLinearExtrusion).
+//!
+//! Extrusion surface: P(U,V) = C(U) + V * Direction
+
+namespace Geom_ExtrusionUtils
+{
+
+//! Evaluates point on extrusion surface.
+//! @tparam CurveType Type supporting D0(param, point) method
+//! @param theU Parameter along the basis curve
+//! @param theV Parameter along the extrusion direction
+//! @param theBasis Basis curve
+//! @param theDir Extrusion direction XYZ (must be normalized)
+//! @param theP [out] Evaluated point
+template <typename CurveType>
+inline void D0(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theDir,
+               gp_Pnt&          theP)
+{
+  theBasis.D0(theU, theP);
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+}
+
+//! Evaluates point and first derivatives on extrusion surface.
+//! @tparam CurveType Type supporting D1(param, point, vec) method
+//! @param theU Parameter along the basis curve
+//! @param theV Parameter along the extrusion direction
+//! @param theBasis Basis curve
+//! @param theDir Extrusion direction XYZ (must be normalized)
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U
+//! @param theD1V [out] First derivative with respect to V
+template <typename CurveType>
+inline void D1(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theDir,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V)
+{
+  theBasis.D1(theU, theP, theD1U);
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
+}
+
+//! Evaluates point, first and second derivatives on extrusion surface.
+//! @tparam CurveType Type supporting D2(param, point, vec, vec) method
+//! @param theU Parameter along the basis curve
+//! @param theV Parameter along the extrusion direction
+//! @param theBasis Basis curve
+//! @param theDir Extrusion direction XYZ (must be normalized)
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U
+//! @param theD1V [out] First derivative with respect to V
+//! @param theD2U [out] Second derivative with respect to U
+//! @param theD2V [out] Second derivative with respect to V
+//! @param theD2UV [out] Mixed second derivative
+template <typename CurveType>
+inline void D2(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theDir,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V,
+               gp_Vec&          theD2U,
+               gp_Vec&          theD2V,
+               gp_Vec&          theD2UV)
+{
+  theBasis.D2(theU, theP, theD1U, theD2U);
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
+  theD2V.SetCoord(0.0, 0.0, 0.0);
+  theD2UV.SetCoord(0.0, 0.0, 0.0);
+}
+
+//! Evaluates point, first, second and third derivatives on extrusion surface.
+//! @tparam CurveType Type supporting D3(param, point, vec, vec, vec) method
+//! @param theU Parameter along the basis curve
+//! @param theV Parameter along the extrusion direction
+//! @param theBasis Basis curve
+//! @param theDir Extrusion direction XYZ (must be normalized)
+//! @param theP [out] Evaluated point
+//! @param theD1U [out] First derivative with respect to U
+//! @param theD1V [out] First derivative with respect to V
+//! @param theD2U [out] Second derivative with respect to U
+//! @param theD2V [out] Second derivative with respect to V
+//! @param theD2UV [out] Mixed second derivative
+//! @param theD3U [out] Third derivative with respect to U
+//! @param theD3V [out] Third derivative with respect to V
+//! @param theD3UUV [out] Mixed third derivative (UUV)
+//! @param theD3UVV [out] Mixed third derivative (UVV)
+template <typename CurveType>
+inline void D3(const double     theU,
+               const double     theV,
+               const CurveType& theBasis,
+               const gp_XYZ&    theDir,
+               gp_Pnt&          theP,
+               gp_Vec&          theD1U,
+               gp_Vec&          theD1V,
+               gp_Vec&          theD2U,
+               gp_Vec&          theD2V,
+               gp_Vec&          theD2UV,
+               gp_Vec&          theD3U,
+               gp_Vec&          theD3V,
+               gp_Vec&          theD3UUV,
+               gp_Vec&          theD3UVV)
+{
+  theBasis.D3(theU, theP, theD1U, theD2U, theD3U);
+  theP.SetXYZ(theP.XYZ() + theV * theDir);
+  theD1V.SetXYZ(theDir);
+  theD2V.SetCoord(0.0, 0.0, 0.0);
+  theD2UV.SetCoord(0.0, 0.0, 0.0);
+  theD3V.SetCoord(0.0, 0.0, 0.0);
+  theD3UUV.SetCoord(0.0, 0.0, 0.0);
+  theD3UVV.SetCoord(0.0, 0.0, 0.0);
+}
+
+//! Evaluates N-th derivative on extrusion surface.
+//! @tparam CurveType Type supporting DN(param, order) method
+//! @param theU Parameter along the basis curve
+//! @param theBasis Basis curve
+//! @param theDir Extrusion direction XYZ (must be normalized)
+//! @param theDerU Derivative order with respect to U
+//! @param theDerV Derivative order with respect to V
+//! @return The derivative vector
+template <typename CurveType>
+inline gp_Vec DN(const double     theU,
+                 const CurveType& theBasis,
+                 const gp_XYZ&    theDir,
+                 const int        theDerU,
+                 const int        theDerV)
+{
+  if (theDerV == 0)
+    return theBasis.DN(theU, theDerU);
+  else if (theDerU == 0 && theDerV == 1)
+    return gp_Vec(theDir);
+  return gp_Vec(0.0, 0.0, 0.0);
+}
+
+} // namespace Geom_ExtrusionUtils
+
+#endif // _Geom_ExtrusionUtils_HeaderFile

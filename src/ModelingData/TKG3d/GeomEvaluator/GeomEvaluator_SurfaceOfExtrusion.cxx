@@ -15,6 +15,7 @@
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_ExtrusionUtils.pxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfExtrusion, GeomEvaluator_Surface)
 
@@ -36,17 +37,21 @@ GeomEvaluator_SurfaceOfExtrusion::GeomEvaluator_SurfaceOfExtrusion(
 {
 }
 
+//==================================================================================================
+
 void GeomEvaluator_SurfaceOfExtrusion::D0(const Standard_Real theU,
                                           const Standard_Real theV,
                                           gp_Pnt&             theValue) const
 {
-  if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D0(theU, theValue);
-  else
-    myBaseCurve->D0(theU, theValue);
+  const gp_XYZ& aDir = myDirection.XYZ();
 
-  Shift(theV, theValue);
+  if (!myBaseAdaptor.IsNull())
+    Geom_ExtrusionUtils::D0(theU, theV, *myBaseAdaptor, aDir, theValue);
+  else
+    Geom_ExtrusionUtils::D0(theU, theV, *myBaseCurve, aDir, theValue);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfExtrusion::D1(const Standard_Real theU,
                                           const Standard_Real theV,
@@ -54,14 +59,15 @@ void GeomEvaluator_SurfaceOfExtrusion::D1(const Standard_Real theU,
                                           gp_Vec&             theD1U,
                                           gp_Vec&             theD1V) const
 {
-  if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D1(theU, theValue, theD1U);
-  else
-    myBaseCurve->D1(theU, theValue, theD1U);
+  const gp_XYZ& aDir = myDirection.XYZ();
 
-  theD1V = myDirection;
-  Shift(theV, theValue);
+  if (!myBaseAdaptor.IsNull())
+    Geom_ExtrusionUtils::D1(theU, theV, *myBaseAdaptor, aDir, theValue, theD1U, theD1V);
+  else
+    Geom_ExtrusionUtils::D1(theU, theV, *myBaseCurve, aDir, theValue, theD1U, theD1V);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfExtrusion::D2(const Standard_Real theU,
                                           const Standard_Real theV,
@@ -72,17 +78,33 @@ void GeomEvaluator_SurfaceOfExtrusion::D2(const Standard_Real theU,
                                           gp_Vec&             theD2V,
                                           gp_Vec&             theD2UV) const
 {
+  const gp_XYZ& aDir = myDirection.XYZ();
+
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D2(theU, theValue, theD1U, theD2U);
+    Geom_ExtrusionUtils::D2(theU,
+                            theV,
+                            *myBaseAdaptor,
+                            aDir,
+                            theValue,
+                            theD1U,
+                            theD1V,
+                            theD2U,
+                            theD2V,
+                            theD2UV);
   else
-    myBaseCurve->D2(theU, theValue, theD1U, theD2U);
-
-  theD1V = myDirection;
-  theD2V.SetCoord(0.0, 0.0, 0.0);
-  theD2UV.SetCoord(0.0, 0.0, 0.0);
-
-  Shift(theV, theValue);
+    Geom_ExtrusionUtils::D2(theU,
+                            theV,
+                            *myBaseCurve,
+                            aDir,
+                            theValue,
+                            theD1U,
+                            theD1V,
+                            theD2U,
+                            theD2V,
+                            theD2UV);
 }
+
+//==================================================================================================
 
 void GeomEvaluator_SurfaceOfExtrusion::D3(const Standard_Real theU,
                                           const Standard_Real theV,
@@ -97,20 +119,41 @@ void GeomEvaluator_SurfaceOfExtrusion::D3(const Standard_Real theU,
                                           gp_Vec&             theD3UUV,
                                           gp_Vec&             theD3UVV) const
 {
+  const gp_XYZ& aDir = myDirection.XYZ();
+
   if (!myBaseAdaptor.IsNull())
-    myBaseAdaptor->D3(theU, theValue, theD1U, theD2U, theD3U);
+    Geom_ExtrusionUtils::D3(theU,
+                            theV,
+                            *myBaseAdaptor,
+                            aDir,
+                            theValue,
+                            theD1U,
+                            theD1V,
+                            theD2U,
+                            theD2V,
+                            theD2UV,
+                            theD3U,
+                            theD3V,
+                            theD3UUV,
+                            theD3UVV);
   else
-    myBaseCurve->D3(theU, theValue, theD1U, theD2U, theD3U);
-
-  theD1V = myDirection;
-  theD2V.SetCoord(0.0, 0.0, 0.0);
-  theD2UV.SetCoord(0.0, 0.0, 0.0);
-  theD3V.SetCoord(0.0, 0.0, 0.0);
-  theD3UUV.SetCoord(0.0, 0.0, 0.0);
-  theD3UVV.SetCoord(0.0, 0.0, 0.0);
-
-  Shift(theV, theValue);
+    Geom_ExtrusionUtils::D3(theU,
+                            theV,
+                            *myBaseCurve,
+                            aDir,
+                            theValue,
+                            theD1U,
+                            theD1V,
+                            theD2U,
+                            theD2V,
+                            theD2UV,
+                            theD3U,
+                            theD3V,
+                            theD3UUV,
+                            theD3UVV);
 }
+
+//==================================================================================================
 
 gp_Vec GeomEvaluator_SurfaceOfExtrusion::DN(const Standard_Real theU,
                                             const Standard_Real,
@@ -122,18 +165,15 @@ gp_Vec GeomEvaluator_SurfaceOfExtrusion::DN(const Standard_Real theU,
   Standard_RangeError_Raise_if(theDerU + theDerV < 1,
                                "GeomEvaluator_SurfaceOfExtrusion::DN(): theDerU + theDerV < 1");
 
-  gp_Vec aResult(0.0, 0.0, 0.0);
-  if (theDerV == 0)
-  {
-    if (!myBaseAdaptor.IsNull())
-      aResult = myBaseAdaptor->DN(theU, theDerU);
-    else
-      aResult = myBaseCurve->DN(theU, theDerU);
-  }
-  else if (theDerU == 0 && theDerV == 1)
-    aResult = gp_Vec(myDirection);
-  return aResult;
+  const gp_XYZ& aDir = myDirection.XYZ();
+
+  if (!myBaseAdaptor.IsNull())
+    return Geom_ExtrusionUtils::DN(theU, *myBaseAdaptor, aDir, theDerU, theDerV);
+  else
+    return Geom_ExtrusionUtils::DN(theU, *myBaseCurve, aDir, theDerU, theDerV);
 }
+
+//==================================================================================================
 
 Handle(GeomEvaluator_Surface) GeomEvaluator_SurfaceOfExtrusion::ShallowCopy() const
 {
