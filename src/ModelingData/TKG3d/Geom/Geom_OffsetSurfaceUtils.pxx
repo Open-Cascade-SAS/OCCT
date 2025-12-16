@@ -1596,6 +1596,15 @@ bool EvaluateD2(double                  theU,
       return false;
     }
 
+    // Get osculating surface info first (needed for sign in fast path)
+    OsculatingInfo              aOscInfo;
+    Handle(Geom_BSplineSurface) aOscSurf;
+    if (theOscQuery)
+    {
+      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+    }
+
     // Try non-singular case first (fast path using direct computation)
     // This ensures consistency with D0 and D1 which also use direct computation
     if (CalculateD2(theValue,
@@ -1608,7 +1617,8 @@ bool EvaluateD2(double                  theU,
                     aD3V,
                     aD3UUV,
                     aD3UVV,
-                    theOffset))
+                    theOffset,
+                    aOscInfo.Sign()))
     {
       return true;
     }
@@ -1631,15 +1641,6 @@ bool EvaluateD2(double                  theU,
     aDerSurf.SetValue(2, 1, aD3UUV);
     aDerSurf.SetValue(1, 2, aD3UVV);
     aDerSurf.SetValue(0, 3, aD3V);
-
-    // Check osculating surface for singular case
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
-    if (theOscQuery)
-    {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-    }
 
     // Use ComputeDerivatives for singular case
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
@@ -1819,6 +1820,15 @@ bool EvaluateD3(double                  theU,
       return false;
     }
 
+    // Get osculating surface info first (needed for sign in fast path)
+    OsculatingInfo              aOscInfo;
+    Handle(Geom_BSplineSurface) aOscSurf;
+    if (theOscQuery)
+    {
+      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+    }
+
     // Get fourth derivatives for CalculateD3
     gp_Vec aD4U    = theBasisSurf->DN(theU, theV, 4, 0);
     gp_Vec aD4V    = theBasisSurf->DN(theU, theV, 0, 4);
@@ -1843,7 +1853,8 @@ bool EvaluateD3(double                  theU,
                     aD4UUV,
                     aD4UUVV,
                     aD4UVV,
-                    theOffset))
+                    theOffset,
+                    aOscInfo.Sign()))
     {
       return true;
     }
@@ -1866,15 +1877,6 @@ bool EvaluateD3(double                  theU,
     aDerSurf.SetValue(2, 1, theD3UUV);
     aDerSurf.SetValue(1, 2, theD3UVV);
     aDerSurf.SetValue(0, 3, theD3V);
-
-    // Check osculating surface for singular case
-    OsculatingInfo              aOscInfo;
-    Handle(Geom_BSplineSurface) aOscSurf;
-    if (theOscQuery)
-    {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-    }
 
     // Use ComputeDerivatives for singular case
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
