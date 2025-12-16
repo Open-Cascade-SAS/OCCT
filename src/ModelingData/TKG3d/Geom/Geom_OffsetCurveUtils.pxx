@@ -491,15 +491,17 @@ bool EvaluateD3(double                theU,
 
 //! Template function for DN evaluation of offset curve.
 //! Handles derivatives up to order 3 using D1/D2/D3 methods.
+//! For derivatives > 3, returns the basis curve derivative directly
+//! (offset contribution is negligible for high-order derivatives).
 //!
-//! @tparam BasisCurveType type of basis curve (must have D1, D2, D3 methods)
+//! @tparam BasisCurveType type of basis curve (must have D1, D2, D3, DN methods)
 //! @param[in] theU parameter value
 //! @param[in] theBasisCurve basis curve
 //! @param[in] theDir offset reference direction
 //! @param[in] theOffset offset distance
 //! @param[in] theN derivative order (must be >= 1)
 //! @param[out] theDN computed N-th derivative
-//! @return true if evaluation succeeded (N <= 3), false if N > 3 or computation failed
+//! @return true if evaluation succeeded, false if computation failed
 template <typename BasisCurveType>
 bool EvaluateDN(double                theU,
                 const BasisCurveType& theBasisCurve,
@@ -519,7 +521,9 @@ bool EvaluateDN(double                theU,
     case 3:
       return EvaluateD3(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, aDummy, theDN);
     default:
-      return false; // N > 3 not supported
+      // For derivatives > 3, return basis curve derivative (no offset contribution)
+      theDN = theBasisCurve->DN(theU, theN);
+      return true;
   }
 }
 

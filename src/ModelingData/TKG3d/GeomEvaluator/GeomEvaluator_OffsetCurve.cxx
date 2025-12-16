@@ -154,31 +154,16 @@ gp_Vec GeomEvaluator_OffsetCurve::DN(const Standard_Real    theU,
   gp_Vec aDN;
   bool   isOK = false;
 
-  if (theDeriv <= 3)
-  {
-    if (!myBaseAdaptor.IsNull())
-      isOK = Geom_OffsetCurveUtils::EvaluateDN(theU,
-                                               myBaseAdaptor,
-                                               myOffsetDir,
-                                               myOffset,
-                                               theDeriv,
-                                               aDN);
-    else
-      isOK =
-        Geom_OffsetCurveUtils::EvaluateDN(theU, myBaseCurve, myOffsetDir, myOffset, theDeriv, aDN);
-
-    if (!isOK)
-    {
-      throw Standard_NullValue("GeomEvaluator_OffsetCurve: Null derivative");
-    }
-  }
+  if (!myBaseAdaptor.IsNull())
+    isOK =
+      Geom_OffsetCurveUtils::EvaluateDN(theU, myBaseAdaptor, myOffsetDir, myOffset, theDeriv, aDN);
   else
+    isOK =
+      Geom_OffsetCurveUtils::EvaluateDN(theU, myBaseCurve, myOffsetDir, myOffset, theDeriv, aDN);
+
+  if (!isOK)
   {
-    // For derivatives > 3, return basis curve derivative (no offset contribution)
-    if (!myBaseAdaptor.IsNull())
-      aDN = myBaseAdaptor->DN(theU, theDeriv);
-    else
-      aDN = myBaseCurve->DN(theU, theDeriv);
+    throw Standard_NullValue("GeomEvaluator_OffsetCurve: Null derivative");
   }
 
   return aDN;
