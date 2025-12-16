@@ -21,10 +21,10 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <Precision.hxx>
 #include <TColgp_Array2OfVec.hxx>
 
-#include <array>
 #include <cmath>
 
 //! Internal helper namespace for 3D offset surface calculations.
@@ -912,9 +912,9 @@ void ComputeDerivatives(int                  theMaxOrder,
     theMaxOrder = 0;
     // Stack buffer for DerSurfL: max size is (theNU + 2) x (theNV + 2)
     // DN can have theNU/theNV up to 6, so max is 8x8=64
-    constexpr int                        aDerSurfLMaxSize = 64;
-    std::array<gp_Vec, aDerSurfLMaxSize> aDerSurfLBuffer;
-    NCollection_Array2<gp_Vec>           DerSurfL(aDerSurfLBuffer[0],
+    const int aDerSurfLSize = (theMaxOrder + theNU + 2) * (theMaxOrder + theNV + 2);
+    NCollection_LocalArray<gp_Vec, 64> aDerSurfLBuffer(aDerSurfLSize);
+    NCollection_Array2<gp_Vec>         DerSurfL(aDerSurfLBuffer[0],
                                         0,
                                         theMaxOrder + theNU + 1,
                                         0,
@@ -1214,12 +1214,12 @@ bool EvaluateD0(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int                    aMaxOrder    = 3;
-    constexpr int                    aDerNUVSize  = (aMaxOrder + 1) * (aMaxOrder + 1); // 16
-    constexpr int                    aDerSurfSize = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
-    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
-    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
-    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder, 0, aMaxOrder);
+    constexpr int aMaxOrder    = 3;
+    constexpr int aDerNUVSize  = (aMaxOrder + 1) * (aMaxOrder + 1); // 16
+    constexpr int aDerSurfSize = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
+    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder, 0, aMaxOrder);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 1, 0, aMaxOrder + 1);
 
     aDerSurf.SetValue(1, 0, aD1U);
@@ -1375,12 +1375,12 @@ bool EvaluateD1(double                  theU,
     }
 
     // Singular case - use higher order derivatives
-    constexpr int                    aMaxOrder    = 3;
-    constexpr int                    aDerNUVSize  = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
-    constexpr int                    aDerSurfSize = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
-    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
-    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
-    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 1, 0, aMaxOrder + 1);
+    constexpr int aMaxOrder    = 3;
+    constexpr int aDerNUVSize  = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
+    constexpr int aDerSurfSize = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
+    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 1, 0, aMaxOrder + 1);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
 
     aDerSurf.SetValue(1, 0, theD1U);
@@ -1624,12 +1624,12 @@ bool EvaluateD2(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int                    aMaxOrder    = 3;
-    constexpr int                    aDerNUVSize  = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
-    constexpr int                    aDerSurfSize = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
-    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
-    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
-    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
+    constexpr int aMaxOrder    = 3;
+    constexpr int aDerNUVSize  = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
+    constexpr int aDerSurfSize = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
+    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
 
     aDerSurf.SetValue(1, 0, theD1U);
@@ -1860,12 +1860,12 @@ bool EvaluateD3(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int                    aMaxOrder    = 3;
-    constexpr int                    aDerNUVSize  = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
-    constexpr int                    aDerSurfSize = (aMaxOrder + 5) * (aMaxOrder + 5); // 64
-    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
-    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
-    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
+    constexpr int aMaxOrder    = 3;
+    constexpr int aDerNUVSize  = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
+    constexpr int aDerSurfSize = (aMaxOrder + 5) * (aMaxOrder + 5); // 64
+    NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, aDerSurfSize> aDerSurfBuffer(aDerSurfSize);
+    NCollection_Array2<gp_Vec> aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
     NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 4, 0, aMaxOrder + 4);
 
     aDerSurf.SetValue(1, 0, theD1U);
@@ -2031,16 +2031,16 @@ bool EvaluateDN(double                  theU,
     int       aOrderU, aOrderV;
 
     // Stack buffers: max size with aMaxOrder=3, theNu=theNv=3 is 7x7=49 and 8x8=64
-    constexpr int                       aDerNUVMaxSize  = 49;
-    constexpr int                       aDerSurfMaxSize = 64;
-    std::array<gp_Vec, aDerNUVMaxSize>  aDerNUVBuffer;
-    std::array<gp_Vec, aDerSurfMaxSize> aDerSurfBuffer;
-    NCollection_Array2<gp_Vec>          aDerNUV(aDerNUVBuffer[0],
+    const int aDerNUVSize  = (aMaxOrder + theNu + 1) * (aMaxOrder + theNv + 1);
+    const int aDerSurfSize = (aMaxOrder + theNu + 2) * (aMaxOrder + theNv + 2);
+    NCollection_LocalArray<gp_Vec, 49> aDerNUVBuffer(aDerNUVSize);
+    NCollection_LocalArray<gp_Vec, 64> aDerSurfBuffer(aDerSurfSize);
+    NCollection_Array2<gp_Vec>         aDerNUV(aDerNUVBuffer[0],
                                        0,
                                        aMaxOrder + theNu,
                                        0,
                                        aMaxOrder + theNv);
-    NCollection_Array2<gp_Vec>          aDerSurf(aDerSurfBuffer[0],
+    NCollection_Array2<gp_Vec>         aDerSurf(aDerSurfBuffer[0],
                                         0,
                                         aMaxOrder + theNu + 1,
                                         0,
