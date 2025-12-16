@@ -562,7 +562,15 @@ bool EvaluateD0(double                  theU,
       return false;
     }
 
-    // Get osculating surface info
+    // Try non-singular case first
+    if (CalculateD0(theValue, aD1U, aD1V, theOffset))
+    {
+      return true;
+    }
+
+    // Singular case - query osculating surface and use higher order derivatives
+    constexpr int aMaxOrder = 3;
+
     OsculatingInfo              aOscInfo;
     Handle(Geom_BSplineSurface) aOscSurf;
     if (theOscQuery)
@@ -571,14 +579,6 @@ bool EvaluateD0(double                  theU,
       aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
-    // Try non-singular case first
-    if (CalculateD0(theValue, aD1U, aD1V, theOffset, aOscInfo.Sign()))
-    {
-      return true;
-    }
-
-    // Singular case - use higher order derivatives with osculating surface
-    constexpr int aMaxOrder    = 3;
     constexpr int aDerNUVSize  = (aMaxOrder + 1) * (aMaxOrder + 1); // 16
     constexpr int aDerSurfSize = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
     NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
@@ -724,22 +724,74 @@ bool EvaluateD1(double                  theU,
       return false;
     }
 
-    // Try non-singular case first
+    // Check if singular by normalizing derivatives and computing cross product
+    gp_Vec aD1U(theD1U);
+    gp_Vec aD1V(theD1V);
+    double aD1UNorm2 = aD1U.SquareMagnitude();
+    double aD1VNorm2 = aD1V.SquareMagnitude();
+    if (aD1UNorm2 > 1.0)
+      aD1U /= std::sqrt(aD1UNorm2);
+    if (aD1VNorm2 > 1.0)
+      aD1V /= std::sqrt(aD1VNorm2);
+
+    bool      isSingular = false;
+    const int aMaxOrder  = 3;
+    gp_Vec    aNorm      = aD1U.Crossed(aD1V);
+
+    // Query osculating surface only if singular
     OsculatingInfo              aOscInfo;
     Handle(Geom_BSplineSurface) aOscSurf;
-    if (theOscQuery)
+    if (aNorm.SquareMagnitude() <= THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL)
     {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      if (theOscQuery)
+      {
+        aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+        aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      }
+      isSingular = true;
     }
 
-    if (CalculateD1(theValue, theD1U, theD1V, aD2U, aD2V, aD2UV, theOffset, aOscInfo.Sign()))
+    // Compute sign factor
+    const double aSign = aOscInfo.Sign();
+
+    // Non-singular case: use direct formulas
+    if (!isSingular)
     {
+      aNorm.Normalize();
+      theValue.SetXYZ(theValue.XYZ() + theOffset * aSign * aNorm.XYZ());
+
+      // Compute normal derivatives using inline formulas
+      gp_Vec       aN0(aNorm.XYZ()), aN1U, aN1V;
+      const double aScale = (theD1U ^ theD1V).Dot(aN0);
+      aN1U.SetX(aD2U.Y() * theD1V.Z() + theD1U.Y() * aD2UV.Z() - aD2U.Z() * theD1V.Y()
+                - theD1U.Z() * aD2UV.Y());
+      aN1U.SetY((aD2U.X() * theD1V.Z() + theD1U.X() * aD2UV.Z() - aD2U.Z() * theD1V.X()
+                 - theD1U.Z() * aD2UV.X())
+                * -1.0);
+      aN1U.SetZ(aD2U.X() * theD1V.Y() + theD1U.X() * aD2UV.Y() - aD2U.Y() * theD1V.X()
+                - theD1U.Y() * aD2UV.X());
+      const double aScaleU = aN1U.Dot(aN0);
+      aN1U.Subtract(aScaleU * aN0);
+      aN1U /= aScale;
+
+      aN1V.SetX(aD2UV.Y() * theD1V.Z() + aD2V.Z() * theD1U.Y() - aD2UV.Z() * theD1V.Y()
+                - aD2V.Y() * theD1U.Z());
+      aN1V.SetY((aD2UV.X() * theD1V.Z() + aD2V.Z() * theD1U.X() - aD2UV.Z() * theD1V.X()
+                 - aD2V.X() * theD1U.Z())
+                * -1.0);
+      aN1V.SetZ(aD2UV.X() * theD1V.Y() + aD2V.Y() * theD1U.X() - aD2UV.Y() * theD1V.X()
+                - aD2V.X() * theD1U.Y());
+      const double aScaleV = aN1V.Dot(aN0);
+      aN1V.Subtract(aScaleV * aN0);
+      aN1V /= aScale;
+
+      theD1U += theOffset * aSign * aN1U;
+      theD1V += theOffset * aSign * aN1V;
+
       return true;
     }
 
     // Singular case - use higher order derivatives
-    constexpr int aMaxOrder    = 3;
     constexpr int aDerNUVSize  = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
     constexpr int aDerSurfSize = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
     NCollection_LocalArray<gp_Vec, aDerNUVSize>  aDerNUVBuffer(aDerNUVSize);
@@ -871,14 +923,14 @@ bool EvaluateD1(double                  theU,
     if (aNStatus == CSLib_Defined)
     {
       // Compute offset point
-      theValue.SetXYZ(theValue.XYZ() + theOffset * aOscInfo.Sign() * aNormal.XYZ());
+      theValue.SetXYZ(theValue.XYZ() + theOffset * aSign * aNormal.XYZ());
       // Compute D1 using CSLib
       theD1U = CSLib::DNNormal(1, 0, aDerNUV, aOrderU, aOrderV);
       theD1V = CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV);
 
-      theD1U.Multiply(theOffset * aOscInfo.Sign());
+      theD1U.Multiply(theOffset * aSign);
       theD1U.Add(aDerSurf(1, 0));
-      theD1V.Multiply(theOffset * aOscInfo.Sign());
+      theD1V.Multiply(theOffset * aSign);
       theD1V.Add(aDerSurf(0, 1));
       return true;
     }
@@ -903,7 +955,6 @@ bool EvaluateD1(double                  theU,
 }
 
 //! Template function for D2 evaluation with retry mechanism for singular points.
-//! Always uses CSLib path to match old evaluator behavior.
 //!
 //! @tparam BasisSurfType type of basis surface (must have D3 method)
 //! @tparam OscSurfQueryType type providing osculating surface query
@@ -960,12 +1011,12 @@ bool EvaluateD2(double                  theU,
       return false;
     }
 
-    // Check if singular using CSLib::Normal (matching original evaluator)
+    // Check if singular using CSLib::Normal
     gp_Dir             aNormal;
     CSLib_NormalStatus aNStatus;
     CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
 
-    // MaxOrder = 0 for non-singular, 3 for singular (matching original)
+    // MaxOrder = 0 for non-singular, 3 for singular
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
 
     // Get osculating surface info
@@ -995,7 +1046,7 @@ bool EvaluateD2(double                  theU,
     aDerSurf.SetValue(1, 2, aD3UVV);
     aDerSurf.SetValue(0, 3, aD3V);
 
-    // Use ComputeDerivatives to populate DerNUV (matching original derivatives() call)
+    // Use ComputeDerivatives to populate DerNUV
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
       ComputeDerivatives(aMaxOrder,
@@ -1028,7 +1079,7 @@ bool EvaluateD2(double                  theU,
                          aDerSurf);
     }
 
-    // Compute normal using CSLib (second call with MaxOrder, matching original)
+    // Compute normal using CSLib (second call with MaxOrder)
     int aOrderU, aOrderV;
     CSLib::Normal(aMaxOrder,
                   aDerNUV,
@@ -1051,18 +1102,18 @@ bool EvaluateD2(double                  theU,
       // Compute offset point
       theValue.SetXYZ(theValue.XYZ() + aSign * aNormal.XYZ());
 
-      // Compute D1 using CSLib::DNNormal (matching original)
+      // Compute D1 using CSLib::DNNormal
       theD1U =
         aDerSurf(1, 0).Added(CSLib::DNNormal(1, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD1V =
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
-      // For D2, re-fetch from basis surface (matching old evaluator behavior)
+      // For D2, re-fetch from basis surface
       theD2U  = theBasisSurf->DN(theU, theV, 2, 0);
       theD2V  = theBasisSurf->DN(theU, theV, 0, 2);
       theD2UV = theBasisSurf->DN(theU, theV, 1, 1);
 
-      // Add offset corrections using CSLib::DNNormal (matching original)
+      // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2V.Add(CSLib::DNNormal(0, 2, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2UV.Add(CSLib::DNNormal(1, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1152,12 +1203,12 @@ bool EvaluateD3(double                  theU,
       return false;
     }
 
-    // Check if singular using CSLib::Normal (matching original evaluator)
+    // Check if singular using CSLib::Normal
     gp_Dir             aNormal;
     CSLib_NormalStatus aNStatus;
     CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
 
-    // MaxOrder = 0 for non-singular, 3 for singular (matching original)
+    // MaxOrder = 0 for non-singular, 3 for singular
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
 
     // Get osculating surface info
@@ -1188,7 +1239,7 @@ bool EvaluateD3(double                  theU,
     aDerSurf.SetValue(1, 2, theD3UVV);
     aDerSurf.SetValue(0, 3, theD3V);
 
-    // Use ComputeDerivatives to populate DerNUV (matching original derivatives() call)
+    // Use ComputeDerivatives to populate DerNUV
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
       ComputeDerivatives(aMaxOrder,
@@ -1221,7 +1272,7 @@ bool EvaluateD3(double                  theU,
                          aDerSurf);
     }
 
-    // Compute normal using CSLib (second call with MaxOrder, matching original)
+    // Compute normal using CSLib (second call with MaxOrder)
     int aOrderU, aOrderV;
     CSLib::Normal(aMaxOrder,
                   aDerNUV,
@@ -1244,13 +1295,13 @@ bool EvaluateD3(double                  theU,
       // Compute offset point
       theValue.SetXYZ(theValue.XYZ() + aSign * aNormal.XYZ());
 
-      // Compute D1 using CSLib::DNNormal (matching original)
+      // Compute D1 using CSLib::DNNormal
       theD1U =
         aDerSurf(1, 0).Added(CSLib::DNNormal(1, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD1V =
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
-      // For D2 and D3, re-fetch from basis surface (matching old evaluator behavior)
+      // For D2 and D3, re-fetch from basis surface
       theD2U   = theBasisSurf->DN(theU, theV, 2, 0);
       theD2V   = theBasisSurf->DN(theU, theV, 0, 2);
       theD2UV  = theBasisSurf->DN(theU, theV, 1, 1);
@@ -1259,7 +1310,7 @@ bool EvaluateD3(double                  theU,
       theD3UUV = theBasisSurf->DN(theU, theV, 2, 1);
       theD3UVV = theBasisSurf->DN(theU, theV, 1, 2);
 
-      // Add offset corrections using CSLib::DNNormal (matching original)
+      // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2V.Add(CSLib::DNNormal(0, 2, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       theD2UV.Add(CSLib::DNNormal(1, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
