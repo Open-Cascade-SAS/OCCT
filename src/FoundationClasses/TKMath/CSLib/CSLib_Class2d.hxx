@@ -48,6 +48,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Default constructor. Creates an empty classifier.
+  CSLib_Class2d() = default;
+
   //! Constructs a 2D classifier from an array of polygon vertices.
   //!
   //! The polygon is automatically closed (no need to repeat the first point at the end).
@@ -86,6 +89,38 @@ public:
                                 double                        theVMin,
                                 double                        theUMax,
                                 double                        theVMax);
+
+  //! Move constructor.
+  CSLib_Class2d(CSLib_Class2d&& theOther) noexcept
+      : myPnts2dX(std::move(theOther.myPnts2dX)),
+        myPnts2dY(std::move(theOther.myPnts2dY)),
+        myTolU(theOther.myTolU),
+        myTolV(theOther.myTolV),
+        myPointsCount(theOther.myPointsCount),
+        myUMin(theOther.myUMin),
+        myVMin(theOther.myVMin),
+        myUMax(theOther.myUMax),
+        myVMax(theOther.myVMax)
+  {
+  }
+
+  //! Move assignment operator.
+  CSLib_Class2d& operator=(CSLib_Class2d&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      myPnts2dX     = std::move(theOther.myPnts2dX);
+      myPnts2dY     = std::move(theOther.myPnts2dY);
+      myTolU        = theOther.myTolU;
+      myTolV        = theOther.myTolV;
+      myPointsCount = theOther.myPointsCount;
+      myUMin        = theOther.myUMin;
+      myVMin        = theOther.myVMin;
+      myUMax        = theOther.myUMax;
+      myVMax        = theOther.myVMax;
+    }
+    return *this;
+  }
 
   //! Classifies a point relative to the polygon.
   //!
@@ -134,7 +169,10 @@ private:
             double                   theUMax,
             double                   theVMax);
 
-  //! Assignment operator is forbidden.
+  //! Copy constructor is deleted.
+  CSLib_Class2d(const CSLib_Class2d&) = delete;
+
+  //! Copy assignment operator is deleted.
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:

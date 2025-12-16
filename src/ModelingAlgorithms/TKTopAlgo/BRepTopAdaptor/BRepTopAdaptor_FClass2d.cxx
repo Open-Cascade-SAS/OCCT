@@ -265,7 +265,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
       //// modified by jgv, 28.04.2009 ////
       PClass.Init(gp_Pnt2d(0., 0.));
       /////////////////////////////////////
-      TabClass.Append((void*)new CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+      TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       anIsBadWire = true;
       TabOrien.Append(-1);
     }
@@ -406,7 +406,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
           FlecheU = Toluv;
         if (FlecheV < Toluv)
           FlecheV = Toluv;
-        TabClass.Append((void*)new CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       } // if(nbpoints>3
       else
       {
@@ -415,8 +415,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face&  aFace,
         TColgp_Array1OfPnt2d xPClass(1, 2);
         xPClass(1) = SeqPnt2d(1);
         xPClass(2) = SeqPnt2d(2);
-        TabClass.Append(
-          (void*)new CSLib_Class2d(xPClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabClass.Append(CSLib_Class2d(xPClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       }
     } // else if(WareIsNotEmpty
   } // for(FaceExplorer
@@ -532,7 +531,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d&        _Puv,
     {
       for (Standard_Integer n = 1; n <= nbtabclass; n++)
       {
-        Standard_Integer cur = ((CSLib_Class2d*)TabClass(n))->SiDans(Puv);
+        Standard_Integer cur = TabClass(n).SiDans(Puv);
         if (cur == 1)
         {
           if (TabOrien(n) == 0)
@@ -673,7 +672,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(
     {
       for (Standard_Integer n = 1; n <= nbtabclass; n++)
       {
-        Standard_Integer cur = ((CSLib_Class2d*)TabClass(n))->SiDans_OnMode(Puv, Tol);
+        Standard_Integer cur = TabClass(n).SiDans_OnMode(Puv, Tol);
         if (cur == 1)
         {
           if (TabOrien(n) == 0)
@@ -748,15 +747,7 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(
 
 void BRepTopAdaptor_FClass2d::Destroy()
 {
-  Standard_Integer nbtabclass = TabClass.Length();
-  for (Standard_Integer d = 1; d <= nbtabclass; d++)
-  {
-    if (TabClass(d))
-    {
-      delete ((CSLib_Class2d*)TabClass(d));
-      TabClass(d) = NULL;
-    }
-  }
+  TabClass.Clear();
 }
 
 #include <Standard_ConstructionError.hxx>

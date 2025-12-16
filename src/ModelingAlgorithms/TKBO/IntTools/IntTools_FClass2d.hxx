@@ -22,10 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepClass_FaceExplorer.hxx>
-#include <BRepTopAdaptor_SeqOfPtr.hxx>
+#include <CSLib_Class2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopAbs_State.hxx>
+
 #include <memory>
 
 class gp_Pnt2d;
@@ -72,19 +74,19 @@ public:
   Standard_EXPORT Standard_Boolean IsHole() const;
 
 private:
-  BRepTopAdaptor_SeqOfPtr   TabClass;
-  TColStd_SequenceOfInteger TabOrien;
-  Standard_Real             Toluv;
-  TopoDS_Face               Face;
-  Standard_Real             U1;
-  Standard_Real             V1;
-  Standard_Real             U2;
-  Standard_Real             V2;
-  Standard_Real             Umin;
-  Standard_Real             Umax;
-  Standard_Real             Vmin;
-  Standard_Real             Vmax;
-  Standard_Boolean          myIsHole;
+  NCollection_Sequence<CSLib_Class2d> TabClass;
+  TColStd_SequenceOfInteger           TabOrien;
+  Standard_Real                       Toluv;
+  TopoDS_Face                         Face;
+  Standard_Real                       U1;
+  Standard_Real                       V1;
+  Standard_Real                       U2;
+  Standard_Real                       V2;
+  Standard_Real                       Umin;
+  Standard_Real                       Umax;
+  Standard_Real                       Vmin;
+  Standard_Real                       Vmax;
+  Standard_Boolean                    myIsHole;
 
   mutable std::unique_ptr<BRepClass_FaceExplorer> myFExplorer;
 };
