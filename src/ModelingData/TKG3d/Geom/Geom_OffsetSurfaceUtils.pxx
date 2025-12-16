@@ -1044,26 +1044,6 @@ bool EvaluateD2(double                  theU,
                   aOrderU,
                   aOrderV);
 
-    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
-    if (aNStatus == CSLib_InfinityOfSolutions)
-    {
-      gp_Vec aNewDU = theD1U;
-      gp_Vec aNewDV = theD1V;
-      if (ReplaceDerivative(theU,
-                            theV,
-                            aUMin,
-                            aUMax,
-                            aVMin,
-                            aVMax,
-                            aNewDU,
-                            aNewDV,
-                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
-                            theBasisSurf))
-      {
-        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
-      }
-    }
-
     if (aNStatus == CSLib_Defined)
     {
       const double aSign = theOffset * aOscInfo.Sign();
@@ -1256,26 +1236,6 @@ bool EvaluateD3(double                  theU,
                   aNormal,
                   aOrderU,
                   aOrderV);
-
-    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
-    if (aNStatus == CSLib_InfinityOfSolutions)
-    {
-      gp_Vec aNewDU = theD1U;
-      gp_Vec aNewDV = theD1V;
-      if (ReplaceDerivative(theU,
-                            theV,
-                            aUMin,
-                            aUMax,
-                            aVMin,
-                            aVMax,
-                            aNewDU,
-                            aNewDV,
-                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
-                            theBasisSurf))
-      {
-        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, aNStatus, aNormal);
-      }
-    }
 
     if (aNStatus == CSLib_Defined)
     {
