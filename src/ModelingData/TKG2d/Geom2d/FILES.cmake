@@ -31,6 +31,7 @@ set(OCCT_Geom2d_FILES
   Geom2d_Line.hxx
   Geom2d_OffsetCurve.cxx
   Geom2d_OffsetCurve.hxx
+  Geom2d_OffsetCurveUtils.pxx
   Geom2d_Parabola.cxx
   Geom2d_Parabola.hxx
   Geom2d_Point.cxx
