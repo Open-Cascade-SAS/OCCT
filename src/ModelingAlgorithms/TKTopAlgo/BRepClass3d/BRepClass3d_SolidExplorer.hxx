@@ -17,7 +17,6 @@
 #ifndef _BRepClass3d_SolidExplorer_HeaderFile
 #define _BRepClass3d_SolidExplorer_HeaderFile
 
-#include <Bnd_Box.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_BndBoxTree.hxx>
 #include <BRepClass3d_MapOfInter.hxx>
@@ -172,8 +171,6 @@ public:
                                            const Standard_Real Par,
                                            const TopAbs_State  S) const;
 
-  Standard_EXPORT const Bnd_Box& Box() const;
-
   Standard_EXPORT const TopoDS_Shape& GetShape() const;
 
   Standard_EXPORT IntCurvesFace_Intersector& Intersector(const TopoDS_Face& F) const;
@@ -195,7 +192,6 @@ protected:
                                                const gp_Pnt2d&                    theP2d) const;
 
 private:
-  Bnd_Box                    myBox;
   TopoDS_Shape               myShape;
   Standard_Boolean           myReject;
   Standard_Integer           myFirstFace;
