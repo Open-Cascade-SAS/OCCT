@@ -30,56 +30,13 @@ HLRAlgo_PolyShellData::HLRAlgo_PolyShellData(const Standard_Integer nbFace)
 
 //=================================================================================================
 
-void HLRAlgo_PolyShellData::UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox)
+void HLRAlgo_PolyShellData::UpdateGlobalMinMax(Bnd_Box& theBox)
 {
-  HLRAlgo_ListIteratorOfListOfBPoint it;
-
-  for (it.Initialize(mySegList); it.More(); it.Next())
+  for (HLRAlgo_ListIteratorOfListOfBPoint it(mySegList); it.More(); it.Next())
   {
-    HLRAlgo_BiPoint&          BP      = it.ChangeValue();
-    HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
-    if (aPoints.PntP1.X() < aPoints.PntP2.X())
-    {
-      if (theBox.XMin > aPoints.PntP1.X())
-        theBox.XMin = aPoints.PntP1.X();
-      else if (theBox.XMax < aPoints.PntP2.X())
-        theBox.XMax = aPoints.PntP2.X();
-    }
-    else
-    {
-      if (theBox.XMin > aPoints.PntP2.X())
-        theBox.XMin = aPoints.PntP2.X();
-      else if (theBox.XMax < aPoints.PntP1.X())
-        theBox.XMax = aPoints.PntP1.X();
-    }
-    if (aPoints.PntP1.Y() < aPoints.PntP2.Y())
-    {
-      if (theBox.YMin > aPoints.PntP1.Y())
-        theBox.YMin = aPoints.PntP1.Y();
-      else if (theBox.YMax < aPoints.PntP2.Y())
-        theBox.YMax = aPoints.PntP2.Y();
-    }
-    else
-    {
-      if (theBox.YMin > aPoints.PntP2.Y())
-        theBox.YMin = aPoints.PntP2.Y();
-      else if (theBox.YMax < aPoints.PntP1.Y())
-        theBox.YMax = aPoints.PntP1.Y();
-    }
-    if (aPoints.PntP1.Z() < aPoints.PntP2.Z())
-    {
-      if (theBox.ZMin > aPoints.PntP1.Z())
-        theBox.ZMin = aPoints.PntP1.Z();
-      else if (theBox.ZMax < aPoints.PntP2.Z())
-        theBox.ZMax = aPoints.PntP2.Z();
-    }
-    else
-    {
-      if (theBox.ZMin > aPoints.PntP2.Z())
-        theBox.ZMin = aPoints.PntP2.Z();
-      else if (theBox.ZMax < aPoints.PntP1.Z())
-        theBox.ZMax = aPoints.PntP1.Z();
-    }
+    const HLRAlgo_BiPoint::PointsT& aPoints = it.Value().Points();
+    theBox.Update(aPoints.PntP1.X(), aPoints.PntP1.Y(), aPoints.PntP1.Z());
+    theBox.Update(aPoints.PntP2.X(), aPoints.PntP2.Y(), aPoints.PntP2.Z());
   }
   for (Standard_Integer i = myPolyg.Lower(); i <= myPolyg.Upper(); i++)
   {

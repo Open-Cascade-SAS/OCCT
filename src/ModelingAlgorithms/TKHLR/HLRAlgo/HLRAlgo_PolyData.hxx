@@ -17,16 +17,16 @@
 #ifndef _HLRAlgo_PolyData_HeaderFile
 #define _HLRAlgo_PolyData_HeaderFile
 
+#include <Bnd_Box.hxx>
 #include <HLRAlgo_BiPoint.hxx>
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <HLRAlgo_HArray1OfTData.hxx>
 #include <HLRAlgo_HArray1OfPHDat.hxx>
-#include <Standard_Transient.hxx>
+#include <HLRAlgo_HArray1OfTData.hxx>
+#include <Standard.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_HArray1OfXYZ.hxx>
 
 class HLRAlgo_EdgeStatus;
 
@@ -57,38 +57,6 @@ public:
     Standard_Real Param, TolParam, TolAng, Tolerance;
   };
 
-  struct Box
-  {
-    Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
-
-    //! The default constructor.
-    Box()
-        : XMin(0.0),
-          YMin(0.0),
-          ZMin(0.0),
-          XMax(0.0),
-          YMax(0.0),
-          ZMax(0.0)
-    {
-    }
-
-    //! The initializing constructor.
-    Box(const Standard_Real& theXMin,
-        const Standard_Real& theYMin,
-        const Standard_Real& theZMin,
-        const Standard_Real& theXMax,
-        const Standard_Real& theYMax,
-        const Standard_Real& theZMax)
-        : XMin(theXMin),
-          YMin(theYMin),
-          ZMin(theZMin),
-          XMax(theXMax),
-          YMax(theYMax),
-          ZMax(theZMax)
-    {
-    }
-  };
-
   Standard_EXPORT HLRAlgo_PolyData();
 
   Standard_EXPORT void HNodes(const Handle(TColgp_HArray1OfXYZ)& HNodes);
@@ -107,7 +75,7 @@ public:
 
   HLRAlgo_Array1OfPHDat& PHDat() const;
 
-  Standard_EXPORT void UpdateGlobalMinMax(Box& theBox);
+  Standard_EXPORT void UpdateGlobalMinMax(Bnd_Box& theBox);
 
   Standard_Boolean Hiding() const;
 

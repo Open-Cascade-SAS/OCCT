@@ -53,69 +53,24 @@ void HLRAlgo_PolyData::HPHDat(const Handle(HLRAlgo_HArray1OfPHDat)& HPHDat)
 
 //=================================================================================================
 
-void HLRAlgo_PolyData::UpdateGlobalMinMax(Box& theBox)
+void HLRAlgo_PolyData::UpdateGlobalMinMax(Bnd_Box& theBox)
 {
-  Standard_Integer          i;
-  Standard_Real             X1, X2, X3, Y1, Y2, Y3, Z1, Z2, Z3;
-  const TColgp_Array1OfXYZ& Nodes = myHNodes->Array1();
-  HLRAlgo_Array1OfTData&    TData = myHTData->ChangeArray1();
-  Standard_Integer          nbT   = TData.Upper();
-  HLRAlgo_TriangleData*     TD    = &(TData.ChangeValue(1));
+  const TColgp_Array1OfXYZ&    Nodes = myHNodes->Array1();
+  const HLRAlgo_Array1OfTData& TData = myHTData->Array1();
+  const Standard_Integer       nbT   = TData.Upper();
 
-  for (i = 1; i <= nbT; i++)
+  for (Standard_Integer i = 1; i <= nbT; i++)
   {
-    if (TD->Flags & HLRAlgo_PolyMask_FMskHiding)
+    const HLRAlgo_TriangleData& TD = TData.Value(i);
+    if (TD.Flags & HLRAlgo_PolyMask_FMskHiding)
     {
-      const gp_XYZ& P1 = Nodes(TD->Node1);
-      const gp_XYZ& P2 = Nodes(TD->Node2);
-      const gp_XYZ& P3 = Nodes(TD->Node3);
-      X1               = P1.X();
-      Y1               = P1.Y();
-      Z1               = P1.Z();
-      X2               = P2.X();
-      Y2               = P2.Y();
-      Z2               = P2.Z();
-      X3               = P3.X();
-      Y3               = P3.Y();
-      Z3               = P3.Z();
-      if (theBox.XMin > X1)
-        theBox.XMin = X1;
-      else if (theBox.XMax < X1)
-        theBox.XMax = X1;
-      if (theBox.YMin > Y1)
-        theBox.YMin = Y1;
-      else if (theBox.YMax < Y1)
-        theBox.YMax = Y1;
-      if (theBox.ZMin > Z1)
-        theBox.ZMin = Z1;
-      else if (theBox.ZMax < Z1)
-        theBox.ZMax = Z1;
-      if (theBox.XMin > X2)
-        theBox.XMin = X2;
-      else if (theBox.XMax < X2)
-        theBox.XMax = X2;
-      if (theBox.YMin > Y2)
-        theBox.YMin = Y2;
-      else if (theBox.YMax < Y2)
-        theBox.YMax = Y2;
-      if (theBox.ZMin > Z2)
-        theBox.ZMin = Z2;
-      else if (theBox.ZMax < Z2)
-        theBox.ZMax = Z2;
-      if (theBox.XMin > X3)
-        theBox.XMin = X3;
-      else if (theBox.XMax < X3)
-        theBox.XMax = X3;
-      if (theBox.YMin > Y3)
-        theBox.YMin = Y3;
-      else if (theBox.YMax < Y3)
-        theBox.YMax = Y3;
-      if (theBox.ZMin > Z3)
-        theBox.ZMin = Z3;
-      else if (theBox.ZMax < Z3)
-        theBox.ZMax = Z3;
+      const gp_XYZ& P1 = Nodes(TD.Node1);
+      const gp_XYZ& P2 = Nodes(TD.Node2);
+      const gp_XYZ& P3 = Nodes(TD.Node3);
+      theBox.Update(P1.X(), P1.Y(), P1.Z());
+      theBox.Update(P2.X(), P2.Y(), P2.Z());
+      theBox.Update(P3.X(), P3.Y(), P3.Z());
     }
-    TD++;
   }
 }
 

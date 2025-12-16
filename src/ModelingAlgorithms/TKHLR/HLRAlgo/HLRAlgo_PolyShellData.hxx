@@ -17,10 +17,11 @@
 #ifndef _HLRAlgo_PolyShellData_HeaderFile
 #define _HLRAlgo_PolyShellData_HeaderFile
 
-#include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
+#include <Bnd_Box.hxx>
 #include <HLRAlgo_ListOfBPoint.hxx>
 #include <HLRAlgo_PolyData.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 class HLRAlgo_PolyShellData;
 DEFINE_STANDARD_HANDLE(HLRAlgo_PolyShellData, Standard_Transient)
@@ -37,7 +38,7 @@ public:
 
   Standard_EXPORT HLRAlgo_PolyShellData(const Standard_Integer nbFace);
 
-  Standard_EXPORT void UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox);
+  Standard_EXPORT void UpdateGlobalMinMax(Bnd_Box& theBox);
 
   Standard_EXPORT void UpdateHiding(const Standard_Integer nbHiding);
 

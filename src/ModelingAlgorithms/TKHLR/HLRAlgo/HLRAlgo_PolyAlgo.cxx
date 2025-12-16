@@ -67,7 +67,7 @@ void HLRAlgo_PolyAlgo::Update()
   Standard_Real           xSegmnMin, ySegmnMin, zSegmnMin;
   Standard_Real           xSegmnMax, ySegmnMax, zSegmnMax;
   constexpr Standard_Real Big = Precision::Infinite();
-  HLRAlgo_PolyData::Box   aBox(Big, Big, Big, -Big, -Big, -Big);
+  Bnd_Box                 aBox;
 
   myNbrShell = myHShell.Size();
   for (Standard_Integer aShellIter = myHShell.Lower(); aShellIter <= myHShell.Upper(); ++aShellIter)
@@ -76,10 +76,11 @@ void HLRAlgo_PolyAlgo::Update()
     aPsd->UpdateGlobalMinMax(aBox);
   }
 
-  Standard_Real dx     = aBox.XMax - aBox.XMin;
-  Standard_Real dy     = aBox.YMax - aBox.YMin;
-  Standard_Real dz     = aBox.ZMax - aBox.ZMin;
-  Standard_Real precad = dx;
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+  Standard_Real dx                                      = aXMax - aXMin;
+  Standard_Real dy                                      = aYMax - aYMin;
+  Standard_Real dz                                      = aZMax - aZMin;
+  Standard_Real precad                                  = dx;
   if (precad < dy)
     precad = dy;
   if (precad < dz)
@@ -90,9 +91,9 @@ void HLRAlgo_PolyAlgo::Update()
   Standard_Real SurDY  = 1020 / (dy + precad);
   Standard_Real SurDZ  = 508 / (dz + precad);
   precad               = precad * 0.5;
-  Standard_Real DecaX  = -aBox.XMin + precad;
-  Standard_Real DecaY  = -aBox.YMin + precad;
-  Standard_Real DecaZ  = -aBox.ZMin + precad;
+  Standard_Real DecaX  = -aXMin + precad;
+  Standard_Real DecaY  = -aYMin + precad;
+  Standard_Real DecaZ  = -aZMin + precad;
 
   for (Standard_Integer aShellIter = myHShell.Lower(); aShellIter <= myHShell.Upper(); ++aShellIter)
   {
