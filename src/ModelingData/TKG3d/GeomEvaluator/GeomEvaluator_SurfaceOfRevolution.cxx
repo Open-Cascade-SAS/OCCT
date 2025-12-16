@@ -45,13 +45,10 @@ void GeomEvaluator_SurfaceOfRevolution::D0(const Standard_Real theU,
                                            const Standard_Real theV,
                                            gp_Pnt&             theValue) const
 {
-  const gp_XYZ& aLoc = myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-
   if (!myBaseAdaptor.IsNull())
-    Geom_RevolutionUtils::D0(theU, theV, *myBaseAdaptor, aLoc, aDir, theValue);
+    Geom_RevolutionUtils::D0(theU, theV, *myBaseAdaptor, myRotAxis, theValue);
   else
-    Geom_RevolutionUtils::D0(theU, theV, *myBaseCurve, aLoc, aDir, theValue);
+    Geom_RevolutionUtils::D0(theU, theV, *myBaseCurve, myRotAxis, theValue);
 }
 
 //==================================================================================================
@@ -62,13 +59,10 @@ void GeomEvaluator_SurfaceOfRevolution::D1(const Standard_Real theU,
                                            gp_Vec&             theD1U,
                                            gp_Vec&             theD1V) const
 {
-  const gp_XYZ& aLoc = myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-
   if (!myBaseAdaptor.IsNull())
-    Geom_RevolutionUtils::D1(theU, theV, *myBaseAdaptor, aLoc, aDir, theValue, theD1U, theD1V);
+    Geom_RevolutionUtils::D1(theU, theV, *myBaseAdaptor, myRotAxis, theValue, theD1U, theD1V);
   else
-    Geom_RevolutionUtils::D1(theU, theV, *myBaseCurve, aLoc, aDir, theValue, theD1U, theD1V);
+    Geom_RevolutionUtils::D1(theU, theV, *myBaseCurve, myRotAxis, theValue, theD1U, theD1V);
 }
 
 //==================================================================================================
@@ -82,15 +76,11 @@ void GeomEvaluator_SurfaceOfRevolution::D2(const Standard_Real theU,
                                            gp_Vec&             theD2V,
                                            gp_Vec&             theD2UV) const
 {
-  const gp_XYZ& aLoc = myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-
   if (!myBaseAdaptor.IsNull())
     Geom_RevolutionUtils::D2(theU,
                              theV,
                              *myBaseAdaptor,
-                             aLoc,
-                             aDir,
+                             myRotAxis,
                              theValue,
                              theD1U,
                              theD1V,
@@ -101,8 +91,7 @@ void GeomEvaluator_SurfaceOfRevolution::D2(const Standard_Real theU,
     Geom_RevolutionUtils::D2(theU,
                              theV,
                              *myBaseCurve,
-                             aLoc,
-                             aDir,
+                             myRotAxis,
                              theValue,
                              theD1U,
                              theD1V,
@@ -126,15 +115,11 @@ void GeomEvaluator_SurfaceOfRevolution::D3(const Standard_Real theU,
                                            gp_Vec&             theD3UUV,
                                            gp_Vec&             theD3UVV) const
 {
-  const gp_XYZ& aLoc = myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-
   if (!myBaseAdaptor.IsNull())
     Geom_RevolutionUtils::D3(theU,
                              theV,
                              *myBaseAdaptor,
-                             aLoc,
-                             aDir,
+                             myRotAxis,
                              theValue,
                              theD1U,
                              theD1V,
@@ -149,8 +134,7 @@ void GeomEvaluator_SurfaceOfRevolution::D3(const Standard_Real theU,
     Geom_RevolutionUtils::D3(theU,
                              theV,
                              *myBaseCurve,
-                             aLoc,
-                             aDir,
+                             myRotAxis,
                              theValue,
                              theD1U,
                              theD1V,
@@ -175,13 +159,10 @@ gp_Vec GeomEvaluator_SurfaceOfRevolution::DN(const Standard_Real    theU,
   Standard_RangeError_Raise_if(theDerU + theDerV < 1,
                                "GeomEvaluator_SurfaceOfRevolution::DN(): theDerU + theDerV < 1");
 
-  const gp_XYZ& aLoc = myRotAxis.Location().XYZ();
-  const gp_XYZ& aDir = myRotAxis.Direction().XYZ();
-
   if (!myBaseAdaptor.IsNull())
-    return Geom_RevolutionUtils::DN(theU, theV, *myBaseAdaptor, aLoc, aDir, theDerU, theDerV);
+    return Geom_RevolutionUtils::DN(theU, theV, *myBaseAdaptor, myRotAxis, theDerU, theDerV);
   else
-    return Geom_RevolutionUtils::DN(theU, theV, *myBaseCurve, aLoc, aDir, theDerU, theDerV);
+    return Geom_RevolutionUtils::DN(theU, theV, *myBaseCurve, myRotAxis, theDerU, theDerV);
 }
 
 //==================================================================================================
