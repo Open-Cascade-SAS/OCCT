@@ -50,8 +50,10 @@ set(OCCT_Geom_FILES
   Geom_Line.hxx
   Geom_OffsetCurve.cxx
   Geom_OffsetCurve.hxx
+  Geom_OffsetCurveUtils.pxx
   Geom_OffsetSurface.cxx
   Geom_OffsetSurface.hxx
+  Geom_OffsetSurfaceUtils.pxx
   Geom_OsculatingSurface.cxx
   Geom_OsculatingSurface.hxx
   Geom_Parabola.cxx
