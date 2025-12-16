@@ -715,16 +715,16 @@ Handle(Geom2d_Curve) GeomLib::GTransform(const Handle(Geom2d_Curve)& Curve, cons
   else
   {
 
-    // Alors, la GTrsf est une other Transformation.
-    // La geometrie des courbes est alors changee, et les conics devront
-    // etre converties en BSplines.
+    // So, the GTrsf is an other Transformation.
+    // The geometry of the curves is then changed, and the conics will have to
+    // be converted to BSplines.
 
     Handle(Standard_Type) TheType = Curve->DynamicType();
 
     if (TheType == STANDARD_TYPE(Geom2d_TrimmedCurve))
     {
 
-      // On va recurer sur la BasisCurve
+      // We will recurse on the BasisCurve
 
       Handle(Geom2d_TrimmedCurve) C = Handle(Geom2d_TrimmedCurve)::DownCast(Curve->Copy());
 
@@ -1318,11 +1318,11 @@ void GeomLib::ExtendCurveToPoint(Handle(Geom_BoundedCurve)& Curve,
   L1 = p0.Distance(Point);
   if (L1 > Tol)
   {
-    // Lambda est le ratio qu'il faut appliquer a la derive de la courbe
-    // pour obtenir la derive du prolongement (fixe arbitrairement a la
-    // longueur du segment bout de la courbe - point cible.
-    // On essai d'avoir sur le prolongement la vitesse moyenne que l'on
-    // a sur la courbe.
+    // Lambda is the ratio to apply to the derivative of the curve
+    // to obtain the derivative of the extension (arbitrarily fixed to the
+    // length of the segment end of curve - target point.
+    // We try to have on the extension the average velocity that we
+    // have on the curve.
     gp_Vec        daux;
     gp_Pnt        pp;
     Standard_Real f = Curve->FirstParameter(), t, dt, norm;
@@ -1517,7 +1517,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
   if (!InU && (BS->VDegree() < Continuity + 1))
     BS->IncreaseDegree(BS->UDegree(), Continuity + 1);
 
-  // si BS etait periodique dans le sens de l'extension, elle ne le sera plus
+  // if BS was periodic in the extension direction, it will no longer be
   if ((InU && (BS->IsUPeriodic())) || (!InU && (BS->IsVPeriodic())))
   {
     Standard_Real U0, U1, V0, V1;
@@ -1562,7 +1562,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
       Cdim = BS->NbUPoles() * gap;
     }
 
-    //  les noeuds plats
+    //  the flat knots
     Ksize  = NbP + Cdeg + 1;
     FKnots = new (TColStd_HArray1OfReal)(1, Ksize);
     if (InU)
@@ -1570,13 +1570,13 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     else
       BS->VKnotSequence(FKnots->ChangeArray1());
 
-    //  le parametre du noeud de raccord
+    //  the parameter of the connection knot
     if (After)
       Tbord = FKnots->Value(FKnots->Upper() - Cdeg);
     else
       Tbord = FKnots->Value(FKnots->Lower() + Cdeg);
 
-    //  les poles
+    //  the poles
     Psize = Cdim * NbP;
     Poles = new (TColStd_HArray1OfReal)(1, Psize);
 
@@ -1612,7 +1612,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     }
     Padr = (Standard_Real*)&Poles->ChangeValue(1);
 
-    //  calcul du point de raccord et de la tangente
+    //  calculation of the connection point and tangent
     Point  = new (TColStd_HArray1OfReal)(1, Cdim);
     Tgte   = new (TColStd_HArray1OfReal)(1, Cdim);
     lambda = new (TColStd_HArray1OfReal)(1, Cdim);
@@ -1644,7 +1644,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
       tgte(ii)  = Result(ii + Cdim);
     }
 
-    //  calcul de la contrainte a atteindre
+    //  calculation of the constraint to reach
 
     gp_Vec CurT, OldT;
 
@@ -1662,9 +1662,9 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
         if (NTgte > Tgtol)
         {
           val = Length / NTgte;
-          // Attentions aux Cas ou le segment donne par les poles
-          // est oppose au sens de la derive
-          // Exemple: Certaine portions de tore.
+          // Attention to cases where the segment given by the poles
+          // is opposite to the direction of the derivative
+          // Example: Certain portions of torus.
           if ((OldN > Tgtol) && (CurT.Angle(OldT) > 2))
           {
             Ok = Standard_False;
@@ -1692,9 +1692,9 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
         if (NTgte > Tgtol)
         {
           val = Length / NTgte;
-          // Attentions aux Cas ou le segment donne par les poles
-          // est oppose au sens de la derive
-          // Exemple: Certaine portion de tore.
+          // Attention to cases where the segment given by the poles
+          // is opposite to the direction of the derivative
+          // Example: Certain portions of torus.
           if ((OldN > Tgtol) && (CurT.Angle(OldT) > 2))
           {
             Ok = Standard_False;
@@ -1712,8 +1712,8 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     }
     if (!Ok && Kount < 2)
     {
-      // On augmente le degre de l'iso bord afin de rapprocher les poles de la surface
-      // Et on ressaye
+      // We increase the degree of the border iso to bring the poles of the surface closer
+      // And we retry
       if (InU)
         BS->IncreaseDegree(BS->UDegree(), BS->VDegree() + 2);
       else
@@ -1737,7 +1737,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     }
   }
 
-  //  cas particulier du rationnel
+  //  special case of rational
   if (rational)
   {
     for (ipole = 1; ipole <= Psize; ipole += gap)
@@ -1754,7 +1754,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     }
   }
 
-  //  tableaux necessaires pour l'extension
+  //  arrays needed for the extension
   Standard_Integer     Ksize2 = Ksize + Cdeg, NbPoles, NbKnots = 0;
   TColStd_Array1OfReal FK(1, Ksize2);
   Standard_Real*       FKRadr = &FK(1);

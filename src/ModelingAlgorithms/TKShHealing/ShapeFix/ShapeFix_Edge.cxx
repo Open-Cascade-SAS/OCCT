@@ -171,7 +171,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
   Standard_Real uf, ul, vf, vl;
   aSurf->Bounds(uf, ul, vf, vl);
 
-  // cas d une ligne
+  // case of a line
   Handle(Geom2d_Line) theL2d = Handle(Geom2d_Line)::DownCast(aC2d);
   if (!theL2d.IsNull())
   {
@@ -245,7 +245,7 @@ static Handle(Geom2d_Curve) TranslatePCurve(const Handle(Geom_Surface)& aSurf,
   }
   else
   {
-    // cas bspline curve
+    // case of BSpline curve
     Handle(Geom2d_BSplineCurve) aBC = Handle(Geom2d_BSplineCurve)::DownCast(aC2d);
     if (aBC.IsNull())
     {

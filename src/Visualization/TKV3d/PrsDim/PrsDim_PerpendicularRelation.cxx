@@ -77,12 +77,12 @@ void PrsDim_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManag
     switch (myFShape.ShapeType())
     {
       case TopAbs_FACE: {
-        // cas perpendiculaire entre deux faces
+        // perpendicular case between two faces
         ComputeTwoFacesPerpendicular(aPresentation);
       }
       break;
       case TopAbs_EDGE: {
-        // cas perpendiculaire entre deux edges
+        // perpendicular case between two edges
         ComputeTwoEdgesPerpendicular(aPresentation);
       }
       break;
@@ -90,7 +90,7 @@ void PrsDim_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManag
         break;
     }
   }
-  // Cas pas traite - Edge/Face
+  // Case not handled - Edge/Face
 }
 
 //=================================================================================================
@@ -232,7 +232,7 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
   pint3d = adp.Value(pint.X(), pint.Y());
 
   myPosition = pint3d;
-  // recherche points attache
+  // search for attachment points
   Standard_Real par1, par2, curpar, pmin, pmax; //,dist,sign;
   Standard_Real length(0.);
 

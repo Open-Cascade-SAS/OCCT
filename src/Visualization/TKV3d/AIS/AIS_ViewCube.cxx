@@ -35,9 +35,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCubeSensitive, Select3D_SensitivePrimitiveArr
 
 namespace
 {
-static const Standard_Integer THE_NB_ROUND_SPLITS   = 8;
-static const Standard_Integer THE_NB_DISK_SLICES    = 20;
-static const Standard_Integer THE_NB_ARROW_FACETTES = 20;
+constexpr Standard_Integer THE_NB_ROUND_SPLITS   = 8;
+constexpr Standard_Integer THE_NB_DISK_SLICES    = 20;
+constexpr Standard_Integer THE_NB_ARROW_FACETTES = 20;
 
 //! Return the number of non-zero components.
 static Standard_Integer nbDirectionComponents(const gp_Dir& theDir)

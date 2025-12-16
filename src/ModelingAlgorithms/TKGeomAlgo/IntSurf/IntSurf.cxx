@@ -33,8 +33,8 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
 
 {
 
-  // Effectuer le produit mixte normale, tangente 1, tangente 2
-  // pour avoir le type de la transition.
+  // Compute the mixed product of normal, tangent 1, tangent 2
+  // to get the type of transition.
 
   gp_Vec pvect(TgSecond.Crossed(TgFirst));
 

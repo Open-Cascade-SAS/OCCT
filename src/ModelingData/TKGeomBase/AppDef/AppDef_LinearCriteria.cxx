@@ -792,7 +792,7 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
     }
   }
   else
-  { // pas de points dans l'interval.
+  { // no points in the interval.
     IF = IL;
     IL--;
   }

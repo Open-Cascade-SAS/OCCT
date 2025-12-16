@@ -811,9 +811,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     return;
   }
   Ambda2 = Gnr1;
-  // Le rang 0 de Save ne doit servir q'au test accelarteur en fin de boucle
-  // s'il on est dejas sur la solution, il faut leurer ce test pour eviter
-  // de faire une seconde iteration...
+  // Rank 0 of Save should only be used for the accelerator test at the end of the loop.
+  // If we are already on the solution, we need to bypass this test to avoid
+  // making a second iteration...
   Save(0)                 = std::max(F2, EpsSqrt);
   Standard_Real aTol_Func = Epsilon(F2);
   FSR_DEBUG("=== Mode Debug de Function Set Root" << std::endl);
@@ -922,15 +922,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       Standard_Boolean Sortbis;
 
       // -------------------------------------------------
-      // Traitement standard sans traitement des bords
+      // Standard processing without boundary handling
       // -------------------------------------------------
       if (!Sort)
-      { // si l'on est pas sortie on essaye de progresser en avant
+      { // if we haven't exited, we try to progress forward
         while ((F2 / PreviousMinimum > Progres) && !Stop)
         {
           if (F2 < OldF && (Dy < 0.0))
           {
-            // On essaye de progresser dans cette direction.
+            // We try to progress in this direction.
             FSR_DEBUG(" iteration de descente = " << DescenteIter);
             DescenteIter++;
             SolSave = Sol;
@@ -1273,21 +1273,21 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           }
         }
         else
-          ChangeDirection = Standard_False; // Si oui on recommence
+          ChangeDirection = Standard_False; // If yes we restart
       }
       else
-        ChangeDirection = Standard_False; // Pas d'historique on continue
-      // Si le gradient ne diminue pas suffisemment par newton on essaie
-      // le gradient sauf si f diminue (aussi bizarre que cela puisse
-      // paraitre avec NEWTON le gradient de f peut augmenter alors que f
-      // diminue: dans ce cas il faut garder NEWTON)
+        ChangeDirection = Standard_False; // No history, we continue
+      // If the gradient does not decrease sufficiently with Newton, we try
+      // the gradient method unless f decreases (as strange as it may seem,
+      // with NEWTON the gradient of f can increase while f
+      // decreases: in this case we must keep NEWTON)
       if ((Gnr1 > 0.9 * Oldgr) && (F2 > 0.5 * PreviousMinimum))
       {
         ChangeDirection = Standard_True;
       }
 
-      // Si l'on ne decide pas de changer de strategie, on verifie,
-      // si ce n'est dejas fait
+      // If we don't decide to change strategy, we verify
+      // if not already done
       if ((!ChangeDirection) && (!Verif))
       {
         for (i = Delta.Lower(); i <= Delta.Upper(); i++)

@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
 
 namespace
 {
-static const Standard_Integer THE_MaxSizeOfResult = 100000;
+constexpr Standard_Integer THE_MaxSizeOfResult = 100000;
 }
 
 //=================================================================================================

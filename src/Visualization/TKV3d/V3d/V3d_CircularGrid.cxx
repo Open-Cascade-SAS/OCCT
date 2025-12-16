@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_CircularGrid, Aspect_CircularGrid)
 
 namespace
 {
-static const Standard_Real THE_DEFAULT_GRID_STEP = 10.0;
-#define DIVISION 8
-#define MYFACTOR 50.
+constexpr double THE_DEFAULT_GRID_STEP = 10.0;
+constexpr int    THE_DIVISION          = 8;
+constexpr double THE_MYFACTOR          = 50.0;
 } // namespace
 
 //! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device
@@ -75,7 +75,7 @@ V3d_CircularGrid::V3d_CircularGrid(const V3d_ViewerPointer& aViewer,
       myCurStep(0.0),
       myCurDivi(0),
       myRadius(0.5 * aViewer->DefaultViewSize()),
-      myOffSet(THE_DEFAULT_GRID_STEP / MYFACTOR)
+      myOffSet(THE_DEFAULT_GRID_STEP / THE_MYFACTOR)
 {
   myColor      = aColor;
   myTenthColor = aTenthColor;
@@ -228,7 +228,7 @@ void V3d_CircularGrid::DefineLines()
   myGroup->Clear();
 
   const Standard_Integer Division =
-    (Standard_Integer)((aDivision >= DIVISION ? aDivision : DIVISION));
+    (Standard_Integer)((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
 
   Standard_Integer nbpnts = 2 * Division;
   // diametres

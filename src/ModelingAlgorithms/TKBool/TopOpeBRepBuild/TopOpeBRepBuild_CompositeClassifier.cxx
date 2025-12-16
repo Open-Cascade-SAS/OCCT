@@ -22,9 +22,9 @@
 
 #define MYBB ((TopOpeBRepBuild_BlockBuilder*)myBlockBuilder)
 
-// sourvenir d'un raise sur FrozenShape lors du Add(myShell,aFace)
-// avec un shell qui a ete deja ete place dans le solide interne du
-// TopOpeBRepTool_SolidClassifier par LoadShell.
+// reminder of a raise on FrozenShape during Add(myShell,aFace)
+// with a shell that has already been placed in the internal solid of
+// TopOpeBRepTool_SolidClassifier by LoadShell.
 
 #ifdef OCCT_DEBUG
 // static Standard_Integer dddjyl = 0;

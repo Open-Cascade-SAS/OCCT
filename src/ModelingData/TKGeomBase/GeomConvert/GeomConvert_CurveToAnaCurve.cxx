@@ -167,7 +167,7 @@ Handle(Geom_Line) GeomConvert_CurveToAnaCurve::ComputeLine(const Handle(Geom_Cur
   Handle(Geom_Line) line;
   if (curve.IsNull())
     return line;
-  line = Handle(Geom_Line)::DownCast(curve); // qui sait
+  line = Handle(Geom_Line)::DownCast(curve); // who knows
   if (!line.IsNull())
   {
     cf        = c1;

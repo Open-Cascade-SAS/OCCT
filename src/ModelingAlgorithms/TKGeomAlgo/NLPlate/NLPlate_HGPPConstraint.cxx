@@ -66,7 +66,7 @@ static const gp_XYZ XYZnull(0., 0., 0.);
 const gp_XYZ& NLPlate_HGPPConstraint::G0Target() const
 {
   return XYZnull;
-  // cette methode ne devrait pas etre appelee
+  // this method should not be called
 }
 
 static const Plate_D1 D1null(XYZnull, XYZnull);
@@ -74,7 +74,7 @@ static const Plate_D1 D1null(XYZnull, XYZnull);
 const Plate_D1& NLPlate_HGPPConstraint::G1Target() const
 {
   return D1null;
-  // cette methode ne devrait pas etre appelee
+  // this method should not be called
 }
 
 static const Plate_D2 D2null(XYZnull, XYZnull, XYZnull);
@@ -82,7 +82,7 @@ static const Plate_D2 D2null(XYZnull, XYZnull, XYZnull);
 const Plate_D2& NLPlate_HGPPConstraint::G2Target() const
 {
   return D2null;
-  // cette methode ne devrait pas etre appelee
+  // this method should not be called
 }
 
 static const Plate_D3 D3null(XYZnull, XYZnull, XYZnull, XYZnull);
@@ -90,7 +90,7 @@ static const Plate_D3 D3null(XYZnull, XYZnull, XYZnull, XYZnull);
 const Plate_D3& NLPlate_HGPPConstraint::G3Target() const
 {
   return D3null;
-  // cette methode ne devrait pas etre applee
+  // this method should not be called
 }
 
 Standard_Integer NLPlate_HGPPConstraint::Orientation()

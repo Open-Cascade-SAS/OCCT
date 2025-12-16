@@ -666,7 +666,7 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
   // Traitement normal pour une courbe
   Standard_Boolean MorePoints = Standard_True;
   Standard_Real    U2         = myFirstu;
-  Standard_Real    AngleMax   = myAngularDeflection * 0.5; // car on prend le point milieu
+  Standard_Real    AngleMax   = myAngularDeflection * 0.5; // because we take the midpoint
   // Indexes of intervals of U1 and U2, used to handle non-uniform case.
   Standard_Integer aIdx[2]       = {Intervs.Lower(), Intervs.Lower()};
   Standard_Boolean isNeedToCheck = Standard_False;

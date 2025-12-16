@@ -775,24 +775,24 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
   sint = axey.Modulus();
   cost = std::abs(Co.Axis().Direction().XYZ().Dot(normp));
 
-  // Le calcul de costa permet de determiner si le plan contient
-  // un generatrice du cone : on calcul std::sin((PI/2. - t) - angl)
+  // The calculation of costa determines if the plane contains
+  // a generatrix of the cone: we calculate std::sin((PI/2. - t) - angl)
 
   costa = cost * cosa - sint * sina; // sin((PI/2 -t)-angl)=cos(t+angl)
-                                     // avec  t ramene entre 0 et pi/2.
+                                     // with t brought back between 0 and pi/2.
 
   if (std::abs(dist) < Tol)
   {
-    // on considere que le plan contient le sommet du cone.
-    // les solutions possibles sont donc : 1 point, 1 droite, 2 droites
-    // selon l inclinaison du plan.
+    // we consider that the plane contains the apex of the cone.
+    // the possible solutions are therefore: 1 point, 1 line, 2 lines
+    // according to the inclination of the plane.
 
     if (std::abs(costa) < Tolang)
-    { // plan parallele a la generatrice
+    { // plane parallel to the generatrix
       typeres = IntAna_Line;
       nbint   = 1;
       gp_XYZ ptonaxe(apex.XYZ() + 10. * (Co.Axis().Direction().XYZ()));
-      // point sur l axe du cone cote z positif
+      // point on the axis of the cone on the positive z side
 
       dist    = A * ptonaxe.X() + B * ptonaxe.Y() + C * ptonaxe.Z() + D;
       ptonaxe = ptonaxe - dist * normp;
@@ -800,7 +800,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
       dir1.SetXYZ(ptonaxe - pt1.XYZ());
     }
     else if (cost < sina)
-    { // plan "interieur" au cone
+    { // plane "interior" to the cone
       typeres = IntAna_Line;
       nbint   = 2;
       pt1     = apex;
@@ -810,7 +810,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
       dir2.SetXYZ(axex - dh * axey);
     }
     else
-    { // plan "exterieur" au cone
+    { // plane "exterior" to the cone
       typeres = IntAna_Point;
       nbint   = 1;
       pt1     = apex;
@@ -818,14 +818,14 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
   }
   else
   {
-    // Solutions possibles : cercle, ellipse, parabole, hyperbole selon
-    // l inclinaison du plan.
+    // Possible solutions: circle, ellipse, parabola, hyperbola according to
+    // the inclination of the plane.
     Standard_Real deltacenter, distance;
 
     if (cost < Tolang)
     {
-      // Le plan contient la direction de l axe du cone. La solution est
-      // l hyperbole
+      // The plane contains the direction of the cone axis. The solution is
+      // the hyperbola
       typeres = IntAna_Hyperbola;
       nbint   = 2;
       pt1.SetXYZ(apex.XYZ() - dist * normp);
@@ -838,13 +838,13 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
     else
     {
 
-      IntAna_IntConicQuad inter(axec, P, Tolang); // on a necessairement 1 point.
+      IntAna_IntConicQuad inter(axec, P, Tolang); // we necessarily have 1 point.
 
       gp_Pnt center(inter.Point(1));
 
-      // En fonction de la position de l intersection par rapport au sommet
-      // du cone, on change l axe x en -x et y en -y. Le parametre du sommet
-      // sur axec est negatif (voir definition du cone)
+      // Depending on the position of the intersection relative to the apex
+      // of the cone, we change the x axis to -x and y to -y. The parameter of the apex
+      // on axec is negative (see definition of the cone)
 
       distance = apex.Distance(center);
 
@@ -855,7 +855,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&       P,
       }
 
       if (std::abs(costa) < Tolang)
-      { // plan parallele a une generatrice
+      { // plane parallel to a generatrix
         typeres     = IntAna_Parabola;
         nbint       = 1;
         deltacenter = distance / 2. / cosa;
@@ -981,15 +981,15 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& P, const gp_Sphere& S)
 
   if (std::abs(std::abs(dist) - radius) < Epsilon(radius))
   {
-    // on a une seule solution : le point projection du centre de la sphere
-    // sur le plan
+    // we have a single solution: the projection point of the sphere center
+    // onto the plane
     nbint   = 1;
     typeres = IntAna_Point;
     pt1.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);
   }
   else if (std::abs(dist) < radius)
   {
-    // on a un cercle solution
+    // we have a circle solution
     nbint   = 1;
     typeres = IntAna_Circle;
     pt1.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);

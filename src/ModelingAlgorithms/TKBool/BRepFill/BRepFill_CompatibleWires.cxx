@@ -2089,7 +2089,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
       else
       {
 
-        // recherche du vertex correspondant a la projection conique
+        // search for the vertex corresponding to the conical projection
         Standard_Real angmin, angV, eta = Precision::Angular();
         TopoDS_Vertex Vopti;
         angmin   = M_PI / 2;
@@ -2170,7 +2170,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
       }
       else
       {
-        // cas general
+        // general case
         gp_Pnt        Pbout = Pnext;
         TopoDS_Edge   E1, E2;
         TopoDS_Vertex V1, V2;
@@ -2207,7 +2207,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
 
         if (std::abs(Pbout.Distance(P1) - Pbout.Distance(P2)) < Precision::Confusion())
         {
-          // cas limite ; on se decale un peu
+          // edge case; shifting a bit
           Pbout = PPn;
           BRepAdaptor_Curve Curve1(E1);
           P1 = Curve1.Value(U1);
@@ -2215,11 +2215,11 @@ void BRepFill_CompatibleWires::ComputeOrigin(const Standard_Boolean /*polar*/)
           P2 = Curve2.Value(U2);
         }
 
-        // calcul de rangdeb
+        // compute rangdeb
         rangdeb = 0;
         if (Pbout.Distance(P1) < Pbout.Distance(P2))
         {
-          // P1 est plus proche; parcours = False
+          // P1 is closer; parcours = False
           parcours = Standard_False;
           rang     = 0;
           for (anExp.Init(wire); anExp.More(); anExp.Next())
@@ -2403,7 +2403,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
           if (ang < -M_PI/2.0)
             ang = -M_PI - ang;
           if (std::abs(ang-M_PI/2.0)<Precision::Angular()) {
-            // cas d'ambiguite
+            // ambiguity case
             gp_Vec Vtrans(P0.Location(),P.Location()),Vsign;
             Standard_Real alpha,beta,sign=1;
             Vsign.SetLinearForm(Vtrans.Dot(vec1),vec2,-Vtrans.Dot(vec2),vec1);

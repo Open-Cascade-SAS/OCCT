@@ -1124,7 +1124,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
         myBuilder.NaturalRestriction(F, bval);
 
         Standard_Byte aByte = (Standard_Byte)IS.get();
-        // cas triangulation
+        // triangulation case
         if (aByte == 2)
         {
           BinTools::GetInteger(IS, s);

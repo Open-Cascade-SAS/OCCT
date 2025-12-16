@@ -260,9 +260,9 @@ void TNaming::Update(const TDF_Label& L, TopTools_DataMapOfShapeShape& M)
     }
   }
 
-  // SI Les shapes dans les sous-labels sont des sous shapes des shapes de L
-  // si les shapes de L n ont pas changes les shapes des sous-labels ne seront
-  // pas changes non plus.
+  // IF the shapes in sub-labels are sub-shapes of L's shapes,
+  // if L's shapes have not changed, the sub-label shapes will not
+  // be changed either.
   for (TDF_ChildIterator ciL(L); ciL.More(); ciL.Next())
   {
     TNaming::Update(ciL.Value(), M);
@@ -486,7 +486,7 @@ void TNaming::Replicate(const TopoDS_Shape& SH, const gp_Trsf& T, const TDF_Labe
   BRepBuilderAPI_Transform opeTrsf(T);
   if (SH.ShapeType() == TopAbs_FACE || SH.ShapeType() == TopAbs_WIRE)
   {
-    opeTrsf.Perform(SH, Standard_True); // pour le pattern de prism
+    opeTrsf.Perform(SH, Standard_True); // for the prism pattern
   }
   else
   {

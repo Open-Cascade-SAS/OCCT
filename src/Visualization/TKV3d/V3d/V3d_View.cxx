@@ -51,12 +51,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_View, Standard_Transient)
 
-#define DEUXPI (2. * M_PI)
-
 namespace
 {
-static const Standard_Integer THE_NB_BOUND_POINTS = 8;
-}
+constexpr double THE_TWO_PI          = 2.0 * M_PI;
+constexpr int    THE_NB_BOUND_POINTS = 8;
+} // namespace
 
 //=================================================================================================
 
@@ -723,23 +722,23 @@ void V3d_View::Rotate(const Standard_Real    ax,
   Standard_Real Az = az;
 
   if (Ax > 0.)
-    while (Ax > DEUXPI)
-      Ax -= DEUXPI;
+    while (Ax > THE_TWO_PI)
+      Ax -= THE_TWO_PI;
   else if (Ax < 0.)
-    while (Ax < -DEUXPI)
-      Ax += DEUXPI;
+    while (Ax < -THE_TWO_PI)
+      Ax += THE_TWO_PI;
   if (Ay > 0.)
-    while (Ay > DEUXPI)
-      Ay -= DEUXPI;
+    while (Ay > THE_TWO_PI)
+      Ay -= THE_TWO_PI;
   else if (Ay < 0.)
-    while (Ay < -DEUXPI)
-      Ay += DEUXPI;
+    while (Ay < -THE_TWO_PI)
+      Ay += THE_TWO_PI;
   if (Az > 0.)
-    while (Az > DEUXPI)
-      Az -= DEUXPI;
+    while (Az > THE_TWO_PI)
+      Az -= THE_TWO_PI;
   else if (Az < 0.)
-    while (Az < -DEUXPI)
-      Az += DEUXPI;
+    while (Az < -THE_TWO_PI)
+      Az += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -790,23 +789,23 @@ void V3d_View::Rotate(const Standard_Real    ax,
   Standard_Real Az = az;
 
   if (Ax > 0.)
-    while (Ax > DEUXPI)
-      Ax -= DEUXPI;
+    while (Ax > THE_TWO_PI)
+      Ax -= THE_TWO_PI;
   else if (Ax < 0.)
-    while (Ax < -DEUXPI)
-      Ax += DEUXPI;
+    while (Ax < -THE_TWO_PI)
+      Ax += THE_TWO_PI;
   if (Ay > 0.)
-    while (Ay > DEUXPI)
-      Ay -= DEUXPI;
+    while (Ay > THE_TWO_PI)
+      Ay -= THE_TWO_PI;
   else if (Ay < 0.)
-    while (Ay < -DEUXPI)
-      Ay += DEUXPI;
+    while (Ay < -THE_TWO_PI)
+      Ay += THE_TWO_PI;
   if (Az > 0.)
-    while (Az > DEUXPI)
-      Az -= DEUXPI;
+    while (Az > THE_TWO_PI)
+      Az -= THE_TWO_PI;
   else if (Az < 0.)
-    while (Az < -DEUXPI)
-      Az += DEUXPI;
+    while (Az < -THE_TWO_PI)
+      Az += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -877,11 +876,11 @@ void V3d_View::Rotate(const V3d_TypeOfAxe    theAxe,
   Standard_Real anAngle = theAngle;
 
   if (anAngle > 0.0)
-    while (anAngle > DEUXPI)
-      anAngle -= DEUXPI;
+    while (anAngle > THE_TWO_PI)
+      anAngle -= THE_TWO_PI;
   else if (anAngle < 0.0)
-    while (anAngle < -DEUXPI)
-      anAngle += DEUXPI;
+    while (anAngle < -THE_TWO_PI)
+      anAngle += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -933,11 +932,11 @@ void V3d_View::Rotate(const Standard_Real angle, const Standard_Boolean Start)
   Standard_Real Angle = angle;
 
   if (Angle > 0.)
-    while (Angle > DEUXPI)
-      Angle -= DEUXPI;
+    while (Angle > THE_TWO_PI)
+      Angle -= THE_TWO_PI;
   else if (Angle < 0.)
-    while (Angle < -DEUXPI)
-      Angle += DEUXPI;
+    while (Angle < -THE_TWO_PI)
+      Angle += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -975,23 +974,23 @@ void V3d_View::Turn(const Standard_Real    ax,
   Standard_Real Az = az;
 
   if (Ax > 0.)
-    while (Ax > DEUXPI)
-      Ax -= DEUXPI;
+    while (Ax > THE_TWO_PI)
+      Ax -= THE_TWO_PI;
   else if (Ax < 0.)
-    while (Ax < -DEUXPI)
-      Ax += DEUXPI;
+    while (Ax < -THE_TWO_PI)
+      Ax += THE_TWO_PI;
   if (Ay > 0.)
-    while (Ay > DEUXPI)
-      Ay -= DEUXPI;
+    while (Ay > THE_TWO_PI)
+      Ay -= THE_TWO_PI;
   else if (Ay < 0.)
-    while (Ay < -DEUXPI)
-      Ay += DEUXPI;
+    while (Ay < -THE_TWO_PI)
+      Ay += THE_TWO_PI;
   if (Az > 0.)
-    while (Az > DEUXPI)
-      Az -= DEUXPI;
+    while (Az > THE_TWO_PI)
+      Az -= THE_TWO_PI;
   else if (Az < 0.)
-    while (Az < -DEUXPI)
-      Az += DEUXPI;
+    while (Az < -THE_TWO_PI)
+      Az += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -1053,11 +1052,11 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
   Standard_Real Angle = angle;
 
   if (Angle > 0.)
-    while (Angle > DEUXPI)
-      Angle -= DEUXPI;
+    while (Angle > THE_TWO_PI)
+      Angle -= THE_TWO_PI;
   else if (Angle < 0.)
-    while (Angle < -DEUXPI)
-      Angle += DEUXPI;
+    while (Angle < -THE_TWO_PI)
+      Angle += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -1090,11 +1089,11 @@ void V3d_View::SetTwist(const Standard_Real angle)
   Standard_Real Angle = angle;
 
   if (Angle > 0.)
-    while (Angle > DEUXPI)
-      Angle -= DEUXPI;
+    while (Angle > THE_TWO_PI)
+      Angle -= THE_TWO_PI;
   else if (Angle < 0.)
-    while (Angle < -DEUXPI)
-      Angle += DEUXPI;
+    while (Angle < -THE_TWO_PI)
+      Angle += THE_TWO_PI;
 
   Handle(Graphic3d_Camera) aCamera = Camera();
 
@@ -2265,7 +2264,7 @@ Standard_Real V3d_View::Twist() const
     const gp_Dir aProjDir = Camera()->Direction().Reversed();
     if (aP.Dot(aProjDir.XYZ()) < 0.0)
     {
-      anAngle = DEUXPI - anAngle;
+      anAngle = THE_TWO_PI - anAngle;
     }
   }
   return anAngle;

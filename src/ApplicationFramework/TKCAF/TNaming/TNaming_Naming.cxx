@@ -1181,8 +1181,8 @@ static Handle(TNaming_NamedShape) BuildName(const TDF_Label&                  F,
   if (OnlyOne)
   {
     //-------------------------------------------------
-    // Filtre par les voisins
-    // pour construire le nom correspondant a S.
+    // Filter by neighbors
+    // to build the name corresponding to S.
     //-------------------------------------------------
 
     if (NS.IsNull())
