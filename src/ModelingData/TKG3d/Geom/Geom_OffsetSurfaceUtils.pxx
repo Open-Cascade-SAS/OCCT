@@ -24,6 +24,7 @@
 #include <Precision.hxx>
 #include <TColgp_Array2OfVec.hxx>
 
+#include <array>
 #include <cmath>
 
 //! Internal helper namespace for 3D offset surface calculations.
@@ -909,7 +910,15 @@ void ComputeDerivatives(int                  theMaxOrder,
   if (theAlongU || theAlongV)
   {
     theMaxOrder = 0;
-    TColgp_Array2OfVec DerSurfL(0, theMaxOrder + theNU + 1, 0, theMaxOrder + theNV + 1);
+    // Stack buffer for DerSurfL: max size is (theNU + 2) × (theNV + 2)
+    // DN can have theNU/theNV up to 6, so max is 8×8=64
+    constexpr int                        aDerSurfLMaxSize = 64;
+    std::array<gp_Vec, aDerSurfLMaxSize> aDerSurfLBuffer;
+    NCollection_Array2<gp_Vec>           DerSurfL(aDerSurfLBuffer[0],
+                                        0,
+                                        theMaxOrder + theNU + 1,
+                                        0,
+                                        theMaxOrder + theNV + 1);
     switch (theMinOrder)
     {
       case 1:
@@ -1091,89 +1100,6 @@ bool ReplaceDerivative(double               theU,
   return isReplaced;
 }
 
-//! Computes normal using CSLib with higher order derivatives for singular case.
-//! Includes handling for CSLib_InfinityOfSolutions using ReplaceDerivative.
-//! @tparam BasisSurfType type of basis surface
-//! @param[in] theMaxOrder maximum derivative order for CSLib
-//! @param[in] theU U parameter
-//! @param[in] theV V parameter
-//! @param[in] theUMin minimum U bound
-//! @param[in] theUMax maximum U bound
-//! @param[in] theVMin minimum V bound
-//! @param[in] theVMax maximum V bound
-//! @param[in] theD1U first derivative with respect to U
-//! @param[in] theD1V first derivative with respect to V
-//! @param[in] theBasisSurf basis surface for computing higher derivatives
-//! @param[out] theNormal computed normal direction
-//! @param[out] theStatus normal computation status
-template <class BasisSurfType>
-void ComputeSingularNormal(int                  theMaxOrder,
-                           double               theU,
-                           double               theV,
-                           double               theUMin,
-                           double               theUMax,
-                           double               theVMin,
-                           double               theVMax,
-                           const gp_Vec&        theD1U,
-                           const gp_Vec&        theD1V,
-                           const BasisSurfType& theBasisSurf,
-                           gp_Dir&              theNormal,
-                           CSLib_NormalStatus&  theStatus)
-{
-  // First try simple normal
-  CSLib::Normal(theD1U, theD1V, THE_D1_MAGNITUDE_TOL, theStatus, theNormal);
-
-  if (theStatus != CSLib_Defined && theMaxOrder > 0)
-  {
-    // Try with higher derivatives
-    TColgp_Array2OfVec aDerNUV(0, theMaxOrder, 0, theMaxOrder);
-    aDerNUV.SetValue(1, 0, theD1U);
-    aDerNUV.SetValue(0, 1, theD1V);
-    for (int i = 0; i <= theMaxOrder; ++i)
-    {
-      for (int j = 0; j <= theMaxOrder; ++j)
-      {
-        if (i + j > 1 && i + j <= theMaxOrder)
-          aDerNUV.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
-      }
-    }
-    int OrderU, OrderV;
-    CSLib::Normal(theMaxOrder,
-                  aDerNUV,
-                  THE_D1_MAGNITUDE_TOL,
-                  theU,
-                  theV,
-                  theUMin,
-                  theUMax,
-                  theVMin,
-                  theVMax,
-                  theStatus,
-                  theNormal,
-                  OrderU,
-                  OrderV);
-
-    // Handle CSLib_InfinityOfSolutions by replacing zero derivative
-    if (theStatus == CSLib_InfinityOfSolutions)
-    {
-      gp_Vec aNewDU = theD1U;
-      gp_Vec aNewDV = theD1V;
-      if (ReplaceDerivative(theU,
-                            theV,
-                            theUMin,
-                            theUMax,
-                            theVMin,
-                            theVMax,
-                            aNewDU,
-                            aNewDV,
-                            THE_D1_MAGNITUDE_TOL * THE_D1_MAGNITUDE_TOL,
-                            theBasisSurf))
-      {
-        CSLib::Normal(aNewDU, aNewDV, THE_D1_MAGNITUDE_TOL, theStatus, theNormal);
-      }
-    }
-  }
-}
-
 //! Attempts to shift the evaluation point towards the center of the parametric space.
 //! This is used when normal calculation fails at singular points near boundaries.
 //! The point is shifted iteratively, each time doubling the distance from the start point.
@@ -1288,9 +1214,13 @@ bool EvaluateD0(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int      aMaxOrder = 3;
-    TColgp_Array2OfVec aDerNUV(0, aMaxOrder, 0, aMaxOrder);
-    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + 1, 0, aMaxOrder + 1);
+    constexpr int                    aMaxOrder    = 3;
+    constexpr int                    aDerNUVSize  = (aMaxOrder + 1) * (aMaxOrder + 1); // 16
+    constexpr int                    aDerSurfSize = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
+    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
+    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
+    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder, 0, aMaxOrder);
+    NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 1, 0, aMaxOrder + 1);
 
     aDerSurf.SetValue(1, 0, aD1U);
     aDerSurf.SetValue(0, 1, aD1V);
@@ -1445,9 +1375,13 @@ bool EvaluateD1(double                  theU,
     }
 
     // Singular case - use higher order derivatives
-    constexpr int      aMaxOrder = 3;
-    TColgp_Array2OfVec aDerNUV(0, aMaxOrder + 1, 0, aMaxOrder + 1);
-    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + 2, 0, aMaxOrder + 2);
+    constexpr int                    aMaxOrder    = 3;
+    constexpr int                    aDerNUVSize  = (aMaxOrder + 2) * (aMaxOrder + 2); // 25
+    constexpr int                    aDerSurfSize = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
+    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
+    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
+    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 1, 0, aMaxOrder + 1);
+    NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
 
     aDerSurf.SetValue(1, 0, theD1U);
     aDerSurf.SetValue(0, 1, theD1V);
@@ -1680,9 +1614,13 @@ bool EvaluateD2(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int      aMaxOrder = 3;
-    TColgp_Array2OfVec aDerNUV(0, aMaxOrder + 2, 0, aMaxOrder + 2);
-    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + 3, 0, aMaxOrder + 3);
+    constexpr int                    aMaxOrder    = 3;
+    constexpr int                    aDerNUVSize  = (aMaxOrder + 3) * (aMaxOrder + 3); // 36
+    constexpr int                    aDerSurfSize = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
+    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
+    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
+    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 2, 0, aMaxOrder + 2);
+    NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
 
     aDerSurf.SetValue(1, 0, theD1U);
     aDerSurf.SetValue(0, 1, theD1V);
@@ -1911,9 +1849,13 @@ bool EvaluateD3(double                  theU,
     }
 
     // Singular case - use higher order derivatives with osculating surface
-    constexpr int      aMaxOrder = 3;
-    TColgp_Array2OfVec aDerNUV(0, aMaxOrder + 3, 0, aMaxOrder + 3);
-    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + 4, 0, aMaxOrder + 4);
+    constexpr int                    aMaxOrder    = 3;
+    constexpr int                    aDerNUVSize  = (aMaxOrder + 4) * (aMaxOrder + 4); // 49
+    constexpr int                    aDerSurfSize = (aMaxOrder + 5) * (aMaxOrder + 5); // 64
+    std::array<gp_Vec, aDerNUVSize>  aDerNUVBuffer;
+    std::array<gp_Vec, aDerSurfSize> aDerSurfBuffer;
+    NCollection_Array2<gp_Vec>       aDerNUV(aDerNUVBuffer[0], 0, aMaxOrder + 3, 0, aMaxOrder + 3);
+    NCollection_Array2<gp_Vec> aDerSurf(aDerSurfBuffer[0], 0, aMaxOrder + 4, 0, aMaxOrder + 4);
 
     aDerSurf.SetValue(1, 0, theD1U);
     aDerSurf.SetValue(0, 1, theD1V);
@@ -2086,8 +2028,21 @@ bool EvaluateDN(double                  theU,
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
     int       aOrderU, aOrderV;
 
-    TColgp_Array2OfVec aDerNUV(0, aMaxOrder + theNu, 0, aMaxOrder + theNv);
-    TColgp_Array2OfVec aDerSurf(0, aMaxOrder + theNu + 1, 0, aMaxOrder + theNv + 1);
+    // Stack buffers: max size with aMaxOrder=3, theNu=theNv=3 is 7×7=49 and 8×8=64
+    constexpr int                       aDerNUVMaxSize  = 49;
+    constexpr int                       aDerSurfMaxSize = 64;
+    std::array<gp_Vec, aDerNUVMaxSize>  aDerNUVBuffer;
+    std::array<gp_Vec, aDerSurfMaxSize> aDerSurfBuffer;
+    NCollection_Array2<gp_Vec>          aDerNUV(aDerNUVBuffer[0],
+                                       0,
+                                       aMaxOrder + theNu,
+                                       0,
+                                       aMaxOrder + theNv);
+    NCollection_Array2<gp_Vec>          aDerSurf(aDerSurfBuffer[0],
+                                        0,
+                                        aMaxOrder + theNu + 1,
+                                        0,
+                                        aMaxOrder + theNv + 1);
 
     aDerSurf.SetValue(1, 0, aD1U);
     aDerSurf.SetValue(0, 1, aD1V);
