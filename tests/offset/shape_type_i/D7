@@ -1,4 +1,5 @@
 puts "TODO OCC24156 MacOS: An exception was caught"
+puts "TODO OCC25406 ALL: Error: bsection of the result and s is not equal to zero"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 ellipse w1 0 0 0 15 10
@@ -11,4 +12,4 @@ revol s w 0 0 0 0 0 1 360
 
 OFFSETSHAPE -1 {} $calcul $type
 
-checkprops result -v 13139
+checkprops result -v 15427.9

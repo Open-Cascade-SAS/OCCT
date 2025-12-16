@@ -365,7 +365,7 @@ inline gp_Vec ComputeD2NormalUV(const gp_Vec& theD1U,
   return aN2UV;
 }
 
-//! Computes third derivative of normal d³N/du³ for non-singular offset surface.
+//! Computes third derivative of normal d^3N/du^3 for non-singular offset surface.
 //! @param[in] theD1U first derivative with respect to U
 //! @param[in] theD1V first derivative with respect to V
 //! @param[in] theD2U second derivative d2P/du2
@@ -392,7 +392,7 @@ inline gp_Vec ComputeD3NormalU(const gp_Vec& theD1U,
                                const gp_Vec& theAN1U,
                                const gp_Vec& theAN2U)
 {
-  // Compute d³(D1U × D1V)/du³ = D4U × D1V + 3·D3U × D2UV + 3·D2U × D3UUV + D1U × D4UUV
+  // Compute d^3(D1U x D1V)/du^3 = D4U x D1V + 3*D3U x D2UV + 3*D2U x D3UUV + D1U x D4UUV
   gp_Vec aN3U;
   aN3U.SetX(theD4U.Y() * theD1V.Z() + 3.0 * theD3U.Y() * theD2UV.Z()
             + 3.0 * theD2U.Y() * theD3UUV.Z() + theD1U.Y() * theD4UUV.Z() - theD4U.Z() * theD1V.Y()
@@ -408,7 +408,7 @@ inline gp_Vec ComputeD3NormalU(const gp_Vec& theD1U,
             - theD1U.Y() * theD4UUV.X());
 
   // Project out normal component and apply corrections
-  // Following pattern: d³N/du³ requires corrections for N'u, N''uu interactions
+  // Following pattern: d^3N/du^3 requires corrections for N'u, N''uu interactions
   double aN1UdotN  = theAN1U.Dot(theNormal);
   double aN2UdotN  = theAN2U.Dot(theNormal);
   double aN1Usq    = theAN1U.Dot(theAN1U);
@@ -424,7 +424,7 @@ inline gp_Vec ComputeD3NormalU(const gp_Vec& theD1U,
   return aN3U;
 }
 
-//! Computes third derivative of normal d³N/dv³ for non-singular offset surface.
+//! Computes third derivative of normal d^3N/dv^3 for non-singular offset surface.
 //! @param[in] theD1U first derivative with respect to U
 //! @param[in] theD1V first derivative with respect to V
 //! @param[in] theD2V second derivative d2P/dv2
@@ -451,7 +451,7 @@ inline gp_Vec ComputeD3NormalV(const gp_Vec& theD1U,
                                const gp_Vec& theAN1V,
                                const gp_Vec& theAN2V)
 {
-  // Compute d³(D1U × D1V)/dv³ = D4UVV × D1V + 3·D3UVV × D2V + 3·D2UV × D3V + D1U × D4V
+  // Compute d^3(D1U x D1V)/dv^3 = D4UVV x D1V + 3*D3UVV x D2V + 3*D2UV x D3V + D1U x D4V
   gp_Vec aN3V;
   aN3V.SetX(theD4UVV.Y() * theD1V.Z() + 3.0 * theD3UVV.Y() * theD2V.Z()
             + 3.0 * theD2UV.Y() * theD3V.Z() + theD1U.Y() * theD4V.Z() - theD4UVV.Z() * theD1V.Y()
@@ -482,7 +482,7 @@ inline gp_Vec ComputeD3NormalV(const gp_Vec& theD1U,
   return aN3V;
 }
 
-//! Computes mixed third derivative of normal d³N/du²dv for non-singular offset surface.
+//! Computes mixed third derivative of normal d^3N/du^2dv for non-singular offset surface.
 //! @param[in] theD1U first derivative with respect to U
 //! @param[in] theD1V first derivative with respect to V
 //! @param[in] theD2U second derivative d2P/du2
@@ -499,7 +499,7 @@ inline gp_Vec ComputeD3NormalV(const gp_Vec& theD1U,
 //! @param[in] theAN1V first derivative of normal with respect to V
 //! @param[in] theAN2U second derivative of normal with respect to U
 //! @param[in] theAN2UV mixed second derivative of normal
-//! @return mixed third derivative of normal d³N/du²dv
+//! @return mixed third derivative of normal d^3N/du^2dv
 inline gp_Vec ComputeD3NormalUUV(const gp_Vec& theD1U,
                                  const gp_Vec& theD1V,
                                  const gp_Vec& theD2U,
@@ -517,8 +517,8 @@ inline gp_Vec ComputeD3NormalUUV(const gp_Vec& theD1U,
                                  const gp_Vec& theAN2U,
                                  const gp_Vec& theAN2UV)
 {
-  // Compute d³(D1U × D1V)/du²dv = D4UUV × D1V + 2·D3U × D2V + D3UUV × D2UV
-  //                              + 2·D2U × D3UVV + D2UV × D3UUV + D1U × D4UUVV
+  // Compute d^3(D1U x D1V)/du^2dv = D4UUV x D1V + 2*D3U x D2V + D3UUV x D2UV
+  //                                + 2*D2U x D3UVV + D2UV x D3UUV + D1U x D4UUVV
   gp_Vec aN3UUV;
   aN3UUV.SetX(
     theD4UUV.Y() * theD1V.Z() + 2.0 * theD3U.Y() * theD2V.Z() + theD3UUV.Y() * theD2UV.Z()
@@ -558,7 +558,7 @@ inline gp_Vec ComputeD3NormalUUV(const gp_Vec& theD1U,
   return aN3UUV;
 }
 
-//! Computes mixed third derivative of normal d³N/dudv² for non-singular offset surface.
+//! Computes mixed third derivative of normal d^3N/dudv^2 for non-singular offset surface.
 //! @param[in] theD1U first derivative with respect to U
 //! @param[in] theD1V first derivative with respect to V
 //! @param[in] theD2U second derivative d2P/du2
@@ -575,7 +575,7 @@ inline gp_Vec ComputeD3NormalUUV(const gp_Vec& theD1U,
 //! @param[in] theAN1V first derivative of normal with respect to V
 //! @param[in] theAN2V second derivative of normal with respect to V
 //! @param[in] theAN2UV mixed second derivative of normal
-//! @return mixed third derivative of normal d³N/dudv²
+//! @return mixed third derivative of normal d^3N/dudv^2
 inline gp_Vec ComputeD3NormalUVV(const gp_Vec& theD1U,
                                  const gp_Vec& theD1V,
                                  const gp_Vec& theD2U,
@@ -593,8 +593,8 @@ inline gp_Vec ComputeD3NormalUVV(const gp_Vec& theD1U,
                                  const gp_Vec& theAN2V,
                                  const gp_Vec& theAN2UV)
 {
-  // Compute d³(D1U × D1V)/dudv² = D4UUVV × D1V + D3UUV × D2V + 2·D3UVV × D2UV
-  //                              + D2U × D3V + 2·D2UV × D3UVV + D1U × D4UVV
+  // Compute d^3(D1U x D1V)/dudv^2 = D4UUVV x D1V + D3UUV x D2V + 2*D3UVV x D2UV
+  //                                + D2U x D3V + 2*D2UV x D3UVV + D1U x D4UVV
   gp_Vec aN3UVV;
   aN3UVV.SetX(
     theD4UUVV.Y() * theD1V.Z() + theD3UUV.Y() * theD2V.Z() + 2.0 * theD3UVV.Y() * theD2UV.Z()
@@ -910,8 +910,8 @@ void ComputeDerivatives(int                  theMaxOrder,
   if (theAlongU || theAlongV)
   {
     theMaxOrder = 0;
-    // Stack buffer for DerSurfL: max size is (theNU + 2) × (theNV + 2)
-    // DN can have theNU/theNV up to 6, so max is 8×8=64
+    // Stack buffer for DerSurfL: max size is (theNU + 2) x (theNV + 2)
+    // DN can have theNU/theNV up to 6, so max is 8x8=64
     constexpr int                        aDerSurfLMaxSize = 64;
     std::array<gp_Vec, aDerSurfLMaxSize> aDerSurfLBuffer;
     NCollection_Array2<gp_Vec>           DerSurfL(aDerSurfLBuffer[0],
@@ -2030,7 +2030,7 @@ bool EvaluateDN(double                  theU,
     const int aMaxOrder = (aNStatus == CSLib_Defined) ? 0 : 3;
     int       aOrderU, aOrderV;
 
-    // Stack buffers: max size with aMaxOrder=3, theNu=theNv=3 is 7×7=49 and 8×8=64
+    // Stack buffers: max size with aMaxOrder=3, theNu=theNv=3 is 7x7=49 and 8x8=64
     constexpr int                       aDerNUVMaxSize  = 49;
     constexpr int                       aDerSurfMaxSize = 64;
     std::array<gp_Vec, aDerNUVMaxSize>  aDerNUVBuffer;

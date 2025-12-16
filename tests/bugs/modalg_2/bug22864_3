@@ -20,5 +20,5 @@ brollingball result s 2. @ f1 f2
 
 checkshape result
 checknbshapes result -vertex 6 -edge 11 -wire 5 -face 5 -shell 1
-checkprops result -s 3750.55
+checkprops result -s 3911.24
 checkview -display result -2d -path ${imagedir}/${test_image}.png

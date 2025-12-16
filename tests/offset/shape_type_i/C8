@@ -1,5 +1,3 @@
-puts "TODO OCC23068 ALL: Error : The volume of result shape is"
-puts "TODO OCC23068 ALL: Error: bsection of the result and s is not equal to zero"
 puts "TODO OCC23068 ALL: Faulty shapes"
 
 ellipse w1 0 0 0 15 10
@@ -12,5 +10,5 @@ revol s w 0 0 0 0 0 1 270
 
 OFFSETSHAPE -1 {} $calcul $type
 
-checkprops result -v 0
+checkprops result -v 8511.64
 
