@@ -52,8 +52,7 @@ void Geom2dEvaluator_OffsetCurve::D0(const Standard_Real theU, gp_Pnt2d& theValu
 
   if (!isOK)
   {
-    throw Geom2d_UndefinedValue(
-      "Geom2dEvaluator_OffsetCurve::D0(): Unable to calculate normal");
+    throw Geom2d_UndefinedValue("Geom2dEvaluator_OffsetCurve::D0(): Unable to calculate normal");
   }
 }
 
@@ -75,8 +74,7 @@ void Geom2dEvaluator_OffsetCurve::D1(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom2d_UndefinedValue(
-      "Geom2dEvaluator_OffsetCurve::D1(): Unable to calculate normal");
+    throw Geom2d_UndefinedValue("Geom2dEvaluator_OffsetCurve::D1(): Unable to calculate normal");
   }
 }
 
@@ -100,8 +98,7 @@ void Geom2dEvaluator_OffsetCurve::D2(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom2d_UndefinedValue(
-      "Geom2dEvaluator_OffsetCurve::D2(): Unable to calculate normal");
+    throw Geom2d_UndefinedValue("Geom2dEvaluator_OffsetCurve::D2(): Unable to calculate normal");
   }
 }
 
@@ -137,8 +134,7 @@ void Geom2dEvaluator_OffsetCurve::D3(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom2d_UndefinedValue(
-      "Geom2dEvaluator_OffsetCurve::D3(): Unable to calculate normal");
+    throw Geom2d_UndefinedValue("Geom2dEvaluator_OffsetCurve::D3(): Unable to calculate normal");
   }
 }
 
@@ -162,8 +158,7 @@ gp_Vec2d Geom2dEvaluator_OffsetCurve::DN(const Standard_Real    theU,
 
   if (!isOK)
   {
-    throw Geom2d_UndefinedValue(
-      "Geom2dEvaluator_OffsetCurve::DN(): Unable to calculate normal");
+    throw Geom2d_UndefinedValue("Geom2dEvaluator_OffsetCurve::DN(): Unable to calculate normal");
   }
 
   return aResult;

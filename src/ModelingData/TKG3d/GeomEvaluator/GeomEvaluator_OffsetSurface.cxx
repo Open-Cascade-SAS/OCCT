@@ -80,8 +80,7 @@ void GeomEvaluator_OffsetSurface::D0(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom_UndefinedValue(
-      "GeomEvaluator_OffsetSurface::D0(): Unable to calculate normal");
+    throw Geom_UndefinedValue("GeomEvaluator_OffsetSurface::D0(): Unable to calculate normal");
   }
 }
 
@@ -119,8 +118,7 @@ void GeomEvaluator_OffsetSurface::D1(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom_UndefinedValue(
-      "GeomEvaluator_OffsetSurface::D1(): Unable to calculate normal");
+    throw Geom_UndefinedValue("GeomEvaluator_OffsetSurface::D1(): Unable to calculate normal");
   }
 }
 
@@ -167,8 +165,7 @@ void GeomEvaluator_OffsetSurface::D2(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom_UndefinedValue(
-      "GeomEvaluator_OffsetSurface::D2(): Unable to calculate normal");
+    throw Geom_UndefinedValue("GeomEvaluator_OffsetSurface::D2(): Unable to calculate normal");
   }
 }
 
@@ -227,8 +224,7 @@ void GeomEvaluator_OffsetSurface::D3(const Standard_Real theU,
 
   if (!isOK)
   {
-    throw Geom_UndefinedValue(
-      "GeomEvaluator_OffsetSurface::D3(): Unable to calculate normal");
+    throw Geom_UndefinedValue("GeomEvaluator_OffsetSurface::D3(): Unable to calculate normal");
   }
 }
 
@@ -271,8 +267,7 @@ gp_Vec GeomEvaluator_OffsetSurface::DN(const Standard_Real    theU,
 
   if (!isOK)
   {
-    throw Geom_UndefinedValue(
-      "GeomEvaluator_OffsetSurface::DN(): Unable to calculate normal");
+    throw Geom_UndefinedValue("GeomEvaluator_OffsetSurface::DN(): Unable to calculate normal");
   }
 
   return aResult;
