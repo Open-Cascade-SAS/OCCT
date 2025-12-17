@@ -194,7 +194,7 @@ public:
 
   //! Translates a line in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Lin2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Lin2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(theV);
@@ -207,8 +207,8 @@ public:
   }
 
   //! Translates a line from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Lin2d Translated(const gp_Pnt2d& theP1,
-                                         const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Lin2d Translated(const gp_Pnt2d& theP1,
+                                                   const gp_Pnt2d& theP2) const noexcept
   {
     gp_Lin2d aL = *this;
     aL.pos.Translate(gp_Vec2d(theP1, theP2));

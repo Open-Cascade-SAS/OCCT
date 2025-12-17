@@ -107,7 +107,7 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  Standard_Boolean IsNegative() const { return matrix.Determinant() < 0.0; }
+  constexpr Standard_Boolean IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
 
   //! Returns true if this transformation is singular (and
   //! therefore, cannot be inverted).
@@ -117,7 +117,7 @@ public:
   //! than or equal to gp::Resolution().
   //! Warning
   //! If this transformation is singular, it cannot be inverted.
-  Standard_Boolean IsSingular() const { return matrix.IsSingular(); }
+  constexpr Standard_Boolean IsSingular() const noexcept { return matrix.IsSingular(); }
 
   //! Returns the nature of the transformation. It can be
   //! an identity transformation, a rotation, a translation, a mirror
@@ -135,7 +135,7 @@ public:
 
   //! Returns the coefficients of the global matrix of transformation.
   //! Raised OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
-  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
 
   Standard_Real operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
   {
@@ -203,9 +203,9 @@ public:
     return aT;
   }
 
-  void Transforms(gp_XY& theCoord) const;
+  constexpr void Transforms(gp_XY& theCoord) const noexcept;
 
-  Standard_NODISCARD gp_XY Transformed(const gp_XY& theCoord) const
+  Standard_NODISCARD constexpr gp_XY Transformed(const gp_XY& theCoord) const noexcept
   {
     gp_XY aNewCoord = theCoord;
     Transforms(aNewCoord);
@@ -219,7 +219,7 @@ public:
   //! Note:
   //! -   Transforms modifies theX, theY, or the coordinate pair Coord, while
   //! -   Transformed creates a new coordinate pair.
-  void Transforms(Standard_Real& theX, Standard_Real& theY) const;
+  constexpr void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
 
   //! Converts this transformation into a gp_Trsf2d transformation.
   //! Exceptions
@@ -276,8 +276,8 @@ inline void gp_GTrsf2d::SetValue(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
-                                       const Standard_Integer theCol) const
+inline constexpr Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
+                                                 const Standard_Integer theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol == 3)
@@ -286,14 +286,14 @@ inline Standard_Real gp_GTrsf2d::Value(const Standard_Integer theRow,
   }
   if (shape == gp_Other)
   {
-    return matrix.Value(theRow, theCol);
+    return matrix.myMat[theRow - 1][theCol - 1];
   }
-  return scale * matrix.Value(theRow, theCol);
+  return scale * matrix.myMat[theRow - 1][theCol - 1];
 }
 
 //=================================================================================================
 
-inline void gp_GTrsf2d::Transforms(gp_XY& theCoord) const
+inline constexpr void gp_GTrsf2d::Transforms(gp_XY& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (!(shape == gp_Other) && !(scale == 1.0))
@@ -305,7 +305,7 @@ inline void gp_GTrsf2d::Transforms(gp_XY& theCoord) const
 
 //=================================================================================================
 
-inline void gp_GTrsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const
+inline constexpr void gp_GTrsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);

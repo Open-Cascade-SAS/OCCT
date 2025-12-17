@@ -30,60 +30,69 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a zero vector.
-  gp_Vec2d() {}
+  constexpr gp_Vec2d() noexcept
+      : coord()
+  {
+  }
 
   //! Creates a unitary vector from a direction theV.
-  gp_Vec2d(const gp_Dir2d& theV);
+  constexpr gp_Vec2d(const gp_Dir2d& theV);
 
   //! Creates a vector with a doublet of coordinates.
-  gp_Vec2d(const gp_XY& theCoord)
+  constexpr gp_Vec2d(const gp_XY& theCoord) noexcept
       : coord(theCoord)
   {
   }
 
   //! Creates a point with its two Cartesian coordinates.
-  gp_Vec2d(const Standard_Real theXv, const Standard_Real theYv)
+  constexpr gp_Vec2d(const Standard_Real theXv, const Standard_Real theYv) noexcept
       : coord(theXv, theYv)
   {
   }
 
   //! Creates a vector from two points. The length of the vector
   //! is the distance between theP1 and theP2
-  gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2);
+  constexpr gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2);
 
   //! Changes the coordinate of range theIndex
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     coord.SetCoord(theIndex, theXi);
   }
 
   //! For this vector, assigns
   //! the values theXv and theYv to its two coordinates
-  void SetCoord(const Standard_Real theXv, const Standard_Real theYv)
+  constexpr void SetCoord(const Standard_Real theXv, const Standard_Real theYv) noexcept
   {
     coord.SetCoord(theXv, theYv);
   }
 
   //! Assigns the given value to the X coordinate of this vector.
-  void SetX(const Standard_Real theX) { coord.SetX(theX); }
+  constexpr void SetX(const Standard_Real theX) noexcept { coord.SetX(theX); }
 
   //! Assigns the given value to the Y coordinate of this vector.
-  void SetY(const Standard_Real theY) { coord.SetY(theY); }
+  constexpr void SetY(const Standard_Real theY) noexcept { coord.SetY(theY); }
 
   //! Assigns the two coordinates of theCoord to this vector.
-  void SetXY(const gp_XY& theCoord) { coord = theCoord; }
+  constexpr void SetXY(const gp_XY& theCoord) noexcept { coord = theCoord; }
 
   //! Returns the coordinate of range theIndex :
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raised if theIndex != {1, 2}.
-  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this vector, returns its two coordinates theXv and theYv
-  void Coord(Standard_Real& theXv, Standard_Real& theYv) const { coord.Coord(theXv, theYv); }
+  constexpr void Coord(Standard_Real& theXv, Standard_Real& theYv) const noexcept
+  {
+    coord.Coord(theXv, theYv);
+  }
 
   //! For this vector, returns its X coordinate.
   constexpr Standard_Real X() const noexcept { return coord.X(); }
@@ -359,16 +368,16 @@ private:
 
 //=================================================================================================
 
-inline gp_Vec2d::gp_Vec2d(const gp_Dir2d& theV)
+inline constexpr gp_Vec2d::gp_Vec2d(const gp_Dir2d& theV)
+    : coord(theV.XY())
 {
-  coord = theV.XY();
 }
 
 //=================================================================================================
 
-inline gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+inline constexpr gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+    : coord(theP2.XY().Subtracted(theP1.XY()))
 {
-  coord = theP2.XY().Subtracted(theP1.XY());
 }
 
 //=================================================================================================

@@ -371,20 +371,6 @@ gp_Quaternion gp_Trsf::GetRotation() const
 
 //=================================================================================================
 
-gp_Mat gp_Trsf::VectorialPart() const
-{
-  if (scale == 1.0)
-    return matrix;
-  gp_Mat M = matrix;
-  if (shape == gp_Scale || shape == gp_PntMirror)
-    M.SetDiagonal(scale * M.Value(1, 1), scale * M.Value(2, 2), scale * M.Value(3, 3));
-  else
-    M.Multiply(scale);
-  return M;
-}
-
-//=================================================================================================
-
 void gp_Trsf::Invert()
 {
   //                                    -1

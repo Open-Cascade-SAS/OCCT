@@ -63,12 +63,12 @@ public:
   //! Warnings : It is possible to have FocalLength = 0. In this case,
   //! the parabola looks like a line, which is parallel to the symmetry-axis.
   //! Raises ConstructionError if FocalLength < 0.0
-  gp_Parab2d(const gp_Ax2d&         theMirrorAxis,
-             const Standard_Real    theFocalLength,
-             const Standard_Boolean theSense = Standard_True)
-      : focalLength(theFocalLength)
+  constexpr gp_Parab2d(const gp_Ax2d&         theMirrorAxis,
+                       const Standard_Real    theFocalLength,
+                       const Standard_Boolean theSense = Standard_True)
+      : pos(theMirrorAxis, theSense),
+        focalLength(theFocalLength)
   {
-    pos = gp_Ax22d(theMirrorAxis, theSense);
     Standard_ConstructionError_Raise_if(theFocalLength < 0.0,
                                         "gp_Parab2d() - focal length should be >= 0");
   }
@@ -78,7 +78,7 @@ public:
   //! Warnings : It is possible to have FocalLength = 0. In this case,
   //! the parabola looks like a line, which is parallel to the symmetry-axis.
   //! Raises ConstructionError if Focal < 0.0
-  gp_Parab2d(const gp_Ax22d& theAxes, const Standard_Real theFocalLength)
+  constexpr gp_Parab2d(const gp_Ax22d& theAxes, const Standard_Real theFocalLength)
       : pos(theAxes),
         focalLength(theFocalLength)
   {
@@ -120,7 +120,7 @@ public:
   //! MA. The "Y Direction" of the local coordinate system is
   //! then recomputed. The orientation of the local
   //! coordinate system is not modified.
-  void SetMirrorAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
+  constexpr void SetMirrorAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Changes the local coordinate system of the parabola.
   //! The "Location" point of A becomes the vertex of the parabola.
@@ -235,7 +235,7 @@ public:
 
   //! Translates a parabola in the direction of the vectorthe theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Parab2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Parab2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theV);
@@ -248,8 +248,8 @@ public:
   }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Parab2d Translated(const gp_Pnt2d& theP1,
-                                           const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Parab2d Translated(const gp_Pnt2d& theP1,
+                                                     const gp_Pnt2d& theP2) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);

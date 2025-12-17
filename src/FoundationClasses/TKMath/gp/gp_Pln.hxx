@@ -256,17 +256,20 @@ public:
 
   //! Translates a plane in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Pln Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Pln Translated(const gp_Vec& theV) const noexcept
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theV);
     return aPl;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a plane from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theP1, theP2);

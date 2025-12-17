@@ -52,7 +52,7 @@ public:
   //! Creates a cylinder of radius Radius, whose axis is the "main
   //! Axis" of theA3. theA3 is the local coordinate system of the cylinder.
   //! Raises ConstructionErrord if theRadius < 0.0
-  gp_Cylinder(const gp_Ax3& theA3, const Standard_Real theRadius)
+  constexpr gp_Cylinder(const gp_Ax3& theA3, const Standard_Real theRadius)
       : pos(theA3),
         radius(theRadius)
   {
@@ -172,17 +172,20 @@ public:
 
   //! Translates a cylinder in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Cylinder Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theV);
     return aCyl;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a cylinder from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Cylinder Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theP1, theP2);

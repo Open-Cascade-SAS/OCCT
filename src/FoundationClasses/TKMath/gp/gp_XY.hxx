@@ -49,10 +49,17 @@ public:
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! Raises OutOfRange if theIndex != {1, 2}.
-  inline void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
-    (&x)[theIndex - 1] = theXi;
+    if (theIndex == 1)
+    {
+      x = theXi;
+    }
+    else
+    {
+      y = theXi;
+    }
   }
 
   //! For this number pair, assigns
@@ -73,16 +80,24 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  inline Standard_Real Coord(const Standard_Integer theIndex) const
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    return y;
   }
 
-  inline Standard_Real& ChangeCoord(const Standard_Integer theIndex)
+  constexpr Standard_Real& ChangeCoord(const Standard_Integer theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    return y;
   }
 
   //! For this number pair, returns its coordinates X and Y.
@@ -221,9 +236,9 @@ public:
   constexpr void operator*=(const gp_XY& theOther) noexcept { Multiply(theOther); }
 
   //! <me> = theMatrix * <me>
-  void Multiply(const gp_Mat2d& theMatrix) noexcept;
+  constexpr void Multiply(const gp_Mat2d& theMatrix) noexcept;
 
-  void operator*=(const gp_Mat2d& theMatrix) noexcept { Multiply(theMatrix); }
+  constexpr void operator*=(const gp_Mat2d& theMatrix) noexcept { Multiply(theMatrix); }
 
   //! @code
   //! New.X() = <me>.X() * theScalar;
@@ -249,13 +264,13 @@ public:
   }
 
   //! New = theMatrix * <me>
-  Standard_NODISCARD gp_XY Multiplied(const gp_Mat2d& theMatrix) const noexcept
+  Standard_NODISCARD constexpr gp_XY Multiplied(const gp_Mat2d& theMatrix) const noexcept
   {
     return gp_XY(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y,
                  theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y);
   }
 
-  Standard_NODISCARD gp_XY operator*(const gp_Mat2d& theMatrix) const noexcept
+  Standard_NODISCARD constexpr gp_XY operator*(const gp_Mat2d& theMatrix) const noexcept
   {
     return Multiplied(theMatrix);
   }
@@ -383,7 +398,7 @@ private:
 
 //=================================================================================================
 
-inline void gp_XY::Multiply(const gp_Mat2d& theMatrix) noexcept
+inline constexpr void gp_XY::Multiply(const gp_Mat2d& theMatrix) noexcept
 {
   const Standard_Real aXresult = theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y;
   y                            = theMatrix.myMat[1][0] * x + theMatrix.myMat[1][1] * y;
@@ -405,7 +420,7 @@ inline void gp_XY::Normalize()
 // function :  operator*
 // purpose :
 //=======================================================================
-inline gp_XY operator*(const gp_Mat2d& theMatrix, const gp_XY& theCoord1) noexcept
+inline constexpr gp_XY operator*(const gp_Mat2d& theMatrix, const gp_XY& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theMatrix);
 }

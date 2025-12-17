@@ -58,7 +58,7 @@ public:
   //! theIndex = 2 => Y is modified
   //! theIndex = 3 => Z is modified
   //! Raised if theIndex != {1, 2, 3}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     coord.SetCoord(theIndex, theXi);
   }
@@ -89,7 +89,10 @@ public:
   //! theIndex = 3 => Z is returned
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
   //! Raised if theIndex != {1, 2, 3}.
-  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this point gives its three coordinates theXp, theYp and theZp.
   constexpr void Coord(Standard_Real& theXp,

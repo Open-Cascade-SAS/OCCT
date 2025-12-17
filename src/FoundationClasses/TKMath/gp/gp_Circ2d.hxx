@@ -61,14 +61,14 @@ public:
   //! Warnings:
   //! It is not forbidden to create a circle with theRadius = 0.0
   //! Raises ConstructionError if theRadius < 0.0.
-  gp_Circ2d(const gp_Ax2d&         theXAxis,
-            const Standard_Real    theRadius,
-            const Standard_Boolean theIsSense = Standard_True)
-      : radius(theRadius)
+  constexpr gp_Circ2d(const gp_Ax2d&         theXAxis,
+                      const Standard_Real    theRadius,
+                      const Standard_Boolean theIsSense = Standard_True)
+      : pos(theXAxis, theIsSense),
+        radius(theRadius)
   {
     Standard_ConstructionError_Raise_if(theRadius < 0.0,
                                         "gp_Circ2d() - radius should be positive number");
-    pos = gp_Ax22d(theXAxis, theIsSense);
   }
 
   //! theAxis defines the Xaxis and Yaxis of the circle which defines
@@ -77,7 +77,7 @@ public:
   //! Warnings:
   //! It is not forbidden to create a circle with theRadius = 0.0
   //! Raises ConstructionError if theRadius < 0.0.
-  gp_Circ2d(const gp_Ax22d& theAxis, const Standard_Real theRadius)
+  constexpr gp_Circ2d(const gp_Ax22d& theAxis, const Standard_Real theRadius)
       : pos(theAxis),
         radius(theRadius)
   {
@@ -89,13 +89,13 @@ public:
   constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { pos.SetLocation(theP); }
 
   //! Changes the X axis of the circle.
-  void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
+  constexpr void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Changes the X axis of the circle.
   constexpr void SetAxis(const gp_Ax22d& theA) noexcept { pos.SetAxis(theA); }
 
   //! Changes the Y axis of the circle.
-  void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
+  constexpr void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
 
   //! Modifies the radius of this circle.
   //! This class does not prevent the creation of a circle where
@@ -227,7 +227,7 @@ public:
 
   //! Translates a circle in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Circ2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Circ2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theV);
@@ -240,8 +240,8 @@ public:
   }
 
   //! Translates a circle from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Circ2d Translated(const gp_Pnt2d& theP1,
-                                          const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Circ2d Translated(const gp_Pnt2d& theP1,
+                                                    const gp_Pnt2d& theP2) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theP1, theP2);

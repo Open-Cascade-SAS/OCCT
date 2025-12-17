@@ -208,17 +208,20 @@ public:
 
   //! Translates a cone in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Cone Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theV);
     return aCone;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a cone from the point P1 to the point P2.
-  Standard_NODISCARD gp_Cone Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theP1, theP2);

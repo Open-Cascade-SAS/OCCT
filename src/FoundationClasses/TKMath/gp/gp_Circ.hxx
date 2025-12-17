@@ -63,7 +63,7 @@ public:
   //! Warnings:
   //! It is not forbidden to create a circle with theRadius = 0.0
   //! Raises ConstructionError if theRadius < 0.0
-  gp_Circ(const gp_Ax2& theA2, const Standard_Real theRadius)
+  constexpr gp_Circ(const gp_Ax2& theA2, const Standard_Real theRadius)
       : pos(theA2),
         radius(theRadius)
   {
@@ -201,7 +201,7 @@ public:
 
   //! Translates a circle in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Circ Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Circ Translated(const gp_Vec& theV) const noexcept
   {
     gp_Circ aC = *this;
     aC.pos.Translate(theV);
@@ -214,7 +214,7 @@ public:
   }
 
   //! Translates a circle from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Circ Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Circ Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Circ aC = *this;
     aC.pos.Translate(theP1, theP2);

@@ -98,9 +98,9 @@ public:
   //! Standard_ConstructionError if theMajorAxis or theMinorAxis is negative.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
   //! Raised if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  gp_Hypr(const gp_Ax2&       theA2,
-          const Standard_Real theMajorRadius,
-          const Standard_Real theMinorRadius)
+  constexpr gp_Hypr(const gp_Ax2&       theA2,
+                    const Standard_Real theMajorRadius,
+                    const Standard_Real theMinorRadius)
       : pos(theA2),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -319,7 +319,7 @@ public:
 
   //! Translates an hyperbola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Hypr Translated(const gp_Vec& theV) const noexcept
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theV);
@@ -332,7 +332,7 @@ public:
   }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Hypr Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theP1, theP2);

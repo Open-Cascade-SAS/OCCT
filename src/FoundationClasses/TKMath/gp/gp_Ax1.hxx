@@ -124,10 +124,9 @@ public:
   constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Reverses the unit vector of this axis and creates a new one.
-  Standard_NODISCARD gp_Ax1 Reversed() const
+  Standard_NODISCARD constexpr gp_Ax1 Reversed() const noexcept
   {
-    gp_Dir D = vdir.Reversed();
-    return gp_Ax1(loc, D);
+    return gp_Ax1(loc, vdir.Reversed());
   }
 
   //! Performs the symmetrical transformation of an axis
@@ -194,7 +193,7 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and creates a new axis.
-  Standard_NODISCARD gp_Ax1 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  Standard_NODISCARD constexpr gp_Ax1 Scaled(const gp_Pnt& theP, const Standard_Real theS) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.Scale(theP, theS);
@@ -224,10 +223,10 @@ public:
 
   //! Translates this axis by the vector theV,
   //! and creates a new one.
-  Standard_NODISCARD gp_Ax1 Translated(const gp_Vec& theV) const
+  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Vec& theV) const noexcept
   {
     gp_Ax1 A1 = *this;
-    (A1.loc).Translate(theV);
+    A1.loc.Translate(theV);
     return A1;
   }
 
@@ -242,10 +241,10 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and creates a new one.
-  Standard_NODISCARD gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Ax1 A1 = *this;
-    (A1.loc).Translate(theP1, theP2);
+    A1.loc.Translate(theP1, theP2);
     return A1;
   }
 

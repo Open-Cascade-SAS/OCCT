@@ -128,7 +128,7 @@ public:
   //! Returns the coefficients of the transformation's matrix.
   //! It is a 2 rows * 3 columns matrix.
   //! Raises OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
-  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
 
   Standard_EXPORT void Invert();
 
@@ -178,10 +178,10 @@ public:
     return aT;
   }
 
-  void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
+  constexpr void Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept;
 
   //! Transforms a doublet XY with a Trsf2d
-  void Transforms(gp_XY& theCoord) const noexcept;
+  constexpr void Transforms(gp_XY& theCoord) const noexcept;
 
   //! Sets the coefficients of the transformation. The
   //! transformation of the point x,y is the point
@@ -298,13 +298,13 @@ inline void gp_Trsf2d::SetTranslation(const gp_Pnt2d& theP1, const gp_Pnt2d& the
 
 //=================================================================================================
 
-inline Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
-                                      const Standard_Integer theCol) const
+inline constexpr Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
+                                                const Standard_Integer theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol < 3)
   {
-    return scale * matrix.Value(theRow, theCol);
+    return scale * matrix.myMat[theRow - 1][theCol - 1];
   }
   else
   {
@@ -314,7 +314,7 @@ inline Standard_Real gp_Trsf2d::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept
+inline constexpr void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);
@@ -328,7 +328,7 @@ inline void gp_Trsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) cons
 
 //=================================================================================================
 
-inline void gp_Trsf2d::Transforms(gp_XY& theCoord) const noexcept
+inline constexpr void gp_Trsf2d::Transforms(gp_XY& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (scale != 1.0)

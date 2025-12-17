@@ -66,7 +66,7 @@ public:
   //! the parabola
   //! Raises ConstructionError if theFocal < 0.0
   //! Raised if theFocal < 0.0
-  gp_Parab(const gp_Ax2& theA2, const Standard_Real theFocal)
+  constexpr gp_Parab(const gp_Ax2& theA2, const Standard_Real theFocal)
       : pos(theA2),
         focalLength(theFocal)
   {
@@ -198,7 +198,7 @@ public:
 
   //! Translates a parabola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Parab Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Vec& theV) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theV);
@@ -211,7 +211,7 @@ public:
   }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Parab Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);

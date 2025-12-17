@@ -57,12 +57,12 @@ public:
   //! oriented so that the cross products theVx^"Y
   //! Direction" and theVx^theVy have the same sign.
   //! Raises ConstructionError if theVx and theVy are parallel (same or opposite orientation).
-  gp_Ax22d(const gp_Pnt2d& theP, const gp_Dir2d& theVx, const gp_Dir2d& theVy)
+  constexpr gp_Ax22d(const gp_Pnt2d& theP, const gp_Dir2d& theVx, const gp_Dir2d& theVy)
       : point(theP),
         vydir(theVy),
         vxdir(theVx)
   {
-    Standard_Real aValue = theVx.Crossed(theVy);
+    const Standard_Real aValue = theVx.Crossed(theVy);
     if (aValue >= 0.0)
     {
       vydir.SetCoord(-vxdir.Y(), vxdir.X());
@@ -77,9 +77,9 @@ public:
   //! theV, which is:
   //! -   right-handed if theIsSense is true (default value), or
   //! -   left-handed if theIsSense is false
-  gp_Ax22d(const gp_Pnt2d&        theP,
-           const gp_Dir2d&        theV,
-           const Standard_Boolean theIsSense = Standard_True)
+  constexpr gp_Ax22d(const gp_Pnt2d&        theP,
+                     const gp_Dir2d&        theV,
+                     const Standard_Boolean theIsSense = Standard_True)
       : point(theP),
         vxdir(theV)
   {
@@ -97,7 +97,7 @@ public:
   //! theA and its "X Direction" is the unit vector of theA, which is:
   //! -   right-handed if theIsSense is true (default value), or
   //! -   left-handed if theIsSense is false.
-  gp_Ax22d(const gp_Ax2d& theA, const Standard_Boolean theIsSense = Standard_True)
+  constexpr gp_Ax22d(const gp_Ax2d& theA, const Standard_Boolean theIsSense = Standard_True)
       : point(theA.Location()),
         vxdir(theA.Direction())
   {
@@ -123,11 +123,11 @@ public:
   //! Changes the XAxis and YAxis ("Location" point and "Direction")
   //! of <me>.
   //! The "YDirection" is recomputed in the same sense as before.
-  void SetXAxis(const gp_Ax2d& theA1);
+  constexpr void SetXAxis(const gp_Ax2d& theA1);
 
   //! Changes the XAxis and YAxis ("Location" point and "Direction") of <me>.
   //! The "XDirection" is recomputed in the same sense as before.
-  void SetYAxis(const gp_Ax2d& theA1);
+  constexpr void SetYAxis(const gp_Ax2d& theA1);
 
   //! Changes the "Location" point (origin) of <me>.
   constexpr void SetLocation(const gp_Pnt2d& theP) noexcept { point = theP; }
@@ -137,14 +137,14 @@ public:
   //! coordinate system is recomputed, normal to theVx ,
   //! without modifying the orientation (right-handed or
   //! left-handed) of this coordinate system.
-  void SetXDirection(const gp_Dir2d& theVx);
+  constexpr void SetXDirection(const gp_Dir2d& theVx);
 
   //! Assigns theVy to the "Y Direction" of
   //! this coordinate system. The other unit vector of this
   //! coordinate system is recomputed, normal to theVy,
   //! without modifying the orientation (right-handed or
   //! left-handed) of this coordinate system.
-  void SetYDirection(const gp_Dir2d& theVy);
+  constexpr void SetYDirection(const gp_Dir2d& theVy);
 
   //! Returns an axis, for which
   //! -   the origin is that of this coordinate system, and
@@ -235,7 +235,7 @@ public:
 
   //! Translates an axis plaxement in the direction of the vector
   //! <theV>. The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax22d Translated(const gp_Vec2d& theV) const
+  Standard_NODISCARD constexpr gp_Ax22d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Ax22d aTemp = *this;
     aTemp.Translate(theV);
@@ -249,7 +249,8 @@ public:
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
-  Standard_NODISCARD gp_Ax22d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD constexpr gp_Ax22d Translated(const gp_Pnt2d& theP1,
+                                                   const gp_Pnt2d& theP2) const noexcept
   {
     gp_Ax22d aTemp = *this;
     aTemp.Translate(theP1, theP2);
@@ -267,11 +268,11 @@ private:
 
 //=================================================================================================
 
-inline void gp_Ax22d::SetXAxis(const gp_Ax2d& theA1)
+inline constexpr void gp_Ax22d::SetXAxis(const gp_Ax2d& theA1)
 {
-  Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
-  point                   = theA1.Location();
-  vxdir                   = theA1.Direction();
+  const bool isSign = (vxdir.Crossed(vydir)) >= 0.0;
+  point             = theA1.Location();
+  vxdir             = theA1.Direction();
   if (isSign)
   {
     vydir.SetCoord(-vxdir.Y(), vxdir.X());
@@ -284,11 +285,11 @@ inline void gp_Ax22d::SetXAxis(const gp_Ax2d& theA1)
 
 //=================================================================================================
 
-inline void gp_Ax22d::SetYAxis(const gp_Ax2d& theA1)
+inline constexpr void gp_Ax22d::SetYAxis(const gp_Ax2d& theA1)
 {
-  Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
-  point                   = theA1.Location();
-  vydir                   = theA1.Direction();
+  const bool isSign = (vxdir.Crossed(vydir)) >= 0.0;
+  point             = theA1.Location();
+  vydir             = theA1.Direction();
   if (isSign)
   {
     vxdir.SetCoord(vydir.Y(), -vydir.X());
@@ -301,10 +302,10 @@ inline void gp_Ax22d::SetYAxis(const gp_Ax2d& theA1)
 
 //=================================================================================================
 
-inline void gp_Ax22d::SetXDirection(const gp_Dir2d& theVx)
+inline constexpr void gp_Ax22d::SetXDirection(const gp_Dir2d& theVx)
 {
-  Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
-  vxdir                   = theVx;
+  const bool isSign = (vxdir.Crossed(vydir)) >= 0.0;
+  vxdir             = theVx;
   if (isSign)
   {
     vydir.SetCoord(-theVx.Y(), theVx.X());
@@ -317,10 +318,10 @@ inline void gp_Ax22d::SetXDirection(const gp_Dir2d& theVx)
 
 //=================================================================================================
 
-inline void gp_Ax22d::SetYDirection(const gp_Dir2d& theVy)
+inline constexpr void gp_Ax22d::SetYDirection(const gp_Dir2d& theVy)
 {
-  Standard_Boolean isSign = (vxdir.Crossed(vydir)) >= 0.0;
-  vydir                   = theVy;
+  const bool isSign = (vxdir.Crossed(vydir)) >= 0.0;
+  vydir             = theVy;
   if (isSign)
   {
     vxdir.SetCoord(theVy.Y(), -theVy.X());

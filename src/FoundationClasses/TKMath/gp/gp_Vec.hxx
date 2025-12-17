@@ -35,7 +35,7 @@ public:
   constexpr gp_Vec() noexcept {}
 
   //! Creates a unitary vector from a direction theV.
-  gp_Vec(const gp_Dir& theV);
+  constexpr gp_Vec(const gp_Dir& theV);
 
   //! Creates a vector with a triplet of coordinates.
   constexpr gp_Vec(const gp_XYZ& theCoord) noexcept
@@ -53,14 +53,14 @@ public:
 
   //! Creates a vector from two points. The length of the vector
   //! is the distance between theP1 and theP2
-  gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2);
+  constexpr gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
   //! Changes the coordinate of range theIndex
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! theIndex = 3 => Z is modified
   //! Raised if theIndex != {1, 2, 3}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     coord.SetCoord(theIndex, theXi);
   }
@@ -93,7 +93,10 @@ public:
   //! theIndex = 2 => Y is returned
   //! theIndex = 3 => Z is returned
   //! Raised if theIndex != {1, 2, 3}.
-  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this vector returns its three coordinates theXv, theYv, and theZv inline
   constexpr void Coord(Standard_Real& theXv,
@@ -472,16 +475,16 @@ private:
 
 //=================================================================================================
 
-inline gp_Vec::gp_Vec(const gp_Dir& theV)
+inline constexpr gp_Vec::gp_Vec(const gp_Dir& theV)
+    : coord(theV.XYZ())
 {
-  coord = theV.XYZ();
 }
 
 //=================================================================================================
 
-inline gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
+inline constexpr gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
+    : coord(theP2.XYZ().Subtracted(theP1.XYZ()))
 {
-  coord = theP2.XYZ().Subtracted(theP1.XYZ());
 }
 
 //=================================================================================================
