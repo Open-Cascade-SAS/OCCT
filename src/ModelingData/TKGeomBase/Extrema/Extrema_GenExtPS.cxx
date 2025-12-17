@@ -18,7 +18,10 @@
 
 #include <Extrema_GenExtPS.hxx>
 
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_HArray1OfSphere.hxx>
+#include <GeomAbs_IsoType.hxx>
 #include <Bnd_Sphere.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>

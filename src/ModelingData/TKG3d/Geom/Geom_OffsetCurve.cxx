@@ -23,6 +23,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
+#include <Geom_OffsetCurveUtils.pxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -31,6 +32,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
@@ -38,32 +40,31 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_OffsetCurve, Geom_Curve)
 
-static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
+static const double MyAngularToleranceForG1 = Precision::Angular();
 
-//=================================================================================================
+//==================================================================================================
 
 Handle(Geom_Geometry) Geom_OffsetCurve::Copy() const
 {
   return new Geom_OffsetCurve(*this);
 }
 
-//=======================================================================
+//==================================================================================================
 // function : Geom_OffsetCurve
 // purpose  : Basis curve cannot be an Offset curve or trimmed from
 //            offset curve.
-//=======================================================================
+//==================================================================================================
 
 Geom_OffsetCurve::Geom_OffsetCurve(const Geom_OffsetCurve& theOther)
     : basisCurve(Handle(Geom_Curve)::DownCast(theOther.basisCurve->Copy())),
       direction(theOther.direction),
       offsetValue(theOther.offsetValue),
-      myBasisCurveContinuity(theOther.myBasisCurveContinuity),
-      myEvaluator(new GeomEvaluator_OffsetCurve(basisCurve, offsetValue, direction))
+      myBasisCurveContinuity(theOther.myBasisCurveContinuity)
 {
   // Deep copy without validation - source curve is already validated
 }
 
-//=======================================================================
+//==================================================================================================
 
 Geom_OffsetCurve::Geom_OffsetCurve(const Handle(Geom_Curve)& theCurve,
                                    const Standard_Real       theOffset,
@@ -75,67 +76,64 @@ Geom_OffsetCurve::Geom_OffsetCurve(const Handle(Geom_Curve)& theCurve,
   SetBasisCurve(theCurve, isTheNotCheckC0);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::Reverse()
 {
   basisCurve->Reverse();
   offsetValue = -offsetValue;
-  myEvaluator->SetOffsetValue(offsetValue);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::ReversedParameter(const Standard_Real U) const
 {
   return basisCurve->ReversedParameter(U);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 const gp_Dir& Geom_OffsetCurve::Direction() const
 {
   return direction;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::SetDirection(const gp_Dir& V)
 {
   direction = V;
-  myEvaluator->SetOffsetDirection(direction);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::SetOffsetValue(const Standard_Real D)
 {
   offsetValue = D;
-  myEvaluator->SetOffsetValue(offsetValue);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Boolean Geom_OffsetCurve::IsPeriodic() const
 {
   return basisCurve->IsPeriodic();
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::Period() const
 {
   return basisCurve->Period();
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::SetBasisCurve(const Handle(Geom_Curve)& C,
                                      const Standard_Boolean    isNotCheckC0)
 {
-  const Standard_Real aUf = C->FirstParameter(), aUl = C->LastParameter();
-  Handle(Geom_Curve)  aCheckingCurve = Handle(Geom_Curve)::DownCast(C->Copy());
-  Standard_Boolean    isTrimmed      = Standard_False;
+  const double       aUf = C->FirstParameter(), aUl = C->LastParameter();
+  Handle(Geom_Curve) aCheckingCurve = Handle(Geom_Curve)::DownCast(C->Copy());
+  bool               isTrimmed      = false;
 
   while (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))
          || aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
@@ -144,17 +142,17 @@ void Geom_OffsetCurve::SetBasisCurve(const Handle(Geom_Curve)& C,
     {
       Handle(Geom_TrimmedCurve) aTrimC = Handle(Geom_TrimmedCurve)::DownCast(aCheckingCurve);
       aCheckingCurve                   = aTrimC->BasisCurve();
-      isTrimmed                        = Standard_True;
+      isTrimmed                        = true;
     }
 
     if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
       Handle(Geom_OffsetCurve) aOC = Handle(Geom_OffsetCurve)::DownCast(aCheckingCurve);
       aCheckingCurve               = aOC->BasisCurve();
-      Standard_Real PrevOff        = aOC->Offset();
-      gp_Vec        V1(aOC->Direction());
-      gp_Vec        V2(direction);
-      gp_Vec        Vdir(PrevOff * V1 + offsetValue * V2);
+      double PrevOff               = aOC->Offset();
+      gp_Vec V1(aOC->Direction());
+      gp_Vec V2(direction);
+      gp_Vec Vdir(PrevOff * V1 + offsetValue * V2);
 
       if (offsetValue >= 0.)
       {
@@ -171,7 +169,7 @@ void Geom_OffsetCurve::SetBasisCurve(const Handle(Geom_Curve)& C,
 
   myBasisCurveContinuity = aCheckingCurve->Continuity();
 
-  Standard_Boolean isC0 = !isNotCheckC0 && (myBasisCurveContinuity == GeomAbs_C0);
+  bool isC0 = !isNotCheckC0 && (myBasisCurveContinuity == GeomAbs_C0);
 
   // Basis curve must be at least C1
   if (isC0 && aCheckingCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
@@ -182,12 +180,14 @@ void Geom_OffsetCurve::SetBasisCurve(const Handle(Geom_Curve)& C,
       // Checking if basis curve has more smooth (C1, G2 and above) is not done.
       // It can be done in case of need.
       myBasisCurveContinuity = GeomAbs_G1;
-      isC0                   = Standard_False;
+      isC0                   = false;
     }
 
     // Raise exception if still C0
     if (isC0)
+    {
       throw Standard_ConstructionError("Offset on C0 curve");
+    }
   }
   //
   if (isTrimmed)
@@ -198,22 +198,19 @@ void Geom_OffsetCurve::SetBasisCurve(const Handle(Geom_Curve)& C,
   {
     basisCurve = aCheckingCurve;
   }
-
-  myEvaluator = new GeomEvaluator_OffsetCurve(basisCurve, offsetValue, direction);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Handle(Geom_Curve) Geom_OffsetCurve::BasisCurve() const
 {
   return basisCurve;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 GeomAbs_Shape Geom_OffsetCurve::Continuity() const
 {
-
   GeomAbs_Shape OffsetShape = GeomAbs_C0;
   switch (myBasisCurveContinuity)
   {
@@ -242,28 +239,46 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity() const
   return OffsetShape;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Geom_OffsetCurve::D0(const Standard_Real U, gp_Pnt& P) const
+void Geom_OffsetCurve::D0(const Standard_Real theU, gp_Pnt& theP) const
 {
-  myEvaluator->D0(U, P);
+  if (!Geom_OffsetCurveUtils::EvaluateD0(theU, basisCurve.get(), direction, offsetValue, theP))
+  {
+    throw Standard_NullValue("Geom_OffsetCurve::D0: Unable to calculate offset point");
+  }
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Geom_OffsetCurve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V1) const
+void Geom_OffsetCurve::D1(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV1) const
 {
-  myEvaluator->D1(U, P, V1);
+  if (!Geom_OffsetCurveUtils::EvaluateD1(theU, basisCurve.get(), direction, offsetValue, theP, theV1))
+  {
+    throw Standard_NullValue("Geom_OffsetCurve::D1: Unable to calculate offset D1");
+  }
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void Geom_OffsetCurve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void Geom_OffsetCurve::D2(const Standard_Real theU,
+                          gp_Pnt&             theP,
+                          gp_Vec&             theV1,
+                          gp_Vec&             theV2) const
 {
-  myEvaluator->D2(U, P, V1, V2);
+  if (!Geom_OffsetCurveUtils::EvaluateD2(theU,
+                                         basisCurve.get(),
+                                         direction,
+                                         offsetValue,
+                                         theP,
+                                         theV1,
+                                         theV2))
+  {
+    throw Standard_NullValue("Geom_OffsetCurve::D2: Unable to calculate offset D2");
+  }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::D3(const Standard_Real theU,
                           gp_Pnt&             theP,
@@ -271,61 +286,60 @@ void Geom_OffsetCurve::D3(const Standard_Real theU,
                           gp_Vec&             theV2,
                           gp_Vec&             theV3) const
 {
-  myEvaluator->D3(theU, theP, theV1, theV2, theV3);
+  if (!Geom_OffsetCurveUtils::EvaluateD3(theU,
+                                         basisCurve.get(),
+                                         direction,
+                                         offsetValue,
+                                         theP,
+                                         theV1,
+                                         theV2,
+                                         theV3))
+  {
+    throw Standard_NullValue("Geom_OffsetCurve::D3: Unable to calculate offset D3");
+  }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 gp_Vec Geom_OffsetCurve::DN(const Standard_Real U, const Standard_Integer N) const
 {
-  Standard_RangeError_Raise_if(N < 1,
-                               "Exception: "
-                               "Geom_OffsetCurve::DN(...). N<1.");
+  Standard_RangeError_Raise_if(N < 1, "Exception: Geom_OffsetCurve::DN(...). N<1.");
 
-  gp_Vec VN, Vtemp;
-  gp_Pnt Ptemp;
-  switch (N)
+  gp_Vec aVN;
+  if (!Geom_OffsetCurveUtils::EvaluateDN(U, basisCurve.get(), direction, offsetValue, N, aVN))
   {
-    case 1:
-      D1(U, Ptemp, VN);
-      break;
-    case 2:
-      D2(U, Ptemp, Vtemp, VN);
-      break;
-    case 3:
-      D3(U, Ptemp, Vtemp, Vtemp, VN);
-      break;
-    default:
-      throw Standard_NotImplemented(
-        "Exception: "
-        "Derivative order is greater than 3. Cannot compute of derivative.");
+    if (N > 3)
+    {
+      throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
+                                    "Cannot compute of derivative.");
+    }
+    throw Standard_NullValue("Geom_OffsetCurve::DN: Unable to calculate offset DN");
   }
-
-  return VN;
+  return aVN;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::FirstParameter() const
 {
   return basisCurve->FirstParameter();
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::LastParameter() const
 {
   return basisCurve->LastParameter();
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::Offset() const
 {
   return offsetValue;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Boolean Geom_OffsetCurve::IsClosed() const
 {
@@ -335,49 +349,45 @@ Standard_Boolean Geom_OffsetCurve::IsClosed() const
   return (PF.Distance(PL) <= gp::Resolution());
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Boolean Geom_OffsetCurve::IsCN(const Standard_Integer N) const
 {
-
   Standard_RangeError_Raise_if(N < 0, " ");
   return basisCurve->IsCN(N + 1);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::Transform(const gp_Trsf& T)
 {
   basisCurve->Transform(T);
   direction.Transform(T);
   offsetValue *= T.ScaleFactor();
-
-  myEvaluator->SetOffsetValue(offsetValue);
-  myEvaluator->SetOffsetDirection(direction);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::TransformedParameter(const Standard_Real U, const gp_Trsf& T) const
 {
   return basisCurve->TransformedParameter(U, T);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 Standard_Real Geom_OffsetCurve::ParametricTransformation(const gp_Trsf& T) const
 {
   return basisCurve->ParametricTransformation(T);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 GeomAbs_Shape Geom_OffsetCurve::GetBasisCurveContinuity() const
 {
   return myBasisCurveContinuity;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Geom_OffsetCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
 {

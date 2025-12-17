@@ -18,7 +18,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
-#include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_SurfaceOfRevolution, GeomAdaptor_Surface)
@@ -62,19 +61,22 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
   aCopy->myHaveAxis = myHaveAxis;
   aCopy->myAxeRev   = myAxeRev;
 
-  aCopy->mySurface        = mySurface;
-  aCopy->myUFirst         = myUFirst;
-  aCopy->myULast          = myULast;
-  aCopy->myVFirst         = myVFirst;
-  aCopy->myVLast          = myVLast;
-  aCopy->myTolU           = myTolU;
-  aCopy->myTolV           = myTolV;
-  aCopy->myBSplineSurface = myBSplineSurface;
-
+  aCopy->mySurface     = mySurface;
+  aCopy->myUFirst      = myUFirst;
+  aCopy->myULast       = myULast;
+  aCopy->myVFirst      = myVFirst;
+  aCopy->myVLast       = myVLast;
+  aCopy->myTolU        = myTolU;
+  aCopy->myTolV        = myTolV;
   aCopy->mySurfaceType = mySurfaceType;
-  if (!myNestedEvaluator.IsNull())
+
+  // Copy surface data variant
+  if (auto* aRevData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&mySurfaceData))
   {
-    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+    GeomAdaptor_Surface::RevolutionData aNewData;
+    aNewData.BasisCurve  = aRevData->BasisCurve->ShallowCopy();
+    aNewData.Axis        = aRevData->Axis;
+    aCopy->mySurfaceData = aNewData;
   }
 
   return aCopy;
@@ -97,8 +99,12 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   myAxis     = V;
 
   mySurfaceType = GeomAbs_SurfaceOfRevolution;
-  myNestedEvaluator =
-    new GeomEvaluator_SurfaceOfRevolution(myBasisCurve, myAxis.Direction(), myAxis.Location());
+
+  // Populate revolution surface data for fast evaluation
+  GeomAdaptor_Surface::RevolutionData aRevData;
+  aRevData.BasisCurve = myBasisCurve;
+  aRevData.Axis       = myAxis;
+  mySurfaceData       = aRevData;
 
   // Eval myAxeRev : axe of revolution ( Determination de Ox).
   gp_Pnt           P, Q;

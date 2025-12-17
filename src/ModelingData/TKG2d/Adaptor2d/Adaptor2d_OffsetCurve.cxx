@@ -14,7 +14,7 @@
 #include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dEvaluator.hxx>
+#include <Geom2d_OffsetCurveUtils.pxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -282,7 +282,7 @@ gp_Pnt2d Adaptor2d_OffsetCurve::Value(const Standard_Real U) const
     gp_Pnt2d aP;
     gp_Vec2d aV;
     myCurve->D1(U, aP, aV);
-    Geom2dEvaluator::CalculateD0(aP, aV, myOffset);
+    Geom2d_OffsetCurveUtils::CalculateD0(aP, aV, myOffset);
     return aP;
   }
   else
@@ -306,7 +306,7 @@ void Adaptor2d_OffsetCurve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) 
   {
     gp_Vec2d aV2;
     myCurve->D2(U, P, V, aV2);
-    Geom2dEvaluator::CalculateD1(P, V, aV2, myOffset);
+    Geom2d_OffsetCurveUtils::CalculateD1(P, V, aV2, myOffset);
   }
   else
   {
@@ -322,7 +322,7 @@ void Adaptor2d_OffsetCurve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1,
   {
     gp_Vec2d aV3;
     myCurve->D3(U, P, V1, V2, aV3);
-    Geom2dEvaluator::CalculateD2(P, V1, V2, aV3, Standard_False, myOffset);
+    Geom2d_OffsetCurveUtils::CalculateD2(P, V1, V2, aV3, Standard_False, myOffset);
   }
   else
   {
@@ -342,7 +342,7 @@ void Adaptor2d_OffsetCurve::D3(const Standard_Real U,
   {
     gp_Vec2d aV4 = myCurve->DN(U, 4);
     myCurve->D3(U, P, V1, V2, V3);
-    Geom2dEvaluator::CalculateD3(P, V1, V2, V3, aV4, Standard_False, myOffset);
+    Geom2d_OffsetCurveUtils::CalculateD3(P, V1, V2, V3, aV4, Standard_False, myOffset);
   }
   else
   {

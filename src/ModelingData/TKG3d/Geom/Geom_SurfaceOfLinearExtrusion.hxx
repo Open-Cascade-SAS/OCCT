@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_SweptSurface.hxx>
-#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
 class gp_Dir;
@@ -275,10 +274,6 @@ public:
                                         Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion, Geom_SweptSurface)
-
-protected:
-private:
-  Handle(GeomEvaluator_SurfaceOfExtrusion) myEvaluator;
 };
 
 #endif // _Geom_SurfaceOfLinearExtrusion_HeaderFile

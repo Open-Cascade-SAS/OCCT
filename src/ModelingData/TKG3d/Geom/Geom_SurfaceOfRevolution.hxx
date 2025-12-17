@@ -20,10 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Geom_SweptSurface.hxx>
-#include <GeomEvaluator_SurfaceOfRevolution.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard_Integer.hxx>
+
 class Geom_Curve;
 class gp_Ax1;
 class gp_Dir;
@@ -329,8 +329,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 
 private:
-  Handle(GeomEvaluator_SurfaceOfRevolution) myEvaluator;
-  gp_Pnt                                    loc;
+  gp_Pnt loc;
 };
 
 #endif // _Geom_SurfaceOfRevolution_HeaderFile
