@@ -65,7 +65,8 @@ public:
   //! Internal structure for offset surface evaluation data.
   struct OffsetData
   {
-    Handle(GeomAdaptor_Surface) BasisAdaptor;  //!< Adaptor for basis surface
+    Handle(GeomAdaptor_Surface) BasisAdaptor;      //!< Adaptor for basis surface
+    Handle(GeomAdaptor_Surface) EquivalentAdaptor; //!< Adaptor for equivalent surface (if exists)
     Handle(Geom_OffsetSurface)  OffsetSurface; //!< Original offset surface for osculating queries
     double                      Offset = 0.0;  //!< Offset distance
   };

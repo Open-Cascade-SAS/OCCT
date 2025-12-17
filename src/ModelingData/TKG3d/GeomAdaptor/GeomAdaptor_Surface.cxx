@@ -124,12 +124,17 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
 }
 
 //! Offset surface D0 evaluation with retry mechanism for singular points.
-//! Uses template utility that shifts point towards center when normal calculation fails.
+//! Uses equivalent surface adaptor for faster evaluation when available.
 inline void offsetD0(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue)
 {
+  if (!theData.EquivalentAdaptor.IsNull())
+  {
+    theData.EquivalentAdaptor->D0(theU, theV, theValue);
+    return;
+  }
   if (!Geom_OffsetSurfaceUtils::EvaluateD0(theU,
                                            theV,
                                            theData.BasisAdaptor,
@@ -142,7 +147,7 @@ inline void offsetD0(const double                           theU,
 }
 
 //! Offset surface D1 evaluation with retry mechanism for singular points.
-//! Uses template utility that shifts point towards center when normal calculation fails.
+//! Uses equivalent surface adaptor for faster evaluation when available.
 inline void offsetD1(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -150,6 +155,11 @@ inline void offsetD1(const double                           theU,
                      gp_Vec&                                theD1U,
                      gp_Vec&                                theD1V)
 {
+  if (!theData.EquivalentAdaptor.IsNull())
+  {
+    theData.EquivalentAdaptor->D1(theU, theV, theValue, theD1U, theD1V);
+    return;
+  }
   if (!Geom_OffsetSurfaceUtils::EvaluateD1(theU,
                                            theV,
                                            theData.BasisAdaptor,
@@ -164,7 +174,7 @@ inline void offsetD1(const double                           theU,
 }
 
 //! Offset surface D2 evaluation with retry mechanism for singular points.
-//! Uses template utility that shifts point towards center when normal calculation fails.
+//! Uses equivalent surface adaptor for faster evaluation when available.
 inline void offsetD2(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -175,6 +185,11 @@ inline void offsetD2(const double                           theU,
                      gp_Vec&                                theD2V,
                      gp_Vec&                                theD2UV)
 {
+  if (!theData.EquivalentAdaptor.IsNull())
+  {
+    theData.EquivalentAdaptor->D2(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
+    return;
+  }
   if (!Geom_OffsetSurfaceUtils::EvaluateD2(theU,
                                            theV,
                                            theData.BasisAdaptor,
@@ -192,7 +207,7 @@ inline void offsetD2(const double                           theU,
 }
 
 //! Offset surface D3 evaluation with retry mechanism for singular points.
-//! Uses template utility that shifts point towards center when normal calculation fails.
+//! Uses equivalent surface adaptor for faster evaluation when available.
 inline void offsetD3(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
@@ -207,6 +222,22 @@ inline void offsetD3(const double                           theU,
                      gp_Vec&                                theD3UUV,
                      gp_Vec&                                theD3UVV)
 {
+  if (!theData.EquivalentAdaptor.IsNull())
+  {
+    theData.EquivalentAdaptor->D3(theU,
+                                  theV,
+                                  theValue,
+                                  theD1U,
+                                  theD1V,
+                                  theD2U,
+                                  theD2V,
+                                  theD2UV,
+                                  theD3U,
+                                  theD3V,
+                                  theD3UUV,
+                                  theD3UVV);
+    return;
+  }
   if (!Geom_OffsetSurfaceUtils::EvaluateD3(theU,
                                            theV,
                                            theData.BasisAdaptor,
@@ -227,13 +258,18 @@ inline void offsetD3(const double                           theU,
   }
 }
 
-//! Offset surface DN evaluation
+//! Offset surface DN evaluation.
+//! Uses equivalent surface adaptor for faster evaluation when available.
 inline gp_Vec offsetDN(const double                           theU,
                        const double                           theV,
                        const GeomAdaptor_Surface::OffsetData& theData,
                        int                                    theNu,
                        int                                    theNv)
 {
+  if (!theData.EquivalentAdaptor.IsNull())
+  {
+    return theData.EquivalentAdaptor->DN(theU, theV, theNu, theNv);
+  }
   gp_Vec aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateDN(theU,
                                            theV,
@@ -286,6 +322,11 @@ Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
     GeomAdaptor_Surface::OffsetData aNewData;
     aNewData.BasisAdaptor =
       Handle(GeomAdaptor_Surface)::DownCast(anOffsetData->BasisAdaptor->ShallowCopy());
+    if (!anOffsetData->EquivalentAdaptor.IsNull())
+    {
+      aNewData.EquivalentAdaptor =
+        Handle(GeomAdaptor_Surface)::DownCast(anOffsetData->EquivalentAdaptor->ShallowCopy());
+    }
     aNewData.OffsetSurface = anOffsetData->OffsetSurface; // Shared handle to original surface
     aNewData.Offset        = anOffsetData->Offset;
     aCopy->mySurfaceData   = std::move(aNewData);
@@ -391,7 +432,19 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
                                                           myTolV);
       anOffsetData.OffsetSurface = anOffSurf;
       anOffsetData.Offset        = anOffSurf->Offset();
-      mySurfaceData              = std::move(anOffsetData);
+      // Check if equivalent canonical surface exists for faster evaluation
+      Handle(Geom_Surface) anEquivSurf = anOffSurf->Surface();
+      if (!anEquivSurf.IsNull())
+      {
+        anOffsetData.EquivalentAdaptor = new GeomAdaptor_Surface(anEquivSurf,
+                                                                 myUFirst,
+                                                                 myULast,
+                                                                 myVFirst,
+                                                                 myVLast,
+                                                                 myTolU,
+                                                                 myTolV);
+      }
+      mySurfaceData = std::move(anOffsetData);
     }
     else
       mySurfaceType = GeomAbs_OtherSurface;
