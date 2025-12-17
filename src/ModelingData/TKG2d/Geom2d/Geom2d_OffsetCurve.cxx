@@ -235,12 +235,12 @@ void Geom2d_OffsetCurve::D3(const Standard_Real theU,
                             gp_Vec2d&           theV3) const
 {
   if (!Geom2d_OffsetCurveUtils::EvaluateD3(theU,
-                                      basisCurve.get(),
-                                      offsetValue,
-                                      theP,
-                                      theV1,
-                                      theV2,
-                                      theV3))
+                                           basisCurve.get(),
+                                           offsetValue,
+                                           theP,
+                                           theV1,
+                                           theV2,
+                                           theV3))
   {
     throw Standard_NullValue("Geom2d_OffsetCurve::D3: Unable to calculate offset D3");
   }

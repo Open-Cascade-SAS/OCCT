@@ -253,7 +253,12 @@ void Geom_OffsetCurve::D0(const Standard_Real theU, gp_Pnt& theP) const
 
 void Geom_OffsetCurve::D1(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV1) const
 {
-  if (!Geom_OffsetCurveUtils::EvaluateD1(theU, basisCurve.get(), direction, offsetValue, theP, theV1))
+  if (!Geom_OffsetCurveUtils::EvaluateD1(theU,
+                                         basisCurve.get(),
+                                         direction,
+                                         offsetValue,
+                                         theP,
+                                         theV1))
   {
     throw Standard_NullValue("Geom_OffsetCurve::D1: Unable to calculate offset D1");
   }

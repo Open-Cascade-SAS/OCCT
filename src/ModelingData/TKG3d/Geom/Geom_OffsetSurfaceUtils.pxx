@@ -745,8 +745,10 @@ bool EvaluateD1(double                  theU,
     {
       if (theOscQuery)
       {
-        aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-        aOscInfo.AlongV = theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+        aOscInfo.AlongU =
+          theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+        aOscInfo.AlongV =
+          theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
       }
       isSingular = true;
     }

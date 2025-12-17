@@ -673,9 +673,9 @@ void Geom2dAdaptor_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom2d_OffsetCurveUtils::EvaluateD0(U,
-                                          anOffsetData.BasisAdaptor.get(),
-                                          anOffsetData.Offset,
-                                          P))
+                                               anOffsetData.BasisAdaptor.get(),
+                                               anOffsetData.Offset,
+                                               P))
       {
         throw Standard_NullValue("Geom2dAdaptor_Curve::D0: Unable to calculate offset point");
       }
@@ -722,10 +722,10 @@ void Geom2dAdaptor_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) co
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom2d_OffsetCurveUtils::EvaluateD1(U,
-                                          anOffsetData.BasisAdaptor.get(),
-                                          anOffsetData.Offset,
-                                          P,
-                                          V))
+                                               anOffsetData.BasisAdaptor.get(),
+                                               anOffsetData.Offset,
+                                               P,
+                                               V))
       {
         throw Standard_NullValue("Geom2dAdaptor_Curve::D1: Unable to calculate offset D1");
       }
@@ -772,11 +772,11 @@ void Geom2dAdaptor_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, g
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom2d_OffsetCurveUtils::EvaluateD2(U,
-                                          anOffsetData.BasisAdaptor.get(),
-                                          anOffsetData.Offset,
-                                          P,
-                                          V1,
-                                          V2))
+                                               anOffsetData.BasisAdaptor.get(),
+                                               anOffsetData.Offset,
+                                               P,
+                                               V1,
+                                               V2))
       {
         throw Standard_NullValue("Geom2dAdaptor_Curve::D2: Unable to calculate offset D2");
       }
@@ -827,12 +827,12 @@ void Geom2dAdaptor_Curve::D3(const Standard_Real U,
     case GeomAbs_OffsetCurve: {
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom2d_OffsetCurveUtils::EvaluateD3(U,
-                                          anOffsetData.BasisAdaptor.get(),
-                                          anOffsetData.Offset,
-                                          P,
-                                          V1,
-                                          V2,
-                                          V3))
+                                               anOffsetData.BasisAdaptor.get(),
+                                               anOffsetData.Offset,
+                                               P,
+                                               V1,
+                                               V2,
+                                               V3))
       {
         throw Standard_NullValue("Geom2dAdaptor_Curve::D3: Unable to calculate offset D3");
       }
@@ -868,10 +868,10 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       gp_Vec2d    aDN;
       if (!Geom2d_OffsetCurveUtils::EvaluateDN(U,
-                                          anOffsetData.BasisAdaptor.get(),
-                                          anOffsetData.Offset,
-                                          N,
-                                          aDN))
+                                               anOffsetData.BasisAdaptor.get(),
+                                               anOffsetData.Offset,
+                                               N,
+                                               aDN))
       {
         if (N > 3)
         {

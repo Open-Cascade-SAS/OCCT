@@ -86,7 +86,10 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool UOsculatingSurface(double theU, double theV, bool& theT, Handle(Geom_BSplineSurface)& theL) const;
+  bool UOsculatingSurface(double                       theU,
+                          double                       theV,
+                          bool&                        theT,
+                          Handle(Geom_BSplineSurface)& theL) const;
 
   //! If true, theL is the local osculating surface along V at point (U,V).
   //! @param theU U parameter
@@ -94,7 +97,10 @@ public:
   //! @param theT output flag indicating if derivative is opposite
   //! @param theL output osculating surface
   //! @return true if osculating surface was found
-  bool VOsculatingSurface(double theU, double theV, bool& theT, Handle(Geom_BSplineSurface)& theL) const;
+  bool VOsculatingSurface(double                       theU,
+                          double                       theV,
+                          bool&                        theT,
+                          Handle(Geom_BSplineSurface)& theL) const;
 
 private:
   //! Returns false if the osculating surface can't be built.

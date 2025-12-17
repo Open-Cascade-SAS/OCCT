@@ -373,9 +373,9 @@ void Geom_OsculatingSurface::Init(const Handle(Geom_Surface)& theBS, double theT
 //=================================================================================================
 
 bool Geom_OsculatingSurface::UOsculatingSurface(double                       theU,
-                                      double                       theV,
-                                      bool&                        theT,
-                                      Handle(Geom_BSplineSurface)& theL) const
+                                                double                       theV,
+                                                bool&                        theT,
+                                                Handle(Geom_BSplineSurface)& theL) const
 {
   bool along = false;
   if (myAlong[0] || myAlong[1])
@@ -435,9 +435,9 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                       the
 //=================================================================================================
 
 bool Geom_OsculatingSurface::VOsculatingSurface(double                       theU,
-                                      double                       theV,
-                                      bool&                        theT,
-                                      Handle(Geom_BSplineSurface)& theL) const
+                                                double                       theV,
+                                                bool&                        theT,
+                                                Handle(Geom_BSplineSurface)& theL) const
 {
   bool along = false;
   if (myAlong[2] || myAlong[3])

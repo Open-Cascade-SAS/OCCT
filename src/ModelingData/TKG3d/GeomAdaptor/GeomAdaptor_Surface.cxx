@@ -382,7 +382,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       Handle(Geom_OffsetSurface) anOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
       // Populate offset surface data - reuse the original surface for osculating queries
       GeomAdaptor_Surface::OffsetData anOffsetData;
-      anOffsetData.BasisAdaptor = new GeomAdaptor_Surface(anOffSurf->BasisSurface(),
+      anOffsetData.BasisAdaptor  = new GeomAdaptor_Surface(anOffSurf->BasisSurface(),
                                                           myUFirst,
                                                           myULast,
                                                           myVFirst,

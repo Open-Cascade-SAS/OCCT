@@ -65,9 +65,9 @@ public:
   //! Internal structure for offset surface evaluation data.
   struct OffsetData
   {
-    Handle(GeomAdaptor_Surface)  BasisAdaptor;  //!< Adaptor for basis surface
-    Handle(Geom_OffsetSurface)   OffsetSurface; //!< Original offset surface for osculating queries
-    double                       Offset = 0.0;  //!< Offset distance
+    Handle(GeomAdaptor_Surface) BasisAdaptor;  //!< Adaptor for basis surface
+    Handle(Geom_OffsetSurface)  OffsetSurface; //!< Original offset surface for osculating queries
+    double                      Offset = 0.0;  //!< Offset distance
   };
 
   //! Internal structure for Bezier surface cache data.

@@ -107,7 +107,7 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const Standard_Real U1,
                                                  const Standard_Real U2) const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_BSplineCurve, " ");
-  const auto& aBSpl = std::get<BSplineData>(myCurveData).Curve;
+  const auto&                    aBSpl  = std::get<BSplineData>(myCurveData).Curve;
   Standard_Integer               Nb     = aBSpl->NbKnots();
   Standard_Integer               Index1 = 0;
   Standard_Integer               Index2 = 0;

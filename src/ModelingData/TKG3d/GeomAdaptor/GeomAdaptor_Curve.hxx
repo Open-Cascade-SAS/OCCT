@@ -278,7 +278,7 @@ private:
   GeomAbs_CurveType  myTypeCurve;
   Standard_Real      myFirst;
   Standard_Real      myLast;
-  CurveDataVariant   myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset, etc.)
+  CurveDataVariant myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset, etc.)
 };
 
 #endif // _GeomAdaptor_Curve_HeaderFile
