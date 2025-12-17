@@ -12,6 +12,23 @@ macro (OCCT_CHECK_AND_UNSET VARNAME)
   endif()
 endmacro()
 
+# Macro to define a version-gated boolean option.
+# If CMake version is sufficient, option defaults to DEFAULT_ON value.
+# If CMake version is too old, option is unset and unavailable.
+# VARNAME - variable name
+# MIN_VERSION - minimum CMake version required
+# DEFAULT_ON - default value when version is sufficient (ON/OFF)
+# DESCRIPTION - variable description
+macro (OCCT_VERSION_GATED_OPTION VARNAME MIN_VERSION DEFAULT_ON DESCRIPTION)
+  if (CMAKE_VERSION VERSION_LESS "${MIN_VERSION}")
+    OCCT_CHECK_AND_UNSET (${VARNAME})
+  else()
+    if (NOT DEFINED ${VARNAME})
+      set (${VARNAME} ${DEFAULT_ON} CACHE BOOL "${DESCRIPTION}")
+    endif()
+  endif()
+endmacro()
+
 macro (OCCT_CHECK_AND_UNSET_GROUP GROUPNAME)
   get_cmake_property(VARS VARIABLES)
   string (REGEX MATCHALL "(^|;)${GROUPNAME}[A-Za-z0-9_]*" GROUPNAME_VARS "${VARS}")

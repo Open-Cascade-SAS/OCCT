@@ -49,6 +49,10 @@ set (BUILD_INCLUDE_SYMLINK_DESCR
 OFF - using a reference file with direct include to the origin,
 ON - symbolic link to the origin file are created")
 
+set (BUILD_INSTALL_PARALLEL_DESCR
+"Enable parallel installation (requires CMake 3.30+).
+When enabled, cmake --install can use -j option to install in parallel.")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),
