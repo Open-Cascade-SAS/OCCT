@@ -14,12 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified     04/10/96 : JCT : derivee des surfaces offset utilisation de
-//                               CSLib
-// Modified     15/11/96 : JPI : ajout equivalent surface pour les surfaces canoniques et modif des
-// methodes D0 D1, ... UIso,VIso Modified     18/11/96 : JPI : inversion de l'offsetValue dans
-// UReverse et Vreverse
-
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
@@ -849,16 +843,13 @@ gp_GTrsf2d Geom_OffsetSurface::ParametricTransformation(const gp_Trsf& T) const
   return basisSurf->ParametricTransformation(T);
 }
 
-//=======================================================================
-// function : Surface
-// purpose  : Trouve si elle existe, une surface non offset, equivalente
-//           a l'offset surface.
-//=======================================================================
+//==================================================================================================
 
 Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
 {
+  // Returns an equivalent non-offset surface if it exists for this offset surface.
   if (offsetValue == 0.0)
-    return basisSurf; // Cas direct
+    return basisSurf; // Direct case - no offset
 
   constexpr Standard_Real Tol = Precision::Confusion();
   Handle(Geom_Surface)    Result, Base;
@@ -867,7 +858,7 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
   Standard_Boolean      IsTrimmed;
   Standard_Real         U1 = 0., V1 = 0., U2 = 0., V2 = 0.;
 
-  // Preambule pour les surface trimmes
+  // Handle trimmed surfaces - extract the basis surface and bounds.
   if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
     Handle(Geom_RectangularTrimmedSurface) S =
@@ -883,122 +874,94 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
     Base      = basisSurf;
   }
 
-  // Traite les surfaces cannonique
+  // Handle canonical surfaces - compute equivalent offset surface.
+  // For direct orientation, offset is along outward normal; for indirect, it's reversed.
   if (TheType == STANDARD_TYPE(Geom_Plane))
   {
     Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(Base);
-    gp_Vec             T = P->Position().XDirection() ^ P->Position().YDirection();
+    // Plane normal is already available as Position().Direction().
+    gp_Vec T(P->Position().Direction());
     T *= offsetValue;
     Result = Handle(Geom_Plane)::DownCast(P->Translated(T));
   }
   else if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
   {
     Handle(Geom_CylindricalSurface) C      = Handle(Geom_CylindricalSurface)::DownCast(Base);
-    Standard_Real                   Radius = C->Radius();
     gp_Ax3                          Axis   = C->Position();
-    if (Axis.Direct())
-      Radius += offsetValue;
-    else
-      Radius -= offsetValue;
+    const Standard_Real             aSign  = Axis.Direct() ? 1.0 : -1.0;
+    const Standard_Real             Radius = C->Radius() + aSign * offsetValue;
     if (Radius >= Tol)
     {
       Result = new Geom_CylindricalSurface(Axis, Radius);
     }
     else if (Radius <= -Tol)
     {
-      Axis.Rotate(gp_Ax1(Axis.Location(), Axis.Direction()), M_PI);
-      Result = new Geom_CylindricalSurface(Axis, std::abs(Radius));
-      Result->UReverse();
+      // Negative radius: flip X-axis to reverse normal orientation.
+      Axis.XReverse();
+      Result = new Geom_CylindricalSurface(Axis, -Radius);
     }
-    else
-    {
-      // surface degeneree
-    }
+    // else: degenerate surface - radius is too small.
   }
   else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    Handle(Geom_ConicalSurface) C        = Handle(Geom_ConicalSurface)::DownCast(Base);
-    gp_Ax3                      anAxis   = C->Position();
-    Standard_Boolean            isDirect = anAxis.Direct();
-    Standard_Real               anAlpha  = C->SemiAngle();
-    Standard_Real               aRadius;
-    if (isDirect)
-    {
-      aRadius = C->RefRadius() + offsetValue * std::cos(anAlpha);
-    }
-    else
-    {
-      aRadius = C->RefRadius() - offsetValue * std::cos(anAlpha);
-    }
+    Handle(Geom_ConicalSurface) C       = Handle(Geom_ConicalSurface)::DownCast(Base);
+    gp_Ax3                      anAxis  = C->Position();
+    const Standard_Real         aSign   = anAxis.Direct() ? 1.0 : -1.0;
+    const Standard_Real         anAlpha = C->SemiAngle();
+    const Standard_Real         aCos    = std::cos(anAlpha);
+    const Standard_Real         aSin    = std::sin(anAlpha);
+    const Standard_Real         aRadius = C->RefRadius() + aSign * offsetValue * aCos;
     if (aRadius >= 0.)
     {
+      // Translate apex along axis by offset component.
       gp_Vec aZ(anAxis.Direction());
-      if (isDirect)
-      {
-        aZ *= -offsetValue * std::sin(anAlpha);
-      }
-      else
-      {
-        aZ *= offsetValue * std::sin(anAlpha);
-      }
+      aZ *= -aSign * offsetValue * aSin;
       anAxis.Translate(aZ);
       Result = new Geom_ConicalSurface(anAxis, anAlpha, aRadius);
     }
-    else
-    {
-      // surface degeneree
-    }
+    // else: degenerate surface - radius is negative.
   }
   else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
   {
     Handle(Geom_SphericalSurface) S      = Handle(Geom_SphericalSurface)::DownCast(Base);
-    Standard_Real                 Radius = S->Radius();
     gp_Ax3                        Axis   = S->Position();
-    if (Axis.Direct())
-      Radius += offsetValue;
-    else
-      Radius -= offsetValue;
+    const Standard_Real           aSign  = Axis.Direct() ? 1.0 : -1.0;
+    const Standard_Real           Radius = S->Radius() + aSign * offsetValue;
     if (Radius >= Tol)
     {
       Result = new Geom_SphericalSurface(Axis, Radius);
     }
     else if (Radius <= -Tol)
     {
-      Axis.Rotate(gp_Ax1(Axis.Location(), Axis.Direction()), M_PI);
+      // Negative radius: flip both X and Z axes to reverse normal orientation.
+      Axis.XReverse();
       Axis.ZReverse();
       Result = new Geom_SphericalSurface(Axis, -Radius);
-      Result->UReverse();
     }
-    else
-    {
-      //      surface degeneree
-    }
+    // else: degenerate surface - radius is too small.
   }
   else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
-
   {
     Handle(Geom_ToroidalSurface) S           = Handle(Geom_ToroidalSurface)::DownCast(Base);
-    Standard_Real                MajorRadius = S->MajorRadius();
-    Standard_Real                MinorRadius = S->MinorRadius();
+    const Standard_Real          MajorRadius = S->MajorRadius();
     gp_Ax3                       Axis        = S->Position();
-    if (MinorRadius <= MajorRadius)
+    const Standard_Real          aSign       = Axis.Direct() ? 1.0 : -1.0;
+    const Standard_Real          MinorRadius = S->MinorRadius() + aSign * offsetValue;
+    // Only handle non-self-intersecting torus (MinorRadius <= MajorRadius).
+    if (MinorRadius >= Tol && MinorRadius <= MajorRadius)
     {
-      if (Axis.Direct())
-        MinorRadius += offsetValue;
-      else
-        MinorRadius -= offsetValue;
-      if (MinorRadius >= Tol)
-        Result = new Geom_ToroidalSurface(Axis, MajorRadius, MinorRadius);
-      //      else if (MinorRadius <= -Tol)
-      //        Result->UReverse();
-      else
-      {
-        //	surface degeneree
-      }
+      Result = new Geom_ToroidalSurface(Axis, MajorRadius, MinorRadius);
     }
+    else if (MinorRadius <= -Tol && -MinorRadius <= MajorRadius)
+    {
+      // Negative minor radius: flip X-axis to reverse normal orientation.
+      Axis.XReverse();
+      Result = new Geom_ToroidalSurface(Axis, MajorRadius, -MinorRadius);
+    }
+    // else: degenerate or self-intersecting torus - no equivalent surface.
   }
 
-  // S'il le faut on trimme le resultat
+  // Trim the result if the basis surface was trimmed.
   if (IsTrimmed && !Result.IsNull())
   {
     Base   = Result;
