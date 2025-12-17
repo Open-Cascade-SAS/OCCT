@@ -121,3 +121,39 @@ TEST(Standard_GUID_Test, OCC669_GUIDFormatting)
   // Verify that different GUIDs are not equal
   EXPECT_NE(aGUID1, aGUID2);
 }
+
+TEST(Standard_GUID_Test, ConstexprConstructionAndComparison)
+{
+  // Test constexpr default construction
+  constexpr Standard_GUID aZeroGUID;
+  static_assert(aZeroGUID == Standard_GUID(), "Default-constructed GUIDs should be equal");
+
+  // Test constexpr construction from components
+  constexpr Standard_GUID aGUID1(0x12345678, 0x1234, 0x5678, 0x9ABC, 0xDE, 0xF0, 0x12, 0x34, 0x56,
+                                 0x78);
+  constexpr Standard_GUID aGUID2(0x12345678, 0x1234, 0x5678, 0x9ABC, 0xDE, 0xF0, 0x12, 0x34, 0x56,
+                                 0x78);
+  constexpr Standard_GUID aGUID3(0x12345678, 0x1234, 0x5678, 0x9ABC, 0xDE, 0xF0, 0x12, 0x34, 0x56,
+                                 0x79);
+
+  // Test constexpr comparison
+  static_assert(aGUID1 == aGUID2, "GUIDs with same components should be equal");
+  static_assert(aGUID1.IsSame(aGUID2), "IsSame should return true for equal GUIDs");
+  static_assert(aGUID1 != aGUID3, "GUIDs with different components should not be equal");
+  static_assert(aGUID1.IsNotSame(aGUID3), "IsNotSame should return true for different GUIDs");
+
+  // Test constexpr ToUUID conversion
+  constexpr Standard_UUID aUUID = aGUID1.ToUUID();
+  static_assert(aUUID.Data1 == 0x12345678, "ToUUID Data1 should match");
+  static_assert(aUUID.Data2 == 0x1234, "ToUUID Data2 should match");
+  static_assert(aUUID.Data3 == 0x5678, "ToUUID Data3 should match");
+
+  // Test constexpr construction from UUID
+  constexpr Standard_GUID aGUIDFromUUID(aUUID);
+  static_assert(aGUIDFromUUID == aGUID1, "GUID from UUID should equal original");
+
+  // Verify at runtime as well
+  EXPECT_EQ(aGUID1, aGUID2);
+  EXPECT_NE(aGUID1, aGUID3);
+  EXPECT_EQ(aGUIDFromUUID, aGUID1);
+}

@@ -54,7 +54,7 @@ public:
   //! Creates a line passing through point theP and parallel to
   //! vector theV (theP and theV are, respectively, the origin and
   //! the unit vector of the positioning axis of the line).
-  gp_Lin(const gp_Pnt& theP, const gp_Dir& theV)
+  constexpr gp_Lin(const gp_Pnt& theP, const gp_Dir& theV) noexcept
       : pos(theP, theV)
   {
   }

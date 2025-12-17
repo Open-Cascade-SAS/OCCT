@@ -69,7 +69,7 @@ public:
   //! theRaises ConstructionError
   //! * if theRadius is lower than 0.0
   //! * std::abs(theAng) < Resolution from gp or std::abs(theAng) >= (PI/2) - Resolution.
-  gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
+  constexpr gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
 
   //! Changes the symmetry axis of the cone. Raises ConstructionError
   //! the direction of theA1 is parallel to the "XDirection"
@@ -236,15 +236,16 @@ private:
 
 //=================================================================================================
 
-inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
-                        const Standard_Real theAng,
-                        const Standard_Real theRadius)
+inline constexpr gp_Cone::gp_Cone(const gp_Ax3&       theA3,
+                                  const Standard_Real theAng,
+                                  const Standard_Real theRadius)
     : pos(theA3),
       radius(theRadius),
       semiAngle(theAng)
 {
-  Standard_ConstructionError_Raise_if(theRadius < 0. || std::abs(theAng) <= gp::Resolution()
-                                        || M_PI * 0.5 - std::abs(theAng) <= gp::Resolution(),
+  const Standard_Real anAbsAng = theAng < 0. ? -theAng : theAng;
+  Standard_ConstructionError_Raise_if(theRadius < 0. || anAbsAng <= gp::Resolution()
+                                        || M_PI * 0.5 - anAbsAng <= gp::Resolution(),
                                       "gp_Cone() - invalid construction parameters");
 }
 
