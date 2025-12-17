@@ -281,7 +281,7 @@ Standard_Boolean FairCurve_DistributionOfJerk::Value(const math_Vector& TParam, 
           k2++;
         }
 
-        // cas ou jj = ii : remplisage en triangle
+        // case where jj = ii: triangular fill
         Produit  = pow(Base(2, II), 2);
         Produit2 = 2 * Base(2, II) * Base(3, II);
         //           ProduitV2 = Base

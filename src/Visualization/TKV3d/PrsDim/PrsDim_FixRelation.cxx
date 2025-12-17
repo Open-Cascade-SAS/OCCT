@@ -334,7 +334,7 @@ void PrsDim_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
     return;
 
   //---------------------------------------------------------
-  // calcul du point de positionnement du symbole 'fix'
+  // compute the positioning point for the 'fix' symbol
   //---------------------------------------------------------
   //--> In case of a straight line
   if (curEdge->IsKind(STANDARD_TYPE(Geom_Line)))

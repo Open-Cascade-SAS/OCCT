@@ -116,11 +116,11 @@ void ProjLib_Torus::Project(const gp_Circ& C)
 
     if (Z > 1.)
     {
-      V = M_PI / 2.; // protection stupide
-    } // contre les erreurs de calcul
+      V = M_PI / 2.; // simple protection
+    } // against calculation errors
     else if (Z < -1.)
-    {                // il arrive que Z soit legerement
-      V = -M_PI / 2; // superieur a 1.
+    {                // it happens that Z is slightly
+      V = -M_PI / 2; // greater than 1.
     }
     else
     {

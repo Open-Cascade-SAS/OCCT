@@ -165,7 +165,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
     L3 = gce_MakeLin(Proj1, Proj2);
   }
   else
-  { // cas ou la dimension est nulle
+  { // case where the dimension is zero
     if (!Proj1.IsEqual(Tcurpos, Precision::Confusion()))
     {
       gp_Vec v3(Proj1, Tcurpos);

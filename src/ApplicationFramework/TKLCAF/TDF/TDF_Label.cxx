@@ -109,8 +109,8 @@ Standard_Integer TDF_Label::Depth() const
 
 Standard_Boolean TDF_Label::IsDescendant(const TDF_Label& aLabel) const
 {
-  // Cet algorithme remonte jusqu'a la racine. On peut s'arreter
-  // si la profondeur atteinte est inferieure a celle de <aLabel>.
+  // This algorithm goes up to the root. We can stop
+  // if the reached depth is less than that of <aLabel>.
 
   const TDF_LabelNode* lp1 = aLabel.myLabelNode;
   TDF_LabelNode*       lp2 = myLabelNode;

@@ -27,10 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Media_FormatContext, Standard_Transient)
 
 namespace
 {
-static const double THE_SECONDS_IN_HOUR   = 3600.0;
-static const double THE_SECONDS_IN_MINUTE = 60.0;
-static const double THE_SECOND_IN_HOUR    = 1.0 / THE_SECONDS_IN_HOUR;
-static const double THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
+constexpr double THE_SECONDS_IN_HOUR   = 3600.0;
+constexpr double THE_SECONDS_IN_MINUTE = 60.0;
+constexpr double THE_SECOND_IN_HOUR    = 1.0 / THE_SECONDS_IN_HOUR;
+constexpr double THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
 
 #ifdef HAVE_FFMPEG
 static const AVRational ST_AV_TIME_BASE_Q = {1, AV_TIME_BASE};

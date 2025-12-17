@@ -98,11 +98,11 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
   myDir                   = norm1.Crossed(dir1);
 
   //-------------------------------------------------
-  // calcul d'une direction orthogonale a l'edge du
-  // chanfrein et dirigee vers l'ext. du contour
+  // compute a direction orthogonal to the chamfer edge
+  // and directed towards the exterior of the contour
   //-------------------------------------------------
 
-  // recup. d'une edge adjacente a l'edge du chanfrein
+  // retrieve an edge adjacent to the chamfer edge
   /*TopoDS_Edge nextedge = TopoDS::Edge(mySShape);
 
   gp_Pnt pfirstnext,plastnext;

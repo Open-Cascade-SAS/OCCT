@@ -67,17 +67,17 @@ void PrsDim_SymmetricRelation::Compute(const Handle(PrsMgr_PresentationManager)&
   switch (myFShape.ShapeType())
   {
     case TopAbs_FACE: {
-      // cas symetrie entre deux faces
+      // symmetry case between two faces
       ComputeTwoFacesSymmetric(aprs);
     }
     break;
     case TopAbs_EDGE: {
-      // cas symetrie entre deux edges
+      // symmetry case between two edges
       ComputeTwoEdgesSymmetric(aprs);
     }
     break;
     case TopAbs_VERTEX: {
-      // cas symetrie entre deux vertexs
+      // symmetry case between two vertices
       ComputeTwoVerticesSymmetric(aprs);
     }
     break;
@@ -417,7 +417,7 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Prese
     circ = c;
   }
 
-  // recherche points attache
+  // search for attachment points
   gp_Pnt ProjOffset = ElCLib::Value(ElCLib::Parameter(laxis, myPosition), laxis);
 
   /*//----------------------------------------------------
@@ -624,12 +624,12 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(const Handle(Prs3d_Pr
   gp_Lin            laxis(geom_line->Lin());
   myAxisDirAttach = laxis.Direction();
 
-  // recherche points attache
+  // search for attachment points
   //  gp_Pnt curpos;
   if (myAutomaticPosition)
   {
     gp_Pnt PjFAttach = ElCLib::Value(ElCLib::Parameter(laxis, myFAttach), laxis);
-    // offset pour eviter confusion Edge et Dimension
+    // offset to avoid confusion between Edge and Dimension
     gp_Vec offset(myAxisDirAttach);
     offset = offset * myArrowSize * (-5);
     gp_Vec Vt(myFAttach, PjFAttach);

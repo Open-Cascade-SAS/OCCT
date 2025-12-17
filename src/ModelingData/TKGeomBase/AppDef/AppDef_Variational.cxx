@@ -14,8 +14,8 @@
 
 // Jeannine PANCIATICI le 06/06/96
 // Igor FEOKTISTOV 14/12/98 - correction of Approximate() and Init().
-// Approximation d une MultiLine de points decrite par le tool MLineTool.
-// avec criteres variationnels
+// Approximation of a MultiLine of points described by the tool MLineTool.
+// with variational criteria
 
 #include <AppDef_MultiLine.hxx>
 #include <AppDef_Variational.hxx>
@@ -1311,8 +1311,8 @@ void AppDef_Variational::TheMotor(Handle(AppDef_SmoothCriterion)& J,
 
       lconst = Standard_False;
 
-      //        (1.2) calcul des criteres de qualites et amelioration
-      //              des estimation.
+      //        (1.2) calculation of quality criteria and improvement
+      //              of estimation.
       ICDANA = J->QualityValues(J1min, J2min, J3min, VALCRI[0], VALCRI[1], VALCRI[2]);
 
       if (ICDANA > 0)
@@ -1322,8 +1322,8 @@ void AppDef_Variational::TheMotor(Handle(AppDef_SmoothCriterion)& J,
 
       isnear = ((std::sqrt(ERRQUA / NbrPnt) < 2 * WQuality) && (myNbIterations > 1));
 
-      //       (1.3) Optimisation des ti par proj orthogonale
-      //             et calcul de l'erreur aux points.
+      //       (1.3) Optimization of ti by orthogonal projection
+      //             and calculation of the error at points.
 
       if (isnear)
       {
@@ -1455,15 +1455,15 @@ void AppDef_Variational::TheMotor(Handle(AppDef_SmoothCriterion)& J,
 
       CCurrent = CNew;
 
-      //      (2.4) calcul des criteres de qualites et amelioration
-      //             des estimation.
+      //      (2.4) calculation of quality criteria and improvement
+      //             of estimation.
 
       ICDANA = J->QualityValues(J1min, J2min, J3min, VALCRI[0], VALCRI[1], VALCRI[2]);
       if (ICDANA > 0)
         lconst = Standard_True;
 
       J->GetEstimation(e1, e2, e3);
-      //       (2.5) Optimisation des ti par proj orthogonale
+      //       (2.5) Optimization of ti by orthogonal projection
 
       NewTi = new (TColStd_HArray1OfReal)(1, CurrentTi->Length());
       Project(CCurrent,
