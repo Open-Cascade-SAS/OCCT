@@ -1,8 +1,7 @@
 # Define the test executable
 add_executable(my_tests
   test_main.cpp
-  QABugs_20_Test.cxx 
-  # QABugs_GTest.cxx  # 取消注释如果需要
+  Bugs_Regression_GTest.cxx
 )
 
 # ============================================================
