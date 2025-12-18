@@ -164,14 +164,6 @@ protected:
                             const TColStd_Array1OfReal&      Vpars);
 
 private:
-  //! This method computes and returns a deflection of isoline
-  //! of given parameter on Surface.
-  Standard_EXPORT Standard_Real ComputeBorderDeflection(const Handle(Adaptor3d_Surface)& Surface,
-                                                        const Standard_Real              Parameter,
-                                                        const Standard_Real              PMin,
-                                                        const Standard_Real              PMax,
-                                                        const Standard_Boolean isUIso) const;
-
   Standard_Integer         nbdeltaU;
   Standard_Integer         nbdeltaV;
   Bnd_Box                  TheBnd;
