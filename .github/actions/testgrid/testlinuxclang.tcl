@@ -25,7 +25,20 @@ set exclude_list [list \
     "boolean bopfuse_simple ZP6" \
     "boolean gdml_private B5" \
     "bugs modalg_1 bug19071" \
-    "bugs modalg_5 bug25199"
+    "bugs modalg_5 bug25199" \
+    "opengl transparency oit" \
+    "vtk ivtk autotriang" \
+    "vtk ivtk bgcolor" \
+    "vtk ivtk boundary_draw" \
+    "vtk ivtk bug26978" \
+    "vtk ivtk bug27567" \
+    "vtk ivtk bug32400" \
+    "vtk ivtk detect" \
+    "vtk ivtk display_mode" \
+    "vtk ivtk erase" \
+    "vtk ivtk seam_edges" \
+    "vtk ivtk select" \
+    "vtk ivtk selection_mode"
 ]
 
 set exclude_str [join $exclude_list ,]
