@@ -93,7 +93,7 @@ runs:
       if: runner.os != 'Windows'
       run: |
         mkdir -p ${{ env.VCPKG_ROOT }}/downloads
-        curl -L -o ${{ env.VCPKG_ROOT }}/downloads/gl2ps-gl2ps_1_4_2.tar.gz \
+        curl -L -o ${{ env.VCPKG_ROOT }}/downloads/gl2ps-gl2ps-gl2ps_1_4_2.tar.gz \
           "https://gitlab.onelab.info/gl2ps/gl2ps/-/archive/gl2ps_1_4_2/gl2ps-gl2ps_1_4_2.tar.gz"
       shell: bash
 
@@ -102,7 +102,7 @@ runs:
       run: |
         New-Item -ItemType Directory -Force -Path "${{ env.VCPKG_ROOT }}/downloads"
         Invoke-WebRequest -Uri "https://gitlab.onelab.info/gl2ps/gl2ps/-/archive/gl2ps_1_4_2/gl2ps-gl2ps_1_4_2.tar.gz" `
-          -OutFile "${{ env.VCPKG_ROOT }}/downloads/gl2ps-gl2ps_1_4_2.tar.gz"
+          -OutFile "${{ env.VCPKG_ROOT }}/downloads/gl2ps-gl2ps-gl2ps_1_4_2.tar.gz"
       shell: pwsh
 
     - name: Add NuGet sources
