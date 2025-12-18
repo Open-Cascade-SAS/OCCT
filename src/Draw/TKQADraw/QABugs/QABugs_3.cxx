@@ -269,7 +269,6 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   shell.Closed(BRep_Tool::IsClosed(shell));
   B.MakeSolid(solid);
   B.Add(solid, shell);
-  gp_Dir                   D(0, 0, 1.0f);
   BRepBuilderAPI_MakeWire  mkw;
   gp_Pnt                   p1 = gp_Pnt(150., 150.0, 260.);
   gp_Pnt                   p2 = gp_Pnt(350., 150., 260.);
