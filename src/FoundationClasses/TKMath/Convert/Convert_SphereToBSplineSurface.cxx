@@ -20,12 +20,15 @@
 #include <gp_Trsf.hxx>
 #include <Standard_DomainError.hxx>
 
-static const Standard_Integer TheUDegree  = 2;
-static const Standard_Integer TheVDegree  = 2;
-static const Standard_Integer MaxNbUKnots = 4;
-static const Standard_Integer MaxNbVKnots = 3;
-static const Standard_Integer MaxNbUPoles = 7;
-static const Standard_Integer MaxNbVPoles = 5;
+namespace
+{
+constexpr int TheUDegree  = 2;
+constexpr int TheVDegree  = 2;
+constexpr int MaxNbUKnots = 4;
+constexpr int MaxNbVKnots = 3;
+constexpr int MaxNbUPoles = 7;
+constexpr int MaxNbVPoles = 5;
+} // namespace
 
 static void ComputePoles(const Standard_Real R,
                          const Standard_Real U1,

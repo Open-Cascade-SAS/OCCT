@@ -379,9 +379,9 @@ Standard_Boolean LProp_SLProps::IsCurvatureDefined()
     return Standard_False;
   }
 
-  // pour eviter un plantage dans le cas du caro pointu
-  // en fait on doit pouvoir calculer les courbure
-  // avoir
+  // to avoid a crash in the case of a pointed patch
+  // in fact we should be able to compute the curvatures
+  // see
   if (!IsTangentUDefined() || !IsTangentVDefined())
   {
     myCurvatureStatus = LProp_Undefined;

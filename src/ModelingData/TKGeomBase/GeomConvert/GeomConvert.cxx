@@ -376,7 +376,7 @@ Handle(Geom_BSplineCurve) GeomConvert::CurveToBSplineCurve(
             else {*/
       Convert_EllipseToBSplineCurve Convert(E2d, Parameterisation);
       TheCurve = BSplineCurveBuilder(TheConic, Convert);
-      TheCurve->SetPeriodic(); // pour polynomial et quasi angular
+      TheCurve->SetPeriodic(); // for polynomial and quasi angular
                                //      }
     }
 

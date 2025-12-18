@@ -37,7 +37,7 @@ static gp_Pnt OnSurface_Value(const Standard_Real            U,
                               const Handle(Adaptor3d_Curve)& myCurve,
                               Extrema_ExtPS*                 myExtPS)
 {
-  // on essaie de rendre le point solution le plus proche.
+  // Try to find the closest solution point.
   myExtPS->Perform(myCurve->Value(U));
 
   Standard_Real    Dist2Min = RealLast();
@@ -183,31 +183,31 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
     Standard_Integer    NbCurves = Fit.NbMultiCurves();
     Standard_Integer    MaxDeg   = 0;
 
-    // Pour transformer la MultiCurve en BSpline, il faut que toutes
-    // les Bezier la constituant aient le meme degre -> Calcul de MaxDeg
+    // To convert the MultiCurve to BSpline, all constituent Bezier curves
+    // must have the same degree -> Calculate MaxDeg
     Standard_Integer NbPoles = 1;
     for (i = 1; i <= NbCurves; i++)
     {
       Standard_Integer Deg = Fit.Value(i).Degree();
       MaxDeg               = std::max(MaxDeg, Deg);
     }
-    NbPoles = MaxDeg * NbCurves + 1; // Poles sur la BSpline
+    NbPoles = MaxDeg * NbCurves + 1; // Poles on the BSpline
     TColgp_Array1OfPnt Poles(1, NbPoles);
 
-    TColgp_Array1OfPnt TempPoles(1, MaxDeg + 1); // pour augmentation du degre
+    TColgp_Array1OfPnt TempPoles(1, MaxDeg + 1); // for degree elevation
 
-    TColStd_Array1OfReal Knots(1, NbCurves + 1); // Noeuds de la BSpline
+    TColStd_Array1OfReal Knots(1, NbCurves + 1); // Knots of the BSpline
 
     Standard_Integer Compt = 1;
     for (i = 1; i <= Fit.NbMultiCurves(); i++)
     {
       Fit.Parameters(i, Knots(i), Knots(i + 1));
 
-      AppParCurves_MultiCurve MC = Fit.Value(i);              // Charge la Ieme Curve
-      TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Recupere les poles
+      AppParCurves_MultiCurve MC = Fit.Value(i);              // Load the i-th Curve
+      TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Get the poles
       MC.Curve(1, Poles);
 
-      // Augmentation eventuelle du degre
+      // Possible degree elevation
       Standard_Integer Inc = MaxDeg - MC.Degree();
       if (Inc > 0)
       {
@@ -216,7 +216,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
                                  BSplCLib::NoWeights(),
                                  TempPoles,
                                  BSplCLib::NoWeights());
-        // mise a jour des poles de la PCurve
+        // update the poles of the PCurve
         for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
         {
           Poles.SetValue(Compt, TempPoles(j));
@@ -225,7 +225,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
       }
       else
       {
-        // mise a jour des poles de la PCurve
+        // update the poles of the PCurve
         for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
         {
           Poles.SetValue(Compt, LocalPoles(j));
@@ -236,7 +236,7 @@ void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C, const Stan
       Compt--;
     }
 
-    // mise a jour des fields de ProjLib_Approx
+    // update the fields of ProjLib_Approx
 
     Standard_Integer NbKnots = NbCurves + 1;
 

@@ -204,7 +204,7 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
           k2++;
         }
 
-        // cas ou jj = ii : remplisage en triangle
+        // case where jj = ii: triangular fill
         Produit = pow(Base(2, II), 2);
 
         // derivation en XiXi

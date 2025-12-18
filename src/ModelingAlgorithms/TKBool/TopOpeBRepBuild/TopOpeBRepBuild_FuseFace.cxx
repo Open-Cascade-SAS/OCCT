@@ -235,7 +235,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
     return;
   }
 
-  // boucle sur les listes des faces de 1 face de LRF
+  // loop over the face lists for each face in LRF
 
   for (itt1.Initialize(mapFacLFac); itt1.More(); itt1.Next())
   {
@@ -591,7 +591,7 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
   //  TopAbs_Orientation ori,ori1;
 
   // Niveau 1
-  // boucle sur les listes des faces de 1 face de LRF
+  // loop over the face lists for each face in LRF
 
   for (it1.Initialize(myLFF); it1.More(); it1.Next())
   {
@@ -685,7 +685,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
   TopTools_ListOfShape               myLFFnew;
 
   // Niveau 1
-  // boucle sur les listes des faces de 1 face de LRF
+  // loop over the face lists for each face in LRF
 
   for (it1.Initialize(myLFF); it1.More(); it1.Next())
   {

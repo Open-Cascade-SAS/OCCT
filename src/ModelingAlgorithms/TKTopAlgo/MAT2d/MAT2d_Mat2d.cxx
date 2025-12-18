@@ -267,7 +267,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:37 2000 End
 
     //---------------------------------------------------
-    // boucle 2 Tant qu il y a des bisectrices a effacer.
+    // loop 2: While there are bisectors to remove.
     //---------------------------------------------------
     for (;;)
     {
@@ -1005,7 +1005,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
     //  Modified by Sergey KHROMOV - Fri Nov 17 10:28:37 2000 End
 
     //---------------------------------------------------
-    // boucle 2 Tant qu il y a des bisectrices a effacer.
+    // loop 2: While there are bisectors to remove.
     //---------------------------------------------------
     for (;;)
     {

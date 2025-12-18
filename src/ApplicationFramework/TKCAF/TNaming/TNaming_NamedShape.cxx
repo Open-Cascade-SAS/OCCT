@@ -372,15 +372,15 @@ Standard_Boolean TNaming_NamedShape::AfterUndo(const Handle(TDF_AttributeDelta)&
 
 Handle(TDF_Attribute) TNaming_NamedShape::BackupCopy() const
 {
-  // Remarque dans le copy il est important de reporter le noeud de l attribut
-  // pour ne pas casser le chemin nextSameShape.
+  // Note: in the copy, it is important to copy the attribute node
+  // to not break the nextSameShape path.
 
   Handle(TNaming_NamedShape) Cop = new TNaming_NamedShape();
   Cop->myNode                    = myNode;
   Cop->myEvolution               = myEvolution;
   Cop->myVersion                 = myVersion;
 
-  // Mise a jour de myAtt sur les noeuds dans l attribut.
+  // Update myAtt on the nodes in the attribute.
   TNaming_Node* CN = Cop->myNode;
 
   Handle(TNaming_NamedShape) A = this;
@@ -613,7 +613,7 @@ static void UpdateFirstUseOrNextSameShape(TNaming_RefShape*& prs, TNaming_Node*&
         break;
       }
     }
-    // boucle interdite et inutile.
+    // forbidden and useless loop.
     if (ldn != pdn)
     {
       if (ldn->myOld == prs)

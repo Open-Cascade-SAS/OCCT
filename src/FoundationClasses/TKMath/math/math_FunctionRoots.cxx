@@ -851,7 +851,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       {
 
         if (AllNull)
-        { // rechercher les vraix zeros depuis le debut
+        { // search for the true zeros from the beginning
 
           AllNull = Standard_False;
           Xu      = Lowr - EpsX;
@@ -879,7 +879,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
         if ((DFFyu > 0. && DFFxu <= 0.) || (DFFyu < 0. && FFyu >= FFxu && DFFxu <= 0.)
             || (DFFyu > 0. && FFyu <= FFxu && DFFxu >= 0.) || (FxuFyu <= 0.))
         {
-          // recherche d 1 minimun possible
+          // search for a possible minimum
           Finish = Standard_False;
           Ambda  = Increment;
           T      = 0.;
@@ -888,14 +888,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
           if (FxuFyu > 0.)
           {
-            // chercher si f peut s annuler pour eviter
-            //  des iterations inutiles
+            // check if f can become zero to avoid
+            // unnecessary iterations
             if (Fxu * (Fxu + 2. * DFxu * Increment) > 0.
                 && Fyu * (Fyu - 2. * DFyu * Increment) > 0.)
             {
 
               Finish = Standard_True;
-              FFi    = std::min(FFxu, FFyu); // pour ne pas recalculer yu
+              FFi    = std::min(FFxu, FFyu); // to avoid recalculating yu
             }
             else if ((DFFxu <= Standard_Underflow && -DFFxu <= Standard_Underflow)
                      || (FFxu <= Standard_Underflow && -FFxu <= Standard_Underflow))
@@ -903,7 +903,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
               Finish = Standard_True;
               FFxu   = 0.0;
-              FFi    = FFyu; // pour recalculer yu
+              FFi    = FFyu; // to recalculate yu
             }
             else if ((DFFyu <= Standard_Underflow && -DFFyu <= Standard_Underflow)
                      || (FFyu <= Standard_Underflow && -FFyu <= Standard_Underflow))
@@ -911,7 +911,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
               Finish = Standard_True;
               FFyu   = 0.0;
-              FFi    = FFxu; // pour recalculer U
+              FFi    = FFxu; // to recalculate U
             }
           }
           else if (FFxu <= Standard_Underflow && -FFxu <= Standard_Underflow)
@@ -931,7 +931,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           while (!Finish)
           {
 
-            // calcul des 2 solutions annulant la derivee de l interpolation cubique
+            // calculate the 2 solutions nullifying the derivative of cubic interpolation
             //    Ambda*t=(U-Xu)  F(t)=aa*t*t*t/3+bb*t*t+cc*t+d
             //    df=aa*t*t+2*bb*t+cc
 
@@ -971,7 +971,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                   }
                   if (Alfa1 > 1. || Alfa2 < 0.)
                   {
-                    // resolution par dichotomie
+                    // solve by bisection
                     if (Fxu * Fyu < 0.)
                       Alfa1 = 0.5;
                     else
@@ -979,11 +979,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                   }
                   else if (Alfa1 < 0. || (DFFxu > 0. && DFFyu >= 0.))
                   {
-                    // si 2 derivees >0
-                    //(cas changement de signe de la distance signee sans
-                    // changement de signe de la derivee:
-                    // cas de 'presque'tangence avec 2
-                    // solutions proches) ,on prend la plus grane racine
+                    // if 2 derivatives > 0
+                    // (case of sign change of the signed distance without
+                    // sign change of the derivative:
+                    // case of 'almost' tangency with 2
+                    // close solutions), take the larger root
                     if (Alfa2 > 1.)
                     {
                       if (Fxu * Fyu < 0.)
@@ -1005,7 +1005,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
             if (!Finish)
             {
-              // petits tests pour diminuer le nombre d iterations
+              // small tests to reduce the number of iterations
               if (Alfa1 <= EpsX)
               {
                 Alfa1 += Alfa1;
@@ -1050,9 +1050,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 T     = Alfa1;
                 if (Alfa1 > Ambda * 0.5)
                 {
-                  // remarque (1)
-                  // determination d 1 autre borne pour diviser
-                  // le nouvel intervalle par 2 au -
+                  // note (1)
+                  // determine another bound to divide
+                  // the new interval by 2 at least
                   Xu = U + Alfa1 * 0.5;
                   if (Xu <= Lowr)
                   {

@@ -124,8 +124,8 @@ void ProjLib_Cone::Project(const gp_Circ& C)
   Standard_Real y = ConePos.YDirection().Dot(CircPos.XDirection());
   Standard_Real z = gp_Vec(myCone.Location(), C.Location()).Dot(ConePos.Direction());
 
-  // pour trouver le point U V, on reprend le code de ElSLib
-  // sans appliquer la Trsf au point ( aller retour inutile).
+  // to find point U V, we use the code from ElSLib
+  // without applying the Trsf to the point (unnecessary round trip).
   if (x == 0.0 && y == 0.0)
   {
     U = 0.;

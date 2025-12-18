@@ -627,7 +627,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
       Polesinit(index).SetCoord(0.0, -Polesinit(index).Y());
   }
 
-  // boucle de positivite
+  // positivity loop
   if ((Polesinit(1).Y() < 0.0) && (Polesinit(2).Y() >= 0.0))
   {
     Us1 = Polesinit(0).Y() / (Polesinit(0).Y() - Polesinit(1).Y());

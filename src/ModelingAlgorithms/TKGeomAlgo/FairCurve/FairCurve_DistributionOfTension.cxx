@@ -176,7 +176,7 @@ Standard_Boolean FairCurve_DistributionOfTension::Value(const math_Vector& TPara
             * (GradDifference(ii) * GradDifference(jj) + FacteurY * Produit); // derivation en YiYj
           k2++;
         }
-        // cas ou jj = ii : remplisage en triangle
+        // case where jj = ii: triangular fill
         Produit = pow(Base(2, ii / 2), 2);
 
         FTension(k1) = Facteur

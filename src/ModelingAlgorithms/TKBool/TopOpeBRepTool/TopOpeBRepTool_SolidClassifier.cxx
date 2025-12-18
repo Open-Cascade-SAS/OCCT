@@ -110,9 +110,9 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
   const TopoDS_Shape& fres = myPClassifier->Face();
   if (fres.IsNull())
   {
-    // NYI : en cas d'elimination des faces EXTERNAL et INTERNAL par le
-    // classifier BRepClass3d_SolidClassifier, traiter quand meme ces faces
-    // pour generer l'etat ON/Solid quand le point est IN/face INTERNAL ou EXTERNAL
+    // NYI: in case of elimination of EXTERNAL and INTERNAL faces by the
+    // BRepClass3d_SolidClassifier classifier, still handle these faces
+    // to generate ON/Solid state when the point is IN/face INTERNAL or EXTERNAL
     return myState;
   }
   TopAbs_Orientation ofres = fres.Orientation();
