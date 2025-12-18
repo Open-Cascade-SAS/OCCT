@@ -125,3 +125,67 @@ Review the generated C++ test code for:
 | `bop` | `BRepAlgoAPI_BooleanOperation` | `BRepAlgoAPI_BooleanOperation.hxx` |
 | `whatis` | Internal checks | Check `Shape().ShapeType()` |
 | `appsurf` | `GeomFill_AppSurf` | `GeomFill_AppSurf.hxx` |
+
+---
+
+## 6. Web-AI Mega-Prompt (Self-Contained Context)
+
+If you are using a web-based AI (like ChatGPT or Gemini Web App) that doesn't have access to your local project, copy and paste the entire block below as your first message. Replace the placeholder with your Tcl code.
+
+```markdown
+# Role: Expert OCCT C++ Developer
+You are tasked with converting an Open CASCADE (OCCT) Tcl test script into a C++ Google Test (Gtest) case.
+
+# Project Context:
+- Framework: Gtest (Google Test).
+- Target Style: Direct C++ API calls (no Tcl bridge, no Draw_Interpretor).
+- Memory Management: OCCT uses reference-counted handles. Use `Handle(ClassName) object = new ClassName(...)`.
+- Naming Convention: Test suite `Bugs`, test name `BugID_Description`. Local variables use `a` prefix (e.g., `aPnt`).
+
+# Technical Reference (OCCT Mapping):
+- `box` -> `BRepPrimAPI_MakeBox`
+- `vertex` -> `BRepBuilderAPI_MakeVertex`
+- `circle` -> `gp_Circ` / `Geom_Circle`
+- `appsurf` -> `GeomFill_AppSurf` (requires `GeomFill_SectionGenerator` and `GeomFill_Line`)
+- Toolkits typically needed: `TKMath`, `TKernel`, `TKBRep`, `TKGeomBase`, `TKGeomAlgo`.
+
+# Output Requirements:
+1. Provide a professional C++ test case using the structure:
+   ```cpp
+   #include <gtest/gtest.h>
+   // Necessary OCCT headers...
+
+   TEST(Bugs, BugID_Description) {
+     // 1. Data setup
+     // 2. Algorithm execution
+     // 3. ASSERT_NO_THROW(...) or EXPECT_TRUE(algo.IsDone())
+   }
+   ```
+2. Mention any OCCT toolkits (TK*) that need to be linked.
+
+# Tcl Script to Convert:
+[PASTE YOUR TCL CODE HERE]
+```
+
+---
+
+## 7. Automated Collection Tool (Python)
+
+To handle a large number of tests (like those in `tests/bugs/filling`), use the provided Python script to collect, filter, and batch tests.
+
+### Location:
+`gtest/tools/collect_tests.py`
+
+### How to use:
+1. **Run the script** on a specific test category folder:
+   ```bash
+   python gtest/tools/collect_tests.py tests/bugs/filling --batch 5 --out filling_batches.md
+   ```
+
+2. **What it does**:
+   - **Filters**: Automatically skips interactive tests (e.g., those using `vinit`, `vdisplay`) which are unsuitable for simple C++ unit tests.
+   - **Naming**: Suggests professional `TestSuite` and `TestCase` names based on OCCT folder structure.
+   - **Batching**: Groups multiple scripts into a single Markdown block to maximize AI context efficiency while keeping it organized.
+
+3. **Output**:
+   It generates a `.md` file. Open this file, copy a batch block, and paste it to the AI along with the **Web-AI Mega-Prompt**.
