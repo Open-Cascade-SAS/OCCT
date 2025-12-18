@@ -30,7 +30,6 @@ set(OCCT_math_FILES
   math_Crout.lxx
   math_DirectPolynomialRoots.cxx
   math_DirectPolynomialRoots.hxx
-  math_DirectPolynomialRoots.lxx
   math_DoubleTab.hxx
   math_EigenValuesSearcher.cxx
   math_EigenValuesSearcher.hxx
