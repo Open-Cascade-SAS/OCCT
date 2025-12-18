@@ -29,8 +29,8 @@ runs:
     - name: Set environment variables (Windows)
       run: |
         echo "USERNAME=Open-Cascade-SAS" >> $env:GITHUB_ENV
-        echo "VCPKG_ROOT=C:\vcpkg" >> $env:GITHUB_ENV
-        echo "VCPKG_EXE=C:\vcpkg\vcpkg.exe" >> $env:GITHUB_ENV
+        echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
+        echo "VCPKG_EXE=$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" >> $env:GITHUB_ENV
         echo "FEED_URL=https://nuget.pkg.github.com/Open-Cascade-SAS/index.json" >> $env:GITHUB_ENV
         echo "VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/Open-Cascade-SAS/index.json,readwrite" >> $env:GITHUB_ENV
         echo "VCPKG_FEATURE_FLAGS=binarycaching,manifests,versions" >> $env:GITHUB_ENV
@@ -83,9 +83,7 @@ runs:
     - name: Set up vcpkg (Windows)
       if: runner.os == 'Windows'
       run: |
-        cd C:\vcpkg
-        git pull
-        .\bootstrap-vcpkg.bat
+        echo "Using pre-installed vcpkg at %VCPKG_INSTALLATION_ROOT%"
       shell: cmd
 
     - name: Add NuGet sources
