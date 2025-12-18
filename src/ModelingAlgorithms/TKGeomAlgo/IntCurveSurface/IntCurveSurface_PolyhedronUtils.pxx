@@ -15,6 +15,7 @@
 #define IntCurveSurface_PolyhedronUtils_pxx_HeaderFile
 
 #include <Bnd_Box.hxx>
+#include <Bnd_HArray1OfBox.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -232,6 +233,626 @@ double ComputeBorderDeflection(const SurfaceType& theSurface,
   }
 
   return aDeflection;
+}
+
+//! Compute the number of triangles in the polyhedron.
+//! @param[in] theNbDeltaU Number of U subdivisions
+//! @param[in] theNbDeltaV Number of V subdivisions
+//! @return Number of triangles (2 * nbdeltaU * nbdeltaV)
+inline int NbTriangles(const int theNbDeltaU, const int theNbDeltaV)
+{
+  return theNbDeltaU * theNbDeltaV * 2;
+}
+
+//! Compute the number of points in the polyhedron.
+//! @param[in] theNbDeltaU Number of U subdivisions
+//! @param[in] theNbDeltaV Number of V subdivisions
+//! @return Number of points ((nbdeltaU + 1) * (nbdeltaV + 1))
+inline int NbPoints(const int theNbDeltaU, const int theNbDeltaV)
+{
+  return (theNbDeltaU + 1) * (theNbDeltaV + 1);
+}
+
+//! Get the three vertex indices of a triangle.
+//! @param[in]  theIndex    Triangle index (1-based)
+//! @param[out] theP1       First vertex index
+//! @param[out] theP2       Second vertex index
+//! @param[out] theP3       Third vertex index
+//! @param[in]  theNbDeltaV Number of V subdivisions
+inline void Triangle(const int theIndex, int& theP1, int& theP2, int& theP3, const int theNbDeltaV)
+{
+  const int line   = 1 + ((theIndex - 1) / (theNbDeltaV * 2));
+  const int colon  = 1 + ((theIndex - 1) % (theNbDeltaV * 2));
+  const int colpnt = (colon + 1) / 2;
+
+  theP1 = (line - 1) * (theNbDeltaV + 1) + colpnt;
+  theP2 = line * (theNbDeltaV + 1) + colpnt + ((colon - 1) % 2);
+  theP3 = (line - 1 + (colon % 2)) * (theNbDeltaV + 1) + colpnt + 1;
+}
+
+//! Navigate to a connected triangle given a pivot point and edge point.
+//! This function computes triangle connectivity for mesh traversal.
+//! @param[in]  theTriang   Current triangle index (0 if unknown)
+//! @param[in]  thePivot    Pivot point index
+//! @param[in]  thePedge    Edge point index (0 if unknown)
+//! @param[out] theTriCon   Connected triangle index (0 if on boundary)
+//! @param[out] theOtherP   The other point of the connected triangle
+//! @param[in]  theNbDeltaU Number of U subdivisions
+//! @param[in]  theNbDeltaV Number of V subdivisions
+//! @return Connected triangle index
+inline int TriConnex(const int theTriang,
+                     const int thePivot,
+                     const int thePedge,
+                     int&      theTriCon,
+                     int&      theOtherP,
+                     const int theNbDeltaU,
+                     const int theNbDeltaV)
+{
+  const int Pivotm1    = thePivot - 1;
+  const int nbdeltaVp1 = theNbDeltaV + 1;
+  const int nbdeltaVm2 = theNbDeltaV + theNbDeltaV;
+
+  const int ligP = Pivotm1 / nbdeltaVp1;
+  const int colP = Pivotm1 - ligP * nbdeltaVp1;
+
+  int ligE = 0, colE = 0, typE = 0;
+  if (thePedge != 0)
+  {
+    ligE = (thePedge - 1) / nbdeltaVp1;
+    colE = (thePedge - 1) - (ligE * nbdeltaVp1);
+    if (ligP == ligE)
+      typE = 1;
+    else if (colP == colE)
+      typE = 2;
+    else
+      typE = 3;
+  }
+
+  int linT = 0, colT = 0;
+  int linO = 0, colO = 0;
+  int t = 0, tt = 0;
+
+  if (theTriang != 0)
+  {
+    t    = (theTriang - 1) / nbdeltaVm2;
+    tt   = (theTriang - 1) - t * nbdeltaVm2;
+    linT = 1 + t;
+    colT = 1 + tt;
+    if (typE == 0)
+    {
+      if (ligP == linT)
+      {
+        ligE = ligP - 1;
+        colE = colP - 1;
+        typE = 3;
+      }
+      else
+      {
+        if (colT == ligP + ligP)
+        {
+          ligE = ligP;
+          colE = colP - 1;
+          typE = 1;
+        }
+        else
+        {
+          ligE = ligP + 1;
+          colE = colP + 1;
+          typE = 3;
+        }
+      }
+    }
+    switch (typE)
+    {
+      case 1:
+        if (linT == ligP)
+        {
+          linT++;
+          linO = ligP + 1;
+          colO = (colP > colE) ? colP : colE;
+        }
+        else
+        {
+          linT--;
+          linO = ligP - 1;
+          colO = (colP < colE) ? colP : colE;
+        }
+        break;
+      case 2:
+        if (colT == (colP + colP))
+        {
+          colT++;
+          linO = (ligP > ligE) ? ligP : ligE;
+          colO = colP + 1;
+        }
+        else
+        {
+          colT--;
+          linO = (ligP < ligE) ? ligP : ligE;
+          colO = colP - 1;
+        }
+        break;
+      case 3:
+        if ((colT & 1) == 0)
+        {
+          colT--;
+          linO = (ligP > ligE) ? ligP : ligE;
+          colO = (colP < colE) ? colP : colE;
+        }
+        else
+        {
+          colT++;
+          linO = (ligP < ligE) ? ligP : ligE;
+          colO = (colP > colE) ? colP : colE;
+        }
+        break;
+    }
+  }
+  else
+  {
+    if (thePedge == 0)
+    {
+      linT = (1 > ligP) ? 1 : ligP;
+      colT = (1 > (colP + colP)) ? 1 : (colP + colP);
+      if (ligP == 0)
+        linO = ligP + 1;
+      else
+        linO = ligP - 1;
+      colO = colP;
+    }
+    else
+    {
+      switch (typE)
+      {
+        case 1:
+          linT = ligP + 1;
+          colT = (colP > colE) ? colP : colE;
+          colT += colT;
+          linO = ligP + 1;
+          colO = (colP > colE) ? colP : colE;
+          break;
+        case 2:
+          linT = (ligP > ligE) ? ligP : ligE;
+          colT = colP + colP;
+          linO = (ligP < ligE) ? ligP : ligE;
+          colO = colP - 1;
+          break;
+        case 3:
+          linT = (ligP > ligE) ? ligP : ligE;
+          colT = colP + colE;
+          linO = (ligP > ligE) ? ligP : ligE;
+          colO = (colP < colE) ? colP : colE;
+          break;
+      }
+    }
+  }
+
+  theTriCon = (linT - 1) * nbdeltaVm2 + colT;
+
+  if (linT < 1)
+  {
+    linO = 0;
+    colO = colP + colP - colE;
+    if (colO < 0)
+    {
+      colO = 0;
+      linO = 1;
+    }
+    else if (colO > theNbDeltaV)
+    {
+      colO = theNbDeltaV;
+      linO = 1;
+    }
+    theTriCon = 0;
+  }
+  else if (linT > theNbDeltaU)
+  {
+    linO = theNbDeltaU;
+    colO = colP + colP - colE;
+    if (colO < 0)
+    {
+      colO = 0;
+      linO = theNbDeltaU - 1;
+    }
+    else if (colO > theNbDeltaV)
+    {
+      colO = theNbDeltaV;
+      linO = theNbDeltaU - 1;
+    }
+    theTriCon = 0;
+  }
+
+  if (colT < 1)
+  {
+    colO = 0;
+    linO = ligP + ligP - ligE;
+    if (linO < 0)
+    {
+      linO = 0;
+      colO = 1;
+    }
+    else if (linO > theNbDeltaU)
+    {
+      linO = theNbDeltaU;
+      colO = 1;
+    }
+    theTriCon = 0;
+  }
+  else if (colT > theNbDeltaV)
+  {
+    colO = theNbDeltaV;
+    linO = ligP + ligP - ligE;
+    if (linO < 0)
+    {
+      linO = 0;
+      colO = theNbDeltaV - 1;
+    }
+    else if (linO > theNbDeltaU)
+    {
+      linO = theNbDeltaU;
+      colO = theNbDeltaV - 1;
+    }
+    theTriCon = 0;
+  }
+
+  theOtherP = linO * nbdeltaVp1 + colO + 1;
+
+  return theTriCon;
+}
+
+//! Compute the plane equation of a triangle.
+//! @param[in]  theP1            First vertex point
+//! @param[in]  theP2            Second vertex point
+//! @param[in]  theP3            Third vertex point
+//! @param[out] theNormalVector  Normal vector of the plane
+//! @param[out] thePolarDistance Distance from origin to plane along normal
+inline void PlaneEquation(const gp_Pnt& theP1,
+                          const gp_Pnt& theP2,
+                          const gp_Pnt& theP3,
+                          gp_XYZ&       theNormalVector,
+                          double&       thePolarDistance)
+{
+  const gp_XYZ v1 = theP2.XYZ() - theP1.XYZ();
+  const gp_XYZ v2 = theP3.XYZ() - theP2.XYZ();
+  const gp_XYZ v3 = theP1.XYZ() - theP3.XYZ();
+
+  if (v1.SquareModulus() <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
+    theNormalVector.SetCoord(1.0, 0.0, 0.0);
+    return;
+  }
+  if (v2.SquareModulus() <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
+    theNormalVector.SetCoord(1.0, 0.0, 0.0);
+    return;
+  }
+  if (v3.SquareModulus() <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
+    theNormalVector.SetCoord(1.0, 0.0, 0.0);
+    return;
+  }
+
+  theNormalVector       = (v1 ^ v2) + (v2 ^ v3) + (v3 ^ v1);
+  const double aNormLen = theNormalVector.Modulus();
+  if (aNormLen < gp::Resolution())
+  {
+    thePolarDistance = 0.0;
+  }
+  else
+  {
+    theNormalVector.Divide(aNormLen);
+    thePolarDistance = theNormalVector * theP1.XYZ();
+  }
+}
+
+//! Check if a point is contained within a triangle.
+//! @param[in] theP1     First vertex point
+//! @param[in] theP2     Second vertex point
+//! @param[in] theP3     Third vertex point
+//! @param[in] theTestPnt Point to test
+//! @return True if point is inside triangle
+inline bool Contain(const gp_Pnt& theP1,
+                    const gp_Pnt& theP2,
+                    const gp_Pnt& theP3,
+                    const gp_Pnt& theTestPnt)
+{
+  const gp_XYZ v1 = (theP2.XYZ() - theP1.XYZ()) ^ (theTestPnt.XYZ() - theP1.XYZ());
+  const gp_XYZ v2 = (theP3.XYZ() - theP2.XYZ()) ^ (theTestPnt.XYZ() - theP2.XYZ());
+  const gp_XYZ v3 = (theP1.XYZ() - theP3.XYZ()) ^ (theTestPnt.XYZ() - theP3.XYZ());
+
+  return (v1 * v2 >= 0.0 && v2 * v3 >= 0.0 && v3 * v1 >= 0.0);
+}
+
+//! Fill bounding boxes for all triangles in the polyhedron.
+//! @param[in]     thePnts              Array of points
+//! @param[in]     theNbDeltaU          Number of U subdivisions
+//! @param[in]     theNbDeltaV          Number of V subdivisions
+//! @param[in]     theDeflection        Deflection value for enlarging boxes
+//! @param[in,out] theComponentsBnd     Array of bounding boxes to fill
+inline void FillBounding(const gp_Pnt*                   thePnts,
+                         const int                       theNbDeltaU,
+                         const int                       theNbDeltaV,
+                         const double                    theDeflection,
+                         const Handle(Bnd_HArray1OfBox)& theComponentsBnd)
+{
+  Bnd_Box   Boite;
+  int       np1, np2, np3;
+  const int nbtriangles = NbTriangles(theNbDeltaU, theNbDeltaV);
+
+  for (int iTri = 1; iTri <= nbtriangles; ++iTri)
+  {
+    Triangle(iTri, np1, np2, np3, theNbDeltaV);
+    const gp_Pnt& p1 = thePnts[np1];
+    const gp_Pnt& p2 = thePnts[np2];
+    const gp_Pnt& p3 = thePnts[np3];
+    Boite.SetVoid();
+    if (p1.SquareDistance(p2) > THE_MIN_EDGE_LENGTH_SQUARED)
+    {
+      if (p1.SquareDistance(p3) > THE_MIN_EDGE_LENGTH_SQUARED)
+      {
+        if (p2.SquareDistance(p3) > THE_MIN_EDGE_LENGTH_SQUARED)
+        {
+          Boite.Add(p1);
+          Boite.Add(p2);
+          Boite.Add(p3);
+          Boite.Enlarge(theDeflection);
+        }
+      }
+    }
+    Boite.Enlarge(theDeflection);
+    theComponentsBnd->SetValue(iTri, Boite);
+  }
+}
+
+//! Compute the maximum deflection over all triangles.
+//! @tparam SurfaceType Type of surface
+//! @tparam SurfaceTool Tool class providing surface operations
+//! @tparam PolyhedronType Type of polyhedron class
+//! @param[in] theSurface     The surface
+//! @param[in] thePolyhedron  The polyhedron object (provides Triangle/Point access)
+//! @param[in] theNbTriangles Number of triangles
+//! @return Maximum deflection value
+template <typename SurfaceType, typename SurfaceTool, typename PolyhedronType>
+double ComputeMaxDeflection(const SurfaceType&    theSurface,
+                            const PolyhedronType& thePolyhedron,
+                            const int             theNbTriangles)
+{
+  double tol = 0.0;
+  for (int i = 1; i <= theNbTriangles; ++i)
+  {
+    int i1, i2, i3;
+    thePolyhedron.Triangle(i, i1, i2, i3);
+
+    double u1, v1, u2, v2, u3, v3;
+    gp_Pnt P1 = thePolyhedron.Point(i1, u1, v1);
+    gp_Pnt P2 = thePolyhedron.Point(i2, u2, v2);
+    gp_Pnt P3 = thePolyhedron.Point(i3, u3, v3);
+
+    double tol1 = DeflectionOnTriangle<SurfaceType,
+                                       SurfaceTool>(theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
+    if (tol1 > tol)
+      tol = tol1;
+  }
+  return tol;
+}
+
+//! Compute the maximum border deflection over all four boundaries.
+//! @tparam SurfaceType Type of surface
+//! @tparam SurfaceTool Tool class providing surface operations
+//! @param[in] theSurface  The surface
+//! @param[in] theU0       First U parameter
+//! @param[in] theV0       First V parameter
+//! @param[in] theU1       Last U parameter
+//! @param[in] theV1       Last V parameter
+//! @param[in] theNbDeltaU Number of U subdivisions
+//! @param[in] theNbDeltaV Number of V subdivisions
+//! @return Maximum border deflection
+template <typename SurfaceType, typename SurfaceTool>
+double ComputeMaxBorderDeflection(const SurfaceType& theSurface,
+                                  const double       theU0,
+                                  const double       theV0,
+                                  const double       theU1,
+                                  const double       theV1,
+                                  const int          theNbDeltaU,
+                                  const int          theNbDeltaV)
+{
+  double maxDeflection = RealFirst();
+
+  // Lower bound (U-isoline)
+  double aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                         theU0,
+                                                                         theV0,
+                                                                         theV1,
+                                                                         true,
+                                                                         theNbDeltaV);
+  if (aDeflection > maxDeflection)
+    maxDeflection = aDeflection;
+
+  // Upper bound (U-isoline)
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theU1,
+                                                                  theV0,
+                                                                  theV1,
+                                                                  true,
+                                                                  theNbDeltaV);
+  if (aDeflection > maxDeflection)
+    maxDeflection = aDeflection;
+
+  // Lower bound (V-isoline)
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theV0,
+                                                                  theU0,
+                                                                  theU1,
+                                                                  false,
+                                                                  theNbDeltaU);
+  if (aDeflection > maxDeflection)
+    maxDeflection = aDeflection;
+
+  // Upper bound (V-isoline)
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theV1,
+                                                                  theU0,
+                                                                  theU1,
+                                                                  false,
+                                                                  theNbDeltaU);
+  if (aDeflection > maxDeflection)
+    maxDeflection = aDeflection;
+
+  return maxDeflection;
+}
+
+//! Check if an edge between two points lies on the boundary.
+//! @param[in] theIndex1      First point index
+//! @param[in] theIndex2      Second point index
+//! @param[in] theIsOnBounds  Array of boundary flags
+//! @param[in] theNbDeltaU    Number of U subdivisions
+//! @param[in] theNbDeltaV    Number of V subdivisions
+//! @return True if edge is on boundary
+inline bool IsOnBound(const int               theIndex1,
+                      const int               theIndex2,
+                      const Standard_Boolean* theIsOnBounds,
+                      const int               theNbDeltaU,
+                      const int               theNbDeltaV)
+{
+  const int aDiff = std::abs(theIndex1 - theIndex2);
+
+  if (aDiff != 1 && aDiff != theNbDeltaV + 1)
+    return false;
+
+  for (int i = 0; i <= theNbDeltaU; ++i)
+  {
+    if ((theIndex1 == 1 + i * (theNbDeltaV + 1)) && (theIndex2 == theIndex1 - 1))
+      return false;
+
+    if ((theIndex1 == (1 + i) * (theNbDeltaV + 1)) && (theIndex2 == theIndex1 + 1))
+      return false;
+  }
+
+  return (theIsOnBounds[theIndex1] && theIsOnBounds[theIndex2]);
+}
+
+//! Deallocate polyhedron arrays.
+//! @param[in,out] thePnts        Points array to delete and nullify
+//! @param[in,out] theU           U parameters array to delete and nullify
+//! @param[in,out] theV           V parameters array to delete and nullify
+//! @param[in,out] theIsOnBounds  Boundary flags array to delete and nullify
+inline void Destroy(Standard_Address& thePnts,
+                    Standard_Address& theU,
+                    Standard_Address& theV,
+                    Standard_Address& theIsOnBounds)
+{
+  if (thePnts)
+    delete[] static_cast<gp_Pnt*>(thePnts);
+  if (theU)
+    delete[] static_cast<Standard_Real*>(theU);
+  if (theV)
+    delete[] static_cast<Standard_Real*>(theV);
+  if (theIsOnBounds)
+    delete[] static_cast<Standard_Boolean*>(theIsOnBounds);
+  thePnts = theU = theV = theIsOnBounds = NULL;
+}
+
+//! Allocate polyhedron arrays.
+//! @param[in]  theNbDeltaU    Number of U subdivisions
+//! @param[in]  theNbDeltaV    Number of V subdivisions
+//! @param[out] thePnts        Points array
+//! @param[out] theU           U parameters array
+//! @param[out] theV           V parameters array
+//! @param[out] theIsOnBounds  Boundary flags array
+inline void AllocateArrays(const int         theNbDeltaU,
+                           const int         theNbDeltaV,
+                           Standard_Address& thePnts,
+                           Standard_Address& theU,
+                           Standard_Address& theV,
+                           Standard_Address& theIsOnBounds)
+{
+  const int t   = (theNbDeltaU + 1) * (theNbDeltaV + 1) + 1;
+  thePnts       = new gp_Pnt[t];
+  theU          = new Standard_Real[t];
+  theV          = new Standard_Real[t];
+  theIsOnBounds = new Standard_Boolean[t];
+}
+
+//! Set deflection over-estimation with minimum threshold.
+//! @param[in]     theFlec       Deflection value
+//! @param[out]    theDeflection Stored deflection value
+//! @param[in,out] theBnd        Bounding box to enlarge
+inline void SetDeflectionOverEstimation(const double theFlec,
+                                        double&      theDeflection,
+                                        Bnd_Box&     theBnd)
+{
+  constexpr double THE_MIN_DEFLECTION = 0.0001;
+  if (theFlec < THE_MIN_DEFLECTION)
+  {
+    theDeflection = THE_MIN_DEFLECTION;
+    theBnd.Enlarge(THE_MIN_DEFLECTION);
+  }
+  else
+  {
+    theDeflection = theFlec;
+    theBnd.Enlarge(theFlec);
+  }
+}
+
+//! Get UV parameters at point index.
+//! @param[in]  theIndex Index of the point
+//! @param[in]  theU     U parameters array
+//! @param[in]  theV     V parameters array
+//! @param[out] theOutU  Output U parameter
+//! @param[out] theOutV  Output V parameter
+inline void Parameters(const int              theIndex,
+                       const Standard_Address theU,
+                       const Standard_Address theV,
+                       double&                theOutU,
+                       double&                theOutV)
+{
+  const Standard_Real* aU = static_cast<const Standard_Real*>(theU);
+  const Standard_Real* aV = static_cast<const Standard_Real*>(theV);
+  theOutU                 = aU[theIndex];
+  theOutV                 = aV[theIndex];
+}
+
+//! Get point with UV parameters.
+//! @param[in]  theIndex Index of the point
+//! @param[in]  thePnts  Points array
+//! @param[in]  theU     U parameters array
+//! @param[in]  theV     V parameters array
+//! @param[out] theOutU  Output U parameter
+//! @param[out] theOutV  Output V parameter
+//! @return Reference to the point
+inline const gp_Pnt& Point(const int              theIndex,
+                           const Standard_Address thePnts,
+                           const Standard_Address theU,
+                           const Standard_Address theV,
+                           double&                theOutU,
+                           double&                theOutV)
+{
+  const gp_Pnt*        aPnts = static_cast<const gp_Pnt*>(thePnts);
+  const Standard_Real* aU    = static_cast<const Standard_Real*>(theU);
+  const Standard_Real* aV    = static_cast<const Standard_Real*>(theV);
+  theOutU                    = aU[theIndex];
+  theOutV                    = aV[theIndex];
+  return aPnts[theIndex];
+}
+
+//! Get point by index.
+//! @param[in] theIndex Index of the point
+//! @param[in] thePnts  Points array
+//! @return Reference to the point
+inline const gp_Pnt& Point(const int theIndex, const Standard_Address thePnts)
+{
+  const gp_Pnt* aPnts = static_cast<const gp_Pnt*>(thePnts);
+  return aPnts[theIndex];
+}
+
+//! Get point by index (output parameter version).
+//! @param[in]  theIndex Index of the point
+//! @param[in]  thePnts  Points array
+//! @param[out] thePoint Output point
+inline void Point(const int theIndex, const Standard_Address thePnts, gp_Pnt& thePoint)
+{
+  const gp_Pnt* aPnts = static_cast<const gp_Pnt*>(thePnts);
+  thePoint            = aPnts[theIndex];
 }
 
 } // namespace IntCurveSurface_PolyhedronUtils
