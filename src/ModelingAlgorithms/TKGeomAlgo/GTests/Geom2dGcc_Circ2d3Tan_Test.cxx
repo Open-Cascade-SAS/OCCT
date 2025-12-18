@@ -24,8 +24,6 @@
 
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 // Test fixture for Geom2dGcc_Circ2d3Tan testing
 class Geom2dGcc_Circ2d3TanTest : public ::testing::Test
 {
