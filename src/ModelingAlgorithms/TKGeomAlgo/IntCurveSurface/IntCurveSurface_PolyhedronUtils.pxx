@@ -259,11 +259,7 @@ inline int NbPoints(const int theNbDeltaU, const int theNbDeltaV)
 //! @param[out] theP2       Second vertex index
 //! @param[out] theP3       Third vertex index
 //! @param[in]  theNbDeltaV Number of V subdivisions
-inline void Triangle(const int theIndex,
-                     int&      theP1,
-                     int&      theP2,
-                     int&      theP3,
-                     const int theNbDeltaV)
+inline void Triangle(const int theIndex, int& theP1, int& theP2, int& theP3, const int theNbDeltaV)
 {
   const int line   = 1 + ((theIndex - 1) / (theNbDeltaV * 2));
   const int colon  = 1 + ((theIndex - 1) % (theNbDeltaV * 2));
@@ -536,7 +532,7 @@ inline void PlaneEquation(const gp_Pnt& theP1,
     return;
   }
 
-  theNormalVector        = (v1 ^ v2) + (v2 ^ v3) + (v3 ^ v1);
+  theNormalVector       = (v1 ^ v2) + (v2 ^ v3) + (v3 ^ v1);
   const double aNormLen = theNormalVector.Modulus();
   if (aNormLen < gp::Resolution())
   {
@@ -573,15 +569,15 @@ inline bool Contain(const gp_Pnt& theP1,
 //! @param[in]     theNbDeltaV          Number of V subdivisions
 //! @param[in]     theDeflection        Deflection value for enlarging boxes
 //! @param[in,out] theComponentsBnd     Array of bounding boxes to fill
-inline void FillBounding(const gp_Pnt*                    thePnts,
-                         const int                        theNbDeltaU,
-                         const int                        theNbDeltaV,
-                         const double                     theDeflection,
-                         const Handle(Bnd_HArray1OfBox)&  theComponentsBnd)
+inline void FillBounding(const gp_Pnt*                   thePnts,
+                         const int                       theNbDeltaU,
+                         const int                       theNbDeltaV,
+                         const double                    theDeflection,
+                         const Handle(Bnd_HArray1OfBox)& theComponentsBnd)
 {
-  Bnd_Box      Boite;
-  int          np1, np2, np3;
-  const int    nbtriangles = NbTriangles(theNbDeltaU, theNbDeltaV);
+  Bnd_Box   Boite;
+  int       np1, np2, np3;
+  const int nbtriangles = NbTriangles(theNbDeltaU, theNbDeltaV);
 
   for (int iTri = 1; iTri <= nbtriangles; ++iTri)
   {
@@ -632,8 +628,8 @@ double ComputeMaxDeflection(const SurfaceType&    theSurface,
     gp_Pnt P2 = thePolyhedron.Point(i2, u2, v2);
     gp_Pnt P3 = thePolyhedron.Point(i3, u3, v3);
 
-    double tol1 = DeflectionOnTriangle<SurfaceType, SurfaceTool>(
-      theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
+    double tol1 = DeflectionOnTriangle<SurfaceType,
+                                       SurfaceTool>(theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
     if (tol1 > tol)
       tol = tol1;
   }
@@ -663,26 +659,42 @@ double ComputeMaxBorderDeflection(const SurfaceType& theSurface,
   double maxDeflection = RealFirst();
 
   // Lower bound (U-isoline)
-  double aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(
-    theSurface, theU0, theV0, theV1, true, theNbDeltaV);
+  double aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                         theU0,
+                                                                         theV0,
+                                                                         theV1,
+                                                                         true,
+                                                                         theNbDeltaV);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
   // Upper bound (U-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(
-    theSurface, theU1, theV0, theV1, true, theNbDeltaV);
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theU1,
+                                                                  theV0,
+                                                                  theV1,
+                                                                  true,
+                                                                  theNbDeltaV);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
   // Lower bound (V-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(
-    theSurface, theV0, theU0, theU1, false, theNbDeltaU);
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theV0,
+                                                                  theU0,
+                                                                  theU1,
+                                                                  false,
+                                                                  theNbDeltaU);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
   // Upper bound (V-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(
-    theSurface, theV1, theU0, theU1, false, theNbDeltaU);
+  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
+                                                                  theV1,
+                                                                  theU0,
+                                                                  theU1,
+                                                                  false,
+                                                                  theNbDeltaU);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
@@ -696,11 +708,11 @@ double ComputeMaxBorderDeflection(const SurfaceType& theSurface,
 //! @param[in] theNbDeltaU    Number of U subdivisions
 //! @param[in] theNbDeltaV    Number of V subdivisions
 //! @return True if edge is on boundary
-inline bool IsOnBound(const int              theIndex1,
-                      const int              theIndex2,
+inline bool IsOnBound(const int               theIndex1,
+                      const int               theIndex2,
                       const Standard_Boolean* theIsOnBounds,
-                      const int              theNbDeltaU,
-                      const int              theNbDeltaV)
+                      const int               theNbDeltaU,
+                      const int               theNbDeltaV)
 {
   const int aDiff = std::abs(theIndex1 - theIndex2);
 
@@ -747,17 +759,17 @@ inline void Destroy(Standard_Address& thePnts,
 //! @param[out] theU           U parameters array
 //! @param[out] theV           V parameters array
 //! @param[out] theIsOnBounds  Boundary flags array
-inline void AllocateArrays(const int        theNbDeltaU,
-                           const int        theNbDeltaV,
+inline void AllocateArrays(const int         theNbDeltaU,
+                           const int         theNbDeltaV,
                            Standard_Address& thePnts,
                            Standard_Address& theU,
                            Standard_Address& theV,
                            Standard_Address& theIsOnBounds)
 {
-  const int t  = (theNbDeltaU + 1) * (theNbDeltaV + 1) + 1;
-  thePnts      = new gp_Pnt[t];
-  theU         = new Standard_Real[t];
-  theV         = new Standard_Real[t];
+  const int t   = (theNbDeltaU + 1) * (theNbDeltaV + 1) + 1;
+  thePnts       = new gp_Pnt[t];
+  theU          = new Standard_Real[t];
+  theV          = new Standard_Real[t];
   theIsOnBounds = new Standard_Boolean[t];
 }
 
@@ -788,16 +800,16 @@ inline void SetDeflectionOverEstimation(const double theFlec,
 //! @param[in]  theV     V parameters array
 //! @param[out] theOutU  Output U parameter
 //! @param[out] theOutV  Output V parameter
-inline void Parameters(const int            theIndex,
+inline void Parameters(const int              theIndex,
                        const Standard_Address theU,
                        const Standard_Address theV,
-                       double&              theOutU,
-                       double&              theOutV)
+                       double&                theOutU,
+                       double&                theOutV)
 {
   const Standard_Real* aU = static_cast<const Standard_Real*>(theU);
   const Standard_Real* aV = static_cast<const Standard_Real*>(theV);
-  theOutU = aU[theIndex];
-  theOutV = aV[theIndex];
+  theOutU                 = aU[theIndex];
+  theOutV                 = aV[theIndex];
 }
 
 //! Get point with UV parameters.
@@ -808,18 +820,18 @@ inline void Parameters(const int            theIndex,
 //! @param[out] theOutU  Output U parameter
 //! @param[out] theOutV  Output V parameter
 //! @return Reference to the point
-inline const gp_Pnt& Point(const int            theIndex,
+inline const gp_Pnt& Point(const int              theIndex,
                            const Standard_Address thePnts,
                            const Standard_Address theU,
                            const Standard_Address theV,
-                           double&              theOutU,
-                           double&              theOutV)
+                           double&                theOutU,
+                           double&                theOutV)
 {
   const gp_Pnt*        aPnts = static_cast<const gp_Pnt*>(thePnts);
   const Standard_Real* aU    = static_cast<const Standard_Real*>(theU);
   const Standard_Real* aV    = static_cast<const Standard_Real*>(theV);
-  theOutU = aU[theIndex];
-  theOutV = aV[theIndex];
+  theOutU                    = aU[theIndex];
+  theOutV                    = aV[theIndex];
   return aPnts[theIndex];
 }
 
@@ -840,7 +852,7 @@ inline const gp_Pnt& Point(const int theIndex, const Standard_Address thePnts)
 inline void Point(const int theIndex, const Standard_Address thePnts, gp_Pnt& thePoint)
 {
   const gp_Pnt* aPnts = static_cast<const gp_Pnt*>(thePnts);
-  thePoint = aPnts[theIndex];
+  thePoint            = aPnts[theIndex];
 }
 
 } // namespace IntCurveSurface_PolyhedronUtils

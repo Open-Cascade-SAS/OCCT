@@ -86,18 +86,36 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(const Standard_Address& Surface,
                                              const Standard_Real     V1)
 {
   PolyUtils::InitUniform<Standard_Address, HLRBRep_SurfaceTool>(
-    Surface, U0, V0, U1, V1, nbdeltaU, nbdeltaV,
-    static_cast<gp_Pnt*>(C_MyPnts), static_cast<Standard_Real*>(C_MyU),
-    static_cast<Standard_Real*>(C_MyV), static_cast<Standard_Boolean*>(C_MyIsOnBounds), TheBnd);
+    Surface,
+    U0,
+    V0,
+    U1,
+    V1,
+    nbdeltaU,
+    nbdeltaV,
+    static_cast<gp_Pnt*>(C_MyPnts),
+    static_cast<Standard_Real*>(C_MyU),
+    static_cast<Standard_Real*>(C_MyV),
+    static_cast<Standard_Boolean*>(C_MyIsOnBounds),
+    TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection<
-    Standard_Address, HLRBRep_SurfaceTool, HLRBRep_ThePolyhedronOfInterCSurf>(
-      Surface, *this, NbTriangles());
+  Standard_Real tol =
+    PolyUtils::ComputeMaxDeflection<Standard_Address,
+                                    HLRBRep_SurfaceTool,
+                                    HLRBRep_ThePolyhedronOfInterCSurf>(Surface,
+                                                                       *this,
+                                                                       NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
-  TheBorderDeflection = PolyUtils::ComputeMaxBorderDeflection<Standard_Address, HLRBRep_SurfaceTool>(
-    Surface, U0, V0, U1, V1, nbdeltaU, nbdeltaV);
+  TheBorderDeflection =
+    PolyUtils::ComputeMaxBorderDeflection<Standard_Address, HLRBRep_SurfaceTool>(Surface,
+                                                                                 U0,
+                                                                                 V0,
+                                                                                 U1,
+                                                                                 V1,
+                                                                                 nbdeltaU,
+                                                                                 nbdeltaV);
 }
 
 //==================================================================================================
@@ -107,19 +125,35 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(const Standard_Address&     Surface
                                              const TColStd_Array1OfReal& Vpars)
 {
   PolyUtils::InitWithParams<Standard_Address, HLRBRep_SurfaceTool>(
-    Surface, Upars, Vpars, nbdeltaU, nbdeltaV,
-    static_cast<gp_Pnt*>(C_MyPnts), static_cast<Standard_Real*>(C_MyU),
-    static_cast<Standard_Real*>(C_MyV), static_cast<Standard_Boolean*>(C_MyIsOnBounds), TheBnd);
+    Surface,
+    Upars,
+    Vpars,
+    nbdeltaU,
+    nbdeltaV,
+    static_cast<gp_Pnt*>(C_MyPnts),
+    static_cast<Standard_Real*>(C_MyU),
+    static_cast<Standard_Real*>(C_MyV),
+    static_cast<Standard_Boolean*>(C_MyIsOnBounds),
+    TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection<
-    Standard_Address, HLRBRep_SurfaceTool, HLRBRep_ThePolyhedronOfInterCSurf>(
-      Surface, *this, NbTriangles());
+  Standard_Real tol =
+    PolyUtils::ComputeMaxDeflection<Standard_Address,
+                                    HLRBRep_SurfaceTool,
+                                    HLRBRep_ThePolyhedronOfInterCSurf>(Surface,
+                                                                       *this,
+                                                                       NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
-  TheBorderDeflection = PolyUtils::ComputeMaxBorderDeflection<Standard_Address, HLRBRep_SurfaceTool>(
-    Surface, Upars(Upars.Lower()), Vpars(Vpars.Lower()),
-    Upars(Upars.Upper()), Vpars(Vpars.Upper()), nbdeltaU, nbdeltaV);
+  TheBorderDeflection =
+    PolyUtils::ComputeMaxBorderDeflection<Standard_Address, HLRBRep_SurfaceTool>(
+      Surface,
+      Upars(Upars.Lower()),
+      Vpars(Vpars.Lower()),
+      Upars(Upars.Upper()),
+      Vpars(Vpars.Upper()),
+      nbdeltaU,
+      nbdeltaV);
 }
 
 //==================================================================================================
@@ -132,8 +166,16 @@ Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(
   Triangle(Triang, i1, i2, i3);
   Standard_Real u1, v1, u2, v2, u3, v3;
   gp_Pnt        P1 = Point(i1, u1, v1), P2 = Point(i2, u2, v2), P3 = Point(i3, u3, v3);
-  return PolyUtils::DeflectionOnTriangle<Standard_Address, HLRBRep_SurfaceTool>(
-    Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
+  return PolyUtils::DeflectionOnTriangle<Standard_Address, HLRBRep_SurfaceTool>(Surface,
+                                                                                P1,
+                                                                                P2,
+                                                                                P3,
+                                                                                u1,
+                                                                                v1,
+                                                                                u2,
+                                                                                v2,
+                                                                                u3,
+                                                                                v3);
 }
 
 //==================================================================================================
@@ -171,7 +213,11 @@ const Bnd_Box& HLRBRep_ThePolyhedronOfInterCSurf::Bounding() const
 void HLRBRep_ThePolyhedronOfInterCSurf::FillBounding()
 {
   TheComponentsBnd = new Bnd_HArray1OfBox(1, NbTriangles());
-  PolyUtils::FillBounding(static_cast<gp_Pnt*>(C_MyPnts), nbdeltaU, nbdeltaV, TheDeflection, TheComponentsBnd);
+  PolyUtils::FillBounding(static_cast<gp_Pnt*>(C_MyPnts),
+                          nbdeltaU,
+                          nbdeltaV,
+                          TheDeflection,
+                          TheComponentsBnd);
 }
 
 //==================================================================================================
@@ -287,8 +333,11 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Point(const Standard_Integer Index, gp_P
 Standard_Boolean HLRBRep_ThePolyhedronOfInterCSurf::IsOnBound(const Standard_Integer Index1,
                                                               const Standard_Integer Index2) const
 {
-  return PolyUtils::IsOnBound(
-    Index1, Index2, static_cast<Standard_Boolean*>(C_MyIsOnBounds), nbdeltaU, nbdeltaV);
+  return PolyUtils::IsOnBound(Index1,
+                              Index2,
+                              static_cast<Standard_Boolean*>(C_MyIsOnBounds),
+                              nbdeltaU,
+                              nbdeltaV);
 }
 
 //==================================================================================================
