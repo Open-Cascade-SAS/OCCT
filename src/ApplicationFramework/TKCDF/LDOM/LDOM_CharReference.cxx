@@ -28,14 +28,12 @@
 
 namespace
 {
-const int NORMAL_C  = 0;
-const int CHAR_REF  = -1;
-const int ENTI_AMP  = 1;
-const int ENTI_LT   = 2;
-const int ENTI_GT   = 3;
-const int ENTI_QUOT = 4;
-
-// const int ENTI_APOS = 5;
+constexpr int NORMAL_C  = 0;
+constexpr int CHAR_REF  = -1;
+constexpr int ENTI_AMP  = 1;
+constexpr int ENTI_LT   = 2;
+constexpr int ENTI_GT   = 3;
+constexpr int ENTI_QUOT = 4;
 
 struct entityRef
 {

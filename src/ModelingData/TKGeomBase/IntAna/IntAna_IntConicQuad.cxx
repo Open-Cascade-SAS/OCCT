@@ -445,9 +445,9 @@ void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
                                   const Standard_Real Len)
 {
 
-  // Tolang represente la tolerance angulaire a partir de laquelle on considere
-  // que l angle entre 2 vecteurs est nul. On raisonnera sur le cosinus de cet
-  // angle, (on a std::cos(t) equivalent a t au voisinage de Pi/2).
+  // Tolang represents the angular tolerance from which we consider
+  // that the angle between 2 vectors is zero. We will reason about the cosine of this
+  // angle, (we have std::cos(t) equivalent to t near Pi/2).
 
   done = Standard_False;
 

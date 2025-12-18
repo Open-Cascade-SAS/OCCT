@@ -85,12 +85,12 @@ void PrsDim_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager)&,
   switch (myFShape.ShapeType())
   {
     case TopAbs_FACE: {
-      // cas longueur entre deux faces
+      // parallel case between two faces
       ComputeTwoFacesParallel(aPresentation);
     }
     break;
     case TopAbs_EDGE: {
-      // cas longueur entre deux edges
+      // parallel case between two edges
       ComputeTwoEdgesParallel(aPresentation);
     }
     break;
@@ -285,7 +285,7 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
     myPosition = curpos;
   }
 
-  // recherche points attache
+  // search for attachment points
   if (!isInfinite1)
   {
     if (isEl1)

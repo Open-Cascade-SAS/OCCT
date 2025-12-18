@@ -333,8 +333,8 @@ static GCPnts_DeflectionType GetDefType(const TheCurve& theC)
     return GCPnts_DefComposite;
   }
 
-  // pour forcer les decoupages aux cassures.
-  // G1 devrait marcher, mais donne des exceptions...
+  // to force subdivisions at discontinuities.
+  // G1 should work, but gives exceptions...
   switch (theC.GetType())
   {
     case GeomAbs_Line:

@@ -137,7 +137,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   TopTools_MapOfShape                toRemove;
   TopTools_MapIteratorOfMapOfShape   itm;
 
-  // recherche des fusions de faces
+  // search for face fusions
   for (itm.Initialize(GEdg); itm.More(); itm.Next())
   {
     const TopoDS_Edge& edg = TopoDS::Edge(itm.Key());

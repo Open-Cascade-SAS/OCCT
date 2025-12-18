@@ -87,7 +87,7 @@ TDataStd_Real::TDataStd_Real()
 Standard_Boolean TDataStd_Real::IsCaptured() const
 {
   Handle(TDF_Reference) reference;
-  // pour test
+  // for test
 
   if (Label().FindAttribute(TDF_Reference::GetID(), reference))
   {

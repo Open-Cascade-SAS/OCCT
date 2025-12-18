@@ -68,11 +68,11 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Dimension, AIS_InteractiveObject)
 namespace
 {
 // default text margin and resolution
-static const Standard_Real THE_3D_TEXT_MARGIN = 0.1;
+constexpr double THE_3D_TEXT_MARGIN = 0.1;
 
 // default selection priorities
-static const Standard_Integer THE_NEUTRAL_SEL_PRIORITY = 5;
-static const Standard_Integer THE_LOCAL_SEL_PRIORITY   = 6;
+constexpr int THE_NEUTRAL_SEL_PRIORITY = 5;
+constexpr int THE_LOCAL_SEL_PRIORITY   = 6;
 } // namespace
 
 //=================================================================================================

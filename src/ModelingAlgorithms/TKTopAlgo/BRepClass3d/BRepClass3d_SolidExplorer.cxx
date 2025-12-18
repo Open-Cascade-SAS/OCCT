@@ -19,18 +19,12 @@
 
 //  Modified by skv - Thu Sep  4 12:29:30 2003 OCC578
 
-//-- Process the case of a hole!!
-#define REJECTION 1
-
-//-- To printf on NT
-
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepClass_FacePassiveClassifier.hxx>
-#include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <gp.hxx>
@@ -48,10 +42,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopExp.hxx>
 
-#include <stdio.h>
-
-// OCC454(apo)->
-//<-OCC454(apo)
 //=======================================================================
 // function : FindAPointInTheFace
 // purpose  : Compute a point P in the face  F. Param is a Real in
@@ -914,10 +904,6 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   }
 #endif
 
-#if REJECTION
-  BRepBndLib::Add(myShape, myBox);
-#endif
-
   // since the internal/external parts should be avoided in tree filler,
   // there is no need to add these parts in the EV map as well
   TopExp_Explorer aExpF(myShape, TopAbs_FACE);
@@ -1077,10 +1063,6 @@ Standard_Boolean BRepClass3d_SolidExplorer::RejectFace(const gp_Lin&) const
   return (Standard_False);
 }
 
-#ifdef OCCT_DEBUG
-  #include <TopAbs_State.hxx>
-#endif
-
 //=======================================================================
 // function : Segment
 // purpose  : Returns  in <L>, <Par>  a segment having at least
@@ -1102,13 +1084,6 @@ IntCurvesFace_Intersector& BRepClass3d_SolidExplorer::Intersector(const TopoDS_F
   void*                      ptr  = (void*)(myMapOfInter.Find(F));
   IntCurvesFace_Intersector& curr = (*((IntCurvesFace_Intersector*)ptr));
   return curr;
-}
-
-//=================================================================================================
-
-const Bnd_Box& BRepClass3d_SolidExplorer::Box() const
-{
-  return (myBox);
 }
 
 //=================================================================================================

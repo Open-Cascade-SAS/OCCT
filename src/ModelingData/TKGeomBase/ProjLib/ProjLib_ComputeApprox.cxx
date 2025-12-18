@@ -525,14 +525,14 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
       {
         UCouture = Standard_True;
 
-        // on cherche a savoir le nombre de fois que la couture est
-        // traversee.
-        // si 0 ou 2 fois : la PCurve est fermee et dans l`intervalle
-        //                  [Uc-PI, Uc+PI] (Uc: U du centre du cercle)
-        // si 1 fois      : la PCurve est ouverte et dans l`intervalle
+        // we seek to know how many times the seam is
+        // crossed.
+        // if 0 or 2 times: the PCurve is closed and in the interval
+        //                  [Uc-PI, Uc+PI] (Uc: U of circle center)
+        // if 1 time      : the PCurve is open and in the interval
         //                  [U1, U1 +/- 2*PI]
 
-        // pour determiner le nombre de solution, on resoud le systeme
+        // to determine the number of solutions, we solve the system
         // x^2 + y^2 + z^2     = R^2  (1)
         // A x + B y + C z + D = 0    (2)
         // x > 0                      (3)
@@ -707,7 +707,7 @@ static void Function_SetUVBounds(Standard_Real&                   myU1,
             myV2 = M_PI / 2.;
           }
 
-          // si P1.Z() vaut +/- R on est sur le sommet : pas significatif.
+          // if P1.Z() equals +/- R we are at the vertex: not significant.
           gp_Pnt pp = P1.Transformed(Trsf);
 
           if (std::abs(pp.X() * pp.X() + pp.Y() * pp.Y() + pp.Z() * pp.Z() - R * R) < Tol)

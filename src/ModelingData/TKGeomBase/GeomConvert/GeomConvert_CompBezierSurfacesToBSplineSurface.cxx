@@ -85,7 +85,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
   myUKnots->SetValue(2, L1);
 
   V1 = vec.Magnitude();
-  // si la Parametrisation est trop bizzare on garde la pseudo-longueur
+  // if the parameterization is too strange we keep the pseudo-length
   if ((V1 > 1000 * L1) || (V1 < L1 * 1.e-3))
     V1 = L1;
 
@@ -138,7 +138,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
   myVKnots->SetValue(2, L1);
 
   V1 = vec.Magnitude();
-  // si la Parametrisation est trop bizzare on garde la pseudo-longueur
+  // if the parameterization is too strange we keep the pseudo-length
   if ((V1 > 1000 * L1) || (V1 < L1 * 1.e-3))
     V1 = L1;
 
@@ -458,12 +458,12 @@ void GeomConvert_CompBezierSurfacesToBSplineSurface::Perform(
     }
   }
 
-  // (3) Elimination des redondances
-  // car dans la boucle precedente on compte :
-  // - 2 fois les poles associes aux noeuds simples
-  // - 4 fois les poles associes aux doubles noeuds (en U et V)
+  // (3) Elimination of redundancies
+  // because in the previous loop we count:
+  // - 2 times the poles associated with simple knots
+  // - 4 times the poles associated with double knots (in U and V)
 
-  // (3.1) Elimination en U
+  // (3.1) Elimination in U
   for (UIndex = myUDegree + 1, ii = 2; ii < myUKnots->Length(); ii++, UIndex += myUDegree)
   {
     for (vpol = 1; vpol <= myPoles->UpperCol(); vpol++)

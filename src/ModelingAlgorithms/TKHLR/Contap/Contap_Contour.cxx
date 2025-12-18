@@ -41,7 +41,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopTrans_CurveTransition.hxx>
 
-static const Standard_Real Tolpetit = 1.e-10; // pour dist au carre
+static const Standard_Real Tolpetit = 1.e-10; // for squared distance
 
 static const Standard_Real tole = 5.e-6;
 

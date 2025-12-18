@@ -617,9 +617,9 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_Curve)& C)
       Handle(ProjLib_HCompProjectedCurve) HProjector =
         new ProjLib_HCompProjectedCurve(mySurface, myCurve, aTolU, aTolV, aMaxDist);
 
-      // Normalement, dans le cadre de ProjLib, le resultat
-      // doit etre une et une seule courbe !!!
-      // De plus, cette courbe ne doit pas etre Single point
+      // Normally, within the framework of ProjLib, the result
+      // must be one and only one curve!
+      // Moreover, this curve must not be a Single point
       Standard_Integer NbCurves = HProjector->NbCurves();
       Standard_Real    Udeb = 0.0, Ufin = 0.0;
       if (NbCurves > 0)

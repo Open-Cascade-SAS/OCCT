@@ -57,7 +57,7 @@ static gp_Pnt OnPlane_Value(const Standard_Real            U,
                             const gp_Dir&                  D)
 {
   //                   PO . Z                /  Z = Pl.Direction()
-  // Proj(u) = P(u) + -------  * D     avec  \  O = Pl.Location()
+  // Proj(u) = P(u) + -------  * D     with  \  O = Pl.Location()
   //                   D  . Z
 
   gp_Pnt Point = aCurvePtr->Value(U);
@@ -83,7 +83,7 @@ static gp_Vec OnPlane_DN(const Standard_Real            U,
                          const gp_Dir&                  D)
 {
   //                   PO . Z                /  Z = Pl.Direction()
-  // Proj(u) = P(u) + -------  * D     avec  \  O = Pl.Location()
+  // Proj(u) = P(u) + -------  * D     with  \  O = Pl.Location()
   //                   D  . Z
 
   gp_Vec Vector = aCurvePtr->DN(U, DerivativeRequest);
@@ -344,21 +344,21 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
   Standard_Integer NbCurves = Fit.NbMultiCurves();
   Standard_Integer MaxDeg   = 0;
 
-  // Pour transformer la MultiCurve en BSpline, il faut que toutes
-  // les Bezier la constituant aient le meme degre -> Calcul de MaxDeg
+  // To convert the MultiCurve to BSpline, all constituent Bezier curves
+  // must have the same degree -> Calculate MaxDeg
   Standard_Integer NbPoles = 1;
   for (i = 1; i <= NbCurves; i++)
   {
     Standard_Integer Deg = Fit.Value(i).Degree();
     MaxDeg               = std::max(MaxDeg, Deg);
   }
-  NbPoles = MaxDeg * NbCurves + 1; // Poles sur la BSpline
+  NbPoles = MaxDeg * NbCurves + 1; // Poles on the BSpline
 
   TColgp_Array1OfPnt Poles(1, NbPoles);
 
-  TColgp_Array1OfPnt TempPoles(1, MaxDeg + 1); // pour augmentation du degre
+  TColgp_Array1OfPnt TempPoles(1, MaxDeg + 1); // for degree elevation
 
-  TColStd_Array1OfReal Knots(1, NbCurves + 1); // Noeuds de la BSpline
+  TColStd_Array1OfReal Knots(1, NbCurves + 1); // Knots of the BSpline
 
   Standard_Integer Compt    = 1;
   Standard_Real    anErrMax = 0., anErr3d, anErr2d;
@@ -367,11 +367,11 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
     Fit.Parameters(i, Knots(i), Knots(i + 1));
     Fit.Error(i, anErr3d, anErr2d);
     anErrMax                   = std::max(anErrMax, anErr3d);
-    AppParCurves_MultiCurve MC = Fit.Value(i);              // Charge la Ieme Curve
-    TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Recupere les poles
+    AppParCurves_MultiCurve MC = Fit.Value(i);              // Load the i-th Curve
+    TColgp_Array1OfPnt      LocalPoles(1, MC.Degree() + 1); // Get the poles
     MC.Curve(1, LocalPoles);
 
-    // Augmentation eventuelle du degre
+    // Possible degree elevation
     if (MaxDeg > MC.Degree())
     {
       BSplCLib::IncreaseDegree(MaxDeg,
@@ -379,7 +379,7 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
                                BSplCLib::NoWeights(),
                                TempPoles,
                                BSplCLib::NoWeights());
-      // mise a jour des poles de la PCurve
+      // update the poles of the PCurve
       for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
       {
         Poles.SetValue(Compt, TempPoles(j));
@@ -388,7 +388,7 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
     }
     else
     {
-      // mise a jour des poles de la PCurve
+      // update the poles of the PCurve
       for (Standard_Integer j = 1; j <= MaxDeg + 1; j++)
       {
         Poles.SetValue(Compt, LocalPoles(j));
@@ -399,7 +399,7 @@ static void PerformApprox(const Handle(Adaptor3d_Curve)& C,
     Compt--;
   }
 
-  // mise a jour des fields de ProjLib_Approx
+  // update the fields of ProjLib_Approx
 
   Standard_Integer NbKnots = NbCurves + 1;
 
@@ -656,8 +656,8 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_Curve)& C,
       break;
     }
     case GeomAbs_Circle: {
-      // Pour le cercle et l ellipse on a les relations suivantes:
-      // ( Rem : pour le cercle R1 = R2 = R)
+      // For circle and ellipse we have the following relations:
+      // (Note: for circle R1 = R2 = R)
       //     P(u) = O + R1 * std::cos(u) * Xc + R2 * std::sin(u) * Yc
       // ==> Q(u) = f(P(u))
       //          = f(O) + R1 * std::cos(u) * f(Xc) + R2 * std::sin(u) * f(Yc)

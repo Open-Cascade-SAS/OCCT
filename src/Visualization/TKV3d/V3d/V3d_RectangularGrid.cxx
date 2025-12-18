@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid, Aspect_RectangularGrid)
 
 namespace
 {
-static const Standard_Real THE_DEFAULT_GRID_STEP = 10.0;
-#define MYFACTOR 50.
+constexpr double THE_DEFAULT_GRID_STEP = 10.0;
+constexpr double THE_MYFACTOR          = 50.0;
 } // namespace
 
 //! Dummy implementation of Graphic3d_Structure overriding ::Compute() method for handling Device
@@ -74,7 +74,7 @@ V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
       myCurYStep(0.0),
       myXSize(0.5 * aViewer->DefaultViewSize()),
       myYSize(0.5 * aViewer->DefaultViewSize()),
-      myOffSet(THE_DEFAULT_GRID_STEP / MYFACTOR)
+      myOffSet(THE_DEFAULT_GRID_STEP / THE_MYFACTOR)
 {
   myColor      = aColor;
   myTenthColor = aTenthColor;

@@ -116,10 +116,13 @@ static std::ostream& formatBytes(std::ostream&    theStream,
   return theStream;
 }
 
-static const Standard_Real THE_SECONDS_IN_HOUR   = 3600.0;
-static const Standard_Real THE_SECONDS_IN_MINUTE = 60.0;
-static const Standard_Real THE_SECOND_IN_HOUR    = 1.0 / THE_SECONDS_IN_HOUR;
-static const Standard_Real THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
+namespace
+{
+constexpr double THE_SECONDS_IN_HOUR   = 3600.0;
+constexpr double THE_SECONDS_IN_MINUTE = 60.0;
+constexpr double THE_SECOND_IN_HOUR    = 1.0 / THE_SECONDS_IN_HOUR;
+constexpr double THE_SECOND_IN_MINUTE  = 1.0 / THE_SECONDS_IN_MINUTE;
+} // namespace
 
 //! Format time.
 static std::ostream& formatTime(std::ostream&    theStream,

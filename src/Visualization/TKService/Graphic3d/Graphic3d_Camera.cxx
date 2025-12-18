@@ -31,11 +31,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
 namespace
 {
 // (degrees -> radians) * 0.5
-static const Standard_Real DTR_HALF = 0.5 * 0.0174532925;
+constexpr Standard_Real DTR_HALF = 0.5 * 0.0174532925;
 
 // default property values
-static const Standard_Real DEFAULT_ZNEAR = 0.001;
-static const Standard_Real DEFAULT_ZFAR  = 3000.0;
+constexpr Standard_Real DEFAULT_ZNEAR = 0.001;
+constexpr Standard_Real DEFAULT_ZFAR  = 3000.0;
 
 // atomic state counter
 static std::atomic<Standard_Size> THE_STATE_COUNTER(0);

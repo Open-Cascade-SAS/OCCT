@@ -16,7 +16,10 @@
 #include <math_Function.hxx>
 #include <StdFail_NotDone.hxx>
 
-static const Standard_Real CGOLD = 0.3819660; // 0.5*(3 - sqrt(5));
+namespace
+{
+constexpr double CGOLD = 0.3819660; // 0.5*(3 - sqrt(5))
+} // namespace
 
 //=================================================================================================
 

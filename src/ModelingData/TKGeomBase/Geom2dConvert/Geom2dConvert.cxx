@@ -997,7 +997,7 @@ void Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&          ArrayOfCu
       ReorderArrayOfG1(ArrayOfCurves, local_tolerance, tabG1, indexmin, ClosedTolerance);
     Curve2 = ArrayOfCurves(0);
     for (j = 1; j <= nb_curve - 1; j++)
-    { // boucle secondaire a l'interieur de chaque groupe
+    { // secondary loop inside each group
       Curve1 = ArrayOfCurves(j);
       if ((j == (nb_curve - 1)) && (NeedDoubleDegRepara))
       {
@@ -1252,7 +1252,7 @@ void Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&          ArrayOfCu
     if (indexmin != (ArrayOfCurves.Length() - 1))
       ReorderArrayOfG1(ArrayOfCurves, local_tolerance, tabG1, indexmin, ClosedTolerance);
     for (j = 0; j <= nb_curve - 1; j++)
-    { // boucle secondaire a l'interieur de chaque groupe
+    { // secondary loop inside each group
       if (NeedToBeTreated(ArrayOfCurves(j)))
       {
         Curve1 = MultNumandDenom(Hermit::Solution(ArrayOfCurves(j)), ArrayOfCurves(j));

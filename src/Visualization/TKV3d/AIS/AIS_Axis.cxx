@@ -244,7 +244,7 @@ void AIS_Axis::ComputeFields()
 {
   if (myIsXYZAxis)
   {
-    // calcul de myPFirst,myPlast
+    // compute myPFirst,myPlast
     Handle(Prs3d_DatumAspect) DA     = myDrawer->DatumAspect();
     gp_Ax2                    anAxis = myAx2->Ax2();
     const gp_Pnt&             Orig   = anAxis.Location();

@@ -18,7 +18,7 @@ inputs:
   use-vtk:
     description: 'Enable VTK'
     required: false
-    default: 'true'
+    default: 'false'
   build-use-pch:
     description: 'Enable precompiled headers'
     required: false
