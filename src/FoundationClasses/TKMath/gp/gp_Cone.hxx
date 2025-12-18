@@ -244,7 +244,7 @@ inline constexpr gp_Cone::gp_Cone(const gp_Ax3&       theA3,
       radius(theRadius),
       semiAngle(theAng)
 {
-  const Standard_Real anAbsAng = theAng < 0. ? -theAng : theAng;
+  [[maybe_unused]] const Standard_Real anAbsAng = theAng < 0. ? -theAng : theAng;
   Standard_ConstructionError_Raise_if(theRadius < 0. || anAbsAng <= gp::Resolution()
                                         || M_PI * 0.5 - anAbsAng <= gp::Resolution(),
                                       "gp_Cone() - invalid construction parameters");
