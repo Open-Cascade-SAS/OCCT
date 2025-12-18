@@ -137,16 +137,25 @@ public:
   constexpr Standard_Boolean IsSame(const Standard_GUID& uid) const noexcept
   {
     return my32b == uid.my32b && my16b1 == uid.my16b1 && my16b2 == uid.my16b2
-           && my16b3 == uid.my16b3 && my8b1 == uid.my8b1 && my8b2 == uid.my8b2
-           && my8b3 == uid.my8b3 && my8b4 == uid.my8b4 && my8b5 == uid.my8b5 && my8b6 == uid.my8b6;
+           && my16b3 == uid.my16b3 && my8b1 == uid.my8b1 && my8b2 == uid.my8b2 && my8b3 == uid.my8b3
+           && my8b4 == uid.my8b4 && my8b5 == uid.my8b5 && my8b6 == uid.my8b6;
   }
 
-  constexpr Standard_Boolean operator==(const Standard_GUID& uid) const noexcept { return IsSame(uid); }
+  constexpr Standard_Boolean operator==(const Standard_GUID& uid) const noexcept
+  {
+    return IsSame(uid);
+  }
 
   //! Returns true if this GUID is not equal to uid.
-  constexpr Standard_Boolean IsNotSame(const Standard_GUID& uid) const noexcept { return !IsSame(uid); }
+  constexpr Standard_Boolean IsNotSame(const Standard_GUID& uid) const noexcept
+  {
+    return !IsSame(uid);
+  }
 
-  constexpr Standard_Boolean operator!=(const Standard_GUID& uid) const noexcept { return IsNotSame(uid); }
+  constexpr Standard_Boolean operator!=(const Standard_GUID& uid) const noexcept
+  {
+    return IsNotSame(uid);
+  }
 
   //! Assigns uid to this GUID.
   constexpr void Assign(const Standard_GUID& uid) noexcept

@@ -269,7 +269,8 @@ public:
   }
 
   //! Translates a plane from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Pln Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theP1, theP2);

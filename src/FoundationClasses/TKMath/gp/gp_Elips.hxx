@@ -253,7 +253,8 @@ public:
   }
 
   //! Translates an ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Elips Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Elips Translated(const gp_Pnt& theP1,
+                                                   const gp_Pnt& theP2) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theP1, theP2);

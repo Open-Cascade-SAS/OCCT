@@ -305,7 +305,8 @@ inline constexpr void gp_GTrsf2d::Transforms(gp_XY& theCoord) const noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_GTrsf2d::Transforms(Standard_Real& theX, Standard_Real& theY) const noexcept
+inline constexpr void gp_GTrsf2d::Transforms(Standard_Real& theX,
+                                             Standard_Real& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);

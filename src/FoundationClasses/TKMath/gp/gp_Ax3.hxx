@@ -340,7 +340,8 @@ public:
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
-  Standard_NODISCARD constexpr gp_Ax3 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Ax3 Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     return Translated(gp_Vec(theP1, theP2));
   }

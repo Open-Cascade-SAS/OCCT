@@ -203,7 +203,8 @@ public:
   }
 
   //! Translates a line from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Lin Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Lin Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Translate(gp_Vec(theP1, theP2));

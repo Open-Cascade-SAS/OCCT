@@ -257,7 +257,9 @@ public:
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Transforms a triplet XYZ with a GTrsf.
-  constexpr void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept;
+  constexpr void Transforms(Standard_Real& theX,
+                            Standard_Real& theY,
+                            Standard_Real& theZ) const noexcept;
 
   gp_Trsf Trsf() const;
 

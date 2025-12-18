@@ -221,7 +221,8 @@ public:
   }
 
   //! Translates a cone from the point P1 to the point P2.
-  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Pnt& theP1,
+                                                  const gp_Pnt& theP2) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theP1, theP2);

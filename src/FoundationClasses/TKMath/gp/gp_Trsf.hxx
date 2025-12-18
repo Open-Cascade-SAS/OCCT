@@ -318,7 +318,9 @@ public:
     return aT;
   }
 
-  constexpr void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept;
+  constexpr void Transforms(Standard_Real& theX,
+                            Standard_Real& theY,
+                            Standard_Real& theZ) const noexcept;
 
   //! Transformation of a triplet XYZ with a Trsf
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;

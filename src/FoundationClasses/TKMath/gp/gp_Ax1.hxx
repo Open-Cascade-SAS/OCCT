@@ -193,7 +193,8 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and creates a new axis.
-  Standard_NODISCARD constexpr gp_Ax1 Scaled(const gp_Pnt& theP, const Standard_Real theS) const noexcept
+  Standard_NODISCARD constexpr gp_Ax1 Scaled(const gp_Pnt&       theP,
+                                             const Standard_Real theS) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.Scale(theP, theS);
@@ -241,7 +242,8 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and creates a new one.
-  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.loc.Translate(theP1, theP2);

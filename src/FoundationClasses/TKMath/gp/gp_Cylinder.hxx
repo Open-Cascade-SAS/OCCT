@@ -185,7 +185,8 @@ public:
   }
 
   //! Translates a cylinder from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Cylinder Translated(const gp_Pnt& theP1,
+                                                      const gp_Pnt& theP2) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theP1, theP2);

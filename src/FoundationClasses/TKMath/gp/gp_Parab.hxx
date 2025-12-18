@@ -211,7 +211,8 @@ public:
   }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Pnt& theP1,
+                                                   const gp_Pnt& theP2) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);
