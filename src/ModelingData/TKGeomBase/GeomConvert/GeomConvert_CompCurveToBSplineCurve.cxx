@@ -85,6 +85,7 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   myTol = Tolerance;
 
   // Use actual curve endpoints instead of poles for proper G0 continuity check.
+  // G0 continuity (positional continuity) requires curves to share endpoints.
   // For non-clamped or periodic B-splines, first/last poles may not coincide with endpoints.
   const gp_Pnt aCurveStart = myCurve->StartPoint();
   const gp_Pnt aCurveEnd   = myCurve->EndPoint();
