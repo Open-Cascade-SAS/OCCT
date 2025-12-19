@@ -1,0 +1,50 @@
+! Description of available plugins for DRAW Test Harness
+! *****************************************************************************
+!
+! Format of the file is compliant with the standard Open CASCADE resource files
+! (see the Resource_Manager.cdl file for details).
+!
+! Each key defines a sequence of either further keys or a name of the dynamic
+! library. Keys can be nested down to an arbitrary level. However, make sure
+! there are no cyclic dependencies (internal checks are not performed).
+! 
+! For details how to implement a DRAW plugin refer to the Test Harness User's
+! Guide.
+!
+! To load a plugin use the following command in DRAW:
+!
+! Draw> pload [-PluginFileName] [[Key1] [Key2]...], where:
+!     <-PluginFileName> - Defines the name of a resource file.
+!                         If this parameter is omitted then the default name DrawPlugin
+!                         is used.
+!                         According to the Open CASCADE resource file management rules
+!                         the environment variable CSF_<PluginFileName>Defaults must
+!                         be set and point to the directory storing the file. If it is
+!                         omitted then it defaults to $CASROOT/src/DrawResources.
+!     [Key]             - Defines the key(s) enumerating plugins to be loaded.
+!                         If no keys are specified then the key named DEFAULT is used
+!                         (if there is no such in the file then no plugins are loaded).
+!
+!
+! NOTE: Make sure the DATAEXCHANGE or XDE key succeeds the OCAF key in a sequence
+!
+
+DEFAULT            : MODELING
+MODELING           : TOPTEST
+VISUALIZATION      : AISV
+OCAFKERNEL         : DCAF
+DATAEXCHANGEKERNEL : XSDRAW
+OCAF               : VISUALIZATION, OCAFKERNEL
+DATAEXCHANGE       : XDE, VISUALIZATION
+XDE                : DATAEXCHANGEKERNEL, XDEDRAW
+ALL                : MODELING, OCAFKERNEL, DATAEXCHANGE
+
+TOPTEST            : TKTopTest
+DCAF               : TKDCAF
+AISV               : TKViewerTest
+XSDRAW             : TKXSDRAW
+XDEDRAW            : TKXDEDRAW
+TOBJ               : TKTObjDRAW
+DFBROWSER          : TKDFBrowser
+QAcommands         : TKQADraw
+VIS                : TKIVtkDraw

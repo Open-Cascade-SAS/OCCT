@@ -1,0 +1,17 @@
+                                                                        S0000001
+,,31HOpen CASCADE IGES processor 6.9,13HFilename.iges,                  G0000001
+16HOpen CASCADE 6.9,31HOpen CASCADE IGES processor 6.9,32,308,15,308,15,G0000002
+,1.,2,2HMM,1,0.01,15H20160109.173038,5E-008,30.,5HRoman,,11,0,          G0000003
+15H20160109.173038,;                                                    G0000004
+     116       1       0       0       0       0       0       000000000D0000001
+     116       0       0       1       0                               0D0000002
+     116       2       0       0       0       0       0       000000000D0000003
+     116       0       0       1       0                               0D0000004
+     116       5       0       0       0       0       0       000000000D0000005
+     116       0       0       1       0                               0D0000006
+116,10.,20.,30.,0;test comment                                   0000001P0000001
+116,20.,30.,40.,0;this is a multi-line comment used to test that 0000003P0000002
+ the parser will successfully process even such long comments be 0000003P0000003
+tween lines in the Parameters section                            0000003P0000004
+116,30.,40.,50.,0;                                               0000005P0000005
+S      1G      4D      6P      5                                        T0000001

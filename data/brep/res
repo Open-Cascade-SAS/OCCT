@@ -1,0 +1,37 @@
+remove0v.exec.op: DropSmallSolids
+remove0v.DropSmallSolids.VolumeThreshold: 400
+
+remove1v.exec.op: DropSmallSolids
+remove1v.DropSmallSolids.VolumeThreshold: 500
+
+remove2v.exec.op: DropSmallSolids
+remove2v.DropSmallSolids.VolumeThreshold: 1000
+
+remove0w.exec.op: DropSmallSolids
+remove0w.DropSmallSolids.WidthFactorThreshold: 2
+
+remove1w.exec.op: DropSmallSolids
+remove1w.DropSmallSolids.WidthFactorThreshold: 3
+
+remove2w.exec.op: DropSmallSolids
+remove2w.DropSmallSolids.WidthFactorThreshold: 4
+
+remove1vw.exec.op: DropSmallSolids
+remove1vw.DropSmallSolids.VolumeThreshold: 500
+remove1vw.DropSmallSolids.WidthFactorThreshold: 4
+
+remove1wv.exec.op: DropSmallSolids
+remove1wv.DropSmallSolids.VolumeThreshold: 1000
+remove1wv.DropSmallSolids.WidthFactorThreshold: 3
+
+merge0v.exec.op: DropSmallSolids
+merge0v.DropSmallSolids.MergeSolids: 1
+merge0v.DropSmallSolids.VolumeThreshold: 400
+
+merge1v.exec.op: DropSmallSolids
+merge1v.DropSmallSolids.MergeSolids: 1
+merge1v.DropSmallSolids.VolumeThreshold: 500
+
+merge2v.exec.op: DropSmallSolids
+merge2v.DropSmallSolids.MergeSolids: 1
+merge2v.DropSmallSolids.VolumeThreshold: 1000

@@ -1,0 +1,48 @@
+DBRep_DrawableShape
+
+CASCADE Topology V3, (c) Open Cascade
+Locations 0
+Curve2ds 0
+Curves 2
+2 0 250 0 0 0 -1 1 0 0 0 -1 0 250
+1 -4.5924254968025744e-14 500 0 9.1848509936051484e-17 -1 0 
+Polygon3D 0
+PolygonOnTriangulations 0
+Surfaces 0
+Triangulations 0
+
+TShapes 5
+Ve
+1.00000007654042e-07
+7.65404249778505e-15 0 0
+0 0
+
+0101101
+*
+Ve
+1e-07
+-4.59242549680257e-14 500 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  1 0 1.5707963267949 4.71238898038469
+0
+
+0101000
++5 0 -4 0 *
+Ed
+ 1e-07 1 1 0
+1  2 0 0 500
+0
+
+0101000
++4 0 -5 0 *
+Wi
+
+1101100
++3 0 +2 0 *
+
++1 0 

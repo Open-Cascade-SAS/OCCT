@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document format="XmlXCAF" xmlns="http://www.opencascade.org/OCAF/XML" xmlns:xcaf="http://www.opencascade.org/OCAF/XML/XCAF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opencascade.org/OCAF/XML">
+ <info date="2023-01-16" schemav="0" DocVersion="12" objnb="31">
+  <iitem>Copyright: Open Cascade, 2001-2002</iitem>
+  <iitem>REFERENCE_COUNTER: 0</iitem>
+  <iitem>MODIFICATION_COUNTER: 1</iitem>
+ </info>
+ <comments/>
+ <label tag="0">
+  <TDataStd_TreeNode id="1" treeid="efd212eb-6dfd-11d4-b9c8-0060b0ee281b" children="2 "/>
+  <label tag="1">
+   <XCAFDoc_DocumentTool id="3"/>
+   <TDataStd_TreeNode id="2" treeid="efd212eb-6dfd-11d4-b9c8-0060b0ee281b"/>
+   <label tag="1">
+    <TDataStd_Name id="4" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Shapes</TDataStd_Name>
+    <XCAFDoc_ShapeTool id="5"/>
+    <TDF_TagSource id="6">2</TDF_TagSource>
+    <label tag="1">
+     <xcaf:Location id="7">
+      <location locId="1"/>
+     </xcaf:Location>
+     <TDataStd_TreeNode id="8" treeid="5b896afe-3adf-11d4-b9b7-0060b0ee281b"/>
+     <TDataStd_Name id="9" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">=&gt;[0:1:1:2]</TDataStd_Name>
+     <TDataStd_TreeNode id="10" treeid="efd212e4-6dfd-11d4-b9c8-0060b0ee281b"/>
+    </label>
+    <label tag="2">
+     <TNaming_NamedShape id="11" evolution="primitive">
+      <olds/>
+      <news>
+       <shape tshape="+9" index="1"/>
+      </news>
+     </TNaming_NamedShape>
+     <TDataStd_Name id="12" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">SOLID</TDataStd_Name>
+     <TDataStd_TreeNode id="13" treeid="5b896afe-3adf-11d4-b9b7-0060b0ee281b" children="8 "/>
+    </label>
+   </label>
+   <label tag="2">
+    <TDataStd_Name id="14" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Colors</TDataStd_Name>
+    <XCAFDoc_ColorTool id="15"/>
+    <TDF_TagSource id="16">1</TDF_TagSource>
+    <label tag="1">
+     <xcaf:Color id="17">407</xcaf:Color>
+     <TDataStd_Name id="18" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">RED (#FF0000FF)</TDataStd_Name>
+     <TDataStd_TreeNode id="19" treeid="efd212e4-6dfd-11d4-b9c8-0060b0ee281b" children="10 "/>
+    </label>
+   </label>
+   <label tag="3">
+    <TDataStd_Name id="20" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Layers</TDataStd_Name>
+    <XCAFDoc_LayerTool id="21"/>
+   </label>
+   <label tag="4">
+    <TDataStd_Name id="22" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">D&amp;GTs</TDataStd_Name>
+    <XCAFDoc_DimTolTool id="23"/>
+   </label>
+   <label tag="5">
+    <TDataStd_Name id="24" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Materials</TDataStd_Name>
+    <XCAFDoc_MaterialTool id="25"/>
+   </label>
+   <label tag="7">
+    <TDataStd_Name id="26" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Views</TDataStd_Name>
+    <XCAFDoc_ViewTool id="27"/>
+   </label>
+   <label tag="8">
+    <TDataStd_Name id="28" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Clipping Planes</TDataStd_Name>
+    <XCAFDoc_ClippingPlaneTool id="29"/>
+   </label>
+   <label tag="9">
+    <TDataStd_Name id="30" nameguid="2a96b608-ec8b-11d0-bee7-080009dc3333">Notes</TDataStd_Name>
+    <XCAFDoc_NotesTool id="31"/>
+   </label>
+  </label>
+ </label>
+ <shapes>
+CASCADE Topology V3, (c) Open Cascade
+Locations 2
+1
+              1               0               0 -2481.14575195312 
+              0               1               0 4128.3408203125 
+              0               0               1               0 
+2  1 -1 0
+Curve2ds 4
+1 6.2831853071795862 0 0 1 
+1 0 0 0 1 
+1 0 -1.5707963267948966 1 0 
+1 0 1.5707963267948966 1 0 
+Curves 1
+8 4.7123889803846897 7.8539816339744828
+2 -2481.145751953125 4128.3408203125 0 0 -1 0 1 0 0 -0 0 1 251.119140625
+Polygon3D 0
+PolygonOnTriangulations 0
+Surfaces 1
+4 -2481.145751953125 4128.3408203125 0 0 0 1 1 0 0 0 1 0 251.119140625
+Triangulations 0
+
+TShapes 9
+Ve
+1e-07
+-2481.14575195312 4128.3408203125 -251.119140625
+0 0
+
+0101101
+*
+Ve
+1e-07
+-2481.14575195312 4128.3408203125 251.119140625
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  1 0 -1.5707963267949 1.5707963267949
+3  1 2CN 1 0 -1.5707963267949 1.5707963267949
+0
+
+0101000
++9 0 -8 0 *
+Ed
+ 1e-07 1 1 1
+2  3 1 0 0 6.28318530717959
+0
+
+0101000
++9 0 -9 0 *
+Ed
+ 1e-07 1 1 1
+2  4 1 0 0 6.28318530717959
+0
+
+0101000
++8 0 -8 0 *
+Wi
+
+0101100
+-7 0 +6 0 +7 0 -5 0 *
+Fa
+1  1e-07 1 0
+
+0111000
++4 0 *
+Sh
+
+0101100
++3 2 *
+So
+
+1100000
++2 0 *
+
+</shapes>
+</document>

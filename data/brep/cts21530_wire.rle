@@ -1,0 +1,45 @@
+DBRep_DrawableShape
+
+
+CASCADE Topology V1, (c) Matra-Datavision
+Locations 1
+1
+              1               0               0               0 
+              0               1               0               0 
+              0               0               1               0 
+Curve2ds 0
+Curves 1
+1 400 37.671295166015625 145.89041137695312 0 0.58234673404969717 0.81294051525413058 
+Polygon3D 0
+PolygonOnTriangulations 0
+Surfaces 0
+Triangulations 0
+
+TShapes 4
+Ve
+1e-07
+400 37.6712951660156 145.890411376953
+0 0
+
+0101100
+*
+Ve
+1e-07
+400 292.808258056641 502.054809570312
+0 0
+
+0101100
+*
+Ed
+ 1e-07 1 1 0
+1  1 0 0 438.118646457201
+0
+
+0101000
++4 0 -3 0 *
+Wi
+
+0101000
++2 0 *
+
++1 1 

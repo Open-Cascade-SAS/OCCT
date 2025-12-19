@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document format="XmlOcaf" xmlns="http://www.opencascade.org/OCAF/XML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opencascade.org/OCAF/XML D:\OCC653\ros\src\XmlOcafResource/XmlOcaf.xsd">
+ <info date="2013-03-27" schemav="0" DocVersion="6" objnb="8">
+  <iitem>Copyright: Open Cascade, 2001-2002</iitem>
+  <iitem>REFERENCE_COUNTER: 0</iitem>
+  <iitem>MODIFICATION_COUNTER: -1</iitem>
+ </info>
+ <comments/>
+ <label tag="0">
+  <TDataStd_Name id="1">DD</TDataStd_Name>
+  <label tag="1">
+   <TDataStd_ExtStringArray id="2" last="3" delta="0">
+    <string>Hello</string>
+    <string>"Gr&#xfc;n"&amp;"Rot"</string>
+    <string>Me</string>
+   </TDataStd_ExtStringArray>
+   <TDataStd_Name id="3">"Gr&#xfc;n"&amp;"Rot"</TDataStd_Name>
+   <label tag="1">
+    <TDataStd_Name id="4">Shapes</TDataStd_Name>
+   </label>
+   <label tag="2">
+    <TDataStd_Name id="5">Colors</TDataStd_Name>
+   </label>
+   <label tag="3">
+    <TDataStd_Name id="6">Layers</TDataStd_Name>
+   </label>
+   <label tag="4">
+    <TDataStd_Name id="7">D&amp;GTs</TDataStd_Name>
+   </label>
+   <label tag="5">
+    <TDataStd_Name id="8">Materials</TDataStd_Name>
+   </label>
+  </label>
+ </label>
+ <shapes/>
+</document>
