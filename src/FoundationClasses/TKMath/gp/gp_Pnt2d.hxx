@@ -55,7 +55,7 @@ public:
   //! theIndex = 1 => X is modified
   //! theIndex = 2 => Y is modified
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     coord.SetCoord(theIndex, theXi);
   }
@@ -79,7 +79,10 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this point returns its two coordinates as a number pair.
   constexpr void Coord(Standard_Real& theXp, Standard_Real& theYp) const noexcept

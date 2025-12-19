@@ -54,18 +54,18 @@ public:
   //! Creates a line passing through point theP and parallel to
   //! vector theV (theP and theV are, respectively, the origin and
   //! the unit vector of the positioning axis of the line).
-  gp_Lin(const gp_Pnt& theP, const gp_Dir& theV)
+  constexpr gp_Lin(const gp_Pnt& theP, const gp_Dir& theV) noexcept
       : pos(theP, theV)
   {
   }
 
-  void Reverse() { pos.Reverse(); }
+  constexpr void Reverse() noexcept { pos.Reverse(); }
 
   //! Reverses the direction of the line.
   //! Note:
   //! -   Reverse assigns the result to this line, while
   //! -   Reversed creates a new one.
-  Standard_NODISCARD gp_Lin Reversed() const
+  Standard_NODISCARD constexpr gp_Lin Reversed() const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Reverse();
@@ -190,17 +190,21 @@ public:
 
   //! Translates a line in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Lin Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Lin Translated(const gp_Vec& theV) const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Translate(theV);
     return aL;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a line from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Lin Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Lin Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Translate(gp_Vec(theP1, theP2));

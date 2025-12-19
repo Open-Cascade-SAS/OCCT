@@ -67,10 +67,21 @@ public:
   //! theIndex = 2 => Y is modified
   //! theIndex = 3 => Z is modified
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    (&x)[theIndex - 1] = theXi;
+    if (theIndex == 1)
+    {
+      x = theXi;
+    }
+    else if (theIndex == 2)
+    {
+      y = theXi;
+    }
+    else
+    {
+      z = theXi;
+    }
   }
 
   //! Assigns the given value to the X coordinate
@@ -88,16 +99,32 @@ public:
   //! theIndex = 3 => Z is returned
   //!
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
-  Standard_Real Coord(const Standard_Integer theIndex) const
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    else if (theIndex == 2)
+    {
+      return y;
+    }
+    return z;
   }
 
-  Standard_Real& ChangeCoord(const Standard_Integer theIndex)
+  constexpr Standard_Real& ChangeCoord(const Standard_Integer theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3, NULL);
-    return (&x)[theIndex - 1];
+    if (theIndex == 1)
+    {
+      return x;
+    }
+    else if (theIndex == 2)
+    {
+      return y;
+    }
+    return z;
   }
 
   constexpr void Coord(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept
@@ -281,9 +308,9 @@ public:
   constexpr void operator*=(const gp_XYZ& theOther) noexcept { Multiply(theOther); }
 
   //! <me> = theMatrix * <me>
-  void Multiply(const gp_Mat& theMatrix) noexcept;
+  constexpr void Multiply(const gp_Mat& theMatrix) noexcept;
 
-  void operator*=(const gp_Mat& theMatrix) noexcept { Multiply(theMatrix); }
+  constexpr void operator*=(const gp_Mat& theMatrix) noexcept { Multiply(theMatrix); }
 
   //! @code
   //! New.X() = <me>.X() * theScalar;
@@ -311,7 +338,7 @@ public:
   }
 
   //! New = theMatrix * <me>
-  Standard_NODISCARD gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
+  Standard_NODISCARD constexpr gp_XYZ Multiplied(const gp_Mat& theMatrix) const noexcept
   {
     // Direct access to matrix data for optimal performance (gp_XYZ is friend of gp_Mat)
     return gp_XYZ(theMatrix.myMat[0][0] * x + theMatrix.myMat[0][1] * y + theMatrix.myMat[0][2] * z,
@@ -320,7 +347,7 @@ public:
                     + theMatrix.myMat[2][2] * z);
   }
 
-  Standard_NODISCARD gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
+  Standard_NODISCARD constexpr gp_XYZ operator*(const gp_Mat& theMatrix) const noexcept
   {
     return Multiplied(theMatrix);
   }
@@ -553,7 +580,7 @@ inline constexpr Standard_Real gp_XYZ::DotCross(const gp_XYZ& theCoord1,
 
 //=================================================================================================
 
-inline void gp_XYZ::Multiply(const gp_Mat& theMatrix) noexcept
+inline constexpr void gp_XYZ::Multiply(const gp_Mat& theMatrix) noexcept
 {
   // Cache original coordinates to avoid aliasing issues
   const Standard_Real aOrigX = x;
@@ -585,7 +612,7 @@ inline void gp_XYZ::Normalize()
 // function : operator*
 // purpose :
 //=======================================================================
-inline gp_XYZ operator*(const gp_Mat& theMatrix, const gp_XYZ& theCoord1) noexcept
+inline constexpr gp_XYZ operator*(const gp_Mat& theMatrix, const gp_XYZ& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theMatrix);
 }

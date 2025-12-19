@@ -69,7 +69,7 @@ public:
   //! theRaises ConstructionError
   //! * if theRadius is lower than 0.0
   //! * std::abs(theAng) < Resolution from gp or std::abs(theAng) >= (PI/2) - Resolution.
-  gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
+  constexpr gp_Cone(const gp_Ax3& theA3, const Standard_Real theAng, const Standard_Real theRadius);
 
   //! Changes the symmetry axis of the cone. Raises ConstructionError
   //! the direction of theA1 is parallel to the "XDirection"
@@ -208,17 +208,21 @@ public:
 
   //! Translates a cone in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Cone Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Vec& theV) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theV);
     return aCone;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a cone from the point P1 to the point P2.
-  Standard_NODISCARD gp_Cone Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Cone Translated(const gp_Pnt& theP1,
+                                                  const gp_Pnt& theP2) const noexcept
   {
     gp_Cone aCone = *this;
     aCone.pos.Translate(theP1, theP2);
@@ -233,15 +237,16 @@ private:
 
 //=================================================================================================
 
-inline gp_Cone::gp_Cone(const gp_Ax3&       theA3,
-                        const Standard_Real theAng,
-                        const Standard_Real theRadius)
+inline constexpr gp_Cone::gp_Cone(const gp_Ax3&       theA3,
+                                  const Standard_Real theAng,
+                                  const Standard_Real theRadius)
     : pos(theA3),
       radius(theRadius),
       semiAngle(theAng)
 {
-  Standard_ConstructionError_Raise_if(theRadius < 0. || std::abs(theAng) <= gp::Resolution()
-                                        || M_PI * 0.5 - std::abs(theAng) <= gp::Resolution(),
+  [[maybe_unused]] const Standard_Real anAbsAng = theAng < 0. ? -theAng : theAng;
+  Standard_ConstructionError_Raise_if(theRadius < 0. || anAbsAng <= gp::Resolution()
+                                        || M_PI * 0.5 - anAbsAng <= gp::Resolution(),
                                       "gp_Cone() - invalid construction parameters");
 }
 

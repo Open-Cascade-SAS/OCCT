@@ -83,7 +83,7 @@ public:
 
   //! Makes the transformation into a symmetrical transformation.
   //! theP is the center of the symmetry.
-  void SetMirror(const gp_Pnt& theP) noexcept;
+  constexpr void SetMirror(const gp_Pnt& theP) noexcept;
 
   //! Makes the transformation into a symmetrical transformation.
   //! theA1 is the center of the axial symmetry.
@@ -243,7 +243,7 @@ public:
 
   //! Returns the vectorial part of the transformation. It is
   //! a 3*3 matrix which includes the scale factor.
-  Standard_EXPORT gp_Mat VectorialPart() const;
+  constexpr gp_Mat VectorialPart() const noexcept;
 
   //! Computes the homogeneous vectorial part of the transformation.
   //! It is a 3*3 matrix which doesn't include the scale factor.
@@ -257,7 +257,7 @@ public:
   //! It is a 3 rows * 4 columns matrix.
   //! This coefficient includes the scale factor.
   //! Raises OutOfRanged if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
 
   Standard_EXPORT void Invert();
 
@@ -318,10 +318,12 @@ public:
     return aT;
   }
 
-  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const noexcept;
+  constexpr void Transforms(Standard_Real& theX,
+                            Standard_Real& theY,
+                            Standard_Real& theZ) const noexcept;
 
   //! Transformation of a triplet XYZ with a Trsf
-  void Transforms(gp_XYZ& theCoord) const noexcept;
+  constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Convert transformation to 4x4 matrix.
   template <class T>
@@ -387,7 +389,7 @@ inline constexpr gp_Trsf::gp_Trsf() noexcept
 
 //=================================================================================================
 
-inline void gp_Trsf::SetMirror(const gp_Pnt& theP) noexcept
+inline constexpr void gp_Trsf::SetMirror(const gp_Pnt& theP) noexcept
 {
   shape = gp_PntMirror;
   scale = -1.0;
@@ -418,13 +420,14 @@ inline constexpr void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt&
 
 //=================================================================================================
 
-inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
-                                    const Standard_Integer theCol) const
+inline constexpr Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
+                                              const Standard_Integer theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol < 4)
   {
-    return scale * matrix.Value(theRow, theCol);
+    // Access matrix data directly to avoid non-constexpr Value() call
+    return scale * matrix.myMat[theRow - 1][theCol - 1];
   }
   else
   {
@@ -434,9 +437,9 @@ inline Standard_Real gp_Trsf::Value(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline void gp_Trsf::Transforms(Standard_Real& theX,
-                                Standard_Real& theY,
-                                Standard_Real& theZ) const noexcept
+inline constexpr void gp_Trsf::Transforms(Standard_Real& theX,
+                                          Standard_Real& theY,
+                                          Standard_Real& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);
@@ -452,7 +455,7 @@ inline void gp_Trsf::Transforms(Standard_Real& theX,
 
 //=================================================================================================
 
-inline void gp_Trsf::Transforms(gp_XYZ& theCoord) const noexcept
+inline constexpr void gp_Trsf::Transforms(gp_XYZ& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (scale != 1.0)
@@ -460,6 +463,27 @@ inline void gp_Trsf::Transforms(gp_XYZ& theCoord) const noexcept
     theCoord.Multiply(scale);
   }
   theCoord.Add(loc);
+}
+
+//=================================================================================================
+
+inline constexpr gp_Mat gp_Trsf::VectorialPart() const noexcept
+{
+  if (scale == 1.0)
+  {
+    return matrix;
+  }
+  gp_Mat M = matrix;
+  if (shape == gp_Scale || shape == gp_PntMirror)
+  {
+    // Access matrix data directly for constexpr (gp_Trsf is friend of gp_Mat)
+    M.SetDiagonal(scale * M.myMat[0][0], scale * M.myMat[1][1], scale * M.myMat[2][2]);
+  }
+  else
+  {
+    M.Multiply(scale);
+  }
+  return M;
 }
 
 #endif // _gp_Trsf_HeaderFile

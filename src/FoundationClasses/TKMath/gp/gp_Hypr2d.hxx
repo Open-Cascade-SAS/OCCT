@@ -84,14 +84,14 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  gp_Hypr2d(const gp_Ax2d&         theMajorAxis,
-            const Standard_Real    theMajorRadius,
-            const Standard_Real    theMinorRadius,
-            const Standard_Boolean theIsSense = Standard_True)
-      : majorRadius(theMajorRadius),
+  constexpr gp_Hypr2d(const gp_Ax2d&         theMajorAxis,
+                      const Standard_Real    theMajorRadius,
+                      const Standard_Real    theMinorRadius,
+                      const Standard_Boolean theIsSense = Standard_True)
+      : pos(theMajorAxis, theIsSense),
+        majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
   {
-    pos = gp_Ax22d(theMajorAxis, theIsSense);
     Standard_ConstructionError_Raise_if(theMinorRadius < 0.0 || theMajorRadius < 0.0,
                                         "gp_Hypr2d() - invalid construction parameters");
   }
@@ -111,9 +111,9 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  gp_Hypr2d(const gp_Ax22d&     theA,
-            const Standard_Real theMajorRadius,
-            const Standard_Real theMinorRadius)
+  constexpr gp_Hypr2d(const gp_Ax22d&     theA,
+                      const Standard_Real theMajorRadius,
+                      const Standard_Real theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -156,11 +156,11 @@ public:
 
   //! Changes the major axis of the hyperbola. The minor axis is
   //! recomputed and the location of the hyperbola too.
-  void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
+  constexpr void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Changes the minor axis of the hyperbola.The minor axis is
   //! recomputed and the location of the hyperbola too.
-  void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
+  constexpr void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
 
   //! In the local coordinate system of the hyperbola the equation of
   //! the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0 and the
@@ -371,7 +371,7 @@ public:
 
   //! Translates an hyperbola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Hypr2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Hypr2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Hypr2d aH = *this;
     aH.pos.Translate(theV);
@@ -384,8 +384,8 @@ public:
   }
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Hypr2d Translated(const gp_Pnt2d& theP1,
-                                          const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Hypr2d Translated(const gp_Pnt2d& theP1,
+                                                    const gp_Pnt2d& theP2) const noexcept
   {
     gp_Hypr2d aH = *this;
     aH.pos.Translate(theP1, theP2);

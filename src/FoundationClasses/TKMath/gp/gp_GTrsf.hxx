@@ -140,7 +140,7 @@ public:
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-  Standard_Boolean IsNegative() const { return matrix.Determinant() < 0.0; }
+  constexpr Standard_Boolean IsNegative() const noexcept { return matrix.Determinant() < 0.0; }
 
   //! Returns true if this transformation is singular (and
   //! therefore, cannot be inverted).
@@ -150,7 +150,7 @@ public:
   //! than or equal to gp::Resolution().
   //! Warning
   //! If this transformation is singular, it cannot be inverted.
-  Standard_Boolean IsSingular() const { return matrix.IsSingular(); }
+  constexpr Standard_Boolean IsSingular() const noexcept { return matrix.IsSingular(); }
 
   //! Returns the nature of the transformation. It can be an
   //! identity transformation, a rotation, a translation, a mirror
@@ -178,7 +178,7 @@ public:
 
   //! Returns the coefficients of the global matrix of transformation.
   //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
+  constexpr Standard_Real Value(const Standard_Integer theRow, const Standard_Integer theCol) const;
 
   Standard_Real operator()(const Standard_Integer theRow, const Standard_Integer theCol) const
   {
@@ -254,10 +254,12 @@ public:
     return aT;
   }
 
-  void Transforms(gp_XYZ& theCoord) const;
+  constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Transforms a triplet XYZ with a GTrsf.
-  void Transforms(Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const;
+  constexpr void Transforms(Standard_Real& theX,
+                            Standard_Real& theY,
+                            Standard_Real& theZ) const noexcept;
 
   gp_Trsf Trsf() const;
 
@@ -379,8 +381,8 @@ inline void gp_GTrsf::SetValue(const Standard_Integer theRow,
 
 //=================================================================================================
 
-inline Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
-                                     const Standard_Integer theCol) const
+inline constexpr Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
+                                               const Standard_Integer theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol == 4)
@@ -389,14 +391,14 @@ inline Standard_Real gp_GTrsf::Value(const Standard_Integer theRow,
   }
   if (shape == gp_Other)
   {
-    return matrix.Value(theRow, theCol);
+    return matrix.myMat[theRow - 1][theCol - 1];
   }
-  return scale * matrix.Value(theRow, theCol);
+  return scale * matrix.myMat[theRow - 1][theCol - 1];
 }
 
 //=================================================================================================
 
-inline void gp_GTrsf::Transforms(gp_XYZ& theCoord) const
+inline constexpr void gp_GTrsf::Transforms(gp_XYZ& theCoord) const noexcept
 {
   theCoord.Multiply(matrix);
   if (!(shape == gp_Other) && !(scale == 1.0))
@@ -408,9 +410,9 @@ inline void gp_GTrsf::Transforms(gp_XYZ& theCoord) const
 
 //=================================================================================================
 
-inline void gp_GTrsf::Transforms(Standard_Real& theX,
-                                 Standard_Real& theY,
-                                 Standard_Real& theZ) const
+inline constexpr void gp_GTrsf::Transforms(Standard_Real& theX,
+                                           Standard_Real& theY,
+                                           Standard_Real& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

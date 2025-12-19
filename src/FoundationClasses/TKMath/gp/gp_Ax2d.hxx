@@ -212,10 +212,11 @@ public:
   }
 
   //! Translates an axis placement from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Ax2d Translated(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  Standard_NODISCARD constexpr gp_Ax2d Translated(const gp_Pnt2d& theP1,
+                                                  const gp_Pnt2d& theP2) const noexcept
   {
     gp_Ax2d anA = *this;
-    (anA.loc).Translate(gp_Vec2d(theP1, theP2));
+    (anA.loc).Translate(theP1, theP2);
     return anA;
   }
 

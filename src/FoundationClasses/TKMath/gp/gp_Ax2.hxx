@@ -317,7 +317,7 @@ public:
     return aTemp;
   }
 
-  void Scale(const gp_Pnt& theP, const Standard_Real theS)
+  constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept
   {
     gp_Pnt aTemp = axis.Location();
     aTemp.Scale(theP, theS);
@@ -336,7 +336,8 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  Standard_NODISCARD gp_Ax2 Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+  Standard_NODISCARD constexpr gp_Ax2 Scaled(const gp_Pnt&       theP,
+                                             const Standard_Real theS) const noexcept
   {
     gp_Ax2 aTemp = *this;
     aTemp.Scale(theP, theS);
@@ -368,7 +369,7 @@ public:
 
   //! Translates an axis plaxement in the direction of the vector <theV>.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax2 Translated(const gp_Vec& theV) const
+  Standard_NODISCARD constexpr gp_Ax2 Translated(const gp_Vec& theV) const noexcept
   {
     gp_Ax2 aTemp = *this;
     aTemp.Translate(theV);
@@ -381,7 +382,8 @@ public:
   }
 
   //! Translates an axis placement from the point <theP1> to the point <theP2>.
-  Standard_NODISCARD gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Ax2 Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Ax2 aTemp = *this;
     aTemp.Translate(theP1, theP2);

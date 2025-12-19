@@ -65,15 +65,18 @@ public:
 
   //! Normalizes the vector theV and creates a Direction. Raises ConstructionError if
   //! theV.Magnitude() <= Resolution from gp.
-  gp_Dir2d(const gp_Vec2d& theV);
+  //! @note Constexpr-compatible when input is already normalized.
+  constexpr gp_Dir2d(const gp_Vec2d& theV);
 
   //! Creates a Direction from a doublet of coordinates. Raises ConstructionError if
   //! theCoord.Modulus() <= Resolution from gp.
-  gp_Dir2d(const gp_XY& theCoord);
+  //! @note Constexpr-compatible when input is already normalized.
+  constexpr gp_Dir2d(const gp_XY& theCoord);
 
   //! Creates a Direction with its 2 cartesian coordinates. Raises ConstructionError if
   //! std::sqrt(theXv*theXv + theYv*theYv) <= Resolution from gp.
-  gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv);
+  //! @note Constexpr-compatible when input is already normalized.
+  constexpr gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv);
 
   //! For this unit vector, assigns:
   //! the value theXi to:
@@ -91,7 +94,8 @@ public:
   //! value theXi and the other coordinate of this vector that
   //! was not directly modified.
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi);
+  //! @note Constexpr-compatible when result is already normalized.
+  constexpr void SetCoord(const Standard_Integer theIndex, const Standard_Real theXi);
 
   //! For this unit vector, assigns:
   //! -   the values theXv and theYv to its two coordinates,
@@ -107,7 +111,8 @@ public:
   //! value Xi and the other coordinate of this vector that
   //! was not directly modified.
   //! Raises OutOfRange if theIndex != {1, 2}.
-  void SetCoord(const Standard_Real theXv, const Standard_Real theYv);
+  //! @note Constexpr-compatible when input is already normalized.
+  constexpr void SetCoord(const Standard_Real theXv, const Standard_Real theYv);
 
   //! Assigns the given value to the X coordinate of this unit vector,
   //! and then normalizes it.
@@ -121,7 +126,8 @@ public:
   //! -   the modulus of the number pair formed from the new
   //! X or Y coordinate and the other coordinate of this
   //! vector that was not directly modified.
-  void SetX(const Standard_Real theX);
+  //! @note Constexpr-compatible when result is already normalized.
+  constexpr void SetX(const Standard_Real theX);
 
   //! Assigns the given value to the Y coordinate of this unit vector,
   //! and then normalizes it.
@@ -135,7 +141,8 @@ public:
   //! -   the modulus of the number pair formed from the new
   //! X or Y coordinate and the other coordinate of this
   //! vector that was not directly modified.
-  void SetY(const Standard_Real theY);
+  //! @note Constexpr-compatible when result is already normalized.
+  constexpr void SetY(const Standard_Real theY);
 
   //! Assigns:
   //! -   the two coordinates of theCoord to this unit vector,
@@ -150,13 +157,17 @@ public:
   //! -   the modulus of the number pair formed from the new
   //! X or Y coordinate and the other coordinate of this
   //! vector that was not directly modified.
-  void SetXY(const gp_XY& theCoord);
+  //! @note Constexpr-compatible when input is already normalized.
+  constexpr void SetXY(const gp_XY& theCoord);
 
   //! For this unit vector returns the coordinate of range theIndex :
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raises OutOfRange if theIndex != {1, 2}.
-  Standard_Real Coord(const Standard_Integer theIndex) const { return coord.Coord(theIndex); }
+  constexpr Standard_Real Coord(const Standard_Integer theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this unit vector returns its two coordinates theXv and theYv.
   //! Raises OutOfRange if theIndex != {1, 2}.
@@ -288,111 +299,93 @@ private:
 
 //=================================================================================================
 
-inline gp_Dir2d::gp_Dir2d(const gp_Vec2d& theV)
+inline constexpr gp_Dir2d::gp_Dir2d(const gp_Vec2d& theV)
+    : gp_Dir2d(theV.XY())
 {
-  const gp_XY&  aXY = theV.XY();
-  Standard_Real aX  = aXY.X();
-  Standard_Real anY = aXY.Y();
-  Standard_Real aD  = sqrt(aX * aX + anY * anY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d() - input vector has zero norm");
-  coord.SetX(aX / aD);
-  coord.SetY(anY / aD);
 }
 
 //=================================================================================================
 
-inline gp_Dir2d::gp_Dir2d(const gp_XY& theXY)
+inline constexpr gp_Dir2d::gp_Dir2d(const gp_XY& theXY)
+    : gp_Dir2d(theXY.X(), theXY.Y())
 {
-  Standard_Real aX  = theXY.X();
-  Standard_Real anY = theXY.Y();
-  Standard_Real aD  = sqrt(aX * aX + anY * anY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d() - input vector has zero norm");
-  coord.SetX(aX / aD);
-  coord.SetY(anY / aD);
 }
 
 //=================================================================================================
 
-inline gp_Dir2d::gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv)
+inline constexpr gp_Dir2d::gp_Dir2d(const Standard_Real theXv, const Standard_Real theYv)
 {
-  Standard_Real aD = sqrt(theXv * theXv + theYv * theYv);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
+  const Standard_Real aSqMod = theXv * theXv + theYv * theYv;
+
+  // Fast path: already normalized - fully constexpr
+  if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
+  {
+    coord.SetCoord(theXv, theYv);
+    return;
+  }
+
+  // Slow path: runtime only (sqrt not constexpr - compile error if reached in constexpr context)
+  Standard_ConstructionError_Raise_if(aSqMod <= gp::Resolution() * gp::Resolution(),
                                       "gp_Dir2d() - input vector has zero norm");
-  coord.SetX(theXv / aD);
-  coord.SetY(theYv / aD);
+  const Standard_Real aD = sqrt(aSqMod);
+  coord.SetCoord(theXv / aD, theYv / aD);
 }
 
 //=================================================================================================
 
-inline void gp_Dir2d::SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
+inline constexpr void gp_Dir2d::SetCoord(const Standard_Integer theIndex, const Standard_Real theXi)
 {
-  Standard_Real aX  = coord.X();
-  Standard_Real anY = coord.Y();
   Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2,
                                "gp_Dir2d::SetCoord() - index is out of range [1, 2]");
   if (theIndex == 1)
   {
-    aX = theXi;
+    SetX(theXi);
   }
   else
   {
-    anY = theXi;
+    SetY(theXi);
   }
-  Standard_Real aD = sqrt(aX * aX + anY * anY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
+}
+
+//=================================================================================================
+
+inline constexpr void gp_Dir2d::SetCoord(const Standard_Real theXv, const Standard_Real theYv)
+{
+  const Standard_Real aSqMod = theXv * theXv + theYv * theYv;
+
+  // Fast path: already normalized - fully constexpr
+  if (aSqMod >= (1.0 - gp::Resolution()) && aSqMod <= (1.0 + gp::Resolution()))
+  {
+    coord.SetCoord(theXv, theYv);
+    return;
+  }
+
+  // Slow path: runtime only (sqrt not constexpr - compile error if reached in constexpr context)
+  Standard_ConstructionError_Raise_if(aSqMod <= gp::Resolution() * gp::Resolution(),
                                       "gp_Dir2d::SetCoord() - result vector has zero norm");
-  coord.SetX(aX / aD);
-  coord.SetY(anY / aD);
+  const Standard_Real aD = sqrt(aSqMod);
+  coord.SetCoord(theXv / aD, theYv / aD);
 }
 
 //=================================================================================================
 
-inline void gp_Dir2d::SetCoord(const Standard_Real theXv, const Standard_Real theYv)
+inline constexpr void gp_Dir2d::SetX(const Standard_Real theX)
 {
-  Standard_Real aD = sqrt(theXv * theXv + theYv * theYv);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d::SetCoord() - result vector has zero norm");
-  coord.SetX(theXv / aD);
-  coord.SetY(theYv / aD);
+  SetCoord(theX, coord.Y());
 }
 
 //=================================================================================================
 
-inline void gp_Dir2d::SetX(const Standard_Real theX)
+inline constexpr void gp_Dir2d::SetY(const Standard_Real theY)
 {
-  Standard_Real anY = coord.Y();
-  Standard_Real aD  = sqrt(theX * theX + anY * anY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d::SetX() - result vector has zero norm");
-  coord.SetX(theX / aD);
-  coord.SetY(anY / aD);
+  SetCoord(coord.X(), theY);
 }
 
 //=================================================================================================
 
-inline void gp_Dir2d::SetY(const Standard_Real theY)
+inline constexpr void gp_Dir2d::SetXY(const gp_XY& theXY)
 {
-  Standard_Real aX = coord.X();
-  Standard_Real aD = sqrt(aX * aX + theY * theY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d::SetY() - result vector has zero norm");
-  coord.SetX(aX / aD);
-  coord.SetY(theY / aD);
-}
-
-//=================================================================================================
-
-inline void gp_Dir2d::SetXY(const gp_XY& theXY)
-{
-  Standard_Real aX  = theXY.X();
-  Standard_Real anY = theXY.Y();
-  Standard_Real aD  = sqrt(aX * aX + anY * anY);
-  Standard_ConstructionError_Raise_if(aD <= gp::Resolution(),
-                                      "gp_Dir2d::SetZ() - result vector has zero norm");
-  coord.SetX(aX / aD);
-  coord.SetY(anY / aD);
+  SetCoord(theXY.X(), theXY.Y());
 }
 
 //=================================================================================================

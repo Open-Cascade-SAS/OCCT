@@ -72,9 +72,9 @@ public:
   //! It is not forbidden to create a torus with
   //! theMajorRadius = theMinorRadius = 0.0
   //! Raises ConstructionError if theMinorRadius < 0.0 or if theMajorRadius < 0.0
-  gp_Torus(const gp_Ax3&       theA3,
-           const Standard_Real theMajorRadius,
-           const Standard_Real theMinorRadius)
+  constexpr gp_Torus(const gp_Ax3&       theA3,
+                     const Standard_Real theMajorRadius,
+                     const Standard_Real theMinorRadius)
       : pos(theA3),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -229,17 +229,21 @@ public:
 
   //! Translates a torus in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Torus Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Torus Translated(const gp_Vec& theV) const noexcept
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theV);
     return aC;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a torus from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Torus Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Torus Translated(const gp_Pnt& theP1,
+                                                   const gp_Pnt& theP2) const noexcept
   {
     gp_Torus aC = *this;
     aC.pos.Translate(theP1, theP2);

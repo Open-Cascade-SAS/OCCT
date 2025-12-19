@@ -55,7 +55,7 @@ public:
   //! Warnings:
   //! It is not forbidden to create a sphere with null radius.
   //! Raises ConstructionError if theRadius < 0.0
-  gp_Sphere(const gp_Ax3& theA3, const Standard_Real theRadius)
+  constexpr gp_Sphere(const gp_Ax3& theA3, const Standard_Real theRadius)
       : pos(theA3),
         radius(theRadius)
   {
@@ -180,17 +180,21 @@ public:
 
   //! Translates a sphere in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Sphere Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Sphere Translated(const gp_Vec& theV) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theV);
     return aC;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { pos.Translate(theP1, theP2); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    pos.Translate(theP1, theP2);
+  }
 
   //! Translates a sphere from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Sphere Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Sphere Translated(const gp_Pnt& theP1,
+                                                    const gp_Pnt& theP2) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theP1, theP2);

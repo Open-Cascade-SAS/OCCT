@@ -61,14 +61,14 @@ public:
   //! It is possible to create an ellipse with
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
-  gp_Elips2d(const gp_Ax2d&         theMajorAxis,
-             const Standard_Real    theMajorRadius,
-             const Standard_Real    theMinorRadius,
-             const Standard_Boolean theIsSense = Standard_True)
-      : majorRadius(theMajorRadius),
+  constexpr gp_Elips2d(const gp_Ax2d&         theMajorAxis,
+                       const Standard_Real    theMajorRadius,
+                       const Standard_Real    theMinorRadius,
+                       const Standard_Boolean theIsSense = Standard_True)
+      : pos(theMajorAxis, theIsSense),
+        majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
   {
-    pos = gp_Ax22d(theMajorAxis, theIsSense);
     Standard_ConstructionError_Raise_if(theMinorRadius < 0.0 || theMajorRadius < theMinorRadius,
                                         "gp_Elips2d() - invalid construction parameters");
   }
@@ -88,9 +88,9 @@ public:
   //! It is possible to create an ellipse with
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
-  gp_Elips2d(const gp_Ax22d&     theA,
-             const Standard_Real theMajorRadius,
-             const Standard_Real theMinorRadius)
+  constexpr gp_Elips2d(const gp_Ax22d&     theA,
+                       const Standard_Real theMajorRadius,
+                       const Standard_Real theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -132,14 +132,14 @@ public:
   //! of the axis theA. The "Y Direction" is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
-  void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
+  constexpr void SetXAxis(const gp_Ax2d& theA) { pos.SetXAxis(theA); }
 
   //! Modifies this ellipse, by redefining its local coordinate system so that
   //! its origin and its "Y Direction" become those
   //! of the axis theA. The "X Direction" is then
   //! recomputed. The orientation of the local coordinate
   //! system is not modified.
-  void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
+  constexpr void SetYAxis(const gp_Ax2d& theA) { pos.SetYAxis(theA); }
 
   //! Computes the area of the ellipse.
   constexpr Standard_Real Area() const noexcept { return M_PI * majorRadius * minorRadius; }
@@ -268,7 +268,7 @@ public:
 
   //! Translates a ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Vec2d& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Elips2d Translated(const gp_Vec2d& theV) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theV);
@@ -281,8 +281,8 @@ public:
   }
 
   //! Translates a ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips2d Translated(const gp_Pnt2d& theP1,
-                                           const gp_Pnt2d& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Elips2d Translated(const gp_Pnt2d& theP1,
+                                                     const gp_Pnt2d& theP2) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theP1, theP2);

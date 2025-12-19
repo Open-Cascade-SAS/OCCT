@@ -66,9 +66,9 @@ public:
   //! It is not forbidden to create an ellipse with theMajorRadius =
   //! theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.
-  gp_Elips(const gp_Ax2&       theA2,
-           const Standard_Real theMajorRadius,
-           const Standard_Real theMinorRadius)
+  constexpr gp_Elips(const gp_Ax2&       theA2,
+                     const Standard_Real theMajorRadius,
+                     const Standard_Real theMinorRadius)
       : pos(theA2),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -240,7 +240,7 @@ public:
 
   //! Translates an ellipse in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Elips Translated(const gp_Vec& theV) const noexcept
+  Standard_NODISCARD constexpr gp_Elips Translated(const gp_Vec& theV) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theV);
@@ -253,7 +253,8 @@ public:
   }
 
   //! Translates an ellipse from the point theP1 to the point theP2.
-  Standard_NODISCARD gp_Elips Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  Standard_NODISCARD constexpr gp_Elips Translated(const gp_Pnt& theP1,
+                                                   const gp_Pnt& theP2) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theP1, theP2);

@@ -326,18 +326,22 @@ public:
 
   //! Translates an axis plaxement in the direction of the vector
   //! <theV>. The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax3 Translated(const gp_Vec& theV) const
+  Standard_NODISCARD constexpr gp_Ax3 Translated(const gp_Vec& theV) const noexcept
   {
     gp_Ax3 aTemp = *this;
     aTemp.Translate(theV);
     return aTemp;
   }
 
-  void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) { Translate(gp_Vec(theP1, theP2)); }
+  constexpr void Translate(const gp_Pnt& theP1, const gp_Pnt& theP2) noexcept
+  {
+    Translate(gp_Vec(theP1, theP2));
+  }
 
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
-  Standard_NODISCARD gp_Ax3 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const
+  Standard_NODISCARD constexpr gp_Ax3 Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     return Translated(gp_Vec(theP1, theP2));
   }
