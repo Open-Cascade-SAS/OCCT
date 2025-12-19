@@ -2,6 +2,7 @@
 add_executable(my_tests
   test_main.cpp
   Bugs_Regression_GTest.cxx
+  OCCT_Bugs_filling.cxx
 )
 
 # ============================================================
