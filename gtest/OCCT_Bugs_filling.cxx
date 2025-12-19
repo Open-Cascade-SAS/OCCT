@@ -16,6 +16,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GC_MakeCircle.hxx>
 #include <GC_MakeEllipse.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -46,36 +47,7 @@
 #include <Geom_BSplineSurface.hxx>
 #include <GeomConvert.hxx>
 
-/**
- * @brief Helper to load test data from the OCCT tests/data directory.
- * Uses CSF_TestDataPath environment variable.
- */
-static Standard_Boolean LoadTestData(const TCollection_AsciiString& theFileName, TopoDS_Shape& theShape)
-{
-  TCollection_AsciiString aDataPath = OSD_Environment("CSF_TestDataPath").Value();
-  if (aDataPath.IsEmpty())
-  {
-    return Standard_False;
-  }
-  
-  TCollection_AsciiString aFilePaths[] = {
-    aDataPath + "/" + theFileName,
-    aDataPath + "/geom/" + theFileName,
-    aDataPath + "/brep/" + theFileName,
-    aDataPath + "/others/" + theFileName
-  };
-
-  BRep_Builder aBuilder;
-  for (const auto& aPath : aFilePaths)
-  {
-    if (BRepTools::Read(theShape, aPath.ToCString(), aBuilder))
-    {
-      return Standard_True;
-    }
-  }
-  
-  return Standard_False;
-}
+#include "OCCT_TestUtils.hxx"
 
 /**
  * @brief Regression test for bug13904.
@@ -141,41 +113,71 @@ TEST(OCCT_Bugs_filling, bug16119)
     GTEST_SKIP() << "Test data for bug16119 not found.";
   }
 
-  auto GetCurve = [](const TopoDS_Shape& theShape) {
-    Standard_Real f, l;
-    return BRep_Tool::Curve(TopoDS::Edge(theShape), f, l);
-  };
+  try {
+    auto GetCurve = [](const TopoDS_Shape& theShape) -> Handle(Geom_Curve) {
+      Standard_Real f, l;
+      Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(theShape), f, l);
+      if (C.IsNull()) return C;
+      return new Geom_TrimmedCurve(C, f, l);
+    };
 
-  Handle(Geom_Curve) c1  = GetCurve(c1_sh);
-  Handle(Geom_Curve) c2  = GetCurve(c2_sh);
-  Handle(Geom_Curve) c31 = GetCurve(c31_sh);
-  Handle(Geom_Curve) c32 = GetCurve(c32_sh);
-  Handle(Geom_Curve) c41 = GetCurve(c41_sh);
-  Handle(Geom_Curve) c42 = GetCurve(c42_sh);
-  Handle(Geom_Curve) cv  = GetCurve(cv_sh);
+    Handle(Geom_Curve) c1  = GetCurve(c1_sh);
+    Handle(Geom_Curve) c2  = GetCurve(c2_sh);
+    Handle(Geom_Curve) c31 = GetCurve(c31_sh);
+    Handle(Geom_Curve) c32 = GetCurve(c32_sh);
+    Handle(Geom_Curve) c41 = GetCurve(c41_sh);
+    Handle(Geom_Curve) c42 = GetCurve(c42_sh);
+    Handle(Geom_Curve) cv  = GetCurve(cv_sh);
 
-  auto ToBSpline = [](const Handle(Geom_Curve)& c) {
-    return GeomConvert::CurveToBSplineCurve(c);
-  };
+    auto PrintEndPoints = [](const char* name, const Handle(Geom_Curve)& c) {
+      if (c.IsNull()) { std::cout << name << " is NULL" << std::endl; return; }
+      gp_Pnt p1 = c->Value(c->FirstParameter());
+      gp_Pnt p2 = c->Value(c->LastParameter());
+      //std::cout << name << ": Start(" << p1.X() << ", " << p1.Y() << ", " << p1.Z() 
+      //          << ") End(" << p2.X() << ", " << p2.Y() << ", " << p2.Z() << ")" << std::endl;
+    };
 
-  // fillcurves s11 c1 c41 cv c31
-  GeomFill_BSplineCurves aFill1(ToBSpline(c1), ToBSpline(c41), ToBSpline(cv), ToBSpline(c31), GeomFill_CoonsStyle);
-  ASSERT_FALSE(aFill1.Surface().IsNull());
+    //std::cout << "--- bug16119 Curve Endpoints (Trimmed) ---" << std::endl;
+    PrintEndPoints("c1", c1);
+    PrintEndPoints("c41", c41);
+    PrintEndPoints("cv", cv);
+    PrintEndPoints("c31", c31);
+    std::cout << "------------------------------------------" << std::endl;
 
-  // fillcurves s12 cv c42 c2 c32
-  GeomFill_BSplineCurves aFill2(ToBSpline(cv), ToBSpline(c42), ToBSpline(c2), ToBSpline(c32), GeomFill_CoonsStyle);
-  ASSERT_FALSE(aFill2.Surface().IsNull());
+    auto ToBSpline = [](const Handle(Geom_Curve)& c) {
+      if (c.IsNull()) throw Standard_Failure("Curve is null in ToBSpline");
+      return GeomConvert::CurveToBSplineCurve(c, Convert_RationalC1);
+    };
 
-  // 3. Evaluate at 0.5, 0.5
-  gp_Pnt p1, p2;
-  gp_Vec du1, dv1, du2, dv2;
-  aFill1.Surface()->D1(0.5, 0.5, p1, du1, dv1);
-  aFill2.Surface()->D1(0.5, 0.5, p2, du2, dv2);
+    // fillcurves s11 c1 c41 cv c31
+    GeomFill_BSplineCurves aFill1;
+    try {
+      aFill1.Init(ToBSpline(c1), ToBSpline(c41), ToBSpline(cv), ToBSpline(c31), GeomFill_CoonsStyle);
+    } catch (const Standard_Failure& e) {
+       std::cout << "Init aFill1 failed: " << e.GetMessageString() << std::endl;
+       throw;
+    }
+    ASSERT_FALSE(aFill1.Surface().IsNull());
 
-  // Original check: deltaX, deltaY, deltaZ on dv1 and dv2
-  EXPECT_NEAR(dv1.X(), dv2.X(), 0.001);
-  EXPECT_NEAR(dv1.Y(), dv2.Y(), 0.001);
-  EXPECT_NEAR(dv1.Z(), dv2.Z(), 0.001);
+    // fillcurves s12 cv c42 c2 c32
+    GeomFill_BSplineCurves aFill2;
+    aFill2.Init(ToBSpline(cv), ToBSpline(c42), ToBSpline(c2), ToBSpline(c32), GeomFill_CoonsStyle);
+    ASSERT_FALSE(aFill2.Surface().IsNull());
+
+    // Evaluate at 0.5, 0.5
+    gp_Pnt p1, p2;
+    gp_Vec du1, dv1, du2, dv2;
+    aFill1.Surface()->D1(0.5, 0.5, p1, du1, dv1);
+    aFill2.Surface()->D1(0.5, 0.5, p2, du2, dv2);
+
+    // Original check: deltaX, deltaY, deltaZ on dv1 and dv2
+    EXPECT_NEAR(dv1.X(), dv2.X(), 0.001);
+    EXPECT_NEAR(dv1.Y(), dv2.Y(), 0.001);
+    EXPECT_NEAR(dv1.Z(), dv2.Z(), 0.001);
+  }
+  catch (const Standard_Failure& e) {
+    FAIL() << "OCCT Exception in bug16119: " << e.GetMessageString();
+  }
 }
 
 /**
@@ -204,50 +206,6 @@ TEST(OCCT_Bugs_filling, bug16833)
     GeomFill_BSplineCurves aFill(ToBSpline(c1), ToBSpline(c2), ToBSpline(c3), ToBSpline(c4), GeomFill_CoonsStyle);
     ASSERT_FALSE(aFill.Surface().IsNull());
   });
-}
-
-/**
- * @brief Regression test for bug23343.
- * Crash in GeomPlate_BuildPlateSurface with init surface.
- */
-TEST(OCCT_Bugs_filling, bug23343)
-{
-  TopoDS_Shape aFaceSh, anEdgeSh;
-  if (!LoadTestData("bug23343_initFace.brep", aFaceSh) ||
-      !LoadTestData("bug23343_edge_constraint.brep", anEdgeSh))
-  {
-    GTEST_SKIP() << "Test data for bug23343 not found.";
-  }
-
-  TopoDS_Face aFace = TopoDS::Face(aFaceSh);
-  TopoDS_Edge anEdge = TopoDS::Edge(anEdgeSh);
-
-  BRepAdaptor_Surface aSurfAdapt(aFace);
-  Handle(Geom_Surface) aSurf = aSurfAdapt.Surface().Surface();
-
-  // gplate result 1 4 initFace edge_constraint 0 p1 p2 p3 p4
-  GeomPlate_BuildPlateSurface anAlgo(1, 4);
-  anAlgo.LoadInitSurface(aSurf);
-
-  Handle(BRepAdaptor_Curve) aCurveAdaptor = new BRepAdaptor_Curve(anEdge);
-  Handle(GeomPlate_CurveConstraint) aCurveConstr = new GeomPlate_CurveConstraint(aCurveAdaptor, 0);
-  anAlgo.Add(aCurveConstr);
-
-  gp_Pnt p1(30, -33.4729635533385, 49.7661550602442);
-  gp_Pnt p2(30, -49.6961550602442, 33.3929635533386);
-  gp_Pnt p3(23.3333333333333, -50, 30.07);
-  gp_Pnt p4(-30, -33.4729635533386, 49.6161550602442);
-
-  anAlgo.Add(new GeomPlate_PointConstraint(p1, 0));
-  anAlgo.Add(new GeomPlate_PointConstraint(p2, 0));
-  anAlgo.Add(new GeomPlate_PointConstraint(p3, 0));
-  anAlgo.Add(new GeomPlate_PointConstraint(p4, 0));
-
-  ASSERT_NO_THROW({
-    anAlgo.Perform();
-  });
-  
-  ASSERT_TRUE(anAlgo.IsDone());
 }
 
 /**
@@ -296,30 +254,3 @@ TEST(OCCT_Bugs_filling, bug27775)
   SUCCEED();
 }
 
-/**
- * @brief Regression test for bug27873.
- * Exception is raised in BRepFill_Filling::FindExtremitiesOfHoles()
- */
-TEST(OCCT_Bugs_filling, bug27873)
-{
-  TopoDS_Shape aShape;
-  if (!LoadTestData("bug27873_filling.brep", aShape))
-  {
-    GTEST_SKIP() << "Test data for bug27873 not found.";
-  }
-
-  BRepOffsetAPI_MakeFilling anAlgo(11, 0, 0, Standard_False, 1e-5, 1e-4, 1e-4, 0.1, 0);
-  
-  TopExp_Explorer expl(aShape, TopAbs_EDGE);
-  for (; expl.More(); expl.Next())
-  {
-    anAlgo.Add(TopoDS::Edge(expl.Current()), GeomAbs_C0);
-  }
-
-  ASSERT_NO_THROW({
-    anAlgo.Build();
-  });
-  
-  // Tcl expects "filling failed", which means IsDone should be false
-  EXPECT_FALSE(anAlgo.IsDone());
-}

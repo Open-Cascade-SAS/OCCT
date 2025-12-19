@@ -358,6 +358,17 @@ gp_Pnt2d GeomPlate_BuildPlateSurface::ProjectPoint(const gp_Pnt& p3d)
 {
   Extrema_POnSurf P;
   myProj.Perform(p3d);
+  if (myProj.NbExt() == 0)
+  {
+    Standard_Real u1, v1, u2, v2;
+    mySurfInit->Bounds(u1, v1, u2, v2);
+    if (Precision::IsInfinite(u1) || Precision::IsInfinite(u2) || Precision::IsInfinite(v1)
+        || Precision::IsInfinite(v2))
+    {
+      return gp_Pnt2d(0, 0);
+    }
+    return gp_Pnt2d((u1 + u2) / 2., (v1 + v2) / 2.);
+  }
   Standard_Integer nearest = 1;
   if (myProj.NbExt() > 1)
   {

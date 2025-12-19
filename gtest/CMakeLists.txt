@@ -3,6 +3,7 @@ add_executable(my_tests
   test_main.cpp
   Bugs_Regression_GTest.cxx
   OCCT_Bugs_filling.cxx
+  OCCT_Boolean_bcommon_2d.cxx
 )
 
 # ============================================================
@@ -99,9 +100,10 @@ set_target_properties(my_tests PROPERTIES FOLDER "Tests")
 # ============================================================
 # 可选：添加编译定义
 # ============================================================
-# target_compile_definitions(my_tests PRIVATE
-#   _CRT_SECURE_NO_WARNINGS  # 禁用 MSVC 安全警告
-# )
+target_compile_definitions(my_tests PRIVATE
+  _CRT_SECURE_NO_WARNINGS  # 禁用 MSVC 安全警告
+  OCCT_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../data"
+)
 
 # ============================================================
 # 可选：设置运行时库 (根据你的 OCCT 构建配置)

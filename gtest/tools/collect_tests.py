@@ -11,6 +11,18 @@ INTERACTIVE_KEYWORDS = [
 # File extensions or metadata files to ignore
 IGNORE_FILES = ["parse.rules", "parse.history", "begin", "end", ".rules", "grids.list"]
 
+def scan_data_files(data_dir):
+    """Recursively scan a data directory and return a map of filename -> relative path."""
+    data_map = {}
+    if not data_dir or not os.path.exists(data_dir):
+        return data_map
+    
+    for root, _, files in os.walk(data_dir):
+        for file in files:
+            # Map basename to its full path for easy lookup
+            data_map[file] = os.path.join(root, file)
+    return data_map
+
 def should_skip_content(content):
     """Check if the Tcl content contains interactive UI commands."""
     for kw in INTERACTIVE_KEYWORDS:
@@ -28,7 +40,7 @@ def extract_dependencies(content):
     if "bsplinecurve" in content: cmds.append("Geom_BSplineCurve")
     return deps, cmds
 
-def collect_tests(root_dir, batch_size=10):
+def collect_tests(root_dir, batch_size=10, data_map=None):
     """Collect Tcl tests and group them into batches for AI processing."""
     batches = []
     current_batch = []
@@ -62,6 +74,20 @@ def collect_tests(root_dir, batch_size=10):
                 
                 data_deps, cpp_hints = extract_dependencies(content)
                 
+                # Filtering logic: check if data dependencies exist
+                missing_deps = []
+                resolved_deps = {}
+                if data_map is not None:
+                    for dep in data_deps:
+                        if dep in data_map:
+                            resolved_deps[dep] = data_map[dep]
+                        else:
+                            missing_deps.append(dep)
+                    
+                    if missing_deps:
+                        print(f"Skipping {file_path}: Missing data files {missing_deps}")
+                        continue
+                
                 # Metadata for the AI
                 test_info = {
                     "path": f"{group}/{grid}/{file}",
@@ -69,6 +95,7 @@ def collect_tests(root_dir, batch_size=10):
                     "case": file.replace(".", "_"),
                     "content": content.strip(),
                     "deps": data_deps,
+                    "resolved_deps": resolved_deps,
                     "hints": cpp_hints
                 }
                 current_batch.append(test_info)
@@ -99,7 +126,14 @@ def format_markdown(batches):
             output += f"- **Target Suite**: {test['suite']}\n"
             output += f"- **Target Case**: {test['case']}\n"
             if test['deps']:
-                output += f"- **Data Files**: `{', '.join(test['deps'])}` (Needs `BRepTools::Read` or path resolution)\n"
+                resolved_info = []
+                for dep in test['deps']:
+                    path = test['resolved_deps'].get(dep)
+                    if path:
+                        resolved_info.append(f"`{dep}` (Path: `{path}`)")
+                    else:
+                        resolved_info.append(f"`{dep}`")
+                output += f"- **Data Files**: {', '.join(resolved_info)}\n"
             if test['hints']:
                 output += f"- **Suggested C++**: {', '.join(test['hints'])}\n"
             
@@ -116,6 +150,7 @@ if __name__ == "__main__":
     parser.add_argument("path", help="Path to the test folder (e.g., tests/bugs/filling)")
     parser.add_argument("--batch", type=int, default=5, help="Number of tests per batch (default: 5)")
     parser.add_argument("--out", help="Output filename (default: batches_[path_slug].md)")
+    parser.add_argument("--data", help="Optional path to the data directory to filter tests by availability")
     
     args = parser.parse_args()
     
@@ -132,7 +167,14 @@ if __name__ == "__main__":
         args.out = f"batches_{slug}.md"
     
     print(f"Scanning {args.path}...")
-    batches = collect_tests(args.path, args.batch)
+    
+    data_map = None
+    if args.data:
+        print(f"Indexing data files in {args.data}...")
+        data_map = scan_data_files(args.data)
+        print(f"Found {len(data_map)} data files.")
+        
+    batches = collect_tests(args.path, args.batch, data_map)
     
     if not batches:
         print("No suitable non-interactive tests found. (Checks skip keywords: vinit, vdisplay, AIS, etc.)")
