@@ -93,7 +93,8 @@ private:
     for (; myIter.More(); myIter.Next())
     {
       const Handle(Graphic3d_Layer)& aLayer = myIter.Value();
-      if (aLayer->IsImmediate() != myToDrawImmediate)
+      if (aLayer->IsImmediate() != myToDrawImmediate 
+          || !aLayer->LayerSettings().IsVisible())
       {
         continue;
       }

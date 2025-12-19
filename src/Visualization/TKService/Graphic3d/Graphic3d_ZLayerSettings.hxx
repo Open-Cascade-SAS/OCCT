@@ -36,7 +36,8 @@ struct Graphic3d_ZLayerSettings
         myToEnableDepthTest(Standard_True),
         myToEnableDepthWrite(Standard_True),
         myToClearDepth(Standard_True),
-        myToRenderInDepthPrepass(Standard_True)
+        myToRenderInDepthPrepass(Standard_True),
+        myVisible(Standard_True)
   {
   }
 
@@ -181,6 +182,17 @@ struct Graphic3d_ZLayerSettings
     myPolygonOffset.Units  = -1.0f;
   }
 
+  //! Return if layer should be visible; TRUE by default.
+  //! @return TRUE if layer is visible, FALSE if layer is hidden.
+  Standard_Boolean IsVisible() const { return myVisible; }
+
+  //! Set if the layer should be visible.
+  //! @param theVisible If TRUE, the layer will be rendered; if FALSE, the layer will be hidden.
+  void SetVisible(Standard_Boolean theVisible)
+  { 
+    myVisible = theVisible;
+  }
+
   //! Dumps the content of me into the stream
   void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
   {
@@ -202,6 +214,7 @@ struct Graphic3d_ZLayerSettings
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToEnableDepthWrite)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToClearDepth)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToRenderInDepthPrepass)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myVisible)
   }
 
 protected:
@@ -220,6 +233,7 @@ protected:
   Standard_Boolean            myToEnableDepthWrite;    //!< option to enable write depth values
   Standard_Boolean            myToClearDepth;          //!< option to clear depth values before drawing the layer
   Standard_Boolean            myToRenderInDepthPrepass;//!< option to render layer within depth pre-pass
+  Standard_Boolean            myVisible;               //!< option to show or hide the layer
   // clang-format on
 };
 
