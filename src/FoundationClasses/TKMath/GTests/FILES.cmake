@@ -58,6 +58,34 @@ set(OCCT_TKMath_GTests_FILES
   math_TrigonometricFunctionRoots_Test.cxx
   math_Uzawa_Test.cxx
   math_Vector_Test.cxx
+  # MathUtils tests
+  MathUtils_Functor_Test.cxx
+  # MathPoly tests
+  MathPoly_Test.cxx
+  MathPoly_Comparison_Test.cxx
+  # MathLin tests
+  MathLin_Test.cxx
+  MathLin_Comparison_Test.cxx
+  # MathOpt tests
+  MathOpt_1D_Test.cxx
+  MathOpt_NDim_Test.cxx
+  MathOpt_FRPR_Test.cxx
+  MathOpt_Newton_Test.cxx
+  MathOpt_PSO_Test.cxx
+  MathOpt_GlobOpt_Test.cxx
+  MathOpt_1D_Comparison_Test.cxx
+  MathOpt_NDim_Comparison_Test.cxx
+  # MathRoot tests
+  MathRoot_Test.cxx
+  MathRoot_Multiple_Test.cxx
+  MathRoot_Comparison_Test.cxx
+  # MathInteg tests
+  MathInteg_Test.cxx
+  MathInteg_New_Test.cxx
+  MathInteg_Comparison_Test.cxx
+  # MathSys tests
+  MathSys_LM_Test.cxx
+  MathSys_Comparison_Test.cxx
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx
