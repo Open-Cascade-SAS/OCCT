@@ -84,12 +84,16 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   Standard_Boolean avant, apres;
   myTol = Tolerance;
 
-  Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
+  // Use actual curve endpoints instead of poles for proper G0 continuity check.
+  // G0 continuity (positional continuity) requires curves to share endpoints.
+  // For non-clamped or periodic B-splines, first/last poles may not coincide with endpoints.
+  const gp_Pnt aCurveStart = myCurve->StartPoint();
+  const gp_Pnt aCurveEnd   = myCurve->EndPoint();
+  const gp_Pnt aBsStart    = Bs->StartPoint();
+  const gp_Pnt aBsEnd      = Bs->EndPoint();
 
-  avant = ((myCurve->Pole(1).Distance(Bs->Pole(1)) < myTol)
-           || (myCurve->Pole(1).Distance(Bs->Pole(LBs)) < myTol));
-  apres = ((myCurve->Pole(LCb).Distance(Bs->Pole(1)) < myTol)
-           || (myCurve->Pole(LCb).Distance(Bs->Pole(LBs)) < myTol));
+  avant = ((aCurveStart.Distance(aBsStart) < myTol) || (aCurveStart.Distance(aBsEnd) < myTol));
+  apres = ((aCurveEnd.Distance(aBsStart) < myTol) || (aCurveEnd.Distance(aBsEnd) < myTol));
 
   // myCurve est (sera) elle fermee ?
   if (avant && apres)
@@ -103,7 +107,7 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   // Ajout Apres ?
   if (apres)
   {
-    if (myCurve->Pole(LCb).Distance(Bs->Pole(LBs)) < myTol)
+    if (aCurveEnd.Distance(aBsEnd) < myTol)
     {
       Bs->Reverse();
     }
@@ -113,7 +117,7 @@ Standard_Boolean GeomConvert_CompCurveToBSplineCurve::Add(const Handle(Geom_Boun
   // Ajout avant ?
   else if (avant)
   {
-    if (myCurve->Pole(1).Distance(Bs->Pole(1)) < myTol)
+    if (aCurveStart.Distance(aBsStart) < myTol)
     {
       Bs->Reverse();
     }
