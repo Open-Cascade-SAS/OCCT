@@ -290,7 +290,7 @@ TEST(MathRoot_Multiple, FindAllRoots_ConvenienceOverload)
 
 TEST(MathRoot_Multiple, FindAllRoots_Exponential)
 {
-  // f(x) = exp(x) - 2, root at ln(2) ≈ 0.693
+  // f(x) = exp(x) - 2, root at ln(2) ~= 0.693
   auto aFunc = MathUtils::MakeScalar([](double x, double& y) {
     y = std::exp(x) - 2.0;
     return true;

@@ -22,7 +22,7 @@
 // Test functions for N-dimensional optimization
 //=============================================================================
 
-// Rosenbrock function: f(x,y) = (1-x)² + 100(y-x²)²
+// Rosenbrock function: f(x,y) = (1-x)^2 + 100(y-x^2)^2
 // Minimum at (1, 1) with f = 0
 class RosenbrockFunction
 {
@@ -45,7 +45,7 @@ public:
   }
 };
 
-// Simple quadratic: f(x,y) = x² + y²
+// Simple quadratic: f(x,y) = x^2 + y^2
 // Minimum at (0, 0) with f = 0
 class SimpleQuadratic
 {
@@ -70,7 +70,7 @@ public:
   }
 };
 
-// Sphere function in N dimensions: f(x) = sum(x_i²)
+// Sphere function in N dimensions: f(x) = sum(x_i^2)
 // Minimum at origin with f = 0
 class SphereFunction
 {
@@ -95,7 +95,7 @@ public:
   }
 };
 
-// Booth function: f(x,y) = (x + 2y - 7)² + (2x + y - 5)²
+// Booth function: f(x,y) = (x + 2y - 7)^2 + (2x + y - 5)^2
 // Minimum at (1, 3) with f = 0
 class BoothFunction
 {
@@ -122,7 +122,7 @@ public:
   }
 };
 
-// Beale's function: f(x,y) = (1.5 - x + xy)² + (2.25 - x + xy²)² + (2.625 - x + xy³)²
+// Beale's function: f(x,y) = (1.5 - x + xy)^2 + (2.25 - x + xy^2)^2 + (2.625 - x + xy^3)^2
 // Minimum at (3, 0.5) with f = 0
 class BealeFunction
 {

@@ -612,6 +612,6 @@ TEST(MathInteg_ComparisonTest, SmallInterval)
   ASSERT_TRUE(aNewResult.IsDone());
 
   EXPECT_NEAR(anOldInteg.Value(), *aNewResult.Value, THE_TOLERANCE);
-  // sin(x) ≈ x for small x, so integral ≈ x^2/2
+  // sin(x) ~= x for small x, so integral ~= x^2/2
   EXPECT_NEAR(*aNewResult.Value, 0.0000005, 1.0e-12);
 }

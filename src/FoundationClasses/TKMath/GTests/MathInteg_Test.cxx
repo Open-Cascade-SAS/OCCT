@@ -386,7 +386,7 @@ TEST(MathInteg_GaussCompositeTest, GaussianFunction)
   // Integral from -3 to 3 (approximates -inf to inf)
   MathInteg::IntegResult aResult = MathInteg::GaussComposite(aFunc, -3.0, 3.0, 50, 15);
   ASSERT_TRUE(aResult.IsDone());
-  // Should be close to sqrt(PI) ≈ 1.7724538509
+  // Should be close to sqrt(PI) ~= 1.7724538509
   EXPECT_NEAR(*aResult.Value, std::sqrt(THE_PI), 1.0e-4);
 }
 
@@ -425,7 +425,7 @@ TEST(MathInteg_BoundsTest, SmallInterval)
   // Very small interval
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, 0.001, 15);
   ASSERT_TRUE(aResult.IsDone());
-  // sin(x) ≈ x for small x, so integral ≈ x^2/2 = 0.0000005
+  // sin(x) ~= x for small x, so integral ~= x^2/2 = 0.0000005
   EXPECT_NEAR(*aResult.Value, 0.0000005, 1.0e-10);
 }
 

@@ -192,7 +192,6 @@ inline std::optional<math_Matrix> MatrixPower(const math_Matrix& theA, double th
 
   const int aLower = aD.Lower();
   const int aUpper = aD.Upper();
-  const int aN     = aUpper - aLower + 1;
 
   // Compute D^p
   math_Vector aDp(aLower, aUpper);

@@ -26,7 +26,7 @@ namespace
   constexpr double THE_PI = 3.14159265358979323846;
 
   //! Function with derivative: f(x) = x^2 - 2, f'(x) = 2x
-  //! Root at x = sqrt(2) ≈ 1.41421356...
+  //! Root at x = sqrt(2) ~= 1.41421356...
   class SqrtTwoFunc
   {
   public:
@@ -45,7 +45,7 @@ namespace
   };
 
   //! Function: f(x) = cos(x) - x
-  //! Root at x ≈ 0.739085...
+  //! Root at x ~= 0.739085...
   class CosMinusXFunc
   {
   public:
@@ -64,7 +64,7 @@ namespace
   };
 
   //! Function: f(x) = x^3 - x - 2
-  //! Root at x ≈ 1.5214...
+  //! Root at x ~= 1.5214...
   class CubicFunc
   {
   public:
@@ -102,7 +102,7 @@ namespace
   };
 
   //! Function: f(x) = e^x - 3
-  //! Root at x = ln(3) ≈ 1.0986...
+  //! Root at x = ln(3) ~= 1.0986...
   class ExpMinusThreeFunc
   {
   public:

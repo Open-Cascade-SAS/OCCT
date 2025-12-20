@@ -165,7 +165,6 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
   const int aColLower = theA.LowerCol();
   const int aColUpper = theA.UpperCol();
   const int aM        = aRowUpper - aRowLower + 1;
-  const int aN        = aColUpper - aColLower + 1;
 
   // Check dimensions
   if (theB.Length() != aM)
@@ -248,8 +247,6 @@ inline InverseResult PseudoInverse(const math_Matrix& theA, double theTolerance 
   const int aRowUpper = theA.UpperRow();
   const int aColLower = theA.LowerCol();
   const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
-  const int aN        = aColUpper - aColLower + 1;
 
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aW = *aSVD.SingularValues;
