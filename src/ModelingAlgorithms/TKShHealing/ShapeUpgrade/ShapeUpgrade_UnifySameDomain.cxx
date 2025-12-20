@@ -3879,6 +3879,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
       {
         TopoDS_Edge aFirstEdge = TopoDS::Edge(InternalEdges(1));
         InternalEdges.RemoveFromIndex(1);
+        RemoveEdgeFromMap(aFirstEdge, IntVEmap);
         TopoDS_Wire anInternalWire;
         BB.MakeWire(anInternalWire);
         BB.Add(anInternalWire, aFirstEdge);
@@ -3902,6 +3903,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                 continue;
               found = Standard_True;
               InternalEdges.RemoveKey(anEdge);
+              RemoveEdgeFromMap(anEdge, IntVEmap);
               BB.Add(anInternalWire, anEdge);
               TopoDS_Vertex V1, V2;
               TopExp::Vertices(anEdge, V1, V2);
