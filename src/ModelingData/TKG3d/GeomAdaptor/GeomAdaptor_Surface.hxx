@@ -17,13 +17,22 @@
 #ifndef _GeomAdaptor_Surface_HeaderFile
 #define _GeomAdaptor_Surface_HeaderFile
 
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplSLib_Cache.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomEvaluator_Surface.hxx>
 #include <Geom_Surface.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_XYZ.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
+#include <memory>
+#include <variant>
+
+class GeomAdaptor_Curve;
+class Geom_OffsetSurface;
 
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 
@@ -38,6 +47,47 @@ DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 class GeomAdaptor_Surface : public Adaptor3d_Surface
 {
   DEFINE_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
+public:
+  //! Internal structure for extrusion surface evaluation data.
+  struct ExtrusionData
+  {
+    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_XYZ                  Direction;  //!< Extrusion direction XYZ (normalized)
+  };
+
+  //! Internal structure for revolution surface evaluation data.
+  struct RevolutionData
+  {
+    Handle(Adaptor3d_Curve) BasisCurve; //!< Adaptor for basis curve
+    gp_Ax1                  Axis;       //!< Revolution axis
+  };
+
+  //! Internal structure for offset surface evaluation data.
+  struct OffsetData
+  {
+    Handle(GeomAdaptor_Surface) BasisAdaptor;      //!< Adaptor for basis surface
+    Handle(GeomAdaptor_Surface) EquivalentAdaptor; //!< Adaptor for equivalent surface (if exists)
+    Handle(Geom_OffsetSurface)  OffsetSurface; //!< Original offset surface for osculating queries
+    double                      Offset = 0.0;  //!< Offset distance
+  };
+
+  //! Internal structure for Bezier surface cache data.
+  struct BezierData
+  {
+    mutable Handle(BSplSLib_Cache) Cache; //!< Cached data for evaluation
+  };
+
+  //! Internal structure for BSpline surface cache data.
+  struct BSplineData
+  {
+    Handle(Geom_BSplineSurface)    Surface; //!< BSpline surface to prevent downcasts
+    mutable Handle(BSplSLib_Cache) Cache;   //!< Cached data for evaluation
+  };
+
+  //! Variant type for surface-specific evaluation data.
+  using SurfaceDataVariant = std::
+    variant<std::monostate, ExtrusionData, RevolutionData, OffsetData, BezierData, BSplineData>;
+
 public:
   GeomAdaptor_Surface()
       : myUFirst(0.),
@@ -105,6 +155,16 @@ public:
     load(theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
 
+  const Handle(Geom_Surface)& Surface() const { return mySurface; }
+
+  virtual Standard_Real FirstUParameter() const Standard_OVERRIDE { return myUFirst; }
+
+  virtual Standard_Real LastUParameter() const Standard_OVERRIDE { return myULast; }
+
+  virtual Standard_Real FirstVParameter() const Standard_OVERRIDE { return myVFirst; }
+
+  virtual Standard_Real LastVParameter() const Standard_OVERRIDE { return myVLast; }
+
   //! Returns the parametric bounds of the surface.
   //! @param[out] theU1 minimum U parameter
   //! @param[out] theU2 maximum U parameter
@@ -120,16 +180,6 @@ public:
     theV1 = FirstVParameter();
     theV2 = LastVParameter();
   }
-
-  const Handle(Geom_Surface)& Surface() const { return mySurface; }
-
-  virtual Standard_Real FirstUParameter() const Standard_OVERRIDE { return myUFirst; }
-
-  virtual Standard_Real LastUParameter() const Standard_OVERRIDE { return myULast; }
-
-  virtual Standard_Real FirstVParameter() const Standard_OVERRIDE { return myVFirst; }
-
-  virtual Standard_Real LastVParameter() const Standard_OVERRIDE { return myVLast; }
 
   Standard_EXPORT GeomAbs_Shape UContinuity() const Standard_OVERRIDE;
 
@@ -356,14 +406,8 @@ protected:
   Standard_Real        myVLast;
   Standard_Real        myTolU;
   Standard_Real        myTolV;
-
-  Handle(Geom_BSplineSurface)    myBSplineSurface; ///< B-spline representation to prevent downcasts
-  mutable Handle(BSplSLib_Cache) mySurfaceCache;   ///< Cached data for B-spline or Bezier surface
-
-  GeomAbs_SurfaceType mySurfaceType;
-  // clang-format off
-  Handle(GeomEvaluator_Surface) myNestedEvaluator; ///< Calculates values of nested complex surfaces (offset surface, surface of extrusion or revolution)
-  // clang-format on
+  GeomAbs_SurfaceType  mySurfaceType;
+  SurfaceDataVariant   mySurfaceData; ///< Surface-specific evaluation data
 };
 
 #endif // _GeomAdaptor_Surface_HeaderFile

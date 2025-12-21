@@ -23,7 +23,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Standard_Integer.hxx>
-#include <Geom2dEvaluator_OffsetCurve.hxx>
 
 class gp_Pnt2d;
 class gp_Vec2d;
@@ -293,12 +292,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_OffsetCurve, Geom2d_Curve)
 
-protected:
 private:
-  Handle(Geom2d_Curve)                basisCurve;
-  Standard_Real                       offsetValue;
-  GeomAbs_Shape                       myBasisCurveContinuity;
-  Handle(Geom2dEvaluator_OffsetCurve) myEvaluator;
+  Handle(Geom2d_Curve) basisCurve;
+  double               offsetValue;
+  GeomAbs_Shape        myBasisCurveContinuity;
 };
 
 #endif // _Geom2d_OffsetCurve_HeaderFile

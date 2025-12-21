@@ -1,0 +1,132 @@
+// Created on: 1998-05-05
+// Created by: Stepan MISHIN
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Geom_OsculatingSurface_HeaderFile
+#define _Geom_OsculatingSurface_HeaderFile
+
+#include <GeomAbs_IsoType.hxx>
+#include <Geom_SequenceOfBSplineSurface.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+
+#include <array>
+
+class Geom_Surface;
+class Geom_BSplineSurface;
+
+//! Internal helper class for Geom_OffsetSurface.
+//! Detects if the surface has punctual U or V isoparametric curve
+//! along on the bounds of the surface relatively to the tolerance
+//! and builds the corresponding osculating surfaces.
+//!
+//! This is a private implementation class - not for external use.
+class Geom_OsculatingSurface
+{
+public:
+  //! Default constructor.
+  Geom_OsculatingSurface();
+
+  //! Constructor that detects punctual isoparametric curves and builds
+  //! osculating surfaces.
+  //! @param theBS the basis surface to analyze
+  //! @param theTol tolerance for detecting punctual curves
+  Geom_OsculatingSurface(const Handle(Geom_Surface)& theBS, double theTol);
+
+  //! Copy constructor.
+  Geom_OsculatingSurface(const Geom_OsculatingSurface& theOther);
+
+  //! Move constructor.
+  Geom_OsculatingSurface(Geom_OsculatingSurface&& theOther) noexcept;
+
+  //! Copy assignment.
+  Geom_OsculatingSurface& operator=(const Geom_OsculatingSurface& theOther);
+
+  //! Move assignment.
+  Geom_OsculatingSurface& operator=(Geom_OsculatingSurface&& theOther) noexcept;
+
+  //! Destructor.
+  ~Geom_OsculatingSurface() = default;
+
+  //! Initialize with a surface and tolerance.
+  void Init(const Handle(Geom_Surface)& theBS, double theTol);
+
+  //! Returns the basis surface.
+  const Handle(Geom_Surface)& BasisSurface() const { return myBasisSurf; }
+
+  //! Returns the tolerance.
+  double Tolerance() const { return myTol; }
+
+  //! Returns true if any osculating surface exists.
+  bool HasOscSurf() const { return myAlong[0] || myAlong[1] || myAlong[2] || myAlong[3]; }
+
+  //! Returns true if osculating surface exists along U direction.
+  bool IsAlongU() const { return myAlong[0] || myAlong[1]; }
+
+  //! Returns true if osculating surface exists along V direction.
+  bool IsAlongV() const { return myAlong[2] || myAlong[3]; }
+
+  //! If true, theL is the local osculating surface along U at point (U,V).
+  //! @param theU U parameter
+  //! @param theV V parameter
+  //! @param theT output flag indicating if derivative is opposite
+  //! @param theL output osculating surface
+  //! @return true if osculating surface was found
+  bool UOsculatingSurface(double                       theU,
+                          double                       theV,
+                          bool&                        theT,
+                          Handle(Geom_BSplineSurface)& theL) const;
+
+  //! If true, theL is the local osculating surface along V at point (U,V).
+  //! @param theU U parameter
+  //! @param theV V parameter
+  //! @param theT output flag indicating if derivative is opposite
+  //! @param theL output osculating surface
+  //! @return true if osculating surface was found
+  bool VOsculatingSurface(double                       theU,
+                          double                       theV,
+                          bool&                        theT,
+                          Handle(Geom_BSplineSurface)& theL) const;
+
+private:
+  //! Returns false if the osculating surface can't be built.
+  bool buildOsculatingSurface(double                             theParam,
+                              int                                theUKnot,
+                              int                                theVKnot,
+                              const Handle(Geom_BSplineSurface)& theBS,
+                              Handle(Geom_BSplineSurface)&       theL) const;
+
+  //! Returns true if the isoparametric is quasi-punctual.
+  bool isQPunctual(const Handle(Geom_Surface)& theS,
+                   double                      theParam,
+                   GeomAbs_IsoType             theIT,
+                   double                      theTolMin,
+                   double                      theTolMax) const;
+
+  //! Clear osculating flags.
+  void clearOsculFlags();
+
+private:
+  Handle(Geom_Surface)          myBasisSurf;
+  double                        myTol;
+  Geom_SequenceOfBSplineSurface myOsculSurf1;
+  Geom_SequenceOfBSplineSurface myOsculSurf2;
+  NCollection_Sequence<int>     myKdeg;
+  std::array<bool, 4>           myAlong;
+};
+
+#endif // _Geom_OsculatingSurface_HeaderFile

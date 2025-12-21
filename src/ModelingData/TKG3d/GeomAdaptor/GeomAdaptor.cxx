@@ -17,6 +17,8 @@
 #include <GeomAdaptor.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>

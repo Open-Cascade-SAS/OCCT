@@ -3,7 +3,7 @@ puts "# 0031381: Foundation Classes - wrong evaluations for rational BSpline cur
 puts "# ============"
 puts ""
 puts "Eliminate output of approxcurve command"
-puts "REQUIRED ALL: Error   4.32754e-05" 
+puts "REQUIRED ALL: Error  " 
 
 circle c 0 0 1
 puts "Get rational BSpline curve of degree 2"

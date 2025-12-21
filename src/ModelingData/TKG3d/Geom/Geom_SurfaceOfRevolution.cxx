@@ -20,9 +20,9 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
+#include "Geom_RevolutionUtils.pxx"
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
@@ -73,7 +73,6 @@ Handle(Geom_Geometry) Geom_SurfaceOfRevolution::Copy() const
 Geom_SurfaceOfRevolution::Geom_SurfaceOfRevolution(const Handle(Geom_Curve)& C, const Ax1& A1)
     : loc(A1.Location())
 {
-
   direction = A1.Direction();
   SetBasisCurve(C);
 }
@@ -82,9 +81,7 @@ Geom_SurfaceOfRevolution::Geom_SurfaceOfRevolution(const Handle(Geom_Curve)& C, 
 
 void Geom_SurfaceOfRevolution::UReverse()
 {
-
   direction.Reverse();
-  myEvaluator->SetDirection(direction);
 }
 
 //=================================================================================================
@@ -179,38 +176,30 @@ Standard_Boolean Geom_SurfaceOfRevolution::IsVPeriodic() const
 
 void Geom_SurfaceOfRevolution::SetAxis(const Ax1& A1)
 {
-
   direction = A1.Direction();
   loc       = A1.Location();
-  myEvaluator->SetAxis(A1);
 }
 
 //=================================================================================================
 
 void Geom_SurfaceOfRevolution::SetDirection(const Dir& V)
 {
-
   direction = V;
-  myEvaluator->SetDirection(direction);
 }
 
 //=================================================================================================
 
 void Geom_SurfaceOfRevolution::SetBasisCurve(const Handle(Geom_Curve)& C)
 {
-
-  basisCurve  = Handle(Geom_Curve)::DownCast(C->Copy());
-  smooth      = C->Continuity();
-  myEvaluator = new GeomEvaluator_SurfaceOfRevolution(basisCurve, direction, loc);
+  basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
+  smooth     = C->Continuity();
 }
 
 //=================================================================================================
 
 void Geom_SurfaceOfRevolution::SetLocation(const Pnt& P)
 {
-
   loc = P;
-  myEvaluator->SetLocation(loc);
 }
 
 //=================================================================================================
@@ -231,7 +220,7 @@ void Geom_SurfaceOfRevolution::Bounds(Standard_Real& U1,
 
 void Geom_SurfaceOfRevolution::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 {
-  myEvaluator->D0(U, V, P);
+  Geom_RevolutionUtils::D0(U, V, *basisCurve, gp_Ax1(loc, direction), P);
 }
 
 //=================================================================================================
@@ -242,7 +231,7 @@ void Geom_SurfaceOfRevolution::D1(const Standard_Real U,
                                   Vec&                D1U,
                                   Vec&                D1V) const
 {
-  myEvaluator->D1(U, V, P, D1U, D1V);
+  Geom_RevolutionUtils::D1(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V);
 }
 
 //=================================================================================================
@@ -256,7 +245,7 @@ void Geom_SurfaceOfRevolution::D2(const Standard_Real U,
                                   Vec&                D2V,
                                   Vec&                D2UV) const
 {
-  myEvaluator->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+  Geom_RevolutionUtils::D2(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V, D2U, D2V, D2UV);
 }
 
 //=================================================================================================
@@ -274,7 +263,20 @@ void Geom_SurfaceOfRevolution::D3(const Standard_Real U,
                                   Vec&                D3UUV,
                                   Vec&                D3UVV) const
 {
-  myEvaluator->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  Geom_RevolutionUtils::D3(U,
+                           V,
+                           *basisCurve,
+                           gp_Ax1(loc, direction),
+                           P,
+                           D1U,
+                           D1V,
+                           D2U,
+                           D2V,
+                           D2UV,
+                           D3U,
+                           D3V,
+                           D3UUV,
+                           D3UVV);
 }
 
 //=================================================================================================
@@ -284,7 +286,8 @@ Vec Geom_SurfaceOfRevolution::DN(const Standard_Real    U,
                                  const Standard_Integer Nu,
                                  const Standard_Integer Nv) const
 {
-  return myEvaluator->DN(U, V, Nu, Nv);
+  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
+  return Geom_RevolutionUtils::DN(U, V, *basisCurve, gp_Ax1(loc, direction), Nu, Nv);
 }
 
 //=================================================================================================
@@ -342,14 +345,11 @@ Handle(Geom_Curve) Geom_SurfaceOfRevolution::VIso(const Standard_Real V) const
 
 void Geom_SurfaceOfRevolution::Transform(const Trsf& T)
 {
-
   loc.Transform(T);
   direction.Transform(T);
   basisCurve->Transform(T);
   if (T.ScaleFactor() * T.HVectorialPart().Determinant() < 0.)
     UReverse();
-  myEvaluator->SetDirection(direction);
-  myEvaluator->SetLocation(loc);
 }
 
 //=================================================================================================

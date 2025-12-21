@@ -24,7 +24,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
 #include <Standard_Integer.hxx>
-#include <GeomEvaluator_OffsetCurve.hxx>
 
 class gp_Pnt;
 class gp_Vec;
@@ -291,13 +290,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetCurve, Geom_Curve)
 
-protected:
 private:
-  Handle(Geom_Curve)                basisCurve;
-  gp_Dir                            direction;
-  Standard_Real                     offsetValue;
-  GeomAbs_Shape                     myBasisCurveContinuity;
-  Handle(GeomEvaluator_OffsetCurve) myEvaluator;
+  Handle(Geom_Curve) basisCurve;
+  gp_Dir             direction;
+  double             offsetValue;
+  GeomAbs_Shape      myBasisCurveContinuity;
 };
 
 #endif // _Geom_OffsetCurve_HeaderFile

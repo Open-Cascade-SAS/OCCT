@@ -575,8 +575,8 @@ bool EvaluateD0(double                  theU,
     Handle(Geom_BSplineSurface) aOscSurf;
     if (theOscQuery)
     {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
     constexpr int aDerNUVSize  = (aMaxOrder + 1) * (aMaxOrder + 1); // 16
@@ -745,8 +745,10 @@ bool EvaluateD1(double                  theU,
     {
       if (theOscQuery)
       {
-        aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-        aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+        aOscInfo.AlongU =
+          theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+        aOscInfo.AlongV =
+          theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
       }
       isSingular = true;
     }
@@ -1024,8 +1026,8 @@ bool EvaluateD2(double                  theU,
     Handle(Geom_BSplineSurface) aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
     // Setup derivative arrays
@@ -1216,8 +1218,8 @@ bool EvaluateD3(double                  theU,
     Handle(Geom_BSplineSurface) aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
     // Setup derivative arrays
@@ -1414,8 +1416,8 @@ bool EvaluateDN(double                  theU,
     Handle(Geom_BSplineSurface) aOscSurf;
     if ((aNStatus != CSLib_Defined) && theOscQuery)
     {
-      aOscInfo.AlongU = theOscQuery->UOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
-      aOscInfo.AlongV = theOscQuery->VOscSurf(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongU = theOscQuery->UOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
+      aOscInfo.AlongV = theOscQuery->VOsculatingSurface(theU, theV, aOscInfo.IsOpposite, aOscSurf);
     }
 
     // Use ComputeDerivatives

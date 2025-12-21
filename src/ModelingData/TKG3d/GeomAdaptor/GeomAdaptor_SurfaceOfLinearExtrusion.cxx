@@ -17,8 +17,8 @@
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax3.hxx>
-#include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_SurfaceOfLinearExtrusion, GeomAdaptor_Surface)
@@ -63,19 +63,22 @@ Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() co
   aCopy->myDirection = myDirection;
   aCopy->myHaveDir   = myHaveDir;
 
-  aCopy->mySurface        = mySurface;
-  aCopy->myUFirst         = myUFirst;
-  aCopy->myULast          = myULast;
-  aCopy->myVFirst         = myVFirst;
-  aCopy->myVLast          = myVLast;
-  aCopy->myTolU           = myTolU;
-  aCopy->myTolV           = myTolV;
-  aCopy->myBSplineSurface = myBSplineSurface;
-
+  aCopy->mySurface     = mySurface;
+  aCopy->myUFirst      = myUFirst;
+  aCopy->myULast       = myULast;
+  aCopy->myVFirst      = myVFirst;
+  aCopy->myVLast       = myVLast;
+  aCopy->myTolU        = myTolU;
+  aCopy->myTolV        = myTolV;
   aCopy->mySurfaceType = mySurfaceType;
-  if (!myNestedEvaluator.IsNull())
+
+  // Copy surface data variant
+  if (auto* anExtData = std::get_if<GeomAdaptor_Surface::ExtrusionData>(&mySurfaceData))
   {
-    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+    GeomAdaptor_Surface::ExtrusionData aNewData;
+    aNewData.BasisCurve  = anExtData->BasisCurve->ShallowCopy();
+    aNewData.Direction   = anExtData->Direction;
+    aCopy->mySurfaceData = aNewData;
   }
 
   return aCopy;
@@ -97,8 +100,13 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const gp_Dir& V)
   myHaveDir   = Standard_True;
   myDirection = V;
 
-  mySurfaceType     = GeomAbs_SurfaceOfExtrusion;
-  myNestedEvaluator = new GeomEvaluator_SurfaceOfExtrusion(myBasisCurve, myDirection);
+  mySurfaceType = GeomAbs_SurfaceOfExtrusion;
+
+  // Populate extrusion surface data for fast evaluation
+  GeomAdaptor_Surface::ExtrusionData anExtData;
+  anExtData.BasisCurve = myBasisCurve;
+  anExtData.Direction  = myDirection.XYZ();
+  mySurfaceData        = anExtData;
 }
 
 //=================================================================================================

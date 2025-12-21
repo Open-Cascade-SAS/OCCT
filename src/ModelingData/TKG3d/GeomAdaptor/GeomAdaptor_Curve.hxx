@@ -21,10 +21,14 @@
 #include <BSplCLib_Cache.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomEvaluator_Curve.hxx>
+#include <gp_Dir.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ConstructionError.hxx>
+
+#include <variant>
+
+class Geom_BSplineCurve;
 
 DEFINE_STANDARD_HANDLE(GeomAdaptor_Curve, Adaptor3d_Curve)
 
@@ -38,6 +42,31 @@ DEFINE_STANDARD_HANDLE(GeomAdaptor_Curve, Adaptor3d_Curve)
 class GeomAdaptor_Curve : public Adaptor3d_Curve
 {
   DEFINE_STANDARD_RTTIEXT(GeomAdaptor_Curve, Adaptor3d_Curve)
+public:
+  //! Internal structure for offset curve evaluation data.
+  struct OffsetData
+  {
+    Handle(GeomAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
+    double                    Offset = 0.0; //!< Offset distance
+    gp_Dir                    Direction;    //!< Offset direction
+  };
+
+  //! Internal structure for Bezier curve cache data.
+  struct BezierData
+  {
+    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
+  };
+
+  //! Internal structure for BSpline curve cache data.
+  struct BSplineData
+  {
+    Handle(Geom_BSplineCurve)      Curve; //!< BSpline curve to prevent downcasts
+    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
+  };
+
+  //! Variant type for curve-specific evaluation data.
+  using CurveDataVariant = std::variant<std::monostate, OffsetData, BezierData, BSplineData>;
+
 public:
   GeomAdaptor_Curve()
       : myTypeCurve(GeomAbs_OtherCurve),
@@ -249,10 +278,7 @@ private:
   GeomAbs_CurveType  myTypeCurve;
   Standard_Real      myFirst;
   Standard_Real      myLast;
-
-  Handle(Geom_BSplineCurve)      myBSplineCurve;    ///< B-spline representation to prevent castings
-  mutable Handle(BSplCLib_Cache) myCurveCache;      ///< Cached data for B-spline or Bezier curve
-  Handle(GeomEvaluator_Curve)    myNestedEvaluator; ///< Calculates value of offset curve
+  CurveDataVariant myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset, etc.)
 };
 
 #endif // _GeomAdaptor_Curve_HeaderFile
