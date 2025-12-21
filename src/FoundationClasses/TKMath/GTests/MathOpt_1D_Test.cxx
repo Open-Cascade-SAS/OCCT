@@ -19,108 +19,108 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-7;
-  constexpr double THE_PI = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-7;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  //! Parabola: f(x) = (x - 3)^2 + 1
-  //! Minimum at x = 3, f(3) = 1
-  class ParabolaFunc
+//! Parabola: f(x) = (x - 3)^2 + 1
+//! Minimum at x = 3, f(3) = 1
+class ParabolaFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = (theX - 3.0) * (theX - 3.0) + 1.0;
-      return true;
-    }
-  };
+    theF = (theX - 3.0) * (theX - 3.0) + 1.0;
+    return true;
+  }
+};
 
-  //! Parabola with negative minimum: f(x) = x^2 - 4x + 3
-  //! Minimum at x = 2, f(2) = -1
-  class ParabolaFunc2
+//! Parabola with negative minimum: f(x) = x^2 - 4x + 3
+//! Minimum at x = 2, f(2) = -1
+class ParabolaFunc2
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX - 4.0 * theX + 3.0;
-      return true;
-    }
-  };
+    theF = theX * theX - 4.0 * theX + 3.0;
+    return true;
+  }
+};
 
-  //! Cosine function: f(x) = cos(x)
-  //! Local minimum at x = PI
-  class CosFunc
+//! Cosine function: f(x) = cos(x)
+//! Local minimum at x = PI
+class CosFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX);
-      return true;
-    }
-  };
+    theF = std::cos(theX);
+    return true;
+  }
+};
 
-  //! Quartic: f(x) = x^4 - 2x^2
-  //! Local minima at x = -1 and x = 1
-  class QuarticFunc
+//! Quartic: f(x) = x^4 - 2x^2
+//! Local minima at x = -1 and x = 1
+class QuarticFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      const double aX2 = theX * theX;
-      theF = aX2 * aX2 - 2.0 * aX2;
-      return true;
-    }
-  };
+    const double aX2 = theX * theX;
+    theF             = aX2 * aX2 - 2.0 * aX2;
+    return true;
+  }
+};
 
-  //! Exponential: f(x) = e^x + e^(-x)
-  //! Minimum at x = 0, f(0) = 2
-  class CoshLikeFunc
+//! Exponential: f(x) = e^x + e^(-x)
+//! Minimum at x = 0, f(0) = 2
+class CoshLikeFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX) + std::exp(-theX);
-      return true;
-    }
-  };
+    theF = std::exp(theX) + std::exp(-theX);
+    return true;
+  }
+};
 
-  //! Rosenbrock-like 1D: f(x) = (1 - x)^2 + 100*(x^2 - x)^2
-  //! Minimum at x = 1
-  class Rosenbrock1DFunc
+//! Rosenbrock-like 1D: f(x) = (1 - x)^2 + 100*(x^2 - x)^2
+//! Minimum at x = 1
+class Rosenbrock1DFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      const double a = 1.0 - theX;
-      const double b = theX * theX - theX;
-      theF = a * a + 100.0 * b * b;
-      return true;
-    }
-  };
+    const double a = 1.0 - theX;
+    const double b = theX * theX - theX;
+    theF           = a * a + 100.0 * b * b;
+    return true;
+  }
+};
 
-  //! Absolute value shifted: f(x) = |x - 2| + 1
-  //! Minimum at x = 2, f(2) = 1 (non-smooth)
-  class AbsShiftedFunc
+//! Absolute value shifted: f(x) = |x - 2| + 1
+//! Minimum at x = 2, f(2) = 1 (non-smooth)
+class AbsShiftedFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::abs(theX - 2.0) + 1.0;
-      return true;
-    }
-  };
+    theF = std::abs(theX - 2.0) + 1.0;
+    return true;
+  }
+};
 
-  //! Sinusoidal with noise: f(x) = sin(x) + 0.5*sin(3x)
-  //! Multiple local minima
-  class SinWithHarmonicFunc
+//! Sinusoidal with noise: f(x) = sin(x) + 0.5*sin(3x)
+//! Multiple local minima
+class SinWithHarmonicFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(theX) + 0.5 * std::sin(3.0 * theX);
-      return true;
-    }
-  };
-}
+    theF = std::sin(theX) + 0.5 * std::sin(3.0 * theX);
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // Brent minimization tests
@@ -128,7 +128,7 @@ namespace
 
 TEST(MathOpt_1D_BrentTest, SimpleParabola)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -137,7 +137,7 @@ TEST(MathOpt_1D_BrentTest, SimpleParabola)
 
 TEST(MathOpt_1D_BrentTest, ParabolaWithNegativeMinimum)
 {
-  ParabolaFunc2 aFunc;
+  ParabolaFunc2         aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 5.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 2.0, THE_TOLERANCE);
@@ -146,7 +146,7 @@ TEST(MathOpt_1D_BrentTest, ParabolaWithNegativeMinimum)
 
 TEST(MathOpt_1D_BrentTest, CosineMinimum)
 {
-  CosFunc aFunc;
+  CosFunc               aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
@@ -175,7 +175,7 @@ TEST(MathOpt_1D_BrentTest, QuarticMinimumLeft)
 
 TEST(MathOpt_1D_BrentTest, CoshLikeMinimum)
 {
-  CoshLikeFunc aFunc;
+  CoshLikeFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, -5.0, 5.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 0.0, THE_TOLERANCE);
@@ -184,7 +184,7 @@ TEST(MathOpt_1D_BrentTest, CoshLikeMinimum)
 
 TEST(MathOpt_1D_BrentTest, NarrowInterval)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 2.9, 3.1);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -192,7 +192,7 @@ TEST(MathOpt_1D_BrentTest, NarrowInterval)
 
 TEST(MathOpt_1D_BrentTest, WideInterval)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, -100.0, 100.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -200,9 +200,9 @@ TEST(MathOpt_1D_BrentTest, WideInterval)
 
 TEST(MathOpt_1D_BrentTest, CustomTolerance)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc    aFunc;
   MathOpt::Config aConfig;
-  aConfig.XTolerance = 1.0e-10;
+  aConfig.XTolerance    = 1.0e-10;
   aConfig.MaxIterations = 200;
 
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0, aConfig);
@@ -212,7 +212,7 @@ TEST(MathOpt_1D_BrentTest, CustomTolerance)
 
 TEST(MathOpt_1D_BrentTest, NonSmoothFunction)
 {
-  AbsShiftedFunc aFunc;
+  AbsShiftedFunc        aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 5.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 2.0, 1.0e-6); // Lower tolerance for non-smooth
@@ -225,7 +225,7 @@ TEST(MathOpt_1D_BrentTest, NonSmoothFunction)
 
 TEST(MathOpt_1D_GoldenTest, SimpleParabola)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -234,7 +234,7 @@ TEST(MathOpt_1D_GoldenTest, SimpleParabola)
 
 TEST(MathOpt_1D_GoldenTest, CosineMinimum)
 {
-  CosFunc aFunc;
+  CosFunc               aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
@@ -243,7 +243,7 @@ TEST(MathOpt_1D_GoldenTest, CosineMinimum)
 
 TEST(MathOpt_1D_GoldenTest, QuarticMinimum)
 {
-  QuarticFunc aFunc;
+  QuarticFunc           aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, 0.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 1.0, THE_TOLERANCE);
@@ -252,7 +252,7 @@ TEST(MathOpt_1D_GoldenTest, QuarticMinimum)
 
 TEST(MathOpt_1D_GoldenTest, CoshLikeMinimum)
 {
-  CoshLikeFunc aFunc;
+  CoshLikeFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, -5.0, 5.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 0.0, THE_TOLERANCE);
@@ -265,7 +265,7 @@ TEST(MathOpt_1D_GoldenTest, CoshLikeMinimum)
 
 TEST(MathOpt_1D_BrentWithBracketTest, SimpleParabola)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::BrentWithBracket(aFunc, 0.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -274,7 +274,7 @@ TEST(MathOpt_1D_BrentWithBracketTest, SimpleParabola)
 
 TEST(MathOpt_1D_BrentWithBracketTest, StartNearMinimum)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::BrentWithBracket(aFunc, 2.5, 0.5);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 3.0, THE_TOLERANCE);
@@ -298,7 +298,7 @@ TEST(MathOpt_1D_ComparisonTest, BrentVsGoldenSameResult)
 {
   ParabolaFunc aFunc;
 
-  MathOpt::ScalarResult aBrent = MathOpt::Brent(aFunc, 0.0, 10.0);
+  MathOpt::ScalarResult aBrent  = MathOpt::Brent(aFunc, 0.0, 10.0);
   MathOpt::ScalarResult aGolden = MathOpt::Golden(aFunc, 0.0, 10.0);
 
   ASSERT_TRUE(aBrent.IsDone());
@@ -310,11 +310,11 @@ TEST(MathOpt_1D_ComparisonTest, BrentVsGoldenSameResult)
 
 TEST(MathOpt_1D_ComparisonTest, BrentFasterThanGolden)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc    aFunc;
   MathOpt::Config aConfig;
   aConfig.MaxIterations = 200;
 
-  MathOpt::ScalarResult aBrent = MathOpt::Brent(aFunc, 0.0, 10.0, aConfig);
+  MathOpt::ScalarResult aBrent  = MathOpt::Brent(aFunc, 0.0, 10.0, aConfig);
   MathOpt::ScalarResult aGolden = MathOpt::Golden(aFunc, 0.0, 10.0, aConfig);
 
   ASSERT_TRUE(aBrent.IsDone());
@@ -341,7 +341,7 @@ TEST(MathOpt_1D_RobustnessTest, MinimumAtLeftBoundary)
     }
   };
 
-  SquareFunc aFunc;
+  SquareFunc            aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 0.0, THE_TOLERANCE);
@@ -360,7 +360,7 @@ TEST(MathOpt_1D_RobustnessTest, MinimumAtRightBoundary)
     }
   };
 
-  ShiftedSquareFunc aFunc;
+  ShiftedSquareFunc     aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 10.0, THE_TOLERANCE);
@@ -375,12 +375,12 @@ TEST(MathOpt_1D_RobustnessTest, VeryFlatFunction)
     bool Value(double theX, double& theF) const
     {
       const double aDiff = theX - 5.0;
-      theF = aDiff * aDiff * aDiff * aDiff;
+      theF               = aDiff * aDiff * aDiff * aDiff;
       return true;
     }
   };
 
-  FlatQuarticFunc aFunc;
+  FlatQuarticFunc       aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 5.0, 1.0e-5); // Lower tolerance for flat function
@@ -392,7 +392,7 @@ TEST(MathOpt_1D_RobustnessTest, VeryFlatFunction)
 
 TEST(MathOpt_1D_BoolConversionTest, SuccessfulResultIsTrue)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   EXPECT_TRUE(static_cast<bool>(aResult));
 }
@@ -403,7 +403,7 @@ TEST(MathOpt_1D_BoolConversionTest, SuccessfulResultIsTrue)
 
 TEST(MathOpt_1D_IterationTest, BrentConvergesQuickly)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_LT(aResult.NbIterations, 50);
@@ -411,7 +411,7 @@ TEST(MathOpt_1D_IterationTest, BrentConvergesQuickly)
 
 TEST(MathOpt_1D_IterationTest, GoldenConverges)
 {
-  ParabolaFunc aFunc;
+  ParabolaFunc          aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, 0.0, 10.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_LT(aResult.NbIterations, 100);

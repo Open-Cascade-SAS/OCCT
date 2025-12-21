@@ -28,12 +28,13 @@ using namespace MathUtils;
 //! Result for trigonometric equation solver.
 struct TrigResult
 {
-  MathUtils::Status             Status = MathUtils::Status::NotConverged;
-  std::array<double, 4>         Roots  = {0.0, 0.0, 0.0, 0.0};
-  int                           NbRoots      = 0;
-  bool                          InfiniteRoots = false;
+  MathUtils::Status     Status        = MathUtils::Status::NotConverged;
+  std::array<double, 4> Roots         = {0.0, 0.0, 0.0, 0.0};
+  int                   NbRoots       = 0;
+  bool                  InfiniteRoots = false;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -71,8 +72,8 @@ inline TrigResult Trigonometric(double theA,
 
   // Compute working interval
   double aMyBorneInf, aDelta, aMod;
-  if (theInfBound <= std::numeric_limits<double>::lowest() / 2.0 &&
-      theSupBound >= std::numeric_limits<double>::max() / 2.0)
+  if (theInfBound <= std::numeric_limits<double>::lowest() / 2.0
+      && theSupBound >= std::numeric_limits<double>::max() / 2.0)
   {
     aMyBorneInf = 0.0;
     aDelta      = THE_TWO_PI;
@@ -101,8 +102,8 @@ inline TrigResult Trigonometric(double theA,
     }
   }
 
-  std::array<double, 4> aZer  = {0.0, 0.0, 0.0, 0.0};
-  size_t                aNZer = 0;
+  std::array<double, 4> aZer       = {0.0, 0.0, 0.0, 0.0};
+  size_t                aNZer      = 0;
   const double          aDelta_Eps = std::numeric_limits<double>::epsilon() * std::abs(aDelta);
 
   // Case: A = B = 0 (degree <= 2 in cos/sin)
@@ -364,10 +365,10 @@ inline TrigResult Trigonometric(double theA,
         {
           double aCos = std::cos(theX);
           double aSin = std::sin(theX);
-          double aF   = theA * aCos * aCos + 2.0 * theB * aCos * aSin + theC * aCos +
-                      theD * aSin + theE;
-          double aDF = -2.0 * theA * aCos * aSin + 2.0 * theB * (aCos * aCos - aSin * aSin) -
-                       theC * aSin + theD * aCos;
+          double aF =
+            theA * aCos * aCos + 2.0 * theB * aCos * aSin + theC * aCos + theD * aSin + theE;
+          double aDF = -2.0 * theA * aCos * aSin + 2.0 * theB * (aCos * aCos - aSin * aSin)
+                       - theC * aSin + theD * aCos;
 
           if (std::abs(aDF) < 1.0e-30)
           {

@@ -22,123 +22,123 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-10;
-  constexpr double THE_PI = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-10;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  //! Function with derivative: f(x) = x^2 - 2, f'(x) = 2x
-  //! Root at x = sqrt(2) ~= 1.41421356...
-  class SqrtTwoFunc
+//! Function with derivative: f(x) = x^2 - 2, f'(x) = 2x
+//! Root at x = sqrt(2) ~= 1.41421356...
+class SqrtTwoFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX - 2.0;
-      return true;
-    }
+    theF = theX * theX - 2.0;
+    return true;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = theX * theX - 2.0;
-      theDf = 2.0 * theX;
-      return true;
-    }
-  };
-
-  //! Function: f(x) = cos(x) - x
-  //! Root at x ~= 0.739085...
-  class CosMinusXFunc
+  bool Values(double theX, double& theF, double& theDf) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX) - theX;
-      return true;
-    }
+    theF  = theX * theX - 2.0;
+    theDf = 2.0 * theX;
+    return true;
+  }
+};
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = std::cos(theX) - theX;
-      theDf = -std::sin(theX) - 1.0;
-      return true;
-    }
-  };
-
-  //! Function: f(x) = x^3 - x - 2
-  //! Root at x ~= 1.5214...
-  class CubicFunc
+//! Function: f(x) = cos(x) - x
+//! Root at x ~= 0.739085...
+class CosMinusXFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX * theX - theX - 2.0;
-      return true;
-    }
+    theF = std::cos(theX) - theX;
+    return true;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = theX * theX * theX - theX - 2.0;
-      theDf = 3.0 * theX * theX - 1.0;
-      return true;
-    }
-  };
-
-  //! Function: f(x) = sin(x)
-  //! Roots at x = n*PI for integer n
-  class SinFunc
+  bool Values(double theX, double& theF, double& theDf) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(theX);
-      return true;
-    }
+    theF  = std::cos(theX) - theX;
+    theDf = -std::sin(theX) - 1.0;
+    return true;
+  }
+};
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = std::sin(theX);
-      theDf = std::cos(theX);
-      return true;
-    }
-  };
-
-  //! Function: f(x) = e^x - 3
-  //! Root at x = ln(3) ~= 1.0986...
-  class ExpMinusThreeFunc
+//! Function: f(x) = x^3 - x - 2
+//! Root at x ~= 1.5214...
+class CubicFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX) - 3.0;
-      return true;
-    }
+    theF = theX * theX * theX - theX - 2.0;
+    return true;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = std::exp(theX) - 3.0;
-      theDf = std::exp(theX);
-      return true;
-    }
-  };
-
-  //! Linear function: f(x) = 2x - 4
-  //! Root at x = 2
-  class LinearFunc
+  bool Values(double theX, double& theF, double& theDf) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = 2.0 * theX - 4.0;
-      return true;
-    }
+    theF  = theX * theX * theX - theX - 2.0;
+    theDf = 3.0 * theX * theX - 1.0;
+    return true;
+  }
+};
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF = 2.0 * theX - 4.0;
-      theDf = 2.0;
-      return true;
-    }
-  };
-}
+//! Function: f(x) = sin(x)
+//! Roots at x = n*PI for integer n
+class SinFunc
+{
+public:
+  bool Value(double theX, double& theF) const
+  {
+    theF = std::sin(theX);
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = std::sin(theX);
+    theDf = std::cos(theX);
+    return true;
+  }
+};
+
+//! Function: f(x) = e^x - 3
+//! Root at x = ln(3) ~= 1.0986...
+class ExpMinusThreeFunc
+{
+public:
+  bool Value(double theX, double& theF) const
+  {
+    theF = std::exp(theX) - 3.0;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = std::exp(theX) - 3.0;
+    theDf = std::exp(theX);
+    return true;
+  }
+};
+
+//! Linear function: f(x) = 2x - 4
+//! Root at x = 2
+class LinearFunc
+{
+public:
+  bool Value(double theX, double& theF) const
+  {
+    theF = 2.0 * theX - 4.0;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = 2.0 * theX - 4.0;
+    theDf = 2.0;
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // Newton method tests
@@ -146,7 +146,7 @@ namespace
 
 TEST(MathRoot_NewtonTest, SqrtTwo)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -155,7 +155,7 @@ TEST(MathRoot_NewtonTest, SqrtTwo)
 
 TEST(MathRoot_NewtonTest, CosMinusX)
 {
-  CosMinusXFunc aFunc;
+  CosMinusXFunc          aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 0.5);
   ASSERT_TRUE(aResult.IsDone());
   // Verify root satisfies equation
@@ -165,7 +165,7 @@ TEST(MathRoot_NewtonTest, CosMinusX)
 
 TEST(MathRoot_NewtonTest, CubicEquation)
 {
-  CubicFunc aFunc;
+  CubicFunc              aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.5);
   ASSERT_TRUE(aResult.IsDone());
   // Verify root
@@ -175,7 +175,7 @@ TEST(MathRoot_NewtonTest, CubicEquation)
 
 TEST(MathRoot_NewtonTest, LinearFunction)
 {
-  LinearFunc aFunc;
+  LinearFunc             aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 0.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 2.0, THE_TOLERANCE);
@@ -183,7 +183,7 @@ TEST(MathRoot_NewtonTest, LinearFunction)
 
 TEST(MathRoot_NewtonTest, ExpFunction)
 {
-  ExpMinusThreeFunc aFunc;
+  ExpMinusThreeFunc      aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::log(3.0), THE_TOLERANCE);
@@ -191,10 +191,10 @@ TEST(MathRoot_NewtonTest, ExpFunction)
 
 TEST(MathRoot_NewtonTest, CustomTolerance)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc      aFunc;
   MathRoot::Config aConfig;
-  aConfig.XTolerance = 1.0e-14;
-  aConfig.FTolerance = 1.0e-14;
+  aConfig.XTolerance    = 1.0e-14;
+  aConfig.FTolerance    = 1.0e-14;
   aConfig.MaxIterations = 100;
 
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.0, aConfig);
@@ -208,7 +208,7 @@ TEST(MathRoot_NewtonTest, CustomTolerance)
 
 TEST(MathRoot_NewtonBoundedTest, SqrtTwoWithBounds)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::NewtonBounded(aFunc, 1.5, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -216,7 +216,7 @@ TEST(MathRoot_NewtonBoundedTest, SqrtTwoWithBounds)
 
 TEST(MathRoot_NewtonBoundedTest, SinWithBounds)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathRoot::ScalarResult aResult = MathRoot::NewtonBounded(aFunc, 3.0, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
@@ -228,7 +228,7 @@ TEST(MathRoot_NewtonBoundedTest, SinWithBounds)
 
 TEST(MathRoot_SecantTest, SqrtTwo)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Secant(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -236,7 +236,7 @@ TEST(MathRoot_SecantTest, SqrtTwo)
 
 TEST(MathRoot_SecantTest, CosMinusX)
 {
-  CosMinusXFunc aFunc;
+  CosMinusXFunc          aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Secant(aFunc, 0.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   double aFx = std::cos(*aResult.Root) - *aResult.Root;
@@ -245,7 +245,7 @@ TEST(MathRoot_SecantTest, CosMinusX)
 
 TEST(MathRoot_SecantTest, ExpFunction)
 {
-  ExpMinusThreeFunc aFunc;
+  ExpMinusThreeFunc      aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Secant(aFunc, 0.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::log(3.0), THE_TOLERANCE);
@@ -257,7 +257,7 @@ TEST(MathRoot_SecantTest, ExpFunction)
 
 TEST(MathRoot_BrentTest, SqrtTwo)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -265,7 +265,7 @@ TEST(MathRoot_BrentTest, SqrtTwo)
 
 TEST(MathRoot_BrentTest, CosMinusX)
 {
-  CosMinusXFunc aFunc;
+  CosMinusXFunc          aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 0.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   double aFx = std::cos(*aResult.Root) - *aResult.Root;
@@ -274,7 +274,7 @@ TEST(MathRoot_BrentTest, CosMinusX)
 
 TEST(MathRoot_BrentTest, CubicEquation)
 {
-  CubicFunc aFunc;
+  CubicFunc              aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   double aFx = *aResult.Root * *aResult.Root * *aResult.Root - *aResult.Root - 2.0;
@@ -283,7 +283,7 @@ TEST(MathRoot_BrentTest, CubicEquation)
 
 TEST(MathRoot_BrentTest, SinPi)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
@@ -291,7 +291,7 @@ TEST(MathRoot_BrentTest, SinPi)
 
 TEST(MathRoot_BrentTest, ExpFunction)
 {
-  ExpMinusThreeFunc aFunc;
+  ExpMinusThreeFunc      aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 0.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::log(3.0), THE_TOLERANCE);
@@ -320,7 +320,7 @@ TEST(MathRoot_BrentTest, ReversedBracket)
 
 TEST(MathRoot_BisectionTest, SqrtTwo)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Bisection(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -328,7 +328,7 @@ TEST(MathRoot_BisectionTest, SqrtTwo)
 
 TEST(MathRoot_BisectionTest, CosMinusX)
 {
-  CosMinusXFunc aFunc;
+  CosMinusXFunc          aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Bisection(aFunc, 0.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   double aFx = std::cos(*aResult.Root) - *aResult.Root;
@@ -337,7 +337,7 @@ TEST(MathRoot_BisectionTest, CosMinusX)
 
 TEST(MathRoot_BisectionTest, SinPi)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Bisection(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
@@ -357,7 +357,7 @@ TEST(MathRoot_BisectionTest, InvalidBracket)
 
 TEST(MathRoot_BisectionNewtonTest, SqrtTwo)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::BisectionNewton(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, std::sqrt(2.0), THE_TOLERANCE);
@@ -365,7 +365,7 @@ TEST(MathRoot_BisectionNewtonTest, SqrtTwo)
 
 TEST(MathRoot_BisectionNewtonTest, CosMinusX)
 {
-  CosMinusXFunc aFunc;
+  CosMinusXFunc          aFunc;
   MathRoot::ScalarResult aResult = MathRoot::BisectionNewton(aFunc, 0.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   double aFx = std::cos(*aResult.Root) - *aResult.Root;
@@ -374,11 +374,11 @@ TEST(MathRoot_BisectionNewtonTest, CosMinusX)
 
 TEST(MathRoot_BisectionNewtonTest, FasterThanPureBisection)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc      aFunc;
   MathRoot::Config aConfig;
   aConfig.MaxIterations = 100;
 
-  MathRoot::ScalarResult aBisec = MathRoot::Bisection(aFunc, 1.0, 2.0, aConfig);
+  MathRoot::ScalarResult aBisec  = MathRoot::Bisection(aFunc, 1.0, 2.0, aConfig);
   MathRoot::ScalarResult aHybrid = MathRoot::BisectionNewton(aFunc, 1.0, 2.0, aConfig);
 
   ASSERT_TRUE(aBisec.IsDone());
@@ -394,7 +394,7 @@ TEST(MathRoot_BisectionNewtonTest, FasterThanPureBisection)
 
 TEST(MathRoot_ConvergenceTest, NewtonIterationCount)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.0);
   ASSERT_TRUE(aResult.IsDone());
   // Newton should converge quickly (typically < 10 iterations)
@@ -403,7 +403,7 @@ TEST(MathRoot_ConvergenceTest, NewtonIterationCount)
 
 TEST(MathRoot_ConvergenceTest, BrentIterationCount)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 1.0, 2.0);
   ASSERT_TRUE(aResult.IsDone());
   // Brent should converge reasonably fast
@@ -416,14 +416,14 @@ TEST(MathRoot_ConvergenceTest, BrentIterationCount)
 
 TEST(MathRoot_BoolConversionTest, SuccessfulResultIsTrue)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Newton(aFunc, 1.0);
   EXPECT_TRUE(static_cast<bool>(aResult));
 }
 
 TEST(MathRoot_BoolConversionTest, InvalidInputIsFalse)
 {
-  SqrtTwoFunc aFunc;
+  SqrtTwoFunc            aFunc;
   MathRoot::ScalarResult aResult = MathRoot::Brent(aFunc, 2.0, 3.0);
   EXPECT_FALSE(static_cast<bool>(aResult));
 }

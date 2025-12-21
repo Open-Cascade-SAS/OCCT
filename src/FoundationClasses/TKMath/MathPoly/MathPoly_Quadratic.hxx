@@ -46,8 +46,8 @@ inline MathUtils::PolyResult Linear(double theA, double theB)
     return aResult;
   }
 
-  aResult.Status = MathUtils::Status::OK;
-  aResult.NbRoots = 1;
+  aResult.Status   = MathUtils::Status::OK;
+  aResult.NbRoots  = 1;
   aResult.Roots[0] = -theB / theA;
   return aResult;
 }
@@ -97,7 +97,7 @@ inline MathUtils::PolyResult Quadratic(double theA, double theB, double theC)
   if (aDisc < -aDiscTol)
   {
     // No real roots (complex conjugate pair)
-    aResult.Status = MathUtils::Status::OK;
+    aResult.Status  = MathUtils::Status::OK;
     aResult.NbRoots = 0;
     return aResult;
   }
@@ -105,8 +105,8 @@ inline MathUtils::PolyResult Quadratic(double theA, double theB, double theC)
   if (std::abs(aDisc) <= aDiscTol)
   {
     // Double root
-    aResult.Status = MathUtils::Status::OK;
-    aResult.NbRoots = 1;
+    aResult.Status   = MathUtils::Status::OK;
+    aResult.NbRoots  = 1;
     aResult.Roots[0] = -aB / (2.0 * aA);
     return aResult;
   }
@@ -118,8 +118,8 @@ inline MathUtils::PolyResult Quadratic(double theA, double theB, double theC)
   // q = -0.5 * (b + sign(b) * sqrt(discriminant))
   const double aQ = -0.5 * (aB + MathUtils::SignTransfer(aSqrtDisc, aB));
 
-  aResult.Status = MathUtils::Status::OK;
-  aResult.NbRoots = 2;
+  aResult.Status   = MathUtils::Status::OK;
+  aResult.NbRoots  = 2;
   aResult.Roots[0] = aQ / aA;
   aResult.Roots[1] = aC / aQ;
 

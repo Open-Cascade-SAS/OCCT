@@ -22,7 +22,7 @@ namespace
 {
 constexpr double THE_TOLERANCE = 1e-8;
 constexpr double THE_PI        = 3.14159265358979323846;
-}
+} // namespace
 
 //==================================================================================================
 // FindAllRoots Tests (Value-only interface)
@@ -80,7 +80,7 @@ TEST(MathRoot_Multiple, FindAllRoots_SineFunction)
   MathUtils::Sine aSine;
 
   MathRoot::MultipleConfig aConfig;
-  aConfig.NbSamples = 200;
+  aConfig.NbSamples  = 200;
   aConfig.FTolerance = 1e-10;
 
   auto aResult = MathRoot::FindAllRoots(aSine, 0.0, 10.0, aConfig);
@@ -116,7 +116,7 @@ TEST(MathRoot_Multiple, FindAllRoots_CloseRoots)
   MathUtils::Polynomial aFunc({1.01, -2.01, 1.0});
 
   MathRoot::MultipleConfig aConfig;
-  aConfig.NbSamples = 500;
+  aConfig.NbSamples  = 500;
   aConfig.XTolerance = 1e-4;
 
   auto aResult = MathRoot::FindAllRoots(aFunc, 0.0, 2.0, aConfig);
@@ -182,7 +182,7 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_DoubleRoot)
   MathUtils::Polynomial aFunc({4.0, -4.0, 1.0});
 
   MathRoot::MultipleConfig aConfig;
-  aConfig.NbSamples = 100;
+  aConfig.NbSamples  = 100;
   aConfig.FTolerance = 1e-8;
 
   auto aResult = MathRoot::FindAllRootsWithDerivative(aFunc, 0.0, 4.0, aConfig);
@@ -209,7 +209,7 @@ TEST(MathRoot_Multiple, FindAllRootsWithDerivative_SineFunction)
 
     bool Values(double theX, double& theY, double& theDY) const
     {
-      theY = std::sin(theX);
+      theY  = std::sin(theX);
       theDY = std::cos(theX);
       return true;
     }
@@ -240,7 +240,7 @@ TEST(MathRoot_Multiple, CompareWithLegacy_Polynomial)
   MathUtils::Polynomial aFunc({-6.0, 11.0, -6.0, 1.0});
 
   MathRoot::MultipleConfig aConfig;
-  aConfig.NbSamples = 50;
+  aConfig.NbSamples  = 50;
   aConfig.XTolerance = 1e-10;
   aConfig.FTolerance = 1e-10;
 

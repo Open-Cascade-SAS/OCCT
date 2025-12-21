@@ -48,7 +48,7 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
   IntegResult aResult;
 
   // Get quadrature points and weights
-  const double* aPoints = nullptr;
+  const double* aPoints  = nullptr;
   const double* aWeights = nullptr;
 
   if (!MathUtils::GetGaussPointsAndWeights(theNbPoints, aPoints, aWeights))
@@ -59,7 +59,7 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
 
   // Transform from [-1, 1] to [theLower, theUpper]
   const double aHalfLen = 0.5 * (theUpper - theLower);
-  const double aMid = 0.5 * (theUpper + theLower);
+  const double aMid     = 0.5 * (theUpper + theLower);
 
   double aSum = 0.0;
   for (int i = 0; i < theNbPoints; ++i)
@@ -74,9 +74,9 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
     aSum += aWeights[i] * aF;
   }
 
-  aResult.Status = Status::OK;
-  aResult.Value = aHalfLen * aSum;
-  aResult.NbPoints = theNbPoints;
+  aResult.Status       = Status::OK;
+  aResult.Value        = aHalfLen * aSum;
+  aResult.NbPoints     = theNbPoints;
   aResult.NbIterations = 1;
   return aResult;
 }
@@ -96,10 +96,10 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
 //! @param theConfig integration configuration
 //! @return result containing integral value and error estimate
 template <typename Function>
-IntegResult GaussAdaptive(Function&               theFunc,
-                               double                  theLower,
-                               double                  theUpper,
-                               const IntegConfig& theConfig = IntegConfig())
+IntegResult GaussAdaptive(Function&          theFunc,
+                          double             theLower,
+                          double             theUpper,
+                          const IntegConfig& theConfig = IntegConfig())
 {
   IntegResult aResult;
 
@@ -122,38 +122,38 @@ IntegResult GaussAdaptive(Function&               theFunc,
   // Check if converged
   if (aError < theConfig.Tolerance * aScale)
   {
-    aResult.Status = Status::OK;
-    aResult.Value = *aFine.Value;
+    aResult.Status        = Status::OK;
+    aResult.Value         = *aFine.Value;
     aResult.AbsoluteError = aError;
     aResult.RelativeError = aError / aScale;
-    aResult.NbPoints = 15;
-    aResult.NbIterations = 1;
+    aResult.NbPoints      = 15;
+    aResult.NbIterations  = 1;
     return aResult;
   }
 
   // Need to subdivide - check iteration limit
   if (theConfig.MaxIterations <= 1)
   {
-    aResult.Status = Status::MaxIterations;
-    aResult.Value = *aFine.Value;
+    aResult.Status        = Status::MaxIterations;
+    aResult.Value         = *aFine.Value;
     aResult.AbsoluteError = aError;
     aResult.RelativeError = aError / aScale;
-    aResult.NbPoints = 15;
-    aResult.NbIterations = 1;
+    aResult.NbPoints      = 15;
+    aResult.NbIterations  = 1;
     return aResult;
   }
 
   // Subdivide interval
   const double aMid = 0.5 * (theLower + theUpper);
 
-  IntegConfig aSubConfig = theConfig;
+  IntegConfig aSubConfig   = theConfig;
   aSubConfig.MaxIterations = theConfig.MaxIterations - 1;
 
   IntegResult aLeft = GaussAdaptive(theFunc, theLower, aMid, aSubConfig);
   if (!aLeft.IsDone())
   {
     aResult.Status = aLeft.Status;
-    aResult.Value = aLeft.Value;
+    aResult.Value  = aLeft.Value;
     return aResult;
   }
 
@@ -161,16 +161,16 @@ IntegResult GaussAdaptive(Function&               theFunc,
   if (!aRight.IsDone())
   {
     aResult.Status = aRight.Status;
-    aResult.Value = *aLeft.Value + (aRight.Value ? *aRight.Value : 0.0);
+    aResult.Value  = *aLeft.Value + (aRight.Value ? *aRight.Value : 0.0);
     return aResult;
   }
 
-  aResult.Status = Status::OK;
-  aResult.Value = *aLeft.Value + *aRight.Value;
+  aResult.Status        = Status::OK;
+  aResult.Value         = *aLeft.Value + *aRight.Value;
   aResult.AbsoluteError = *aLeft.AbsoluteError + *aRight.AbsoluteError;
   aResult.RelativeError = *aResult.AbsoluteError / std::max(std::abs(*aResult.Value), 1.0e-15);
-  aResult.NbPoints = aLeft.NbPoints + aRight.NbPoints;
-  aResult.NbIterations = std::max(aLeft.NbIterations, aRight.NbIterations) + 1;
+  aResult.NbPoints      = aLeft.NbPoints + aRight.NbPoints;
+  aResult.NbIterations  = std::max(aLeft.NbIterations, aRight.NbIterations) + 1;
   return aResult;
 }
 
@@ -187,10 +187,10 @@ IntegResult GaussAdaptive(Function&               theFunc,
 //! @return result containing integral value
 template <typename Function>
 IntegResult GaussComposite(Function& theFunc,
-                                double    theLower,
-                                double    theUpper,
-                                int       theNbIntervals,
-                                int       theNbPoints = 7)
+                           double    theLower,
+                           double    theUpper,
+                           int       theNbIntervals,
+                           int       theNbPoints = 7)
 {
   IntegResult aResult;
 
@@ -200,8 +200,8 @@ IntegResult GaussComposite(Function& theFunc,
     return aResult;
   }
 
-  const double aH = (theUpper - theLower) / theNbIntervals;
-  double       aSum = 0.0;
+  const double aH           = (theUpper - theLower) / theNbIntervals;
+  double       aSum         = 0.0;
   int          aTotalPoints = 0;
 
   for (int i = 0; i < theNbIntervals; ++i)
@@ -212,8 +212,8 @@ IntegResult GaussComposite(Function& theFunc,
     IntegResult aSubResult = Gauss(theFunc, aA, aB, theNbPoints);
     if (!aSubResult.IsDone())
     {
-      aResult.Status = aSubResult.Status;
-      aResult.Value = aSum;
+      aResult.Status   = aSubResult.Status;
+      aResult.Value    = aSum;
       aResult.NbPoints = aTotalPoints;
       return aResult;
     }
@@ -222,9 +222,9 @@ IntegResult GaussComposite(Function& theFunc,
     aTotalPoints += aSubResult.NbPoints;
   }
 
-  aResult.Status = Status::OK;
-  aResult.Value = aSum;
-  aResult.NbPoints = aTotalPoints;
+  aResult.Status       = Status::OK;
+  aResult.Value        = aSum;
+  aResult.NbPoints     = aTotalPoints;
   aResult.NbIterations = 1;
   return aResult;
 }

@@ -30,20 +30,21 @@ using namespace MathUtils;
 //! Configuration for Particle Swarm Optimization.
 struct PSOConfig : NDimConfig
 {
-  int    NbParticles    = 40;   //!< Number of particles in the swarm
-  double Omega          = 0.7;  //!< Inertia weight (velocity decay)
-  double PhiPersonal    = 1.5;  //!< Personal best attraction coefficient
-  double PhiGlobal      = 1.5;  //!< Global best attraction coefficient
-  double VelocityClamp  = 0.5;  //!< Max velocity as fraction of search space
-  unsigned int Seed     = 12345; //!< Random seed for reproducibility
+  int          NbParticles   = 40;    //!< Number of particles in the swarm
+  double       Omega         = 0.7;   //!< Inertia weight (velocity decay)
+  double       PhiPersonal   = 1.5;   //!< Personal best attraction coefficient
+  double       PhiGlobal     = 1.5;   //!< Global best attraction coefficient
+  double       VelocityClamp = 0.5;   //!< Max velocity as fraction of search space
+  unsigned int Seed          = 12345; //!< Random seed for reproducibility
 
   //! Default constructor.
-  PSOConfig() : NDimConfig(1.0e-8, 100, true) {}
+  PSOConfig()
+      : NDimConfig(1.0e-8, 100, true)
+  {
+  }
 
   //! Constructor with parameters.
-  PSOConfig(int    theNbParticles,
-            int    theMaxIter   = 100,
-            double theTolerance = 1.0e-8)
+  PSOConfig(int theNbParticles, int theMaxIter = 100, double theTolerance = 1.0e-8)
       : NDimConfig(theTolerance, theMaxIter, true),
         NbParticles(theNbParticles)
   {
@@ -153,12 +154,11 @@ VectorResult PSO(Function&          theFunc,
     // Random position in bounds
     for (int i = aLower; i <= aUpper; ++i)
     {
-      double aRand = aRNG.NextReal();
-      aParticle.Position(i) =
-          theLowerBounds(i) + aRand * (theUpperBounds(i) - theLowerBounds(i));
+      double aRand          = aRNG.NextReal();
+      aParticle.Position(i) = theLowerBounds(i) + aRand * (theUpperBounds(i) - theLowerBounds(i));
 
       // Random velocity
-      aRand = 2.0 * aRNG.NextReal() - 1.0;
+      aRand                 = 2.0 * aRNG.NextReal() - 1.0;
       aParticle.Velocity(i) = aRand * aVelMax(i);
     }
 
@@ -181,7 +181,7 @@ VectorResult PSO(Function&          theFunc,
   }
 
   // Main PSO loop
-  double aPrevBest = aGlobalBestValue;
+  double aPrevBest        = aGlobalBestValue;
   int    aStagnationCount = 0;
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
@@ -199,12 +199,13 @@ VectorResult PSO(Function&          theFunc,
         double r1 = aRNG.NextReal();
         double r2 = aRNG.NextReal();
 
-        double aVnew = theConfig.Omega * aParticle.Velocity(i)
-                     + theConfig.PhiPersonal * r1 * (aParticle.BestPosition(i) - aParticle.Position(i))
-                     + theConfig.PhiGlobal * r2 * (aGlobalBest(i) - aParticle.Position(i));
+        double aVnew =
+          theConfig.Omega * aParticle.Velocity(i)
+          + theConfig.PhiPersonal * r1 * (aParticle.BestPosition(i) - aParticle.Position(i))
+          + theConfig.PhiGlobal * r2 * (aGlobalBest(i) - aParticle.Position(i));
 
         // Clamp velocity
-        aVnew = MathUtils::Clamp(aVnew, -aVelMax(i), aVelMax(i));
+        aVnew                 = MathUtils::Clamp(aVnew, -aVelMax(i), aVelMax(i));
         aParticle.Velocity(i) = aVnew;
       }
 
@@ -250,7 +251,8 @@ VectorResult PSO(Function&          theFunc,
     }
 
     // Check for convergence (stagnation)
-    if (std::abs(aGlobalBestValue - aPrevBest) < theConfig.Tolerance * (1.0 + std::abs(aGlobalBestValue)))
+    if (std::abs(aGlobalBestValue - aPrevBest)
+        < theConfig.Tolerance * (1.0 + std::abs(aGlobalBestValue)))
     {
       ++aStagnationCount;
       if (aStagnationCount > 10)
@@ -293,8 +295,8 @@ VectorResult PSOMultiStart(Function&          theFunc,
                            const PSOConfig&   theConfig   = PSOConfig())
 {
   // First run PSO to get initial points
-  PSOConfig aPSOConfig = theConfig;
-  aPSOConfig.NbParticles = theNbStarts * 10;
+  PSOConfig aPSOConfig     = theConfig;
+  aPSOConfig.NbParticles   = theNbStarts * 10;
   aPSOConfig.MaxIterations = theConfig.MaxIterations / 2;
 
   VectorResult aPSOResult = PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig);

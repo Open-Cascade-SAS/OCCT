@@ -36,6 +36,7 @@ constexpr double THE_LOOSE_TOL = 1.0e-3;
 struct LinearSystem2D
 {
   int NbVariables() const { return 2; }
+
   int NbEquations() const { return 2; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -67,6 +68,7 @@ struct LinearSystem2D
 struct CircleHyperbola
 {
   int NbVariables() const { return 2; }
+
   int NbEquations() const { return 2; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -98,6 +100,7 @@ struct CircleHyperbola
 struct RosenbrockResidual
 {
   int NbVariables() const { return 2; }
+
   int NbEquations() const { return 2; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -131,6 +134,7 @@ struct RosenbrockResidual
 struct PowellSingular
 {
   int NbVariables() const { return 4; }
+
   int NbEquations() const { return 4; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -153,12 +157,12 @@ struct PowellSingular
     theD(2, 4) = -std::sqrt(5.0);
     // F3 = (x2 - 2*x3)^2
     const double aT1 = theX(2) - 2.0 * theX(3);
-    theD(3, 2) = 2.0 * aT1;
-    theD(3, 3) = -4.0 * aT1;
+    theD(3, 2)       = 2.0 * aT1;
+    theD(3, 3)       = -4.0 * aT1;
     // F4 = sqrt(10)*(x1 - x4)^2
     const double aT2 = theX(1) - theX(4);
-    theD(4, 1) = 2.0 * std::sqrt(10.0) * aT2;
-    theD(4, 4) = -2.0 * std::sqrt(10.0) * aT2;
+    theD(4, 1)       = 2.0 * std::sqrt(10.0) * aT2;
+    theD(4, 4)       = -2.0 * std::sqrt(10.0) * aT2;
     return true;
   }
 
@@ -177,6 +181,7 @@ struct ExponentialFit
   double myY[5] = {1.0, 2.7, 7.4, 20.1, 54.6}; // Approx e^t
 
   int NbVariables() const { return 2; }
+
   int NbEquations() const { return 5; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -193,8 +198,8 @@ struct ExponentialFit
     for (int i = 0; i < 5; ++i)
     {
       const double aExp = std::exp(theX(2) * myT[i]);
-      theD(i + 1, 1) = -aExp;
-      theD(i + 1, 2) = -theX(1) * myT[i] * aExp;
+      theD(i + 1, 1)    = -aExp;
+      theD(i + 1, 2)    = -theX(1) * myT[i] * aExp;
     }
     return true;
   }
@@ -213,6 +218,7 @@ struct ExponentialFit
 struct OverdeterminedSystem
 {
   int NbVariables() const { return 2; }
+
   int NbEquations() const { return 3; }
 
   bool Value(const math_Vector& theX, math_Vector& theF)
@@ -248,6 +254,7 @@ class CircleHyperbolaOld : public math_FunctionSetWithDerivatives
 {
 public:
   Standard_Integer NbVariables() const override { return 2; }
+
   Standard_Integer NbEquations() const override { return 2; }
 
   Standard_Boolean Value(const math_Vector& theX, math_Vector& theF) override
@@ -276,6 +283,7 @@ class RosenbrockResidualOld : public math_FunctionSetWithDerivatives
 {
 public:
   Standard_Integer NbVariables() const override { return 2; }
+
   Standard_Integer NbEquations() const override { return 2; }
 
   Standard_Boolean Value(const math_Vector& theX, math_Vector& theF) override
@@ -574,7 +582,7 @@ TEST(MathSys_LM_Test, DampingParameters)
     const double aY = (*aResult.Solution)(2);
 
     EXPECT_NEAR(aX * aX + aY * aY, 4.0, THE_TOLERANCE)
-        << "Failed equation 1 with lambda = " << aLambda;
+      << "Failed equation 1 with lambda = " << aLambda;
     EXPECT_NEAR(aX * aY, 1.0, THE_TOLERANCE) << "Failed equation 2 with lambda = " << aLambda;
   }
 }
@@ -605,8 +613,8 @@ TEST(MathSys_LM_Test, LambdaUpdateFactors)
 
     auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
-    ASSERT_TRUE(aResult.IsDone())
-        << "Failed with increase=" << aFactor.myIncrease << ", decrease=" << aFactor.myDecrease;
+    ASSERT_TRUE(aResult.IsDone()) << "Failed with increase=" << aFactor.myIncrease
+                                  << ", decrease=" << aFactor.myDecrease;
     EXPECT_LT(*aResult.Value, 0.1);
   }
 }
@@ -752,16 +760,16 @@ TEST(MathSys_LM_Test, DifferentStartingPoints)
 
     auto aResult = MathSys::LevenbergMarquardt(aFunc, aStart, aConfig);
 
-    ASSERT_TRUE(aResult.IsDone())
-        << "Failed with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
+    ASSERT_TRUE(aResult.IsDone()) << "Failed with start = (" << aStartPt[0] << ", " << aStartPt[1]
+                                  << ")";
 
     const double aX = (*aResult.Solution)(1);
     const double aY = (*aResult.Solution)(2);
 
     EXPECT_NEAR(aX * aX + aY * aY, 4.0, THE_TOLERANCE)
-        << "Failed equation 1 with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
+      << "Failed equation 1 with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
     EXPECT_NEAR(aX * aY, 1.0, THE_TOLERANCE)
-        << "Failed equation 2 with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
+      << "Failed equation 2 with start = (" << aStartPt[0] << ", " << aStartPt[1] << ")";
   }
 }
 

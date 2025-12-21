@@ -42,10 +42,10 @@ using namespace MathUtils;
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult Secant(Function&     theFunc,
-                    double        theX0,
-                    double        theX1,
-                    const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult Secant(Function&                theFunc,
+                               double                   theX0,
+                               double                   theX1,
+                               const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
 
@@ -130,9 +130,9 @@ MathUtils::ScalarResult Secant(Function&     theFunc,
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult SecantAuto(Function&     theFunc,
-                        double        theX0,
-                        const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult SecantAuto(Function&                theFunc,
+                                   double                   theX0,
+                                   const MathUtils::Config& theConfig = MathUtils::Config())
 {
   // Create second point by small perturbation
   const double aDelta = (std::abs(theX0) > 1.0) ? 0.01 * theX0 : 0.01;

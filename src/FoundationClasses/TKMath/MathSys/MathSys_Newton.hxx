@@ -164,8 +164,8 @@ VectorResult NewtonBounded(FuncSetType&       theFunc,
   const int aM = theFunc.NbEquations();
 
   // Check dimensions
-  if (aN != aM || theStart.Length() != aN || theTolX.Length() != aN
-      || theInfBound.Length() != aN || theSupBound.Length() != aN)
+  if (aN != aM || theStart.Length() != aN || theTolX.Length() != aN || theInfBound.Length() != aN
+      || theSupBound.Length() != aN)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;

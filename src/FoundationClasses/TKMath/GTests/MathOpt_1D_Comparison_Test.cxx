@@ -24,145 +24,145 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-7;
-  constexpr double THE_PI        = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-7;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  // ============================================================================
-  // Adapter classes for old API (inherit from math_Function)
-  // ============================================================================
+// ============================================================================
+// Adapter classes for old API (inherit from math_Function)
+// ============================================================================
 
-  //! f(x) = (x - 3)^2 + 1
-  //! Minimum at x = 3, f(3) = 1
-  class ParabolaFuncOld : public math_Function
+//! f(x) = (x - 3)^2 + 1
+//! Minimum at x = 3, f(3) = 1
+class ParabolaFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = (theX - 3.0) * (theX - 3.0) + 1.0;
-      return Standard_True;
-    }
-  };
+    theF = (theX - 3.0) * (theX - 3.0) + 1.0;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x^2 - 4x + 3
-  //! Minimum at x = 2, f(2) = -1
-  class ParabolaFunc2Old : public math_Function
+//! f(x) = x^2 - 4x + 3
+//! Minimum at x = 2, f(2) = -1
+class ParabolaFunc2Old : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX - 4.0 * theX + 3.0;
-      return Standard_True;
-    }
-  };
+    theF = theX * theX - 4.0 * theX + 3.0;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = cos(x)
-  //! Local minimum at x = PI, f(PI) = -1
-  class CosFuncOld : public math_Function
+//! f(x) = cos(x)
+//! Local minimum at x = PI, f(PI) = -1
+class CosFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::cos(theX);
-      return Standard_True;
-    }
-  };
+    theF = std::cos(theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x^4 - 2x^2
-  //! Local minima at x = -1 and x = 1, f(-1) = f(1) = -1
-  class QuarticFuncOld : public math_Function
+//! f(x) = x^4 - 2x^2
+//! Local minima at x = -1 and x = 1, f(-1) = f(1) = -1
+class QuarticFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      const double aX2 = theX * theX;
-      theF             = aX2 * aX2 - 2.0 * aX2;
-      return Standard_True;
-    }
-  };
+    const double aX2 = theX * theX;
+    theF             = aX2 * aX2 - 2.0 * aX2;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = e^x + e^(-x)
-  //! Minimum at x = 0, f(0) = 2
-  class CoshLikeFuncOld : public math_Function
+//! f(x) = e^x + e^(-x)
+//! Minimum at x = 0, f(0) = 2
+class CoshLikeFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::exp(theX) + std::exp(-theX);
-      return Standard_True;
-    }
-  };
+    theF = std::exp(theX) + std::exp(-theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x^2
-  //! Minimum at x = 0, f(0) = 0
-  class SquareFuncOld : public math_Function
+//! f(x) = x^2
+//! Minimum at x = 0, f(0) = 0
+class SquareFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX;
-      return Standard_True;
-    }
-  };
+    theF = theX * theX;
+    return Standard_True;
+  }
+};
 
-  // ============================================================================
-  // Function classes for new API
-  // ============================================================================
+// ============================================================================
+// Function classes for new API
+// ============================================================================
 
-  struct ParabolaFuncNew
+struct ParabolaFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = (theX - 3.0) * (theX - 3.0) + 1.0;
-      return true;
-    }
-  };
+    theF = (theX - 3.0) * (theX - 3.0) + 1.0;
+    return true;
+  }
+};
 
-  struct ParabolaFunc2New
+struct ParabolaFunc2New
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX - 4.0 * theX + 3.0;
-      return true;
-    }
-  };
+    theF = theX * theX - 4.0 * theX + 3.0;
+    return true;
+  }
+};
 
-  struct CosFuncNew
+struct CosFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX);
-      return true;
-    }
-  };
+    theF = std::cos(theX);
+    return true;
+  }
+};
 
-  struct QuarticFuncNew
+struct QuarticFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      const double aX2 = theX * theX;
-      theF             = aX2 * aX2 - 2.0 * aX2;
-      return true;
-    }
-  };
+    const double aX2 = theX * theX;
+    theF             = aX2 * aX2 - 2.0 * aX2;
+    return true;
+  }
+};
 
-  struct CoshLikeFuncNew
+struct CoshLikeFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX) + std::exp(-theX);
-      return true;
-    }
-  };
+    theF = std::exp(theX) + std::exp(-theX);
+    return true;
+  }
+};
 
-  struct SquareFuncNew
+struct SquareFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX;
-      return true;
-    }
-  };
-}
+    theF = theX * theX;
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // math_BrentMinimum vs MathOpt::Brent comparison tests
@@ -352,8 +352,8 @@ TEST(MathOpt_1D_ComparisonTest, Accuracy_BrentVsOld)
   anOldSolver.Perform(anOldFunc, 0.0, 3.0, 10.0);
 
   MathOpt::Config aConfig;
-  aConfig.XTolerance    = aTightTol;
-  aConfig.MaxIterations = 200;
+  aConfig.XTolerance               = aTightTol;
+  aConfig.MaxIterations            = 200;
   MathOpt::ScalarResult aNewResult = MathOpt::Brent(aNewFunc, 0.0, 10.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());

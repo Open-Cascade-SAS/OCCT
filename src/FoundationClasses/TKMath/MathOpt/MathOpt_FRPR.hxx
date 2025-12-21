@@ -143,7 +143,7 @@ VectorResult FRPR(Function&          theFunc,
 
     // Line search
     MathUtils::LineSearchResult aLineResult =
-        MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
 
     if (!aLineResult.IsValid || aLineResult.Alpha < MathUtils::THE_EPSILON)
     {
@@ -240,8 +240,7 @@ VectorResult FRPR(Function&          theFunc,
           }
           break;
 
-        case ConjugateGradientFormula::PolakRibiere:
-        {
+        case ConjugateGradientFormula::PolakRibiere: {
           // beta = g_new^T (g_new - g) / g^T g
           double aDot = 0.0;
           for (int i = aLower; i <= aUpper; ++i)
@@ -261,8 +260,7 @@ VectorResult FRPR(Function&          theFunc,
         }
         break;
 
-        case ConjugateGradientFormula::HestenesStiefel:
-        {
+        case ConjugateGradientFormula::HestenesStiefel: {
           // beta = g_new^T (g_new - g) / d^T (g_new - g)
           double aNum = 0.0;
           double aDen = 0.0;
@@ -283,8 +281,7 @@ VectorResult FRPR(Function&          theFunc,
         }
         break;
 
-        case ConjugateGradientFormula::DaiYuan:
-        {
+        case ConjugateGradientFormula::DaiYuan: {
           // beta = g_new^T g_new / d^T (g_new - g)
           double aDen = 0.0;
           for (int i = aLower; i <= aUpper; ++i)

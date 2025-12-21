@@ -84,12 +84,12 @@ struct RosenbrockFunc
 
   bool Hessian(const math_Vector& theX, math_Matrix& theHess)
   {
-    const double aX   = theX(1);
-    const double aY   = theX(2);
-    theHess(1, 1)     = 1200.0 * aX * aX - 400.0 * aY + 2.0;
-    theHess(1, 2)     = -400.0 * aX;
-    theHess(2, 1)     = -400.0 * aX;
-    theHess(2, 2)     = 200.0;
+    const double aX = theX(1);
+    const double aY = theX(2);
+    theHess(1, 1)   = 1200.0 * aX * aX - 400.0 * aY + 2.0;
+    theHess(1, 2)   = -400.0 * aX;
+    theHess(2, 1)   = -400.0 * aX;
+    theHess(2, 2)   = 200.0;
     return true;
   }
 };
@@ -121,10 +121,10 @@ struct BoothFunc
 
   bool Hessian(const math_Vector& /*theX*/, math_Matrix& theHess)
   {
-    theHess(1, 1) = 10.0;  // 2 + 8
-    theHess(1, 2) = 8.0;   // 4 + 4
+    theHess(1, 1) = 10.0; // 2 + 8
+    theHess(1, 2) = 8.0;  // 4 + 4
     theHess(2, 1) = 8.0;
-    theHess(2, 2) = 10.0;  // 8 + 2
+    theHess(2, 2) = 10.0; // 8 + 2
     return true;
   }
 };
@@ -196,10 +196,15 @@ public:
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG, math_Matrix& theH) override
+  Standard_Boolean Values(const math_Vector& theX,
+                          Standard_Real&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
-    if (!Value(theX, theF)) return Standard_False;
-    if (!Gradient(theX, theG)) return Standard_False;
+    if (!Value(theX, theF))
+      return Standard_False;
+    if (!Gradient(theX, theG))
+      return Standard_False;
     theH(1, 1) = 2.0;
     theH(1, 2) = 0.0;
     theH(2, 1) = 0.0;
@@ -239,10 +244,15 @@ public:
     return Value(theX, theF) && Gradient(theX, theG);
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG, math_Matrix& theH) override
+  Standard_Boolean Values(const math_Vector& theX,
+                          Standard_Real&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
-    if (!Value(theX, theF)) return Standard_False;
-    if (!Gradient(theX, theG)) return Standard_False;
+    if (!Value(theX, theF))
+      return Standard_False;
+    if (!Gradient(theX, theG))
+      return Standard_False;
     theH(1, 1) = 10.0;
     theH(1, 2) = 8.0;
     theH(2, 1) = 8.0;
@@ -305,7 +315,7 @@ TEST(MathOpt_NewtonTest, Rosenbrock)
   RosenbrockFunc aFunc;
 
   math_Vector aStart(1, 2);
-  aStart(1) = 0.5;  // Start closer to solution for Newton
+  aStart(1) = 0.5; // Start closer to solution for Newton
   aStart(2) = 0.5;
 
   MathOpt::NewtonConfig aConfig;
@@ -379,9 +389,9 @@ TEST(MathOpt_NewtonTest, ModifiedNewton_Rosenbrock)
   aStart(2) = 1.0;
 
   MathOpt::NewtonConfig aConfig;
-  aConfig.MaxIterations   = 200;
-  aConfig.Tolerance       = 1.0e-6;
-  aConfig.Regularization  = 1.0e-4; // Higher regularization for Rosenbrock from far start
+  aConfig.MaxIterations  = 200;
+  aConfig.Tolerance      = 1.0e-6;
+  aConfig.Regularization = 1.0e-4; // Higher regularization for Rosenbrock from far start
 
   auto aResult = MathOpt::NewtonModified(aFunc, aStart, aConfig);
 

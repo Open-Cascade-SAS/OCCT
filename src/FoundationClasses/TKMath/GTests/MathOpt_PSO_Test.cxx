@@ -50,9 +50,9 @@ struct RastriginFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN = theX.Length();
+    const int    aN  = theX.Length();
     const double aPI = M_PI;
-    theF = 10.0 * aN;
+    theF             = 10.0 * aN;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theF += theX(i) * theX(i) - 10.0 * std::cos(2.0 * aPI * theX(i));
@@ -66,10 +66,10 @@ struct AckleyFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN     = theX.Length();
-    const double aPI    = M_PI;
-    double       aSum1  = 0.0;
-    double       aSum2  = 0.0;
+    const int    aN    = theX.Length();
+    const double aPI   = M_PI;
+    double       aSum1 = 0.0;
+    double       aSum2 = 0.0;
 
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
@@ -122,7 +122,10 @@ private:
   int myN;
 
 public:
-  SphereFuncOld(int theN) : myN(theN) {}
+  SphereFuncOld(int theN)
+      : myN(theN)
+  {
+  }
 
   Standard_Integer NbVariables() const override { return myN; }
 

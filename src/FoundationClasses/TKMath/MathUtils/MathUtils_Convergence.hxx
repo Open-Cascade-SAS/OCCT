@@ -32,7 +32,7 @@ namespace MathUtils
 //! @return true if converged
 inline bool IsXConverged(double theXOld, double theXNew, double theTolerance)
 {
-  const double aDiff = std::abs(theXNew - theXOld);
+  const double aDiff  = std::abs(theXNew - theXOld);
   const double aScale = std::max(1.0, std::abs(theXNew));
   return aDiff < theTolerance * aScale;
 }
@@ -53,13 +53,10 @@ inline bool IsFConverged(double theFValue, double theTolerance)
 //! @param theFValue function value at theXNew
 //! @param theConfig solver configuration
 //! @return true if either criterion is satisfied
-inline bool IsConverged(double             theXOld,
-                        double             theXNew,
-                        double             theFValue,
-                        const Config& theConfig)
+inline bool IsConverged(double theXOld, double theXNew, double theFValue, const Config& theConfig)
 {
   return IsXConverged(theXOld, theXNew, theConfig.XTolerance)
-      || IsFConverged(theFValue, theConfig.FTolerance);
+         || IsFConverged(theFValue, theConfig.FTolerance);
 }
 
 //! Convergence test for minimization (checks both X and F change).
@@ -69,10 +66,10 @@ inline bool IsConverged(double             theXOld,
 //! @param theFNew current function value
 //! @param theConfig solver configuration
 //! @return true if converged
-inline bool IsMinConverged(double             theXOld,
-                           double             theXNew,
-                           double             theFOld,
-                           double             theFNew,
+inline bool IsMinConverged(double        theXOld,
+                           double        theXNew,
+                           double        theFOld,
+                           double        theFNew,
                            const Config& theConfig)
 {
   // X convergence
@@ -82,7 +79,7 @@ inline bool IsMinConverged(double             theXOld,
   }
 
   // Relative function change convergence
-  const double aFDiff = std::abs(theFNew - theFOld);
+  const double aFDiff  = std::abs(theFNew - theFOld);
   const double aFScale = std::max(1.0, std::abs(theFNew));
   return aFDiff < theConfig.FTolerance * aFScale;
 }
@@ -96,11 +93,11 @@ inline bool IsVectorConverged(const math_Vector& theOld,
                               const math_Vector& theNew,
                               double             theTolerance)
 {
-  double aMaxDiff = 0.0;
+  double aMaxDiff  = 0.0;
   double aMaxScale = 1.0;
   for (int i = theOld.Lower(); i <= theOld.Upper(); ++i)
   {
-    aMaxDiff = std::max(aMaxDiff, std::abs(theNew(i) - theOld(i)));
+    aMaxDiff  = std::max(aMaxDiff, std::abs(theNew(i) - theOld(i)));
     aMaxScale = std::max(aMaxScale, std::abs(theNew(i)));
   }
   return aMaxDiff < theTolerance * aMaxScale;

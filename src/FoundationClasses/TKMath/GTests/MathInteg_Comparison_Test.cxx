@@ -25,185 +25,185 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-10;
-  constexpr double THE_PI        = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-10;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  // ============================================================================
-  // Adapter classes for old API (inherit from math_Function)
-  // ============================================================================
+// ============================================================================
+// Adapter classes for old API (inherit from math_Function)
+// ============================================================================
 
-  //! f(x) = sin(x)
-  //! Integral from 0 to PI = 2
-  class SinFuncOld : public math_Function
+//! f(x) = sin(x)
+//! Integral from 0 to PI = 2
+class SinFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::sin(theX);
-      return Standard_True;
-    }
-  };
+    theF = std::sin(theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x^2
-  //! Integral from 0 to 1 = 1/3
-  class QuadraticFuncOld : public math_Function
+//! f(x) = x^2
+//! Integral from 0 to 1 = 1/3
+class QuadraticFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX;
-      return Standard_True;
-    }
-  };
+    theF = theX * theX;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = e^x
-  //! Integral from 0 to 1 = e - 1
-  class ExpFuncOld : public math_Function
+//! f(x) = e^x
+//! Integral from 0 to 1 = e - 1
+class ExpFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::exp(theX);
-      return Standard_True;
-    }
-  };
+    theF = std::exp(theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = cos(x)
-  //! Integral from 0 to PI/2 = 1
-  class CosFuncOld : public math_Function
+//! f(x) = cos(x)
+//! Integral from 0 to PI/2 = 1
+class CosFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::cos(theX);
-      return Standard_True;
-    }
-  };
+    theF = std::cos(theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = 1/(1+x)
-  //! Integral from 0 to 1 = ln(2)
-  class LogIntegrandOld : public math_Function
+//! f(x) = 1/(1+x)
+//! Integral from 0 to 1 = ln(2)
+class LogIntegrandOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = 1.0 / (1.0 + theX);
-      return Standard_True;
-    }
-  };
+    theF = 1.0 / (1.0 + theX);
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x
-  //! Integral from 0 to 1 = 1/2
-  class LinearFuncOld : public math_Function
+//! f(x) = x
+//! Integral from 0 to 1 = 1/2
+class LinearFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX;
-      return Standard_True;
-    }
-  };
+    theF = theX;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = x^3
-  //! Integral from 0 to 1 = 1/4
-  class CubicFuncOld : public math_Function
+//! f(x) = x^3
+//! Integral from 0 to 1 = 1/4
+class CubicFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX * theX;
-      return Standard_True;
-    }
-  };
+    theF = theX * theX * theX;
+    return Standard_True;
+  }
+};
 
-  //! f(x) = 1 (constant)
-  //! Integral from a to b = b - a
-  class ConstantFuncOld : public math_Function
+//! f(x) = 1 (constant)
+//! Integral from a to b = b - a
+class ConstantFuncOld : public math_Function
+{
+public:
+  Standard_Boolean Value(const Standard_Real /*theX*/, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real /*theX*/, Standard_Real& theF) override
-    {
-      theF = 1.0;
-      return Standard_True;
-    }
-  };
+    theF = 1.0;
+    return Standard_True;
+  }
+};
 
-  // ============================================================================
-  // Function classes for new API
-  // ============================================================================
+// ============================================================================
+// Function classes for new API
+// ============================================================================
 
-  struct SinFuncNew
+struct SinFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(theX);
-      return true;
-    }
-  };
+    theF = std::sin(theX);
+    return true;
+  }
+};
 
-  struct QuadraticFuncNew
+struct QuadraticFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX;
-      return true;
-    }
-  };
+    theF = theX * theX;
+    return true;
+  }
+};
 
-  struct ExpFuncNew
+struct ExpFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX);
-      return true;
-    }
-  };
+    theF = std::exp(theX);
+    return true;
+  }
+};
 
-  struct CosFuncNew
+struct CosFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX);
-      return true;
-    }
-  };
+    theF = std::cos(theX);
+    return true;
+  }
+};
 
-  struct LogIntegrandNew
+struct LogIntegrandNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = 1.0 / (1.0 + theX);
-      return true;
-    }
-  };
+    theF = 1.0 / (1.0 + theX);
+    return true;
+  }
+};
 
-  struct LinearFuncNew
+struct LinearFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX;
-      return true;
-    }
-  };
+    theF = theX;
+    return true;
+  }
+};
 
-  struct CubicFuncNew
+struct CubicFuncNew
+{
+  bool Value(double theX, double& theF) const
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX * theX;
-      return true;
-    }
-  };
+    theF = theX * theX * theX;
+    return true;
+  }
+};
 
-  struct ConstantFuncNew
+struct ConstantFuncNew
+{
+  bool Value(double /*theX*/, double& theF) const
   {
-    bool Value(double /*theX*/, double& theF) const
-    {
-      theF = 1.0;
-      return true;
-    }
-  };
-}
+    theF = 1.0;
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // math_GaussSingleIntegration vs MathInteg::Gauss comparison tests
@@ -379,7 +379,7 @@ TEST(MathInteg_ComparisonTest, Order3_Comparison)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 3);
-  MathInteg::IntegResult            aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 3);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 3);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -393,7 +393,7 @@ TEST(MathInteg_ComparisonTest, Order5_Comparison)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 5);
-  MathInteg::IntegResult            aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 5);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 5);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -407,7 +407,7 @@ TEST(MathInteg_ComparisonTest, Order7_Comparison)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 7);
-  MathInteg::IntegResult            aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 7);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 7);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -421,7 +421,7 @@ TEST(MathInteg_ComparisonTest, Order15_Comparison)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 15);
-  MathInteg::IntegResult            aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 15);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 15);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());
@@ -435,7 +435,7 @@ TEST(MathInteg_ComparisonTest, Order21_Comparison)
   SinFuncNew aNewFunc;
 
   math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 21);
-  MathInteg::IntegResult            aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 21);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 21);
 
   ASSERT_TRUE(anOldInteg.IsDone());
   ASSERT_TRUE(aNewResult.IsDone());

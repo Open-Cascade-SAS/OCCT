@@ -21,143 +21,143 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-10;
-  constexpr double THE_PI = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-10;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  //! Constant function: f(x) = 5
-  //! Integral from a to b = 5*(b-a)
-  class ConstantFunc
+//! Constant function: f(x) = 5
+//! Integral from a to b = 5*(b-a)
+class ConstantFunc
+{
+public:
+  bool Value(double, double& theF) const
   {
-  public:
-    bool Value(double, double& theF) const
-    {
-      theF = 5.0;
-      return true;
-    }
-  };
+    theF = 5.0;
+    return true;
+  }
+};
 
-  //! Linear function: f(x) = 2x + 1
-  //! Integral from a to b = x^2 + x |_a^b
-  class LinearFunc
+//! Linear function: f(x) = 2x + 1
+//! Integral from a to b = x^2 + x |_a^b
+class LinearFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = 2.0 * theX + 1.0;
-      return true;
-    }
-  };
+    theF = 2.0 * theX + 1.0;
+    return true;
+  }
+};
 
-  //! Quadratic function: f(x) = x^2
-  //! Integral from 0 to 1 = 1/3
-  class QuadraticFunc
+//! Quadratic function: f(x) = x^2
+//! Integral from 0 to 1 = 1/3
+class QuadraticFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX;
-      return true;
-    }
-  };
+    theF = theX * theX;
+    return true;
+  }
+};
 
-  //! Sine function: f(x) = sin(x)
-  //! Integral from 0 to PI = 2
-  class SinFunc
+//! Sine function: f(x) = sin(x)
+//! Integral from 0 to PI = 2
+class SinFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(theX);
-      return true;
-    }
-  };
+    theF = std::sin(theX);
+    return true;
+  }
+};
 
-  //! Cosine function: f(x) = cos(x)
-  //! Integral from 0 to PI/2 = 1
-  class CosFunc
+//! Cosine function: f(x) = cos(x)
+//! Integral from 0 to PI/2 = 1
+class CosFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX);
-      return true;
-    }
-  };
+    theF = std::cos(theX);
+    return true;
+  }
+};
 
-  //! Exponential function: f(x) = e^x
-  //! Integral from 0 to 1 = e - 1
-  class ExpFunc
+//! Exponential function: f(x) = e^x
+//! Integral from 0 to 1 = e - 1
+class ExpFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX);
-      return true;
-    }
-  };
+    theF = std::exp(theX);
+    return true;
+  }
+};
 
-  //! Polynomial: f(x) = x^5 - 3x^3 + 2x
-  //! Gauss quadrature should be exact for polynomials up to degree 2n-1
-  class PolynomialFunc
+//! Polynomial: f(x) = x^5 - 3x^3 + 2x
+//! Gauss quadrature should be exact for polynomials up to degree 2n-1
+class PolynomialFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      const double aX2 = theX * theX;
-      const double aX3 = aX2 * theX;
-      theF = aX2 * aX3 - 3.0 * aX3 + 2.0 * theX;
-      return true;
-    }
-  };
+    const double aX2 = theX * theX;
+    const double aX3 = aX2 * theX;
+    theF             = aX2 * aX3 - 3.0 * aX3 + 2.0 * theX;
+    return true;
+  }
+};
 
-  //! Gaussian function: f(x) = e^(-x^2)
-  //! Integral from -inf to inf = sqrt(PI)
-  class GaussianFunc
+//! Gaussian function: f(x) = e^(-x^2)
+//! Integral from -inf to inf = sqrt(PI)
+class GaussianFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(-theX * theX);
-      return true;
-    }
-  };
+    theF = std::exp(-theX * theX);
+    return true;
+  }
+};
 
-  //! Reciprocal function: f(x) = 1/x
-  //! Integral from 1 to e = 1
-  class ReciprocalFunc
+//! Reciprocal function: f(x) = 1/x
+//! Integral from 1 to e = 1
+class ReciprocalFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = 1.0 / theX;
-      return true;
-    }
-  };
+    theF = 1.0 / theX;
+    return true;
+  }
+};
 
-  //! Oscillatory function: f(x) = sin(10x)
-  //! Requires more points or subdivision
-  class OscillatoryFunc
+//! Oscillatory function: f(x) = sin(10x)
+//! Requires more points or subdivision
+class OscillatoryFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(10.0 * theX);
-      return true;
-    }
-  };
+    theF = std::sin(10.0 * theX);
+    return true;
+  }
+};
 
-  //! Square root: f(x) = sqrt(x)
-  //! Integral from 0 to 1 = 2/3
-  class SqrtFunc
+//! Square root: f(x) = sqrt(x)
+//! Integral from 0 to 1 = 2/3
+class SqrtFunc
+{
+public:
+  bool Value(double theX, double& theF) const
   {
-  public:
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sqrt(theX);
-      return true;
-    }
-  };
-}
+    theF = std::sqrt(theX);
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // Basic Gauss quadrature tests
@@ -232,7 +232,7 @@ TEST(MathInteg_GaussTest, ReciprocalFunction)
 
 TEST(MathInteg_GaussTest, Order3)
 {
-  QuadraticFunc aFunc;
+  QuadraticFunc          aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, 1.0, 3);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 3);
@@ -241,7 +241,7 @@ TEST(MathInteg_GaussTest, Order3)
 
 TEST(MathInteg_GaussTest, Order5)
 {
-  QuadraticFunc aFunc;
+  QuadraticFunc          aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, 1.0, 5);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 5);
@@ -250,7 +250,7 @@ TEST(MathInteg_GaussTest, Order5)
 
 TEST(MathInteg_GaussTest, Order7)
 {
-  QuadraticFunc aFunc;
+  QuadraticFunc          aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, 1.0, 7);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 7);
@@ -259,7 +259,7 @@ TEST(MathInteg_GaussTest, Order7)
 
 TEST(MathInteg_GaussTest, Order15)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 15);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 15);
@@ -268,7 +268,7 @@ TEST(MathInteg_GaussTest, Order15)
 
 TEST(MathInteg_GaussTest, Order21)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 21);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 21);
@@ -300,7 +300,7 @@ TEST(MathInteg_GaussTest, PolynomialExactness_Order3)
 TEST(MathInteg_GaussTest, PolynomialExactness_Order7)
 {
   // 7-point Gauss should be exact for polynomials up to degree 13
-  PolynomialFunc aFunc;
+  PolynomialFunc         aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, -1.0, 1.0, 7);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
@@ -312,7 +312,7 @@ TEST(MathInteg_GaussTest, PolynomialExactness_Order7)
 
 TEST(MathInteg_GaussAdaptiveTest, SineFunction)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegConfig aConfig;
   aConfig.Tolerance = 1.0e-12;
 
@@ -323,7 +323,7 @@ TEST(MathInteg_GaussAdaptiveTest, SineFunction)
 
 TEST(MathInteg_GaussAdaptiveTest, ExponentialFunction)
 {
-  ExpFunc aFunc;
+  ExpFunc                aFunc;
   MathInteg::IntegConfig aConfig;
   aConfig.Tolerance = 1.0e-12;
 
@@ -334,9 +334,9 @@ TEST(MathInteg_GaussAdaptiveTest, ExponentialFunction)
 
 TEST(MathInteg_GaussAdaptiveTest, OscillatoryFunction)
 {
-  OscillatoryFunc aFunc;
+  OscillatoryFunc        aFunc;
   MathInteg::IntegConfig aConfig;
-  aConfig.Tolerance = 1.0e-8;
+  aConfig.Tolerance     = 1.0e-8;
   aConfig.MaxIterations = 20;
 
   // Integral of sin(10x) from 0 to PI = (1 - cos(10*PI))/10 = 0
@@ -347,7 +347,7 @@ TEST(MathInteg_GaussAdaptiveTest, OscillatoryFunction)
 
 TEST(MathInteg_GaussAdaptiveTest, ProvidesErrorEstimate)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegConfig aConfig;
   aConfig.Tolerance = 1.0e-8;
 
@@ -392,7 +392,7 @@ TEST(MathInteg_GaussCompositeTest, GaussianFunction)
 
 TEST(MathInteg_GaussCompositeTest, InvalidSubintervals)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::GaussComposite(aFunc, 0.0, THE_PI, 0, 7);
   EXPECT_EQ(aResult.Status, MathInteg::Status::InvalidInput);
 }
@@ -472,14 +472,14 @@ TEST(MathInteg_SpecialTest, SqrtFunction)
 
 TEST(MathInteg_BoolConversionTest, SuccessfulResultIsTrue)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 15);
   EXPECT_TRUE(static_cast<bool>(aResult));
 }
 
 TEST(MathInteg_BoolConversionTest, InvalidInputIsFalse)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 10);
   EXPECT_FALSE(static_cast<bool>(aResult));
 }
@@ -490,19 +490,19 @@ TEST(MathInteg_BoolConversionTest, InvalidInputIsFalse)
 
 TEST(MathInteg_AccuracyTest, HigherOrderMoreAccurate)
 {
-  SinFunc aFunc;
+  SinFunc      aFunc;
   const double aExact = 2.0;
 
-  MathInteg::IntegResult aResult3 = MathInteg::Gauss(aFunc, 0.0, THE_PI, 3);
-  MathInteg::IntegResult aResult7 = MathInteg::Gauss(aFunc, 0.0, THE_PI, 7);
+  MathInteg::IntegResult aResult3  = MathInteg::Gauss(aFunc, 0.0, THE_PI, 3);
+  MathInteg::IntegResult aResult7  = MathInteg::Gauss(aFunc, 0.0, THE_PI, 7);
   MathInteg::IntegResult aResult15 = MathInteg::Gauss(aFunc, 0.0, THE_PI, 15);
 
   ASSERT_TRUE(aResult3.IsDone());
   ASSERT_TRUE(aResult7.IsDone());
   ASSERT_TRUE(aResult15.IsDone());
 
-  double aError3 = std::abs(*aResult3.Value - aExact);
-  double aError7 = std::abs(*aResult7.Value - aExact);
+  double aError3  = std::abs(*aResult3.Value - aExact);
+  double aError7  = std::abs(*aResult7.Value - aExact);
   double aError15 = std::abs(*aResult15.Value - aExact);
 
   EXPECT_GT(aError3, aError7);

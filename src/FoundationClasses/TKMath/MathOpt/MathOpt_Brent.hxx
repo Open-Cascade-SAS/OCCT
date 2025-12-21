@@ -43,10 +43,10 @@ using namespace MathUtils;
 //! @param theConfig solver configuration
 //! @return result containing minimum location and value
 template <typename Function>
-ScalarResult Brent(Function&          theFunc,
-                        double             theLower,
-                        double             theUpper,
-                        const Config& theConfig = Config())
+ScalarResult Brent(Function&     theFunc,
+                   double        theLower,
+                   double        theUpper,
+                   const Config& theConfig = Config())
 {
   ScalarResult aResult;
 
@@ -72,9 +72,8 @@ ScalarResult Brent(Function&          theFunc,
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
-    const double aXm = 0.5 * (aA + aB);
-    const double aTol1 =
-      theConfig.XTolerance * std::abs(aX) + MathUtils::THE_ZERO_TOL / 10.0;
+    const double aXm   = 0.5 * (aA + aB);
+    const double aTol1 = theConfig.XTolerance * std::abs(aX) + MathUtils::THE_ZERO_TOL / 10.0;
     const double aTol2 = 2.0 * aTol1;
 
     aResult.NbIterations = anIter + 1;
@@ -83,12 +82,12 @@ ScalarResult Brent(Function&          theFunc,
     if (std::abs(aX - aXm) <= (aTol2 - 0.5 * (aB - aA)))
     {
       aResult.Status = Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Root   = aX;
+      aResult.Value  = aFx;
       return aResult;
     }
 
-    double aU = 0.0;
+    double aU            = 0.0;
     bool   aUseParabolic = false;
 
     // Try parabolic interpolation if step is large enough
@@ -98,7 +97,7 @@ ScalarResult Brent(Function&          theFunc,
       const double aR = (aX - aW) * (aFx - aFv);
       double       aQ = (aX - aV) * (aFx - aFw);
       double       aP = (aX - aV) * aQ - (aX - aW) * aR;
-      aQ = 2.0 * (aQ - aR);
+      aQ              = 2.0 * (aQ - aR);
 
       if (aQ > 0.0)
       {
@@ -110,11 +109,10 @@ ScalarResult Brent(Function&          theFunc,
       }
 
       const double aETmp = aE;
-      aE = aD;
+      aE                 = aD;
 
       // Check if parabolic step is acceptable
-      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX)
-          && aP < aQ * (aB - aX))
+      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX) && aP < aQ * (aB - aX))
       {
         aD = aP / aQ;
         aU = aX + aD;
@@ -149,8 +147,8 @@ ScalarResult Brent(Function&          theFunc,
     if (!theFunc.Value(aU, aFu))
     {
       aResult.Status = Status::NumericalError;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Root   = aX;
+      aResult.Value  = aFx;
       return aResult;
     }
 
@@ -166,9 +164,9 @@ ScalarResult Brent(Function&          theFunc,
         aA = aX;
       }
 
-      aV = aW;
-      aW = aX;
-      aX = aU;
+      aV  = aW;
+      aW  = aX;
+      aX  = aU;
       aFv = aFw;
       aFw = aFx;
       aFx = aFu;
@@ -186,14 +184,14 @@ ScalarResult Brent(Function&          theFunc,
 
       if (aFu <= aFw || aW == aX)
       {
-        aV = aW;
-        aW = aU;
+        aV  = aW;
+        aW  = aU;
         aFv = aFw;
         aFw = aFu;
       }
       else if (aFu <= aFv || aV == aX || aV == aW)
       {
-        aV = aU;
+        aV  = aU;
         aFv = aFu;
       }
     }
@@ -201,8 +199,8 @@ ScalarResult Brent(Function&          theFunc,
 
   // Maximum iterations reached
   aResult.Status = Status::MaxIterations;
-  aResult.Root = aX;
-  aResult.Value = aFx;
+  aResult.Root   = aX;
+  aResult.Value  = aFx;
   return aResult;
 }
 
@@ -217,10 +215,10 @@ ScalarResult Brent(Function&          theFunc,
 //! @param theConfig solver configuration
 //! @return result containing minimum location and value
 template <typename Function>
-ScalarResult Golden(Function&          theFunc,
-                         double             theLower,
-                         double             theUpper,
-                         const Config& theConfig = Config())
+ScalarResult Golden(Function&     theFunc,
+                    double        theLower,
+                    double        theUpper,
+                    const Config& theConfig = Config())
 {
   ScalarResult aResult;
 
@@ -258,12 +256,12 @@ ScalarResult Golden(Function&          theFunc,
       aResult.Status = Status::OK;
       if (aF1 < aF2)
       {
-        aResult.Root = aX1;
+        aResult.Root  = aX1;
         aResult.Value = aF1;
       }
       else
       {
-        aResult.Root = aX2;
+        aResult.Root  = aX2;
         aResult.Value = aF2;
       }
       return aResult;
@@ -272,30 +270,30 @@ ScalarResult Golden(Function&          theFunc,
     if (aF1 < aF2)
     {
       // Minimum is in [a, x2]
-      aB = aX2;
+      aB  = aX2;
       aX2 = aX1;
       aF2 = aF1;
       aX1 = aA + aC * (aB - aA);
       if (!theFunc.Value(aX1, aF1))
       {
         aResult.Status = Status::NumericalError;
-        aResult.Root = aX2;
-        aResult.Value = aF2;
+        aResult.Root   = aX2;
+        aResult.Value  = aF2;
         return aResult;
       }
     }
     else
     {
       // Minimum is in [x1, b]
-      aA = aX1;
+      aA  = aX1;
       aX1 = aX2;
       aF1 = aF2;
       aX2 = aA + aR * (aB - aA);
       if (!theFunc.Value(aX2, aF2))
       {
         aResult.Status = Status::NumericalError;
-        aResult.Root = aX1;
-        aResult.Value = aF1;
+        aResult.Root   = aX1;
+        aResult.Value  = aF1;
         return aResult;
       }
     }
@@ -305,12 +303,12 @@ ScalarResult Golden(Function&          theFunc,
   aResult.Status = Status::MaxIterations;
   if (aF1 < aF2)
   {
-    aResult.Root = aX1;
+    aResult.Root  = aX1;
     aResult.Value = aF1;
   }
   else
   {
-    aResult.Root = aX2;
+    aResult.Root  = aX2;
     aResult.Value = aF2;
   }
   return aResult;
@@ -326,10 +324,10 @@ ScalarResult Golden(Function&          theFunc,
 //! @param theConfig solver configuration
 //! @return result containing minimum location and value
 template <typename Function>
-ScalarResult BrentWithBracket(Function&          theFunc,
-                                   double             theGuess,
-                                   double             theStep   = 1.0,
-                                   const Config& theConfig = Config())
+ScalarResult BrentWithBracket(Function&     theFunc,
+                              double        theGuess,
+                              double        theStep   = 1.0,
+                              const Config& theConfig = Config())
 {
   ScalarResult aResult;
 

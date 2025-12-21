@@ -39,12 +39,13 @@ enum class LeastSquaresMethod
 struct LeastSquaresResult
 {
   Status                     Status = Status::NotConverged;
-  std::optional<math_Vector> Solution;     //!< Least squares solution x
-  std::optional<double>      Residual;     //!< ||Ax - b||_2 (L2 norm of residual)
-  std::optional<double>      ResidualSq;   //!< ||Ax - b||_2^2 (squared residual)
-  int                        Rank = 0;     //!< Numerical rank of A (for SVD)
+  std::optional<math_Vector> Solution;   //!< Least squares solution x
+  std::optional<double>      Residual;   //!< ||Ax - b||_2 (L2 norm of residual)
+  std::optional<double>      ResidualSq; //!< ||Ax - b||_2^2 (squared residual)
+  int                        Rank = 0;   //!< Numerical rank of A (for SVD)
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -63,10 +64,10 @@ struct LeastSquaresResult
 //! @param theMethod solution method (default: QR)
 //! @param theTolerance for rank/singularity detection
 //! @return least squares result
-inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
-                                       const math_Vector&   theB,
-                                       LeastSquaresMethod   theMethod   = LeastSquaresMethod::QR,
-                                       double               theTolerance = 1.0e-15)
+inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
+                                       const math_Vector& theB,
+                                       LeastSquaresMethod theMethod    = LeastSquaresMethod::QR,
+                                       double             theTolerance = 1.0e-15)
 {
   LeastSquaresResult aResult;
 
@@ -88,8 +89,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
 
   switch (theMethod)
   {
-    case LeastSquaresMethod::NormalEquations:
-    {
+    case LeastSquaresMethod::NormalEquations: {
       // Form normal equations: A^T * A * x = A^T * b
       math_Matrix aAtA(aColLower, aColUpper, aColLower, aColUpper, 0.0);
       math_Vector aAtb(aColLower, aColUpper, 0.0);
@@ -120,13 +120,12 @@ inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
       }
 
       // Solve the normal equations
-      aLinResult = Solve(aAtA, aAtb, theTolerance);
+      aLinResult   = Solve(aAtA, aAtb, theTolerance);
       aResult.Rank = (aLinResult.IsDone()) ? aN : 0;
     }
     break;
 
-    case LeastSquaresMethod::QR:
-    {
+    case LeastSquaresMethod::QR: {
       aLinResult = SolveQR(theA, theB, theTolerance);
       if (aLinResult.IsDone())
       {
@@ -136,8 +135,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
     }
     break;
 
-    case LeastSquaresMethod::SVD:
-    {
+    case LeastSquaresMethod::SVD: {
       aLinResult = SolveSVD(theA, theB, theTolerance);
       if (aLinResult.IsDone())
       {
@@ -158,7 +156,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
   aResult.Solution = aLinResult.Solution;
 
   // Compute residual ||Ax - b||_2
-  const math_Vector& aX = *aResult.Solution;
+  const math_Vector& aX          = *aResult.Solution;
   double             aResidualSq = 0.0;
 
   for (int i = aRowLower; i <= aRowUpper; ++i)
@@ -189,11 +187,12 @@ inline LeastSquaresResult LeastSquares(const math_Matrix&   theA,
 //! @param theMethod solution method
 //! @param theTolerance for rank detection
 //! @return weighted least squares result
-inline LeastSquaresResult WeightedLeastSquares(const math_Matrix&   theA,
-                                               const math_Vector&   theB,
-                                               const math_Vector&   theW,
-                                               LeastSquaresMethod   theMethod    = LeastSquaresMethod::QR,
-                                               double               theTolerance = 1.0e-15)
+inline LeastSquaresResult WeightedLeastSquares(
+  const math_Matrix& theA,
+  const math_Vector& theB,
+  const math_Vector& theW,
+  LeastSquaresMethod theMethod    = LeastSquaresMethod::QR,
+  double             theTolerance = 1.0e-15)
 {
   LeastSquaresResult aResult;
 
@@ -319,7 +318,7 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
   aResult.Rank     = aN;
 
   // Compute residual
-  const math_Vector& aX = *aResult.Solution;
+  const math_Vector& aX          = *aResult.Solution;
   double             aResidualSq = 0.0;
 
   for (int i = aRowLower; i <= aRowUpper; ++i)

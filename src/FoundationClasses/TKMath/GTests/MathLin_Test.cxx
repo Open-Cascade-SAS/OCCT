@@ -100,9 +100,9 @@ double VectorNorm(const math_Vector& theVec)
 //! Matrix multiplication A*B.
 math_Matrix MatMul(const math_Matrix& theA, const math_Matrix& theB)
 {
-  const int aM = theA.RowNumber();
-  const int aN = theB.ColNumber();
-  const int aK = theA.ColNumber();
+  const int   aM = theA.RowNumber();
+  const int   aN = theB.ColNumber();
+  const int   aK = theA.ColNumber();
   math_Matrix aResult(1, aM, 1, aN, 0.0);
   for (int i = 1; i <= aM; ++i)
   {
@@ -120,8 +120,8 @@ math_Matrix MatMul(const math_Matrix& theA, const math_Matrix& theB)
 //! Transpose matrix.
 math_Matrix Transpose(const math_Matrix& theMat)
 {
-  const int aM = theMat.RowNumber();
-  const int aN = theMat.ColNumber();
+  const int   aM = theMat.RowNumber();
+  const int   aN = theMat.ColNumber();
   math_Matrix aResult(1, aN, 1, aM);
   for (int i = 1; i <= aM; ++i)
   {
@@ -142,8 +142,10 @@ math_Matrix Transpose(const math_Matrix& theMat)
 TEST(MathLin_SVD_Test, BasicDecomposition_2x2)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 2.0;
-  aMat(2, 1) = 2.0; aMat(2, 2) = 3.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 2.0;
+  aMat(2, 1) = 2.0;
+  aMat(2, 2) = 3.0;
 
   auto aResult = MathLin::SVD(aMat);
 
@@ -161,8 +163,8 @@ TEST(MathLin_SVD_Test, BasicDecomposition_2x2)
   aSigma(2, 2) = aS(2);
 
   // Compute U * Sigma * V^T
-  math_Matrix aUSigma = MatMul(aU, aSigma);
-  math_Matrix aVt = Transpose(aV);
+  math_Matrix aUSigma        = MatMul(aU, aSigma);
+  math_Matrix aVt            = Transpose(aV);
   math_Matrix aReconstructed = MatMul(aUSigma, aVt);
 
   // Check reconstruction
@@ -178,9 +180,15 @@ TEST(MathLin_SVD_Test, BasicDecomposition_2x2)
 TEST(MathLin_SVD_Test, SingularValues)
 {
   math_Matrix aMat(1, 3, 1, 3);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0; aMat(1, 3) = 3.0;
-  aMat(2, 1) = 4.0; aMat(2, 2) = 5.0; aMat(2, 3) = 6.0;
-  aMat(3, 1) = 7.0; aMat(3, 2) = 8.0; aMat(3, 3) = 9.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(1, 3) = 3.0;
+  aMat(2, 1) = 4.0;
+  aMat(2, 2) = 5.0;
+  aMat(2, 3) = 6.0;
+  aMat(3, 1) = 7.0;
+  aMat(3, 2) = 8.0;
+  aMat(3, 3) = 9.0;
 
   auto aResult = MathLin::SVD(aMat);
 
@@ -201,8 +209,10 @@ TEST(MathLin_SVD_Test, SingularValues)
 TEST(MathLin_SVD_Test, SolveSystem)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
 
   math_Vector aB(1, 2);
   aB(1) = 9.0;
@@ -213,9 +223,9 @@ TEST(MathLin_SVD_Test, SolveSystem)
   ASSERT_TRUE(aResult.IsDone());
 
   // Check solution: Ax = b
-  const math_Vector& aX = *aResult.Solution;
-  double aCheck1 = aMat(1, 1) * aX(1) + aMat(1, 2) * aX(2);
-  double aCheck2 = aMat(2, 1) * aX(1) + aMat(2, 2) * aX(2);
+  const math_Vector& aX      = *aResult.Solution;
+  double             aCheck1 = aMat(1, 1) * aX(1) + aMat(1, 2) * aX(2);
+  double             aCheck2 = aMat(2, 1) * aX(1) + aMat(2, 2) * aX(2);
 
   EXPECT_NEAR(aCheck1, aB(1), THE_TOLERANCE);
   EXPECT_NEAR(aCheck2, aB(2), THE_TOLERANCE);
@@ -224,15 +234,17 @@ TEST(MathLin_SVD_Test, SolveSystem)
 TEST(MathLin_SVD_Test, PseudoInverse)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0;
-  aMat(2, 1) = 3.0; aMat(2, 2) = 4.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(2, 1) = 3.0;
+  aMat(2, 2) = 4.0;
 
   auto aPinv = MathLin::PseudoInverse(aMat);
 
   ASSERT_TRUE(aPinv.IsDone());
 
   // A * A+ * A = A
-  math_Matrix aTemp = MatMul(aMat, *aPinv.Inverse);
+  math_Matrix aTemp  = MatMul(aMat, *aPinv.Inverse);
   math_Matrix aCheck = MatMul(aTemp, aMat);
 
   for (int i = 1; i <= 2; ++i)
@@ -247,8 +259,8 @@ TEST(MathLin_SVD_Test, PseudoInverse)
 TEST(MathLin_SVD_Test, ConditionNumber)
 {
   // Well-conditioned identity matrix
-  math_Matrix aI = CreateIdentity(3);
-  double aCondI = MathLin::ConditionNumber(aI);
+  math_Matrix aI     = CreateIdentity(3);
+  double      aCondI = MathLin::ConditionNumber(aI);
   EXPECT_NEAR(aCondI, 1.0, THE_TOLERANCE);
 
   // Ill-conditioned matrix
@@ -271,8 +283,10 @@ TEST(MathLin_SVD_Test, ConditionNumber)
 TEST(MathLin_Householder_Test, BasicQR_2x2)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0;
-  aMat(2, 1) = 3.0; aMat(2, 2) = 4.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(2, 1) = 3.0;
+  aMat(2, 2) = 4.0;
 
   auto aResult = MathLin::QR(aMat);
 
@@ -309,8 +323,10 @@ TEST(MathLin_Householder_Test, BasicQR_2x2)
 TEST(MathLin_Householder_Test, SolveSystem)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
 
   math_Vector aB(1, 2);
   aB(1) = 9.0;
@@ -321,9 +337,9 @@ TEST(MathLin_Householder_Test, SolveSystem)
   ASSERT_TRUE(aResult.IsDone());
 
   // Check solution: Ax = b
-  const math_Vector& aX = *aResult.Solution;
-  double aCheck1 = aMat(1, 1) * aX(1) + aMat(1, 2) * aX(2);
-  double aCheck2 = aMat(2, 1) * aX(1) + aMat(2, 2) * aX(2);
+  const math_Vector& aX      = *aResult.Solution;
+  double             aCheck1 = aMat(1, 1) * aX(1) + aMat(1, 2) * aX(2);
+  double             aCheck2 = aMat(2, 1) * aX(1) + aMat(2, 2) * aX(2);
 
   EXPECT_NEAR(aCheck1, aB(1), THE_TOLERANCE);
   EXPECT_NEAR(aCheck2, aB(2), THE_TOLERANCE);
@@ -333,9 +349,12 @@ TEST(MathLin_Householder_Test, Overdetermined)
 {
   // 3x2 system (overdetermined)
   math_Matrix aMat(1, 3, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
-  aMat(3, 1) = 1.0; aMat(3, 2) = 3.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
+  aMat(3, 1) = 1.0;
+  aMat(3, 2) = 3.0;
 
   math_Vector aB(1, 3);
   aB(1) = 1.0;
@@ -377,8 +396,10 @@ TEST(MathLin_Jacobi_Test, Eigenvalues_Diagonal)
 TEST(MathLin_Jacobi_Test, Eigenvalues_Symmetric)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 3.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 3.0;
 
   auto aResult = MathLin::Jacobi(aMat, true);
 
@@ -431,7 +452,7 @@ TEST(MathLin_Jacobi_Test, SpectralDecomposition)
     aDiag(i, i) = aD(i);
   }
 
-  math_Matrix aVD = MatMul(aV, aDiag);
+  math_Matrix aVD            = MatMul(aV, aDiag);
   math_Matrix aReconstructed = MatMul(aVD, Transpose(aV));
 
   for (int i = 1; i <= 3; ++i)
@@ -470,8 +491,10 @@ TEST(MathLin_Jacobi_Test, MatrixSqrt)
 TEST(MathLin_LeastSquares_Test, SquareSystem)
 {
   math_Matrix aMat(1, 2, 1, 2);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
 
   math_Vector aB(1, 2);
   aB(1) = 9.0;
@@ -489,10 +512,14 @@ TEST(MathLin_LeastSquares_Test, Overdetermined)
 {
   // 4x2 overdetermined system
   math_Matrix aMat(1, 4, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
-  aMat(3, 1) = 1.0; aMat(3, 2) = 3.0;
-  aMat(4, 1) = 1.0; aMat(4, 2) = 4.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
+  aMat(3, 1) = 1.0;
+  aMat(3, 2) = 3.0;
+  aMat(4, 1) = 1.0;
+  aMat(4, 2) = 4.0;
 
   // Perfect line: y = 1 + x
   math_Vector aB(1, 4);
@@ -543,9 +570,12 @@ TEST(MathLin_LeastSquares_Test, MethodComparison)
 TEST(MathLin_LeastSquares_Test, WeightedLeastSquares)
 {
   math_Matrix aMat(1, 3, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
-  aMat(3, 1) = 1.0; aMat(3, 2) = 3.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
+  aMat(3, 1) = 1.0;
+  aMat(3, 2) = 3.0;
 
   math_Vector aB(1, 3);
   aB(1) = 2.0;
@@ -554,13 +584,13 @@ TEST(MathLin_LeastSquares_Test, WeightedLeastSquares)
 
   // Equal weights
   math_Vector aW1(1, 3, 1.0);
-  auto aResult1 = MathLin::WeightedLeastSquares(aMat, aB, aW1);
+  auto        aResult1 = MathLin::WeightedLeastSquares(aMat, aB, aW1);
 
   // Higher weight on first two points
   math_Vector aW2(1, 3);
-  aW2(1) = 10.0;
-  aW2(2) = 10.0;
-  aW2(3) = 0.1;
+  aW2(1)        = 10.0;
+  aW2(2)        = 10.0;
+  aW2(3)        = 0.1;
   auto aResult2 = MathLin::WeightedLeastSquares(aMat, aB, aW2);
 
   ASSERT_TRUE(aResult1.IsDone());
@@ -607,9 +637,15 @@ TEST(MathLin_LeastSquares_Test, RegularizedLeastSquares)
 TEST(MathLin_Test, CompareWithOldAPI_SVD)
 {
   math_Matrix aMat(1, 3, 1, 3);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 2.0; aMat(1, 3) = 3.0;
-  aMat(2, 1) = 4.0; aMat(2, 2) = 5.0; aMat(2, 3) = 6.0;
-  aMat(3, 1) = 7.0; aMat(3, 2) = 8.0; aMat(3, 3) = 10.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 2.0;
+  aMat(1, 3) = 3.0;
+  aMat(2, 1) = 4.0;
+  aMat(2, 2) = 5.0;
+  aMat(2, 3) = 6.0;
+  aMat(3, 1) = 7.0;
+  aMat(3, 2) = 8.0;
+  aMat(3, 3) = 10.0;
 
   math_Vector aB(1, 3);
   aB(1) = 1.0;
@@ -617,7 +653,7 @@ TEST(MathLin_Test, CompareWithOldAPI_SVD)
   aB(3) = 3.0;
 
   // Old API
-  math_SVD anOldSVD(aMat);
+  math_SVD    anOldSVD(aMat);
   math_Vector anOldSol(1, 3);
   anOldSVD.Solve(aB, anOldSol);
 
@@ -637,9 +673,12 @@ TEST(MathLin_Test, CompareWithOldAPI_SVD)
 TEST(MathLin_Test, CompareWithOldAPI_Householder)
 {
   math_Matrix aMat(1, 3, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
-  aMat(3, 1) = 1.0; aMat(3, 2) = 3.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
+  aMat(3, 1) = 1.0;
+  aMat(3, 2) = 3.0;
 
   math_Vector aB(1, 3);
   aB(1) = 2.0;
@@ -673,9 +712,15 @@ TEST(MathLin_Test, CompareWithOldAPI_Householder)
 TEST(MathLin_Test, CompareWithOldAPI_Jacobi)
 {
   math_Matrix aMat(1, 3, 1, 3);
-  aMat(1, 1) = 3.0; aMat(1, 2) = 1.0; aMat(1, 3) = 0.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 3.0; aMat(2, 3) = 1.0;
-  aMat(3, 1) = 0.0; aMat(3, 2) = 1.0; aMat(3, 3) = 3.0;
+  aMat(1, 1) = 3.0;
+  aMat(1, 2) = 1.0;
+  aMat(1, 3) = 0.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 3.0;
+  aMat(2, 3) = 1.0;
+  aMat(3, 1) = 0.0;
+  aMat(3, 2) = 1.0;
+  aMat(3, 3) = 3.0;
 
   // Old API
   math_Jacobi anOldJacobi(aMat);
@@ -697,10 +742,14 @@ TEST(MathLin_Test, CompareWithOldAPI_Jacobi)
 TEST(MathLin_Test, CompareWithOldAPI_GaussLeastSquare)
 {
   math_Matrix aMat(1, 4, 1, 2);
-  aMat(1, 1) = 1.0; aMat(1, 2) = 1.0;
-  aMat(2, 1) = 1.0; aMat(2, 2) = 2.0;
-  aMat(3, 1) = 1.0; aMat(3, 2) = 3.0;
-  aMat(4, 1) = 1.0; aMat(4, 2) = 4.0;
+  aMat(1, 1) = 1.0;
+  aMat(1, 2) = 1.0;
+  aMat(2, 1) = 1.0;
+  aMat(2, 2) = 2.0;
+  aMat(3, 1) = 1.0;
+  aMat(3, 2) = 3.0;
+  aMat(4, 1) = 1.0;
+  aMat(4, 2) = 4.0;
 
   math_Vector aB(1, 4);
   aB(1) = 2.0;
@@ -710,7 +759,7 @@ TEST(MathLin_Test, CompareWithOldAPI_GaussLeastSquare)
 
   // Old API
   math_GaussLeastSquare anOldLS(aMat);
-  math_Vector anOldSol(1, 2);
+  math_Vector           anOldSol(1, 2);
   anOldLS.Solve(aB, anOldSol);
 
   // New API

@@ -42,15 +42,15 @@ using namespace MathUtils;
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult Brent(Function&          theFunc,
-                        double             theLower,
-                        double             theUpper,
-                        const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult Brent(Function&                theFunc,
+                              double                   theLower,
+                              double                   theUpper,
+                              const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
 
-  double aA = theLower;
-  double aB = theUpper;
+  double aA  = theLower;
+  double aB  = theUpper;
   double aFa = 0.0;
   double aFb = 0.0;
 
@@ -80,10 +80,10 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     std::swap(aFa, aFb);
   }
 
-  double aC = aA;  // Previous iterate
+  double aC  = aA; // Previous iterate
   double aFc = aFa;
-  double aD = aB - aA; // Step size
-  double aE = aD;      // Previous step size
+  double aD  = aB - aA; // Step size
+  double aE  = aD;      // Previous step size
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
@@ -93,8 +93,8 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     if (std::abs(aFb) < theConfig.FTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aB;
-      aResult.Value = aFb;
+      aResult.Root   = aB;
+      aResult.Value  = aFb;
       return aResult;
     }
 
@@ -102,8 +102,8 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     if (std::abs(aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aB)))
     {
       aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aB;
-      aResult.Value = aFb;
+      aResult.Root   = aB;
+      aResult.Value  = aFb;
       return aResult;
     }
 
@@ -115,8 +115,8 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     {
       // Inverse quadratic interpolation
       aS = aA * aFb * aFc / ((aFa - aFb) * (aFa - aFc))
-         + aB * aFa * aFc / ((aFb - aFa) * (aFb - aFc))
-         + aC * aFa * aFb / ((aFc - aFa) * (aFc - aFb));
+           + aB * aFa * aFc / ((aFb - aFa) * (aFb - aFc))
+           + aC * aFa * aFb / ((aFc - aFa) * (aFc - aFb));
     }
     else
     {
@@ -126,7 +126,7 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
 
     // Decide whether to accept the interpolation step
     const double aTol = 2.0 * MathUtils::THE_EPSILON * std::abs(aB) + 0.5 * theConfig.XTolerance;
-    const double aM = 0.5 * (aC - aB);
+    const double aM   = 0.5 * (aC - aB);
 
     bool aUseInterp = false;
 
@@ -155,7 +155,7 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     }
 
     // Update previous values
-    aA = aB;
+    aA  = aB;
     aFa = aFb;
 
     // Compute new point, ensuring minimum step
@@ -172,24 +172,24 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
     if (!theFunc.Value(aB, aFb))
     {
       aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root = aB;
+      aResult.Root   = aB;
       return aResult;
     }
 
     // Update bracket
     if (aFb * aFc > 0.0)
     {
-      aC = aA;
+      aC  = aA;
       aFc = aFa;
-      aD = aB - aA;
-      aE = aD;
+      aD  = aB - aA;
+      aE  = aD;
     }
     else if (std::abs(aFc) < std::abs(aFb))
     {
       // Swap b and c if c is better
-      aA = aB;
-      aB = aC;
-      aC = aA;
+      aA  = aB;
+      aB  = aC;
+      aC  = aA;
       aFa = aFb;
       aFb = aFc;
       aFc = aFa;
@@ -198,8 +198,8 @@ MathUtils::ScalarResult Brent(Function&          theFunc,
 
   // Maximum iterations reached
   aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root = aB;
-  aResult.Value = aFb;
+  aResult.Root   = aB;
+  aResult.Value  = aFb;
   return aResult;
 }
 

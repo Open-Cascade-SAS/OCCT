@@ -23,134 +23,138 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-8;
+constexpr double THE_TOLERANCE = 1.0e-8;
 
-  //! Simple 2x2 nonlinear system: F1 = x^2 + y^2 - 1, F2 = x - y
-  //! Solution: x = y = sqrt(0.5) ~ 0.7071
-  class SimpleCircleLineSystem : public math_FunctionSetWithDerivatives
+//! Simple 2x2 nonlinear system: F1 = x^2 + y^2 - 1, F2 = x - y
+//! Solution: x = y = sqrt(0.5) ~ 0.7071
+class SimpleCircleLineSystem : public math_FunctionSetWithDerivatives
+{
+public:
+  int NbVariables() const override { return 2; }
+
+  int NbEquations() const override { return 2; }
+
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
-  public:
-    int NbVariables() const override { return 2; }
-    int NbEquations() const override { return 2; }
+    F(1) = X(1) * X(1) + X(2) * X(2) - 1.0; // x^2 + y^2 = 1
+    F(2) = X(1) - X(2);                     // x = y
+    return true;
+  }
 
-    bool Value(const math_Vector& X, math_Vector& F) override
-    {
-      F(1) = X(1) * X(1) + X(2) * X(2) - 1.0; // x^2 + y^2 = 1
-      F(2) = X(1) - X(2);                     // x = y
-      return true;
-    }
-
-    bool Derivatives(const math_Vector& X, math_Matrix& D) override
-    {
-      D(1, 1) = 2.0 * X(1); // dF1/dx
-      D(1, 2) = 2.0 * X(2); // dF1/dy
-      D(2, 1) = 1.0;        // dF2/dx
-      D(2, 2) = -1.0;       // dF2/dy
-      return true;
-    }
-
-    bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
-    {
-      return Value(X, F) && Derivatives(X, D);
-    }
-  };
-
-  //! Rosenbrock-like 2D system: F1 = 10*(y - x^2), F2 = 1 - x
-  //! Solution: x = 1, y = 1
-  class RosenbrockSystem : public math_FunctionSetWithDerivatives
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override
   {
-  public:
-    int NbVariables() const override { return 2; }
-    int NbEquations() const override { return 2; }
+    D(1, 1) = 2.0 * X(1); // dF1/dx
+    D(1, 2) = 2.0 * X(2); // dF1/dy
+    D(2, 1) = 1.0;        // dF2/dx
+    D(2, 2) = -1.0;       // dF2/dy
+    return true;
+  }
 
-    bool Value(const math_Vector& X, math_Vector& F) override
-    {
-      F(1) = 10.0 * (X(2) - X(1) * X(1));
-      F(2) = 1.0 - X(1);
-      return true;
-    }
-
-    bool Derivatives(const math_Vector& X, math_Matrix& D) override
-    {
-      D(1, 1) = -20.0 * X(1);
-      D(1, 2) = 10.0;
-      D(2, 1) = -1.0;
-      D(2, 2) = 0.0;
-      return true;
-    }
-
-    bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
-    {
-      return Value(X, F) && Derivatives(X, D);
-    }
-  };
-
-  //! 3x3 linear-like system: F1 = 2x + y - 2, F2 = x + 3y - 5, F3 = z - 1
-  //! Solution: x = 0.2, y = 1.6, z = 1
-  class Linear3System : public math_FunctionSetWithDerivatives
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
   {
-  public:
-    int NbVariables() const override { return 3; }
-    int NbEquations() const override { return 3; }
+    return Value(X, F) && Derivatives(X, D);
+  }
+};
 
-    bool Value(const math_Vector& X, math_Vector& F) override
-    {
-      F(1) = 2.0 * X(1) + X(2) - 2.0;
-      F(2) = X(1) + 3.0 * X(2) - 5.0;
-      F(3) = X(3) - 1.0;
-      return true;
-    }
+//! Rosenbrock-like 2D system: F1 = 10*(y - x^2), F2 = 1 - x
+//! Solution: x = 1, y = 1
+class RosenbrockSystem : public math_FunctionSetWithDerivatives
+{
+public:
+  int NbVariables() const override { return 2; }
 
-    bool Derivatives(const math_Vector&, math_Matrix& D) override
-    {
-      D(1, 1) = 2.0;
-      D(1, 2) = 1.0;
-      D(1, 3) = 0.0;
-      D(2, 1) = 1.0;
-      D(2, 2) = 3.0;
-      D(2, 3) = 0.0;
-      D(3, 1) = 0.0;
-      D(3, 2) = 0.0;
-      D(3, 3) = 1.0;
-      return true;
-    }
+  int NbEquations() const override { return 2; }
 
-    bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
-    {
-      return Value(X, F) && Derivatives(X, D);
-    }
-  };
-
-  //! Polynomial system: x^3 - y = 0, y^3 - x = 0
-  //! Solutions: (0,0), (1,1), (-1,-1)
-  class PolynomialSystem : public math_FunctionSetWithDerivatives
+  bool Value(const math_Vector& X, math_Vector& F) override
   {
-  public:
-    int NbVariables() const override { return 2; }
-    int NbEquations() const override { return 2; }
+    F(1) = 10.0 * (X(2) - X(1) * X(1));
+    F(2) = 1.0 - X(1);
+    return true;
+  }
 
-    bool Value(const math_Vector& X, math_Vector& F) override
-    {
-      F(1) = X(1) * X(1) * X(1) - X(2);
-      F(2) = X(2) * X(2) * X(2) - X(1);
-      return true;
-    }
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override
+  {
+    D(1, 1) = -20.0 * X(1);
+    D(1, 2) = 10.0;
+    D(2, 1) = -1.0;
+    D(2, 2) = 0.0;
+    return true;
+  }
 
-    bool Derivatives(const math_Vector& X, math_Matrix& D) override
-    {
-      D(1, 1) = 3.0 * X(1) * X(1);
-      D(1, 2) = -1.0;
-      D(2, 1) = -1.0;
-      D(2, 2) = 3.0 * X(2) * X(2);
-      return true;
-    }
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  {
+    return Value(X, F) && Derivatives(X, D);
+  }
+};
 
-    bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
-    {
-      return Value(X, F) && Derivatives(X, D);
-    }
-  };
-}
+//! 3x3 linear-like system: F1 = 2x + y - 2, F2 = x + 3y - 5, F3 = z - 1
+//! Solution: x = 0.2, y = 1.6, z = 1
+class Linear3System : public math_FunctionSetWithDerivatives
+{
+public:
+  int NbVariables() const override { return 3; }
+
+  int NbEquations() const override { return 3; }
+
+  bool Value(const math_Vector& X, math_Vector& F) override
+  {
+    F(1) = 2.0 * X(1) + X(2) - 2.0;
+    F(2) = X(1) + 3.0 * X(2) - 5.0;
+    F(3) = X(3) - 1.0;
+    return true;
+  }
+
+  bool Derivatives(const math_Vector&, math_Matrix& D) override
+  {
+    D(1, 1) = 2.0;
+    D(1, 2) = 1.0;
+    D(1, 3) = 0.0;
+    D(2, 1) = 1.0;
+    D(2, 2) = 3.0;
+    D(2, 3) = 0.0;
+    D(3, 1) = 0.0;
+    D(3, 2) = 0.0;
+    D(3, 3) = 1.0;
+    return true;
+  }
+
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  {
+    return Value(X, F) && Derivatives(X, D);
+  }
+};
+
+//! Polynomial system: x^3 - y = 0, y^3 - x = 0
+//! Solutions: (0,0), (1,1), (-1,-1)
+class PolynomialSystem : public math_FunctionSetWithDerivatives
+{
+public:
+  int NbVariables() const override { return 2; }
+
+  int NbEquations() const override { return 2; }
+
+  bool Value(const math_Vector& X, math_Vector& F) override
+  {
+    F(1) = X(1) * X(1) * X(1) - X(2);
+    F(2) = X(2) * X(2) * X(2) - X(1);
+    return true;
+  }
+
+  bool Derivatives(const math_Vector& X, math_Matrix& D) override
+  {
+    D(1, 1) = 3.0 * X(1) * X(1);
+    D(1, 2) = -1.0;
+    D(2, 1) = -1.0;
+    D(2, 2) = 3.0 * X(2) * X(2);
+    return true;
+  }
+
+  bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override
+  {
+    return Value(X, F) && Derivatives(X, D);
+  }
+};
+} // namespace
 
 //==================================================================================================
 // Test: Simple circle-line system - compare new API with legacy
@@ -438,14 +442,14 @@ TEST(MathSys_ComparisonTest, Newton_DifferentStartingPoints)
   SimpleCircleLineSystem aFunc;
 
   math_Vector aTolX(1, 2, 1.0e-10);
-  double       aTolF = 1.0e-10;
+  double      aTolF = 1.0e-10;
 
   // Test several starting points
   double aStartPoints[][2] = {
-      {0.1, 0.1},
-      {0.9, 0.9},
-      {0.3, 0.7},
-      {1.0, 0.0},
+    {0.1, 0.1},
+    {0.9, 0.9},
+    {0.3, 0.7},
+    {1.0, 0.0},
   };
 
   for (const auto& aStartPt : aStartPoints)
@@ -455,8 +459,8 @@ TEST(MathSys_ComparisonTest, Newton_DifferentStartingPoints)
     aStart(2) = aStartPt[1];
 
     auto aNewResult = MathSys::Newton(aFunc, aStart, aTolX, aTolF);
-    ASSERT_TRUE(aNewResult.IsDone()) << "Failed for start (" << aStartPt[0] << ", " << aStartPt[1]
-                                     << ")";
+    ASSERT_TRUE(aNewResult.IsDone())
+      << "Failed for start (" << aStartPt[0] << ", " << aStartPt[1] << ")";
 
     math_NewtonFunctionSetRoot aOldSolver(aFunc, aTolX, aTolF);
     aOldSolver.Perform(aFunc, aStart);

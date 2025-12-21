@@ -57,7 +57,7 @@ VectorResult Powell(Function&          theFunc,
 
   const int aLower = theStartingPoint.Lower();
   const int aUpper = theStartingPoint.Upper();
-  const int aN = aUpper - aLower + 1;
+  const int aN     = aUpper - aLower + 1;
 
   // Current point
   math_Vector aX(aLower, aUpper);
@@ -91,10 +91,10 @@ VectorResult Powell(Function&          theFunc,
     aResult.NbIterations = anIter + 1;
 
     const double aFp = aFx;
-    aXOld = aX;
+    aXOld            = aX;
 
     // Track largest decrease and its direction index
-    double aDel = 0.0;
+    double aDel  = 0.0;
     int    aIBig = 0;
 
     // Minimize along each direction
@@ -125,18 +125,19 @@ VectorResult Powell(Function&          theFunc,
         const double aDecrease = aFpPrev - aFx;
         if (aDecrease > aDel)
         {
-          aDel = aDecrease;
+          aDel  = aDecrease;
           aIBig = i;
         }
       }
     }
 
     // Check convergence
-    if (2.0 * std::abs(aFp - aFx) <= theConfig.FTolerance * (std::abs(aFp) + std::abs(aFx) + MathUtils::THE_ZERO_TOL))
+    if (2.0 * std::abs(aFp - aFx)
+        <= theConfig.FTolerance * (std::abs(aFp) + std::abs(aFx) + MathUtils::THE_ZERO_TOL))
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
 
@@ -182,7 +183,7 @@ VectorResult Powell(Function&          theFunc,
             for (int j = 1; j <= aN; ++j)
             {
               aDirections(aIBig, j) = aDirections(aN, j);
-              aDirections(aN, j) = aXit(aLower + j - 1);
+              aDirections(aN, j)    = aXit(aLower + j - 1);
             }
           }
         }
@@ -197,17 +198,17 @@ VectorResult Powell(Function&          theFunc,
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
   }
 
   // Maximum iterations reached
-  aResult.Status = Status::MaxIterations;
+  aResult.Status   = Status::MaxIterations;
   aResult.Solution = aX;
-  aResult.Value = aFx;
+  aResult.Value    = aFx;
   return aResult;
 }
 
@@ -230,7 +231,7 @@ VectorResult PowellWithDirections(Function&          theFunc,
 
   const int aLower = theStartingPoint.Lower();
   const int aUpper = theStartingPoint.Upper();
-  const int aN = aUpper - aLower + 1;
+  const int aN     = aUpper - aLower + 1;
 
   // Validate dimensions
   if (theInitialDirections.RowNumber() != aN || theInitialDirections.ColNumber() != aN)
@@ -263,9 +264,9 @@ VectorResult PowellWithDirections(Function&          theFunc,
     aResult.NbIterations = anIter + 1;
 
     const double aFp = aFx;
-    aXOld = aX;
+    aXOld            = aX;
 
-    double aDel = 0.0;
+    double aDel  = 0.0;
     int    aIBig = 0;
 
     for (int i = 1; i <= aN; ++i)
@@ -291,7 +292,7 @@ VectorResult PowellWithDirections(Function&          theFunc,
         const double aDecrease = aFpPrev - aFx;
         if (aDecrease > aDel)
         {
-          aDel = aDecrease;
+          aDel  = aDecrease;
           aIBig = i;
         }
       }
@@ -301,9 +302,9 @@ VectorResult PowellWithDirections(Function&          theFunc,
     if (2.0 * std::abs(aFp - aFx)
         <= theConfig.FTolerance * (std::abs(aFp) + std::abs(aFx) + MathUtils::THE_ZERO_TOL))
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
 
@@ -343,7 +344,7 @@ VectorResult PowellWithDirections(Function&          theFunc,
             for (int j = 1; j <= aN; ++j)
             {
               aDirections(aIBig, j) = aDirections(aN, j);
-              aDirections(aN, j) = aXit(aLower + j - 1);
+              aDirections(aN, j)    = aXit(aLower + j - 1);
             }
           }
         }
@@ -357,16 +358,16 @@ VectorResult PowellWithDirections(Function&          theFunc,
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
   }
 
-  aResult.Status = Status::MaxIterations;
+  aResult.Status   = Status::MaxIterations;
   aResult.Solution = aX;
-  aResult.Value = aFx;
+  aResult.Value    = aFx;
   return aResult;
 }
 

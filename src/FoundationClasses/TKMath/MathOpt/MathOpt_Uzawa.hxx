@@ -38,15 +38,16 @@ struct UzawaResult
   int                        NbIterations = 0;
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
 //! Configuration for Uzawa algorithm.
 struct UzawaConfig
 {
-  double EpsLix       = 1.0e-6; //!< Tolerance for X convergence
-  double EpsLic       = 1.0e-6; //!< Tolerance for dual variable convergence
-  int    MaxIterations = 500;   //!< Maximum iterations
+  double EpsLix        = 1.0e-6; //!< Tolerance for X convergence
+  double EpsLic        = 1.0e-6; //!< Tolerance for dual variable convergence
+  int    MaxIterations = 500;    //!< Maximum iterations
 };
 
 //! Solve constrained least squares using Uzawa algorithm.
@@ -80,8 +81,8 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
   const int aNcol = theCont.ColNumber();
 
   // Validate dimensions
-  if (theSecont.Length() != aNlig || (theNce + theNci) != aNlig ||
-      theStartingPoint.Length() != aNcol)
+  if (theSecont.Length() != aNlig || (theNce + theNci) != aNlig
+      || theStartingPoint.Length() != aNcol)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -99,8 +100,7 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
     double aSum = 0.0;
     for (int j = 1; j <= aNcol; ++j)
     {
-      aSum += theCont(i + aRowLower - 1, j + aColLower - 1) *
-              theStartingPoint(j + aXLower - 1);
+      aSum += theCont(i + aRowLower - 1, j + aColLower - 1) * theStartingPoint(j + aXLower - 1);
     }
     aErrinit(i) = aSum - theSecont(i + aSecLower - 1);
   }
@@ -125,8 +125,8 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
         double aSum = 0.0;
         for (int k = 1; k <= aNcol; ++k)
         {
-          aSum += theCont(i + aRowLower - 1, k + aColLower - 1) *
-                  theCont(j + aRowLower - 1, k + aColLower - 1);
+          aSum += theCont(i + aRowLower - 1, k + aColLower - 1)
+                  * theCont(j + aRowLower - 1, k + aColLower - 1);
         }
         aCTCinv(i, j) = aSum;
         if (i != j)
@@ -201,7 +201,7 @@ inline UzawaResult Uzawa(const math_Matrix& theCont,
     }
     aNormat += aNormli;
   }
-  const double aRho  = 1.0 / (std::sqrt(2.0) * aNormat);
+  const double aRho = 1.0 / (std::sqrt(2.0) * aNormat);
 
   // Uzawa iterations
   for (int anIter = 1; anIter <= theConfig.MaxIterations; ++anIter)

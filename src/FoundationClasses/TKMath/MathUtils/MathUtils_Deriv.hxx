@@ -37,7 +37,7 @@ namespace MathUtils
 template <typename Function>
 bool CentralDifference(Function& theFunc, double theX, double& theDeriv, double theStep = 1.0e-8)
 {
-  double aFPlus = 0.0;
+  double aFPlus  = 0.0;
   double aFMinus = 0.0;
 
   if (!theFunc.Value(theX + theStep, aFPlus))
@@ -103,8 +103,8 @@ bool NumericalGradient(Function&    theFunc,
 
   for (int i = aLower; i <= aUpper; ++i)
   {
-    const double aXi = theX(i);
-    double       aFPlus = 0.0;
+    const double aXi     = theX(i);
+    double       aFPlus  = 0.0;
     double       aFMinus = 0.0;
 
     // Forward perturbation
@@ -157,7 +157,7 @@ bool NumericalGradientAdaptive(Function&    theFunc,
     // Adaptive step: larger for larger |x|, with minimum floor
     const double aStep = theRelStep * std::max(1.0, std::abs(aXi));
 
-    double aFPlus = 0.0;
+    double aFPlus  = 0.0;
     double aFMinus = 0.0;
 
     theX(i) = aXi + aStep;
@@ -174,7 +174,7 @@ bool NumericalGradientAdaptive(Function&    theFunc,
       return false;
     }
 
-    theX(i) = aXi;
+    theX(i)    = aXi;
     theGrad(i) = (aFPlus - aFMinus) / (2.0 * aStep);
   }
 
@@ -205,7 +205,7 @@ bool NumericalJacobian(Function&    theFunc,
   for (int j = 1; j <= aNbCols; ++j)
   {
     const int    aIdx = theX.Lower() + j - 1;
-    const double aXj = theX(aIdx);
+    const double aXj  = theX(aIdx);
 
     // Forward perturbation
     theX(aIdx) = aXj + theStep;
@@ -264,8 +264,8 @@ bool NumericalHessian(Function&    theFunc,
   // Diagonal elements: d^2f/dx[i]^2 ~= (f(x+h[i]*e[i]) - 2f(x) + f(x-h[i]*e[i])) / h^2
   for (int i = aLower; i <= aUpper; ++i)
   {
-    const double aXi = theX(i);
-    double       aFPlus = 0.0;
+    const double aXi     = theX(i);
+    double       aFPlus  = 0.0;
     double       aFMinus = 0.0;
 
     theX(i) = aXi + theStep;
@@ -284,7 +284,7 @@ bool NumericalHessian(Function&    theFunc,
 
     theX(i) = aXi;
 
-    const int aMatIdx = i - aLower + 1;
+    const int aMatIdx         = i - aLower + 1;
     theHess(aMatIdx, aMatIdx) = (aFPlus - 2.0 * aFx + aFMinus) / (theStep * theStep);
   }
 
@@ -295,8 +295,8 @@ bool NumericalHessian(Function&    theFunc,
   {
     for (int j = i + 1; j <= aUpper; ++j)
     {
-      const double aXi = theX(i);
-      const double aXj = theX(j);
+      const double aXi  = theX(i);
+      const double aXj  = theX(j);
       double       aFpp = 0.0, aFpm = 0.0, aFmp = 0.0, aFmm = 0.0;
 
       // f(x + h[i]*e[i] + h[j]*e[j])
@@ -342,7 +342,7 @@ bool NumericalHessian(Function&    theFunc,
 
       const int    aMatI = i - aLower + 1;
       const int    aMatJ = j - aLower + 1;
-      const double aHij = (aFpp - aFpm - aFmp + aFmm) / (4.0 * theStep * theStep);
+      const double aHij  = (aFpp - aFpm - aFmp + aFmm) / (4.0 * theStep * theStep);
 
       // Symmetric
       theHess(aMatI, aMatJ) = aHij;
@@ -370,7 +370,7 @@ bool SecondDerivative(Function& theFunc,
                       double&   theD2f,
                       double    theStep = 1.0e-5)
 {
-  double aFPlus = 0.0;
+  double aFPlus  = 0.0;
   double aFMinus = 0.0;
 
   if (!theFunc.Value(theX + theStep, aFPlus))

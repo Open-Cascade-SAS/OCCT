@@ -29,11 +29,12 @@ using namespace MathUtils;
 struct QRResult
 {
   Status                     Status = Status::NotConverged;
-  std::optional<math_Matrix> Q;    //!< Orthogonal matrix Q (m x m)
-  std::optional<math_Matrix> R;    //!< Upper triangular matrix R (m x n)
+  std::optional<math_Matrix> Q;        //!< Orthogonal matrix Q (m x m)
+  std::optional<math_Matrix> R;        //!< Upper triangular matrix R (m x n)
   int                        Rank = 0; //!< Numerical rank
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 

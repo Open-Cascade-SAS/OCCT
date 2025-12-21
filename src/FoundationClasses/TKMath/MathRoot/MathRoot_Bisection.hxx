@@ -42,15 +42,15 @@ using namespace MathUtils;
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult Bisection(Function&          theFunc,
-                            double             theLower,
-                            double             theUpper,
-                            const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult Bisection(Function&                theFunc,
+                                  double                   theLower,
+                                  double                   theUpper,
+                                  const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
 
-  double aA = theLower;
-  double aB = theUpper;
+  double aA  = theLower;
+  double aB  = theUpper;
   double aFa = 0.0;
   double aFb = 0.0;
 
@@ -87,13 +87,13 @@ MathUtils::ScalarResult Bisection(Function&          theFunc,
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     // Compute midpoint
-    const double aM = 0.5 * (aA + aB);
+    const double aM  = 0.5 * (aA + aB);
     double       aFm = 0.0;
 
     if (!theFunc.Value(aM, aFm))
     {
-      aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root = aM;
+      aResult.Status       = MathUtils::Status::NumericalError;
+      aResult.Root         = aM;
       aResult.NbIterations = anIter + 1;
       return aResult;
     }
@@ -104,8 +104,8 @@ MathUtils::ScalarResult Bisection(Function&          theFunc,
     if (std::abs(aFm) < theConfig.FTolerance)
     {
       aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aM;
-      aResult.Value = aFm;
+      aResult.Root   = aM;
+      aResult.Value  = aFm;
       return aResult;
     }
 
@@ -113,8 +113,8 @@ MathUtils::ScalarResult Bisection(Function&          theFunc,
     if ((aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aM)))
     {
       aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aM;
-      aResult.Value = aFm;
+      aResult.Root   = aM;
+      aResult.Value  = aFm;
       return aResult;
     }
 
@@ -123,21 +123,21 @@ MathUtils::ScalarResult Bisection(Function&          theFunc,
     if (aIsNegAtM == aIsNegAtA)
     {
       // Same sign as endpoint A, replace A
-      aA = aM;
+      aA  = aM;
       aFa = aFm;
     }
     else
     {
       // Same sign as endpoint B, replace B
-      aB = aM;
+      aB  = aM;
       aFb = aFm;
     }
   }
 
   // Maximum iterations reached
   aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root = 0.5 * (aA + aB);
-  aResult.Value = 0.0;
+  aResult.Root   = 0.5 * (aA + aB);
+  aResult.Value  = 0.0;
   theFunc.Value(*aResult.Root, *aResult.Value);
   return aResult;
 }
@@ -153,17 +153,17 @@ MathUtils::ScalarResult Bisection(Function&          theFunc,
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult BisectionNewton(Function&          theFunc,
-                                  double             theLower,
-                                  double             theUpper,
-                                  const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult BisectionNewton(Function&                theFunc,
+                                        double                   theLower,
+                                        double                   theUpper,
+                                        const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
 
-  double aA = theLower;
-  double aB = theUpper;
-  double aFa = 0.0;
-  double aFb = 0.0;
+  double aA     = theLower;
+  double aB     = theUpper;
+  double aFa    = 0.0;
+  double aFb    = 0.0;
   double aDummy = 0.0;
 
   // Evaluate at endpoints
@@ -196,16 +196,16 @@ MathUtils::ScalarResult BisectionNewton(Function&          theFunc,
   bool aIsNegAtA = (aFa < 0.0);
 
   // Start from midpoint
-  double aX = 0.5 * (aA + aB);
-  double aFx = 0.0;
+  double aX   = 0.5 * (aA + aB);
+  double aFx  = 0.0;
   double aDfx = 0.0;
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     if (!theFunc.Values(aX, aFx, aDfx))
     {
-      aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root = aX;
+      aResult.Status       = MathUtils::Status::NumericalError;
+      aResult.Root         = aX;
       aResult.NbIterations = anIter + 1;
       return aResult;
     }
@@ -215,18 +215,18 @@ MathUtils::ScalarResult BisectionNewton(Function&          theFunc,
     // Check convergence
     if (std::abs(aFx) < theConfig.FTolerance)
     {
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Status     = MathUtils::Status::OK;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
     }
 
     if ((aB - aA) < theConfig.XTolerance * std::max(1.0, std::abs(aX)))
     {
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Status     = MathUtils::Status::OK;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
     }
@@ -262,9 +262,9 @@ MathUtils::ScalarResult BisectionNewton(Function&          theFunc,
   }
 
   // Maximum iterations reached
-  aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root = aX;
-  aResult.Value = 0.0;
+  aResult.Status     = MathUtils::Status::MaxIterations;
+  aResult.Root       = aX;
+  aResult.Value      = 0.0;
   aResult.Derivative = 0.0;
   theFunc.Values(*aResult.Root, *aResult.Value, *aResult.Derivative);
   return aResult;

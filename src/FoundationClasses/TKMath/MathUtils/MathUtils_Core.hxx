@@ -68,7 +68,7 @@ inline bool IsZero(double theValue, double theTolerance = THE_ZERO_TOL)
 //! @return true if values are approximately equal
 inline bool IsEqual(double theA, double theB, double theTolerance = THE_ZERO_TOL)
 {
-  const double aDiff = std::abs(theA - theB);
+  const double aDiff  = std::abs(theA - theB);
   const double aScale = std::max({1.0, std::abs(theA), std::abs(theB)});
   return aDiff < theTolerance * aScale;
 }
@@ -168,7 +168,7 @@ inline double ComputeScaleFactor(const double* theCoeffs, int theCount)
 //! @return dot product sum(A[i] * B[i])
 inline double DotProduct(const math_Vector& theA, const math_Vector& theB)
 {
-  double aSum = 0.0;
+  double    aSum   = 0.0;
   const int aLower = theA.Lower();
   const int aUpper = theA.Upper();
   for (int i = aLower; i <= aUpper; ++i)

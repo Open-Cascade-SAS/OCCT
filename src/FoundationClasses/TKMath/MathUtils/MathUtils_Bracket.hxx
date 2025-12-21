@@ -147,14 +147,14 @@ MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, int
   for (int anIter = 0; anIter < theMaxIter && aResult.Fb >= aResult.Fc; ++anIter)
   {
     // Parabolic extrapolation
-    const double aR = (aResult.B - aResult.A) * (aResult.Fb - aResult.Fc);
-    const double aQ = (aResult.B - aResult.C) * (aResult.Fb - aResult.Fa);
+    const double aR     = (aResult.B - aResult.A) * (aResult.Fb - aResult.Fc);
+    const double aQ     = (aResult.B - aResult.C) * (aResult.Fb - aResult.Fa);
     const double aDenom = 2.0 * SignTransfer(std::max(std::abs(aQ - aR), THE_ZERO_TOL), aQ - aR);
 
     double aU = aResult.B - ((aResult.B - aResult.C) * aQ - (aResult.B - aResult.A) * aR) / aDenom;
 
     const double aULim = aResult.B + 100.0 * (aResult.C - aResult.B);
-    double       aFu = 0.0;
+    double       aFu   = 0.0;
 
     if ((aResult.B - aU) * (aU - aResult.C) > 0.0)
     {
@@ -166,17 +166,17 @@ MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, int
 
       if (aFu < aResult.Fc)
       {
-        aResult.A = aResult.B;
-        aResult.B = aU;
-        aResult.Fa = aResult.Fb;
-        aResult.Fb = aFu;
+        aResult.A       = aResult.B;
+        aResult.B       = aU;
+        aResult.Fa      = aResult.Fb;
+        aResult.Fb      = aFu;
         aResult.IsValid = true;
         return aResult;
       }
       else if (aFu > aResult.Fb)
       {
-        aResult.C = aU;
-        aResult.Fc = aFu;
+        aResult.C       = aU;
+        aResult.Fc      = aFu;
         aResult.IsValid = true;
         return aResult;
       }
@@ -198,9 +198,9 @@ MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, int
 
       if (aFu < aResult.Fc)
       {
-        aResult.B = aResult.C;
-        aResult.C = aU;
-        aU = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
+        aResult.B  = aResult.C;
+        aResult.C  = aU;
+        aU         = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
         aResult.Fb = aResult.Fc;
         aResult.Fc = aFu;
         if (!theFunc.Value(aU, aFu))
@@ -229,9 +229,9 @@ MinBracketResult BracketMinimum(Function& theFunc, double theA, double theB, int
     }
 
     // Shift points
-    aResult.A = aResult.B;
-    aResult.B = aResult.C;
-    aResult.C = aU;
+    aResult.A  = aResult.B;
+    aResult.B  = aResult.C;
+    aResult.C  = aU;
     aResult.Fa = aResult.Fb;
     aResult.Fb = aResult.Fc;
     aResult.Fc = aFu;

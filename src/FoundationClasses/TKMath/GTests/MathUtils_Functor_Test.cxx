@@ -26,7 +26,7 @@ namespace
 {
 constexpr double THE_TOLERANCE = 1e-10;
 constexpr double THE_PI        = 3.14159265358979323846;
-}
+} // namespace
 
 //==================================================================================================
 // Scalar Functor Tests
@@ -146,7 +146,7 @@ TEST(MathUtils_Functor_Scalar, Composite_Value)
   // Result: (x+1)^2
   MathUtils::Polynomial aOuter({0.0, 0.0, 1.0}); // x^2
   MathUtils::Polynomial aInner({1.0, 1.0});      // x + 1
-  auto aComposite = MathUtils::MakeComposite(aOuter, aInner);
+  auto                  aComposite = MathUtils::MakeComposite(aOuter, aInner);
 
   double aValue = 0.0;
   EXPECT_TRUE(aComposite.Value(0.0, aValue));
@@ -161,7 +161,7 @@ TEST(MathUtils_Functor_Scalar, Sum_Value)
   // f(x) + g(x) = (x^2) + (2x + 1) = x^2 + 2x + 1
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
   MathUtils::Polynomial aG({1.0, 2.0});      // 2x + 1
-  auto aSum = MathUtils::MakeSum(aF, aG);
+  auto                  aSum = MathUtils::MakeSum(aF, aG);
 
   double aValue = 0.0;
   EXPECT_TRUE(aSum.Value(1.0, aValue));
@@ -176,7 +176,7 @@ TEST(MathUtils_Functor_Scalar, Difference_Value)
   // f(x) - g(x) = (x^2) - (x) = x^2 - x
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
   MathUtils::Polynomial aG({0.0, 1.0});      // x
-  auto aDiff = MathUtils::MakeDifference(aF, aG);
+  auto                  aDiff = MathUtils::MakeDifference(aF, aG);
 
   double aValue = 0.0;
   EXPECT_TRUE(aDiff.Value(3.0, aValue));
@@ -186,9 +186,9 @@ TEST(MathUtils_Functor_Scalar, Difference_Value)
 TEST(MathUtils_Functor_Scalar, Product_Value)
 {
   // f(x) * g(x) = (x) * (x + 1) = x^2 + x
-  MathUtils::Polynomial aF({0.0, 1.0});      // x
-  MathUtils::Polynomial aG({1.0, 1.0});      // x + 1
-  auto aProd = MathUtils::MakeProduct(aF, aG);
+  MathUtils::Polynomial aF({0.0, 1.0}); // x
+  MathUtils::Polynomial aG({1.0, 1.0}); // x + 1
+  auto                  aProd = MathUtils::MakeProduct(aF, aG);
 
   double aValue = 0.0;
   EXPECT_TRUE(aProd.Value(2.0, aValue));
@@ -200,7 +200,7 @@ TEST(MathUtils_Functor_Scalar, Quotient_Value)
   // f(x) / g(x) = (x^2) / (x) = x
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
   MathUtils::Polynomial aG({0.0, 1.0});      // x
-  auto aQuot = MathUtils::MakeQuotient(aF, aG);
+  auto                  aQuot = MathUtils::MakeQuotient(aF, aG);
 
   double aValue = 0.0;
   EXPECT_TRUE(aQuot.Value(5.0, aValue));
@@ -211,7 +211,7 @@ TEST(MathUtils_Functor_Scalar, Scaled_Value)
 {
   // 3 * f(x) = 3 * x^2
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
-  auto aScaled = MathUtils::MakeScaled(aF, 3.0);
+  auto                  aScaled = MathUtils::MakeScaled(aF, 3.0);
 
   double aValue = 0.0;
   EXPECT_TRUE(aScaled.Value(2.0, aValue));
@@ -222,7 +222,7 @@ TEST(MathUtils_Functor_Scalar, Shifted_Value)
 {
   // f(x) + 5 = x^2 + 5
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
-  auto aShifted = MathUtils::MakeShifted(aF, 5.0);
+  auto                  aShifted = MathUtils::MakeShifted(aF, 5.0);
 
   double aValue = 0.0;
   EXPECT_TRUE(aShifted.Value(2.0, aValue));
@@ -233,7 +233,7 @@ TEST(MathUtils_Functor_Scalar, Negated_Value)
 {
   // -f(x) = -x^2
   MathUtils::Polynomial aF({0.0, 0.0, 1.0}); // x^2
-  auto aNegated = MathUtils::MakeNegated(aF);
+  auto                  aNegated = MathUtils::MakeNegated(aF);
 
   double aValue = 0.0;
   EXPECT_TRUE(aNegated.Value(3.0, aValue));

@@ -140,15 +140,15 @@ struct BealeFunc
 
   bool Gradient(const math_Vector& theX, math_Vector& theGrad)
   {
-    const double aX   = theX(1);
-    const double aY   = theX(2);
-    const double aY2  = aY * aY;
-    const double aY3  = aY2 * aY;
-    const double aT1  = 1.5 - aX * (1.0 - aY);
-    const double aT2  = 2.25 - aX * (1.0 - aY2);
-    const double aT3  = 2.625 - aX * (1.0 - aY3);
-    theGrad(1)        = -2.0 * aT1 * (1.0 - aY) - 2.0 * aT2 * (1.0 - aY2) - 2.0 * aT3 * (1.0 - aY3);
-    theGrad(2)        = 2.0 * aT1 * aX + 2.0 * aT2 * 2.0 * aX * aY + 2.0 * aT3 * 3.0 * aX * aY2;
+    const double aX  = theX(1);
+    const double aY  = theX(2);
+    const double aY2 = aY * aY;
+    const double aY3 = aY2 * aY;
+    const double aT1 = 1.5 - aX * (1.0 - aY);
+    const double aT2 = 2.25 - aX * (1.0 - aY2);
+    const double aT3 = 2.625 - aX * (1.0 - aY3);
+    theGrad(1)       = -2.0 * aT1 * (1.0 - aY) - 2.0 * aT2 * (1.0 - aY2) - 2.0 * aT3 * (1.0 - aY3);
+    theGrad(2)       = 2.0 * aT1 * aX + 2.0 * aT2 * 2.0 * aX * aY + 2.0 * aT3 * 3.0 * aX * aY2;
     return true;
   }
 };

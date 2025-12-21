@@ -58,10 +58,7 @@ struct KronrodConfig : IntegConfig
 //! @param theNbGauss number of Gauss points (determines rule order)
 //! @return integration result with error estimate
 template <typename Function>
-IntegResult KronrodRule(Function& theFunc,
-                        double    theLower,
-                        double    theUpper,
-                        int       theNbGauss = 7)
+IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, int theNbGauss = 7)
 {
   IntegResult aResult;
 
@@ -98,7 +95,7 @@ IntegResult KronrodRule(Function& theFunc,
   // Even indices (Gauss points embedded in Kronrod)
   for (int i = 2; i < aNPnt2; i += 2)
   {
-    const double aDx = aHalfLen * aKronrodP(i);
+    const double aDx   = aHalfLen * aKronrodP(i);
     double       aVal1 = 0.0, aVal2 = 0.0;
 
     if (!theFunc.Value(aMid + aDx, aVal1) || !theFunc.Value(aMid - aDx, aVal2))
@@ -132,7 +129,7 @@ IntegResult KronrodRule(Function& theFunc,
   // Odd indices (Kronrod-only points)
   for (int i = 1; i < aNPnt2; i += 2)
   {
-    const double aDx = aHalfLen * aKronrodP(i);
+    const double aDx   = aHalfLen * aKronrodP(i);
     double       aVal1 = 0.0, aVal2 = 0.0;
 
     if (!theFunc.Value(aMid + aDx, aVal1) || !theFunc.Value(aMid - aDx, aVal2))
@@ -264,7 +261,8 @@ IntegResult Kronrod(Function&            theFunc,
     ++aIterations;
 
     // Replace the worst interval with the two new intervals
-    aHeap.ChangeValue(aMaxIdx) = {aWorst.Lower, aBisMid, *aLeftResult.Value, *aLeftResult.AbsoluteError};
+    aHeap.ChangeValue(
+      aMaxIdx) = {aWorst.Lower, aBisMid, *aLeftResult.Value, *aLeftResult.AbsoluteError};
     aHeap.Append({aBisMid, aWorst.Upper, *aRightResult.Value, *aRightResult.AbsoluteError});
   }
 

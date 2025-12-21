@@ -61,9 +61,9 @@ struct ScalarResult
 //! Supports up to 4 real roots (for quartic equations).
 struct PolyResult
 {
-  Status                Status  = Status::NotConverged;      //!< Computation status
-  size_t                NbRoots = 0;                         //!< Number of real roots found
-  std::array<double, 4> Roots   = {0.0, 0.0, 0.0, 0.0};      //!< Array of real roots (sorted)
+  Status                Status  = Status::NotConverged; //!< Computation status
+  size_t                NbRoots = 0;                    //!< Number of real roots found
+  std::array<double, 4> Roots   = {0.0, 0.0, 0.0, 0.0}; //!< Array of real roots (sorted)
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -82,11 +82,11 @@ struct PolyResult
 struct VectorResult
 {
   Status                     Status       = Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0;                    //!< Number of iterations performed
-  std::optional<math_Vector> Solution;                            //!< Solution vector (set by solver on success)
-  std::optional<double>      Value;                               //!< Function value at solution (if computed)
-  std::optional<math_Vector> Gradient;                            //!< Gradient at solution (if computed)
-  std::optional<math_Matrix> Jacobian;                            //!< Jacobian at solution (if computed)
+  size_t                     NbIterations = 0; //!< Number of iterations performed
+  std::optional<math_Vector> Solution;         //!< Solution vector (set by solver on success)
+  std::optional<double>      Value;            //!< Function value at solution (if computed)
+  std::optional<math_Vector> Gradient;         //!< Gradient at solution (if computed)
+  std::optional<math_Matrix> Jacobian;         //!< Jacobian at solution (if computed)
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -100,8 +100,8 @@ struct VectorResult
 struct LinearResult
 {
   Status                     Status = Status::NotConverged; //!< Computation status
-  std::optional<math_Vector> Solution;                      //!< Solution vector X in AX = B (set by solver)
-  std::optional<double>      Determinant;                   //!< Determinant of matrix (if computed)
+  std::optional<math_Vector> Solution;    //!< Solution vector X in AX = B (set by solver)
+  std::optional<double>      Determinant; //!< Determinant of matrix (if computed)
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -115,9 +115,9 @@ struct LinearResult
 struct EigenResult
 {
   Status                     Status       = Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0;                    //!< Number of iterations performed
-  std::optional<math_Vector> EigenValues;                         //!< Computed eigenvalues (set by solver)
-  std::optional<math_Matrix> EigenVectors;                        //!< Computed eigenvectors (set by solver)
+  size_t                     NbIterations = 0; //!< Number of iterations performed
+  std::optional<math_Vector> EigenValues;      //!< Computed eigenvalues (set by solver)
+  std::optional<math_Matrix> EigenVectors;     //!< Computed eigenvectors (set by solver)
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -131,10 +131,10 @@ struct EigenResult
 struct DecompResult
 {
   Status                     Status = Status::NotConverged; //!< Computation status
-  std::optional<math_Matrix> L;                             //!< Lower triangular (LU) or left singular vectors (SVD)
-  std::optional<math_Matrix> U;                             //!< Upper triangular (LU) or right singular vectors (SVD)
-  std::optional<math_Vector> D;                             //!< Diagonal elements or singular values
-  std::optional<double>      Determinant;                   //!< Matrix determinant (if computed)
+  std::optional<math_Matrix> L;           //!< Lower triangular (LU) or left singular vectors (SVD)
+  std::optional<math_Matrix> U;           //!< Upper triangular (LU) or right singular vectors (SVD)
+  std::optional<math_Vector> D;           //!< Diagonal elements or singular values
+  std::optional<double>      Determinant; //!< Matrix determinant (if computed)
 
   //! Returns true if decomposition succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -149,10 +149,10 @@ struct IntegResult
 {
   Status                Status       = Status::NotConverged; //!< Computation status
   size_t                NbIterations = 0;                    //!< Number of adaptive iterations
-  size_t                NbPoints     = 0;                    //!< Total number of quadrature points used
-  std::optional<double> Value;                               //!< Computed integral value
-  std::optional<double> AbsoluteError;                       //!< Estimated absolute error (if computed)
-  std::optional<double> RelativeError;                       //!< Estimated relative error (if computed)
+  size_t                NbPoints     = 0; //!< Total number of quadrature points used
+  std::optional<double> Value;            //!< Computed integral value
+  std::optional<double> AbsoluteError;    //!< Estimated absolute error (if computed)
+  std::optional<double> RelativeError;    //!< Estimated relative error (if computed)
 
   //! Returns true if integration succeeded.
   bool IsDone() const { return Status == Status::OK; }

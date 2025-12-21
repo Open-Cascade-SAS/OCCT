@@ -34,6 +34,7 @@ struct EigenResult
   int                        Dimension = 0;
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -74,19 +75,19 @@ inline double ComputeWilkinsonShift(const math_Vector& theDiag,
                                     int                theEnd)
 {
   const int aLower = theDiag.Lower();
-  double    aShift = (theDiag(theStart + 1 + aLower - 1) - theDiag(theStart + aLower - 1)) /
-                  (2.0 * theSubdiag(theStart + aLower - 1));
+  double    aShift = (theDiag(theStart + 1 + aLower - 1) - theDiag(theStart + aLower - 1))
+                  / (2.0 * theSubdiag(theStart + aLower - 1));
   const double aRadius = Hypot(1.0, aShift);
 
   if (aShift < 0.0)
   {
-    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1) +
-             theSubdiag(theStart + aLower - 1) / (aShift - aRadius);
+    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1)
+             + theSubdiag(theStart + aLower - 1) / (aShift - aRadius);
   }
   else
   {
-    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1) +
-             theSubdiag(theStart + aLower - 1) / (aShift + aRadius);
+    aShift = theDiag(theEnd + aLower - 1) - theDiag(theStart + aLower - 1)
+             + theSubdiag(theStart + aLower - 1) / (aShift + aRadius);
   }
   return aShift;
 }
@@ -112,9 +113,9 @@ inline bool PerformQLStep(math_Vector& theDiag,
   int aRowIdx;
   for (aRowIdx = theEnd - 1; aRowIdx >= theStart; --aRowIdx)
   {
-    const double aTempVal     = aSine * theSubdiag(aRowIdx + aLowerD - 1);
-    const double aSubdiagTemp = aCosine * theSubdiag(aRowIdx + aLowerD - 1);
-    aRadius                   = Hypot(aTempVal, aShift);
+    const double aTempVal                 = aSine * theSubdiag(aRowIdx + aLowerD - 1);
+    const double aSubdiagTemp             = aCosine * theSubdiag(aRowIdx + aLowerD - 1);
+    aRadius                               = Hypot(aTempVal, aShift);
     theSubdiag(aRowIdx + 1 + aLowerD - 1) = aRadius;
 
     if (aRadius == 0.0)
@@ -130,7 +131,7 @@ inline bool PerformQLStep(math_Vector& theDiag,
 
     const double aRadiusTemp =
       (theDiag(aRowIdx + aLowerD - 1) - aShift) * aSine + 2.0 * aCosine * aSubdiagTemp;
-    aPrevDiag                         = aSine * aRadiusTemp;
+    aPrevDiag                          = aSine * aRadiusTemp;
     theDiag(aRowIdx + 1 + aLowerD - 1) = aShift + aPrevDiag;
     aShift                             = aCosine * aRadiusTemp - aSubdiagTemp;
 
@@ -150,7 +151,7 @@ inline bool PerformQLStep(math_Vector& theDiag,
     return true;
   }
 
-  theDiag(theStart + aLowerD - 1)    -= aPrevDiag;
+  theDiag(theStart + aLowerD - 1) -= aPrevDiag;
   theSubdiag(theStart + aLowerD - 1) = aShift;
   theSubdiag(theEnd + aLowerD - 1)   = 0.0;
 

@@ -42,12 +42,14 @@ using namespace MathUtils;
 //! @param theConfig solver configuration (tolerances, max iterations)
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult Newton(Function& theFunc, double theGuess, const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult Newton(Function&                theFunc,
+                               double                   theGuess,
+                               const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
-  double            aX = theGuess;
-  double            aFx = 0.0;
-  double            aDfx = 0.0;
+  double                  aX   = theGuess;
+  double                  aFx  = 0.0;
+  double                  aDfx = 0.0;
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
@@ -56,8 +58,8 @@ MathUtils::ScalarResult Newton(Function& theFunc, double theGuess, const MathUti
     // Evaluate function and derivative
     if (!theFunc.Values(aX, aFx, aDfx))
     {
-      aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root = aX;
+      aResult.Status       = MathUtils::Status::NumericalError;
+      aResult.Root         = aX;
       aResult.NbIterations = anIter;
       return aResult;
     }
@@ -68,10 +70,10 @@ MathUtils::ScalarResult Newton(Function& theFunc, double theGuess, const MathUti
       // Try to continue with a small perturbation if not converged
       if (!MathUtils::IsFConverged(aFx, theConfig.FTolerance))
       {
-        aResult.Status = MathUtils::Status::NumericalError;
-        aResult.Root = aX;
-        aResult.Value = aFx;
-        aResult.Derivative = aDfx;
+        aResult.Status       = MathUtils::Status::NumericalError;
+        aResult.Root         = aX;
+        aResult.Value        = aFx;
+        aResult.Derivative   = aDfx;
         aResult.NbIterations = anIter;
         return aResult;
       }
@@ -88,18 +90,18 @@ MathUtils::ScalarResult Newton(Function& theFunc, double theGuess, const MathUti
     // Check convergence
     if (MathUtils::IsConverged(anXOld, aX, aFx, theConfig))
     {
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Status     = MathUtils::Status::OK;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
     }
   }
 
   // Maximum iterations reached
-  aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root = aX;
-  aResult.Value = aFx;
+  aResult.Status     = MathUtils::Status::MaxIterations;
+  aResult.Root       = aX;
+  aResult.Value      = aFx;
   aResult.Derivative = aDfx;
   return aResult;
 }
@@ -116,23 +118,23 @@ MathUtils::ScalarResult Newton(Function& theFunc, double theGuess, const MathUti
 //! @param theConfig solver configuration
 //! @return result containing root location and convergence status
 template <typename Function>
-MathUtils::ScalarResult NewtonBounded(Function&          theFunc,
-                                double             theGuess,
-                                double             theLower,
-                                double             theUpper,
-                                const MathUtils::Config& theConfig = MathUtils::Config())
+MathUtils::ScalarResult NewtonBounded(Function&                theFunc,
+                                      double                   theGuess,
+                                      double                   theLower,
+                                      double                   theUpper,
+                                      const MathUtils::Config& theConfig = MathUtils::Config())
 {
   MathUtils::ScalarResult aResult;
 
   // Clamp initial guess to bounds
-  double aX = MathUtils::Clamp(theGuess, theLower, theUpper);
+  double aX   = MathUtils::Clamp(theGuess, theLower, theUpper);
   double aXLo = theLower;
   double aXHi = theUpper;
 
-  double aFx = 0.0;
-  double aDfx = 0.0;
-  double aFLo = 0.0;
-  double aFHi = 0.0;
+  double aFx    = 0.0;
+  double aDfx   = 0.0;
+  double aFLo   = 0.0;
+  double aFHi   = 0.0;
   double aDummy = 0.0;
 
   // Initialize bounds with function values
@@ -157,8 +159,8 @@ MathUtils::ScalarResult NewtonBounded(Function&          theFunc,
     // Evaluate function and derivative at current point
     if (!theFunc.Values(aX, aFx, aDfx))
     {
-      aResult.Status = MathUtils::Status::NumericalError;
-      aResult.Root = aX;
+      aResult.Status       = MathUtils::Status::NumericalError;
+      aResult.Root         = aX;
       aResult.NbIterations = anIter;
       return aResult;
     }
@@ -168,9 +170,9 @@ MathUtils::ScalarResult NewtonBounded(Function&          theFunc,
     // Check convergence
     if (MathUtils::IsFConverged(aFx, theConfig.FTolerance))
     {
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Status     = MathUtils::Status::OK;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
     }
@@ -219,18 +221,18 @@ MathUtils::ScalarResult NewtonBounded(Function&          theFunc,
     {
       // Re-evaluate at final position
       theFunc.Values(aX, aFx, aDfx);
-      aResult.Status = MathUtils::Status::OK;
-      aResult.Root = aX;
-      aResult.Value = aFx;
+      aResult.Status     = MathUtils::Status::OK;
+      aResult.Root       = aX;
+      aResult.Value      = aFx;
       aResult.Derivative = aDfx;
       return aResult;
     }
   }
 
   // Maximum iterations reached
-  aResult.Status = MathUtils::Status::MaxIterations;
-  aResult.Root = aX;
-  aResult.Value = aFx;
+  aResult.Status     = MathUtils::Status::MaxIterations;
+  aResult.Root       = aX;
+  aResult.Value      = aFx;
   aResult.Derivative = aDfx;
   return aResult;
 }

@@ -47,9 +47,9 @@ struct RastriginFunc
 {
   bool Value(const math_Vector& theX, double& theF)
   {
-    const int    aN = theX.Length();
+    const int    aN  = theX.Length();
     const double aPI = M_PI;
-    theF = 10.0 * aN;
+    theF             = 10.0 * aN;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theF += theX(i) * theX(i) - 10.0 * std::cos(2.0 * aPI * theX(i));
@@ -109,11 +109,15 @@ struct GoldsteinPriceFunc
     const double aX = theX(1);
     const double aY = theX(2);
 
-    const double aA = 1.0 + (aX + aY + 1.0) * (aX + aY + 1.0) *
-        (19.0 - 14.0 * aX + 3.0 * aX * aX - 14.0 * aY + 6.0 * aX * aY + 3.0 * aY * aY);
+    const double aA =
+      1.0
+      + (aX + aY + 1.0) * (aX + aY + 1.0)
+          * (19.0 - 14.0 * aX + 3.0 * aX * aX - 14.0 * aY + 6.0 * aX * aY + 3.0 * aY * aY);
 
-    const double aB = 30.0 + (2.0 * aX - 3.0 * aY) * (2.0 * aX - 3.0 * aY) *
-        (18.0 - 32.0 * aX + 12.0 * aX * aX + 48.0 * aY - 36.0 * aX * aY + 27.0 * aY * aY);
+    const double aB =
+      30.0
+      + (2.0 * aX - 3.0 * aY) * (2.0 * aX - 3.0 * aY)
+          * (18.0 - 32.0 * aX + 12.0 * aX * aX + 48.0 * aY - 36.0 * aX * aY + 27.0 * aY * aY);
 
     theF = aA * aB;
     return true;
@@ -127,7 +131,10 @@ private:
   int myN;
 
 public:
-  SphereFuncOld(int theN) : myN(theN) {}
+  SphereFuncOld(int theN)
+      : myN(theN)
+  {
+  }
 
   Standard_Integer NbVariables() const override { return myN; }
 

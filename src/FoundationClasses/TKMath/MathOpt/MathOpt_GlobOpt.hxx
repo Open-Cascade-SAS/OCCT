@@ -33,9 +33,9 @@ using namespace MathUtils;
 //! Global optimization strategy selection.
 enum class GlobalStrategy
 {
-  PSO,               //!< Particle Swarm Optimization only
-  MultiStart,        //!< Multiple local optimizations from random starts
-  PSOHybrid,         //!< PSO followed by local refinement
+  PSO,                  //!< Particle Swarm Optimization only
+  MultiStart,           //!< Multiple local optimizations from random starts
+  PSOHybrid,            //!< PSO followed by local refinement
   DifferentialEvolution //!< Differential Evolution algorithm
 };
 
@@ -43,14 +43,17 @@ enum class GlobalStrategy
 struct GlobalConfig : NDimConfig
 {
   GlobalStrategy Strategy      = GlobalStrategy::PSOHybrid; //!< Algorithm to use
-  int            NbPopulation  = 40;    //!< Population/swarm size
+  int            NbPopulation  = 40;                        //!< Population/swarm size
   int            NbStarts      = 10;    //!< Number of random starts (for MultiStart)
   double         MutationScale = 0.8;   //!< Mutation scale (for DE)
   double         CrossoverProb = 0.9;   //!< Crossover probability (for DE)
   unsigned int   Seed          = 12345; //!< Random seed
 
   //! Default constructor.
-  GlobalConfig() : NDimConfig(1.0e-8, 200, true) {}
+  GlobalConfig()
+      : NDimConfig(1.0e-8, 200, true)
+  {
+  }
 
   //! Constructor with strategy.
   GlobalConfig(GlobalStrategy theStrategy, int theMaxIter = 200)
@@ -90,7 +93,7 @@ VectorResult DifferentialEvolution(Function&           theFunc,
     return aResult;
   }
 
-  const int aNP = theConfig.NbPopulation;
+  const int    aNP = theConfig.NbPopulation;
   const double aF  = theConfig.MutationScale;
   const double aCR = theConfig.CrossoverProb;
 
@@ -108,7 +111,8 @@ VectorResult DifferentialEvolution(Function&           theFunc,
     for (int j = aLower; j <= aUpper; ++j)
     {
       double r = aRNG.NextReal();
-      aPopulation.ChangeValue(i)(j) = theLowerBounds(j) + r * (theUpperBounds(j) - theLowerBounds(j));
+      aPopulation.ChangeValue(i)(j) =
+        theLowerBounds(j) + r * (theUpperBounds(j) - theLowerBounds(j));
     }
 
     double aFit;
@@ -143,9 +147,18 @@ VectorResult DifferentialEvolution(Function&           theFunc,
     {
       // Select 3 distinct random indices different from i
       int a, b, c;
-      do { a = static_cast<int>(aRNG.NextReal() * aNP); } while (a == i);
-      do { b = static_cast<int>(aRNG.NextReal() * aNP); } while (b == i || b == a);
-      do { c = static_cast<int>(aRNG.NextReal() * aNP); } while (c == i || c == a || c == b);
+      do
+      {
+        a = static_cast<int>(aRNG.NextReal() * aNP);
+      } while (a == i);
+      do
+      {
+        b = static_cast<int>(aRNG.NextReal() * aNP);
+      } while (b == i || b == a);
+      do
+      {
+        c = static_cast<int>(aRNG.NextReal() * aNP);
+      } while (c == i || c == a || c == b);
 
       // Mutation and crossover
       int jRand = aLower + static_cast<int>(aRNG.NextReal() * aN);
@@ -155,7 +168,8 @@ VectorResult DifferentialEvolution(Function&           theFunc,
         if (aRNG.NextReal() < aCR || j == jRand)
         {
           // Mutation: DE/rand/1
-          double aVal = aPopulation.Value(a)(j) + aF * (aPopulation.Value(b)(j) - aPopulation.Value(c)(j));
+          double aVal =
+            aPopulation.Value(a)(j) + aF * (aPopulation.Value(b)(j) - aPopulation.Value(c)(j));
           // Clamp to bounds
           aTrial(j) = MathUtils::Clamp(aVal, theLowerBounds(j), theUpperBounds(j));
         }
@@ -326,8 +340,7 @@ VectorResult GlobalMinimum(Function&           theFunc,
 {
   switch (theConfig.Strategy)
   {
-    case GlobalStrategy::PSO:
-    {
+    case GlobalStrategy::PSO: {
       PSOConfig aPSOConfig;
       aPSOConfig.NbParticles   = theConfig.NbPopulation;
       aPSOConfig.MaxIterations = theConfig.MaxIterations;
@@ -339,8 +352,7 @@ VectorResult GlobalMinimum(Function&           theFunc,
     case GlobalStrategy::MultiStart:
       return MultiStart(theFunc, theLowerBounds, theUpperBounds, theConfig);
 
-    case GlobalStrategy::PSOHybrid:
-    {
+    case GlobalStrategy::PSOHybrid: {
       // Run PSO first for global exploration
       PSOConfig aPSOConfig;
       aPSOConfig.NbParticles   = theConfig.NbPopulation;
@@ -368,9 +380,9 @@ VectorResult GlobalMinimum(Function&           theFunc,
           && *aLocalResult.Value < *aPSOResult.Value)
       {
         // Clamp to bounds
-        const int aLower = theLowerBounds.Lower();
-        const int aUpper = theLowerBounds.Upper();
-        math_Vector aSol = *aLocalResult.Solution;
+        const int   aLower = theLowerBounds.Lower();
+        const int   aUpper = theLowerBounds.Upper();
+        math_Vector aSol   = *aLocalResult.Solution;
         for (int i = aLower; i <= aUpper; ++i)
         {
           aSol(i) = MathUtils::Clamp(aSol(i), theLowerBounds(i), theUpperBounds(i));

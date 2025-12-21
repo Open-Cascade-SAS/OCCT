@@ -30,222 +30,232 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-9;
-  constexpr double THE_PI        = 3.14159265358979323846;
+constexpr double THE_TOLERANCE = 1.0e-9;
+constexpr double THE_PI        = 3.14159265358979323846;
 
-  // ============================================================================
-  // Adapter classes for old API (inherit from math_FunctionWithDerivative)
-  // ============================================================================
+// ============================================================================
+// Adapter classes for old API (inherit from math_FunctionWithDerivative)
+// ============================================================================
 
-  //! f(x) = x^2 - 2, f'(x) = 2x
-  //! Root at sqrt(2)
-  class SqrtTwoFuncOld : public math_FunctionWithDerivative
+//! f(x) = x^2 - 2, f'(x) = 2x
+//! Root at sqrt(2)
+class SqrtTwoFuncOld : public math_FunctionWithDerivative
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX - 2.0;
-      return Standard_True;
-    }
+    theF = theX * theX - 2.0;
+    return Standard_True;
+  }
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
-    {
-      theD = 2.0 * theX;
-      return Standard_True;
-    }
-
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
-    {
-      theF = theX * theX - 2.0;
-      theD = 2.0 * theX;
-      return Standard_True;
-    }
-  };
-
-  //! f(x) = cos(x) - x, f'(x) = -sin(x) - 1
-  //! Root at approximately 0.739085
-  class CosMinusXFuncOld : public math_FunctionWithDerivative
+  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::cos(theX) - theX;
-      return Standard_True;
-    }
+    theD = 2.0 * theX;
+    return Standard_True;
+  }
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
-    {
-      theD = -std::sin(theX) - 1.0;
-      return Standard_True;
-    }
-
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
-    {
-      theF = std::cos(theX) - theX;
-      theD = -std::sin(theX) - 1.0;
-      return Standard_True;
-    }
-  };
-
-  //! f(x) = sin(x), f'(x) = cos(x)
-  //! Roots at n*PI
-  class SinFuncOld : public math_FunctionWithDerivative
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::sin(theX);
-      return Standard_True;
-    }
+    theF = theX * theX - 2.0;
+    theD = 2.0 * theX;
+    return Standard_True;
+  }
+};
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
-    {
-      theD = std::cos(theX);
-      return Standard_True;
-    }
-
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
-    {
-      theF = std::sin(theX);
-      theD = std::cos(theX);
-      return Standard_True;
-    }
-  };
-
-  //! f(x) = x^3 - x - 2, f'(x) = 3x^2 - 1
-  //! Root at approximately 1.5214
-  class CubicFuncOld : public math_FunctionWithDerivative
+//! f(x) = cos(x) - x, f'(x) = -sin(x) - 1
+//! Root at approximately 0.739085
+class CosMinusXFuncOld : public math_FunctionWithDerivative
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = theX * theX * theX - theX - 2.0;
-      return Standard_True;
-    }
+    theF = std::cos(theX) - theX;
+    return Standard_True;
+  }
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
-    {
-      theD = 3.0 * theX * theX - 1.0;
-      return Standard_True;
-    }
-
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
-    {
-      theF = theX * theX * theX - theX - 2.0;
-      theD = 3.0 * theX * theX - 1.0;
-      return Standard_True;
-    }
-  };
-
-  //! f(x) = e^x - 3, f'(x) = e^x
-  //! Root at ln(3)
-  class ExpMinusThreeFuncOld : public math_FunctionWithDerivative
+  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
   {
-  public:
-    Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
-    {
-      theF = std::exp(theX) - 3.0;
-      return Standard_True;
-    }
+    theD = -std::sin(theX) - 1.0;
+    return Standard_True;
+  }
 
-    Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
-    {
-      theD = std::exp(theX);
-      return Standard_True;
-    }
-
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
-    {
-      theF = std::exp(theX) - 3.0;
-      theD = std::exp(theX);
-      return Standard_True;
-    }
-  };
-
-  // ============================================================================
-  // Function classes for new API (simple structs with Value/Values methods)
-  // ============================================================================
-
-  struct SqrtTwoFuncNew
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX - 2.0;
-      return true;
-    }
+    theF = std::cos(theX) - theX;
+    theD = -std::sin(theX) - 1.0;
+    return Standard_True;
+  }
+};
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF  = theX * theX - 2.0;
-      theDf = 2.0 * theX;
-      return true;
-    }
-  };
-
-  struct CosMinusXFuncNew
+//! f(x) = sin(x), f'(x) = cos(x)
+//! Roots at n*PI
+class SinFuncOld : public math_FunctionWithDerivative
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::cos(theX) - theX;
-      return true;
-    }
+    theF = std::sin(theX);
+    return Standard_True;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF  = std::cos(theX) - theX;
-      theDf = -std::sin(theX) - 1.0;
-      return true;
-    }
-  };
-
-  struct SinFuncNew
+  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::sin(theX);
-      return true;
-    }
+    theD = std::cos(theX);
+    return Standard_True;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF  = std::sin(theX);
-      theDf = std::cos(theX);
-      return true;
-    }
-  };
-
-  struct CubicFuncNew
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = theX * theX * theX - theX - 2.0;
-      return true;
-    }
+    theF = std::sin(theX);
+    theD = std::cos(theX);
+    return Standard_True;
+  }
+};
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF  = theX * theX * theX - theX - 2.0;
-      theDf = 3.0 * theX * theX - 1.0;
-      return true;
-    }
-  };
-
-  struct ExpMinusThreeFuncNew
+//! f(x) = x^3 - x - 2, f'(x) = 3x^2 - 1
+//! Root at approximately 1.5214
+class CubicFuncOld : public math_FunctionWithDerivative
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
   {
-    bool Value(double theX, double& theF) const
-    {
-      theF = std::exp(theX) - 3.0;
-      return true;
-    }
+    theF = theX * theX * theX - theX - 2.0;
+    return Standard_True;
+  }
 
-    bool Values(double theX, double& theF, double& theDf) const
-    {
-      theF  = std::exp(theX) - 3.0;
-      theDf = std::exp(theX);
-      return true;
-    }
-  };
-}
+  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  {
+    theD = 3.0 * theX * theX - 1.0;
+    return Standard_True;
+  }
+
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
+  {
+    theF = theX * theX * theX - theX - 2.0;
+    theD = 3.0 * theX * theX - 1.0;
+    return Standard_True;
+  }
+};
+
+//! f(x) = e^x - 3, f'(x) = e^x
+//! Root at ln(3)
+class ExpMinusThreeFuncOld : public math_FunctionWithDerivative
+{
+public:
+  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  {
+    theF = std::exp(theX) - 3.0;
+    return Standard_True;
+  }
+
+  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  {
+    theD = std::exp(theX);
+    return Standard_True;
+  }
+
+  Standard_Boolean Values(const Standard_Real theX,
+                          Standard_Real&      theF,
+                          Standard_Real&      theD) override
+  {
+    theF = std::exp(theX) - 3.0;
+    theD = std::exp(theX);
+    return Standard_True;
+  }
+};
+
+// ============================================================================
+// Function classes for new API (simple structs with Value/Values methods)
+// ============================================================================
+
+struct SqrtTwoFuncNew
+{
+  bool Value(double theX, double& theF) const
+  {
+    theF = theX * theX - 2.0;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = theX * theX - 2.0;
+    theDf = 2.0 * theX;
+    return true;
+  }
+};
+
+struct CosMinusXFuncNew
+{
+  bool Value(double theX, double& theF) const
+  {
+    theF = std::cos(theX) - theX;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = std::cos(theX) - theX;
+    theDf = -std::sin(theX) - 1.0;
+    return true;
+  }
+};
+
+struct SinFuncNew
+{
+  bool Value(double theX, double& theF) const
+  {
+    theF = std::sin(theX);
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = std::sin(theX);
+    theDf = std::cos(theX);
+    return true;
+  }
+};
+
+struct CubicFuncNew
+{
+  bool Value(double theX, double& theF) const
+  {
+    theF = theX * theX * theX - theX - 2.0;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = theX * theX * theX - theX - 2.0;
+    theDf = 3.0 * theX * theX - 1.0;
+    return true;
+  }
+};
+
+struct ExpMinusThreeFuncNew
+{
+  bool Value(double theX, double& theF) const
+  {
+    theF = std::exp(theX) - 3.0;
+    return true;
+  }
+
+  bool Values(double theX, double& theF, double& theDf) const
+  {
+    theF  = std::exp(theX) - 3.0;
+    theDf = std::exp(theX);
+    return true;
+  }
+};
+} // namespace
 
 // ============================================================================
 // math_BissecNewton vs MathRoot::BisectionNewton comparison tests
@@ -344,8 +354,8 @@ TEST(MathRoot_ComparisonTest, Newton_SqrtTwo)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
-  aConfig.FTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
+  aConfig.FTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Newton(aNewFunc, 1.5, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -365,8 +375,8 @@ TEST(MathRoot_ComparisonTest, Newton_ExpMinusThree)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
-  aConfig.FTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
+  aConfig.FTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Newton(aNewFunc, 1.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -386,8 +396,8 @@ TEST(MathRoot_ComparisonTest, Newton_CosMinusX)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
-  aConfig.FTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
+  aConfig.FTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Newton(aNewFunc, 0.5, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -410,7 +420,7 @@ TEST(MathRoot_ComparisonTest, Brent_SqrtTwo)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Brent(aNewFunc, 1.0, 2.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -430,7 +440,7 @@ TEST(MathRoot_ComparisonTest, Brent_CosMinusX)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Brent(aNewFunc, 0.0, 1.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -449,7 +459,7 @@ TEST(MathRoot_ComparisonTest, Brent_SinPi)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Brent(aNewFunc, 2.0, 4.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -469,7 +479,7 @@ TEST(MathRoot_ComparisonTest, Brent_ExpMinusThree)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::Brent(aNewFunc, 0.0, 2.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -493,7 +503,7 @@ TEST(MathRoot_ComparisonTest, FunctionRoot_SqrtTwo)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::NewtonBounded(aNewFunc, 1.5, 1.0, 2.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -513,7 +523,7 @@ TEST(MathRoot_ComparisonTest, FunctionRoot_SinPi)
 
   // New API
   MathRoot::Config aConfig;
-  aConfig.XTolerance = THE_TOLERANCE;
+  aConfig.XTolerance                = THE_TOLERANCE;
   MathRoot::ScalarResult aNewResult = MathRoot::NewtonBounded(aNewFunc, 3.0, 2.0, 4.0, aConfig);
 
   ASSERT_TRUE(anOldSolver.IsDone());
@@ -568,7 +578,9 @@ TEST(MathRoot_ComparisonTest, ChallengingCase_CloseToZeroDerivative)
       return Standard_True;
     }
 
-    Standard_Boolean Values(const Standard_Real theX, Standard_Real& theF, Standard_Real& theD) override
+    Standard_Boolean Values(const Standard_Real theX,
+                            Standard_Real&      theF,
+                            Standard_Real&      theD) override
     {
       Value(theX, theF);
       Derivative(theX, theD);

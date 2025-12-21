@@ -50,7 +50,7 @@ public:
   //! Constructor from lambda/callable.
   //! @param theLambda callable with signature bool(double theX, double& theY)
   explicit ScalarLambda(Lambda theLambda)
-    : myLambda(std::move(theLambda))
+      : myLambda(std::move(theLambda))
   {
   }
 
@@ -85,7 +85,7 @@ public:
   //! Constructor from lambda/callable.
   //! @param theLambda callable with signature bool(double theX, double& theY, double& theDY)
   explicit ScalarLambdaWithDerivative(Lambda theLambda)
-    : myLambda(std::move(theLambda))
+      : myLambda(std::move(theLambda))
   {
   }
 
@@ -94,7 +94,10 @@ public:
   //! @param[out] theY function value f(theX)
   //! @param[out] theDY derivative value f'(theX)
   //! @return true if evaluation succeeded
-  bool Values(double theX, double& theY, double& theDY) const { return myLambda(theX, theY, theDY); }
+  bool Values(double theX, double& theY, double& theDY) const
+  {
+    return myLambda(theX, theY, theDY);
+  }
 
   //! Evaluates only the function value (for algorithms that don't need derivative).
   //! @param[in] theX input value
@@ -147,7 +150,7 @@ public:
   //! Constructor from initializer list.
   //! @param theCoeffs coefficients in ascending power order
   Polynomial(std::initializer_list<double> theCoeffs)
-    : myCoeffs(0, static_cast<int>(theCoeffs.size()) - 1)
+      : myCoeffs(0, static_cast<int>(theCoeffs.size()) - 1)
   {
     int anIdx = 0;
     for (double aCoeff : theCoeffs)
@@ -159,7 +162,7 @@ public:
   //! Constructor from math_Vector.
   //! @param theCoeffs coefficients in ascending power order
   explicit Polynomial(const math_Vector& theCoeffs)
-    : myCoeffs(theCoeffs)
+      : myCoeffs(theCoeffs)
   {
   }
 
@@ -177,7 +180,7 @@ public:
 
     // Horner's method: p(x) = a[0] + x*(a[1] + x*(a[2] + ...))
     const int aLast = myCoeffs.Upper();
-    theY = myCoeffs(aLast);
+    theY            = myCoeffs(aLast);
     for (int i = aLast - 1; i >= myCoeffs.Lower(); --i)
     {
       theY = theY * theX + myCoeffs(i);
@@ -210,8 +213,8 @@ public:
     // Horner's method for value and derivative simultaneously
     const int aLower = myCoeffs.Lower();
     const int aLast  = myCoeffs.Upper();
-    theY  = myCoeffs(aLast);
-    theDY = 0.0;
+    theY             = myCoeffs(aLast);
+    theDY            = 0.0;
     for (int i = aLast - 1; i >= aLower; --i)
     {
       theDY = theDY * theX + theY;
@@ -230,8 +233,7 @@ public:
   double Coefficient(int theIndex) const
   {
     const int aIdx = myCoeffs.Lower() + theIndex;
-    return (aIdx >= myCoeffs.Lower() && aIdx <= myCoeffs.Upper())
-           ? myCoeffs(aIdx) : 0.0;
+    return (aIdx >= myCoeffs.Lower() && aIdx <= myCoeffs.Upper()) ? myCoeffs(aIdx) : 0.0;
   }
 
 private:
@@ -252,10 +254,9 @@ public:
   //! Constructor from math_Vector.
   //! @param theNum numerator coefficients (ascending power order)
   //! @param theDenom denominator coefficients (ascending power order)
-  Rational(const math_Vector& theNum,
-           const math_Vector& theDenom)
-    : myNum(theNum)
-    , myDenom(theDenom)
+  Rational(const math_Vector& theNum, const math_Vector& theDenom)
+      : myNum(theNum),
+        myDenom(theDenom)
   {
   }
 
@@ -263,8 +264,8 @@ public:
   //! @param theNum numerator coefficients
   //! @param theDenom denominator coefficients
   Rational(std::initializer_list<double> theNum, std::initializer_list<double> theDenom)
-    : myNum(0, static_cast<int>(theNum.size()) - 1)
-    , myDenom(0, static_cast<int>(theDenom.size()) - 1)
+      : myNum(0, static_cast<int>(theNum.size()) - 1),
+        myDenom(0, static_cast<int>(theDenom.size()) - 1)
   {
     int anIdx = 0;
     for (double aCoeff : theNum)
@@ -284,14 +285,14 @@ public:
   //! @return false if denominator is zero
   bool Value(double theX, double& theY) const
   {
-    double aNum = 0.0;
+    double aNum   = 0.0;
     double aDenom = 0.0;
 
     // Evaluate numerator using Horner's method
     if (myNum.Length() > 0)
     {
       const int aLast = myNum.Upper();
-      aNum = myNum(aLast);
+      aNum            = myNum(aLast);
       for (int i = aLast - 1; i >= myNum.Lower(); --i)
       {
         aNum = aNum * theX + myNum(i);
@@ -302,7 +303,7 @@ public:
     if (myDenom.Length() > 0)
     {
       const int aLast = myDenom.Upper();
-      aDenom = myDenom(aLast);
+      aDenom          = myDenom(aLast);
       for (int i = aLast - 1; i >= myDenom.Lower(); --i)
       {
         aDenom = aDenom * theX + myDenom(i);
@@ -344,8 +345,8 @@ public:
   //! @param theOuter outer function f
   //! @param theInner inner function g
   Composite(Outer theOuter, Inner theInner)
-    : myOuter(std::move(theOuter))
-    , myInner(std::move(theInner))
+      : myOuter(std::move(theOuter)),
+        myInner(std::move(theInner))
   {
   }
 
@@ -399,8 +400,8 @@ public:
   //! @param theF first function
   //! @param theG second function
   Sum(F theF, G theG)
-    : myF(std::move(theF))
-    , myG(std::move(theG))
+      : myF(std::move(theF)),
+        myG(std::move(theG))
   {
   }
 
@@ -448,8 +449,8 @@ public:
   //! @param theF first function (minuend)
   //! @param theG second function (subtrahend)
   Difference(F theF, G theG)
-    : myF(std::move(theF))
-    , myG(std::move(theG))
+      : myF(std::move(theF)),
+        myG(std::move(theG))
   {
   }
 
@@ -497,8 +498,8 @@ public:
   //! @param theF first function (multiplicand)
   //! @param theG second function (multiplier)
   Product(F theF, G theG)
-    : myF(std::move(theF))
-    , myG(std::move(theG))
+      : myF(std::move(theF)),
+        myG(std::move(theG))
   {
   }
 
@@ -546,8 +547,8 @@ public:
   //! @param theF numerator function
   //! @param theG denominator function
   Quotient(F theF, G theG)
-    : myF(std::move(theF))
-    , myG(std::move(theG))
+      : myF(std::move(theF)),
+        myG(std::move(theG))
   {
   }
 
@@ -598,8 +599,8 @@ public:
   //! @param theF function to scale
   //! @param theScale scale factor
   Scaled(F theF, double theScale)
-    : myF(std::move(theF))
-    , myScale(theScale)
+      : myF(std::move(theF)),
+        myScale(theScale)
   {
   }
 
@@ -641,8 +642,8 @@ public:
   //! @param theF function to shift
   //! @param theShift shift value (added to output)
   Shifted(F theF, double theShift)
-    : myF(std::move(theF))
-    , myShift(theShift)
+      : myF(std::move(theF)),
+        myShift(theShift)
   {
   }
 
@@ -683,7 +684,7 @@ public:
   //! Constructor from function.
   //! @param theF function to negate
   explicit Negated(F theF)
-    : myF(std::move(theF))
+      : myF(std::move(theF))
   {
   }
 
@@ -720,7 +721,7 @@ public:
   //! Constructor from constant value.
   //! @param theValue constant value
   explicit Constant(double theValue)
-    : myValue(theValue)
+      : myValue(theValue)
   {
   }
 
@@ -758,8 +759,8 @@ public:
   //! @param theSlope coefficient a (slope)
   //! @param theIntercept coefficient b (y-intercept)
   Linear(double theSlope, double theIntercept)
-    : mySlope(theSlope)
-    , myIntercept(theIntercept)
+      : mySlope(theSlope),
+        myIntercept(theIntercept)
   {
   }
 
@@ -803,10 +804,10 @@ public:
        double theFrequency = 1.0,
        double thePhase     = 0.0,
        double theOffset    = 0.0)
-    : myAmplitude(theAmplitude)
-    , myFrequency(theFrequency)
-    , myPhase(thePhase)
-    , myOffset(theOffset)
+      : myAmplitude(theAmplitude),
+        myFrequency(theFrequency),
+        myPhase(thePhase),
+        myOffset(theOffset)
   {
   }
 
@@ -853,10 +854,10 @@ public:
          double theFrequency = 1.0,
          double thePhase     = 0.0,
          double theOffset    = 0.0)
-    : myAmplitude(theAmplitude)
-    , myFrequency(theFrequency)
-    , myPhase(thePhase)
-    , myOffset(theOffset)
+      : myAmplitude(theAmplitude),
+        myFrequency(theFrequency),
+        myPhase(thePhase),
+        myOffset(theOffset)
   {
   }
 
@@ -899,9 +900,9 @@ public:
   //! @param theRate rate b
   //! @param theOffset vertical offset c
   Exponential(double theScale = 1.0, double theRate = 1.0, double theOffset = 0.0)
-    : myScale(theScale)
-    , myRate(theRate)
-    , myOffset(theOffset)
+      : myScale(theScale),
+        myRate(theRate),
+        myOffset(theOffset)
   {
   }
 
@@ -943,9 +944,9 @@ public:
   //! @param theScale scale factor a
   //! @param theOffset vertical offset b
   Power(double theExponent, double theScale = 1.0, double theOffset = 0.0)
-    : myExponent(theExponent)
-    , myScale(theScale)
-    , myOffset(theOffset)
+      : myExponent(theExponent),
+        myScale(theScale),
+        myOffset(theOffset)
   {
   }
 
@@ -1002,9 +1003,9 @@ public:
   //! @param theMean mean mu (center)
   //! @param theSigma standard deviation sigma (width)
   Gaussian(double theAmplitude = 1.0, double theMean = 0.0, double theSigma = 1.0)
-    : myAmplitude(theAmplitude)
-    , myMean(theMean)
-    , mySigma(theSigma)
+      : myAmplitude(theAmplitude),
+        myMean(theMean),
+        mySigma(theSigma)
   {
   }
 

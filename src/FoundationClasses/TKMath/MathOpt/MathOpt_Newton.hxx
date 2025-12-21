@@ -201,7 +201,7 @@ VectorResult Newton(Function&           theFunc,
     {
       // Line search
       MathUtils::LineSearchResult aLineResult =
-          MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+        MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
 
       if (!aLineResult.IsValid)
       {
@@ -210,7 +210,8 @@ VectorResult Newton(Function&           theFunc,
         {
           aDir(i) = -aGrad(i);
         }
-        aLineResult = MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+        aLineResult =
+          MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
 
         if (!aLineResult.IsValid)
         {
@@ -444,9 +445,9 @@ VectorResult NewtonNumerical(Function&           theFunc,
       {
         for (int j = i + 1; j <= aUpper; ++j)
         {
-          double aAvg     = 0.5 * (theHess(i, j) + theHess(j, i));
-          theHess(i, j)   = aAvg;
-          theHess(j, i)   = aAvg;
+          double aAvg   = 0.5 * (theHess(i, j) + theHess(j, i));
+          theHess(i, j) = aAvg;
+          theHess(j, i) = aAvg;
         }
       }
 

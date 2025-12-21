@@ -89,7 +89,7 @@ VectorResult LevenbergMarquardt(FuncSetType&       theFunc,
   const int aVarUpper = theStart.Upper();
 
   // Working vectors and matrices
-  math_Vector aSol    = theStart;
+  math_Vector aSol = theStart;
   math_Vector aF(1, aNbEqs);
   math_Vector aFNew(1, aNbEqs);
   math_Vector aDeltaX(aVarLower, aVarUpper);
@@ -167,7 +167,7 @@ VectorResult LevenbergMarquardt(FuncSetType&       theFunc,
       {
         aSum += aJac(k, i) * aF(k);
       }
-      aJtF(i) = aSum;
+      aJtF(i)  = aSum;
       aGrad(i) = 2.0 * aSum; // Gradient of chi^2 = 2 * J^T * F
     }
 
@@ -256,9 +256,9 @@ VectorResult LevenbergMarquardt(FuncSetType&       theFunc,
       if (aChi2New < aChi2)
       {
         // Step accepted
-        aSol   = aSolNew;
-        aF     = aFNew;
-        aChi2  = aChi2New;
+        aSol  = aSolNew;
+        aF    = aFNew;
+        aChi2 = aChi2New;
         aLambda *= theConfig.LambdaDecrease;
         if (aLambda < theConfig.LambdaMin)
         {

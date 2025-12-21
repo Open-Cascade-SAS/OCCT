@@ -37,6 +37,7 @@ struct CroutResult
   std::optional<double>      Determinant; //!< Matrix determinant
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 

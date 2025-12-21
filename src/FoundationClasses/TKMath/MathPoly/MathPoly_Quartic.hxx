@@ -44,7 +44,11 @@ using namespace MathUtils;
 //! @param theD coefficient of x
 //! @param theE constant term
 //! @return result containing 0, 1, 2, 3, or 4 real roots (sorted in ascending order)
-inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, double theD, double theE)
+inline MathUtils::PolyResult Quartic(double theA,
+                                     double theB,
+                                     double theC,
+                                     double theD,
+                                     double theE)
 {
   MathUtils::PolyResult aResult;
 
@@ -71,9 +75,9 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
 
   // Substitute x = t - a/4 to get depressed quartic: t^4 + pt^2 + qt + r = 0
   const double aShift = a / 4.0;
-  const double a2 = a * a;
-  const double a3 = a2 * a;
-  const double a4 = a2 * a2;
+  const double a2     = a * a;
+  const double a3     = a2 * a;
+  const double a4     = a2 * a2;
 
   const double p = b - 3.0 * a2 / 8.0;
   const double q = c - a * b / 2.0 + a3 / 8.0;
@@ -94,7 +98,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
       return aResult;
     }
 
-    aResult.Status = MathUtils::Status::OK;
+    aResult.Status  = MathUtils::Status::OK;
     aResult.NbRoots = 0;
 
     for (size_t i = 0; i < aQuadResult.NbRoots; ++i)
@@ -110,7 +114,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
         else
         {
           // u > 0 -> t = +/-sqrt(u)
-          const double aSqrtU = std::sqrt(u);
+          const double aSqrtU              = std::sqrt(u);
           aResult.Roots[aResult.NbRoots++] = aSqrtU - aShift;
           aResult.Roots[aResult.NbRoots++] = -aSqrtU - aShift;
         }
@@ -159,7 +163,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
   // where s = sqrt(z), u = (p + z)/2 + q/(2s), v = (p + z)/2 - q/(2s)
 
   const double s = std::sqrt(z);
-  double u, v;
+  double       u, v;
 
   if (MathUtils::IsZero(s))
   {
@@ -179,12 +183,12 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
     }
 
     // Solve t^2 + u = 0 and t^2 + v = 0
-    aResult.Status = MathUtils::Status::OK;
+    aResult.Status  = MathUtils::Status::OK;
     aResult.NbRoots = 0;
 
     if (u <= MathUtils::THE_ZERO_TOL)
     {
-      const double aSqrt = std::sqrt(std::max(0.0, -u));
+      const double aSqrt               = std::sqrt(std::max(0.0, -u));
       aResult.Roots[aResult.NbRoots++] = aSqrt - aShift;
       if (aSqrt > MathUtils::THE_ZERO_TOL)
       {
@@ -194,7 +198,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
 
     if (v <= MathUtils::THE_ZERO_TOL)
     {
-      const double aSqrt = std::sqrt(std::max(0.0, -v));
+      const double aSqrt               = std::sqrt(std::max(0.0, -v));
       aResult.Roots[aResult.NbRoots++] = aSqrt - aShift;
       if (aSqrt > MathUtils::THE_ZERO_TOL)
       {
@@ -206,7 +210,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
   {
     // General case
     const double aHalfPPlusZ = (p + z) / 2.0;
-    const double aQOver2S = q / (2.0 * s);
+    const double aQOver2S    = q / (2.0 * s);
 
     u = aHalfPPlusZ - aQOver2S;
     v = aHalfPPlusZ + aQOver2S;
@@ -217,7 +221,7 @@ inline MathUtils::PolyResult Quartic(double theA, double theB, double theC, doub
     // Solve t^2 - st + v = 0
     MathUtils::PolyResult aQuad2 = Quadratic(1.0, -s, v);
 
-    aResult.Status = MathUtils::Status::OK;
+    aResult.Status  = MathUtils::Status::OK;
     aResult.NbRoots = 0;
 
     if (aQuad1.IsDone())

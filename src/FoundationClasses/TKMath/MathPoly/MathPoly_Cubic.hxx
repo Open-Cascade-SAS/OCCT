@@ -67,19 +67,19 @@ inline MathUtils::PolyResult Cubic(double theA, double theB, double theC, double
   const double aR = theD / theA;
 
   // Substitute x = t - p/3 to get depressed cubic: t^3 + at + b = 0
-  const double aP3 = aP / 3.0;
+  const double aP3    = aP / 3.0;
   const double aP3_sq = aP3 * aP3;
-  const double a = aQ - 3.0 * aP3_sq;
-  const double b = aR - aP3 * aQ + 2.0 * aP3_sq * aP3;
+  const double a      = aQ - 3.0 * aP3_sq;
+  const double b      = aR - aP3 * aQ + 2.0 * aP3_sq * aP3;
 
   // Discriminant: Delta = (b/2)^2 + (a/3)^3
-  const double aHalfB = b / 2.0;
+  const double aHalfB  = b / 2.0;
   const double aThirdA = a / 3.0;
-  const double aDisc = aHalfB * aHalfB + aThirdA * aThirdA * aThirdA;
+  const double aDisc   = aHalfB * aHalfB + aThirdA * aThirdA * aThirdA;
 
   // Tolerance for discriminant
-  const double aDiscTol = MathUtils::THE_ZERO_TOL
-                        * std::max(aHalfB * aHalfB, std::abs(aThirdA * aThirdA * aThirdA));
+  const double aDiscTol =
+    MathUtils::THE_ZERO_TOL * std::max(aHalfB * aHalfB, std::abs(aThirdA * aThirdA * aThirdA));
 
   // Store original coefficients for refinement
   const double aCoeffs[4] = {theD, theC, theB, theA};
@@ -89,11 +89,11 @@ inline MathUtils::PolyResult Cubic(double theA, double theB, double theC, double
     // One real root, two complex conjugate roots
     // Cardano's formula: t = cbrt(-b/2 + sqrt(disc)) + cbrt(-b/2 - sqrt(disc))
     const double aSqrtDisc = std::sqrt(aDisc);
-    const double aU = MathUtils::CubeRoot(-aHalfB + aSqrtDisc);
-    const double aV = MathUtils::CubeRoot(-aHalfB - aSqrtDisc);
+    const double aU        = MathUtils::CubeRoot(-aHalfB + aSqrtDisc);
+    const double aV        = MathUtils::CubeRoot(-aHalfB - aSqrtDisc);
 
-    aResult.Status = MathUtils::Status::OK;
-    aResult.NbRoots = 1;
+    aResult.Status   = MathUtils::Status::OK;
+    aResult.NbRoots  = 1;
     aResult.Roots[0] = aU + aV - aP3;
 
     // Refine root
@@ -105,13 +105,13 @@ inline MathUtils::PolyResult Cubic(double theA, double theB, double theC, double
     // t = 2*sqrt(-a/3) * cos(theta/3 + 2*k*pi/3), k = 0, 1, 2
     // where cos(theta) = -b / (2 * sqrt((-a/3)^3))
 
-    const double aR_val = std::sqrt(-aThirdA * aThirdA * aThirdA);
-    const double aCosArg = MathUtils::Clamp(-aHalfB / aR_val, -1.0, 1.0);
-    const double aTheta = std::acos(aCosArg);
+    const double aR_val        = std::sqrt(-aThirdA * aThirdA * aThirdA);
+    const double aCosArg       = MathUtils::Clamp(-aHalfB / aR_val, -1.0, 1.0);
+    const double aTheta        = std::acos(aCosArg);
     const double aTwoSqrtNegA3 = 2.0 * std::sqrt(-aThirdA);
 
-    aResult.Status = MathUtils::Status::OK;
-    aResult.NbRoots = 3;
+    aResult.Status   = MathUtils::Status::OK;
+    aResult.NbRoots  = 3;
     aResult.Roots[0] = aTwoSqrtNegA3 * std::cos(aTheta / 3.0) - aP3;
     aResult.Roots[1] = aTwoSqrtNegA3 * std::cos((aTheta + 2.0 * MathUtils::THE_PI) / 3.0) - aP3;
     aResult.Roots[2] = aTwoSqrtNegA3 * std::cos((aTheta + 4.0 * MathUtils::THE_PI) / 3.0) - aP3;
@@ -135,13 +135,13 @@ inline MathUtils::PolyResult Cubic(double theA, double theB, double theC, double
     if (MathUtils::IsZero(aU))
     {
       // Triple root at x = -p/3
-      aResult.NbRoots = 1;
+      aResult.NbRoots  = 1;
       aResult.Roots[0] = -aP3;
     }
     else
     {
       // One single root and one double root
-      aResult.NbRoots = 2;
+      aResult.NbRoots  = 2;
       aResult.Roots[0] = 2.0 * aU - aP3; // Single root
       aResult.Roots[1] = -aU - aP3;      // Double root
 

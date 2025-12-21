@@ -38,15 +38,17 @@ struct NullInterval
 //! Result for all roots finder including null intervals.
 struct AllRootsResult
 {
-  MathUtils::Status               Status = MathUtils::Status::NotConverged;
-  NCollection_Vector<double>      Roots;         //!< Isolated root locations
-  NCollection_Vector<int>         RootStates;    //!< State numbers for roots
+  MathUtils::Status                Status = MathUtils::Status::NotConverged;
+  NCollection_Vector<double>       Roots;         //!< Isolated root locations
+  NCollection_Vector<int>          RootStates;    //!< State numbers for roots
   NCollection_Vector<NullInterval> NullIntervals; //!< Intervals where function is null
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 
   int NbRoots() const { return Roots.Length(); }
+
   int NbIntervals() const { return NullIntervals.Length(); }
 };
 
@@ -70,10 +72,10 @@ MultipleResult FindMultipleRoots(Func&  theFunc,
                                  double theOffset = 0.0)
 {
   MultipleConfig aConfig;
-  aConfig.NbSamples     = theNbSamples;
-  aConfig.XTolerance    = theEpsX;
-  aConfig.FTolerance    = theEpsF;
-  aConfig.Offset        = theOffset;
+  aConfig.NbSamples  = theNbSamples;
+  aConfig.XTolerance = theEpsX;
+  aConfig.FTolerance = theEpsF;
+  aConfig.Offset     = theOffset;
   return FindAllRoots(theFunc, theA, theB, aConfig);
 }
 
@@ -166,7 +168,10 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
       MultipleResult aRes = FindMultipleRoots(theFunc,
                                               theSamples(aLower + i - 1),
                                               theSamples(aLower + i),
-                                              10, theEpsX, theEpsF, aCst);
+                                              10,
+                                              theEpsX,
+                                              theEpsF,
+                                              aCst);
       if (aRes.IsDone() && aRes.NbRoots() > 0)
       {
         aFinNul = aRes.Roots[0];
@@ -181,7 +186,10 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
       auto aRes2 = FindMultipleRoots(theFunc,
                                      theSamples(aLower + i - 1),
                                      theSamples(aLower + i),
-                                     10, theEpsX, theEpsF, aCst);
+                                     10,
+                                     theEpsX,
+                                     theEpsF,
+                                     aCst);
       if (aRes2.IsDone() && aRes2.NbRoots() > 0)
       {
         if (aRes2.Roots[0] < aFinNul)
@@ -209,7 +217,10 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
         MultipleResult aRes = FindMultipleRoots(theFunc,
                                                 theSamples(aLower + i - 2),
                                                 theSamples(aLower + i - 1),
-                                                10, theEpsX, theEpsF, aCst);
+                                                10,
+                                                theEpsX,
+                                                theEpsF,
+                                                aCst);
         if (aRes.IsDone() && aRes.NbRoots() > 0)
         {
           aDebNul = aRes.Roots[aRes.NbRoots() - 1];
@@ -224,7 +235,10 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
         auto aRes2 = FindMultipleRoots(theFunc,
                                        theSamples(aLower + i - 2),
                                        theSamples(aLower + i - 1),
-                                       10, theEpsX, theEpsF, aCst);
+                                       10,
+                                       theEpsX,
+                                       theEpsF,
+                                       aCst);
         if (aRes2.IsDone() && aRes2.NbRoots() > 0)
         {
           if (aRes2.Roots[aRes2.NbRoots() - 1] > aDebNul)
@@ -263,8 +277,8 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
   if (aIntervalStarts.IsEmpty())
   {
     // No null intervals - find all roots in entire range
-    MultipleResult aRes = FindMultipleRoots(theFunc, aSampleFirst, aSampleLast,
-                                            aNbp, theEpsX, theEpsF);
+    MultipleResult aRes =
+      FindMultipleRoots(theFunc, aSampleFirst, aSampleLast, aNbp, theEpsX, theEpsF);
     if (aRes.IsDone())
     {
       for (int j = 0; j < aRes.NbRoots(); ++j)
@@ -281,8 +295,9 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
     {
       double aStart = aSampleFirst;
       double aEnd   = aIntervalStarts.Value(0);
-      int    aNbrpt = std::max(3, static_cast<int>(
-        std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
+      int    aNbrpt =
+        std::max(3,
+                 static_cast<int>(std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
 
       MultipleResult aRes = FindMultipleRoots(theFunc, aStart, aEnd, aNbrpt, theEpsX, theEpsF);
       if (aRes.IsDone())
@@ -300,8 +315,9 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
     {
       double aStart = aIntervalEnds.Value(k - 1);
       double aEnd   = aIntervalStarts.Value(k);
-      int    aNbrpt = std::max(3, static_cast<int>(
-        std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
+      int    aNbrpt =
+        std::max(3,
+                 static_cast<int>(std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
 
       MultipleResult aRes = FindMultipleRoots(theFunc, aStart, aEnd, aNbrpt, theEpsX, theEpsF);
       if (aRes.IsDone())
@@ -319,8 +335,9 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
     {
       double aStart = aIntervalEnds.Value(aIntervalEnds.Length() - 1);
       double aEnd   = aSampleLast;
-      int    aNbrpt = std::max(3, static_cast<int>(
-        std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
+      int    aNbrpt =
+        std::max(3,
+                 static_cast<int>(std::abs((aEnd - aStart) / (aSampleLast - aSampleFirst)) * aNbp));
 
       MultipleResult aRes = FindMultipleRoots(theFunc, aStart, aEnd, aNbrpt, theEpsX, theEpsF);
       if (aRes.IsDone())

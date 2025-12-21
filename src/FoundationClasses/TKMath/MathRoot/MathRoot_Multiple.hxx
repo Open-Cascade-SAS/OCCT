@@ -40,10 +40,10 @@ using namespace MathUtils;
 struct MultipleResult
 {
   MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0;                    //!< Total iterations across all roots
-  NCollection_Vector<double> Roots;                               //!< Found roots (sorted)
-  NCollection_Vector<double> Values;                              //!< Function values at roots
-  bool                       IsAllNull = false;                   //!< True if function is essentially zero in range
+  size_t                     NbIterations = 0;  //!< Total iterations across all roots
+  NCollection_Vector<double> Roots;             //!< Found roots (sorted)
+  NCollection_Vector<double> Values;            //!< Function values at roots
+  bool                       IsAllNull = false; //!< True if function is essentially zero in range
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == MathUtils::Status::OK; }
@@ -98,12 +98,12 @@ MultipleResult FindAllRoots(Function&             theFunc,
   double aUpper = std::max(theLower, theUpper);
 
   // Minimum samples
-  const int aNbSamples = std::max(theConfig.NbSamples, 10);
-  const double aDx = (aUpper - aLower) / aNbSamples;
+  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
+  const double aDx        = (aUpper - aLower) / aNbSamples;
 
   // Ensure EpsX is not too small relative to interval
   const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
-  const double aEpsX = std::max(theConfig.XTolerance, aMinEpsX);
+  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
 
   // Sample function values
   math_Vector aSamples(0, aNbSamples);
@@ -113,7 +113,8 @@ MultipleResult FindAllRoots(Function&             theFunc,
   for (int i = 0; i <= aNbSamples; ++i)
   {
     double aX = aLower + i * aDx;
-    if (aX > aUpper) aX = aUpper;
+    if (aX > aUpper)
+      aX = aUpper;
     aXValues(i) = aX;
 
     double aF = 0.0;
@@ -166,18 +167,22 @@ MultipleResult FindAllRoots(Function&             theFunc,
   {
   public:
     BrentWrapper(Function& theF, double theOffset)
-      : myFunc(theF), myOffset(theOffset) {}
+        : myFunc(theF),
+          myOffset(theOffset)
+    {
+    }
 
     bool Value(double theX, double& theY) const
     {
-      if (!myFunc.Value(theX, theY)) return false;
+      if (!myFunc.Value(theX, theY))
+        return false;
       theY -= myOffset;
       return true;
     }
 
   private:
     Function& myFunc;
-    double myOffset;
+    double    myOffset;
   };
 
   BrentWrapper aWrapper(theFunc, theConfig.Offset);
@@ -282,11 +287,11 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
   double aLower = std::min(theLower, theUpper);
   double aUpper = std::max(theLower, theUpper);
 
-  const int aNbSamples = std::max(theConfig.NbSamples, 10);
-  const double aDx = (aUpper - aLower) / aNbSamples;
+  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
+  const double aDx        = (aUpper - aLower) / aNbSamples;
 
   const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
-  const double aEpsX = std::max(theConfig.XTolerance, aMinEpsX);
+  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
 
   // Sample function values and derivatives
   math_Vector aFValues(0, aNbSamples);
@@ -297,7 +302,8 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
   for (int i = 0; i <= aNbSamples; ++i)
   {
     double aX = aLower + i * aDx;
-    if (aX > aUpper) aX = aUpper;
+    if (aX > aUpper)
+      aX = aUpper;
     aXValues(i) = aX;
 
     double aF = 0.0, aDF = 0.0;
@@ -350,19 +356,23 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
   {
   public:
     BrentWrapper(Function& theF, double theOffset)
-      : myFunc(theF), myOffset(theOffset) {}
+        : myFunc(theF),
+          myOffset(theOffset)
+    {
+    }
 
     bool Value(double theX, double& theY) const
     {
       double aDF = 0.0;
-      if (!myFunc.Values(theX, theY, aDF)) return false;
+      if (!myFunc.Values(theX, theY, aDF))
+        return false;
       theY -= myOffset;
       return true;
     }
 
   private:
     Function& myFunc;
-    double myOffset;
+    double    myOffset;
   };
 
   BrentWrapper aWrapper(theFunc, theConfig.Offset);
@@ -413,7 +423,8 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
         {
           double aXM = 0.5 * (aXL + aXR);
           double aFM = 0.0, aDFM = 0.0;
-          if (!theFunc.Values(aXM, aFM, aDFM)) break;
+          if (!theFunc.Values(aXM, aFM, aDFM))
+            break;
           aFM -= theConfig.Offset;
 
           if (aDFM < 0.0)
@@ -445,7 +456,8 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
         {
           double aXM = 0.5 * (aXL + aXR);
           double aFM = 0.0, aDFM = 0.0;
-          if (!theFunc.Values(aXM, aFM, aDFM)) break;
+          if (!theFunc.Values(aXM, aFM, aDFM))
+            break;
           aFM -= theConfig.Offset;
 
           if (aDFM > 0.0)
@@ -517,10 +529,7 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
 //! @param theNbSamples number of sample points
 //! @return result with all found roots
 template <typename Function>
-MultipleResult FindAllRoots(Function& theFunc,
-                            double    theLower,
-                            double    theUpper,
-                            int       theNbSamples)
+MultipleResult FindAllRoots(Function& theFunc, double theLower, double theUpper, int theNbSamples)
 {
   MultipleConfig aConfig;
   aConfig.NbSamples = theNbSamples;

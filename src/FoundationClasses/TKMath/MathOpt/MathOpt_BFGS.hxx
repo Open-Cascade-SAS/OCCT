@@ -55,13 +55,15 @@ using namespace MathUtils;
 //! @param theConfig solver configuration
 //! @return result containing minimum location and value
 template <typename Function>
-VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const Config& theConfig = Config())
+VectorResult BFGS(Function&          theFunc,
+                  const math_Vector& theStartingPoint,
+                  const Config&      theConfig = Config())
 {
   VectorResult aResult;
 
   const int aLower = theStartingPoint.Lower();
   const int aUpper = theStartingPoint.Upper();
-  const int aN = aUpper - aLower + 1;
+  const int aN     = aUpper - aLower + 1;
 
   // Current point and function value
   math_Vector aX(aLower, aUpper);
@@ -92,9 +94,9 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
 
   if (aGradNorm < theConfig.FTolerance)
   {
-    aResult.Status = Status::OK;
+    aResult.Status   = Status::OK;
     aResult.Solution = aX;
-    aResult.Value = aFx;
+    aResult.Value    = aFx;
     aResult.Gradient = aGrad;
     return aResult;
   }
@@ -107,11 +109,11 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
   }
 
   // Working vectors
-  math_Vector aDir(aLower, aUpper);   // Search direction
-  math_Vector aXNew(aLower, aUpper);  // New point
-  math_Vector aGradNew(aLower, aUpper);  // New gradient
-  math_Vector aS(1, aN);              // Step: x_new - x
-  math_Vector aY(1, aN);              // Gradient difference: grad_new - grad
+  math_Vector aDir(aLower, aUpper);     // Search direction
+  math_Vector aXNew(aLower, aUpper);    // New point
+  math_Vector aGradNew(aLower, aUpper); // New gradient
+  math_Vector aS(1, aN);                // Step: x_new - x
+  math_Vector aY(1, aN);                // Gradient difference: grad_new - grad
 
   for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
@@ -144,9 +146,9 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
       if (!aLineResult.IsValid)
       {
         // Both BFGS and steepest descent failed
-        aResult.Status = Status::NotConverged;
+        aResult.Status   = Status::NotConverged;
         aResult.Solution = aX;
-        aResult.Value = aFx;
+        aResult.Value    = aFx;
         aResult.Gradient = aGrad;
         return aResult;
       }
@@ -176,9 +178,9 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
     // Evaluate gradient at new point
     if (!theFunc.Gradient(aXNew, aGradNew))
     {
-      aResult.Status = Status::NumericalError;
+      aResult.Status   = Status::NumericalError;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
 
@@ -192,9 +194,9 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
 
     if (aGradNorm < theConfig.FTolerance)
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
-      aResult.Value = aLineResult.FNew;
+      aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;
       return aResult;
     }
@@ -207,9 +209,9 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
-      aResult.Value = aLineResult.FNew;
+      aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;
       return aResult;
     }
@@ -259,21 +261,22 @@ VectorResult BFGS(Function& theFunc, const math_Vector& theStartingPoint, const 
       {
         for (int j = 1; j <= aN; ++j)
         {
-          aH(i, j) = aH(i, j) - aRho * (aHy(i) * aS(j) + aS(i) * aHy(j)) + aFactor * aRho * aS(i) * aS(j);
+          aH(i, j) =
+            aH(i, j) - aRho * (aHy(i) * aS(j) + aS(i) * aHy(j)) + aFactor * aRho * aS(i) * aS(j);
         }
       }
     }
 
     // Update for next iteration
-    aX = aXNew;
+    aX    = aXNew;
     aGrad = aGradNew;
-    aFx = aLineResult.FNew;
+    aFx   = aLineResult.FNew;
   }
 
   // Maximum iterations reached
-  aResult.Status = Status::MaxIterations;
+  aResult.Status   = Status::MaxIterations;
   aResult.Solution = aX;
-  aResult.Value = aFx;
+  aResult.Value    = aFx;
   aResult.Gradient = aGrad;
   return aResult;
 }
@@ -299,8 +302,8 @@ VectorResult BFGSNumerical(Function&          theFunc,
   {
   public:
     FuncWithGradient(Function& theF, double theStep)
-        : myFunc(theF)
-        , myStep(theStep)
+        : myFunc(theF),
+          myStep(theStep)
     {
     }
 
@@ -341,8 +344,8 @@ VectorResult LBFGS(Function&          theFunc,
 
   const int aLower = theStartingPoint.Lower();
   const int aUpper = theStartingPoint.Upper();
-  const int aN = aUpper - aLower + 1;
-  const int aM = theMemorySize;
+  const int aN     = aUpper - aLower + 1;
+  const int aM     = theMemorySize;
 
   math_Vector aX(aLower, aUpper);
   aX = theStartingPoint;
@@ -391,9 +394,9 @@ VectorResult LBFGS(Function&          theFunc,
     }
     if (std::sqrt(aGradNorm) < theConfig.FTolerance)
     {
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       aResult.Gradient = aGrad;
       return aResult;
     }
@@ -408,9 +411,8 @@ VectorResult LBFGS(Function&          theFunc,
     // First loop (backward)
     for (int k = aCount - 1; k >= 0; --k)
     {
-      const int aIdx = (aHead + k) % aM;
-      aAlphaVec(aIdx) =
-        aRhoVec(aIdx) * MathUtils::DotProduct(aSVec.Value(aIdx), aQ);
+      const int aIdx  = (aHead + k) % aM;
+      aAlphaVec(aIdx) = aRhoVec(aIdx) * MathUtils::DotProduct(aSVec.Value(aIdx), aQ);
       for (int i = 1; i <= aN; ++i)
       {
         aQ(i) -= aAlphaVec(aIdx) * aYVec.Value(aIdx)(i);
@@ -422,7 +424,7 @@ VectorResult LBFGS(Function&          theFunc,
     if (aCount > 0)
     {
       const int aLastIdx = (aHead + aCount - 1) % aM;
-      double aYY = MathUtils::DotProduct(aYVec.Value(aLastIdx), aYVec.Value(aLastIdx));
+      double    aYY      = MathUtils::DotProduct(aYVec.Value(aLastIdx), aYVec.Value(aLastIdx));
       if (aYY > MathUtils::THE_ZERO_TOL)
       {
         aGamma = 1.0 / (aRhoVec(aLastIdx) * aYY);
@@ -468,9 +470,9 @@ VectorResult LBFGS(Function&          theFunc,
 
       if (!aLineResult.IsValid)
       {
-        aResult.Status = Status::NotConverged;
+        aResult.Status   = Status::NotConverged;
         aResult.Solution = aX;
-        aResult.Value = aFx;
+        aResult.Value    = aFx;
         return aResult;
       }
       // Reset history after steepest descent
@@ -495,9 +497,9 @@ VectorResult LBFGS(Function&          theFunc,
       {
         aGradNew = aGrad;
       }
-      aResult.Status = Status::OK;
+      aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
-      aResult.Value = aLineResult.FNew;
+      aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;
       return aResult;
     }
@@ -505,9 +507,9 @@ VectorResult LBFGS(Function&          theFunc,
     // Evaluate gradient at new point
     if (!theFunc.Gradient(aXNew, aGradNew))
     {
-      aResult.Status = Status::NumericalError;
+      aResult.Status   = Status::NumericalError;
       aResult.Solution = aX;
-      aResult.Value = aFx;
+      aResult.Value    = aFx;
       return aResult;
     }
 
@@ -534,14 +536,14 @@ VectorResult LBFGS(Function&          theFunc,
     }
 
     // Update for next iteration
-    aX = aXNew;
+    aX    = aXNew;
     aGrad = aGradNew;
-    aFx = aLineResult.FNew;
+    aFx   = aLineResult.FNew;
   }
 
-  aResult.Status = Status::MaxIterations;
+  aResult.Status   = Status::MaxIterations;
   aResult.Solution = aX;
-  aResult.Value = aFx;
+  aResult.Value    = aFx;
   aResult.Gradient = aGrad;
   return aResult;
 }

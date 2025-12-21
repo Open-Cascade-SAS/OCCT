@@ -36,6 +36,7 @@ struct SVDResult
   int                        Rank = 0;       //!< Numerical rank
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -299,9 +300,9 @@ inline double ConditionNumber(const math_Matrix& theA)
     return std::numeric_limits<double>::infinity();
   }
 
-  const math_Vector& aW      = *aSVD.SingularValues;
-  const int          aLower  = aW.Lower();
-  const int          aUpper  = aW.Upper();
+  const math_Vector& aW     = *aSVD.SingularValues;
+  const int          aLower = aW.Lower();
+  const int          aUpper = aW.Upper();
 
   double aMaxSV = 0.0;
   double aMinSV = std::numeric_limits<double>::max();

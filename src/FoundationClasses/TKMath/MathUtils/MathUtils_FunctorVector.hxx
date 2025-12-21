@@ -51,7 +51,7 @@ public:
   //! Constructor from lambda/callable.
   //! @param theLambda callable with signature bool(const math_Vector&, double&)
   explicit VectorLambda(Lambda theLambda)
-    : myLambda(std::move(theLambda))
+      : myLambda(std::move(theLambda))
   {
   }
 
@@ -93,8 +93,8 @@ public:
   //! @param theValueLambda callable for value evaluation
   //! @param theGradLambda callable for gradient evaluation
   VectorLambdaWithGradient(ValueLambda theValueLambda, GradLambda theGradLambda)
-    : myValueLambda(std::move(theValueLambda))
-    , myGradLambda(std::move(theGradLambda))
+      : myValueLambda(std::move(theValueLambda)),
+        myGradLambda(std::move(theGradLambda))
   {
   }
 
@@ -108,7 +108,10 @@ public:
   //! @param[in] theX input vector
   //! @param[out] theG gradient vector
   //! @return true if evaluation succeeded
-  bool Gradient(const math_Vector& theX, math_Vector& theG) const { return myGradLambda(theX, theG); }
+  bool Gradient(const math_Vector& theX, math_Vector& theG) const
+  {
+    return myGradLambda(theX, theG);
+  }
 
   //! Evaluates both value and gradient at theX.
   //! @param[in] theX input vector
@@ -142,11 +145,11 @@ VectorLambda<Lambda> MakeVector(Lambda theLambda)
 //! @param theGradLambda callable for gradient evaluation
 //! @return VectorLambdaWithGradient wrapper
 template <typename ValueLambda, typename GradLambda>
-VectorLambdaWithGradient<ValueLambda, GradLambda>
-MakeVectorWithGradient(ValueLambda theValueLambda, GradLambda theGradLambda)
+VectorLambdaWithGradient<ValueLambda, GradLambda> MakeVectorWithGradient(ValueLambda theValueLambda,
+                                                                         GradLambda  theGradLambda)
 {
   return VectorLambdaWithGradient<ValueLambda, GradLambda>(std::move(theValueLambda),
-                                                          std::move(theGradLambda));
+                                                           std::move(theGradLambda));
 }
 
 //! Quadratic form functor: f(x) = x^T A x + b^T x + c.
@@ -170,9 +173,9 @@ public:
   //! @param theB linear coefficient vector
   //! @param theC constant term
   QuadraticForm(const math_Matrix& theA, const math_Vector& theB, double theC)
-    : myA(theA)
-    , myB(theB)
-    , myC(theC)
+      : myA(theA),
+        myB(theB),
+        myC(theC)
   {
   }
 
@@ -253,8 +256,8 @@ public:
   //! @param theA parameter a (default 1.0)
   //! @param theB parameter b (default 100.0)
   Rosenbrock(double theA = 1.0, double theB = 100.0)
-    : myA(theA)
-    , myB(theB)
+      : myA(theA),
+        myB(theB)
   {
   }
 
@@ -264,11 +267,11 @@ public:
   //! @return true if evaluation succeeded
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
+    const double x  = theX(theX.Lower());
+    const double y  = theX(theX.Lower() + 1);
     const double t1 = myA - x;
     const double t2 = y - x * x;
-    theY = t1 * t1 + myB * t2 * t2;
+    theY            = t1 * t1 + myB * t2 * t2;
     return true;
   }
 
@@ -278,9 +281,9 @@ public:
   //! @return true if evaluation succeeded
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
-    const double t2 = y - x * x;
+    const double x         = theX(theX.Lower());
+    const double y         = theX(theX.Lower() + 1);
+    const double t2        = y - x * x;
     theG(theG.Lower())     = -2.0 * (myA - x) - 4.0 * myB * x * t2;
     theG(theG.Lower() + 1) = 2.0 * myB * t2;
     return true;
@@ -375,11 +378,11 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
+    const double x  = theX(theX.Lower());
+    const double y  = theX(theX.Lower() + 1);
     const double t1 = x + 2.0 * y - 7.0;
     const double t2 = 2.0 * x + y - 5.0;
-    theY = t1 * t1 + t2 * t2;
+    theY            = t1 * t1 + t2 * t2;
     return true;
   }
 
@@ -389,10 +392,10 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
-    const double t1 = x + 2.0 * y - 7.0;
-    const double t2 = 2.0 * x + y - 5.0;
+    const double x         = theX(theX.Lower());
+    const double y         = theX(theX.Lower() + 1);
+    const double t1        = x + 2.0 * y - 7.0;
+    const double t2        = 2.0 * x + y - 5.0;
     theG(theG.Lower())     = 2.0 * t1 + 4.0 * t2;
     theG(theG.Lower() + 1) = 4.0 * t1 + 2.0 * t2;
     return true;
@@ -421,12 +424,12 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
+    const double x  = theX(theX.Lower());
+    const double y  = theX(theX.Lower() + 1);
     const double t1 = 1.5 - x + x * y;
     const double t2 = 2.25 - x + x * y * y;
     const double t3 = 2.625 - x + x * y * y * y;
-    theY = t1 * t1 + t2 * t2 + t3 * t3;
+    theY            = t1 * t1 + t2 * t2 + t3 * t3;
     return true;
   }
 
@@ -436,13 +439,13 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x  = theX(theX.Lower());
-    const double y  = theX(theX.Lower() + 1);
-    const double y2 = y * y;
-    const double y3 = y2 * y;
-    const double t1 = 1.5 - x + x * y;
-    const double t2 = 2.25 - x + x * y2;
-    const double t3 = 2.625 - x + x * y3;
+    const double x         = theX(theX.Lower());
+    const double y         = theX(theX.Lower() + 1);
+    const double y2        = y * y;
+    const double y3        = y2 * y;
+    const double t1        = 1.5 - x + x * y;
+    const double t2        = 2.25 - x + x * y2;
+    const double t3        = 2.625 - x + x * y3;
     theG(theG.Lower())     = 2.0 * ((y - 1.0) * t1 + (y2 - 1.0) * t2 + (y3 - 1.0) * t3);
     theG(theG.Lower() + 1) = 2.0 * x * (t1 + 2.0 * y * t2 + 3.0 * y2 * t3);
     return true;
@@ -472,11 +475,11 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
+    const double x  = theX(theX.Lower());
+    const double y  = theX(theX.Lower() + 1);
     const double t1 = x * x + y - 11.0;
     const double t2 = x + y * y - 7.0;
-    theY = t1 * t1 + t2 * t2;
+    theY            = t1 * t1 + t2 * t2;
     return true;
   }
 
@@ -486,10 +489,10 @@ public:
   //! @return true (always succeeds)
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
-    const double x = theX(theX.Lower());
-    const double y = theX(theX.Lower() + 1);
-    const double t1 = x * x + y - 11.0;
-    const double t2 = x + y * y - 7.0;
+    const double x         = theX(theX.Lower());
+    const double y         = theX(theX.Lower() + 1);
+    const double t1        = x * x + y - 11.0;
+    const double t2        = x + y * y - 7.0;
     theG(theG.Lower())     = 4.0 * x * t1 + 2.0 * t2;
     theG(theG.Lower() + 1) = 2.0 * t1 + 4.0 * y * t2;
     return true;
@@ -517,7 +520,7 @@ public:
   //! Constructor with parameter.
   //! @param theA parameter A (default 10.0)
   explicit Rastrigin(double theA = 10.0)
-    : myA(theA)
+      : myA(theA)
   {
   }
 
@@ -528,8 +531,8 @@ public:
   bool Value(const math_Vector& theX, double& theY) const
   {
     constexpr double aTwoPi = 2.0 * 3.14159265358979323846;
-    const int n = theX.Upper() - theX.Lower() + 1;
-    theY = myA * static_cast<double>(n);
+    const int        n      = theX.Upper() - theX.Lower() + 1;
+    theY                    = myA * static_cast<double>(n);
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theY += theX(i) * theX(i) - myA * std::cos(aTwoPi * theX(i));
@@ -577,9 +580,9 @@ public:
   //! @param theB parameter b (default 0.2)
   //! @param theC parameter c (default 2*pi)
   Ackley(double theA = 20.0, double theB = 0.2, double theC = 2.0 * 3.14159265358979323846)
-    : myA(theA)
-    , myB(theB)
-    , myC(theC)
+      : myA(theA),
+        myB(theB),
+        myC(theC)
   {
   }
 
@@ -589,17 +592,16 @@ public:
   //! @return true (always succeeds)
   bool Value(const math_Vector& theX, double& theY) const
   {
-    constexpr double aE = 2.718281828459045;
-    const int n = theX.Upper() - theX.Lower() + 1;
-    double aSumSq = 0.0;
-    double aSumCos = 0.0;
+    constexpr double aE      = 2.718281828459045;
+    const int        n       = theX.Upper() - theX.Lower() + 1;
+    double           aSumSq  = 0.0;
+    double           aSumCos = 0.0;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       aSumSq += theX(i) * theX(i);
       aSumCos += std::cos(myC * theX(i));
     }
-    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / n))
-           - std::exp(aSumCos / n) + myA + aE;
+    theY = -myA * std::exp(-myB * std::sqrt(aSumSq / n)) - std::exp(aSumCos / n) + myA + aE;
     return true;
   }
 
@@ -629,8 +631,8 @@ public:
   //! @param theA coefficient matrix (m x n)
   //! @param theB right-hand side vector (m)
   LinearResidual(const math_Matrix& theA, const math_Vector& theB)
-    : myA(theA)
-    , myB(theB)
+      : myA(theA),
+        myB(theB)
   {
   }
 
@@ -660,7 +662,7 @@ public:
   bool Gradient(const math_Vector& theX, math_Vector& theG) const
   {
     // First compute residual r = Ax - b
-    const int m = myA.UpperRow() - myA.LowerRow() + 1;
+    const int   m = myA.UpperRow() - myA.LowerRow() + 1;
     math_Vector aResidual(1, m);
     for (int i = myA.LowerRow(); i <= myA.UpperRow(); ++i)
     {
@@ -719,8 +721,8 @@ public:
   //! @param theLambda callable for system evaluation
   //! @param theNbEquations number of equations in the system
   SystemLambda(Lambda theLambda, int theNbEquations)
-    : myLambda(std::move(theLambda))
-    , myNbEquations(theNbEquations)
+      : myLambda(std::move(theLambda)),
+        myNbEquations(theNbEquations)
   {
   }
 

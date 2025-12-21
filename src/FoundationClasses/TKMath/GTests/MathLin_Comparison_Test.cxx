@@ -22,7 +22,7 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-10;
+constexpr double THE_TOLERANCE = 1.0e-10;
 }
 
 //==================================================================================================
@@ -33,9 +33,15 @@ TEST(MathLin_ComparisonTest, Solve_3x3System)
 {
   // Create a 3x3 matrix
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 3.0; aA(1, 2) = 2.0; aA(1, 3) = -1.0;
-  aA(2, 1) = 2.0; aA(2, 2) = -2.0; aA(2, 3) = 4.0;
-  aA(3, 1) = -1.0; aA(3, 2) = 0.5; aA(3, 3) = -1.0;
+  aA(1, 1) = 3.0;
+  aA(1, 2) = 2.0;
+  aA(1, 3) = -1.0;
+  aA(2, 1) = 2.0;
+  aA(2, 2) = -2.0;
+  aA(2, 3) = 4.0;
+  aA(3, 1) = -1.0;
+  aA(3, 2) = 0.5;
+  aA(3, 3) = -1.0;
 
   // Right-hand side
   math_Vector aB(1, 3);
@@ -58,7 +64,7 @@ TEST(MathLin_ComparisonTest, Solve_3x3System)
   for (int i = 1; i <= 3; ++i)
   {
     EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), THE_TOLERANCE)
-        << "Solution differs at index " << i;
+      << "Solution differs at index " << i;
   }
 }
 
@@ -104,7 +110,7 @@ TEST(MathLin_ComparisonTest, Solve_5x5System)
   for (int i = 1; i <= 5; ++i)
   {
     EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), THE_TOLERANCE)
-        << "Solution differs at index " << i;
+      << "Solution differs at index " << i;
   }
 }
 
@@ -116,9 +122,15 @@ TEST(MathLin_ComparisonTest, Determinant_3x3Matrix)
 {
   // Create a 3x3 matrix with known determinant
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 6.0; aA(1, 2) = 1.0; aA(1, 3) = 1.0;
-  aA(2, 1) = 4.0; aA(2, 2) = -2.0; aA(2, 3) = 5.0;
-  aA(3, 1) = 2.0; aA(3, 2) = 8.0; aA(3, 3) = 7.0;
+  aA(1, 1) = 6.0;
+  aA(1, 2) = 1.0;
+  aA(1, 3) = 1.0;
+  aA(2, 1) = 4.0;
+  aA(2, 2) = -2.0;
+  aA(2, 3) = 5.0;
+  aA(3, 1) = 2.0;
+  aA(3, 2) = 8.0;
+  aA(3, 3) = 7.0;
   // Expected determinant: -306
 
   // Compute using new API
@@ -171,9 +183,15 @@ TEST(MathLin_ComparisonTest, Invert_3x3Matrix)
 {
   // Create a 3x3 matrix
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 2.0; aA(1, 3) = 3.0;
-  aA(2, 1) = 0.0; aA(2, 2) = 1.0; aA(2, 3) = 4.0;
-  aA(3, 1) = 5.0; aA(3, 2) = 6.0; aA(3, 3) = 0.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(1, 3) = 3.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0;
+  aA(2, 3) = 4.0;
+  aA(3, 1) = 5.0;
+  aA(3, 2) = 6.0;
+  aA(3, 3) = 0.0;
 
   // Compute inverse using new API
   auto aNewResult = MathLin::Invert(aA);
@@ -192,7 +210,7 @@ TEST(MathLin_ComparisonTest, Invert_3x3Matrix)
     for (int j = 1; j <= 3; ++j)
     {
       EXPECT_NEAR((*aNewResult.Inverse)(i, j), aOldInv(i, j), THE_TOLERANCE)
-          << "Inverse differs at (" << i << ", " << j << ")";
+        << "Inverse differs at (" << i << ", " << j << ")";
     }
   }
 }
@@ -205,9 +223,15 @@ TEST(MathLin_ComparisonTest, Invert_VerifyByMultiplication)
 {
   // Create a 3x3 matrix
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 2.0; aA(1, 2) = 1.0; aA(1, 3) = 1.0;
-  aA(2, 1) = 1.0; aA(2, 2) = 3.0; aA(2, 3) = 2.0;
-  aA(3, 1) = 1.0; aA(3, 2) = 2.0; aA(3, 3) = 2.0;
+  aA(1, 1) = 2.0;
+  aA(1, 2) = 1.0;
+  aA(1, 3) = 1.0;
+  aA(2, 1) = 1.0;
+  aA(2, 2) = 3.0;
+  aA(2, 3) = 2.0;
+  aA(3, 1) = 1.0;
+  aA(3, 2) = 2.0;
+  aA(3, 3) = 2.0;
 
   // Compute inverse using new API
   auto aNewResult = MathLin::Invert(aA);
@@ -222,7 +246,7 @@ TEST(MathLin_ComparisonTest, Invert_VerifyByMultiplication)
     {
       double aExpected = (i == j) ? 1.0 : 0.0;
       EXPECT_NEAR(aProduct(i, j), aExpected, THE_TOLERANCE)
-          << "Product differs at (" << i << ", " << j << ")";
+        << "Product differs at (" << i << ", " << j << ")";
     }
   }
 }
@@ -235,9 +259,15 @@ TEST(MathLin_ComparisonTest, LU_Decomposition)
 {
   // Create a 3x3 matrix
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 2.0; aA(1, 2) = 1.0; aA(1, 3) = 1.0;
-  aA(2, 1) = 4.0; aA(2, 2) = 3.0; aA(2, 3) = 3.0;
-  aA(3, 1) = 8.0; aA(3, 2) = 7.0; aA(3, 3) = 9.0;
+  aA(1, 1) = 2.0;
+  aA(1, 2) = 1.0;
+  aA(1, 3) = 1.0;
+  aA(2, 1) = 4.0;
+  aA(2, 2) = 3.0;
+  aA(2, 3) = 3.0;
+  aA(3, 1) = 8.0;
+  aA(3, 2) = 7.0;
+  aA(3, 3) = 9.0;
 
   // Perform LU decomposition
   auto aLUResult = MathLin::LU(aA);
@@ -271,7 +301,9 @@ TEST(MathLin_ComparisonTest, LU_Decomposition)
 
   // Verify by solving a system and checking residual
   math_Vector aB(1, 3);
-  aB(1) = 1.0; aB(2) = 2.0; aB(3) = 3.0;
+  aB(1) = 1.0;
+  aB(2) = 2.0;
+  aB(3) = 3.0;
 
   auto aSolveResult = MathLin::Solve(aA, aB);
   ASSERT_TRUE(aSolveResult.IsDone());
@@ -293,9 +325,15 @@ TEST(MathLin_ComparisonTest, SingularMatrix_Detection)
 {
   // Create a singular matrix (row 3 = row 1)
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 2.0; aA(1, 3) = 3.0;
-  aA(2, 1) = 4.0; aA(2, 2) = 5.0; aA(2, 3) = 6.0;
-  aA(3, 1) = 1.0; aA(3, 2) = 2.0; aA(3, 3) = 3.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(1, 3) = 3.0;
+  aA(2, 1) = 4.0;
+  aA(2, 2) = 5.0;
+  aA(2, 3) = 6.0;
+  aA(3, 1) = 1.0;
+  aA(3, 2) = 2.0;
+  aA(3, 3) = 3.0;
 
   // New API should report failure
   auto aNewResult = MathLin::LU(aA);
@@ -313,7 +351,7 @@ TEST(MathLin_ComparisonTest, SingularMatrix_Detection)
 TEST(MathLin_ComparisonTest, IllConditioned_HilbertMatrix)
 {
   // Create 4x4 Hilbert matrix (ill-conditioned)
-  const int aN = 4;
+  const int   aN = 4;
   math_Matrix aH(1, aN, 1, aN);
   for (int i = 1; i <= aN; ++i)
   {
@@ -345,7 +383,7 @@ TEST(MathLin_ComparisonTest, IllConditioned_HilbertMatrix)
   for (int i = 1; i <= aN; ++i)
   {
     EXPECT_NEAR((*aNewResult.Solution)(i), aOldX(i), aLooseTol)
-        << "Solution differs at index " << i;
+      << "Solution differs at index " << i;
   }
 }
 
@@ -363,10 +401,10 @@ TEST(MathLin_ComparisonTest, Determinant_MultipleMatrices)
   };
 
   TestCase aCases[] = {
-      {1.0, 0.0, 0.0, 1.0, 1.0},   // Identity
-      {2.0, 0.0, 0.0, 3.0, 6.0},   // Diagonal
-      {1.0, 2.0, 3.0, 4.0, -2.0},  // General
-      {0.0, 1.0, 1.0, 0.0, -1.0},  // Permutation
+    {1.0, 0.0, 0.0, 1.0, 1.0},  // Identity
+    {2.0, 0.0, 0.0, 3.0, 6.0},  // Diagonal
+    {1.0, 2.0, 3.0, 4.0, -2.0}, // General
+    {0.0, 1.0, 1.0, 0.0, -1.0}, // Permutation
   };
 
   for (const auto& aCase : aCases)
@@ -396,9 +434,15 @@ TEST(MathLin_ComparisonTest, Solve_KnownSolution)
 {
   // Create system with known solution x = (1, 2, 3)
   math_Matrix aA(1, 3, 1, 3);
-  aA(1, 1) = 1.0; aA(1, 2) = 0.0; aA(1, 3) = 0.0;
-  aA(2, 1) = 0.0; aA(2, 2) = 1.0; aA(2, 3) = 0.0;
-  aA(3, 1) = 0.0; aA(3, 2) = 0.0; aA(3, 3) = 1.0;
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 0.0;
+  aA(1, 3) = 0.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 1.0;
+  aA(2, 3) = 0.0;
+  aA(3, 1) = 0.0;
+  aA(3, 2) = 0.0;
+  aA(3, 3) = 1.0;
 
   math_Vector aExpectedX(1, 3);
   aExpectedX(1) = 1.0;
@@ -427,10 +471,22 @@ TEST(MathLin_ComparisonTest, Solve_ComplexKnownSolution)
 {
   // Create a more complex system with known solution x = (1, -1, 2, -2)
   math_Matrix aA(1, 4, 1, 4);
-  aA(1, 1) = 5.0; aA(1, 2) = 7.0; aA(1, 3) = 6.0; aA(1, 4) = 5.0;
-  aA(2, 1) = 7.0; aA(2, 2) = 10.0; aA(2, 3) = 8.0; aA(2, 4) = 7.0;
-  aA(3, 1) = 6.0; aA(3, 2) = 8.0; aA(3, 3) = 10.0; aA(3, 4) = 9.0;
-  aA(4, 1) = 5.0; aA(4, 2) = 7.0; aA(4, 3) = 9.0; aA(4, 4) = 10.0;
+  aA(1, 1) = 5.0;
+  aA(1, 2) = 7.0;
+  aA(1, 3) = 6.0;
+  aA(1, 4) = 5.0;
+  aA(2, 1) = 7.0;
+  aA(2, 2) = 10.0;
+  aA(2, 3) = 8.0;
+  aA(2, 4) = 7.0;
+  aA(3, 1) = 6.0;
+  aA(3, 2) = 8.0;
+  aA(3, 3) = 10.0;
+  aA(3, 4) = 9.0;
+  aA(4, 1) = 5.0;
+  aA(4, 2) = 7.0;
+  aA(4, 3) = 9.0;
+  aA(4, 4) = 10.0;
 
   math_Vector aExpectedX(1, 4);
   aExpectedX(1) = 1.0;

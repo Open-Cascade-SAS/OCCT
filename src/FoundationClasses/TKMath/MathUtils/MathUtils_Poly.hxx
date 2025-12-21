@@ -92,7 +92,7 @@ inline double RefinePolyRoot(const double* theCoeffs,
   double aX = theRoot;
   for (int i = 0; i < theMaxIter; ++i)
   {
-    double aF = 0.0;
+    double aF  = 0.0;
     double aDf = 0.0;
     EvalPolyDeriv(theCoeffs, theDegree, aX, aF, aDf);
 
@@ -140,7 +140,7 @@ inline void SortRoots(double* theRoots, size_t theCount)
   for (size_t i = 1; i < theCount; ++i)
   {
     const double aKey = theRoots[i];
-    size_t j = i;
+    size_t       j    = i;
     while (j > 0 && theRoots[j - 1] > aKey)
     {
       theRoots[j] = theRoots[j - 1];
@@ -189,10 +189,10 @@ inline void DepressCubic(double  theB,
                          double& theQ,
                          double& theShift)
 {
-  theShift = theB / 3.0;
+  theShift         = theB / 3.0;
   const double aB2 = theB * theB;
-  theP = theC - aB2 / 3.0;
-  theQ = theD - theB * theC / 3.0 + 2.0 * aB2 * theB / 27.0;
+  theP             = theC - aB2 / 3.0;
+  theQ             = theD - theB * theC / 3.0 + 2.0 * aB2 * theB / 27.0;
 }
 
 //! Compute depressed quartic coefficients.
@@ -214,7 +214,7 @@ inline void DepressQuartic(double  theB,
                            double& theR,
                            double& theShift)
 {
-  theShift = theB / 4.0;
+  theShift         = theB / 4.0;
   const double aB2 = theB * theB;
   const double aB3 = aB2 * theB;
   const double aB4 = aB2 * aB2;

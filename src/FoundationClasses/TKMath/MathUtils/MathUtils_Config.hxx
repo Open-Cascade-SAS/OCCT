@@ -62,7 +62,10 @@ struct BoundedConfig : Config
   //! @param theUpper upper bound
   //! @param theTolerance convergence tolerance
   //! @param theMaxIter maximum iterations
-  BoundedConfig(double theLower, double theUpper, double theTolerance = 1.0e-10, int theMaxIter = 100)
+  BoundedConfig(double theLower,
+                double theUpper,
+                double theTolerance = 1.0e-10,
+                int    theMaxIter   = 100)
       : Config(theTolerance, theMaxIter),
         LowerBound(theLower),
         UpperBound(theUpper)

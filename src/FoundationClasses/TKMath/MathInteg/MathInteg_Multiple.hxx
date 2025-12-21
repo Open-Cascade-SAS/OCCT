@@ -53,18 +53,18 @@ struct MultipleConfig
 //! @param theConfig optional configuration
 //! @return IntegResult containing the integral value
 template <typename Func>
-IntegResult GaussMultiple(Func&                      theFunc,
-                          int                        theNVars,
-                          const math_Vector&         theLower,
-                          const math_Vector&         theUpper,
-                          const math_IntegerVector&  theOrder,
-                          const MultipleConfig&      theConfig = MultipleConfig())
+IntegResult GaussMultiple(Func&                     theFunc,
+                          int                       theNVars,
+                          const math_Vector&        theLower,
+                          const math_Vector&        theUpper,
+                          const math_IntegerVector& theOrder,
+                          const MultipleConfig&     theConfig = MultipleConfig())
 {
   IntegResult aResult;
 
   // Validate inputs
-  if (theNVars <= 0 || theLower.Length() != theNVars || theUpper.Length() != theNVars ||
-      theOrder.Length() != theNVars)
+  if (theNVars <= 0 || theLower.Length() != theNVars || theUpper.Length() != theNVars
+      || theOrder.Length() != theNVars)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;

@@ -738,8 +738,10 @@ TEST(MathOpt_NDim_ComparisonTest, DifferentStartingPoints)
   QuadraticFuncNew     aNewFunc;
 
   // Test multiple starting points
-  std::vector<std::pair<double, double>> aStartPoints = {
-    {0.0, 0.0}, {10.0, 10.0}, {-5.0, 5.0}, {100.0, -50.0}};
+  std::vector<std::pair<double, double>> aStartPoints = {{0.0, 0.0},
+                                                         {10.0, 10.0},
+                                                         {-5.0, 5.0},
+                                                         {100.0, -50.0}};
 
   for (const auto& aPoint : aStartPoints)
   {

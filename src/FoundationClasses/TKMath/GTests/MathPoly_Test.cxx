@@ -21,20 +21,20 @@
 
 namespace
 {
-  constexpr double THE_TOLERANCE = 1.0e-10;
+constexpr double THE_TOLERANCE = 1.0e-10;
 
-  //! Helper to verify a root satisfies the polynomial equation.
-  double EvalCubic(double theA, double theB, double theC, double theD, double theX)
-  {
-    return theA * theX * theX * theX + theB * theX * theX + theC * theX + theD;
-  }
-
-  double EvalQuartic(double theA, double theB, double theC, double theD, double theE, double theX)
-  {
-    const double aX2 = theX * theX;
-    return theA * aX2 * aX2 + theB * aX2 * theX + theC * aX2 + theD * theX + theE;
-  }
+//! Helper to verify a root satisfies the polynomial equation.
+double EvalCubic(double theA, double theB, double theC, double theD, double theX)
+{
+  return theA * theX * theX * theX + theB * theX * theX + theC * theX + theD;
 }
+
+double EvalQuartic(double theA, double theB, double theC, double theD, double theE, double theX)
+{
+  const double aX2 = theX * theX;
+  return theA * aX2 * aX2 + theB * aX2 * theX + theC * aX2 + theD * theX + theE;
+}
+} // namespace
 
 // ============================================================================
 // Linear equation tests

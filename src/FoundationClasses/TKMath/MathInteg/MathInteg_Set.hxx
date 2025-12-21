@@ -33,6 +33,7 @@ struct SetResult
   int                        NbEquations = 0;
 
   bool IsDone() const { return Status == Status::OK; }
+
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -55,10 +56,7 @@ struct SetResult
 //! @param theOrder integration order (max 61)
 //! @return SetResult containing vector of integrals
 template <typename Func>
-SetResult GaussSet(Func&  theFunc,
-                   double theLower,
-                   double theUpper,
-                   int    theOrder)
+SetResult GaussSet(Func& theFunc, double theLower, double theUpper, int theOrder)
 {
   SetResult aResult;
 
@@ -167,10 +165,7 @@ SetResult GaussSet(Func&              theFunc,
                    const math_Vector& theUpper,
                    int                theOrder)
 {
-  return GaussSet(theFunc,
-                  theLower(theLower.Lower()),
-                  theUpper(theUpper.Lower()),
-                  theOrder);
+  return GaussSet(theFunc, theLower(theLower.Lower()), theUpper(theUpper.Lower()), theOrder);
 }
 
 } // namespace MathInteg

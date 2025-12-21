@@ -26,10 +26,10 @@ namespace MathUtils
 //! Result of line search operation.
 struct LineSearchResult
 {
-  bool   IsValid = false;  //!< True if line search succeeded
-  double Alpha   = 0.0;    //!< Step size found
-  double FNew    = 0.0;    //!< Function value at new point
-  int    NbEvals = 0;      //!< Number of function evaluations
+  bool   IsValid = false; //!< True if line search succeeded
+  double Alpha   = 0.0;   //!< Step size found
+  double FNew    = 0.0;   //!< Function value at new point
+  int    NbEvals = 0;     //!< Number of function evaluations
 };
 
 //! Backtracking line search with Armijo condition.
@@ -64,7 +64,7 @@ LineSearchResult ArmijoBacktrack(Function&          theFunc,
                                  int                theMaxIter   = 50)
 {
   LineSearchResult aResult;
-  aResult.Alpha = theAlphaInit;
+  aResult.Alpha   = theAlphaInit;
   aResult.NbEvals = 0;
 
   const int aLower = theX.Lower();
@@ -111,7 +111,7 @@ LineSearchResult ArmijoBacktrack(Function&          theFunc,
     if (aFNew <= theFx + theC1 * aResult.Alpha * aDirDeriv)
     {
       aResult.IsValid = true;
-      aResult.FNew = aFNew;
+      aResult.FNew    = aFNew;
       return aResult;
     }
 
@@ -185,7 +185,7 @@ LineSearchResult WolfeSearch(Function&          theFunc,
 
   double aAlphaLo = 0.0;
   double aAlphaHi = theAlphaInit * 2.0;
-  double aAlpha = theAlphaInit;
+  double aAlpha   = theAlphaInit;
 
   double aPhiLo = theFx;
 
@@ -203,7 +203,7 @@ LineSearchResult WolfeSearch(Function&          theFunc,
     {
       // Shrink interval
       aAlphaHi = aAlpha;
-      aAlpha = 0.5 * (aAlphaLo + aAlphaHi);
+      aAlpha   = 0.5 * (aAlphaLo + aAlphaHi);
       ++aResult.NbEvals;
       continue;
     }
@@ -234,8 +234,8 @@ LineSearchResult WolfeSearch(Function&          theFunc,
     if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
     {
       aResult.IsValid = true;
-      aResult.Alpha = aAlpha;
-      aResult.FNew = aPhi;
+      aResult.Alpha   = aAlpha;
+      aResult.FNew    = aPhi;
       return aResult;
     }
 
@@ -244,14 +244,14 @@ LineSearchResult WolfeSearch(Function&          theFunc,
       // Found bracket [alpha, alpha_lo]
       aAlphaHi = aAlphaLo;
       aAlphaLo = aAlpha;
-      aPhiLo = aPhi;
+      aPhiLo   = aPhi;
       break;
     }
 
     // Increase alpha
     aAlphaLo = aAlpha;
-    aPhiLo = aPhi;
-    aAlpha = 0.5 * (aAlpha + aAlphaHi);
+    aPhiLo   = aPhi;
+    aAlpha   = 0.5 * (aAlpha + aAlphaHi);
   }
 
   // Phase 2: Zoom
@@ -294,8 +294,8 @@ LineSearchResult WolfeSearch(Function&          theFunc,
       if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
       {
         aResult.IsValid = true;
-        aResult.Alpha = aAlpha;
-        aResult.FNew = aPhi;
+        aResult.Alpha   = aAlpha;
+        aResult.FNew    = aPhi;
         return aResult;
       }
 
@@ -305,7 +305,7 @@ LineSearchResult WolfeSearch(Function&          theFunc,
       }
 
       aAlphaLo = aAlpha;
-      aPhiLo = aPhi;
+      aPhiLo   = aPhi;
     }
 
     // Check for convergence
@@ -317,8 +317,8 @@ LineSearchResult WolfeSearch(Function&          theFunc,
 
   // Return best found
   aResult.IsValid = true;
-  aResult.Alpha = aAlpha;
-  aResult.FNew = aPhiLo;
+  aResult.Alpha   = aAlpha;
+  aResult.FNew    = aPhiLo;
   return aResult;
 }
 
@@ -339,7 +339,7 @@ template <typename Function>
 LineSearchResult ExactLineSearch(Function&          theFunc,
                                  const math_Vector& theX,
                                  const math_Vector& theDir,
-                                 double             theAlphaMax = 10.0,
+                                 double             theAlphaMax  = 10.0,
                                  double             theTolerance = 1.0e-6,
                                  int                theMaxIter   = 100)
 {
@@ -352,8 +352,7 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
   math_Vector aXNew(aLower, aUpper);
 
   // Lambda to evaluate phi(alpha) = f(x + alpha*d)
-  auto aEvalPhi = [&](double theAlpha, double& thePhi) -> bool
-  {
+  auto aEvalPhi = [&](double theAlpha, double& thePhi) -> bool {
     for (int i = aLower; i <= aUpper; ++i)
     {
       aXNew(i) = theX(i) + theAlpha * theDir(i);
@@ -384,7 +383,7 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
 
   for (int anIter = 0; anIter < theMaxIter; ++anIter)
   {
-    const double aXm = 0.5 * (aA + aB);
+    const double aXm   = 0.5 * (aA + aB);
     const double aTol1 = theTolerance * std::abs(aX) + THE_ZERO_TOL / 10.0;
     const double aTol2 = 2.0 * aTol1;
 
@@ -392,12 +391,12 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
     if (std::abs(aX - aXm) <= (aTol2 - 0.5 * (aB - aA)))
     {
       aResult.IsValid = true;
-      aResult.Alpha = aX;
-      aResult.FNew = aFx;
+      aResult.Alpha   = aX;
+      aResult.FNew    = aFx;
       return aResult;
     }
 
-    double aU = 0.0;
+    double aU            = 0.0;
     bool   aUseParabolic = false;
 
     // Try parabolic interpolation
@@ -406,7 +405,7 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
       const double aR = (aX - aW) * (aFx - aFv);
       double       aQ = (aX - aV) * (aFx - aFw);
       double       aP = (aX - aV) * aQ - (aX - aW) * aR;
-      aQ = 2.0 * (aQ - aR);
+      aQ              = 2.0 * (aQ - aR);
 
       if (aQ > 0.0)
       {
@@ -418,10 +417,9 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
       }
 
       const double aETmp = aE;
-      aE = aD;
+      aE                 = aD;
 
-      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX)
-          && aP < aQ * (aB - aX))
+      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX) && aP < aQ * (aB - aX))
       {
         aD = aP / aQ;
         aU = aX + aD;
@@ -452,8 +450,8 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
     if (!aEvalPhi(aU, aFu))
     {
       aResult.IsValid = false;
-      aResult.Alpha = aX;
-      aResult.FNew = aFx;
+      aResult.Alpha   = aX;
+      aResult.FNew    = aFx;
       return aResult;
     }
 
@@ -469,9 +467,9 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
         aA = aX;
       }
 
-      aV = aW;
-      aW = aX;
-      aX = aU;
+      aV  = aW;
+      aW  = aX;
+      aX  = aU;
       aFv = aFw;
       aFw = aFx;
       aFx = aFu;
@@ -489,22 +487,22 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
 
       if (aFu <= aFw || aW == aX)
       {
-        aV = aW;
-        aW = aU;
+        aV  = aW;
+        aW  = aU;
         aFv = aFw;
         aFw = aFu;
       }
       else if (aFu <= aFv || aV == aX || aV == aW)
       {
-        aV = aU;
+        aV  = aU;
         aFv = aFu;
       }
     }
   }
 
   aResult.IsValid = true;
-  aResult.Alpha = aX;
-  aResult.FNew = aFx;
+  aResult.Alpha   = aX;
+  aResult.FNew    = aFx;
   return aResult;
 }
 
@@ -524,7 +522,7 @@ inline double QuadraticInterpolation(double thePhi0,
   // Quadratic: phi(alpha) = phi(0) + phi'(0)*alpha + c*alpha^2
   // where c = (phi(alpha1) - phi(0) - phi'(0)*alpha1) / alpha1^2
   // Minimum at alpha* = -phi'(0) / (2c)
-  const double aNum = thePhi0Prime * theAlpha1 * theAlpha1;
+  const double aNum   = thePhi0Prime * theAlpha1 * theAlpha1;
   const double aDenom = 2.0 * (thePhi1 - thePhi0 - thePhi0Prime * theAlpha1);
 
   if (std::abs(aDenom) < THE_ZERO_TOL)

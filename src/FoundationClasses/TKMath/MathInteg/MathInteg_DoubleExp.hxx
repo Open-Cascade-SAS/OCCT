@@ -28,8 +28,8 @@ using namespace MathUtils;
 //! Configuration for double exponential integration.
 struct DoubleExpConfig : IntegConfig
 {
-  int    NbLevels    = 6;     //!< Number of refinement levels (each doubles points)
-  double StepFactor  = 0.5;   //!< Initial step size h = StepFactor / NbPoints
+  int    NbLevels   = 6;   //!< Number of refinement levels (each doubles points)
+  double StepFactor = 0.5; //!< Initial step size h = StepFactor / NbPoints
 
   //! Default constructor.
   DoubleExpConfig() = default;
@@ -83,13 +83,13 @@ IntegResult TanhSinh(Function&              theFunc,
   double aH = 1.0;
 
   // For convergence checking
-  double aPrevSum = 0.0;
+  double aPrevSum     = 0.0;
   size_t aTotalPoints = 0;
 
   // Level-by-level refinement
   for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
   {
-    double aSum = 0.0;
+    double aSum      = 0.0;
     int    aNbPoints = 0;
 
     // For level 0, evaluate at t = 0, +/-h, +/-2h, ...
@@ -116,8 +116,8 @@ IntegResult TanhSinh(Function&              theFunc,
       }
 
       // tanh(u) and sech^2(u) = 1/cosh^2(u)
-      double aTanhU = std::tanh(aU);
-      double aCoshU = std::cosh(aU);
+      double aTanhU  = std::tanh(aU);
+      double aCoshU  = std::cosh(aU);
       double aSech2U = 1.0 / (aCoshU * aCoshU);
 
       // x = mid + half * tanh(u)
@@ -163,7 +163,7 @@ IntegResult TanhSinh(Function&              theFunc,
     }
 
     // Negative t direction (skip t=0 which was already counted)
-    int aNegStart = (aLevel == 0) ? 1 : aStart;  // Start at 1 for level 0, aStart otherwise
+    int aNegStart = (aLevel == 0) ? 1 : aStart; // Start at 1 for level 0, aStart otherwise
     for (int k = aNegStart;; k += aStep)
     {
       double aT = -k * aH;
@@ -246,10 +246,10 @@ IntegResult TanhSinh(Function&              theFunc,
   }
 
   // Did not converge, return best estimate
-  aResult.Status        = Status::OK; // Still return a result
-  aResult.Value         = aPrevSum;
-  aResult.NbPoints      = aTotalPoints;
-  aResult.NbIterations  = static_cast<size_t>(theConfig.NbLevels);
+  aResult.Status       = Status::OK; // Still return a result
+  aResult.Value        = aPrevSum;
+  aResult.NbPoints     = aTotalPoints;
+  aResult.NbIterations = static_cast<size_t>(theConfig.NbLevels);
   return aResult;
 }
 
@@ -270,9 +270,9 @@ IntegResult ExpSinh(Function&              theFunc,
 {
   IntegResult aResult;
 
-  const double aHalfPi = M_PI / 2.0;
-  double       aH      = 1.0;
-  double       aPrevSum = 0.0;
+  const double aHalfPi      = M_PI / 2.0;
+  double       aH           = 1.0;
+  double       aPrevSum     = 0.0;
   size_t       aTotalPoints = 0;
 
   for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
@@ -389,14 +389,13 @@ IntegResult ExpSinh(Function&              theFunc,
 //! @param theConfig integration configuration
 //! @return integration result
 template <typename Function>
-IntegResult SinhSinh(Function&              theFunc,
-                     const DoubleExpConfig& theConfig = DoubleExpConfig())
+IntegResult SinhSinh(Function& theFunc, const DoubleExpConfig& theConfig = DoubleExpConfig())
 {
   IntegResult aResult;
 
-  const double aHalfPi = M_PI / 2.0;
-  double       aH      = 1.0;
-  double       aPrevSum = 0.0;
+  const double aHalfPi      = M_PI / 2.0;
+  double       aH           = 1.0;
+  double       aPrevSum     = 0.0;
   size_t       aTotalPoints = 0;
 
   for (int aLevel = 0; aLevel < theConfig.NbLevels; ++aLevel)
@@ -543,10 +542,7 @@ IntegResult DoubleExponential(Function&              theFunc,
       {
       }
 
-      bool Value(double theX, double& theF)
-      {
-        return myFunc.Value(-theX, theF);
-      }
+      bool Value(double theX, double& theF) { return myFunc.Value(-theX, theF); }
 
     private:
       Function& myFunc;
@@ -627,10 +623,10 @@ IntegResult TanhSinhWithSingularity(Function&              theFunc,
   }
 
   // Combine results
-  aResult.Status        = Status::OK;
-  aResult.Value         = *aLeft.Value + *aRight.Value;
-  aResult.NbPoints      = aLeft.NbPoints + aRight.NbPoints;
-  aResult.NbIterations  = std::max(aLeft.NbIterations, aRight.NbIterations);
+  aResult.Status       = Status::OK;
+  aResult.Value        = *aLeft.Value + *aRight.Value;
+  aResult.NbPoints     = aLeft.NbPoints + aRight.NbPoints;
+  aResult.NbIterations = std::max(aLeft.NbIterations, aRight.NbIterations);
 
   if (aLeft.AbsoluteError && aRight.AbsoluteError)
   {
