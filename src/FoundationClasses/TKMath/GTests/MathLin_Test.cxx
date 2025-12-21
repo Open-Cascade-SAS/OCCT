@@ -72,20 +72,6 @@ math_Matrix CreateRandom(int theM, int theN, int theSeed = 42)
   return aMat;
 }
 
-//! Compute Frobenius norm of matrix.
-double FrobeniusNorm(const math_Matrix& theMat)
-{
-  double aNorm = 0.0;
-  for (int i = theMat.LowerRow(); i <= theMat.UpperRow(); ++i)
-  {
-    for (int j = theMat.LowerCol(); j <= theMat.UpperCol(); ++j)
-    {
-      aNorm += theMat(i, j) * theMat(i, j);
-    }
-  }
-  return std::sqrt(aNorm);
-}
-
 //! Compute L2 norm of vector.
 double VectorNorm(const math_Vector& theVec)
 {
