@@ -202,7 +202,7 @@ public:
     if constexpr (n == 1)
     {
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxPoint[0])
     }
     else if constexpr (n == 2)
     {
@@ -246,9 +246,11 @@ public:
     constexpr int n = (N < 3) ? N : 3;
     if constexpr (n == 1)
     {
-      Standard_Real aValue;
-      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aValue);
-      myMinPoint[0] = (T)aValue;
+      Standard_Real aMinValue, aMaxValue;
+      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMinValue);
+      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMaxValue);
+      myMinPoint[0] = (T)aMinValue;
+      myMaxPoint[0] = (T)aMaxValue;
     }
     else if constexpr (n == 2)
     {
@@ -295,19 +297,9 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      if (myMinPoint[0] > theMaxPoint[0] || myMaxPoint[0] < theMinPoint[0])
-        return Standard_True;
-    }
-    if constexpr (N >= 2)
-    {
-      if (myMinPoint[1] > theMaxPoint[1] || myMaxPoint[1] < theMinPoint[1])
-        return Standard_True;
-    }
-    if constexpr (N >= 3)
-    {
-      if (myMinPoint[2] > theMaxPoint[2] || myMaxPoint[2] < theMinPoint[2])
+      if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
         return Standard_True;
     }
     return Standard_False;
@@ -334,27 +326,12 @@ public:
       return Standard_False;
 
     Standard_Boolean isInside = Standard_True;
-
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      hasOverlap = (myMinPoint[0] <= theMaxPoint[0] && myMaxPoint[0] >= theMinPoint[0]);
+      hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
       if (!hasOverlap)
         return Standard_False;
-      isInside = isInside && (myMinPoint[0] <= theMinPoint[0] && myMaxPoint[0] >= theMaxPoint[0]);
-    }
-    if constexpr (N >= 2)
-    {
-      hasOverlap = (myMinPoint[1] <= theMaxPoint[1] && myMaxPoint[1] >= theMinPoint[1]);
-      if (!hasOverlap)
-        return Standard_False;
-      isInside = isInside && (myMinPoint[1] <= theMinPoint[1] && myMaxPoint[1] >= theMaxPoint[1]);
-    }
-    if constexpr (N >= 3)
-    {
-      hasOverlap = (myMinPoint[2] <= theMaxPoint[2] && myMaxPoint[2] >= theMinPoint[2]);
-      if (!hasOverlap)
-        return Standard_False;
-      isInside = isInside && (myMinPoint[2] <= theMinPoint[2] && myMaxPoint[2] >= theMaxPoint[2]);
+      isInside = isInside && (myMinPoint[i] <= theMinPoint[i] && myMaxPoint[i] >= theMaxPoint[i]);
     }
     return isInside;
   }
@@ -365,19 +342,9 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      if (thePoint[0] < myMinPoint[0] || thePoint[0] > myMaxPoint[0])
-        return Standard_True;
-    }
-    if constexpr (N >= 2)
-    {
-      if (thePoint[1] < myMinPoint[1] || thePoint[1] > myMaxPoint[1])
-        return Standard_True;
-    }
-    if constexpr (N >= 3)
-    {
-      if (thePoint[2] < myMinPoint[2] || thePoint[2] > myMaxPoint[2])
+      if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
         return Standard_True;
     }
     return Standard_False;
@@ -404,63 +371,38 @@ struct CenterAxis
 };
 
 //! Tool class for calculating surface area of the box.
+//! For N=2, computes area (or perimeter for degenerate boxes).
+//! For N>=3, computes 3D surface area using X, Y, Z components only.
+//! The W component (4th dimension) is intentionally ignored as BVH surface area
+//! heuristic (SAH) operates in 3D geometric space regardless of additional dimensions.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
 struct SurfaceCalculator
 {
-  // Not implemented
-};
-
-template <class T>
-struct SurfaceCalculator<T, 2>
-{
-  static inline T Area(const typename BVH_Box<T, 2>::BVH_VecNt& theSize)
+  static inline T Area(const typename BVH_Box<T, N>::BVH_VecNt& theSize)
   {
-    const T anArea = std::abs(theSize.x() * theSize.y());
-
-    if (anArea < std::numeric_limits<T>::epsilon())
+    if constexpr (N == 2)
     {
-      return std::abs(theSize.x()) + std::abs(theSize.y());
+      const T anArea = std::abs(theSize.x() * theSize.y());
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return std::abs(theSize.x()) + std::abs(theSize.y());
+      }
+      return anArea;
     }
-
-    return anArea;
-  }
-};
-
-template <class T>
-struct SurfaceCalculator<T, 3>
-{
-  static inline T Area(const typename BVH_Box<T, 3>::BVH_VecNt& theSize)
-  {
-    const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
-                      + std::abs(theSize.z() * theSize.y()))
-                     * static_cast<T>(2.0);
-
-    if (anArea < std::numeric_limits<T>::epsilon())
+    else
     {
-      return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
+      // For N >= 3, compute standard 3D surface area.
+      const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
+                        + std::abs(theSize.z() * theSize.y()))
+                       * static_cast<T>(2.0);
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
+      }
+      return anArea;
     }
-
-    return anArea;
-  }
-};
-
-template <class T>
-struct SurfaceCalculator<T, 4>
-{
-  static inline T Area(const typename BVH_Box<T, 4>::BVH_VecNt& theSize)
-  {
-    const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
-                      + std::abs(theSize.z() * theSize.y()))
-                     * static_cast<T>(2.0);
-
-    if (anArea < std::numeric_limits<T>::epsilon())
-    {
-      return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
-    }
-
-    return anArea;
   }
 };
 
@@ -475,42 +417,18 @@ struct BoxMinMax
   //! Computes component-wise minimum in-place.
   static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
-    }
-    if constexpr (N >= 2)
-    {
-      theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
-    }
-    if constexpr (N >= 3)
-    {
-      theVec1.z() = (std::min)(theVec1.z(), theVec2.z());
-    }
-    if constexpr (N >= 4)
-    {
-      theVec1.w() = (std::min)(theVec1.w(), theVec2.w());
+      theVec1[i] = (std::min)(theVec1[i], theVec2[i]);
     }
   }
 
   //! Computes component-wise maximum in-place.
   static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
-    }
-    if constexpr (N >= 2)
-    {
-      theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
-    }
-    if constexpr (N >= 3)
-    {
-      theVec1.z() = (std::max)(theVec1.z(), theVec2.z());
-    }
-    if constexpr (N >= 4)
-    {
-      theVec1.w() = (std::max)(theVec1.w(), theVec2.w());
+      theVec1[i] = (std::max)(theVec1[i], theVec2[i]);
     }
   }
 };
