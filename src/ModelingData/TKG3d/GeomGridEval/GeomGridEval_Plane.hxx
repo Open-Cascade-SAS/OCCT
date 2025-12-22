@@ -294,7 +294,7 @@ public:
     return aResult;
   }
 
-  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! For a plane: D1U = XDir, D1V = YDir, all others = 0.
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction

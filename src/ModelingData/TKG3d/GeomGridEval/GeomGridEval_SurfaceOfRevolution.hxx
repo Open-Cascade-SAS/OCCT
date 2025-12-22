@@ -41,10 +41,10 @@
 //! then applies rotation transformations. Precomputes sin/cos values for each U parameter.
 //!
 //! Mathematical formulas for derivatives:
-//! - D1U = Axis × (P - AxisLocation), then rotated
+//! - D1U = Axis Cross (P - AxisLocation), then rotated
 //! - D1V = C'(v), rotated
-//! - D2U = (Axis · (P - AxisLocation)) * Axis - (P - AxisLocation), then rotated
-//! - D2UV = Axis × C'(v), then rotated
+//! - D2U = (Axis Dot (P - AxisLocation)) * Axis - (P - AxisLocation), then rotated
+//! - D2UV = Axis Cross C'(v), then rotated
 //! - D2V = C''(v), rotated
 //!
 //! Usage:
@@ -104,7 +104,7 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
 
-  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)

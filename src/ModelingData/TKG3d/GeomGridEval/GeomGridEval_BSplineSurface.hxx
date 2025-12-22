@@ -111,7 +111,7 @@ public:
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
 
-  //! Evaluate partial derivative ∂^(NU+NV)S/(∂U^NU ∂V^NV) at all grid points.
+  //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! For orders > degree in either direction, returns zero.
   //! Uses direct geometry DN method.
   //! @param theNU derivative order in U direction
