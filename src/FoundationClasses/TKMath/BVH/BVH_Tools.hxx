@@ -450,6 +450,20 @@ public: //! @name Ray-Box Intersection
       }
     }
 
+    if constexpr (N >= 4)
+    {
+      T aT1w = (theBoxCMin[3] - theRayOrigin[3]) * theRayInvDirection[3];
+      T aT2w = (theBoxCMax[3] - theRayOrigin[3]) * theRayInvDirection[3];
+
+      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1w, aT2w));
+      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1w, aT2w));
+
+      if (aTimeEnter > aTimeLeave)
+      {
+        return Standard_False;
+      }
+    }
+
     // Check if intersection is behind the ray origin
     if (aTimeLeave < T(0))
     {
