@@ -16,6 +16,7 @@
 
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
+#include <MathUtils_Core.hxx>
 #include <MathPoly.hxx>
 
 #include <cmath>
@@ -62,13 +63,11 @@ inline TrigResult Trigonometric(double theA,
                                 double theD,
                                 double theE,
                                 double theInfBound = 0.0,
-                                double theSupBound = 2.0 * M_PI,
+                                double theSupBound = THE_2PI,
                                 double theEps      = 1.5e-12)
 {
   TrigResult aResult;
   aResult.Status = MathUtils::Status::OK;
-
-  constexpr double THE_TWO_PI = 2.0 * M_PI;
 
   // Compute working interval
   double aMyBorneInf, aDelta, aMod;
@@ -76,29 +75,29 @@ inline TrigResult Trigonometric(double theA,
       && theSupBound >= std::numeric_limits<double>::max() / 2.0)
   {
     aMyBorneInf = 0.0;
-    aDelta      = THE_TWO_PI;
+    aDelta      = THE_2PI;
     aMod        = 0.0;
   }
   else if (theSupBound >= std::numeric_limits<double>::max() / 2.0)
   {
     aMyBorneInf = theInfBound;
-    aDelta      = THE_TWO_PI;
-    aMod        = aMyBorneInf / THE_TWO_PI;
+    aDelta      = THE_2PI;
+    aMod        = aMyBorneInf / THE_2PI;
   }
   else if (theInfBound <= std::numeric_limits<double>::lowest() / 2.0)
   {
-    aMyBorneInf = theSupBound - THE_TWO_PI;
-    aDelta      = THE_TWO_PI;
-    aMod        = aMyBorneInf / THE_TWO_PI;
+    aMyBorneInf = theSupBound - THE_2PI;
+    aDelta      = THE_2PI;
+    aMod        = aMyBorneInf / THE_2PI;
   }
   else
   {
     aMyBorneInf = theInfBound;
     aDelta      = theSupBound - theInfBound;
-    aMod        = theInfBound / THE_TWO_PI;
-    if (aDelta > THE_TWO_PI)
+    aMod        = theInfBound / THE_2PI;
+    if (aDelta > THE_2PI)
     {
-      aDelta = THE_TWO_PI;
+      aDelta = THE_2PI;
     }
   }
 
@@ -135,7 +134,7 @@ inline TrigResult Trigonometric(double theA,
         }
 
         aZer[0] = std::asin(aVal);
-        aZer[1] = M_PI - aZer[0];
+        aZer[1] = THE_PI - aZer[0];
         aNZer   = 2;
 
         // Adjust to positive range
@@ -143,9 +142,9 @@ inline TrigResult Trigonometric(double theA,
         {
           if (aZer[i] <= -theEps)
           {
-            aZer[i] = THE_TWO_PI - std::abs(aZer[i]);
+            aZer[i] = THE_2PI - std::abs(aZer[i]);
           }
-          aZer[i] += std::trunc(aMod) * THE_TWO_PI;
+          aZer[i] += std::trunc(aMod) * THE_2PI;
           double aX = aZer[i] - aMyBorneInf;
           if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
           {
@@ -173,9 +172,9 @@ inline TrigResult Trigonometric(double theA,
       {
         if (aZer[i] <= -theEps)
         {
-          aZer[i] = THE_TWO_PI - std::abs(aZer[i]);
+          aZer[i] = THE_2PI - std::abs(aZer[i]);
         }
-        aZer[i] += std::trunc(aMod) * THE_TWO_PI;
+        aZer[i] += std::trunc(aMod) * THE_2PI;
         double aX = aZer[i] - aMyBorneInf;
         if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
         {
@@ -220,7 +219,7 @@ inline TrigResult Trigonometric(double theA,
       {
         // 2*B*sin*cos + D*sin = 0  =>  sin(x)*(2*B*cos(x) + D) = 0
         aZer[0] = 0.0;
-        aZer[1] = M_PI;
+        aZer[1] = THE_PI;
         aNZer   = 2;
 
         double aVal = -theD / (theB * 2.0);
@@ -233,13 +232,13 @@ inline TrigResult Trigonometric(double theA,
           }
           else if (aVal <= -1.0)
           {
-            aZer[2] = M_PI;
-            aZer[3] = M_PI;
+            aZer[2] = THE_PI;
+            aZer[3] = THE_PI;
           }
           else
           {
             aZer[2] = std::acos(aVal);
-            aZer[3] = THE_TWO_PI - aZer[2];
+            aZer[3] = THE_2PI - aZer[2];
           }
           aNZer = 4;
         }
@@ -248,9 +247,9 @@ inline TrigResult Trigonometric(double theA,
         {
           if (aZer[i] <= aMyBorneInf - theEps)
           {
-            aZer[i] += THE_TWO_PI;
+            aZer[i] += THE_2PI;
           }
-          aZer[i] += std::trunc(aMod) * THE_TWO_PI;
+          aZer[i] += std::trunc(aMod) * THE_2PI;
           double aX = aZer[i] - aMyBorneInf;
           if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
           {
@@ -263,8 +262,8 @@ inline TrigResult Trigonometric(double theA,
       if (std::abs(theD) <= theEps)
       {
         // 2*B*sin*cos + C*cos = 0  =>  cos(x)*(2*B*sin(x) + C) = 0
-        aZer[0] = M_PI / 2.0;
-        aZer[1] = M_PI * 3.0 / 2.0;
+        aZer[0] = THE_PI / 2.0;
+        aZer[1] = THE_PI * 3.0 / 2.0;
         aNZer   = 2;
 
         double aVal = -theC / (theB * 2.0);
@@ -272,18 +271,18 @@ inline TrigResult Trigonometric(double theA,
         {
           if (aVal >= 1.0)
           {
-            aZer[2] = M_PI / 2.0;
-            aZer[3] = M_PI / 2.0;
+            aZer[2] = THE_PI / 2.0;
+            aZer[3] = THE_PI / 2.0;
           }
           else if (aVal <= -1.0)
           {
-            aZer[2] = M_PI * 3.0 / 2.0;
-            aZer[3] = M_PI * 3.0 / 2.0;
+            aZer[2] = THE_PI * 3.0 / 2.0;
+            aZer[3] = THE_PI * 3.0 / 2.0;
           }
           else
           {
             aZer[2] = std::asin(aVal);
-            aZer[3] = M_PI - aZer[2];
+            aZer[3] = THE_PI - aZer[2];
           }
           aNZer = 4;
         }
@@ -292,9 +291,9 @@ inline TrigResult Trigonometric(double theA,
         {
           if (aZer[i] <= aMyBorneInf - theEps)
           {
-            aZer[i] += THE_TWO_PI;
+            aZer[i] += THE_2PI;
           }
-          aZer[i] += std::trunc(aMod) * THE_TWO_PI;
+          aZer[i] += std::trunc(aMod) * THE_2PI;
           double aX = aZer[i] - aMyBorneInf;
           if (aX >= -1.0e-10 && aX <= aDelta + 1.0e-10)
           {
@@ -345,12 +344,12 @@ inline TrigResult Trigonometric(double theA,
     double aTeta = 2.0 * std::atan(aZer[i]);
     if (aZer[i] <= -theEps)
     {
-      aTeta = THE_TWO_PI - std::abs(aTeta);
+      aTeta = THE_2PI - std::abs(aTeta);
     }
-    aTeta += std::trunc(aMod) * THE_TWO_PI;
+    aTeta += std::trunc(aMod) * THE_2PI;
     if (aTeta - aMyBorneInf < 0.0)
     {
-      aTeta += THE_TWO_PI;
+      aTeta += THE_2PI;
     }
 
     double aX = aTeta - aMyBorneInf;
@@ -432,7 +431,7 @@ inline TrigResult Trigonometric(double theA,
   // Special case: check if PI is a root (when A - C + E = 0)
   if (aResult.NbRoots < 4 && std::abs(theA - theC + theE) <= theEps)
   {
-    double aTeta = M_PI + std::trunc(aMod) * THE_TWO_PI;
+    double aTeta = THE_PI + std::trunc(aMod) * THE_2PI;
     double aX    = aTeta - aMyBorneInf;
     if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
     {
@@ -479,7 +478,7 @@ inline TrigResult Trigonometric(double theA,
 inline TrigResult TrigonometricLinear(double theD,
                                       double theE,
                                       double theInfBound = 0.0,
-                                      double theSupBound = 2.0 * M_PI)
+                                      double theSupBound = THE_2PI)
 {
   return Trigonometric(0.0, 0.0, 0.0, theD, theE, theInfBound, theSupBound);
 }
@@ -496,7 +495,7 @@ inline TrigResult TrigonometricCDE(double theC,
                                    double theD,
                                    double theE,
                                    double theInfBound = 0.0,
-                                   double theSupBound = 2.0 * M_PI)
+                                   double theSupBound = THE_2PI)
 {
   return Trigonometric(0.0, 0.0, theC, theD, theE, theInfBound, theSupBound);
 }

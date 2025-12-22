@@ -174,6 +174,8 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
     return aResult;
   }
 
+  const int aBLower = theB.Lower(); // B vector may have different indexing
+
   const math_Matrix& aU = *aSVD.U;
   const math_Vector& aW = *aSVD.SingularValues;
   const math_Matrix& aV = *aSVD.V;
@@ -194,7 +196,8 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
     double aSum = 0.0;
     for (int i = aRowLower; i <= aRowUpper; ++i)
     {
-      aSum += aU(i, j) * theB(i);
+      // Map i to B's index space: B[aBLower + (i - aRowLower)]
+      aSum += aU(i, j) * theB(aBLower + (i - aRowLower));
     }
     // Divide by singular value if above threshold
     if (aW(j) > aWMin)

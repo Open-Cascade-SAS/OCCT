@@ -134,8 +134,9 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
     const double aBound1 = (3.0 * aA + aB) / 4.0;
     if ((aS > std::min(aBound1, aB) && aS < std::max(aBound1, aB)))
     {
-      // Check additional conditions for accepting interpolation
-      if (std::abs(aS - aB) < std::abs(aE) / 2.0 && std::abs(aS - aB) >= aTol)
+      // Accept interpolation if step is smaller than half the previous step
+      // (ensures convergence rate). Minimum step is enforced later.
+      if (std::abs(aS - aB) < std::abs(aE) / 2.0)
       {
         aUseInterp = true;
       }
@@ -186,13 +187,11 @@ MathUtils::ScalarResult Brent(Function&                theFunc,
     }
     else if (std::abs(aFc) < std::abs(aFb))
     {
-      // Swap b and c if c is better
+      // Swap b and c if c is better (use std::swap to avoid overwriting)
       aA  = aB;
-      aB  = aC;
-      aC  = aA;
       aFa = aFb;
-      aFb = aFc;
-      aFc = aFa;
+      std::swap(aB, aC);
+      std::swap(aFb, aFc);
     }
   }
 

@@ -278,8 +278,8 @@ TEST(MathInteg_GaussTest, Order21)
 TEST(MathInteg_GaussTest, InvalidOrder)
 {
   SinFunc aFunc;
-  // Order 10 is not supported
-  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 10);
+  // Order 9 is not supported (supported orders: 3, 4, 5, 6, 7, 8, 10, 15, 21, 31)
+  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 9);
   EXPECT_EQ(aResult.Status, MathInteg::Status::InvalidInput);
 }
 
@@ -479,8 +479,9 @@ TEST(MathInteg_BoolConversionTest, SuccessfulResultIsTrue)
 
 TEST(MathInteg_BoolConversionTest, InvalidInputIsFalse)
 {
-  SinFunc                aFunc;
-  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 10);
+  SinFunc aFunc;
+  // Order 9 is not supported
+  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 9);
   EXPECT_FALSE(static_cast<bool>(aResult));
 }
 

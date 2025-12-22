@@ -548,6 +548,330 @@ VectorResult LBFGS(Function&          theFunc,
   return aResult;
 }
 
+//! BFGS with bound constraints (box constraints).
+//!
+//! Minimizes f(x) subject to theLowerBounds <= x <= theUpperBounds.
+//! Uses projected gradient approach:
+//! - After each step, clamp x to bounds
+//! - Zero gradient components at bounds where they point outward
+//!
+//! @tparam Function type with Value and Gradient methods
+//! @param theFunc function object
+//! @param theStartingPoint initial guess
+//! @param theLowerBounds lower bounds for each variable
+//! @param theUpperBounds upper bounds for each variable
+//! @param theConfig solver configuration
+//! @return result containing minimum location and value
+template <typename Function>
+VectorResult BFGSBounded(Function&          theFunc,
+                         const math_Vector& theStartingPoint,
+                         const math_Vector& theLowerBounds,
+                         const math_Vector& theUpperBounds,
+                         const Config&      theConfig = Config())
+{
+  VectorResult aResult;
+
+  const int aLower = theStartingPoint.Lower();
+  const int aUpper = theStartingPoint.Upper();
+  const int aN     = aUpper - aLower + 1;
+
+  // Check dimensions
+  if (theLowerBounds.Length() != aN || theUpperBounds.Length() != aN)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
+  // Lambda to clamp a point to bounds
+  auto ClampToBounds = [&](math_Vector& theX) {
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
+      if (theX(i) < theLowerBounds(aBndIdx))
+      {
+        theX(i) = theLowerBounds(aBndIdx);
+      }
+      if (theX(i) > theUpperBounds(aBndIdx))
+      {
+        theX(i) = theUpperBounds(aBndIdx);
+      }
+    }
+  };
+
+  // Lambda to project gradient (zero components at active bounds)
+  auto ProjectGradient = [&](const math_Vector& theX, math_Vector& theGrad) {
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      const int    aBndIdx = theLowerBounds.Lower() + (i - aLower);
+      const double aTol    = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX(i)));
+
+      // At lower bound and gradient points downward -> zero gradient
+      if (theX(i) - theLowerBounds(aBndIdx) < aTol && theGrad(i) > 0.0)
+      {
+        theGrad(i) = 0.0;
+      }
+      // At upper bound and gradient points upward -> zero gradient
+      if (theUpperBounds(aBndIdx) - theX(i) < aTol && theGrad(i) < 0.0)
+      {
+        theGrad(i) = 0.0;
+      }
+    }
+  };
+
+  // Current point and function value
+  math_Vector aX(aLower, aUpper);
+  aX = theStartingPoint;
+  ClampToBounds(aX);
+
+  double aFx = 0.0;
+  if (!theFunc.Value(aX, aFx))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
+
+  // Gradient at current point
+  math_Vector aGrad(aLower, aUpper);
+  if (!theFunc.Gradient(aX, aGrad))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
+  ProjectGradient(aX, aGrad);
+
+  // Check if already at minimum
+  double aGradNorm = 0.0;
+  for (int i = aLower; i <= aUpper; ++i)
+  {
+    aGradNorm += MathUtils::Sqr(aGrad(i));
+  }
+  aGradNorm = std::sqrt(aGradNorm);
+
+  if (aGradNorm < theConfig.FTolerance)
+  {
+    aResult.Status   = Status::OK;
+    aResult.Solution = aX;
+    aResult.Value    = aFx;
+    aResult.Gradient = aGrad;
+    return aResult;
+  }
+
+  // Initialize inverse Hessian approximation to identity
+  math_Matrix aH(1, aN, 1, aN, 0.0);
+  for (int i = 1; i <= aN; ++i)
+  {
+    aH(i, i) = 1.0;
+  }
+
+  // Working vectors
+  math_Vector aDir(aLower, aUpper);
+  math_Vector aXNew(aLower, aUpper);
+  math_Vector aGradNew(aLower, aUpper);
+  math_Vector aS(1, aN);
+  math_Vector aY(1, aN);
+
+  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  {
+    aResult.NbIterations = anIter + 1;
+
+    // Compute search direction: p = -H * grad
+    for (int i = 1; i <= aN; ++i)
+    {
+      double aSum = 0.0;
+      for (int j = 1; j <= aN; ++j)
+      {
+        aSum += aH(i, j) * aGrad(aLower + j - 1);
+      }
+      aDir(aLower + i - 1) = -aSum;
+    }
+
+    // Line search with bounds-aware step
+    double aAlphaMax = 1.0;
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
+      if (aDir(i) < -MathUtils::THE_EPSILON)
+      {
+        // Moving toward lower bound
+        double aMaxStep = (theLowerBounds(aBndIdx) - aX(i)) / aDir(i);
+        aAlphaMax       = std::min(aAlphaMax, aMaxStep);
+      }
+      else if (aDir(i) > MathUtils::THE_EPSILON)
+      {
+        // Moving toward upper bound
+        double aMaxStep = (theUpperBounds(aBndIdx) - aX(i)) / aDir(i);
+        aAlphaMax       = std::min(aAlphaMax, aMaxStep);
+      }
+    }
+    aAlphaMax = std::max(aAlphaMax, MathUtils::THE_EPSILON);
+
+    MathUtils::LineSearchResult aLineResult =
+      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, aAlphaMax, 1.0e-4, 0.5, 50);
+
+    if (!aLineResult.IsValid || aLineResult.Alpha < MathUtils::THE_EPSILON)
+    {
+      // Fall back to projected steepest descent
+      for (int i = aLower; i <= aUpper; ++i)
+      {
+        aDir(i) = -aGrad(i);
+      }
+      // Recompute alpha max for steepest descent
+      aAlphaMax = 1.0;
+      for (int i = aLower; i <= aUpper; ++i)
+      {
+        const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
+        if (aDir(i) < -MathUtils::THE_EPSILON)
+        {
+          aAlphaMax = std::min(aAlphaMax, (theLowerBounds(aBndIdx) - aX(i)) / aDir(i));
+        }
+        else if (aDir(i) > MathUtils::THE_EPSILON)
+        {
+          aAlphaMax = std::min(aAlphaMax, (theUpperBounds(aBndIdx) - aX(i)) / aDir(i));
+        }
+      }
+      aAlphaMax = std::max(aAlphaMax, MathUtils::THE_EPSILON);
+
+      aLineResult =
+        MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, aAlphaMax, 1.0e-4, 0.5, 50);
+
+      if (!aLineResult.IsValid)
+      {
+        aResult.Status   = Status::NotConverged;
+        aResult.Solution = aX;
+        aResult.Value    = aFx;
+        aResult.Gradient = aGrad;
+        return aResult;
+      }
+
+      // Reset Hessian
+      for (int i = 1; i <= aN; ++i)
+      {
+        for (int j = 1; j <= aN; ++j)
+        {
+          aH(i, j) = (i == j) ? 1.0 : 0.0;
+        }
+      }
+    }
+
+    // Compute and clamp new point
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      aXNew(i) = aX(i) + aLineResult.Alpha * aDir(i);
+    }
+    ClampToBounds(aXNew);
+
+    // Compute s = x_new - x
+    for (int i = 1; i <= aN; ++i)
+    {
+      aS(i) = aXNew(aLower + i - 1) - aX(aLower + i - 1);
+    }
+
+    // Evaluate at new point
+    double aFxNew = 0.0;
+    if (!theFunc.Value(aXNew, aFxNew))
+    {
+      aResult.Status   = Status::NumericalError;
+      aResult.Solution = aX;
+      aResult.Value    = aFx;
+      return aResult;
+    }
+
+    if (!theFunc.Gradient(aXNew, aGradNew))
+    {
+      aResult.Status   = Status::NumericalError;
+      aResult.Solution = aX;
+      aResult.Value    = aFx;
+      return aResult;
+    }
+    ProjectGradient(aXNew, aGradNew);
+
+    // Check gradient convergence
+    aGradNorm = 0.0;
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      aGradNorm += MathUtils::Sqr(aGradNew(i));
+    }
+    aGradNorm = std::sqrt(aGradNorm);
+
+    if (aGradNorm < theConfig.FTolerance)
+    {
+      aResult.Status   = Status::OK;
+      aResult.Solution = aXNew;
+      aResult.Value    = aFxNew;
+      aResult.Gradient = aGradNew;
+      return aResult;
+    }
+
+    // Check X convergence
+    double aMaxDiff = 0.0;
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew(i) - aX(i)));
+    }
+    if (aMaxDiff < theConfig.XTolerance)
+    {
+      aResult.Status   = Status::OK;
+      aResult.Solution = aXNew;
+      aResult.Value    = aFxNew;
+      aResult.Gradient = aGradNew;
+      return aResult;
+    }
+
+    // Compute y = grad_new - grad
+    for (int i = 1; i <= aN; ++i)
+    {
+      aY(i) = aGradNew(aLower + i - 1) - aGrad(aLower + i - 1);
+    }
+
+    // Curvature condition
+    double aSY = 0.0;
+    for (int i = 1; i <= aN; ++i)
+    {
+      aSY += aS(i) * aY(i);
+    }
+
+    if (aSY > MathUtils::THE_ZERO_TOL)
+    {
+      const double aRho = 1.0 / aSY;
+
+      math_Vector aHy(1, aN, 0.0);
+      for (int i = 1; i <= aN; ++i)
+      {
+        for (int j = 1; j <= aN; ++j)
+        {
+          aHy(i) += aH(i, j) * aY(j);
+        }
+      }
+
+      double aYHy = 0.0;
+      for (int i = 1; i <= aN; ++i)
+      {
+        aYHy += aY(i) * aHy(i);
+      }
+
+      const double aFactor = 1.0 + aRho * aYHy;
+      for (int i = 1; i <= aN; ++i)
+      {
+        for (int j = 1; j <= aN; ++j)
+        {
+          aH(i, j) =
+            aH(i, j) - aRho * (aHy(i) * aS(j) + aS(i) * aHy(j)) + aFactor * aRho * aS(i) * aS(j);
+        }
+      }
+    }
+
+    aX    = aXNew;
+    aGrad = aGradNew;
+    aFx   = aFxNew;
+  }
+
+  aResult.Status   = Status::MaxIterations;
+  aResult.Solution = aX;
+  aResult.Value    = aFx;
+  aResult.Gradient = aGrad;
+  return aResult;
+}
+
 } // namespace MathOpt
 
 #endif // _MathOpt_BFGS_HeaderFile

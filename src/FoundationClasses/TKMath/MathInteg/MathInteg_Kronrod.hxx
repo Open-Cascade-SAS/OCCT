@@ -143,12 +143,33 @@ IntegResult KronrodRule(Function& theFunc, double theLower, double theUpper, int
     aKronrodVal += (aVal1 + aVal2) * aKronrodW(i);
   }
 
+  // QUADPACK-style error estimation:
+  // Compute asc = integral of |f(x) - mean|, which measures function variability
+  const double aMean = 0.5 * aKronrodVal;
+  double       aAsc  = std::abs(aFc - aMean) * aKronrodW(aNPnt2);
+  for (int i = 1; i < aNPnt2; ++i)
+  {
+    aAsc += aKronrodW(i) * (std::abs(aF1(i) - aMean) + std::abs(aF2(i) - aMean));
+  }
+
   // Scale by interval half-length
+  aAsc *= aHalfLen;
   aKronrodVal *= aHalfLen;
   aGaussVal *= aHalfLen;
 
-  // Error estimate
+  // Basic error estimate
   double aAbsError = std::abs(aKronrodVal - aGaussVal);
+
+  // QUADPACK scaling: when error is small relative to function variability,
+  // the actual error may be even smaller
+  if (aAsc != 0.0 && aAbsError != 0.0)
+  {
+    const double aScale = std::pow(200.0 * aAbsError / aAsc, 1.5);
+    if (aScale < 1.0)
+    {
+      aAbsError = std::min(aAbsError, aAsc * aScale);
+    }
+  }
 
   aResult.Status        = Status::OK;
   aResult.Value         = aKronrodVal;

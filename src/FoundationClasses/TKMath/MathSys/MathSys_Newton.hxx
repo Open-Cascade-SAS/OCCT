@@ -94,25 +94,39 @@ VectorResult Newton(FuncSetType&       theFunc,
 
     aDeltaX = *aLinResult.Solution;
 
+    // Check X convergence before update
+    bool aXConverged = true;
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      if (std::abs(aDeltaX(i)) > theTolX(i))
+      {
+        aXConverged = false;
+        break;
+      }
+    }
+
     // Update solution
     for (int i = aLower; i <= aUpper; ++i)
     {
       aSol(i) += aDeltaX(i);
     }
 
-    // Check convergence
-    bool aXConverged = true;
-    bool aFConverged = true;
+    // Re-evaluate function at new solution to check F convergence
+    if (!theFunc.Value(aSol, aF))
+    {
+      aResult.Status       = Status::NumericalError;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
 
+    // Check F convergence with updated function values
+    bool aFConverged = true;
     for (int i = aLower; i <= aUpper; ++i)
     {
-      if (std::abs(aDeltaX(i)) > theTolX(i))
-      {
-        aXConverged = false;
-      }
       if (std::abs(aF(i)) > theTolF)
       {
         aFConverged = false;
+        break;
       }
     }
 
@@ -221,6 +235,17 @@ VectorResult NewtonBounded(FuncSetType&       theFunc,
 
     aDeltaX = *aLinResult.Solution;
 
+    // Check X convergence before update
+    bool aXConverged = true;
+    for (int i = aLower; i <= aUpper; ++i)
+    {
+      if (std::abs(aDeltaX(i)) > theTolX(i))
+      {
+        aXConverged = false;
+        break;
+      }
+    }
+
     // Update solution with bounds clamping
     for (int i = aLower; i <= aUpper; ++i)
     {
@@ -235,19 +260,22 @@ VectorResult NewtonBounded(FuncSetType&       theFunc,
       }
     }
 
-    // Check convergence
-    bool aXConverged = true;
-    bool aFConverged = true;
+    // Re-evaluate function at new solution to check F convergence
+    if (!theFunc.Value(aSol, aF))
+    {
+      aResult.Status       = Status::NumericalError;
+      aResult.NbIterations = anIter + 1;
+      return aResult;
+    }
 
+    // Check F convergence with updated function values
+    bool aFConverged = true;
     for (int i = aLower; i <= aUpper; ++i)
     {
-      if (std::abs(aDeltaX(i)) > theTolX(i))
-      {
-        aXConverged = false;
-      }
       if (std::abs(aF(i)) > theTolF)
       {
         aFConverged = false;
+        break;
       }
     }
 

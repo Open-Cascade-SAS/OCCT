@@ -40,7 +40,7 @@ using namespace MathUtils;
 //! @param theFunc function to integrate
 //! @param theLower lower integration bound
 //! @param theUpper upper integration bound
-//! @param theNbPoints number of quadrature points (3, 5, 7, 15, or 21)
+//! @param theNbPoints number of quadrature points (3, 4, 5, 6, 7, 8, 10, 15, 21, or 31)
 //! @return result containing integral value
 template <typename Function>
 IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNbPoints = 15)
@@ -183,7 +183,7 @@ IntegResult GaussAdaptive(Function&          theFunc,
 //! @param theLower lower integration bound
 //! @param theUpper upper integration bound
 //! @param theNbIntervals number of subintervals
-//! @param theNbPoints Gauss points per interval (3, 5, 7, 15, or 21)
+//! @param theNbPoints Gauss points per interval (3, 4, 5, 6, 7, 8, 10, 15, 21, or 31)
 //! @return result containing integral value
 template <typename Function>
 IntegResult GaussComposite(Function& theFunc,
