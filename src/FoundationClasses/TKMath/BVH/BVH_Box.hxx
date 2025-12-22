@@ -120,51 +120,48 @@ class BVH_Box : public BVH_BaseBox<T, N, BVH_Box>
 public:
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
+private:
+  //! Returns the minimum point sentinel value for invalid box.
+  static constexpr T minSentinel() noexcept { return (std::numeric_limits<T>::max)(); }
+
+  //! Returns the maximum point sentinel value for invalid box.
+  static constexpr T maxSentinel() noexcept { return (std::numeric_limits<T>::lowest)(); }
+
 public:
   //! Creates uninitialized bounding box.
   constexpr BVH_Box() noexcept
-      : myIsInited(Standard_False)
+      : myMinPoint(BVH_VecNt(minSentinel())),
+        myMaxPoint(BVH_VecNt(maxSentinel()))
   {
   }
 
   //! Creates bounding box of given point.
   constexpr BVH_Box(const BVH_VecNt& thePoint) noexcept
       : myMinPoint(thePoint),
-        myMaxPoint(thePoint),
-        myIsInited(Standard_True)
+        myMaxPoint(thePoint)
   {
   }
 
   //! Creates bounding box from corner points.
   constexpr BVH_Box(const BVH_VecNt& theMinPoint, const BVH_VecNt& theMaxPoint) noexcept
       : myMinPoint(theMinPoint),
-        myMaxPoint(theMaxPoint),
-        myIsInited(Standard_True)
+        myMaxPoint(theMaxPoint)
   {
   }
 
 public:
   //! Clears bounding box.
-  constexpr void Clear() noexcept { myIsInited = Standard_False; }
+  constexpr void Clear() noexcept
+  {
+    myMinPoint = BVH_VecNt(minSentinel());
+    myMaxPoint = BVH_VecNt(maxSentinel());
+  }
 
   //! Is bounding box valid?
-  constexpr Standard_Boolean IsValid() const noexcept { return myIsInited; }
+  constexpr Standard_Boolean IsValid() const noexcept { return myMinPoint[0] <= myMaxPoint[0]; }
 
   //! Appends new point to the bounding box.
-  void Add(const BVH_VecNt& thePoint)
-  {
-    if (!myIsInited)
-    {
-      myMinPoint = thePoint;
-      myMaxPoint = thePoint;
-      myIsInited = Standard_True;
-    }
-    else
-    {
-      myMinPoint = myMinPoint.cwiseMin(thePoint);
-      myMaxPoint = myMaxPoint.cwiseMax(thePoint);
-    }
-  }
+  void Add(const BVH_VecNt& thePoint);
 
   //! Combines bounding box with another one.
   void Combine(const BVH_Box& theBox);
@@ -198,13 +195,14 @@ public:
   void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
   {
     (void)theDepth;
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsInited)
+    const Standard_Integer anIsValid = IsValid() ? 1 : 0;
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, anIsValid)
 
     constexpr int n = (N < 3) ? N : 3;
     if constexpr (n == 1)
     {
       OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
-      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMinPoint[0])
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxPoint[0])
     }
     else if constexpr (n == 2)
     {
@@ -233,18 +231,26 @@ public:
   {
     Standard_Integer aPos = theStreamPos;
 
-    Standard_Integer        anIsInited = 0;
+    Standard_Integer        anIsValid  = 0;
     TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
-    OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsInited);
-    myIsInited = anIsInited != 0;
+    OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, anIsValid);
+
+    if (anIsValid == 0)
+    {
+      Clear(); // Set to invalid state using sentinel values
+      theStreamPos = aPos;
+      return Standard_True;
+    }
 
     constexpr int n = (N < 3) ? N : 3;
     if constexpr (n == 1)
     {
-      Standard_Real aValue;
-      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aValue);
-      myMinPoint[0] = (T)aValue;
+      Standard_Real aMinValue, aMaxValue;
+      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMinValue);
+      OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, aMaxValue);
+      myMinPoint[0] = (T)aMinValue;
+      myMaxPoint[0] = (T)aMaxValue;
     }
     else if constexpr (n == 2)
     {
@@ -271,6 +277,14 @@ public:
       myMaxPoint[2] = (T)aValue3;
     }
 
+    // For N > 3, initialize remaining dimensions to unbounded range
+    // so they don't affect intersection checks
+    for (int i = n; i < N; ++i)
+    {
+      myMinPoint[i] = (std::numeric_limits<T>::lowest)();
+      myMaxPoint[i] = (std::numeric_limits<T>::max)();
+    }
+
     theStreamPos = aPos;
     return Standard_True;
   }
@@ -291,19 +305,9 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      if (myMinPoint[0] > theMaxPoint[0] || myMaxPoint[0] < theMinPoint[0])
-        return Standard_True;
-    }
-    if constexpr (N >= 2)
-    {
-      if (myMinPoint[1] > theMaxPoint[1] || myMaxPoint[1] < theMinPoint[1])
-        return Standard_True;
-    }
-    if constexpr (N >= 3)
-    {
-      if (myMinPoint[2] > theMaxPoint[2] || myMaxPoint[2] < theMinPoint[2])
+      if (myMinPoint[i] > theMaxPoint[i] || myMaxPoint[i] < theMinPoint[i])
         return Standard_True;
     }
     return Standard_False;
@@ -330,27 +334,12 @@ public:
       return Standard_False;
 
     Standard_Boolean isInside = Standard_True;
-
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      hasOverlap = (myMinPoint[0] <= theMaxPoint[0] && myMaxPoint[0] >= theMinPoint[0]);
+      hasOverlap = (myMinPoint[i] <= theMaxPoint[i] && myMaxPoint[i] >= theMinPoint[i]);
       if (!hasOverlap)
         return Standard_False;
-      isInside = isInside && (myMinPoint[0] <= theMinPoint[0] && myMaxPoint[0] >= theMaxPoint[0]);
-    }
-    if constexpr (N >= 2)
-    {
-      hasOverlap = (myMinPoint[1] <= theMaxPoint[1] && myMaxPoint[1] >= theMinPoint[1]);
-      if (!hasOverlap)
-        return Standard_False;
-      isInside = isInside && (myMinPoint[1] <= theMinPoint[1] && myMaxPoint[1] >= theMaxPoint[1]);
-    }
-    if constexpr (N >= 3)
-    {
-      hasOverlap = (myMinPoint[2] <= theMaxPoint[2] && myMaxPoint[2] >= theMinPoint[2]);
-      if (!hasOverlap)
-        return Standard_False;
-      isInside = isInside && (myMinPoint[2] <= theMinPoint[2] && myMaxPoint[2] >= theMaxPoint[2]);
+      isInside = isInside && (myMinPoint[i] <= theMinPoint[i] && myMaxPoint[i] >= theMaxPoint[i]);
     }
     return isInside;
   }
@@ -361,28 +350,17 @@ public:
     if (!IsValid())
       return Standard_True;
 
-    if constexpr (N >= 1)
+    for (int i = 0; i < N; ++i)
     {
-      if (thePoint[0] < myMinPoint[0] || thePoint[0] > myMaxPoint[0])
-        return Standard_True;
-    }
-    if constexpr (N >= 2)
-    {
-      if (thePoint[1] < myMinPoint[1] || thePoint[1] > myMaxPoint[1])
-        return Standard_True;
-    }
-    if constexpr (N >= 3)
-    {
-      if (thePoint[2] < myMinPoint[2] || thePoint[2] > myMaxPoint[2])
+      if (thePoint[i] < myMinPoint[i] || thePoint[i] > myMaxPoint[i])
         return Standard_True;
     }
     return Standard_False;
   }
 
 protected:
-  BVH_VecNt        myMinPoint; //!< Minimum point of bounding box
-  BVH_VecNt        myMaxPoint; //!< Maximum point of bounding box
-  Standard_Boolean myIsInited; //!< Is bounding box initialized?
+  BVH_VecNt myMinPoint; //!< Minimum point of bounding box (max<T> when invalid)
+  BVH_VecNt myMaxPoint; //!< Maximum point of bounding box (lowest<T> when invalid)
 };
 
 namespace BVH
@@ -393,131 +371,56 @@ namespace BVH
 template <class T, int N>
 struct CenterAxis
 {
-  // Not implemented
-};
-
-template <class T>
-struct CenterAxis<T, 2>
-{
-  static inline T Center(const BVH_Box<T, 2>& theBox, const Standard_Integer theAxis)
+  //! Returns the center of the box along the specified axis using array access.
+  static inline T Center(const BVH_Box<T, N>& theBox, const Standard_Integer theAxis)
   {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
-  }
-};
-
-template <class T>
-struct CenterAxis<T, 3>
-{
-  static inline T Center(const BVH_Box<T, 3>& theBox, const Standard_Integer theAxis)
-  {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 2)
-    {
-      return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
-  }
-};
-
-template <class T>
-struct CenterAxis<T, 4>
-{
-  static inline T Center(const BVH_Box<T, 4>& theBox, const Standard_Integer theAxis)
-  {
-    if (theAxis == 0)
-    {
-      return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 1)
-    {
-      return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T>(0.5);
-    }
-    else if (theAxis == 2)
-    {
-      return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T>(0.5);
-    }
-    return static_cast<T>(0.0);
+    return (theBox.CornerMin()[theAxis] + theBox.CornerMax()[theAxis]) * static_cast<T>(0.5);
   }
 };
 
 //! Tool class for calculating surface area of the box.
+//! For N=1, computes length (degenerate case).
+//! For N=2, computes area (or perimeter for degenerate boxes).
+//! For N>=3, computes 3D surface area using X, Y, Z components only.
+//! The W component (4th dimension) is intentionally ignored as BVH surface area
+//! heuristic (SAH) operates in 3D geometric space regardless of additional dimensions.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
 struct SurfaceCalculator
 {
-  // Not implemented
-};
-
-template <class T>
-struct SurfaceCalculator<T, 2>
-{
-  static inline T Area(const typename BVH_Box<T, 2>::BVH_VecNt& theSize)
+  static inline T Area(const typename BVH_Box<T, N>::BVH_VecNt& theSize)
   {
-    const T anArea = std::abs(theSize.x() * theSize.y());
-
-    if (anArea < std::numeric_limits<T>::epsilon())
+    if constexpr (N == 1)
     {
-      return std::abs(theSize.x()) + std::abs(theSize.y());
+      // For 1D, return the length
+      return std::abs(theSize[0]);
     }
-
-    return anArea;
+    else if constexpr (N == 2)
+    {
+      const T anArea = std::abs(theSize.x() * theSize.y());
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return std::abs(theSize.x()) + std::abs(theSize.y());
+      }
+      return anArea;
+    }
+    else
+    {
+      // For N >= 3, compute standard 3D surface area.
+      const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
+                        + std::abs(theSize.z() * theSize.y()))
+                       * static_cast<T>(2.0);
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
+      }
+      return anArea;
+    }
   }
 };
 
-template <class T>
-struct SurfaceCalculator<T, 3>
-{
-  static inline T Area(const typename BVH_Box<T, 3>::BVH_VecNt& theSize)
-  {
-    const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
-                      + std::abs(theSize.z() * theSize.y()))
-                     * static_cast<T>(2.0);
-
-    if (anArea < std::numeric_limits<T>::epsilon())
-    {
-      return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
-    }
-
-    return anArea;
-  }
-};
-
-template <class T>
-struct SurfaceCalculator<T, 4>
-{
-  static inline T Area(const typename BVH_Box<T, 4>::BVH_VecNt& theSize)
-  {
-    const T anArea = (std::abs(theSize.x() * theSize.y()) + std::abs(theSize.x() * theSize.z())
-                      + std::abs(theSize.z() * theSize.y()))
-                     * static_cast<T>(2.0);
-
-    if (anArea < std::numeric_limits<T>::epsilon())
-    {
-      return std::abs(theSize.x()) + std::abs(theSize.y()) + std::abs(theSize.z());
-    }
-
-    return anArea;
-  }
-};
-
-//! Tool class for calculate component-wise vector minimum
-//! and maximum (optimized version).
+//! Tool class for computing component-wise vector minimum and maximum.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
@@ -525,36 +428,22 @@ struct BoxMinMax
 {
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
+  //! Computes component-wise minimum in-place.
   static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
-    theVec1.z() = (std::min)(theVec1.z(), theVec2.z());
+    for (int i = 0; i < N; ++i)
+    {
+      theVec1[i] = (std::min)(theVec1[i], theVec2[i]);
+    }
   }
 
+  //! Computes component-wise maximum in-place.
   static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
-    theVec1.z() = (std::max)(theVec1.z(), theVec2.z());
-  }
-};
-
-template <class T>
-struct BoxMinMax<T, 2>
-{
-  typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
-
-  static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-  {
-    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
-  }
-
-  static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-  {
-    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
+    for (int i = 0; i < N; ++i)
+    {
+      theVec1[i] = (std::max)(theVec1[i], theVec2[i]);
+    }
   }
 };
 } // namespace BVH
@@ -562,21 +451,21 @@ struct BoxMinMax<T, 2>
 //=================================================================================================
 
 template <class T, int N>
+void BVH_Box<T, N>::Add(const BVH_VecNt& thePoint)
+{
+  BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, thePoint);
+  BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, thePoint);
+}
+
+//=================================================================================================
+
+template <class T, int N>
 void BVH_Box<T, N>::Combine(const BVH_Box& theBox)
 {
-  if (theBox.myIsInited)
+  if (theBox.IsValid())
   {
-    if (!myIsInited)
-    {
-      myMinPoint = theBox.myMinPoint;
-      myMaxPoint = theBox.myMaxPoint;
-      myIsInited = Standard_True;
-    }
-    else
-    {
-      BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, theBox.myMinPoint);
-      BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, theBox.myMaxPoint);
-    }
+    BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, theBox.myMinPoint);
+    BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, theBox.myMaxPoint);
   }
 }
 
@@ -585,8 +474,8 @@ void BVH_Box<T, N>::Combine(const BVH_Box& theBox)
 template <class T, int N>
 T BVH_Box<T, N>::Area() const
 {
-  return !myIsInited ? static_cast<T>(0.0)
-                     : BVH::SurfaceCalculator<T, N>::Area(myMaxPoint - myMinPoint);
+  return !IsValid() ? static_cast<T>(0.0)
+                    : BVH::SurfaceCalculator<T, N>::Area(myMaxPoint - myMinPoint);
 }
 
 //=================================================================================================
