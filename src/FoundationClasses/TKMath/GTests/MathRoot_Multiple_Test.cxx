@@ -249,7 +249,7 @@ TEST(MathRoot_Multiple, CompareWithLegacy_Polynomial)
   EXPECT_EQ(aResult.NbRoots(), 3u);
 
   // Verify function value at roots is close to zero
-  for (size_t i = 0; i < aResult.NbRoots(); ++i)
+  for (int i = 0; i < aResult.NbRoots(); ++i)
   {
     double aValue = 0.0;
     aFunc.Value(aResult.Roots[i], aValue);
