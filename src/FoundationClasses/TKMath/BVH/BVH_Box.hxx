@@ -379,6 +379,7 @@ struct CenterAxis
 };
 
 //! Tool class for calculating surface area of the box.
+//! For N=1, computes length (degenerate case).
 //! For N=2, computes area (or perimeter for degenerate boxes).
 //! For N>=3, computes 3D surface area using X, Y, Z components only.
 //! The W component (4th dimension) is intentionally ignored as BVH surface area
@@ -390,7 +391,12 @@ struct SurfaceCalculator
 {
   static inline T Area(const typename BVH_Box<T, N>::BVH_VecNt& theSize)
   {
-    if constexpr (N == 2)
+    if constexpr (N == 1)
+    {
+      // For 1D, return the length
+      return std::abs(theSize[0]);
+    }
+    else if constexpr (N == 2)
     {
       const T anArea = std::abs(theSize.x() * theSize.y());
       if (anArea < std::numeric_limits<T>::epsilon())

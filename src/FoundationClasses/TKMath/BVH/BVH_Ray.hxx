@@ -59,9 +59,10 @@ private:
   //! Computes reciprocal of direction vector.
   static constexpr BVH_VecNt computeInvDirect(const BVH_VecNt& theDirect) noexcept
   {
+    static_assert(N >= 1 && N <= 4, "BVH_Ray only supports dimensions 1 to 4");
     if constexpr (N == 1)
     {
-      return BVH_VecNt(invComponent(theDirect));
+      return BVH_VecNt(invComponent(theDirect[0]));
     }
     else if constexpr (N == 2)
     {
@@ -73,7 +74,7 @@ private:
                        invComponent(theDirect.y()),
                        invComponent(theDirect.z()));
     }
-    else if constexpr (N == 4)
+    else // N == 4
     {
       return BVH_VecNt(invComponent(theDirect.x()),
                        invComponent(theDirect.y()),
