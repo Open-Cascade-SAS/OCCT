@@ -1,0 +1,8 @@
+# Source files for MathSys package
+set(OCCT_MathSys_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_MathSys_FILES
+  MathSys_Newton.hxx
+  MathSys_LevenbergMarquardt.hxx
+  README.md
+)
