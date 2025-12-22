@@ -13,7 +13,6 @@
 
 #include <GeomGridEval_OffsetSurface.hxx>
 
-#include "Geom_OsculatingSurface.pxx"
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_OffsetSurfaceUtils.pxx>
 #include <GeomGridEval_Surface.hxx>
@@ -81,9 +80,9 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
   // Use GeomAdaptor for evaluation - works with template functions
   GeomAdaptor_Surface aBasisAdaptor(myBasis);
 
-  // No access to osculating surface from Geom_OffsetSurface public interface,
-  // pass nullptr - the utilities handle singular points via ComputeDerivatives
-  Geom_OsculatingSurface* anOscSurf = nullptr;
+  // Pass Geom_OffsetSurface which has UOsculatingSurface/VOsculatingSurface methods
+  // for proper handling of singular points via osculating surface queries
+  const Geom_OffsetSurface* anOscQuery = myGeom.get();
 
   for (int i = 1; i <= aNbU; ++i)
   {
@@ -95,7 +94,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
                                           myVParams.Value(j),
                                           &aBasisAdaptor,
                                           myOffset,
-                                          anOscSurf,
+                                          anOscQuery,
                                           aP,
                                           aBasis.D1U,
                                           aBasis.D1V);
@@ -143,8 +142,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  GeomAdaptor_Surface     aBasisAdaptor(myBasis);
-  Geom_OsculatingSurface* anOscSurf = nullptr;
+  GeomAdaptor_Surface       aBasisAdaptor(myBasis);
+  const Geom_OffsetSurface* anOscQuery = myGeom.get();
 
   for (int i = 1; i <= aNbU; ++i)
   {
@@ -158,7 +157,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
                                           myVParams.Value(j),
                                           &aBasisAdaptor,
                                           myOffset,
-                                          anOscSurf,
+                                          anOscQuery,
                                           aP,
                                           aD1U,
                                           aD1V,
@@ -209,8 +208,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  GeomAdaptor_Surface     aBasisAdaptor(myBasis);
-  Geom_OsculatingSurface* anOscSurf = nullptr;
+  GeomAdaptor_Surface       aBasisAdaptor(myBasis);
+  const Geom_OffsetSurface* anOscQuery = myGeom.get();
 
   for (int i = 1; i <= aNbU; ++i)
   {
@@ -227,7 +226,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
                                           myVParams.Value(j),
                                           &aBasisAdaptor,
                                           myOffset,
-                                          anOscSurf,
+                                          anOscQuery,
                                           aP,
                                           aD1U,
                                           aD1V,
@@ -271,8 +270,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
   const int                                aNbV = myVParams.Size();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
-  GeomAdaptor_Surface     aBasisAdaptor(myBasis);
-  Geom_OsculatingSurface* anOscSurf = nullptr;
+  GeomAdaptor_Surface       aBasisAdaptor(myBasis);
+  const Geom_OffsetSurface* anOscQuery = myGeom.get();
 
   for (int i = 1; i <= aNbU; ++i)
   {
@@ -284,7 +283,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
                                           myVParams.Value(j),
                                           &aBasisAdaptor,
                                           myOffset,
-                                          anOscSurf,
+                                          anOscQuery,
                                           aP,
                                           aD1U,
                                           aD1V,
@@ -341,8 +340,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(int theNU,
     return NCollection_Array2<gp_Vec>();
   }
 
-  GeomAdaptor_Surface     aBasisAdaptor(myBasis);
-  Geom_OsculatingSurface* anOscSurf = nullptr;
+  GeomAdaptor_Surface       aBasisAdaptor(myBasis);
+  const Geom_OffsetSurface* anOscQuery = myGeom.get();
 
   for (int i = 1; i <= aNbU; ++i)
   {
@@ -356,7 +355,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(int theNU,
                                           theNV,
                                           &aBasisAdaptor,
                                           myOffset,
-                                          anOscSurf,
+                                          anOscQuery,
                                           aDN,
                                           aBasis.D1U,
                                           aBasis.D1V);
