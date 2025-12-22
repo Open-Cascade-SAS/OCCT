@@ -277,6 +277,14 @@ public:
       myMaxPoint[2] = (T)aValue3;
     }
 
+    // For N > 3, initialize remaining dimensions to unbounded range
+    // so they don't affect intersection checks
+    for (int i = n; i < N; ++i)
+    {
+      myMinPoint[i] = (std::numeric_limits<T>::lowest)();
+      myMaxPoint[i] = (std::numeric_limits<T>::max)();
+    }
+
     theStreamPos = aPos;
     return Standard_True;
   }
