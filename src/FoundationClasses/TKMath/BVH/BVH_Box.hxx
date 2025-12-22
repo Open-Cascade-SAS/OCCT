@@ -151,20 +151,9 @@ public:
   constexpr Standard_Boolean IsValid() const noexcept { return myIsInited; }
 
   //! Appends new point to the bounding box.
-  void Add(const BVH_VecNt& thePoint)
-  {
-    if (!myIsInited)
-    {
-      myMinPoint = thePoint;
-      myMaxPoint = thePoint;
-      myIsInited = Standard_True;
-    }
-    else
-    {
-      myMinPoint = myMinPoint.cwiseMin(thePoint);
-      myMaxPoint = myMaxPoint.cwiseMax(thePoint);
-    }
-  }
+  //! Uses in-place component-wise operations to avoid temporary vector creation.
+  void Add(const BVH_VecNt& thePoint);
+
 
   //! Combines bounding box with another one.
   void Combine(const BVH_Box& theBox);
@@ -516,8 +505,8 @@ struct SurfaceCalculator<T, 4>
   }
 };
 
-//! Tool class for calculate component-wise vector minimum
-//! and maximum (optimized version).
+//! Tool class for computing component-wise vector minimum and maximum.
+//! Uses if constexpr for compile-time dimension handling without specializations.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template <class T, int N>
@@ -525,39 +514,68 @@ struct BoxMinMax
 {
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
+  //! Computes component-wise minimum in-place: theVec1 = min(theVec1, theVec2)
   static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
-    theVec1.z() = (std::min)(theVec1.z(), theVec2.z());
+    if constexpr (N >= 1)
+    {
+      theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
+    }
+    if constexpr (N >= 2)
+    {
+      theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
+    }
+    if constexpr (N >= 3)
+    {
+      theVec1.z() = (std::min)(theVec1.z(), theVec2.z());
+    }
+    if constexpr (N >= 4)
+    {
+      theVec1.w() = (std::min)(theVec1.w(), theVec2.w());
+    }
   }
 
+  //! Computes component-wise maximum in-place: theVec1 = max(theVec1, theVec2)
   static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
   {
-    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
-    theVec1.z() = (std::max)(theVec1.z(), theVec2.z());
-  }
-};
-
-template <class T>
-struct BoxMinMax<T, 2>
-{
-  typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
-
-  static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-  {
-    theVec1.x() = (std::min)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::min)(theVec1.y(), theVec2.y());
-  }
-
-  static inline void CwiseMax(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-  {
-    theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
-    theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
+    if constexpr (N >= 1)
+    {
+      theVec1.x() = (std::max)(theVec1.x(), theVec2.x());
+    }
+    if constexpr (N >= 2)
+    {
+      theVec1.y() = (std::max)(theVec1.y(), theVec2.y());
+    }
+    if constexpr (N >= 3)
+    {
+      theVec1.z() = (std::max)(theVec1.z(), theVec2.z());
+    }
+    if constexpr (N >= 4)
+    {
+      theVec1.w() = (std::max)(theVec1.w(), theVec2.w());
+    }
   }
 };
 } // namespace BVH
+
+//=================================================================================================
+
+template <class T, int N>
+void BVH_Box<T, N>::Add(const BVH_VecNt& thePoint)
+{
+  if (!myIsInited)
+  {
+    myMinPoint = thePoint;
+    myMaxPoint = thePoint;
+    myIsInited = Standard_True;
+  }
+  else
+  {
+    // Use in-place component-wise min/max to avoid temporary vector creation
+    BVH::BoxMinMax<T, N>::CwiseMin(myMinPoint, thePoint);
+    BVH::BoxMinMax<T, N>::CwiseMax(myMaxPoint, thePoint);
+  }
+}
 
 //=================================================================================================
 

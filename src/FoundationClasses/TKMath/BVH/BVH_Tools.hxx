@@ -279,7 +279,8 @@ public: //! @name Point-Triangle Square distance
   }
 
 public: //! @name Ray-Box Intersection
-  //! Computes hit time of ray-box intersection
+  //! Computes hit time of ray-box intersection.
+  //! Uses precomputed reciprocal direction from BVH_Ray for optimal performance.
   static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
                                              const BVH_Box<T, N>& theBox,
                                              T&                   theTimeEnter,
@@ -297,18 +298,21 @@ public: //! @name Ray-Box Intersection
   }
 
   //! Computes hit time of ray-box intersection.
+  //! Uses precomputed reciprocal direction from BVH_Ray for optimal performance.
   static Standard_Boolean RayBoxIntersection(const BVH_Ray<T, N>& theRay,
                                              const BVH_VecNt&     theBoxCMin,
                                              const BVH_VecNt&     theBoxCMax,
                                              T&                   theTimeEnter,
                                              T&                   theTimeLeave)
   {
+    // Use optimized version with precomputed reciprocal direction
     return RayBoxIntersection(theRay.Origin,
-                              theRay.Direct,
+                              theRay.InvDirect,
                               theBoxCMin,
                               theBoxCMax,
                               theTimeEnter,
-                              theTimeLeave);
+                              theTimeLeave,
+                              true);
   }
 
   //! Computes hit time of ray-box intersection
@@ -332,6 +336,13 @@ public: //! @name Ray-Box Intersection
 
   //! Computes hit time of ray-box intersection.
   //! Uses optimized single-pass algorithm with early exit.
+  //! @param theRayOrigin ray origin point
+  //! @param theRayDirection ray direction vector
+  //! @param theBoxCMin minimum corner of the box
+  //! @param theBoxCMax maximum corner of the box
+  //! @param theTimeEnter time of ray entering the box
+  //! @param theTimeLeave time of ray leaving the box
+  //! @return true if ray intersects the box
   static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
                                              const BVH_VecNt& theRayDirection,
                                              const BVH_VecNt& theBoxCMin,
@@ -368,6 +379,71 @@ public: //! @name Ray-Box Intersection
       aTimeLeave = (std::min)(aTimeLeave, aTMax);
 
       // Early exit if no intersection
+      if (aTimeEnter > aTimeLeave)
+      {
+        return Standard_False;
+      }
+    }
+
+    // Check if intersection is behind the ray origin
+    if (aTimeLeave < T(0))
+    {
+      return Standard_False;
+    }
+
+    theTimeEnter = aTimeEnter;
+    theTimeLeave = aTimeLeave;
+    return Standard_True;
+  }
+
+  //! Computes hit time of ray-box intersection using precomputed reciprocal direction.
+  //! This is the fastest variant - use when performing multiple ray-box tests with the same ray.
+  //! @param theRayOrigin ray origin point
+  //! @param theRayInvDirection precomputed reciprocal of ray direction (1/direction)
+  //! @param theBoxCMin minimum corner of the box
+  //! @param theBoxCMax maximum corner of the box
+  //! @param theTimeEnter time of ray entering the box
+  //! @param theTimeLeave time of ray leaving the box
+  //! @return true if ray intersects the box
+  static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
+                                             const BVH_VecNt& theRayInvDirection,
+                                             const BVH_VecNt& theBoxCMin,
+                                             const BVH_VecNt& theBoxCMax,
+                                             T&               theTimeEnter,
+                                             T&               theTimeLeave,
+                                             const bool /*theUseInvDir*/)
+  {
+    // Compute intersection distances using multiplication instead of division
+    // When direction component is 0, InvDirection is infinity, which correctly
+    // produces infinity for the intersection times
+    T aT1x = (theBoxCMin[0] - theRayOrigin[0]) * theRayInvDirection[0];
+    T aT2x = (theBoxCMax[0] - theRayOrigin[0]) * theRayInvDirection[0];
+
+    T aTimeEnter = (std::min)(aT1x, aT2x);
+    T aTimeLeave = (std::max)(aT1x, aT2x);
+
+    if constexpr (N >= 2)
+    {
+      T aT1y = (theBoxCMin[1] - theRayOrigin[1]) * theRayInvDirection[1];
+      T aT2y = (theBoxCMax[1] - theRayOrigin[1]) * theRayInvDirection[1];
+
+      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1y, aT2y));
+      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1y, aT2y));
+
+      if (aTimeEnter > aTimeLeave)
+      {
+        return Standard_False;
+      }
+    }
+
+    if constexpr (N >= 3)
+    {
+      T aT1z = (theBoxCMin[2] - theRayOrigin[2]) * theRayInvDirection[2];
+      T aT2z = (theBoxCMax[2] - theRayOrigin[2]) * theRayInvDirection[2];
+
+      aTimeEnter = (std::max)(aTimeEnter, (std::min)(aT1z, aT2z));
+      aTimeLeave = (std::min)(aTimeLeave, (std::max)(aT1z, aT2z));
+
       if (aTimeEnter > aTimeLeave)
       {
         return Standard_False;
