@@ -50,7 +50,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 {
   if (theSurface.IsInstance(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
-    Initialize(Handle(GeomAdaptor_Surface)::DownCast(&theSurface)->Surface());
+    Initialize(static_cast<const GeomAdaptor_Surface&>(theSurface).Surface());
     return;
   }
 

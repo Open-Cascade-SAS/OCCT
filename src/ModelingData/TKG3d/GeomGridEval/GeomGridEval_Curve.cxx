@@ -48,7 +48,7 @@ void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 {
   if (theCurve.IsInstance(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
-    Initialize(Handle(GeomAdaptor_Curve)::DownCast(&theCurve)->Curve());
+    Initialize(static_cast<const GeomAdaptor_Curve&>(theCurve).Curve());
     return;
   }
 
