@@ -69,10 +69,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_BSplineSurface(const GeomGridEval_BSplineSurface&) = delete;
+  GeomGridEval_BSplineSurface(const GeomGridEval_BSplineSurface&)            = delete;
   GeomGridEval_BSplineSurface& operator=(const GeomGridEval_BSplineSurface&) = delete;
-  GeomGridEval_BSplineSurface(GeomGridEval_BSplineSurface&&) = delete;
-  GeomGridEval_BSplineSurface& operator=(GeomGridEval_BSplineSurface&&) = delete;
+  GeomGridEval_BSplineSurface(GeomGridEval_BSplineSurface&&)                 = delete;
+  GeomGridEval_BSplineSurface& operator=(GeomGridEval_BSplineSurface&&)      = delete;
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values

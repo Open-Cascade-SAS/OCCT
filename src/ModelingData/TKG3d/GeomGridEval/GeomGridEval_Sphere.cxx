@@ -554,7 +554,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_Sphere::EvaluateGridDN(int theNU, int th
       // For pure U derivatives (NV=0): Z term is sinV (phase 0 for V)
       // For mixed derivatives: need both components
 
-      const double aXYTerm = aCoeffVXY * (aCoeffUX * aXX + aCoeffUY * aYX);
+      const double aXYTerm  = aCoeffVXY * (aCoeffUX * aXX + aCoeffUY * aYX);
       const double aXYTermY = aCoeffVXY * (aCoeffUX * aXY + aCoeffUY * aYY);
       const double aXYTermZ = aCoeffVXY * (aCoeffUX * aXZ + aCoeffUY * aYZ);
 

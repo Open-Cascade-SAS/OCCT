@@ -313,7 +313,7 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_Plane)  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
@@ -368,8 +368,8 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
-  Handle(Geom_BSplineSurface) aSurf     = CreateSimpleBSplineSurface();
-  GeomAdaptor_Surface anAdaptor(aSurf);
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomAdaptor_Surface         anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -400,8 +400,8 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
-  Handle(Geom_BezierSurface)  aBezier   = new Geom_BezierSurface(aPoles);
-  GeomAdaptor_Surface anAdaptor(aBezier);
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  GeomAdaptor_Surface        anAdaptor(aBezier);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -1037,7 +1037,8 @@ TEST(GeomGridEval_SphereTest, DerivativeD3)
   GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2 + 0.1, M_PI / 2 - 0.1, 5); // Avoid poles
+  TColStd_Array1OfReal aVParams =
+    CreateUniformParams(-M_PI / 2 + 0.1, M_PI / 2 - 0.1, 5); // Avoid poles
   anEval.SetUVParams(aUParams, aVParams);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
@@ -1050,8 +1051,18 @@ TEST(GeomGridEval_SphereTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(iU),
+                   aVParams.Value(iV),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -1085,8 +1096,18 @@ TEST(GeomGridEval_CylinderTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(iU),
+                   aVParams.Value(iV),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -1115,8 +1136,18 @@ TEST(GeomGridEval_ConeTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(iU),
+                   aVParams.Value(iV),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -1145,8 +1176,18 @@ TEST(GeomGridEval_TorusTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(iU),
+                   aVParams.Value(iV),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -1174,8 +1215,18 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(iU),
+                   aVParams.Value(iV),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -1211,8 +1262,18 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      aTorus->D3(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U,
-                 aD3V, aD3UUV, aD3UVV);
+      aTorus->D3(aUParams.Value(iU),
+                 aVParams.Value(iV),
+                 aPnt,
+                 aD1U,
+                 aD1V,
+                 aD2U,
+                 aD2V,
+                 aD2UV,
+                 aD3U,
+                 aD3V,
+                 aD3UUV,
+                 aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);

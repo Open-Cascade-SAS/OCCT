@@ -49,10 +49,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Torus(const GeomGridEval_Torus&) = delete;
+  GeomGridEval_Torus(const GeomGridEval_Torus&)            = delete;
   GeomGridEval_Torus& operator=(const GeomGridEval_Torus&) = delete;
-  GeomGridEval_Torus(GeomGridEval_Torus&&) = delete;
-  GeomGridEval_Torus& operator=(GeomGridEval_Torus&&) = delete;
+  GeomGridEval_Torus(GeomGridEval_Torus&&)                 = delete;
+  GeomGridEval_Torus& operator=(GeomGridEval_Torus&&)      = delete;
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values (major angle)

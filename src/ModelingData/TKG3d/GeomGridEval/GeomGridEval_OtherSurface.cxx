@@ -144,7 +144,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
       gp_Pnt       aPoint;
       gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
       mySurface.get().D3(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
-      aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+      aResult.ChangeValue(iU,
+                          iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
   }
 

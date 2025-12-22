@@ -60,7 +60,8 @@ public:
 
   //! Constructor with geometry.
   //! @param theRevolution the revolution surface geometry to evaluate
-  Standard_EXPORT GeomGridEval_SurfaceOfRevolution(const Handle(Geom_SurfaceOfRevolution)& theRevolution);
+  Standard_EXPORT GeomGridEval_SurfaceOfRevolution(
+    const Handle(Geom_SurfaceOfRevolution)& theRevolution);
 
   //! Non-copyable and non-movable.
   GeomGridEval_SurfaceOfRevolution(const GeomGridEval_SurfaceOfRevolution&)            = delete;

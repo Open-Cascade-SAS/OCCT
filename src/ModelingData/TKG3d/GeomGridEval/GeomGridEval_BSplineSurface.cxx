@@ -725,8 +725,9 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
                        aD3UUV,
                        aD3UVV);
 
-          aResults.ChangeValue(iu + 1, iv + 1) =
-            {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+          aResults.ChangeValue(
+            iu + 1,
+            iv + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
         }
       }
     }

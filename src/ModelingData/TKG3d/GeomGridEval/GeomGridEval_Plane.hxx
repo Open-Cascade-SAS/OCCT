@@ -46,10 +46,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Plane(const GeomGridEval_Plane&) = delete;
+  GeomGridEval_Plane(const GeomGridEval_Plane&)            = delete;
   GeomGridEval_Plane& operator=(const GeomGridEval_Plane&) = delete;
-  GeomGridEval_Plane(GeomGridEval_Plane&&) = delete;
-  GeomGridEval_Plane& operator=(GeomGridEval_Plane&&) = delete;
+  GeomGridEval_Plane(GeomGridEval_Plane&&)                 = delete;
+  GeomGridEval_Plane& operator=(GeomGridEval_Plane&&)      = delete;
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values
@@ -278,7 +278,7 @@ public:
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v = myVParams.Value(iV);
+        const double v              = myVParams.Value(iV);
         aResult.ChangeValue(iU, iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ),
                                        aD1U,
                                        aD1V,

@@ -211,8 +211,18 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      anAdaptor.D3(aUParams.Value(i), aVParams.Value(j), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                   aD3U, aD3V, aD3UUV, aD3UVV);
+      anAdaptor.D3(aUParams.Value(i),
+                   aVParams.Value(j),
+                   aPnt,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV,
+                   aD3U,
+                   aD3V,
+                   aD3UUV,
+                   aD3UVV);
 
       EXPECT_NEAR(aGrid.Value(i, j).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);

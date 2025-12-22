@@ -84,10 +84,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Curve(const GeomGridEval_Curve&) = delete;
+  GeomGridEval_Curve(const GeomGridEval_Curve&)            = delete;
   GeomGridEval_Curve& operator=(const GeomGridEval_Curve&) = delete;
-  GeomGridEval_Curve(GeomGridEval_Curve&&) = delete;
-  GeomGridEval_Curve& operator=(GeomGridEval_Curve&&) = delete;
+  GeomGridEval_Curve(GeomGridEval_Curve&&)                 = delete;
+  GeomGridEval_Curve& operator=(GeomGridEval_Curve&&)      = delete;
 
   //! Initialize from adaptor reference (auto-detects curve type).
   //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.

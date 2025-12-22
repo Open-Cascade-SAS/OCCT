@@ -45,10 +45,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Hyperbola(const GeomGridEval_Hyperbola&) = delete;
+  GeomGridEval_Hyperbola(const GeomGridEval_Hyperbola&)            = delete;
   GeomGridEval_Hyperbola& operator=(const GeomGridEval_Hyperbola&) = delete;
-  GeomGridEval_Hyperbola(GeomGridEval_Hyperbola&&) = delete;
-  GeomGridEval_Hyperbola& operator=(GeomGridEval_Hyperbola&&) = delete;
+  GeomGridEval_Hyperbola(GeomGridEval_Hyperbola&&)                 = delete;
+  GeomGridEval_Hyperbola& operator=(GeomGridEval_Hyperbola&&)      = delete;
 
   //! Set parameter values.
   //! @param theParams array of parameter values

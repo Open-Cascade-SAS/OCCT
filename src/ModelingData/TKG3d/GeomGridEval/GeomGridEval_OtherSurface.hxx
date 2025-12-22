@@ -51,10 +51,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_OtherSurface(const GeomGridEval_OtherSurface&) = delete;
+  GeomGridEval_OtherSurface(const GeomGridEval_OtherSurface&)            = delete;
   GeomGridEval_OtherSurface& operator=(const GeomGridEval_OtherSurface&) = delete;
-  GeomGridEval_OtherSurface(GeomGridEval_OtherSurface&&) = delete;
-  GeomGridEval_OtherSurface& operator=(GeomGridEval_OtherSurface&&) = delete;
+  GeomGridEval_OtherSurface(GeomGridEval_OtherSurface&&)                 = delete;
+  GeomGridEval_OtherSurface& operator=(GeomGridEval_OtherSurface&&)      = delete;
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values

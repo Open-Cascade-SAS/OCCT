@@ -600,12 +600,11 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(int theN) c
 
   const Handle(TColStd_HArray1OfReal)& aWeightsHandle = myGeom->HArrayWeights();
   const bool                           isRational     = myGeom->IsRational();
-  const TColStd_Array1OfReal*          aWeights = (isRational && !aWeightsHandle.IsNull())
-                                                    ? &aWeightsHandle->Array1()
-                                                    : nullptr;
+  const TColStd_Array1OfReal*          aWeights =
+    (isRational && !aWeightsHandle.IsNull()) ? &aWeightsHandle->Array1() : nullptr;
 
-  const TColStd_Array1OfReal&    aKnots = myGeom->Knots();
-  const TColStd_Array1OfInteger& aMults = myGeom->Multiplicities();
+  const TColStd_Array1OfReal&    aKnots     = myGeom->Knots();
+  const TColStd_Array1OfInteger& aMults     = myGeom->Multiplicities();
   const bool                     isPeriodic = myGeom->IsPeriodic();
 
   // Use BSplCLib::DN directly with pre-computed span indices

@@ -56,10 +56,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_OffsetCurve(const GeomGridEval_OffsetCurve&) = delete;
+  GeomGridEval_OffsetCurve(const GeomGridEval_OffsetCurve&)            = delete;
   GeomGridEval_OffsetCurve& operator=(const GeomGridEval_OffsetCurve&) = delete;
-  GeomGridEval_OffsetCurve(GeomGridEval_OffsetCurve&&) = delete;
-  GeomGridEval_OffsetCurve& operator=(GeomGridEval_OffsetCurve&&) = delete;
+  GeomGridEval_OffsetCurve(GeomGridEval_OffsetCurve&&)                 = delete;
+  GeomGridEval_OffsetCurve& operator=(GeomGridEval_OffsetCurve&&)      = delete;
 
   //! Set parameters for grid evaluation.
   //! @param theParams array of parameter values

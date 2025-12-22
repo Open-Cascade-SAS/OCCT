@@ -187,8 +187,18 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      aBezier->D3(aParams.Value(i), aParams.Value(j), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                  aD3U, aD3V, aD3UUV, aD3UVV);
+      aBezier->D3(aParams.Value(i),
+                  aParams.Value(j),
+                  aPnt,
+                  aD1U,
+                  aD1V,
+                  aD2U,
+                  aD2V,
+                  aD2UV,
+                  aD3U,
+                  aD3V,
+                  aD3UUV,
+                  aD3UVV);
       EXPECT_NEAR(aGrid.Value(i, j).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);

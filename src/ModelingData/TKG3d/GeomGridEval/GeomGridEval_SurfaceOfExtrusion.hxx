@@ -52,7 +52,8 @@ public:
 
   //! Constructor with geometry.
   //! @param theExtrusion the extrusion surface geometry to evaluate
-  Standard_EXPORT GeomGridEval_SurfaceOfExtrusion(const Handle(Geom_SurfaceOfLinearExtrusion)& theExtrusion);
+  Standard_EXPORT GeomGridEval_SurfaceOfExtrusion(
+    const Handle(Geom_SurfaceOfLinearExtrusion)& theExtrusion);
 
   //! Non-copyable and non-movable.
   GeomGridEval_SurfaceOfExtrusion(const GeomGridEval_SurfaceOfExtrusion&)            = delete;

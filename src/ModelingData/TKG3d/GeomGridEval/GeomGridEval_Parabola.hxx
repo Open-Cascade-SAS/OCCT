@@ -45,10 +45,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Parabola(const GeomGridEval_Parabola&) = delete;
+  GeomGridEval_Parabola(const GeomGridEval_Parabola&)            = delete;
   GeomGridEval_Parabola& operator=(const GeomGridEval_Parabola&) = delete;
-  GeomGridEval_Parabola(GeomGridEval_Parabola&&) = delete;
-  GeomGridEval_Parabola& operator=(GeomGridEval_Parabola&&) = delete;
+  GeomGridEval_Parabola(GeomGridEval_Parabola&&)                 = delete;
+  GeomGridEval_Parabola& operator=(GeomGridEval_Parabola&&)      = delete;
 
   //! Set parameter values.
   //! @param theParams array of parameter values

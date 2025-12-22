@@ -47,10 +47,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_BezierSurface(const GeomGridEval_BezierSurface&) = delete;
+  GeomGridEval_BezierSurface(const GeomGridEval_BezierSurface&)            = delete;
   GeomGridEval_BezierSurface& operator=(const GeomGridEval_BezierSurface&) = delete;
-  GeomGridEval_BezierSurface(GeomGridEval_BezierSurface&&) = delete;
-  GeomGridEval_BezierSurface& operator=(GeomGridEval_BezierSurface&&) = delete;
+  GeomGridEval_BezierSurface(GeomGridEval_BezierSurface&&)                 = delete;
+  GeomGridEval_BezierSurface& operator=(GeomGridEval_BezierSurface&&)      = delete;
 
   //! Set UV parameters from two 1D arrays.
   //! @param theUParams array of U parameter values

@@ -43,10 +43,10 @@ public:
   }
 
   //! Non-copyable and non-movable.
-  GeomGridEval_Line(const GeomGridEval_Line&) = delete;
+  GeomGridEval_Line(const GeomGridEval_Line&)            = delete;
   GeomGridEval_Line& operator=(const GeomGridEval_Line&) = delete;
-  GeomGridEval_Line(GeomGridEval_Line&&) = delete;
-  GeomGridEval_Line& operator=(GeomGridEval_Line&&) = delete;
+  GeomGridEval_Line(GeomGridEval_Line&&)                 = delete;
+  GeomGridEval_Line& operator=(GeomGridEval_Line&&)      = delete;
 
   //! Set parameters for grid evaluation (by const reference).
   //! @param theParams array of parameter values
