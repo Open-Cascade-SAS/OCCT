@@ -27,7 +27,7 @@
 //! Provides static inline functions to compute offset curve point and derivatives
 //! from basis curve derivatives.
 //!
-//! These functions are used by Geom_OffsetCurve and GeomAdaptor_Curve.
+//! These functions are used by Geom_OffsetCurve, GeomAdaptor_Curve, and GeomGridEval.
 //!
 //! Mathematical basis:
 //! P(u) = p(u) + Offset * N / ||N||
@@ -36,19 +36,22 @@ namespace Geom_OffsetCurveUtils
 {
 
 //! Calculates D0 (point) for 3D offset curve.
+//! Core version that works with gp_XYZ direction vector (must be normalized).
 //! @param[in,out] theValue on input: basis curve point; on output: offset point
 //! @param[in] theD1 first derivative of basis curve at the point
-//! @param[in] theDir offset reference direction
+//! @param[in] theDirXYZ offset reference direction as XYZ (must be unit vector)
 //! @param[in] theOffset offset distance value
+//! @param[in] theTolerance tolerance for singularity check (default: gp::Resolution())
 //! @return true if successful, false if normal vector has zero magnitude
 inline bool CalculateD0(gp_Pnt&       theValue,
                         const gp_Vec& theD1,
-                        const gp_Dir& theDir,
-                        double        theOffset)
+                        const gp_XYZ& theDirXYZ,
+                        double        theOffset,
+                        double        theTolerance = gp::Resolution())
 {
-  gp_XYZ Ndir = (theD1.XYZ()).Crossed(theDir.XYZ());
+  gp_XYZ Ndir = (theD1.XYZ()).Crossed(theDirXYZ);
   double R    = Ndir.Modulus();
-  if (R <= gp::Resolution())
+  if (R <= theTolerance)
   {
     return false;
   }
@@ -59,32 +62,35 @@ inline bool CalculateD0(gp_Pnt&       theValue,
 }
 
 //! Calculates D0 and D1 for 3D offset curve.
+//! Core version that works with gp_XYZ direction vector (must be normalized).
 //! @param[in,out] theValue on input: basis curve point; on output: offset point
 //! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
 //! @param[in] theD2 second derivative of basis curve
-//! @param[in] theDir offset reference direction
+//! @param[in] theDirXYZ offset reference direction as XYZ (must be unit vector)
 //! @param[in] theOffset offset distance value
+//! @param[in] theTolerance tolerance for singularity check (default: gp::Resolution())
 //! @return true if successful, false if computation failed
 inline bool CalculateD1(gp_Pnt&       theValue,
                         gp_Vec&       theD1,
                         const gp_Vec& theD2,
-                        const gp_Dir& theDir,
-                        double        theOffset)
+                        const gp_XYZ& theDirXYZ,
+                        double        theOffset,
+                        double        theTolerance = gp::Resolution())
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
 
   // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-  gp_XYZ Ndir  = (theD1.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ DNdir = (theD2.XYZ()).Crossed(theDir.XYZ());
+  gp_XYZ Ndir  = (theD1.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ DNdir = (theD2.XYZ()).Crossed(theDirXYZ);
   double R2    = Ndir.SquareModulus();
   double R     = std::sqrt(R2);
   double R3    = R * R2;
   double Dr    = Ndir.Dot(DNdir);
-  if (R3 <= gp::Resolution())
+  if (R3 <= theTolerance)
   {
-    if (R2 <= gp::Resolution())
+    if (R2 <= theTolerance)
     {
       return false;
     }
@@ -109,21 +115,24 @@ inline bool CalculateD1(gp_Pnt&       theValue,
 }
 
 //! Calculates D0, D1, D2 for 3D offset curve.
+//! Core version that works with gp_XYZ direction vector (must be normalized).
 //! @param[in,out] theValue on input: basis curve point; on output: offset point
 //! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
 //! @param[in,out] theD2 on input: second derivative of basis; on output: offset curve D2
 //! @param[in] theD3 third derivative of basis curve
-//! @param[in] theDir offset reference direction
+//! @param[in] theDirXYZ offset reference direction as XYZ (must be unit vector)
 //! @param[in] theOffset offset distance value
 //! @param[in] theIsDirChange flag indicating direction change at singular point
+//! @param[in] theTolerance tolerance for singularity check (default: gp::Resolution())
 //! @return true if successful, false if computation failed
 inline bool CalculateD2(gp_Pnt&       theValue,
                         gp_Vec&       theD1,
                         gp_Vec&       theD2,
                         const gp_Vec& theD3,
-                        const gp_Dir& theDir,
+                        const gp_XYZ& theDirXYZ,
                         double        theOffset,
-                        bool          theIsDirChange)
+                        bool          theIsDirChange,
+                        double        theTolerance = gp::Resolution())
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
@@ -133,9 +142,9 @@ inline bool CalculateD2(gp_Pnt&       theValue,
   // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
   //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
 
-  gp_XYZ Ndir   = (theD1.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ DNdir  = (theD2.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ D2Ndir = (theD3.XYZ()).Crossed(theDir.XYZ());
+  gp_XYZ Ndir   = (theD1.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ DNdir  = (theD2.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ D2Ndir = (theD3.XYZ()).Crossed(theDirXYZ);
   double R2     = Ndir.SquareModulus();
   double R      = std::sqrt(R2);
   double R3     = R2 * R;
@@ -144,9 +153,9 @@ inline bool CalculateD2(gp_Pnt&       theValue,
   double Dr     = Ndir.Dot(DNdir);
   double D2r    = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
 
-  if (R5 <= gp::Resolution())
+  if (R5 <= theTolerance)
   {
-    if (R4 <= gp::Resolution())
+    if (R4 <= theTolerance)
     {
       return false;
     }
@@ -191,23 +200,26 @@ inline bool CalculateD2(gp_Pnt&       theValue,
 }
 
 //! Calculates D0, D1, D2, D3 for 3D offset curve.
+//! Core version that works with gp_XYZ direction vector (must be normalized).
 //! @param[in,out] theValue on input: basis curve point; on output: offset point
 //! @param[in,out] theD1 on input: first derivative of basis; on output: offset curve D1
 //! @param[in,out] theD2 on input: second derivative of basis; on output: offset curve D2
 //! @param[in,out] theD3 on input: third derivative of basis; on output: offset curve D3
 //! @param[in] theD4 fourth derivative of basis curve
-//! @param[in] theDir offset reference direction
+//! @param[in] theDirXYZ offset reference direction as XYZ (must be unit vector)
 //! @param[in] theOffset offset distance value
 //! @param[in] theIsDirChange flag indicating direction change at singular point
+//! @param[in] theTolerance tolerance for singularity check (default: gp::Resolution())
 //! @return true if successful, false if computation failed
 inline bool CalculateD3(gp_Pnt&       theValue,
                         gp_Vec&       theD1,
                         gp_Vec&       theD2,
                         gp_Vec&       theD3,
                         const gp_Vec& theD4,
-                        const gp_Dir& theDir,
+                        const gp_XYZ& theDirXYZ,
                         double        theOffset,
-                        bool          theIsDirChange)
+                        bool          theIsDirChange,
+                        double        theTolerance = gp::Resolution())
 {
   // P(u) = p(u) + Offset * Ndir / R
   // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
@@ -222,10 +234,10 @@ inline bool CalculateD3(gp_Pnt&       theValue,
   //          (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
   //          (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
 
-  gp_XYZ       Ndir   = (theD1.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ       DNdir  = (theD2.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ       D2Ndir = (theD3.XYZ()).Crossed(theDir.XYZ());
-  gp_XYZ       D3Ndir = (theD4.XYZ()).Crossed(theDir.XYZ());
+  gp_XYZ       Ndir   = (theD1.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ       DNdir  = (theD2.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ       D2Ndir = (theD3.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ       D3Ndir = (theD4.XYZ()).Crossed(theDirXYZ);
   const double R2     = Ndir.SquareModulus();
   const double R      = std::sqrt(R2);
   const double R3     = R2 * R;
@@ -236,9 +248,9 @@ inline bool CalculateD3(gp_Pnt&       theValue,
   const double Dr     = Ndir.Dot(DNdir);
   const double D2r    = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
   const double D3r    = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
-  if (R7 <= gp::Resolution())
+  if (R7 <= theTolerance)
   {
-    if (R6 <= gp::Resolution())
+    if (R6 <= theTolerance)
     {
       return false;
     }
@@ -391,7 +403,7 @@ bool EvaluateD0(double                theU,
 {
   gp_Vec aD1;
   theBasisCurve->D1(theU, theValue, aD1);
-  return CalculateD0(theValue, aD1, theDir, theOffset);
+  return CalculateD0(theValue, aD1, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D1 evaluation of offset curve.
@@ -415,7 +427,7 @@ bool EvaluateD1(double                theU,
 {
   gp_Vec aD2;
   theBasisCurve->D2(theU, theValue, theD1, aD2);
-  return CalculateD1(theValue, theD1, aD2, theDir, theOffset);
+  return CalculateD1(theValue, theD1, aD2, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D2 evaluation of offset curve.
@@ -450,7 +462,7 @@ bool EvaluateD2(double                theU,
     isDirectionChange = AdjustDerivative(*theBasisCurve, 3, theU, theD1, theD2, aD3, aDummyD4);
   }
 
-  return CalculateD2(theValue, theD1, theD2, aD3, theDir, theOffset, isDirectionChange);
+  return CalculateD2(theValue, theD1, theD2, aD3, theDir.XYZ(), theOffset, isDirectionChange);
 }
 
 //! Template function for D3 evaluation of offset curve.
@@ -486,7 +498,14 @@ bool EvaluateD3(double                theU,
     isDirectionChange = AdjustDerivative(*theBasisCurve, 4, theU, theD1, theD2, theD3, aD4);
   }
 
-  return CalculateD3(theValue, theD1, theD2, theD3, aD4, theDir, theOffset, isDirectionChange);
+  return CalculateD3(theValue,
+                     theD1,
+                     theD2,
+                     theD3,
+                     aD4,
+                     theDir.XYZ(),
+                     theOffset,
+                     isDirectionChange);
 }
 
 //! Template function for DN evaluation of offset curve.

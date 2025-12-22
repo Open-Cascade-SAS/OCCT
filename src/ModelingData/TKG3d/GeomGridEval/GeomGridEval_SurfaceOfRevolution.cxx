@@ -13,41 +13,8 @@
 
 #include <GeomGridEval_SurfaceOfRevolution.hxx>
 
+#include <gp_Trsf.hxx>
 #include <Precision.hxx>
-
-#include <cmath>
-
-namespace
-{
-//! Rotate a point around an axis using Rodrigues' rotation formula.
-//! More efficient than gp_Trsf for single point rotation.
-//! @param thePoint point to rotate (relative to axis location)
-//! @param theAxisDir axis direction (unit vector)
-//! @param theCos cosine of rotation angle
-//! @param theSin sine of rotation angle
-//! @return rotated point coordinates
-inline gp_XYZ rotatePoint(const gp_XYZ& thePoint,
-                          const gp_XYZ& theAxisDir,
-                          double        theCos,
-                          double        theSin)
-{
-  // Rodrigues' rotation formula:
-  // v' = v*cos(θ) + (k×v)*sin(θ) + k*(k·v)*(1-cos(θ))
-  const double aKDotV   = theAxisDir.Dot(thePoint);
-  gp_XYZ       aKCrossV = theAxisDir.Crossed(thePoint);
-  return thePoint * theCos + aKCrossV * theSin + theAxisDir * aKDotV * (1.0 - theCos);
-}
-
-//! Rotate a vector around an axis using Rodrigues' rotation formula.
-inline gp_Vec rotateVec(const gp_Vec& theVec,
-                        const gp_XYZ& theAxisDir,
-                        double        theCos,
-                        double        theSin)
-{
-  return gp_Vec(rotatePoint(theVec.XYZ(), theAxisDir, theCos, theSin));
-}
-
-} // namespace
 
 //==================================================================================================
 
@@ -108,30 +75,18 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid() cons
     return NCollection_Array2<gp_Pnt>();
   }
 
-  // Precompute sin/cos for all U values
-  NCollection_Array1<double> aCosU(1, aNbU);
-  NCollection_Array1<double> aSinU(1, aNbU);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    const double aU = myUParams.Value(i);
-    aCosU.SetValue(i, std::cos(aU));
-    aSinU.SetValue(i, std::sin(aU));
-  }
-
-  const gp_XYZ&              aAxisDir = myAxisDirection.XYZ();
-  const gp_XYZ&              aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
-  for (int j = 1; j <= aNbV; ++j)
+  for (int i = 1; i <= aNbU; ++i)
   {
-    // Vector from axis location to curve point (before rotation)
-    const gp_XYZ aCQ = aCurvePoints.Value(j).XYZ() - aAxisLoc;
+    gp_Trsf aRotation;
+    aRotation.SetRotation(myAxis, myUParams.Value(i));
 
-    for (int i = 1; i <= aNbU; ++i)
+    for (int j = 1; j <= aNbV; ++j)
     {
-      // Rotate the point around the axis
-      const gp_XYZ aRotatedPt = rotatePoint(aCQ, aAxisDir, aCosU.Value(i), aSinU.Value(i));
-      aResult.SetValue(i, j, gp_Pnt(aRotatedPt + aAxisLoc));
+      gp_Pnt aP = aCurvePoints.Value(j);
+      aP.Transform(aRotation);
+      aResult.SetValue(i, j, aP);
     }
   }
 
@@ -161,46 +116,35 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  // Precompute sin/cos
-  NCollection_Array1<double> aCosU(1, aNbU);
-  NCollection_Array1<double> aSinU(1, aNbU);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    const double aU = myUParams.Value(i);
-    aCosU.SetValue(i, std::cos(aU));
-    aSinU.SetValue(i, std::sin(aU));
-  }
-
   const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
   const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
-  for (int j = 1; j <= aNbV; ++j)
+  for (int i = 1; i <= aNbU; ++i)
   {
-    const GeomGridEval::CurveD1& aCurveData = aCurveD1.Value(j);
-    const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
+    gp_Trsf aRotation;
+    aRotation.SetRotation(myAxis, myUParams.Value(i));
 
-    // D1U (before rotation) = Axis × (P - AxisLoc)
-    gp_Vec aD1U_unrot(aAxisDir.Crossed(aCQ));
-    if (aD1U_unrot.SquareMagnitude() < Precision::SquareConfusion())
+    for (int j = 1; j <= aNbV; ++j)
     {
-      aD1U_unrot.SetCoord(0.0, 0.0, 0.0);
-    }
+      const GeomGridEval::CurveD1& aCurveData = aCurveD1.Value(j);
+      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-    // D1V (before rotation) = C'(v)
-    const gp_Vec& aD1V_unrot = aCurveData.D1;
+      // D1U (before rotation) = Axis × (P - AxisLoc)
+      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
+      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
+      {
+        aD1U.SetCoord(0.0, 0.0, 0.0);
+      }
 
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      const double aCos = aCosU.Value(i);
-      const double aSin = aSinU.Value(i);
+      // Rotate point and vectors
+      gp_Pnt aP = aCurveData.Point;
+      aP.Transform(aRotation);
+      aD1U.Transform(aRotation);
+      gp_Vec aD1V = aCurveData.D1;
+      aD1V.Transform(aRotation);
 
-      // Rotate all vectors
-      const gp_XYZ aRotatedPt = rotatePoint(aCQ, aAxisDir, aCos, aSin);
-      const gp_Vec aD1U       = rotateVec(aD1U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD1V       = rotateVec(aD1V_unrot, aAxisDir, aCos, aSin);
-
-      aResult.ChangeValue(i, j) = {gp_Pnt(aRotatedPt + aAxisLoc), aD1U, aD1V};
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V};
     }
   }
 
@@ -230,58 +174,45 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  // Precompute sin/cos
-  NCollection_Array1<double> aCosU(1, aNbU);
-  NCollection_Array1<double> aSinU(1, aNbU);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    const double aU = myUParams.Value(i);
-    aCosU.SetValue(i, std::cos(aU));
-    aSinU.SetValue(i, std::sin(aU));
-  }
-
   const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
   const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
-  for (int j = 1; j <= aNbV; ++j)
+  for (int i = 1; i <= aNbU; ++i)
   {
-    const GeomGridEval::CurveD2& aCurveData = aCurveD2.Value(j);
-    const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
+    gp_Trsf aRotation;
+    aRotation.SetRotation(myAxis, myUParams.Value(i));
 
-    // D1U (before rotation) = Axis × (P - AxisLoc)
-    gp_Vec aD1U_unrot(aAxisDir.Crossed(aCQ));
-    if (aD1U_unrot.SquareMagnitude() < Precision::SquareConfusion())
+    for (int j = 1; j <= aNbV; ++j)
     {
-      aD1U_unrot.SetCoord(0.0, 0.0, 0.0);
-    }
+      const GeomGridEval::CurveD2& aCurveData = aCurveD2.Value(j);
+      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-    // D1V (before rotation) = C'(v)
-    const gp_Vec& aD1V_unrot = aCurveData.D1;
+      // D1U (before rotation) = Axis × (P - AxisLoc)
+      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
+      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
+      {
+        aD1U.SetCoord(0.0, 0.0, 0.0);
+      }
 
-    // D2U (before rotation) = (Axis · CQ) * Axis - CQ
-    const gp_Vec aD2U_unrot(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
+      // D2U (before rotation) = (Axis · CQ) * Axis - CQ
+      gp_Vec aD2U(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
 
-    // D2UV (before rotation) = Axis × C'(v)
-    const gp_Vec aD2UV_unrot(aAxisDir.Crossed(aD1V_unrot.XYZ()));
+      // D2UV (before rotation) = Axis × C'(v)
+      gp_Vec aD2UV(aAxisDir.Crossed(aCurveData.D1.XYZ()));
 
-    // D2V (before rotation) = C''(v)
-    const gp_Vec& aD2V_unrot = aCurveData.D2;
+      // Rotate point and all vectors
+      gp_Pnt aP = aCurveData.Point;
+      aP.Transform(aRotation);
+      aD1U.Transform(aRotation);
+      gp_Vec aD1V = aCurveData.D1;
+      aD1V.Transform(aRotation);
+      aD2U.Transform(aRotation);
+      gp_Vec aD2V = aCurveData.D2;
+      aD2V.Transform(aRotation);
+      aD2UV.Transform(aRotation);
 
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      const double aCos = aCosU.Value(i);
-      const double aSin = aSinU.Value(i);
-
-      // Rotate all vectors
-      const gp_XYZ aRotatedPt = rotatePoint(aCQ, aAxisDir, aCos, aSin);
-      const gp_Vec aD1U       = rotateVec(aD1U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD1V       = rotateVec(aD1V_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2U       = rotateVec(aD2U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2V       = rotateVec(aD2V_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2UV      = rotateVec(aD2UV_unrot, aAxisDir, aCos, aSin);
-
-      aResult.ChangeValue(i, j) = {gp_Pnt(aRotatedPt + aAxisLoc), aD1U, aD1V, aD2U, aD2V, aD2UV};
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
 
@@ -311,68 +242,59 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  // Precompute sin/cos
-  NCollection_Array1<double> aCosU(1, aNbU);
-  NCollection_Array1<double> aSinU(1, aNbU);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    const double aU = myUParams.Value(i);
-    aCosU.SetValue(i, std::cos(aU));
-    aSinU.SetValue(i, std::sin(aU));
-  }
-
   const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
   const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
-  for (int j = 1; j <= aNbV; ++j)
+  for (int i = 1; i <= aNbU; ++i)
   {
-    const GeomGridEval::CurveD3& aCurveData = aCurveD3.Value(j);
-    const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
+    gp_Trsf aRotation;
+    aRotation.SetRotation(myAxis, myUParams.Value(i));
 
-    // D1U (before rotation) = Axis × (P - AxisLoc)
-    gp_Vec aD1U_unrot(aAxisDir.Crossed(aCQ));
-    if (aD1U_unrot.SquareMagnitude() < Precision::SquareConfusion())
+    for (int j = 1; j <= aNbV; ++j)
     {
-      aD1U_unrot.SetCoord(0.0, 0.0, 0.0);
-    }
+      const GeomGridEval::CurveD3& aCurveData = aCurveD3.Value(j);
+      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-    const gp_Vec& aD1V_unrot = aCurveData.D1;
-    const gp_Vec  aD2U_unrot(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
-    const gp_Vec  aD2UV_unrot(aAxisDir.Crossed(aD1V_unrot.XYZ()));
-    const gp_Vec& aD2V_unrot = aCurveData.D2;
+      // D1U (before rotation) = Axis × (P - AxisLoc)
+      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
+      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
+      {
+        aD1U.SetCoord(0.0, 0.0, 0.0);
+      }
 
-    // D3U (before rotation) = -D1U
-    const gp_Vec aD3U_unrot = -aD1U_unrot;
+      // D2U (before rotation) = (Axis · CQ) * Axis - CQ
+      gp_Vec aD2U(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
 
-    // D3UUV (before rotation) = (Axis · D1V) * Axis - D1V
-    const gp_Vec aD3UUV_unrot(aAxisDir.Dot(aD1V_unrot.XYZ()) * aAxisDir - aD1V_unrot.XYZ());
+      // D2UV (before rotation) = Axis × C'(v)
+      gp_Vec aD2UV(aAxisDir.Crossed(aCurveData.D1.XYZ()));
 
-    // D3UVV (before rotation) = Axis × D2V
-    const gp_Vec aD3UVV_unrot(aAxisDir.Crossed(aD2V_unrot.XYZ()));
+      // D3U (before rotation) = -D1U
+      gp_Vec aD3U = -aD1U;
 
-    // D3V (before rotation) = C'''(v)
-    const gp_Vec& aD3V_unrot = aCurveData.D3;
+      // D3UUV (before rotation) = (Axis · D1V) * Axis - D1V
+      gp_Vec aD3UUV(aAxisDir.Dot(aCurveData.D1.XYZ()) * aAxisDir - aCurveData.D1.XYZ());
 
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      const double aCos = aCosU.Value(i);
-      const double aSin = aSinU.Value(i);
+      // D3UVV (before rotation) = Axis × D2V
+      gp_Vec aD3UVV(aAxisDir.Crossed(aCurveData.D2.XYZ()));
 
-      // Rotate all vectors
-      const gp_XYZ aRotatedPt = rotatePoint(aCQ, aAxisDir, aCos, aSin);
-      const gp_Vec aD1U       = rotateVec(aD1U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD1V       = rotateVec(aD1V_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2U       = rotateVec(aD2U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2V       = rotateVec(aD2V_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD2UV      = rotateVec(aD2UV_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD3U       = rotateVec(aD3U_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD3V       = rotateVec(aD3V_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD3UUV     = rotateVec(aD3UUV_unrot, aAxisDir, aCos, aSin);
-      const gp_Vec aD3UVV     = rotateVec(aD3UVV_unrot, aAxisDir, aCos, aSin);
+      // Rotate point and all vectors
+      gp_Pnt aP = aCurveData.Point;
+      aP.Transform(aRotation);
+      aD1U.Transform(aRotation);
+      gp_Vec aD1V = aCurveData.D1;
+      aD1V.Transform(aRotation);
+      aD2U.Transform(aRotation);
+      gp_Vec aD2V = aCurveData.D2;
+      aD2V.Transform(aRotation);
+      aD2UV.Transform(aRotation);
+      aD3U.Transform(aRotation);
+      gp_Vec aD3V = aCurveData.D3;
+      aD3V.Transform(aRotation);
+      aD3UUV.Transform(aRotation);
+      aD3UVV.Transform(aRotation);
 
-      aResult.ChangeValue(i, j) =
-        {gp_Pnt(aRotatedPt + aAxisLoc), aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
   }
 
@@ -393,16 +315,6 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
   const int aNbU = myUParams.Size();
   const int aNbV = myVParams.Size();
 
-  // Precompute sin/cos
-  NCollection_Array1<double> aCosU(1, aNbU);
-  NCollection_Array1<double> aSinU(1, aNbU);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    const double aU = myUParams.Value(i);
-    aCosU.SetValue(i, std::cos(aU));
-    aSinU.SetValue(i, std::sin(aU));
-  }
-
   const gp_XYZ&              aAxisDir = myAxisDirection.XYZ();
   const gp_XYZ&              aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
@@ -417,12 +329,15 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
     // Pure V derivative = curve derivative, rotated
     NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theNV);
 
-    for (int j = 1; j <= aNbV; ++j)
+    for (int i = 1; i <= aNbU; ++i)
     {
-      const gp_Vec& aDV_unrot = aCurveDN.Value(j);
-      for (int i = 1; i <= aNbU; ++i)
+      gp_Trsf aRotation;
+      aRotation.SetRotation(myAxis, myUParams.Value(i));
+
+      for (int j = 1; j <= aNbV; ++j)
       {
-        const gp_Vec aDV = rotateVec(aDV_unrot, aAxisDir, aCosU.Value(i), aSinU.Value(i));
+        gp_Vec aDV = aCurveDN.Value(j);
+        aDV.Transform(aRotation);
         aResult.SetValue(i, j, aDV);
       }
     }
@@ -443,46 +358,49 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
       aCurveDV = aCurveEval.EvaluateGridDN(theNV);
     }
 
-    for (int j = 1; j <= aNbV; ++j)
+    for (int i = 1; i <= aNbU; ++i)
     {
-      gp_Vec aDV_unrot;
-      if (theNV == 0)
-      {
-        // For pure U derivative, the "vector" is the position from axis
-        aDV_unrot = gp_Vec(aCurvePts.Value(j).XYZ() - aAxisLoc);
-      }
-      else
-      {
-        aDV_unrot = aCurveDV.Value(j);
-      }
+      gp_Trsf aRotation;
+      aRotation.SetRotation(myAxis, myUParams.Value(i));
 
-      // Apply U derivative formula based on GeomEvaluator pattern:
-      // theNU % 4 == 1: Axis × DV
-      // theNU % 4 == 2: (Axis · DV) * Axis - DV
-      // theNU % 4 == 3: -(Axis × DV)
-      // theNU % 4 == 0: DV - (Axis · DV) * Axis
-      gp_Vec    aDN_unrot;
-      const int aModU = theNU % 4;
-      if (aModU == 1)
+      for (int j = 1; j <= aNbV; ++j)
       {
-        aDN_unrot = gp_Vec(aAxisDir.Crossed(aDV_unrot.XYZ()));
-      }
-      else if (aModU == 2)
-      {
-        aDN_unrot = gp_Vec(aAxisDir.Dot(aDV_unrot.XYZ()) * aAxisDir - aDV_unrot.XYZ());
-      }
-      else if (aModU == 3)
-      {
-        aDN_unrot = gp_Vec(aAxisDir.Crossed(aDV_unrot.XYZ())) * (-1.0);
-      }
-      else // aModU == 0
-      {
-        aDN_unrot = gp_Vec(aDV_unrot.XYZ() - aAxisDir.Dot(aDV_unrot.XYZ()) * aAxisDir);
-      }
+        gp_Vec aDV;
+        if (theNV == 0)
+        {
+          // For pure U derivative, the "vector" is the position from axis
+          aDV = gp_Vec(aCurvePts.Value(j).XYZ() - aAxisLoc);
+        }
+        else
+        {
+          aDV = aCurveDV.Value(j);
+        }
 
-      for (int i = 1; i <= aNbU; ++i)
-      {
-        const gp_Vec aDN = rotateVec(aDN_unrot, aAxisDir, aCosU.Value(i), aSinU.Value(i));
+        // Apply U derivative formula based on GeomEvaluator pattern:
+        // theNU % 4 == 1: Axis × DV
+        // theNU % 4 == 2: (Axis · DV) * Axis - DV
+        // theNU % 4 == 3: -(Axis × DV)
+        // theNU % 4 == 0: DV - (Axis · DV) * Axis
+        gp_Vec    aDN;
+        const int aModU = theNU % 4;
+        if (aModU == 1)
+        {
+          aDN = gp_Vec(aAxisDir.Crossed(aDV.XYZ()));
+        }
+        else if (aModU == 2)
+        {
+          aDN = gp_Vec(aAxisDir.Dot(aDV.XYZ()) * aAxisDir - aDV.XYZ());
+        }
+        else if (aModU == 3)
+        {
+          aDN = gp_Vec(aAxisDir.Crossed(aDV.XYZ())) * (-1.0);
+        }
+        else // aModU == 0
+        {
+          aDN = gp_Vec(aDV.XYZ() - aAxisDir.Dot(aDV.XYZ()) * aAxisDir);
+        }
+
+        aDN.Transform(aRotation);
         aResult.SetValue(i, j, aDN);
       }
     }

@@ -13,201 +13,8 @@
 
 #include <GeomGridEval_OffsetCurve.hxx>
 
+#include <Geom_OffsetCurveUtils.pxx>
 #include <GeomGridEval_Curve.hxx>
-
-namespace
-{
-//! Tolerance for detecting singular offset direction.
-constexpr double THE_OFFSET_TOL = 1e-10;
-
-//! Compute offset D0 from basis D1.
-//! P(u) = p(u) + Offset * Ndir / R
-//! with R = ||p' ^ V|| and Ndir = p' ^ direction
-inline void computeOffsetD0(gp_Pnt&       theP,
-                            const gp_Vec& theD1,
-                            const gp_XYZ& theDirXYZ,
-                            double        theOffset)
-{
-  gp_XYZ aNdir = theD1.XYZ().Crossed(theDirXYZ);
-  double aR    = aNdir.Modulus();
-  if (aR > THE_OFFSET_TOL)
-  {
-    theP.SetXYZ(theP.XYZ() + (theOffset / aR) * aNdir);
-  }
-}
-
-//! Compute offset D1 from basis D1, D2.
-//! P'(u) = p'(u) + (Offset / R^2) * (DNdir * R - Ndir * (Dr/R))
-inline void computeOffsetD1(gp_Pnt&       theP,
-                            gp_Vec&       theD1,
-                            const gp_Vec& theD2,
-                            const gp_XYZ& theDirXYZ,
-                            double        theOffset)
-{
-  gp_XYZ aNdir  = theD1.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aDNdir = theD2.XYZ().Crossed(theDirXYZ);
-  double aR2    = aNdir.SquareModulus();
-  double aR     = std::sqrt(aR2);
-  double aR3    = aR * aR2;
-  double aDr    = aNdir.Dot(aDNdir);
-
-  if (aR3 <= THE_OFFSET_TOL)
-  {
-    if (aR2 <= THE_OFFSET_TOL)
-    {
-      // Singular point - just return basis values
-      return;
-    }
-    // Alternative computation for stability
-    aDNdir.Multiply(aR);
-    aDNdir.Subtract(aNdir.Multiplied(aDr / aR));
-    aDNdir.Multiply(theOffset / aR2);
-  }
-  else
-  {
-    // Same computation as IICURV in EUCLID-IS for better stability
-    aDNdir.Multiply(theOffset / aR);
-    aDNdir.Subtract(aNdir.Multiplied(theOffset * aDr / aR3));
-  }
-
-  aNdir.Multiply(theOffset / aR);
-  theP.ChangeCoord().Add(aNdir);
-  theD1.Add(gp_Vec(aDNdir));
-}
-
-//! Compute offset D2 from basis D1, D2, D3.
-//! P"(u) = p"(u) + (Offset / R) * (D2Ndir - DNdir * (2 * Dr / R^2) +
-//!         Ndir * ((3 * Dr^2 / R^4) - (D2r / R^2)))
-inline void computeOffsetD2(gp_Pnt&       theP,
-                            gp_Vec&       theD1,
-                            gp_Vec&       theD2,
-                            const gp_Vec& theD3,
-                            const gp_XYZ& theDirXYZ,
-                            double        theOffset)
-{
-  gp_XYZ aNdir   = theD1.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aDNdir  = theD2.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aD2Ndir = theD3.XYZ().Crossed(theDirXYZ);
-  double aR2     = aNdir.SquareModulus();
-  double aR      = std::sqrt(aR2);
-  double aR3     = aR2 * aR;
-  double aR4     = aR2 * aR2;
-  double aR5     = aR3 * aR2;
-  double aDr     = aNdir.Dot(aDNdir);
-  double aD2r    = aNdir.Dot(aD2Ndir) + aDNdir.Dot(aDNdir);
-
-  if (aR5 <= THE_OFFSET_TOL)
-  {
-    if (aR4 <= THE_OFFSET_TOL)
-    {
-      // Singular point - just return basis values
-      return;
-    }
-    // Alternative computation for stability
-    aR4 = aR2 * aR2;
-    aD2Ndir.Subtract(aDNdir.Multiplied(2.0 * aDr / aR2));
-    aD2Ndir.Add(aNdir.Multiplied(((3.0 * aDr * aDr) / aR4) - (aD2r / aR2)));
-    aD2Ndir.Multiply(theOffset / aR);
-
-    aDNdir.Multiply(aR);
-    aDNdir.Subtract(aNdir.Multiplied(aDr / aR));
-    aDNdir.Multiply(theOffset / aR2);
-  }
-  else
-  {
-    // Same computation as IICURV in EUCLID-IS for better stability
-    aD2Ndir.Multiply(theOffset / aR);
-    aD2Ndir.Subtract(aDNdir.Multiplied(2.0 * theOffset * aDr / aR3));
-    aD2Ndir.Add(aNdir.Multiplied(theOffset * (((3.0 * aDr * aDr) / aR5) - (aD2r / aR3))));
-
-    aDNdir.Multiply(theOffset / aR);
-    aDNdir.Subtract(aNdir.Multiplied(theOffset * aDr / aR3));
-  }
-
-  aNdir.Multiply(theOffset / aR);
-  theP.ChangeCoord().Add(aNdir);
-  theD1.Add(gp_Vec(aDNdir));
-  theD2.Add(gp_Vec(aD2Ndir));
-}
-
-//! Compute offset D3 from basis D1, D2, D3, D4.
-//! P"'(u) = p"'(u) + (Offset / R) * (D3Ndir - (3 * Dr / R^2) * D2Ndir -
-//!          (3 * D2r / R^2) * DNdir + (3 * Dr^2 / R^4) * DNdir -
-//!          (D3r / R^2) * Ndir + (6 * Dr^2 / R^4) * Ndir +
-//!          (6 * Dr * D2r / R^4) * Ndir - (15 * Dr^3 / R^6) * Ndir
-inline void computeOffsetD3(gp_Pnt&       theP,
-                            gp_Vec&       theD1,
-                            gp_Vec&       theD2,
-                            gp_Vec&       theD3,
-                            const gp_Vec& theD4,
-                            const gp_XYZ& theDirXYZ,
-                            double        theOffset)
-{
-  gp_XYZ aNdir   = theD1.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aDNdir  = theD2.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aD2Ndir = theD3.XYZ().Crossed(theDirXYZ);
-  gp_XYZ aD3Ndir = theD4.XYZ().Crossed(theDirXYZ);
-  double aR2     = aNdir.SquareModulus();
-  double aR      = std::sqrt(aR2);
-  double aR3     = aR2 * aR;
-  double aR4     = aR2 * aR2;
-  double aR5     = aR3 * aR2;
-  double aR6     = aR3 * aR3;
-  double aR7     = aR5 * aR2;
-  double aDr     = aNdir.Dot(aDNdir);
-  double aD2r    = aNdir.Dot(aD2Ndir) + aDNdir.Dot(aDNdir);
-  double aD3r    = aNdir.Dot(aD3Ndir) + 3.0 * aDNdir.Dot(aD2Ndir);
-
-  if (aR7 <= THE_OFFSET_TOL)
-  {
-    if (aR6 <= THE_OFFSET_TOL)
-    {
-      // Singular point - just return basis values
-      return;
-    }
-    // Alternative computation for stability
-    aD3Ndir.Subtract(aD2Ndir.Multiplied(3.0 * aDr / aR2));
-    aD3Ndir.Subtract(aDNdir.Multiplied(3.0 * ((aD2r / aR2) + (aDr * aDr / aR4))));
-    aD3Ndir.Add(aNdir.Multiplied(6.0 * aDr * aDr / aR4 + 6.0 * aDr * aD2r / aR4
-                                 - 15.0 * aDr * aDr * aDr / aR6 - aD3r));
-    aD3Ndir.Multiply(theOffset / aR);
-
-    aR4 = aR2 * aR2;
-    aD2Ndir.Subtract(aDNdir.Multiplied(2.0 * aDr / aR2));
-    aD2Ndir.Subtract(aNdir.Multiplied((3.0 * aDr * aDr / aR4) - (aD2r / aR2)));
-    aD2Ndir.Multiply(theOffset / aR);
-
-    aDNdir.Multiply(aR);
-    aDNdir.Subtract(aNdir.Multiplied(aDr / aR));
-    aDNdir.Multiply(theOffset / aR2);
-  }
-  else
-  {
-    // Same computation as IICURV in EUCLID-IS for better stability
-    aD3Ndir.Divide(aR);
-    aD3Ndir.Subtract(aD2Ndir.Multiplied(3.0 * aDr / aR3));
-    aD3Ndir.Subtract(aDNdir.Multiplied((3.0 * ((aD2r / aR3) + (aDr * aDr) / aR5))));
-    aD3Ndir.Add(aNdir.Multiplied(6.0 * aDr * aDr / aR5 + 6.0 * aDr * aD2r / aR5
-                                 - 15.0 * aDr * aDr * aDr / aR7 - aD3r));
-    aD3Ndir.Multiply(theOffset);
-
-    aD2Ndir.Divide(aR);
-    aD2Ndir.Subtract(aDNdir.Multiplied(2.0 * aDr / aR3));
-    aD2Ndir.Subtract(aNdir.Multiplied((3.0 * aDr * aDr / aR5) - (aD2r / aR3)));
-    aD2Ndir.Multiply(theOffset);
-
-    aDNdir.Multiply(theOffset / aR);
-    aDNdir.Subtract(aNdir.Multiplied(theOffset * aDr / aR3));
-  }
-
-  aNdir.Multiply(theOffset / aR);
-  theP.ChangeCoord().Add(aNdir);
-  theD1.Add(gp_Vec(aDNdir));
-  theD2.Add(gp_Vec(aD2Ndir));
-  theD3.Add(gp_Vec(aD3Ndir));
-}
-
-} // namespace
 
 //==================================================================================================
 
@@ -232,6 +39,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OffsetCurve::EvaluateGrid() const
   }
 
   // Offset D0 requires basis D1 to compute offset direction
+  // Batch evaluate basis curve D1
   GeomGridEval_Curve aBasisEval;
   aBasisEval.Initialize(myBasis);
   aBasisEval.SetParams(myParams);
@@ -251,7 +59,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OffsetCurve::EvaluateGrid() const
   {
     const GeomGridEval::CurveD1& aBasis = aBasisD1.Value(i);
     gp_Pnt                       aP     = aBasis.Point;
-    computeOffsetD0(aP, aBasis.D1, aDirXYZ, myOffset);
+    // CalculateD0 - no direction change handling needed
+    Geom_OffsetCurveUtils::CalculateD0(aP, aBasis.D1, aDirXYZ, myOffset);
     aResult.SetValue(i, aP);
   }
 
@@ -268,6 +77,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OffsetCurve::EvaluateGrid
   }
 
   // Offset D1 requires basis D2
+  // Batch evaluate basis curve D2
   GeomGridEval_Curve aBasisEval;
   aBasisEval.Initialize(myBasis);
   aBasisEval.SetParams(myParams);
@@ -288,7 +98,8 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OffsetCurve::EvaluateGrid
     const GeomGridEval::CurveD2& aBasis = aBasisD2.Value(i);
     gp_Pnt                       aP     = aBasis.Point;
     gp_Vec                       aD1    = aBasis.D1;
-    computeOffsetD1(aP, aD1, aBasis.D2, aDirXYZ, myOffset);
+    // CalculateD1 - no direction change handling needed
+    Geom_OffsetCurveUtils::CalculateD1(aP, aD1, aBasis.D2, aDirXYZ, myOffset);
     aResult.ChangeValue(i) = {aP, aD1};
   }
 
@@ -305,6 +116,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
   }
 
   // Offset D2 requires basis D3
+  // Batch evaluate basis curve D3
   GeomGridEval_Curve aBasisEval;
   aBasisEval.Initialize(myBasis);
   aBasisEval.SetParams(myParams);
@@ -326,7 +138,23 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
     gp_Pnt                       aP     = aBasis.Point;
     gp_Vec                       aD1    = aBasis.D1;
     gp_Vec                       aD2    = aBasis.D2;
-    computeOffsetD2(aP, aD1, aD2, aBasis.D3, aDirXYZ, myOffset);
+    gp_Vec                       aD3    = aBasis.D3;
+
+    // Check for direction change at singular points
+    bool isDirectionChange = false;
+    if (aD1.SquareMagnitude() <= gp::Resolution())
+    {
+      gp_Vec aDummyD4;
+      isDirectionChange = Geom_OffsetCurveUtils::AdjustDerivative(*myBasis,
+                                                                  3,
+                                                                  myParams.Value(i),
+                                                                  aD1,
+                                                                  aD2,
+                                                                  aD3,
+                                                                  aDummyD4);
+    }
+
+    Geom_OffsetCurveUtils::CalculateD2(aP, aD1, aD2, aD3, aDirXYZ, myOffset, isDirectionChange);
     aResult.ChangeValue(i) = {aP, aD1, aD2};
   }
 
@@ -342,8 +170,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  // Offset D3 requires basis D4 - we need to use adaptor for D4 since we don't have batch D4
-  // But we can still batch evaluate D3 from basis and compute D4 individually
+  // Offset D3 requires basis D3 + D4
+  // Batch evaluate basis curve D3, get D4 individually
   GeomGridEval_Curve aBasisEval;
   aBasisEval.Initialize(myBasis);
   aBasisEval.SetParams(myParams);
@@ -366,11 +194,24 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
     gp_Vec                       aD1    = aBasis.D1;
     gp_Vec                       aD2    = aBasis.D2;
     gp_Vec                       aD3    = aBasis.D3;
+    gp_Vec                       aD4    = myBasis->DN(myParams.Value(i), 4);
 
-    // Get D4 from basis curve for this parameter
-    gp_Vec aD4 = myBasis->DN(myParams.Value(i), 4);
+    // Check for direction change at singular points
+    bool isDirectionChange = false;
+    if (aD1.SquareMagnitude() <= gp::Resolution())
+    {
+      isDirectionChange =
+        Geom_OffsetCurveUtils::AdjustDerivative(*myBasis, 4, myParams.Value(i), aD1, aD2, aD3, aD4);
+    }
 
-    computeOffsetD3(aP, aD1, aD2, aD3, aD4, aDirXYZ, myOffset);
+    Geom_OffsetCurveUtils::CalculateD3(aP,
+                                       aD1,
+                                       aD2,
+                                       aD3,
+                                       aD4,
+                                       aDirXYZ,
+                                       myOffset,
+                                       isDirectionChange);
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }
 
@@ -381,46 +222,52 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
 
 NCollection_Array1<gp_Vec> GeomGridEval_OffsetCurve::EvaluateGridDN(int theN) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  if (myBasis.IsNull() || myParams.IsEmpty() || theN < 1)
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNbParams = myParams.Size();
-  NCollection_Array1<gp_Vec> aResult(1, aNbParams);
-
-  // Reuse existing grid evaluators for orders 1-3
+  // Reuse optimized grid evaluators for orders 1-3
   if (theN == 1)
   {
-    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = EvaluateGridD1();
+    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid   = EvaluateGridD1();
+    const int                                 aNbParams = myParams.Size();
+    NCollection_Array1<gp_Vec>                aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD1Grid.Value(i).D1);
     }
+    return aResult;
   }
   else if (theN == 2)
   {
-    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid = EvaluateGridD2();
+    NCollection_Array1<GeomGridEval::CurveD2> aD2Grid   = EvaluateGridD2();
+    const int                                 aNbParams = myParams.Size();
+    NCollection_Array1<gp_Vec>                aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD2Grid.Value(i).D2);
     }
+    return aResult;
   }
   else if (theN == 3)
   {
-    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid = EvaluateGridD3();
+    NCollection_Array1<GeomGridEval::CurveD3> aD3Grid   = EvaluateGridD3();
+    const int                                 aNbParams = myParams.Size();
+    NCollection_Array1<gp_Vec>                aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD3Grid.Value(i).D3);
     }
+    return aResult;
   }
   else
   {
-    // For orders > 3, use geometry DN method directly
-    for (int i = 1; i <= aNbParams; ++i)
-    {
-      aResult.SetValue(i, myGeom->DN(myParams.Value(i), theN));
-    }
+    // For orders > 3, offset curve DN = basis curve DN (no offset contribution)
+    // Batch evaluate basis curve DN
+    GeomGridEval_Curve aBasisEval;
+    aBasisEval.Initialize(myBasis);
+    aBasisEval.SetParams(myParams);
+    return aBasisEval.EvaluateGridDN(theN);
   }
-  return aResult;
 }

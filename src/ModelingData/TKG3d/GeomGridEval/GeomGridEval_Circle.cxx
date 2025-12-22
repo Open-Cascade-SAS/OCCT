@@ -13,6 +13,8 @@
 
 #include <GeomGridEval_Circle.hxx>
 
+#include <gp_Circ.hxx>
+
 #include <cmath>
 
 //==================================================================================================
