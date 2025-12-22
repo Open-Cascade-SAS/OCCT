@@ -397,13 +397,12 @@ public: //! @name Ray-Box Intersection
   }
 
   //! Computes hit time of ray-box intersection using precomputed reciprocal direction.
-  //! This is the fastest variant - use when performing multiple ray-box tests with the same ray.
-  //! @param theRayOrigin ray origin point
-  //! @param theRayInvDirection precomputed reciprocal of ray direction (1/direction)
-  //! @param theBoxCMin minimum corner of the box
-  //! @param theBoxCMax maximum corner of the box
-  //! @param theTimeEnter time of ray entering the box
-  //! @param theTimeLeave time of ray leaving the box
+  //! @param[in] theRayOrigin ray origin point
+  //! @param[in] theRayInvDirection reciprocal of ray direction (1/direction)
+  //! @param[in] theBoxCMin minimum corner of the box
+  //! @param[in] theBoxCMax maximum corner of the box
+  //! @param[out] theTimeEnter time of ray entering the box
+  //! @param[out] theTimeLeave time of ray leaving the box
   //! @return true if ray intersects the box
   static Standard_Boolean RayBoxIntersection(const BVH_VecNt& theRayOrigin,
                                              const BVH_VecNt& theRayInvDirection,
@@ -413,9 +412,6 @@ public: //! @name Ray-Box Intersection
                                              T&               theTimeLeave,
                                              const bool /*theUseInvDir*/)
   {
-    // Compute intersection distances using multiplication instead of division
-    // When direction component is 0, InvDirection is infinity, which correctly
-    // produces infinity for the intersection times
     T aT1x = (theBoxCMin[0] - theRayOrigin[0]) * theRayInvDirection[0];
     T aT2x = (theBoxCMax[0] - theRayOrigin[0]) * theRayInvDirection[0];
 
