@@ -29,11 +29,13 @@
 #include <GeomGridEval_SurfaceOfRevolution.hxx>
 #include <GeomGridEval_Torus.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+#include <optional>
 #include <variant>
 
 //! @brief Unified grid evaluator for any 3D surface.
@@ -146,9 +148,31 @@ public:
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 
+  //! Returns true if a transformation is applied.
+  bool HasTransformation() const { return myTrsf.has_value(); }
+
+  //! Returns the transformation (empty if not set).
+  const std::optional<gp_Trsf>& GetTransformation() const { return myTrsf; }
+
 private:
-  EvaluatorVariant    myEvaluator;
-  GeomAbs_SurfaceType mySurfaceType;
+  //! Apply transformation to grid of points.
+  void applyTransformation(NCollection_Array2<gp_Pnt>& theGrid) const;
+
+  //! Apply transformation to grid of D1 results.
+  void applyTransformation(NCollection_Array2<GeomGridEval::SurfD1>& theGrid) const;
+
+  //! Apply transformation to grid of D2 results.
+  void applyTransformation(NCollection_Array2<GeomGridEval::SurfD2>& theGrid) const;
+
+  //! Apply transformation to grid of D3 results.
+  void applyTransformation(NCollection_Array2<GeomGridEval::SurfD3>& theGrid) const;
+
+  //! Apply transformation to grid of vectors.
+  void applyTransformation(NCollection_Array2<gp_Vec>& theGrid) const;
+
+  EvaluatorVariant       myEvaluator;
+  GeomAbs_SurfaceType    mySurfaceType;
+  std::optional<gp_Trsf> myTrsf; //!< Optional transformation for BRepAdaptor surfaces
 };
 
 #endif // _GeomGridEval_Surface_HeaderFile

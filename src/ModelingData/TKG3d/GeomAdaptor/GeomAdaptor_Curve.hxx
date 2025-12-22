@@ -153,10 +153,10 @@ public:
   Standard_EXPORT Standard_Real Period() const Standard_OVERRIDE;
 
   //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE final;
 
   //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE final;
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
@@ -165,7 +165,9 @@ public:
   //! if the curve is cut in interval of continuity at least C1, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const Standard_Real U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V) const Standard_OVERRIDE final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
@@ -177,7 +179,7 @@ public:
   Standard_EXPORT void D2(const Standard_Real U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
-                          gp_Vec&             V2) const Standard_OVERRIDE;
+                          gp_Vec&             V2) const Standard_OVERRIDE final;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -190,7 +192,7 @@ public:
                           gp_Pnt&             P,
                           gp_Vec&             V1,
                           gp_Vec&             V2,
-                          gp_Vec&             V3) const Standard_OVERRIDE;
+                          gp_Vec&             V3) const Standard_OVERRIDE final;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -200,7 +202,7 @@ public:
   //! else the derivatives are computed on the basis curve.
   //! Raised if N < 1.
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const Standard_OVERRIDE;
+                            const Standard_Integer N) const Standard_OVERRIDE final;
 
   //! returns the parametric resolution
   Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;

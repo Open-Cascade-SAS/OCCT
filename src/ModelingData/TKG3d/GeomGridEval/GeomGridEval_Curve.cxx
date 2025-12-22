@@ -46,7 +46,7 @@ Handle(Geom_Curve) ExtractBasisCurve(const Handle(Geom_Curve)& theCurve)
 
 void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 {
-  if (theCurve.IsInstance(STANDARD_TYPE(GeomAdaptor_Curve)))
+  if (theCurve.IsKind(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
     Initialize(static_cast<const GeomAdaptor_Curve&>(theCurve).Curve());
     return;
