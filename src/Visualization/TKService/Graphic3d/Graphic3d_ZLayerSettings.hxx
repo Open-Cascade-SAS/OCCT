@@ -182,7 +182,7 @@ struct Graphic3d_ZLayerSettings
 
   //! Set if the layer should be visible.
   //! @param theVisible If TRUE, the layer will be rendered; if FALSE, the layer will be hidden.
-  void SetVisible(Standard_Boolean theVisible) { myVisible = theVisible; }
+  void SetVisible(const Standard_Boolean theVisible) { myVisible = theVisible; }
 
   //! Dumps the content of me into the stream
   void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
