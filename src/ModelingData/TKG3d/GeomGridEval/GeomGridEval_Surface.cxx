@@ -20,109 +20,44 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 
+namespace
+{
+
+//! Extracts basis surface from potentially nested RectangularTrimmedSurface wrappers.
+//! @param theSurface input surface (may be RectangularTrimmedSurface or any other)
+//! @return the underlying basis surface, or theSurface if not a RectangularTrimmedSurface
+Handle(Geom_Surface) ExtractBasisSurface(const Handle(Geom_Surface)& theSurface)
+{
+  Handle(Geom_Surface) aResult = theSurface;
+  while (auto aTrimmed = Handle(Geom_RectangularTrimmedSurface)::DownCast(aResult))
+  {
+    aResult = aTrimmed->BasisSurface();
+  }
+  return aResult;
+}
+
+} // namespace
+
 //==================================================================================================
 
 void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 {
-  // Try to downcast to GeomAdaptor_Surface to get underlying Geom_Surface
-  const GeomAdaptor_Surface* aGeomAdaptor = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-  if (aGeomAdaptor != nullptr)
+  if (theSurface.IsInstance(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
-    const Handle(Geom_Surface)& aGeomSurf = aGeomAdaptor->Surface();
-    if (!aGeomSurf.IsNull())
-    {
-      Initialize(aGeomSurf);
-      return;
-    }
+    Initialize(Handle(GeomAdaptor_Surface)::DownCast(&theSurface)->Surface());
+    return;
   }
 
   // For non-GeomAdaptor or when Geom_Surface is not available,
   // use reference for the evaluator
   mySurfaceType = theSurface.GetType();
-
-  switch (mySurfaceType)
-  {
-    case GeomAbs_Plane: {
-      Handle(Geom_Plane) aGeomPlane = new Geom_Plane(theSurface.Plane());
-      myEvaluator.emplace<GeomGridEval_Plane>(aGeomPlane);
-      break;
-    }
-    case GeomAbs_Cylinder: {
-      Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(theSurface.Cylinder());
-      myEvaluator.emplace<GeomGridEval_Cylinder>(aGeomCyl);
-      break;
-    }
-    case GeomAbs_Sphere: {
-      Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(theSurface.Sphere());
-      myEvaluator.emplace<GeomGridEval_Sphere>(aGeomSphere);
-      break;
-    }
-    case GeomAbs_Cone: {
-      Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(theSurface.Cone());
-      myEvaluator.emplace<GeomGridEval_Cone>(aGeomCone);
-      break;
-    }
-    case GeomAbs_Torus: {
-      Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(theSurface.Torus());
-      myEvaluator.emplace<GeomGridEval_Torus>(aGeomTorus);
-      break;
-    }
-    case GeomAbs_BezierSurface: {
-      myEvaluator.emplace<GeomGridEval_BezierSurface>(theSurface.Bezier());
-      break;
-    }
-    case GeomAbs_BSplineSurface: {
-      myEvaluator.emplace<GeomGridEval_BSplineSurface>(theSurface.BSpline());
-      break;
-    }
-    case GeomAbs_SurfaceOfRevolution: {
-      // Need to get the underlying Geom_SurfaceOfRevolution
-      // For GeomAdaptor_Surface, we can try to get it from the adaptor
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr)
-      {
-        Handle(Geom_SurfaceOfRevolution) aRevSurf =
-          Handle(Geom_SurfaceOfRevolution)::DownCast(aGeomAdaptor->Surface());
-        if (!aRevSurf.IsNull())
-        {
-          myEvaluator.emplace<GeomGridEval_SurfaceOfRevolution>(aRevSurf);
-          break;
-        }
-      }
-      // Fallback to OtherSurface if we can't get the Geom_SurfaceOfRevolution
-      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
-      break;
-    }
-    case GeomAbs_SurfaceOfExtrusion: {
-      // Need to get the underlying Geom_SurfaceOfLinearExtrusion
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr)
-      {
-        Handle(Geom_SurfaceOfLinearExtrusion) anExtSurf =
-          Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aGeomAdaptor->Surface());
-        if (!anExtSurf.IsNull())
-        {
-          myEvaluator.emplace<GeomGridEval_SurfaceOfExtrusion>(anExtSurf);
-          break;
-        }
-      }
-      // Fallback to OtherSurface if we can't get the Geom_SurfaceOfLinearExtrusion
-      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
-      break;
-    }
-    default: {
-      // Fallback: store reference for OtherSurface
-      myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
-      break;
-    }
-  }
+  myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
 }
 
 //==================================================================================================
@@ -136,52 +71,55 @@ void GeomGridEval_Surface::Initialize(const Handle(Geom_Surface)& theSurface)
     return;
   }
 
-  if (auto aPlane = Handle(Geom_Plane)::DownCast(theSurface))
+  // Extract basis surface from potentially nested RectangularTrimmedSurface wrappers
+  Handle(Geom_Surface) aBasisSurf = ExtractBasisSurface(theSurface);
+
+  if (auto aPlane = Handle(Geom_Plane)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Plane;
     myEvaluator.emplace<GeomGridEval_Plane>(aPlane);
   }
-  else if (auto aCyl = Handle(Geom_CylindricalSurface)::DownCast(theSurface))
+  else if (auto aCyl = Handle(Geom_CylindricalSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Cylinder;
     myEvaluator.emplace<GeomGridEval_Cylinder>(aCyl);
   }
-  else if (auto aSphere = Handle(Geom_SphericalSurface)::DownCast(theSurface))
+  else if (auto aSphere = Handle(Geom_SphericalSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Sphere;
     myEvaluator.emplace<GeomGridEval_Sphere>(aSphere);
   }
-  else if (auto aCone = Handle(Geom_ConicalSurface)::DownCast(theSurface))
+  else if (auto aCone = Handle(Geom_ConicalSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Cone;
     myEvaluator.emplace<GeomGridEval_Cone>(aCone);
   }
-  else if (auto aTorus = Handle(Geom_ToroidalSurface)::DownCast(theSurface))
+  else if (auto aTorus = Handle(Geom_ToroidalSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_Torus;
     myEvaluator.emplace<GeomGridEval_Torus>(aTorus);
   }
-  else if (auto aBezier = Handle(Geom_BezierSurface)::DownCast(theSurface))
+  else if (auto aBezier = Handle(Geom_BezierSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_BezierSurface;
     myEvaluator.emplace<GeomGridEval_BezierSurface>(aBezier);
   }
-  else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface))
+  else if (auto aBSpline = Handle(Geom_BSplineSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_BSplineSurface;
     myEvaluator.emplace<GeomGridEval_BSplineSurface>(aBSpline);
   }
-  else if (auto anOffset = Handle(Geom_OffsetSurface)::DownCast(theSurface))
+  else if (auto anOffset = Handle(Geom_OffsetSurface)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_OffsetSurface;
     myEvaluator.emplace<GeomGridEval_OffsetSurface>(anOffset);
   }
-  else if (auto aRevolution = Handle(Geom_SurfaceOfRevolution)::DownCast(theSurface))
+  else if (auto aRevolution = Handle(Geom_SurfaceOfRevolution)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_SurfaceOfRevolution;
     myEvaluator.emplace<GeomGridEval_SurfaceOfRevolution>(aRevolution);
   }
-  else if (auto anExtrusion = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theSurface))
+  else if (auto anExtrusion = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(aBasisSurf))
   {
     mySurfaceType = GeomAbs_SurfaceOfExtrusion;
     myEvaluator.emplace<GeomGridEval_SurfaceOfExtrusion>(anExtrusion);

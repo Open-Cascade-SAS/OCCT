@@ -22,72 +22,40 @@
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+
+namespace
+{
+
+//! Extracts basis curve from potentially nested TrimmedCurve wrappers.
+//! @param theCurve input curve (may be TrimmedCurve or any other)
+//! @return the underlying basis curve, or theCurve if not a TrimmedCurve
+Handle(Geom_Curve) ExtractBasisCurve(const Handle(Geom_Curve)& theCurve)
+{
+  Handle(Geom_Curve) aResult = theCurve;
+  while (auto aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(aResult))
+  {
+    aResult = aTrimmed->BasisCurve();
+  }
+  return aResult;
+}
+
+} // namespace
 
 //==================================================================================================
 
 void GeomGridEval_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 {
-  // Try to downcast to GeomAdaptor_Curve to get underlying Geom_Curve
-  const GeomAdaptor_Curve* aGeomAdaptor = dynamic_cast<const GeomAdaptor_Curve*>(&theCurve);
-  if (aGeomAdaptor != nullptr)
+  if (theCurve.IsInstance(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
-    const Handle(Geom_Curve)& aGeomCurve = aGeomAdaptor->Curve();
-    if (!aGeomCurve.IsNull())
-    {
-      Initialize(aGeomCurve);
-      return;
-    }
+    Initialize(Handle(GeomAdaptor_Curve)::DownCast(&theCurve)->Curve());
+    return;
   }
 
   // For non-GeomAdaptor or when Geom_Curve is not available,
   // use reference for the evaluator
   myCurveType = theCurve.GetType();
-
-  switch (myCurveType)
-  {
-    case GeomAbs_Line: {
-      Handle(Geom_Line) aGeomLine = new Geom_Line(theCurve.Line());
-      myEvaluator.emplace<GeomGridEval_Line>(aGeomLine);
-      break;
-    }
-    case GeomAbs_Circle: {
-      Handle(Geom_Circle) aGeomCircle = new Geom_Circle(theCurve.Circle());
-      myEvaluator.emplace<GeomGridEval_Circle>(aGeomCircle);
-      break;
-    }
-    case GeomAbs_Ellipse: {
-      Handle(Geom_Ellipse) aGeomEllipse = new Geom_Ellipse(theCurve.Ellipse());
-      myEvaluator.emplace<GeomGridEval_Ellipse>(aGeomEllipse);
-      break;
-    }
-    case GeomAbs_Hyperbola: {
-      Handle(Geom_Hyperbola) aGeomHyperbola = new Geom_Hyperbola(theCurve.Hyperbola());
-      myEvaluator.emplace<GeomGridEval_Hyperbola>(aGeomHyperbola);
-      break;
-    }
-    case GeomAbs_Parabola: {
-      Handle(Geom_Parabola) aGeomParabola = new Geom_Parabola(theCurve.Parabola());
-      myEvaluator.emplace<GeomGridEval_Parabola>(aGeomParabola);
-      break;
-    }
-    case GeomAbs_BezierCurve: {
-      myEvaluator.emplace<GeomGridEval_BezierCurve>(theCurve.Bezier());
-      break;
-    }
-    case GeomAbs_BSplineCurve: {
-      myEvaluator.emplace<GeomGridEval_BSplineCurve>(theCurve.BSpline());
-      break;
-    }
-    case GeomAbs_OffsetCurve: {
-      myEvaluator.emplace<GeomGridEval_OffsetCurve>(theCurve.OffsetCurve());
-      break;
-    }
-    default: {
-      // Fallback: store reference for OtherCurve
-      myEvaluator.emplace<GeomGridEval_OtherCurve>(theCurve);
-      break;
-    }
-  }
+  myEvaluator.emplace<GeomGridEval_OtherCurve>(theCurve);
 }
 
 //==================================================================================================
@@ -101,42 +69,45 @@ void GeomGridEval_Curve::Initialize(const Handle(Geom_Curve)& theCurve)
     return;
   }
 
-  if (auto aLine = Handle(Geom_Line)::DownCast(theCurve))
+  // Extract basis curve from potentially nested TrimmedCurve wrappers
+  Handle(Geom_Curve) aBasisCurve = ExtractBasisCurve(theCurve);
+
+  if (auto aLine = Handle(Geom_Line)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_Line;
     myEvaluator.emplace<GeomGridEval_Line>(aLine);
   }
-  else if (auto aCircle = Handle(Geom_Circle)::DownCast(theCurve))
+  else if (auto aCircle = Handle(Geom_Circle)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_Circle;
     myEvaluator.emplace<GeomGridEval_Circle>(aCircle);
   }
-  else if (auto anEllipse = Handle(Geom_Ellipse)::DownCast(theCurve))
+  else if (auto anEllipse = Handle(Geom_Ellipse)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_Ellipse;
     myEvaluator.emplace<GeomGridEval_Ellipse>(anEllipse);
   }
-  else if (auto aHyperbola = Handle(Geom_Hyperbola)::DownCast(theCurve))
+  else if (auto aHyperbola = Handle(Geom_Hyperbola)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_Hyperbola;
     myEvaluator.emplace<GeomGridEval_Hyperbola>(aHyperbola);
   }
-  else if (auto aParabola = Handle(Geom_Parabola)::DownCast(theCurve))
+  else if (auto aParabola = Handle(Geom_Parabola)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_Parabola;
     myEvaluator.emplace<GeomGridEval_Parabola>(aParabola);
   }
-  else if (auto aBezier = Handle(Geom_BezierCurve)::DownCast(theCurve))
+  else if (auto aBezier = Handle(Geom_BezierCurve)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_BezierCurve;
     myEvaluator.emplace<GeomGridEval_BezierCurve>(aBezier);
   }
-  else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve))
+  else if (auto aBSpline = Handle(Geom_BSplineCurve)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_BSplineCurve;
     myEvaluator.emplace<GeomGridEval_BSplineCurve>(aBSpline);
   }
-  else if (auto anOffset = Handle(Geom_OffsetCurve)::DownCast(theCurve))
+  else if (auto anOffset = Handle(Geom_OffsetCurve)::DownCast(aBasisCurve))
   {
     myCurveType = GeomAbs_OffsetCurve;
     myEvaluator.emplace<GeomGridEval_OffsetCurve>(anOffset);
