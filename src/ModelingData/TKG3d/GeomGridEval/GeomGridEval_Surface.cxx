@@ -13,6 +13,7 @@
 
 #include <GeomGridEval_Surface.hxx>
 
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <GeomAdaptor_SurfaceOfRevolution.hxx>
@@ -67,6 +68,48 @@ Handle(Geom_Surface) CreateGeomSurfaceFromAdaptor(const Adaptor3d_Surface& theSu
   }
 }
 
+//! Extracts Geom_Curve from Adaptor3d_Curve if possible.
+//! @param theCurve the curve adaptor
+//! @return Geom_Curve handle, or null if not available
+Handle(Geom_Curve) ExtractGeomCurve(const Handle(Adaptor3d_Curve)& theCurve)
+{
+  if (theCurve.IsNull())
+  {
+    return Handle(Geom_Curve)();
+  }
+  if (auto aGeomAdaptor = Handle(GeomAdaptor_Curve)::DownCast(theCurve))
+  {
+    return aGeomAdaptor->Curve();
+  }
+  return Handle(Geom_Curve)();
+}
+
+//! Creates Geom_SurfaceOfRevolution from adaptor data.
+//! @param theAdaptor the revolution surface adaptor
+//! @return Geom_SurfaceOfRevolution handle, or null if curve not available
+Handle(Geom_Surface) CreateRevolutionSurface(const GeomAdaptor_SurfaceOfRevolution& theAdaptor)
+{
+  Handle(Geom_Curve) aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
+  if (aCurve.IsNull())
+  {
+    return Handle(Geom_Surface)();
+  }
+  return new Geom_SurfaceOfRevolution(aCurve, theAdaptor.AxeOfRevolution());
+}
+
+//! Creates Geom_SurfaceOfLinearExtrusion from adaptor data.
+//! @param theAdaptor the extrusion surface adaptor
+//! @return Geom_SurfaceOfLinearExtrusion handle, or null if curve not available
+Handle(Geom_Surface) CreateExtrusionSurface(const GeomAdaptor_SurfaceOfLinearExtrusion& theAdaptor)
+{
+  Handle(Geom_Curve) aCurve = ExtractGeomCurve(theAdaptor.BasisCurve());
+  if (aCurve.IsNull())
+  {
+    return Handle(Geom_Surface)();
+  }
+  return new Geom_SurfaceOfLinearExtrusion(aCurve, theAdaptor.Direction());
+}
+
 } // namespace
 
 //==================================================================================================
@@ -115,6 +158,14 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
       return;
     }
 
+    // Try to recreate Geom_SurfaceOfRevolution from axis and basis curve
+    aGeomSurf = CreateRevolutionSurface(aRevAdaptor);
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
     // No geometry available - use adaptor directly as fallback
     mySurfaceType = theSurface.GetType();
     myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
@@ -136,6 +187,14 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
     // Try the stored Surface() handle
     aGeomSurf = aExtAdaptor.Surface();
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // Try to recreate Geom_SurfaceOfLinearExtrusion from direction and basis curve
+    aGeomSurf = CreateExtrusionSurface(aExtAdaptor);
     if (!aGeomSurf.IsNull())
     {
       Initialize(aGeomSurf);
