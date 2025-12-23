@@ -13,6 +13,8 @@
 
 #include <GeomGridEval_SurfaceOfExtrusion.hxx>
 
+#include <Geom_ExtrusionUtils.pxx>
+
 //==================================================================================================
 
 GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
@@ -77,11 +79,13 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid() const
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    const gp_XYZ& aCurvePt = aCurvePoints.Value(i).XYZ();
+    const gp_Pnt& aCurvePt = aCurvePoints.Value(i);
     for (int j = 1; j <= aNbV; ++j)
     {
       const double aV = myVParams.Value(j);
-      aResult.SetValue(i, j, gp_Pnt(aCurvePt + aV * aDirXYZ));
+      gp_Pnt       aP;
+      Geom_ExtrusionUtils::CalculateD0(aCurvePt, aV, aDirXYZ, aP);
+      aResult.SetValue(i, j, aP);
     }
   }
 
@@ -113,19 +117,25 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
 
   // For extrusion: D1U = C'(u), D1V = Direction (constant)
   const gp_XYZ                             aDirXYZ = myDirection.XYZ();
-  const gp_Vec                             aD1V(myDirection);
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
     const GeomGridEval::CurveD1& aCurveData = aCurveD1.Value(i);
-    const gp_XYZ&                aCurvePt   = aCurveData.Point.XYZ();
-    const gp_Vec&                aD1U       = aCurveData.D1;
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV           = myVParams.Value(j);
-      aResult.ChangeValue(i, j) = {gp_Pnt(aCurvePt + aV * aDirXYZ), aD1U, aD1V};
+      const double aV = myVParams.Value(j);
+      gp_Pnt       aP;
+      gp_Vec       aD1U, aD1V;
+      Geom_ExtrusionUtils::CalculateD1(aCurveData.Point,
+                                       aCurveData.D1,
+                                       aV,
+                                       aDirXYZ,
+                                       aP,
+                                       aD1U,
+                                       aD1V);
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V};
     }
   }
 
@@ -158,21 +168,29 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
   // For extrusion: D1U = C'(u), D1V = Direction
   // D2U = C''(u), D2V = 0, D2UV = 0
   const gp_XYZ                             aDirXYZ = myDirection.XYZ();
-  const gp_Vec                             aD1V(myDirection);
-  const gp_Vec                             aZero(0.0, 0.0, 0.0);
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
     const GeomGridEval::CurveD2& aCurveData = aCurveD2.Value(i);
-    const gp_XYZ&                aCurvePt   = aCurveData.Point.XYZ();
-    const gp_Vec&                aD1U       = aCurveData.D1;
-    const gp_Vec&                aD2U       = aCurveData.D2;
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV           = myVParams.Value(j);
-      aResult.ChangeValue(i, j) = {gp_Pnt(aCurvePt + aV * aDirXYZ), aD1U, aD1V, aD2U, aZero, aZero};
+      const double aV = myVParams.Value(j);
+      gp_Pnt       aP;
+      gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV;
+      Geom_ExtrusionUtils::CalculateD2(aCurveData.Point,
+                                       aCurveData.D1,
+                                       aCurveData.D2,
+                                       aV,
+                                       aDirXYZ,
+                                       aP,
+                                       aD1U,
+                                       aD1V,
+                                       aD2U,
+                                       aD2V,
+                                       aD2UV);
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
 
@@ -206,31 +224,34 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
   // D2U = C''(u), D2V = 0, D2UV = 0
   // D3U = C'''(u), D3V = 0, D3UUV = 0, D3UVV = 0
   const gp_XYZ                             aDirXYZ = myDirection.XYZ();
-  const gp_Vec                             aD1V(myDirection);
-  const gp_Vec                             aZero(0.0, 0.0, 0.0);
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
     const GeomGridEval::CurveD3& aCurveData = aCurveD3.Value(i);
-    const gp_XYZ&                aCurvePt   = aCurveData.Point.XYZ();
-    const gp_Vec&                aD1U       = aCurveData.D1;
-    const gp_Vec&                aD2U       = aCurveData.D2;
-    const gp_Vec&                aD3U       = aCurveData.D3;
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV           = myVParams.Value(j);
-      aResult.ChangeValue(i, j) = {gp_Pnt(aCurvePt + aV * aDirXYZ),
-                                   aD1U,
-                                   aD1V,
-                                   aD2U,
-                                   aZero,
-                                   aZero,
-                                   aD3U,
-                                   aZero,
-                                   aZero,
-                                   aZero};
+      const double aV = myVParams.Value(j);
+      gp_Pnt       aP;
+      gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      Geom_ExtrusionUtils::CalculateD3(aCurveData.Point,
+                                       aCurveData.D1,
+                                       aCurveData.D2,
+                                       aCurveData.D3,
+                                       aV,
+                                       aDirXYZ,
+                                       aP,
+                                       aD1U,
+                                       aD1V,
+                                       aD2U,
+                                       aD2V,
+                                       aD2UV,
+                                       aD3U,
+                                       aD3V,
+                                       aD3UUV,
+                                       aD3UVV);
+      aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
   }
 
@@ -253,49 +274,12 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(int t
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
-  // For extrusion surface:
-  // - DN with theNV >= 2: always zero (direction is constant)
-  // - DN with theNV == 1 and theNU == 0: Direction
-  // - DN with theNV == 0: curve derivative C^(theNU)(u)
-  if (theNV >= 2)
+  const gp_XYZ aDirXYZ = myDirection.XYZ();
+
+  // For theNV == 0: need curve derivative, otherwise use CalculateDN directly
+  if (theNV == 0)
   {
-    // All higher V derivatives are zero
-    const gp_Vec aZero(0.0, 0.0, 0.0);
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      for (int j = 1; j <= aNbV; ++j)
-      {
-        aResult.SetValue(i, j, aZero);
-      }
-    }
-  }
-  else if (theNV == 1 && theNU == 0)
-  {
-    // D0V = Direction
-    const gp_Vec aDir(myDirection);
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      for (int j = 1; j <= aNbV; ++j)
-      {
-        aResult.SetValue(i, j, aDir);
-      }
-    }
-  }
-  else if (theNV == 1)
-  {
-    // Mixed derivatives with theNV == 1 are all zero (direction is constant)
-    const gp_Vec aZero(0.0, 0.0, 0.0);
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      for (int j = 1; j <= aNbV; ++j)
-      {
-        aResult.SetValue(i, j, aZero);
-      }
-    }
-  }
-  else
-  {
-    // theNV == 0: pure U derivative = curve derivative
+    // Pure U derivative = curve derivative
     GeomGridEval_Curve aCurveEval;
     aCurveEval.Initialize(myBasisCurve);
     aCurveEval.SetParams(myUParams);
@@ -304,7 +288,19 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(int t
 
     for (int i = 1; i <= aNbU; ++i)
     {
-      const gp_Vec& aDN = aCurveDN.Value(i);
+      const gp_Vec aDN = Geom_ExtrusionUtils::CalculateDN(aCurveDN.Value(i), aDirXYZ, theNU, theNV);
+      for (int j = 1; j <= aNbV; ++j)
+      {
+        aResult.SetValue(i, j, aDN);
+      }
+    }
+  }
+  else
+  {
+    // For theNV >= 1: result doesn't depend on curve, use CalculateDN with zero vector
+    const gp_Vec aDN = Geom_ExtrusionUtils::CalculateDN(gp_Vec(), aDirXYZ, theNU, theNV);
+    for (int i = 1; i <= aNbU; ++i)
+    {
       for (int j = 1; j <= aNbV; ++j)
       {
         aResult.SetValue(i, j, aDN);

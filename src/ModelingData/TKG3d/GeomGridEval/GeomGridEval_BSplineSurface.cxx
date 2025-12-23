@@ -189,7 +189,7 @@ void GeomGridEval_BSplineSurface::prepare() const
     const double aSpanMid     = aSpanStart + aSpanHalfLen;
     const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
 
-    myUParams.SetValue(i - 1, ParamWithSpan{myRawUParams.Value(i), aLocalParam, aSpanIdx});
+    myUParams.SetValue(i - 1, ParamWithSpan{aParam, aLocalParam, aSpanIdx});
   }
 
   // Process V parameters
@@ -207,7 +207,7 @@ void GeomGridEval_BSplineSurface::prepare() const
     const double aSpanMid     = aSpanStart + aSpanHalfLen;
     const double aLocalParam  = (aParam - aSpanMid) / aSpanHalfLen;
 
-    myVParams.SetValue(j - 1, ParamWithSpan{myRawVParams.Value(j), aLocalParam, aSpanIdx});
+    myVParams.SetValue(j - 1, ParamWithSpan{aParam, aLocalParam, aSpanIdx});
   }
 
   // Compute span ranges
