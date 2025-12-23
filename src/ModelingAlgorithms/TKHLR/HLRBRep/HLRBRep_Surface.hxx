@@ -50,6 +50,9 @@ public:
   //! Returns the 3D Surface.
   BRepAdaptor_Surface& Surface();
 
+  //! Returns the 3D Surface (const version).
+  const BRepAdaptor_Surface& Surface() const;
+
   //! Sets the 3D Surface to be projected.
   Standard_EXPORT void Surface(const TopoDS_Face& F);
 
@@ -76,12 +79,12 @@ public:
   //! If necessary, breaks the surface in U intervals of
   //! continuity <S>. And returns the number of
   //! intervals.
-  Standard_Integer NbUIntervals(const GeomAbs_Shape S);
+  Standard_Integer NbUIntervals(const GeomAbs_Shape S) const;
 
   //! If necessary, breaks the surface in V intervals of
   //! continuity <S>. And returns the number of
   //! intervals.
-  Standard_Integer NbVIntervals(const GeomAbs_Shape S);
+  Standard_Integer NbVIntervals(const GeomAbs_Shape S) const;
 
   GeomAbs_Shape UIntervalContinuity() const;
 

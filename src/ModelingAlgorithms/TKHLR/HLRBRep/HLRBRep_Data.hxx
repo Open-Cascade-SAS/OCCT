@@ -45,6 +45,7 @@ class BRepTopAdaptor_TopolTool;
 class gp_Dir2d;
 class HLRBRep_EdgeData;
 class HLRBRep_FaceData;
+class HLRBRep_Surface;
 class IntRes2d_IntersectionPoint;
 class TableauRejection;
 
@@ -241,7 +242,7 @@ private:
   HLRBRep_FaceIterator               myFaceItr2;
   Standard_Integer                   iFace;
   HLRBRep_FaceData*                  iFaceData;
-  Standard_Address                   iFaceGeom;
+  HLRBRep_Surface*                   iFaceGeom;
   HLRAlgo_EdgesBlock::MinMaxIndices* iFaceMinMax;
   GeomAbs_SurfaceType                iFaceType;
   Standard_Boolean                   iFaceBack;

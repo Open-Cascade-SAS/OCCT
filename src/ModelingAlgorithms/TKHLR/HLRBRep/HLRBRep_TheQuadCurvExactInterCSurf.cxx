@@ -18,6 +18,7 @@
 
 #include <gp_Lin.hxx>
 #include <HLRBRep_LineTool.hxx>
+#include <HLRBRep_Surface.hxx>
 #include <HLRBRep_SurfaceTool.hxx>
 #include <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
 
@@ -25,13 +26,13 @@
 
 //==================================================================================================
 
-HLRBRep_TheQuadCurvExactInterCSurf::HLRBRep_TheQuadCurvExactInterCSurf(const Standard_Address& S,
-                                                                       const gp_Lin&           C)
+HLRBRep_TheQuadCurvExactInterCSurf::HLRBRep_TheQuadCurvExactInterCSurf(HLRBRep_Surface* S,
+                                                                       const gp_Lin&    C)
     : nbpnts(-1),
       nbintv(-1)
 {
   IntCurveSurface_QuadricCurveExactInterUtils::PerformIntersection<
-    Standard_Address,
+    HLRBRep_Surface*,
     HLRBRep_SurfaceTool,
     gp_Lin,
     HLRBRep_LineTool,

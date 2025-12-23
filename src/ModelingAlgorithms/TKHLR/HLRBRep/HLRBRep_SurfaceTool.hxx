@@ -36,134 +36,139 @@ class gp_Pnt;
 class gp_Vec;
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
+class HLRBRep_Surface;
 
 class HLRBRep_SurfaceTool
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  static Standard_Real FirstUParameter(const Standard_Address S);
+  static double FirstUParameter(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real FirstVParameter(const Standard_Address S);
+  static double FirstVParameter(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real LastUParameter(const Standard_Address S);
+  static double LastUParameter(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real LastVParameter(const Standard_Address S);
+  static double LastVParameter(const HLRBRep_Surface* theSurf);
 
-  static Standard_Integer NbUIntervals(const Standard_Address S, const GeomAbs_Shape Sh);
+  static int NbUIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh);
 
-  static Standard_Integer NbVIntervals(const Standard_Address S, const GeomAbs_Shape Sh);
+  static int NbVIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh);
 
-  static void UIntervals(const Standard_Address S, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
+  static void UIntervals(const HLRBRep_Surface* theSurf,
+                         TColStd_Array1OfReal&  theT,
+                         const GeomAbs_Shape    theSh);
 
-  static void VIntervals(const Standard_Address S, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
+  static void VIntervals(const HLRBRep_Surface* theSurf,
+                         TColStd_Array1OfReal&  theT,
+                         const GeomAbs_Shape    theSh);
 
-  //! If <First> >= <Last>
-  static Handle(Adaptor3d_Surface) UTrim(const Standard_Address S,
-                                         const Standard_Real    First,
-                                         const Standard_Real    Last,
-                                         const Standard_Real    Tol);
+  //! If <theFirst> >= <theLast>
+  static Handle(Adaptor3d_Surface) UTrim(const HLRBRep_Surface* theSurf,
+                                         const double           theFirst,
+                                         const double           theLast,
+                                         const double           theTol);
 
-  //! If <First> >= <Last>
-  static Handle(Adaptor3d_Surface) VTrim(const Standard_Address S,
-                                         const Standard_Real    First,
-                                         const Standard_Real    Last,
-                                         const Standard_Real    Tol);
+  //! If <theFirst> >= <theLast>
+  static Handle(Adaptor3d_Surface) VTrim(const HLRBRep_Surface* theSurf,
+                                         const double           theFirst,
+                                         const double           theLast,
+                                         const double           theTol);
 
-  static Standard_Boolean IsUClosed(const Standard_Address S);
+  static bool IsUClosed(const HLRBRep_Surface* theSurf);
 
-  static Standard_Boolean IsVClosed(const Standard_Address S);
+  static bool IsVClosed(const HLRBRep_Surface* theSurf);
 
-  static Standard_Boolean IsUPeriodic(const Standard_Address S);
+  static bool IsUPeriodic(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real UPeriod(const Standard_Address S);
+  static double UPeriod(const HLRBRep_Surface* theSurf);
 
-  static Standard_Boolean IsVPeriodic(const Standard_Address S);
+  static bool IsVPeriodic(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real VPeriod(const Standard_Address S);
+  static double VPeriod(const HLRBRep_Surface* theSurf);
 
-  static gp_Pnt Value(const Standard_Address S, const Standard_Real u, const Standard_Real v);
+  static gp_Pnt Value(const HLRBRep_Surface* theSurf, const double theU, const double theV);
 
-  static void D0(const Standard_Address S, const Standard_Real u, const Standard_Real v, gp_Pnt& P);
+  static void D0(const HLRBRep_Surface* theSurf, const double theU, const double theV, gp_Pnt& theP);
 
-  static void D1(const Standard_Address S,
-                 const Standard_Real    u,
-                 const Standard_Real    v,
-                 gp_Pnt&                P,
-                 gp_Vec&                D1u,
-                 gp_Vec&                D1v);
+  static void D1(const HLRBRep_Surface* theSurf,
+                 const double           theU,
+                 const double           theV,
+                 gp_Pnt&                theP,
+                 gp_Vec&                theD1U,
+                 gp_Vec&                theD1V);
 
-  static void D2(const Standard_Address S,
-                 const Standard_Real    u,
-                 const Standard_Real    v,
-                 gp_Pnt&                P,
-                 gp_Vec&                D1U,
-                 gp_Vec&                D1V,
-                 gp_Vec&                D2U,
-                 gp_Vec&                D2V,
-                 gp_Vec&                D2UV);
+  static void D2(const HLRBRep_Surface* theSurf,
+                 const double           theU,
+                 const double           theV,
+                 gp_Pnt&                theP,
+                 gp_Vec&                theD1U,
+                 gp_Vec&                theD1V,
+                 gp_Vec&                theD2U,
+                 gp_Vec&                theD2V,
+                 gp_Vec&                theD2UV);
 
-  static void D3(const Standard_Address S,
-                 const Standard_Real    u,
-                 const Standard_Real    v,
-                 gp_Pnt&                P,
-                 gp_Vec&                D1U,
-                 gp_Vec&                D1V,
-                 gp_Vec&                D2U,
-                 gp_Vec&                D2V,
-                 gp_Vec&                D2UV,
-                 gp_Vec&                D3U,
-                 gp_Vec&                D3V,
-                 gp_Vec&                D3UUV,
-                 gp_Vec&                D3UVV);
+  static void D3(const HLRBRep_Surface* theSurf,
+                 const double           theU,
+                 const double           theV,
+                 gp_Pnt&                theP,
+                 gp_Vec&                theD1U,
+                 gp_Vec&                theD1V,
+                 gp_Vec&                theD2U,
+                 gp_Vec&                theD2V,
+                 gp_Vec&                theD2UV,
+                 gp_Vec&                theD3U,
+                 gp_Vec&                theD3V,
+                 gp_Vec&                theD3UUV,
+                 gp_Vec&                theD3UVV);
 
-  static gp_Vec DN(const Standard_Address S,
-                   const Standard_Real    u,
-                   const Standard_Real    v,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+  static gp_Vec DN(const HLRBRep_Surface* theSurf,
+                   const double           theU,
+                   const double           theV,
+                   const int              theNu,
+                   const int              theNv);
 
-  static Standard_Real UResolution(const Standard_Address S, const Standard_Real R3d);
+  static double UResolution(const HLRBRep_Surface* theSurf, const double theR3d);
 
-  static Standard_Real VResolution(const Standard_Address S, const Standard_Real R3d);
+  static double VResolution(const HLRBRep_Surface* theSurf, const double theR3d);
 
-  static GeomAbs_SurfaceType GetType(const Standard_Address S);
+  static GeomAbs_SurfaceType GetType(const HLRBRep_Surface* theSurf);
 
-  static gp_Pln Plane(const Standard_Address S);
+  static gp_Pln Plane(const HLRBRep_Surface* theSurf);
 
-  static gp_Cylinder Cylinder(const Standard_Address S);
+  static gp_Cylinder Cylinder(const HLRBRep_Surface* theSurf);
 
-  static gp_Cone Cone(const Standard_Address S);
+  static gp_Cone Cone(const HLRBRep_Surface* theSurf);
 
-  static gp_Torus Torus(const Standard_Address S);
+  static gp_Torus Torus(const HLRBRep_Surface* theSurf);
 
-  static gp_Sphere Sphere(const Standard_Address S);
+  static gp_Sphere Sphere(const HLRBRep_Surface* theSurf);
 
-  static Handle(Geom_BezierSurface) Bezier(const Standard_Address S);
+  static Handle(Geom_BezierSurface) Bezier(const HLRBRep_Surface* theSurf);
 
-  static Handle(Geom_BSplineSurface) BSpline(const Standard_Address S);
+  static Handle(Geom_BSplineSurface) BSpline(const HLRBRep_Surface* theSurf);
 
-  static gp_Ax1 AxeOfRevolution(const Standard_Address S);
+  static gp_Ax1 AxeOfRevolution(const HLRBRep_Surface* theSurf);
 
-  static gp_Dir Direction(const Standard_Address S);
+  static gp_Dir Direction(const HLRBRep_Surface* theSurf);
 
-  static Handle(Adaptor3d_Curve) BasisCurve(const Standard_Address S);
+  static Handle(Adaptor3d_Curve) BasisCurve(const HLRBRep_Surface* theSurf);
 
-  static Handle(Adaptor3d_Surface) BasisSurface(const Standard_Address S);
+  static Handle(Adaptor3d_Surface) BasisSurface(const HLRBRep_Surface* theSurf);
 
-  static Standard_Real OffsetValue(const Standard_Address S);
+  static double OffsetValue(const HLRBRep_Surface* theSurf);
 
-  Standard_EXPORT static Standard_Integer NbSamplesU(const Standard_Address S);
+  Standard_EXPORT static int NbSamplesU(const HLRBRep_Surface* theSurf);
 
-  Standard_EXPORT static Standard_Integer NbSamplesV(const Standard_Address S);
+  Standard_EXPORT static int NbSamplesV(const HLRBRep_Surface* theSurf);
 
-  Standard_EXPORT static Standard_Integer NbSamplesU(const Standard_Address S,
-                                                     const Standard_Real    u1,
-                                                     const Standard_Real    u2);
+  Standard_EXPORT static int NbSamplesU(const HLRBRep_Surface* theSurf,
+                                        const double           theU1,
+                                        const double           theU2);
 
-  Standard_EXPORT static Standard_Integer NbSamplesV(const Standard_Address S,
-                                                     const Standard_Real    v1,
-                                                     const Standard_Real    v2);
+  Standard_EXPORT static int NbSamplesV(const HLRBRep_Surface* theSurf,
+                                        const double           theV1,
+                                        const double           theV2);
 
 protected:
 private:

@@ -21,9 +21,11 @@
 #include <HLRBRep_LineTool.hxx>
 #include <math_Matrix.hxx>
 #include <gp_Pnt.hxx>
+#include <HLRBRep_Surface.hxx>
 
-#define ThePSurface Standard_Address
-#define ThePSurface_hxx <Standard_Address.hxx>
+// Use typedef instead of #define for correct const semantics with pointers
+typedef HLRBRep_Surface* ThePSurface;
+#define ThePSurface_hxx <HLRBRep_Surface.hxx>
 #define ThePSurfaceTool HLRBRep_SurfaceTool
 #define ThePSurfaceTool_hxx <HLRBRep_SurfaceTool.hxx>
 #define TheCurve gp_Lin
