@@ -14,6 +14,8 @@
 #include <GeomGridEval_Surface.hxx>
 
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -43,6 +45,28 @@ Handle(Geom_Surface) ExtractBasisSurface(const Handle(Geom_Surface)& theSurface)
   return aResult;
 }
 
+//! Creates Geom_Surface from adaptor's elementary surface type.
+//! @param theSurface the adaptor to extract geometry from
+//! @return Geom_Surface handle, or null if type is not elementary
+Handle(Geom_Surface) CreateGeomSurfaceFromAdaptor(const Adaptor3d_Surface& theSurface)
+{
+  switch (theSurface.GetType())
+  {
+    case GeomAbs_Plane:
+      return new Geom_Plane(theSurface.Plane());
+    case GeomAbs_Cylinder:
+      return new Geom_CylindricalSurface(theSurface.Cylinder());
+    case GeomAbs_Cone:
+      return new Geom_ConicalSurface(theSurface.Cone());
+    case GeomAbs_Sphere:
+      return new Geom_SphericalSurface(theSurface.Sphere());
+    case GeomAbs_Torus:
+      return new Geom_ToroidalSurface(theSurface.Torus());
+    default:
+      return Handle(Geom_Surface)();
+  }
+}
+
 } // namespace
 
 //==================================================================================================
@@ -70,15 +94,93 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     return;
   }
 
-  // Check for plain GeomAdaptor_Surface (without transformation)
-  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  // Check for SurfaceOfRevolution adaptor - may not have stored Geom_Surface
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_SurfaceOfRevolution)))
   {
-    Initialize(static_cast<const GeomAdaptor_Surface&>(theSurface).Surface());
+    const auto& aRevAdaptor = static_cast<const GeomAdaptor_SurfaceOfRevolution&>(theSurface);
+
+    // First try to get elementary surface type (Plane, Cylinder, Cone, Sphere, Torus)
+    Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(aRevAdaptor);
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // Try the stored Surface() handle
+    aGeomSurf = aRevAdaptor.Surface();
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // No geometry available - use adaptor directly as fallback
+    mySurfaceType = theSurface.GetType();
+    myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
     return;
   }
 
-  // For non-GeomAdaptor or when Geom_Surface is not available,
-  // use reference for the evaluator
+  // Check for SurfaceOfExtrusion adaptor - may not have stored Geom_Surface
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_SurfaceOfLinearExtrusion)))
+  {
+    const auto& aExtAdaptor = static_cast<const GeomAdaptor_SurfaceOfLinearExtrusion&>(theSurface);
+
+    // First try to get elementary surface type (Plane, Cylinder, Cone, Sphere, Torus)
+    Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(aExtAdaptor);
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // Try the stored Surface() handle
+    aGeomSurf = aExtAdaptor.Surface();
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // No geometry available - use adaptor directly as fallback
+    mySurfaceType = theSurface.GetType();
+    myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
+    return;
+  }
+
+  // Check for plain GeomAdaptor_Surface (without transformation)
+  if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
+  {
+    const auto&          aGeomAdaptor = static_cast<const GeomAdaptor_Surface&>(theSurface);
+    Handle(Geom_Surface) aGeomSurf    = aGeomAdaptor.Surface();
+
+    // If Surface() is null, try to create from elementary type
+    if (aGeomSurf.IsNull())
+    {
+      aGeomSurf = CreateGeomSurfaceFromAdaptor(aGeomAdaptor);
+    }
+
+    if (!aGeomSurf.IsNull())
+    {
+      Initialize(aGeomSurf);
+      return;
+    }
+
+    // Surface() is null and not elementary - use adaptor directly
+    mySurfaceType = theSurface.GetType();
+    myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
+    return;
+  }
+
+  // For non-GeomAdaptor adaptors, try to create Geom_Surface from elementary type first
+  Handle(Geom_Surface) aGeomSurf = CreateGeomSurfaceFromAdaptor(theSurface);
+  if (!aGeomSurf.IsNull())
+  {
+    Initialize(aGeomSurf);
+    return;
+  }
+
+  // No way to get Geom_Surface - use adaptor directly as fallback
   mySurfaceType = theSurface.GetType();
   myEvaluator.emplace<GeomGridEval_OtherSurface>(theSurface);
 }
