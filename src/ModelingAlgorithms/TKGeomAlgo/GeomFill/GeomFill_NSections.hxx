@@ -34,8 +34,6 @@ class Geom_BSplineSurface;
 class gp_Pnt;
 class Geom_Curve;
 
-#include <optional>
-
 class GeomFill_NSections;
 DEFINE_STANDARD_HANDLE(GeomFill_NSections, GeomFill_SectionLaw)
 
@@ -230,8 +228,6 @@ private:
   TColStd_SequenceOfReal      myParams;
   Handle(Geom_BSplineSurface) mySurface;
   Handle(Geom_BSplineSurface) myRefSurf;
-
-  mutable std::optional<gp_Pnt> myCachedBarycentre; //!< Cached barycentre of the surface
 };
 
 #endif // _GeomFill_NSections_HeaderFile

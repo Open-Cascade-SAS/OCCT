@@ -15,10 +15,8 @@
 
 #include <BRepMesh_DefaultRangeSplitter.hxx>
 
-#include <BRep_Tool.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomGridEval_Surface.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <BRep_Tool.hxx>
 
 //=================================================================================================
 
@@ -71,8 +69,8 @@ void BRepMesh_DefaultRangeSplitter::AdjustRange()
     return;
   }
 
-  Standard_Real aLengthU = 0.0, aLengthV = 0.0;
-  computeLengths(aLengthU, aLengthV);
+  const Standard_Real aLengthU = computeLengthU();
+  const Standard_Real aLengthV = computeLengthV();
   myIsValid = aLengthU > Precision::PConfusion() && aLengthV > Precision::PConfusion();
 
   if (myIsValid)
@@ -142,56 +140,62 @@ void BRepMesh_DefaultRangeSplitter::computeDelta(const Standard_Real theLengthU,
 
 //=================================================================================================
 
-void BRepMesh_DefaultRangeSplitter::computeLengths(Standard_Real& theLengthU,
-                                                   Standard_Real& theLengthV)
+Standard_Real BRepMesh_DefaultRangeSplitter::computeLengthU()
 {
-  // Use batch grid evaluation for optimized surface point computation.
-  // Grid is 21x21 points covering the UV range uniformly.
-  constexpr int THE_NB_PARAMS = 21;
-  constexpr int THE_MID_INDEX = 11; // Middle index (1-based)
+  Standard_Real longu = 0.0;
+  gp_Pnt        P11, P12, P21, P22, P31, P32;
 
-  const double aDeltaU = (myRangeU.second - myRangeU.first) / (THE_NB_PARAMS - 1);
-  const double aDeltaV = (myRangeV.second - myRangeV.first) / (THE_NB_PARAMS - 1);
+  Standard_Real    du     = 0.05 * (myRangeU.second - myRangeU.first);
+  Standard_Real    dfvave = 0.5 * (myRangeV.second + myRangeV.first);
+  Standard_Real    dfucur;
+  Standard_Integer i1;
 
-  TColStd_Array1OfReal aUParams(1, THE_NB_PARAMS);
-  TColStd_Array1OfReal aVParams(1, THE_NB_PARAMS);
-
-  for (int i = 1; i <= THE_NB_PARAMS; ++i)
+  const Handle(BRepAdaptor_Surface)& gFace = GetSurface();
+  gFace->D0(myRangeU.first, myRangeV.first, P11);
+  gFace->D0(myRangeU.first, dfvave, P21);
+  gFace->D0(myRangeU.first, myRangeV.second, P31);
+  for (i1 = 1, dfucur = myRangeU.first + du; i1 <= 20; i1++, dfucur += du)
   {
-    aUParams.SetValue(i, myRangeU.first + (i - 1) * aDeltaU);
-    aVParams.SetValue(i, myRangeV.first + (i - 1) * aDeltaV);
+    gFace->D0(dfucur, myRangeV.first, P12);
+    gFace->D0(dfucur, dfvave, P22);
+    gFace->D0(dfucur, myRangeV.second, P32);
+    longu += (P11.Distance(P12) + P21.Distance(P22) + P31.Distance(P32));
+    P11 = P12;
+    P21 = P22;
+    P31 = P32;
   }
-  // Ensure exact boundary values
-  aUParams.SetValue(THE_NB_PARAMS, myRangeU.second);
-  aVParams.SetValue(THE_NB_PARAMS, myRangeV.second);
 
-  GeomGridEval_Surface anEvaluator;
-  anEvaluator.Initialize(*GetSurface());
-  anEvaluator.SetUVParams(aUParams, aVParams);
+  return longu / 3.;
+}
 
-  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+//=================================================================================================
 
-  // Compute length along U at 3 V values: VFirst (row 1), VMid (row 11), VLast (row 21)
-  theLengthU = 0.0;
-  for (int aVIdx : {1, THE_MID_INDEX, THE_NB_PARAMS})
+Standard_Real BRepMesh_DefaultRangeSplitter::computeLengthV()
+{
+  Standard_Real longv = 0.0;
+  gp_Pnt        P11, P12, P21, P22, P31, P32;
+
+  Standard_Real    dv     = 0.05 * (myRangeV.second - myRangeV.first);
+  Standard_Real    dfuave = 0.5 * (myRangeU.second + myRangeU.first);
+  Standard_Real    dfvcur;
+  Standard_Integer i1;
+
+  const Handle(BRepAdaptor_Surface)& gFace = GetSurface();
+  gFace->D0(myRangeU.first, myRangeV.first, P11);
+  gFace->D0(dfuave, myRangeV.first, P21);
+  gFace->D0(myRangeU.second, myRangeV.first, P31);
+  for (i1 = 1, dfvcur = myRangeV.first + dv; i1 <= 20; i1++, dfvcur += dv)
   {
-    for (int aUIdx = 1; aUIdx < THE_NB_PARAMS; ++aUIdx)
-    {
-      theLengthU += aGrid.Value(aUIdx, aVIdx).Distance(aGrid.Value(aUIdx + 1, aVIdx));
-    }
+    gFace->D0(myRangeU.first, dfvcur, P12);
+    gFace->D0(dfuave, dfvcur, P22);
+    gFace->D0(myRangeU.second, dfvcur, P32);
+    longv += (P11.Distance(P12) + P21.Distance(P22) + P31.Distance(P32));
+    P11 = P12;
+    P21 = P22;
+    P31 = P32;
   }
-  theLengthU /= 3.0;
 
-  // Compute length along V at 3 U values: UFirst (col 1), UMid (col 11), ULast (col 21)
-  theLengthV = 0.0;
-  for (int aUIdx : {1, THE_MID_INDEX, THE_NB_PARAMS})
-  {
-    for (int aVIdx = 1; aVIdx < THE_NB_PARAMS; ++aVIdx)
-    {
-      theLengthV += aGrid.Value(aUIdx, aVIdx).Distance(aGrid.Value(aUIdx, aVIdx + 1));
-    }
-  }
-  theLengthV /= 3.0;
+  return longv / 3.;
 }
 
 //=================================================================================================
