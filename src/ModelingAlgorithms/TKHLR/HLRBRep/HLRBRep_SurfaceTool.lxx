@@ -48,12 +48,14 @@ inline double HLRBRep_SurfaceTool::LastVParameter(const HLRBRep_Surface* theSurf
   return theSurf->LastVParameter();
 }
 
-inline int HLRBRep_SurfaceTool::NbUIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh)
+inline int HLRBRep_SurfaceTool::NbUIntervals(const HLRBRep_Surface* theSurf,
+                                             const GeomAbs_Shape    theSh)
 {
   return theSurf->NbUIntervals(theSh);
 }
 
-inline int HLRBRep_SurfaceTool::NbVIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh)
+inline int HLRBRep_SurfaceTool::NbVIntervals(const HLRBRep_Surface* theSurf,
+                                             const GeomAbs_Shape    theSh)
 {
   return theSurf->NbVIntervals(theSh);
 }

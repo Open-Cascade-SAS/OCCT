@@ -89,7 +89,10 @@ public:
 
   static gp_Pnt Value(const HLRBRep_Surface* theSurf, const double theU, const double theV);
 
-  static void D0(const HLRBRep_Surface* theSurf, const double theU, const double theV, gp_Pnt& theP);
+  static void D0(const HLRBRep_Surface* theSurf,
+                 const double           theU,
+                 const double           theV,
+                 gp_Pnt&                theP);
 
   static void D1(const HLRBRep_Surface* theSurf,
                  const double           theU,

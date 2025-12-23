@@ -320,8 +320,7 @@ void HLRBRep_InterCSurf::InternalPerform(const TheCurve&      curve,
 
 //==================================================================================================
 
-void HLRBRep_InterCSurf::InternalPerformCurveQuadric(const TheCurve& curve,
-                                                     TheSurface      surface)
+void HLRBRep_InterCSurf::InternalPerformCurveQuadric(const TheCurve& curve, TheSurface surface)
 {
   IntCurveSurface_InterImpl::InternalPerformCurveQuadric<TheCurve,
                                                          TheCurveTool,

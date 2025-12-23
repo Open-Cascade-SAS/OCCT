@@ -100,7 +100,8 @@ protected:
                                const double     theU1,
                                const double     theV1);
 
-  Standard_EXPORT void InternalPerformCurveQuadric(const gp_Lin& theCurve, HLRBRep_Surface* theSurface);
+  Standard_EXPORT void InternalPerformCurveQuadric(const gp_Lin&    theCurve,
+                                                   HLRBRep_Surface* theSurface);
 
   Standard_EXPORT void InternalPerform(const gp_Lin&                            theCurve,
                                        const HLRBRep_ThePolygonOfInterCSurf&    thePolygon,

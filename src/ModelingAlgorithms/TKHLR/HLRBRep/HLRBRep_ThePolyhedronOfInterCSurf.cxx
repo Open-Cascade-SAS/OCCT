@@ -33,14 +33,13 @@ namespace PolyUtils = IntCurveSurface_PolyhedronUtils;
 
 //==================================================================================================
 
-HLRBRep_ThePolyhedronOfInterCSurf::HLRBRep_ThePolyhedronOfInterCSurf(
-  HLRBRep_Surface*       Surface,
-  const Standard_Integer nbdU,
-  const Standard_Integer nbdV,
-  const Standard_Real    u1,
-  const Standard_Real    v1,
-  const Standard_Real    u2,
-  const Standard_Real    v2)
+HLRBRep_ThePolyhedronOfInterCSurf::HLRBRep_ThePolyhedronOfInterCSurf(HLRBRep_Surface*       Surface,
+                                                                     const Standard_Integer nbdU,
+                                                                     const Standard_Integer nbdV,
+                                                                     const Standard_Real    u1,
+                                                                     const Standard_Real    v1,
+                                                                     const Standard_Real    u2,
+                                                                     const Standard_Real    v2)
     : nbdeltaU((nbdU < 3) ? 3 : nbdU),
       nbdeltaV((nbdV < 3) ? 3 : nbdV),
       TheDeflection(Epsilon(100.)),

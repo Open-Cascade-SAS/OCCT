@@ -127,11 +127,11 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
 
 //=================================================================================================
 
-void HLRBRep_Intersector::Perform(const int         /*theNA*/,
+void HLRBRep_Intersector::Perform(const int /*theNA*/,
                                   HLRBRep_EdgeData* theEdge1,
                                   const double      theDa1,
                                   const double      theDb1,
-                                  const int         /*theNB*/,
+                                  const int /*theNB*/,
                                   HLRBRep_EdgeData* theEdge2,
                                   const double      theDa2,
                                   const double      theDb2,
@@ -463,10 +463,10 @@ void HLRBRep_Intersector::SimulateOnePoint(HLRBRep_EdgeData* theEdge1,
   HLRBRep_Curve* myC1 = theEdge1->Curve();
   HLRBRep_Curve* myC2 = theEdge2->Curve();
 
-  double u3 = myC1->Parameter3d(theU);
-  double v3 = myC2->Parameter3d(theV);
-  gp_Pnt2d      P13, P23;
-  gp_Vec2d      T13, T23;
+  double   u3 = myC1->Parameter3d(theU);
+  double   v3 = myC2->Parameter3d(theV);
+  gp_Pnt2d P13, P23;
+  gp_Vec2d T13, T23;
   myC1->D1(u3, P13, T13);
   myC2->D1(v3, P23, T23);
 
