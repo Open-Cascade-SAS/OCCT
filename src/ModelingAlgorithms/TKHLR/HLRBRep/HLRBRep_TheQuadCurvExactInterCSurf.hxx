@@ -23,6 +23,7 @@
 
 #include <TColStd_SequenceOfReal.hxx>
 #include <Standard_Boolean.hxx>
+class HLRBRep_Surface;
 class HLRBRep_SurfaceTool;
 class gp_Lin;
 class HLRBRep_LineTool;
@@ -35,7 +36,7 @@ public:
 
   //! Provides the signed distance function : Q(w)
   //! and its first derivative dQ(w)/dw
-  Standard_EXPORT HLRBRep_TheQuadCurvExactInterCSurf(const Standard_Address& S, const gp_Lin& C);
+  Standard_EXPORT HLRBRep_TheQuadCurvExactInterCSurf(HLRBRep_Surface* S, const gp_Lin& C);
 
   Standard_EXPORT Standard_Boolean IsDone() const;
 

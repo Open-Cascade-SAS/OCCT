@@ -990,12 +990,12 @@ void HLRBRep_Data::InitEdge(const Standard_Integer FI, BRepTopAdaptor_MapOfShape
   iFaceBack   = iFaceData->Back();
   iFaceSimp   = iFaceData->Simple();
   iFaceMinMax = &iFaceData->Wires()->MinMax();
-  iFaceType   = ((HLRBRep_Surface*)iFaceGeom)->GetType();
+  iFaceType   = iFaceGeom->GetType();
   iFaceTest   = !iFaceSimp;
   mySLProps.SetSurface(iFaceGeom);
   myIntersector.Load(iFaceGeom);
 
-  HLRBRep_Surface*           p1   = (HLRBRep_Surface*)iFaceGeom;
+  HLRBRep_Surface*           p1   = iFaceGeom;
   const BRepAdaptor_Surface& bras = p1->Surface();
 
   const TopoDS_Face& topodsface = bras.Face();
@@ -1144,7 +1144,7 @@ void HLRBRep_Data::NextEdge(const Standard_Boolean skip)
     NextEdge();
     return;
   }
-  if (((HLRBRep_Surface*)iFaceGeom)->IsAbove(iFaceBack, myLEGeom, (Standard_Real)myLETol))
+  if (iFaceGeom->IsAbove(iFaceBack, myLEGeom, (Standard_Real)myLETol))
   {
     NextEdge();
     return;
@@ -2109,19 +2109,19 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
       }
       wLim -= TolZ;
       Standard_Real PeriodU, PeriodV, UMin = 0., UMax = 0., VMin = 0., VMax = 0.;
-      if (((HLRBRep_Surface*)iFaceGeom)->IsUPeriodic())
+      if (iFaceGeom->IsUPeriodic())
       {
-        PeriodU = ((HLRBRep_Surface*)iFaceGeom)->UPeriod();
-        UMin    = ((HLRBRep_Surface*)iFaceGeom)->FirstUParameter();
-        UMax    = ((HLRBRep_Surface*)iFaceGeom)->LastUParameter();
+        PeriodU = iFaceGeom->UPeriod();
+        UMin    = iFaceGeom->FirstUParameter();
+        UMax    = iFaceGeom->LastUParameter();
       }
       else
         PeriodU = 0.;
-      if (((HLRBRep_Surface*)iFaceGeom)->IsVPeriodic())
+      if (iFaceGeom->IsVPeriodic())
       {
-        PeriodV = ((HLRBRep_Surface*)iFaceGeom)->VPeriod();
-        VMin    = ((HLRBRep_Surface*)iFaceGeom)->FirstVParameter();
-        VMax    = ((HLRBRep_Surface*)iFaceGeom)->LastVParameter();
+        PeriodV = iFaceGeom->VPeriod();
+        VMin    = iFaceGeom->FirstVParameter();
+        VMax    = iFaceGeom->LastVParameter();
       }
       else
         PeriodV = 0;
@@ -2503,10 +2503,10 @@ Standard_Boolean HLRBRep_Data::SameVertex(const Standard_Boolean h1, const Stand
 
 Standard_Boolean HLRBRep_Data::IsBadFace() const
 {
-  if (iFaceGeom)
+  if (iFaceGeom != nullptr)
   {
     // check for garbage data - if periodic then bounds must not exceed period
-    HLRBRep_Surface* pGeom = (HLRBRep_Surface*)iFaceGeom;
+    HLRBRep_Surface* pGeom = iFaceGeom;
     if (pGeom->IsUPeriodic())
     {
       Standard_Real aPeriod = pGeom->UPeriod();

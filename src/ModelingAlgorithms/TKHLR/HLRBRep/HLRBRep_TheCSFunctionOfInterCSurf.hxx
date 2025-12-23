@@ -26,6 +26,7 @@
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
+class HLRBRep_Surface;
 class HLRBRep_SurfaceTool;
 class gp_Lin;
 class HLRBRep_LineTool;
@@ -37,7 +38,7 @@ class HLRBRep_TheCSFunctionOfInterCSurf : public math_FunctionSetWithDerivatives
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRBRep_TheCSFunctionOfInterCSurf(const Standard_Address& S, const gp_Lin& C);
+  Standard_EXPORT HLRBRep_TheCSFunctionOfInterCSurf(HLRBRep_Surface* const& S, const gp_Lin& C);
 
   Standard_EXPORT Standard_Integer NbVariables() const;
 
@@ -53,13 +54,13 @@ public:
 
   Standard_EXPORT Standard_Real Root() const;
 
-  Standard_EXPORT const Standard_Address& AuxillarSurface() const;
+  Standard_EXPORT HLRBRep_Surface* const& AuxillarSurface() const;
 
   Standard_EXPORT const gp_Lin& AuxillarCurve() const;
 
 protected:
 private:
-  Standard_Address surface;
+  HLRBRep_Surface* surface;
   gp_Lin           curve;
   gp_Pnt           p;
   Standard_Real    f;

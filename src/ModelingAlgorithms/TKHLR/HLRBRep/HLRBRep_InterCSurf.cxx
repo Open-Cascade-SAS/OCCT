@@ -38,10 +38,12 @@
 
 #include "../../TKGeomAlgo/IntCurveSurface/IntCurveSurface_Inter.pxx"
 
+#include <HLRBRep_Surface.hxx>
+
 // Type aliases for readability
 using TheCurve              = gp_Lin;
 using TheCurveTool          = HLRBRep_LineTool;
-using TheSurface            = Standard_Address;
+using TheSurface            = HLRBRep_Surface*;
 using TheSurfaceTool        = HLRBRep_SurfaceTool;
 using ThePolygon            = HLRBRep_ThePolygonOfInterCSurf;
 using ThePolyhedron         = HLRBRep_ThePolyhedronOfInterCSurf;
@@ -56,7 +58,7 @@ HLRBRep_InterCSurf::HLRBRep_InterCSurf() {}
 
 //==================================================================================================
 
-void HLRBRep_InterCSurf::DoSurface(const TheSurface&   surface,
+void HLRBRep_InterCSurf::DoSurface(TheSurface          surface,
                                    const Standard_Real u0,
                                    const Standard_Real u1,
                                    const Standard_Real v0,
@@ -77,7 +79,7 @@ void HLRBRep_InterCSurf::DoSurface(const TheSurface&   surface,
 
 //==================================================================================================
 
-void HLRBRep_InterCSurf::DoNewBounds(const TheSurface&           surface,
+void HLRBRep_InterCSurf::DoNewBounds(TheSurface                  surface,
                                      const Standard_Real         u0,
                                      const Standard_Real         u1,
                                      const Standard_Real         v0,
@@ -102,25 +104,25 @@ void HLRBRep_InterCSurf::DoNewBounds(const TheSurface&           surface,
 
 //==================================================================================================
 
-void HLRBRep_InterCSurf::Perform(const TheCurve& curve, const TheSurface& surface)
+void HLRBRep_InterCSurf::Perform(const TheCurve& curve, TheSurface surface)
 {
   IntCurveSurface_InterImpl::Perform<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(
     curve,
     surface,
     done,
     [this]() { this->ResetFields(); },
-    [this](const TheCurve&   c,
-           const TheSurface& s,
-           Standard_Real     u0,
-           Standard_Real     v0,
-           Standard_Real     u1,
-           Standard_Real     v1) { this->Perform(c, s, u0, v0, u1, v1); });
+    [this](const TheCurve& c,
+           TheSurface      s,
+           Standard_Real   u0,
+           Standard_Real   v0,
+           Standard_Real   u1,
+           Standard_Real   v1) { this->Perform(c, s, u0, v0, u1, v1); });
 }
 
 //==================================================================================================
 
 void HLRBRep_InterCSurf::Perform(const TheCurve&     curve,
-                                 const TheSurface&   surface,
+                                 TheSurface          surface,
                                  const Standard_Real U1,
                                  const Standard_Real V1,
                                  const Standard_Real U2,
@@ -134,28 +136,28 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&     curve,
       V1,
       U2,
       V2,
-      [this](const auto&       conic,
-             const TheCurve&   c,
-             const TheSurface& s,
-             Standard_Real     u1,
-             Standard_Real     v1,
-             Standard_Real     u2,
-             Standard_Real     v2) { this->PerformConicSurf(conic, c, s, u1, v1, u2, v2); },
+      [this](const auto&     conic,
+             const TheCurve& c,
+             TheSurface      s,
+             Standard_Real   u1,
+             Standard_Real   v1,
+             Standard_Real   u2,
+             Standard_Real   v2) { this->PerformConicSurf(conic, c, s, u1, v1, u2, v2); },
       [this](const TheCurve&   c,
              const ThePolygon& p,
-             const TheSurface& s,
+             TheSurface        s,
              Standard_Real     u1,
              Standard_Real     v1,
              Standard_Real     u2,
              Standard_Real     v2) { this->InternalPerform(c, p, s, u1, v1, u2, v2); },
-      [this](const TheCurve& c, const TheSurface& s) { this->InternalPerformCurveQuadric(c, s); });
+      [this](const TheCurve& c, TheSurface s) { this->InternalPerformCurveQuadric(c, s); });
 }
 
 //==================================================================================================
 
 void HLRBRep_InterCSurf::Perform(const TheCurve&   curve,
                                  const ThePolygon& polygon,
-                                 const TheSurface& surface)
+                                 TheSurface        surface)
 {
   IntCurveSurface_InterImpl::
     PerformPolygon<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool, ThePolygon, ThePolyhedron>(
@@ -164,7 +166,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&   curve,
       surface,
       done,
       [this]() { this->ResetFields(); },
-      [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph) {
+      [this](const TheCurve& c, const ThePolygon& p, TheSurface s, const ThePolyhedron& ph) {
         this->Perform(c, p, s, ph);
       });
 }
@@ -172,7 +174,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&   curve,
 //==================================================================================================
 
 void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
-                                 const TheSurface&    surface,
+                                 TheSurface           surface,
                                  const ThePolyhedron& polyhedron)
 {
   IntCurveSurface_InterImpl::PerformPolyhedron<TheCurve,
@@ -186,7 +188,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
     polyhedron,
     done,
     [this]() { this->ResetFields(); },
-    [this](const TheCurve& c, const ThePolygon& p, const TheSurface& s, const ThePolyhedron& ph) {
+    [this](const TheCurve& c, const ThePolygon& p, TheSurface s, const ThePolyhedron& ph) {
       this->Perform(c, p, s, ph);
     });
 }
@@ -195,7 +197,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
 
 void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
                                  const ThePolygon&    polygon,
-                                 const TheSurface&    surface,
+                                 TheSurface           surface,
                                  const ThePolyhedron& polyhedron)
 {
   IntCurveSurface_InterImpl::PerformPolygonPolyhedron<TheCurve,
@@ -212,7 +214,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
     [this]() { this->ResetFields(); },
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -224,7 +226,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
 
 void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
                                  const ThePolygon&    polygon,
-                                 const TheSurface&    surface,
+                                 TheSurface           surface,
                                  const ThePolyhedron& polyhedron,
                                  Bnd_BoundSortBox&    BndBSB)
 {
@@ -243,7 +245,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
     [this]() { this->ResetFields(); },
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -256,7 +258,7 @@ void HLRBRep_InterCSurf::Perform(const TheCurve&      curve,
 
 void HLRBRep_InterCSurf::InternalPerform(const TheCurve&      curve,
                                          const ThePolygon&    polygon,
-                                         const TheSurface&    surface,
+                                         TheSurface           surface,
                                          const ThePolyhedron& polyhedron,
                                          const Standard_Real  u0,
                                          const Standard_Real  v0,
@@ -289,7 +291,7 @@ void HLRBRep_InterCSurf::InternalPerform(const TheCurve&      curve,
 
 void HLRBRep_InterCSurf::InternalPerform(const TheCurve&      curve,
                                          const ThePolygon&    polygon,
-                                         const TheSurface&    surface,
+                                         TheSurface           surface,
                                          const ThePolyhedron& polyhedron,
                                          const Standard_Real  u0,
                                          const Standard_Real  v0,
@@ -318,8 +320,7 @@ void HLRBRep_InterCSurf::InternalPerform(const TheCurve&      curve,
 
 //==================================================================================================
 
-void HLRBRep_InterCSurf::InternalPerformCurveQuadric(const TheCurve&   curve,
-                                                     const TheSurface& surface)
+void HLRBRep_InterCSurf::InternalPerformCurveQuadric(const TheCurve& curve, TheSurface surface)
 {
   IntCurveSurface_InterImpl::InternalPerformCurveQuadric<TheCurve,
                                                          TheCurveTool,
@@ -335,7 +336,7 @@ void HLRBRep_InterCSurf::InternalPerformCurveQuadric(const TheCurve&   curve,
 
 void HLRBRep_InterCSurf::InternalPerform(const TheCurve&     curve,
                                          const ThePolygon&   polygon,
-                                         const TheSurface&   surface,
+                                         TheSurface          surface,
                                          const Standard_Real U1,
                                          const Standard_Real V1,
                                          const Standard_Real U2,
@@ -357,7 +358,7 @@ void HLRBRep_InterCSurf::InternalPerform(const TheCurve&     curve,
     V2,
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -370,7 +371,7 @@ void HLRBRep_InterCSurf::InternalPerform(const TheCurve&     curve,
 
 void HLRBRep_InterCSurf::PerformConicSurf(const gp_Lin&       Line,
                                           const TheCurve&     curve,
-                                          const TheSurface&   surface,
+                                          TheSurface          surface,
                                           const Standard_Real U1,
                                           const Standard_Real V1,
                                           const Standard_Real U2,
@@ -389,12 +390,12 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Lin&       Line,
     V1,
     U2,
     V2,
-    [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+    [this](const TheCurve& c, TheSurface s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -407,7 +408,7 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Lin&       Line,
 
 void HLRBRep_InterCSurf::PerformConicSurf(const gp_Circ&      Circle,
                                           const TheCurve&     curve,
-                                          const TheSurface&   surface,
+                                          TheSurface          surface,
                                           const Standard_Real U1,
                                           const Standard_Real V1,
                                           const Standard_Real U2,
@@ -422,12 +423,12 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Circ&      Circle,
       V1,
       U2,
       V2,
-      [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+      [this](const TheCurve& c, TheSurface s, const IntAna_IntConicQuad& ana) {
         this->AppendIntAna(c, s, ana);
       },
       [this](const TheCurve&   c,
              const ThePolygon& p,
-             const TheSurface& s,
+             TheSurface        s,
              Standard_Real     u1,
              Standard_Real     v1,
              Standard_Real     u2,
@@ -438,7 +439,7 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Circ&      Circle,
 
 void HLRBRep_InterCSurf::PerformConicSurf(const gp_Elips&     Ellipse,
                                           const TheCurve&     curve,
-                                          const TheSurface&   surface,
+                                          TheSurface          surface,
                                           const Standard_Real U1,
                                           const Standard_Real V1,
                                           const Standard_Real U2,
@@ -453,12 +454,12 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Elips&     Ellipse,
       V1,
       U2,
       V2,
-      [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+      [this](const TheCurve& c, TheSurface s, const IntAna_IntConicQuad& ana) {
         this->AppendIntAna(c, s, ana);
       },
       [this](const TheCurve&   c,
              const ThePolygon& p,
-             const TheSurface& s,
+             TheSurface        s,
              Standard_Real     u1,
              Standard_Real     v1,
              Standard_Real     u2,
@@ -469,7 +470,7 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Elips&     Ellipse,
 
 void HLRBRep_InterCSurf::PerformConicSurf(const gp_Parab&     Parab,
                                           const TheCurve&     curve,
-                                          const TheSurface&   surface,
+                                          TheSurface          surface,
                                           const Standard_Real U1,
                                           const Standard_Real V1,
                                           const Standard_Real U2,
@@ -488,12 +489,12 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Parab&     Parab,
     V1,
     U2,
     V2,
-    [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+    [this](const TheCurve& c, TheSurface s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -505,7 +506,7 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Parab&     Parab,
 
 void HLRBRep_InterCSurf::PerformConicSurf(const gp_Hypr&      Hypr,
                                           const TheCurve&     curve,
-                                          const TheSurface&   surface,
+                                          TheSurface          surface,
                                           const Standard_Real U1,
                                           const Standard_Real V1,
                                           const Standard_Real U2,
@@ -524,12 +525,12 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Hypr&      Hypr,
     V1,
     U2,
     V2,
-    [this](const TheCurve& c, const TheSurface& s, const IntAna_IntConicQuad& ana) {
+    [this](const TheCurve& c, TheSurface s, const IntAna_IntConicQuad& ana) {
       this->AppendIntAna(c, s, ana);
     },
     [this](const TheCurve&      c,
            const ThePolygon&    p,
-           const TheSurface&    s,
+           TheSurface           s,
            const ThePolyhedron& ph,
            Standard_Real        u1,
            Standard_Real        v1,
@@ -540,7 +541,7 @@ void HLRBRep_InterCSurf::PerformConicSurf(const gp_Hypr&      Hypr,
 //==================================================================================================
 
 void HLRBRep_InterCSurf::AppendIntAna(const TheCurve&            curve,
-                                      const TheSurface&          surface,
+                                      TheSurface                 surface,
                                       const IntAna_IntConicQuad& intana_ConicQuad)
 {
   IntCurveSurface_InterImpl::AppendIntAna<TheCurve, TheCurveTool, TheSurface, TheSurfaceTool>(
@@ -555,7 +556,7 @@ void HLRBRep_InterCSurf::AppendIntAna(const TheCurve&            curve,
 
 void HLRBRep_InterCSurf::AppendPoint(const TheCurve&     curve,
                                      const Standard_Real lw,
-                                     const TheSurface&   surface,
+                                     TheSurface          surface,
                                      const Standard_Real su,
                                      const Standard_Real sv)
 {
@@ -577,7 +578,7 @@ void HLRBRep_InterCSurf::AppendPoint(const TheCurve&     curve,
 void HLRBRep_InterCSurf::AppendSegment(const TheCurve&,
                                        const Standard_Real,
                                        const Standard_Real,
-                                       const TheSurface&)
+                                       TheSurface)
 {
   // Not implemented
 }

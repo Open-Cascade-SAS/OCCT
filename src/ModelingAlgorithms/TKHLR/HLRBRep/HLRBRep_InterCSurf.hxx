@@ -23,25 +23,27 @@
 #include <IntCurveSurface_Intersection.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
+class Bnd_BoundSortBox;
+class Bnd_Box;
+class gp_Circ;
+class gp_Elips;
+class gp_Hypr;
 class gp_Lin;
+class gp_Parab;
 class HLRBRep_LineTool;
+class HLRBRep_Surface;
 class HLRBRep_SurfaceTool;
+class HLRBRep_TheCSFunctionOfInterCSurf;
+class HLRBRep_TheExactInterCSurf;
+class HLRBRep_TheInterferenceOfInterCSurf;
 class HLRBRep_ThePolygonOfInterCSurf;
 class HLRBRep_ThePolygonToolOfInterCSurf;
 class HLRBRep_ThePolyhedronOfInterCSurf;
 class HLRBRep_ThePolyhedronToolOfInterCSurf;
-class HLRBRep_TheInterferenceOfInterCSurf;
-class HLRBRep_TheCSFunctionOfInterCSurf;
-class HLRBRep_TheExactInterCSurf;
 class HLRBRep_TheQuadCurvExactInterCSurf;
 class HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf;
-class Bnd_BoundSortBox;
-class gp_Circ;
-class gp_Elips;
-class gp_Parab;
-class gp_Hypr;
 class IntAna_IntConicQuad;
-class Bnd_Box;
 
 class HLRBRep_InterCSurf : public IntCurveSurface_Intersection
 {
@@ -53,156 +55,156 @@ public:
 
   //! Compute the Intersection between the curve and the
   //! surface
-  Standard_EXPORT void Perform(const gp_Lin& Curve, const Standard_Address& Surface);
+  Standard_EXPORT void Perform(const gp_Lin& theCurve, HLRBRep_Surface* theSurface);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
-  //! its polygon : <Polygon> is given.
-  Standard_EXPORT void Perform(const gp_Lin&                         Curve,
-                               const HLRBRep_ThePolygonOfInterCSurf& Polygon,
-                               const Standard_Address&               Surface);
+  //! its polygon : <thePolygon> is given.
+  Standard_EXPORT void Perform(const gp_Lin&                         theCurve,
+                               const HLRBRep_ThePolygonOfInterCSurf& thePolygon,
+                               HLRBRep_Surface*                      theSurface);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
-  //! its polygon : <Polygon> is given. The Surface is
-  //! also sampled and <Polyhedron> is given.
-  Standard_EXPORT void Perform(const gp_Lin&                            Curve,
-                               const HLRBRep_ThePolygonOfInterCSurf&    ThePolygon,
-                               const Standard_Address&                  Surface,
-                               const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron);
+  //! its polygon : <thePolygon> is given. The Surface is
+  //! also sampled and <thePolyhedron> is given.
+  Standard_EXPORT void Perform(const gp_Lin&                            theCurve,
+                               const HLRBRep_ThePolygonOfInterCSurf&    thePolygon,
+                               HLRBRep_Surface*                         theSurface,
+                               const HLRBRep_ThePolyhedronOfInterCSurf& thePolyhedron);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Curve is already sampled and
-  //! its polygon : <Polygon> is given. The Surface is
-  //! also sampled and <Polyhedron> is given.
-  Standard_EXPORT void Perform(const gp_Lin&                            Curve,
-                               const HLRBRep_ThePolygonOfInterCSurf&    ThePolygon,
-                               const Standard_Address&                  Surface,
-                               const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron,
-                               Bnd_BoundSortBox&                        BndBSB);
+  //! its polygon : <thePolygon> is given. The Surface is
+  //! also sampled and <thePolyhedron> is given.
+  Standard_EXPORT void Perform(const gp_Lin&                            theCurve,
+                               const HLRBRep_ThePolygonOfInterCSurf&    thePolygon,
+                               HLRBRep_Surface*                         theSurface,
+                               const HLRBRep_ThePolyhedronOfInterCSurf& thePolyhedron,
+                               Bnd_BoundSortBox&                        theBndBSB);
 
   //! Compute the Intersection between the curve and
   //! the surface. The Surface is already sampled and
-  //! its polyhedron : <Polyhedron> is given.
-  Standard_EXPORT void Perform(const gp_Lin&                            Curve,
-                               const Standard_Address&                  Surface,
-                               const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron);
+  //! its polyhedron : <thePolyhedron> is given.
+  Standard_EXPORT void Perform(const gp_Lin&                            theCurve,
+                               HLRBRep_Surface*                         theSurface,
+                               const HLRBRep_ThePolyhedronOfInterCSurf& thePolyhedron);
 
 protected:
   //! Compute the Intersection between the curve and the
   //! surface
-  Standard_EXPORT void Perform(const gp_Lin&           Curve,
-                               const Standard_Address& Surface,
-                               const Standard_Real     U0,
-                               const Standard_Real     V0,
-                               const Standard_Real     U1,
-                               const Standard_Real     V1);
+  Standard_EXPORT void Perform(const gp_Lin&    theCurve,
+                               HLRBRep_Surface* theSurface,
+                               const double     theU0,
+                               const double     theV0,
+                               const double     theU1,
+                               const double     theV1);
 
-  Standard_EXPORT void InternalPerformCurveQuadric(const gp_Lin&           Curve,
-                                                   const Standard_Address& Surface);
+  Standard_EXPORT void InternalPerformCurveQuadric(const gp_Lin&    theCurve,
+                                                   HLRBRep_Surface* theSurface);
 
-  Standard_EXPORT void InternalPerform(const gp_Lin&                            Curve,
-                                       const HLRBRep_ThePolygonOfInterCSurf&    Polygon,
-                                       const Standard_Address&                  Surface,
-                                       const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron,
-                                       const Standard_Real                      U1,
-                                       const Standard_Real                      V1,
-                                       const Standard_Real                      U2,
-                                       const Standard_Real                      V2);
+  Standard_EXPORT void InternalPerform(const gp_Lin&                            theCurve,
+                                       const HLRBRep_ThePolygonOfInterCSurf&    thePolygon,
+                                       HLRBRep_Surface*                         theSurface,
+                                       const HLRBRep_ThePolyhedronOfInterCSurf& thePolyhedron,
+                                       const double                             theU1,
+                                       const double                             theV1,
+                                       const double                             theU2,
+                                       const double                             theV2);
 
-  Standard_EXPORT void InternalPerform(const gp_Lin&                            Curve,
-                                       const HLRBRep_ThePolygonOfInterCSurf&    Polygon,
-                                       const Standard_Address&                  Surface,
-                                       const HLRBRep_ThePolyhedronOfInterCSurf& Polyhedron,
-                                       const Standard_Real                      U1,
-                                       const Standard_Real                      V1,
-                                       const Standard_Real                      U2,
-                                       const Standard_Real                      V2,
-                                       Bnd_BoundSortBox&                        BSB);
+  Standard_EXPORT void InternalPerform(const gp_Lin&                            theCurve,
+                                       const HLRBRep_ThePolygonOfInterCSurf&    thePolygon,
+                                       HLRBRep_Surface*                         theSurface,
+                                       const HLRBRep_ThePolyhedronOfInterCSurf& thePolyhedron,
+                                       const double                             theU1,
+                                       const double                             theV1,
+                                       const double                             theU2,
+                                       const double                             theV2,
+                                       Bnd_BoundSortBox&                        theBSB);
 
-  Standard_EXPORT void InternalPerform(const gp_Lin&                         Curve,
-                                       const HLRBRep_ThePolygonOfInterCSurf& Polygon,
-                                       const Standard_Address&               Surface,
-                                       const Standard_Real                   U1,
-                                       const Standard_Real                   V1,
-                                       const Standard_Real                   U2,
-                                       const Standard_Real                   V2);
+  Standard_EXPORT void InternalPerform(const gp_Lin&                         theCurve,
+                                       const HLRBRep_ThePolygonOfInterCSurf& thePolygon,
+                                       HLRBRep_Surface*                      theSurface,
+                                       const double                          theU1,
+                                       const double                          theV1,
+                                       const double                          theU2,
+                                       const double                          theV2);
 
-  Standard_EXPORT void PerformConicSurf(const gp_Lin&           Line,
-                                        const gp_Lin&           Curve,
-                                        const Standard_Address& Surface,
-                                        const Standard_Real     U1,
-                                        const Standard_Real     V1,
-                                        const Standard_Real     U2,
-                                        const Standard_Real     V2);
+  Standard_EXPORT void PerformConicSurf(const gp_Lin&    theLine,
+                                        const gp_Lin&    theCurve,
+                                        HLRBRep_Surface* theSurface,
+                                        const double     theU1,
+                                        const double     theV1,
+                                        const double     theU2,
+                                        const double     theV2);
 
-  Standard_EXPORT void PerformConicSurf(const gp_Circ&          Circle,
-                                        const gp_Lin&           Curve,
-                                        const Standard_Address& Surface,
-                                        const Standard_Real     U1,
-                                        const Standard_Real     V1,
-                                        const Standard_Real     U2,
-                                        const Standard_Real     V2);
+  Standard_EXPORT void PerformConicSurf(const gp_Circ&   theCircle,
+                                        const gp_Lin&    theCurve,
+                                        HLRBRep_Surface* theSurface,
+                                        const double     theU1,
+                                        const double     theV1,
+                                        const double     theU2,
+                                        const double     theV2);
 
-  Standard_EXPORT void PerformConicSurf(const gp_Elips&         Ellipse,
-                                        const gp_Lin&           Curve,
-                                        const Standard_Address& Surface,
-                                        const Standard_Real     U1,
-                                        const Standard_Real     V1,
-                                        const Standard_Real     U2,
-                                        const Standard_Real     V2);
+  Standard_EXPORT void PerformConicSurf(const gp_Elips&  theEllipse,
+                                        const gp_Lin&    theCurve,
+                                        HLRBRep_Surface* theSurface,
+                                        const double     theU1,
+                                        const double     theV1,
+                                        const double     theU2,
+                                        const double     theV2);
 
-  Standard_EXPORT void PerformConicSurf(const gp_Parab&         Parab,
-                                        const gp_Lin&           Curve,
-                                        const Standard_Address& Surface,
-                                        const Standard_Real     U1,
-                                        const Standard_Real     V1,
-                                        const Standard_Real     U2,
-                                        const Standard_Real     V2);
+  Standard_EXPORT void PerformConicSurf(const gp_Parab&  theParab,
+                                        const gp_Lin&    theCurve,
+                                        HLRBRep_Surface* theSurface,
+                                        const double     theU1,
+                                        const double     theV1,
+                                        const double     theU2,
+                                        const double     theV2);
 
-  Standard_EXPORT void PerformConicSurf(const gp_Hypr&          Hyper,
-                                        const gp_Lin&           Curve,
-                                        const Standard_Address& Surface,
-                                        const Standard_Real     U1,
-                                        const Standard_Real     V1,
-                                        const Standard_Real     U2,
-                                        const Standard_Real     V2);
+  Standard_EXPORT void PerformConicSurf(const gp_Hypr&   theHyper,
+                                        const gp_Lin&    theCurve,
+                                        HLRBRep_Surface* theSurface,
+                                        const double     theU1,
+                                        const double     theV1,
+                                        const double     theU2,
+                                        const double     theV2);
 
-  Standard_EXPORT void AppendIntAna(const gp_Lin&              Curve,
-                                    const Standard_Address&    Surface,
-                                    const IntAna_IntConicQuad& InterAna);
+  Standard_EXPORT void AppendIntAna(const gp_Lin&              theCurve,
+                                    HLRBRep_Surface*           theSurface,
+                                    const IntAna_IntConicQuad& theInterAna);
 
-  Standard_EXPORT void AppendPoint(const gp_Lin&           Curve,
-                                   const Standard_Real     w,
-                                   const Standard_Address& Surface,
-                                   const Standard_Real     u,
-                                   const Standard_Real     v);
+  Standard_EXPORT void AppendPoint(const gp_Lin&    theCurve,
+                                   const double     theW,
+                                   HLRBRep_Surface* theSurface,
+                                   const double     theU,
+                                   const double     theV);
 
-  Standard_EXPORT void AppendSegment(const gp_Lin&           Curve,
-                                     const Standard_Real     u0,
-                                     const Standard_Real     u1,
-                                     const Standard_Address& Surface);
+  Standard_EXPORT void AppendSegment(const gp_Lin&    theCurve,
+                                     const double     theU0,
+                                     const double     theU1,
+                                     HLRBRep_Surface* theSurface);
 
 private:
-  Standard_EXPORT void DoSurface(const Standard_Address& surface,
-                                 const Standard_Real     u0,
-                                 const Standard_Real     u1,
-                                 const Standard_Real     v0,
-                                 const Standard_Real     v1,
-                                 TColgp_Array2OfPnt&     pntsOnSurface,
-                                 Bnd_Box&                boxSurface,
-                                 Standard_Real&          gap);
+  Standard_EXPORT void DoSurface(HLRBRep_Surface*    theSurface,
+                                 const double        theU0,
+                                 const double        theU1,
+                                 const double        theV0,
+                                 const double        theV1,
+                                 TColgp_Array2OfPnt& thePntsOnSurface,
+                                 Bnd_Box&            theBoxSurface,
+                                 double&             theGap);
 
-  Standard_EXPORT void DoNewBounds(const Standard_Address&     surface,
-                                   const Standard_Real         u0,
-                                   const Standard_Real         u1,
-                                   const Standard_Real         v0,
-                                   const Standard_Real         v1,
-                                   const TColgp_Array2OfPnt&   pntsOnSurface,
-                                   const TColStd_Array1OfReal& X,
-                                   const TColStd_Array1OfReal& Y,
-                                   const TColStd_Array1OfReal& Z,
-                                   TColStd_Array1OfReal&       Bounds);
+  Standard_EXPORT void DoNewBounds(HLRBRep_Surface*            theSurface,
+                                   const double                theU0,
+                                   const double                theU1,
+                                   const double                theV0,
+                                   const double                theV1,
+                                   const TColgp_Array2OfPnt&   thePntsOnSurface,
+                                   const TColStd_Array1OfReal& theX,
+                                   const TColStd_Array1OfReal& theY,
+                                   const TColStd_Array1OfReal& theZ,
+                                   TColStd_Array1OfReal&       theBounds);
 };
 
 #endif // _HLRBRep_InterCSurf_HeaderFile

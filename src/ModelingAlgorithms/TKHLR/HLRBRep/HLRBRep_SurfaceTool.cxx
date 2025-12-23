@@ -15,12 +15,14 @@
 
 #include <HLRBRep_SurfaceTool.hxx>
 
-#include <BRepAdaptor_Surface.hxx>
+#include <HLRBRep_Surface.hxx>
 
-Standard_Integer HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S)
+//=================================================================================================
+
+int HLRBRep_SurfaceTool::NbSamplesU(const HLRBRep_Surface* theSurf)
 {
-  Standard_Integer    nbs;
-  GeomAbs_SurfaceType typS = ((BRepAdaptor_Surface*)S)->GetType();
+  int                       nbs;
+  const GeomAbs_SurfaceType typS = theSurf->GetType();
   switch (typS)
   {
     case GeomAbs_Plane: {
@@ -28,12 +30,12 @@ Standard_Integer HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S)
     }
     break;
     case GeomAbs_BezierSurface: {
-      nbs = 3 + ((BRepAdaptor_Surface*)S)->NbUPoles();
+      nbs = 3 + theSurf->NbUPoles();
     }
     break;
     case GeomAbs_BSplineSurface: {
-      nbs = ((BRepAdaptor_Surface*)S)->NbUKnots();
-      nbs *= ((BRepAdaptor_Surface*)S)->UDegree();
+      nbs = theSurf->NbUKnots();
+      nbs *= theSurf->UDegree();
       if (nbs < 2)
         nbs = 2;
     }
@@ -56,13 +58,15 @@ Standard_Integer HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S)
     }
     break;
   }
-  return (nbs);
+  return nbs;
 }
 
-Standard_Integer HLRBRep_SurfaceTool::NbSamplesV(const Standard_Address S)
+//=================================================================================================
+
+int HLRBRep_SurfaceTool::NbSamplesV(const HLRBRep_Surface* theSurf)
 {
-  Standard_Integer    nbs;
-  GeomAbs_SurfaceType typS = ((BRepAdaptor_Surface*)S)->GetType();
+  int                       nbs;
+  const GeomAbs_SurfaceType typS = theSurf->GetType();
   switch (typS)
   {
     case GeomAbs_Plane: {
@@ -70,12 +74,12 @@ Standard_Integer HLRBRep_SurfaceTool::NbSamplesV(const Standard_Address S)
     }
     break;
     case GeomAbs_BezierSurface: {
-      nbs = 3 + ((BRepAdaptor_Surface*)S)->NbVPoles();
+      nbs = 3 + theSurf->NbVPoles();
     }
     break;
     case GeomAbs_BSplineSurface: {
-      nbs = ((BRepAdaptor_Surface*)S)->NbVKnots();
-      nbs *= ((BRepAdaptor_Surface*)S)->VDegree();
+      nbs = theSurf->NbVKnots();
+      nbs *= theSurf->VDegree();
       if (nbs < 2)
         nbs = 2;
     }
@@ -95,43 +99,47 @@ Standard_Integer HLRBRep_SurfaceTool::NbSamplesV(const Standard_Address S)
     }
     break;
   }
-  return (nbs);
+  return nbs;
 }
 
-Standard_Integer HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S,
-                                                 const Standard_Real    u1,
-                                                 const Standard_Real    u2)
+//=================================================================================================
+
+int HLRBRep_SurfaceTool::NbSamplesU(const HLRBRep_Surface* theSurf,
+                                    const double           theU1,
+                                    const double           theU2)
 {
-  Standard_Integer nbs = NbSamplesU(S);
-  Standard_Integer n   = nbs;
+  int nbs = NbSamplesU(theSurf);
+  int n   = nbs;
   if (nbs > 10)
   {
-    Standard_Real uf = FirstUParameter(S);
-    Standard_Real ul = LastUParameter(S);
-    n *= (Standard_Integer)((u2 - u1) / (uf - ul));
+    const double uf = FirstUParameter(theSurf);
+    const double ul = LastUParameter(theSurf);
+    n *= (int)((theU2 - theU1) / (uf - ul));
     if (n > nbs)
       n = nbs;
     if (n < 5)
       n = 5;
   }
-  return (n);
+  return n;
 }
 
-Standard_Integer HLRBRep_SurfaceTool::NbSamplesV(const Standard_Address S,
-                                                 const Standard_Real    v1,
-                                                 const Standard_Real    v2)
+//=================================================================================================
+
+int HLRBRep_SurfaceTool::NbSamplesV(const HLRBRep_Surface* theSurf,
+                                    const double           theV1,
+                                    const double           theV2)
 {
-  Standard_Integer nbs = NbSamplesV(S);
-  Standard_Integer n   = nbs;
+  int nbs = NbSamplesV(theSurf);
+  int n   = nbs;
   if (nbs > 10)
   {
-    Standard_Real vf = FirstVParameter(S);
-    Standard_Real vl = LastVParameter(S);
-    n *= (Standard_Integer)((v2 - v1) / (vf - vl));
+    const double vf = FirstVParameter(theSurf);
+    const double vl = LastVParameter(theSurf);
+    n *= (int)((theV2 - theV1) / (vf - vl));
     if (n > nbs)
       n = nbs;
     if (n < 5)
       n = 5;
   }
-  return (n);
+  return n;
 }

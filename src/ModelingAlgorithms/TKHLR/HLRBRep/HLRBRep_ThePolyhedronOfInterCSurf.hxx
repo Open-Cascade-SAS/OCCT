@@ -26,6 +26,7 @@
 #include <Bnd_HArray1OfBox.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_OutOfRange;
+class HLRBRep_Surface;
 class HLRBRep_SurfaceTool;
 class gp_Pnt;
 class Bnd_Box;
@@ -36,15 +37,15 @@ class HLRBRep_ThePolyhedronOfInterCSurf
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(const Standard_Address& Surface,
-                                                    const Standard_Integer  nbdU,
-                                                    const Standard_Integer  nbdV,
-                                                    const Standard_Real     U1,
-                                                    const Standard_Real     V1,
-                                                    const Standard_Real     U2,
-                                                    const Standard_Real     V2);
+  Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(HLRBRep_Surface*       Surface,
+                                                    const Standard_Integer nbdU,
+                                                    const Standard_Integer nbdV,
+                                                    const Standard_Real    U1,
+                                                    const Standard_Real    V1,
+                                                    const Standard_Real    U2,
+                                                    const Standard_Real    V2);
 
-  Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(const Standard_Address&     Surface,
+  Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(HLRBRep_Surface*            Surface,
                                                     const TColStd_Array1OfReal& Upars,
                                                     const TColStd_Array1OfReal& Vpars);
 
@@ -54,8 +55,8 @@ public:
 
   Standard_EXPORT void DeflectionOverEstimation(const Standard_Real flec);
 
-  Standard_EXPORT Standard_Real DeflectionOnTriangle(const Standard_Address& Surface,
-                                                     const Standard_Integer  Index) const;
+  Standard_EXPORT Standard_Real DeflectionOnTriangle(HLRBRep_Surface*       Surface,
+                                                     const Standard_Integer Index) const;
 
   Standard_EXPORT void UMinSingularity(const Standard_Boolean Sing);
 
@@ -160,13 +161,13 @@ public:
   Standard_EXPORT void Dump() const;
 
 protected:
-  Standard_EXPORT void Init(const Standard_Address& Surface,
-                            const Standard_Real     U1,
-                            const Standard_Real     V1,
-                            const Standard_Real     U2,
-                            const Standard_Real     V2);
+  Standard_EXPORT void Init(HLRBRep_Surface*    Surface,
+                            const Standard_Real U1,
+                            const Standard_Real V1,
+                            const Standard_Real U2,
+                            const Standard_Real V2);
 
-  Standard_EXPORT void Init(const Standard_Address&     Surface,
+  Standard_EXPORT void Init(HLRBRep_Surface*            Surface,
                             const TColStd_Array1OfReal& Upars,
                             const TColStd_Array1OfReal& Vpars);
 

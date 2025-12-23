@@ -26,6 +26,13 @@ inline BRepAdaptor_Surface& HLRBRep_Surface::Surface()
 
 //=================================================================================================
 
+inline const BRepAdaptor_Surface& HLRBRep_Surface::Surface() const
+{
+  return mySurf;
+}
+
+//=================================================================================================
+
 inline Standard_Real HLRBRep_Surface::FirstUParameter() const
 {
   return HLRBRep_BSurfaceTool::FirstUParameter(mySurf);
@@ -68,14 +75,14 @@ inline GeomAbs_Shape HLRBRep_Surface::VContinuity() const
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S)
+inline Standard_Integer HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S) const
 {
   return HLRBRep_BSurfaceTool::NbUIntervals(mySurf, S);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S)
+inline Standard_Integer HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S) const
 {
   return HLRBRep_BSurfaceTool::NbVIntervals(mySurf, S);
 }
