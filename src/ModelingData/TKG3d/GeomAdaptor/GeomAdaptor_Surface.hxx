@@ -28,7 +28,6 @@
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-#include <memory>
 #include <variant>
 
 class GeomAdaptor_Curve;
@@ -234,12 +233,12 @@ public:
 
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT gp_Pnt Value(const Standard_Real U,
-                               const Standard_Real V) const Standard_OVERRIDE;
+                               const Standard_Real V) const Standard_OVERRIDE final;
 
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT void D0(const Standard_Real U,
                           const Standard_Real V,
-                          gp_Pnt&             P) const Standard_OVERRIDE;
+                          gp_Pnt&             P) const Standard_OVERRIDE final;
 
   //! Computes the point and the first derivatives on
   //! the surface.
@@ -252,7 +251,7 @@ public:
                           const Standard_Real V,
                           gp_Pnt&             P,
                           gp_Vec&             D1U,
-                          gp_Vec&             D1V) const Standard_OVERRIDE;
+                          gp_Vec&             D1V) const Standard_OVERRIDE final;
 
   //! Computes the point, the first and second derivatives
   //! on the surface.
@@ -268,7 +267,7 @@ public:
                           gp_Vec&             D1V,
                           gp_Vec&             D2U,
                           gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const Standard_OVERRIDE;
+                          gp_Vec&             D2UV) const Standard_OVERRIDE final;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -288,7 +287,7 @@ public:
                           gp_Vec&             D3U,
                           gp_Vec&             D3V,
                           gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const Standard_OVERRIDE;
+                          gp_Vec&             D3UVV) const Standard_OVERRIDE final;
 
   //! Computes the derivative of order Nu in the
   //! direction U and Nv in the direction V at the point P(U, V).
@@ -301,7 +300,7 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real    U,
                             const Standard_Real    V,
                             const Standard_Integer Nu,
-                            const Standard_Integer Nv) const Standard_OVERRIDE;
+                            const Standard_Integer Nv) const Standard_OVERRIDE final;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.

@@ -96,10 +96,12 @@ public:
   const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const { return myTolerance; }
 
 private:
-  //! Computes length along U direction.
+  //! Computes length along U direction using grid evaluation.
+  //! @return computed length along U direction
   Standard_Real computeLengthU();
 
-  //! Computes length along V direction.
+  //! Computes length along V direction using grid evaluation.
+  //! @return computed length along V direction
   Standard_Real computeLengthV();
 
   //! Updates discrete range of surface according to its geometric range.

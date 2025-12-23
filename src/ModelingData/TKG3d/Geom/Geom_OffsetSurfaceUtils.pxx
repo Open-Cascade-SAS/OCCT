@@ -524,9 +524,9 @@ inline bool ShiftPoint(double        theUStart,
   return true;
 }
 
-//! Template function for D0 evaluation with retry mechanism for singular points.
-//! When normal calculation fails, attempts to shift the point towards the center
-//! and retry the calculation.
+//! Template function for D0 evaluation with pre-computed basis surface D1.
+//! When normal calculation fails at singular points, falls back to full evaluation
+//! with retry mechanism.
 //!
 //! @tparam BasisSurfType type of basis surface (must have D1 method)
 //! @tparam OscSurfQueryType type providing osculating surface query
@@ -535,7 +535,9 @@ inline bool ShiftPoint(double        theUStart,
 //! @param[in] theBasisSurf basis surface adaptor
 //! @param[in] theOffset offset distance
 //! @param[in] theOscQuery osculating surface query object (may be null)
-//! @param[out] theValue computed offset point
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in] theD1U pre-computed basis surface D1U (used for first iteration)
+//! @param[in] theD1V pre-computed basis surface D1V (used for first iteration)
 //! @return true if calculation succeeded, false if failed at singular point
 template <class BasisSurfType, class OscSurfQueryType>
 bool EvaluateD0(double                  theU,
@@ -543,7 +545,9 @@ bool EvaluateD0(double                  theU,
                 const BasisSurfType&    theBasisSurf,
                 double                  theOffset,
                 const OscSurfQueryType& theOscQuery,
-                gp_Pnt&                 theValue)
+                gp_Pnt&                 theValue,
+                const gp_Vec&           theD1U,
+                const gp_Vec&           theD1V)
 {
   const double aUStart = theU;
   const double aVStart = theV;
@@ -552,10 +556,19 @@ bool EvaluateD0(double                  theU,
   const bool isUPer = theBasisSurf->IsUPeriodic();
   const bool isVPer = theBasisSurf->IsVPeriodic();
 
+  // Use pre-computed D1 for first iteration
+  gp_Vec aD1U             = theD1U;
+  gp_Vec aD1V             = theD1V;
+  bool   isFirstIteration = true;
+
   for (;;)
   {
-    gp_Vec aD1U, aD1V;
-    theBasisSurf->D1(theU, theV, theValue, aD1U, aD1V);
+    // For subsequent iterations, recompute D1 at shifted point
+    if (!isFirstIteration)
+    {
+      theBasisSurf->D1(theU, theV, theValue, aD1U, aD1V);
+    }
+    isFirstIteration = false;
 
     if (IsInfiniteCoord(aD1U) || IsInfiniteCoord(aD1V))
     {
@@ -684,7 +697,35 @@ bool EvaluateD0(double                  theU,
   }
 }
 
-//! Template function for D1 evaluation with retry mechanism for singular points.
+//! Template function for D0 evaluation with retry mechanism for singular points.
+//! When normal calculation fails, attempts to shift the point towards the center
+//! and retry the calculation.
+//!
+//! @tparam BasisSurfType type of basis surface (must have D1 method)
+//! @tparam OscSurfQueryType type providing osculating surface query
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theBasisSurf basis surface adaptor
+//! @param[in] theOffset offset distance
+//! @param[in] theOscQuery osculating surface query object (may be null)
+//! @param[out] theValue computed offset point
+//! @return true if calculation succeeded, false if failed at singular point
+template <class BasisSurfType, class OscSurfQueryType>
+bool EvaluateD0(double                  theU,
+                double                  theV,
+                const BasisSurfType&    theBasisSurf,
+                double                  theOffset,
+                const OscSurfQueryType& theOscQuery,
+                gp_Pnt&                 theValue)
+{
+  gp_Vec aD1U, aD1V;
+  theBasisSurf->D1(theU, theV, theValue, aD1U, aD1V);
+  return EvaluateD0(theU, theV, theBasisSurf, theOffset, theOscQuery, theValue, aD1U, aD1V);
+}
+
+//! Template function for D1 evaluation with pre-computed basis surface D2.
+//! When normal calculation fails at singular points, falls back to full evaluation
+//! with retry mechanism.
 //!
 //! @tparam BasisSurfType type of basis surface (must have D2 method)
 //! @tparam OscSurfQueryType type providing osculating surface query
@@ -693,9 +734,12 @@ bool EvaluateD0(double                  theU,
 //! @param[in] theBasisSurf basis surface adaptor
 //! @param[in] theOffset offset distance
 //! @param[in] theOscQuery osculating surface query object (may be null)
-//! @param[out] theValue computed offset point
-//! @param[out] theD1U computed D1U derivative
-//! @param[out] theD1V computed D1V derivative
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in,out] theD1U on input: pre-computed basis D1U; on output: offset D1U
+//! @param[in,out] theD1V on input: pre-computed basis D1V; on output: offset D1V
+//! @param[in] theD2U pre-computed basis surface D2U (used for first iteration)
+//! @param[in] theD2V pre-computed basis surface D2V (used for first iteration)
+//! @param[in] theD2UV pre-computed basis surface D2UV (used for first iteration)
 //! @return true if calculation succeeded, false if failed at singular point
 template <class BasisSurfType, class OscSurfQueryType>
 bool EvaluateD1(double                  theU,
@@ -705,7 +749,10 @@ bool EvaluateD1(double                  theU,
                 const OscSurfQueryType& theOscQuery,
                 gp_Pnt&                 theValue,
                 gp_Vec&                 theD1U,
-                gp_Vec&                 theD1V)
+                gp_Vec&                 theD1V,
+                const gp_Vec&           theD2U,
+                const gp_Vec&           theD2V,
+                const gp_Vec&           theD2UV)
 {
   const double aUStart = theU;
   const double aVStart = theV;
@@ -714,10 +761,20 @@ bool EvaluateD1(double                  theU,
   const bool isUPer = theBasisSurf->IsUPeriodic();
   const bool isVPer = theBasisSurf->IsVPeriodic();
 
+  // Use pre-computed D2 for first iteration
+  gp_Vec aD2U             = theD2U;
+  gp_Vec aD2V             = theD2V;
+  gp_Vec aD2UV            = theD2UV;
+  bool   isFirstIteration = true;
+
   for (;;)
   {
-    gp_Vec aD2U, aD2V, aD2UV;
-    theBasisSurf->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+    // For subsequent iterations, recompute D2 at shifted point
+    if (!isFirstIteration)
+    {
+      theBasisSurf->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+    }
+    isFirstIteration = false;
 
     if (IsInfiniteCoord(theD1U) || IsInfiniteCoord(theD1V))
     {
@@ -956,9 +1013,10 @@ bool EvaluateD1(double                  theU,
   }
 }
 
-//! Template function for D2 evaluation with retry mechanism for singular points.
+//! Template function for D1 evaluation with retry mechanism for singular points.
+//! Computes D2 internally and calls the pre-computed overload.
 //!
-//! @tparam BasisSurfType type of basis surface (must have D3 method)
+//! @tparam BasisSurfType type of basis surface (must have D2 method)
 //! @tparam OscSurfQueryType type providing osculating surface query
 //! @param[in] theU U parameter
 //! @param[in] theV V parameter
@@ -968,9 +1026,53 @@ bool EvaluateD1(double                  theU,
 //! @param[out] theValue computed offset point
 //! @param[out] theD1U computed D1U derivative
 //! @param[out] theD1V computed D1V derivative
-//! @param[out] theD2U computed D2U derivative
-//! @param[out] theD2V computed D2V derivative
-//! @param[out] theD2UV computed D2UV derivative
+//! @return true if calculation succeeded, false if failed at singular point
+template <class BasisSurfType, class OscSurfQueryType>
+bool EvaluateD1(double                  theU,
+                double                  theV,
+                const BasisSurfType&    theBasisSurf,
+                double                  theOffset,
+                const OscSurfQueryType& theOscQuery,
+                gp_Pnt&                 theValue,
+                gp_Vec&                 theD1U,
+                gp_Vec&                 theD1V)
+{
+  gp_Vec aD2U, aD2V, aD2UV;
+  theBasisSurf->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  return EvaluateD1(theU,
+                    theV,
+                    theBasisSurf,
+                    theOffset,
+                    theOscQuery,
+                    theValue,
+                    theD1U,
+                    theD1V,
+                    aD2U,
+                    aD2V,
+                    aD2UV);
+}
+
+//! Template function for D2 evaluation with pre-computed basis surface D3.
+//! When normal calculation fails at singular points, falls back to full evaluation
+//! with retry mechanism.
+//!
+//! @tparam BasisSurfType type of basis surface (must have D3 method)
+//! @tparam OscSurfQueryType type providing osculating surface query
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theBasisSurf basis surface adaptor
+//! @param[in] theOffset offset distance
+//! @param[in] theOscQuery osculating surface query object (may be null)
+//! @param[in,out] theValue on input: basis surface point; on output: offset point
+//! @param[in,out] theD1U on input: pre-computed basis D1U; on output: offset D1U
+//! @param[in,out] theD1V on input: pre-computed basis D1V; on output: offset D1V
+//! @param[in,out] theD2U on input: pre-computed basis D2U; on output: offset D2U
+//! @param[in,out] theD2V on input: pre-computed basis D2V; on output: offset D2V
+//! @param[in,out] theD2UV on input: pre-computed basis D2UV; on output: offset D2UV
+//! @param[in] theD3U pre-computed basis surface D3U (used for first iteration)
+//! @param[in] theD3V pre-computed basis surface D3V (used for first iteration)
+//! @param[in] theD3UUV pre-computed basis surface D3UUV (used for first iteration)
+//! @param[in] theD3UVV pre-computed basis surface D3UVV (used for first iteration)
 //! @return true if calculation succeeded, false if failed at singular point
 template <class BasisSurfType, class OscSurfQueryType>
 bool EvaluateD2(double                  theU,
@@ -983,7 +1085,11 @@ bool EvaluateD2(double                  theU,
                 gp_Vec&                 theD1V,
                 gp_Vec&                 theD2U,
                 gp_Vec&                 theD2V,
-                gp_Vec&                 theD2UV)
+                gp_Vec&                 theD2UV,
+                const gp_Vec&           theD3U,
+                const gp_Vec&           theD3V,
+                const gp_Vec&           theD3UUV,
+                const gp_Vec&           theD3UVV)
 {
   const double aUStart = theU;
   const double aVStart = theV;
@@ -992,21 +1098,32 @@ bool EvaluateD2(double                  theU,
   const bool isUPer = theBasisSurf->IsUPeriodic();
   const bool isVPer = theBasisSurf->IsVPeriodic();
 
+  // Use pre-computed D3 for first iteration
+  gp_Vec aD3U             = theD3U;
+  gp_Vec aD3V             = theD3V;
+  gp_Vec aD3UUV           = theD3UUV;
+  gp_Vec aD3UVV           = theD3UVV;
+  bool   isFirstIteration = true;
+
   for (;;)
   {
-    gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-    theBasisSurf->D3(theU,
-                     theV,
-                     theValue,
-                     theD1U,
-                     theD1V,
-                     theD2U,
-                     theD2V,
-                     theD2UV,
-                     aD3U,
-                     aD3V,
-                     aD3UUV,
-                     aD3UVV);
+    // For subsequent iterations, recompute D3 at shifted point
+    if (!isFirstIteration)
+    {
+      theBasisSurf->D3(theU,
+                       theV,
+                       theValue,
+                       theD1U,
+                       theD1V,
+                       theD2U,
+                       theD2V,
+                       theD2UV,
+                       aD3U,
+                       aD3V,
+                       aD3UUV,
+                       aD3UVV);
+    }
+    isFirstIteration = false;
 
     if (IsInfiniteCoord(theD1U) || IsInfiniteCoord(theD1V))
     {
@@ -1139,6 +1256,56 @@ bool EvaluateD2(double                  theU,
       return false;
     }
   }
+}
+
+//! Template function for D2 evaluation with retry mechanism for singular points.
+//! Computes D3 internally and calls the pre-computed overload.
+//!
+//! @tparam BasisSurfType type of basis surface (must have D3 method)
+//! @tparam OscSurfQueryType type providing osculating surface query
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theBasisSurf basis surface adaptor
+//! @param[in] theOffset offset distance
+//! @param[in] theOscQuery osculating surface query object (may be null)
+//! @param[out] theValue computed offset point
+//! @param[out] theD1U computed D1U derivative
+//! @param[out] theD1V computed D1V derivative
+//! @param[out] theD2U computed D2U derivative
+//! @param[out] theD2V computed D2V derivative
+//! @param[out] theD2UV computed D2UV derivative
+//! @return true if calculation succeeded, false if failed at singular point
+template <class BasisSurfType, class OscSurfQueryType>
+bool EvaluateD2(double                  theU,
+                double                  theV,
+                const BasisSurfType&    theBasisSurf,
+                double                  theOffset,
+                const OscSurfQueryType& theOscQuery,
+                gp_Pnt&                 theValue,
+                gp_Vec&                 theD1U,
+                gp_Vec&                 theD1V,
+                gp_Vec&                 theD2U,
+                gp_Vec&                 theD2V,
+                gp_Vec&                 theD2UV)
+{
+  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
+  theBasisSurf
+    ->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+  return EvaluateD2(theU,
+                    theV,
+                    theBasisSurf,
+                    theOffset,
+                    theOscQuery,
+                    theValue,
+                    theD1U,
+                    theD1V,
+                    theD2U,
+                    theD2V,
+                    theD2UV,
+                    aD3U,
+                    aD3V,
+                    aD3UUV,
+                    aD3UVV);
 }
 
 //! Template function for D3 evaluation with retry mechanism for singular points.
@@ -1342,8 +1509,9 @@ bool EvaluateD3(double                  theU,
   }
 }
 
-//! Template function for DN evaluation with retry mechanism for singular points.
-//! Computes arbitrary order derivative of offset surface.
+//! Template function for DN evaluation with pre-computed basis surface D1.
+//! When normal calculation fails at singular points, falls back to full evaluation
+//! with retry mechanism.
 //!
 //! @tparam BasisSurfType type of basis surface (must have D1 and DN methods)
 //! @tparam OscSurfQueryType type providing osculating surface query
@@ -1355,6 +1523,8 @@ bool EvaluateD3(double                  theU,
 //! @param[in] theOffset offset distance
 //! @param[in] theOscQuery osculating surface query object (may be null)
 //! @param[out] theResult computed derivative vector
+//! @param[in] theD1U pre-computed basis surface D1U (used for first iteration)
+//! @param[in] theD1V pre-computed basis surface D1V (used for first iteration)
 //! @return true if calculation succeeded, false if failed at singular point
 template <class BasisSurfType, class OscSurfQueryType>
 bool EvaluateDN(double                  theU,
@@ -1364,7 +1534,9 @@ bool EvaluateDN(double                  theU,
                 const BasisSurfType&    theBasisSurf,
                 double                  theOffset,
                 const OscSurfQueryType& theOscQuery,
-                gp_Vec&                 theResult)
+                gp_Vec&                 theResult,
+                const gp_Vec&           theD1U,
+                const gp_Vec&           theD1V)
 {
   const double aUStart = theU;
   const double aVStart = theV;
@@ -1373,11 +1545,20 @@ bool EvaluateDN(double                  theU,
   const bool isUPer = theBasisSurf->IsUPeriodic();
   const bool isVPer = theBasisSurf->IsVPeriodic();
 
+  // Use pre-computed D1 for first iteration
+  gp_Pnt aP;
+  gp_Vec aD1U             = theD1U;
+  gp_Vec aD1V             = theD1V;
+  bool   isFirstIteration = true;
+
   for (;;)
   {
-    gp_Pnt aP;
-    gp_Vec aD1U, aD1V;
-    theBasisSurf->D1(theU, theV, aP, aD1U, aD1V);
+    // For subsequent iterations, recompute D1 at shifted point
+    if (!isFirstIteration)
+    {
+      theBasisSurf->D1(theU, theV, aP, aD1U, aD1V);
+    }
+    isFirstIteration = false;
 
     if (IsInfiniteCoord(aD1U) || IsInfiniteCoord(aD1V))
     {
@@ -1495,6 +1676,45 @@ bool EvaluateDN(double                  theU,
       return false;
     }
   }
+}
+
+//! Template function for DN evaluation with retry mechanism for singular points.
+//! Computes D1 internally and calls the pre-computed overload.
+//!
+//! @tparam BasisSurfType type of basis surface (must have D1 and DN methods)
+//! @tparam OscSurfQueryType type providing osculating surface query
+//! @param[in] theU U parameter
+//! @param[in] theV V parameter
+//! @param[in] theNu derivative order in U
+//! @param[in] theNv derivative order in V
+//! @param[in] theBasisSurf basis surface adaptor
+//! @param[in] theOffset offset distance
+//! @param[in] theOscQuery osculating surface query object (may be null)
+//! @param[out] theResult computed derivative vector
+//! @return true if calculation succeeded, false if failed at singular point
+template <class BasisSurfType, class OscSurfQueryType>
+bool EvaluateDN(double                  theU,
+                double                  theV,
+                int                     theNu,
+                int                     theNv,
+                const BasisSurfType&    theBasisSurf,
+                double                  theOffset,
+                const OscSurfQueryType& theOscQuery,
+                gp_Vec&                 theResult)
+{
+  gp_Pnt aP;
+  gp_Vec aD1U, aD1V;
+  theBasisSurf->D1(theU, theV, aP, aD1U, aD1V);
+  return EvaluateDN(theU,
+                    theV,
+                    theNu,
+                    theNv,
+                    theBasisSurf,
+                    theOffset,
+                    theOscQuery,
+                    theResult,
+                    aD1U,
+                    aD1V);
 }
 
 } // namespace Geom_OffsetSurfaceUtils

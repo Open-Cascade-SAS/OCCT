@@ -25,6 +25,7 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Cone.hxx>
@@ -442,17 +443,32 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
     }
       Standard_FALLTHROUGH
     default: {
-      Standard_Integer Nu = NbUSamples(S);
-      Standard_Integer Nv = NbVSamples(S);
-      gp_Pnt           P;
+      // Use batch grid evaluation for optimized surface point computation
+      const Standard_Integer Nu = NbUSamples(S);
+      const Standard_Integer Nv = NbVSamples(S);
+
+      TColStd_Array1OfReal aUParams(1, Nu);
+      TColStd_Array1OfReal aVParams(1, Nv);
+
       for (Standard_Integer i = 1; i <= Nu; i++)
       {
-        const Standard_Real U = UMin + ((UMax - UMin) * (i - 1) / (Nu - 1));
-        for (Standard_Integer j = 1; j <= Nv; j++)
+        aUParams.SetValue(i, UMin + ((UMax - UMin) * (i - 1) / (Nu - 1)));
+      }
+      for (Standard_Integer j = 1; j <= Nv; j++)
+      {
+        aVParams.SetValue(j, VMin + ((VMax - VMin) * (j - 1) / (Nv - 1)));
+      }
+
+      GeomGridEval_Surface anEvaluator;
+      anEvaluator.Initialize(S);
+      anEvaluator.SetUVParams(aUParams, aVParams);
+
+      const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+      for (Standard_Integer i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
+      {
+        for (Standard_Integer j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
         {
-          const Standard_Real V = VMin + ((VMax - VMin) * (j - 1) / (Nv - 1));
-          S.D0(U, V, P);
-          B.Add(P);
+          B.Add(aGrid.Value(i, j));
         }
       }
       B.Enlarge(Tol);
@@ -544,26 +560,51 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
                                    const Standard_Real      Tol,
                                    Bnd_Box&                 B)
 {
-  Standard_Integer Nu = NbUSamples(S, UMin, UMax);
-  Standard_Integer Nv = NbVSamples(S, VMin, VMax);
+  const Standard_Integer Nu = NbUSamples(S, UMin, UMax);
+  const Standard_Integer Nv = NbVSamples(S, VMin, VMax);
   //
   Standard_Real CoordMin[3] = {RealLast(), RealLast(), RealLast()};
   Standard_Real CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
   Standard_Real DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
   //
-  //
-  Standard_Real              du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
-  Standard_Real              dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
-  NCollection_Array2<gp_XYZ> aPnts(1, Nu, 1, Nv);
-  Standard_Real              u, v;
-  Standard_Integer           i, j, k;
-  gp_Pnt                     P;
-  for (i = 1, u = UMin; i <= Nu; i++, u += du)
+  const Standard_Real du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
+  const Standard_Real dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
+
+  // Use batch grid evaluation with finer grid (2*Nu-1) x (2*Nv-1) to include midpoints
+  const Standard_Integer NuFine = 2 * Nu - 1;
+  const Standard_Integer NvFine = 2 * Nv - 1;
+
+  TColStd_Array1OfReal aUParams(1, NuFine);
+  TColStd_Array1OfReal aVParams(1, NvFine);
+
+  for (Standard_Integer i = 1; i <= NuFine; i++)
   {
-    for (j = 1, v = VMin; j <= Nv; j++, v += dv)
+    aUParams.SetValue(i, UMin + (i - 1) * du2);
+  }
+  for (Standard_Integer j = 1; j <= NvFine; j++)
+  {
+    aVParams.SetValue(j, VMin + (j - 1) * dv2);
+  }
+
+  GeomGridEval_Surface anEvaluator;
+  anEvaluator.Initialize(S);
+  anEvaluator.SetUVParams(aUParams, aVParams);
+
+  const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid();
+
+  // Extract main grid points (at even indices in fine grid: 1, 3, 5, ...)
+  // Main grid indices in fine grid: iFine = 2*i - 1, jFine = 2*j - 1
+  NCollection_Array2<gp_XYZ> aPnts(1, Nu, 1, Nv);
+
+  Standard_Integer i, j, k;
+  for (i = 1; i <= Nu; i++)
+  {
+    const Standard_Integer iFine = 2 * i - 1;
+    for (j = 1; j <= Nv; j++)
     {
-      S.D0(u, v, P);
-      aPnts(i, j) = P.XYZ();
+      const Standard_Integer jFine = 2 * j - 1;
+      const gp_Pnt&          P     = aFineGrid.Value(iFine, jFine);
+      aPnts(i, j)                  = P.XYZ();
       //
       for (k = 0; k < 3; ++k)
       {
@@ -577,44 +618,48 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
         }
       }
       //
+      // U-midpoint: between (i-1, j) and (i, j) in main grid
+      // Fine grid index: (2*i - 2, 2*j - 1) = (iFine - 1, jFine)
       if (i > 1)
       {
-        gp_XYZ aPm = 0.5 * (aPnts(i - 1, j) + aPnts(i, j));
-        S.D0(u - du2, v, P);
-        gp_XYZ aD = (P.XYZ() - aPm);
+        const gp_XYZ  aPm = 0.5 * (aPnts(i - 1, j) + aPnts(i, j));
+        const gp_Pnt& PM  = aFineGrid.Value(iFine - 1, jFine);
+        const gp_XYZ  aD  = (PM.XYZ() - aPm);
         for (k = 0; k < 3; ++k)
         {
-          if (CoordMin[k] > P.Coord(k + 1))
+          if (CoordMin[k] > PM.Coord(k + 1))
           {
-            CoordMin[k] = P.Coord(k + 1);
+            CoordMin[k] = PM.Coord(k + 1);
           }
-          if (CoordMax[k] < P.Coord(k + 1))
+          if (CoordMax[k] < PM.Coord(k + 1))
           {
-            CoordMax[k] = P.Coord(k + 1);
+            CoordMax[k] = PM.Coord(k + 1);
           }
-          Standard_Real d = std::abs(aD.Coord(k + 1));
+          const Standard_Real d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;
           }
         }
       }
+      // V-midpoint: between (i, j-1) and (i, j) in main grid
+      // Fine grid index: (2*i - 1, 2*j - 2) = (iFine, jFine - 1)
       if (j > 1)
       {
-        gp_XYZ aPm = 0.5 * (aPnts(i, j - 1) + aPnts(i, j));
-        S.D0(u, v - dv2, P);
-        gp_XYZ aD = (P.XYZ() - aPm);
+        const gp_XYZ  aPm = 0.5 * (aPnts(i, j - 1) + aPnts(i, j));
+        const gp_Pnt& PM  = aFineGrid.Value(iFine, jFine - 1);
+        const gp_XYZ  aD  = (PM.XYZ() - aPm);
         for (k = 0; k < 3; ++k)
         {
-          if (CoordMin[k] > P.Coord(k + 1))
+          if (CoordMin[k] > PM.Coord(k + 1))
           {
-            CoordMin[k] = P.Coord(k + 1);
+            CoordMin[k] = PM.Coord(k + 1);
           }
-          if (CoordMax[k] < P.Coord(k + 1))
+          if (CoordMax[k] < PM.Coord(k + 1))
           {
-            CoordMax[k] = P.Coord(k + 1);
+            CoordMax[k] = PM.Coord(k + 1);
           }
-          Standard_Real d = std::abs(aD.Coord(k + 1));
+          const Standard_Real d = std::abs(aD.Coord(k + 1));
           if (DeflMax[k] < d)
           {
             DeflMax[k] = d;

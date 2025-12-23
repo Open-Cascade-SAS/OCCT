@@ -12,4 +12,6 @@ set(OCCT_GeomAdaptor_FILES
   GeomAdaptor_SurfaceOfLinearExtrusion.hxx
   GeomAdaptor_SurfaceOfRevolution.cxx
   GeomAdaptor_SurfaceOfRevolution.hxx
+  GeomAdaptor_TransformedSurface.cxx
+  GeomAdaptor_TransformedSurface.hxx
 )

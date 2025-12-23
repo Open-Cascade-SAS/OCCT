@@ -17,12 +17,14 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_GenExtSS.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <math_BFGS.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //! This class represents distance objective function for surface / surface.
 class Extrema_FuncDistSS : public math_MultipleVarFunctionWithGradient
@@ -196,22 +198,38 @@ void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
   Standard_Real PasV = myv2sup - myv2min;
   Standard_Real U0   = PasU / myusample / 100.;
   Standard_Real V0   = PasV / myvsample / 100.;
-  gp_Pnt        P1;
-  PasU = (PasU - U0) / (myusample - 1);
-  PasV = (PasV - V0) / (myvsample - 1);
-  U0   = myu2min + U0 / 2.;
-  V0   = myv2min + V0 / 2.;
+  PasU               = (PasU - U0) / (myusample - 1);
+  PasV               = (PasV - V0) / (myvsample - 1);
+  U0                 = myu2min + U0 / 2.;
+  V0                 = myv2min + V0 / 2.;
 
-  // Calcul des distances
+  // Build UV parameter arrays for batch evaluation
+  TColStd_Array1OfReal aUParams(1, myusample);
+  TColStd_Array1OfReal aVParams(1, myvsample);
 
-  Standard_Integer NoU, NoV;
-  Standard_Real    U, V;
-  for (NoU = 1, U = U0; NoU <= myusample; NoU++, U += PasU)
+  Standard_Real U = U0;
+  for (Standard_Integer NoU = 1; NoU <= myusample; NoU++, U += PasU)
   {
-    for (NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+    aUParams.SetValue(NoU, U);
+  }
+  Standard_Real V = V0;
+  for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++, V += PasV)
+  {
+    aVParams.SetValue(NoV, V);
+  }
+
+  // Use batch grid evaluation for optimized surface point computation
+  GeomGridEval_Surface anEvaluator;
+  anEvaluator.Initialize(*myS2);
+  anEvaluator.SetUVParams(aUParams, aVParams);
+
+  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+
+  for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
+  {
+    for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
     {
-      P1 = myS2->Value(U, V);
-      mypoints2->SetValue(NoU, NoV, P1);
+      mypoints2->SetValue(NoU, NoV, aGrid.Value(NoU, NoV));
     }
   }
 }
@@ -267,14 +285,33 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   U20                 = myu2min + U20 / 2.;
   V20                 = myv2min + V20 / 2.;
 
-  // Calcul des distances
+  // Build UV parameter arrays for batch evaluation of S1
+  TColStd_Array1OfReal aU1Params(1, myusample);
+  TColStd_Array1OfReal aV1Params(1, myvsample);
 
-  for (NoU1 = 1, U1 = U10; NoU1 <= myusample; NoU1++, U1 += PasU1)
+  U1 = U10;
+  for (NoU1 = 1; NoU1 <= myusample; NoU1++, U1 += PasU1)
   {
-    for (NoV1 = 1, V1 = V10; NoV1 <= myvsample; NoV1++, V1 += PasV1)
+    aU1Params.SetValue(NoU1, U1);
+  }
+  V1 = V10;
+  for (NoV1 = 1; NoV1 <= myvsample; NoV1++, V1 += PasV1)
+  {
+    aV1Params.SetValue(NoV1, V1);
+  }
+
+  // Use batch grid evaluation for optimized surface point computation
+  GeomGridEval_Surface anEvaluator;
+  anEvaluator.Initialize(S1);
+  anEvaluator.SetUVParams(aU1Params, aV1Params);
+
+  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+
+  for (NoU1 = 1; NoU1 <= myusample; NoU1++)
+  {
+    for (NoV1 = 1; NoV1 <= myvsample; NoV1++)
     {
-      P1 = S1.Value(U1, V1);
-      mypoints1->SetValue(NoU1, NoV1, P1);
+      mypoints1->SetValue(NoU1, NoV1, aGrid.Value(NoU1, NoV1));
     }
   }
 

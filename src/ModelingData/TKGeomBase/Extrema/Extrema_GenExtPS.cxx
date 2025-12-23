@@ -23,6 +23,7 @@
 #include <Bnd_HArray1OfSphere.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Bnd_Sphere.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -30,6 +31,7 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
@@ -536,15 +538,24 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
 
     // If flag was changed and extrema not reinitialized Extrema would fail
     myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
-    // Calculation of distances
+
+    GeomGridEval_Surface aGridEval;
+    aGridEval.Initialize(*myS);
+    aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+
+    NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
+
+    if (aGridPoints.IsEmpty())
+    {
+      return;
+    }
 
     for (Standard_Integer NoU = 1; NoU <= myusample; NoU++)
     {
       for (Standard_Integer NoV = 1; NoV <= myvsample; NoV++)
       {
-        gp_Pnt                aP1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
+        const gp_Pnt&         aP1 = aGridPoints.Value(NoU, NoV);
         Extrema_POnSurfParams aParam(myUParams->Value(NoU), myVParams->Value(NoV), aP1);
-
         aParam.SetElementType(Extrema_Node);
         aParam.SetIndices(NoU, NoV);
         myPoints.SetValue(NoU, NoV, aParam);
@@ -836,11 +847,10 @@ void Extrema_GenExtPS::BuildTree()
   Standard_Real PasV = myvsup - myvmin;
   Standard_Real U0   = PasU / myusample / 100.;
   Standard_Real V0   = PasV / myvsample / 100.;
-  gp_Pnt        P1;
-  PasU = (PasU - U0) / (myusample - 1);
-  PasV = (PasV - V0) / (myvsample - 1);
-  U0   = U0 / 2. + myumin;
-  V0   = V0 / 2. + myvmin;
+  PasU               = (PasU - U0) / (myusample - 1);
+  PasV               = (PasV - V0) / (myvsample - 1);
+  U0                 = U0 / 2. + myumin;
+  V0                 = V0 / 2. + myvmin;
 
   // build grid of parametric points
   myUParams = new TColStd_HArray1OfReal(1, myusample);
@@ -852,19 +862,27 @@ void Extrema_GenExtPS::BuildTree()
   for (NoV = 1; NoV <= myvsample; NoV++, V += PasV)
     myVParams->SetValue(NoV, V);
 
-  // Calculation of distances
+  // Build UB-tree with surface points for fast proximity search.
+  // Use optimized grid evaluator with span-based caching for B-spline surfaces.
   mySphereUBTree = new Extrema_UBTreeOfSphere;
   Extrema_UBTreeFillerOfSphere aFiller(*mySphereUBTree);
   Standard_Integer             i = 0;
 
   mySphereArray = new Bnd_HArray1OfSphere(0, myusample * myvsample);
 
+  // Use unified grid evaluator for all surface types (optimized for BSpline, Bezier, etc.)
+  GeomGridEval_Surface aGridEval;
+  aGridEval.Initialize(*myS);
+  aGridEval.SetUVParams(myUParams->Array1(), myVParams->Array1());
+
+  const NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid();
+
   for (NoU = 1; NoU <= myusample; NoU++)
   {
     for (NoV = 1; NoV <= myvsample; NoV++)
     {
-      P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
-      Bnd_Sphere aSph(P1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
+      const gp_Pnt& aP1 = aGridPoints.Value(NoU, NoV);
+      Bnd_Sphere    aSph(aP1.XYZ(), 0 /*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
       aFiller.Add(i, aSph);
       mySphereArray->SetValue(i, aSph);
       i++;
