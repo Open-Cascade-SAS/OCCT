@@ -13,8 +13,7 @@
 
 #include <GeomGridEval_SurfaceOfRevolution.hxx>
 
-#include <gp_Trsf.hxx>
-#include <Precision.hxx>
+#include <Geom_RevolutionUtils.pxx>
 
 //==================================================================================================
 
@@ -79,13 +78,12 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid() cons
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    gp_Trsf aRotation;
-    aRotation.SetRotation(myAxis, myUParams.Value(i));
+    const double aU = myUParams.Value(i);
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      gp_Pnt aP = aCurvePoints.Value(j);
-      aP.Transform(aRotation);
+      gp_Pnt aP;
+      Geom_RevolutionUtils::CalculateD0(aCurvePoints.Value(j), aU, myAxis, aP);
       aResult.SetValue(i, j, aP);
     }
   }
@@ -116,34 +114,25 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
-  const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    gp_Trsf aRotation;
-    aRotation.SetRotation(myAxis, myUParams.Value(i));
+    const double aU = myUParams.Value(i);
 
     for (int j = 1; j <= aNbV; ++j)
     {
       const GeomGridEval::CurveD1& aCurveData = aCurveD1.Value(j);
-      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-      // D1U (before rotation) = Axis Cross (P - AxisLoc)
-      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
-      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
-      {
-        aD1U.SetCoord(0.0, 0.0, 0.0);
-      }
-
-      // Rotate point and vectors
-      gp_Pnt aP = aCurveData.Point;
-      aP.Transform(aRotation);
-      aD1U.Transform(aRotation);
-      gp_Vec aD1V = aCurveData.D1;
-      aD1V.Transform(aRotation);
-
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V;
+      Geom_RevolutionUtils::CalculateD1(aCurveData.Point,
+                                        aCurveData.D1,
+                                        aU,
+                                        myAxis,
+                                        aP,
+                                        aD1U,
+                                        aD1V);
       aResult.ChangeValue(i, j) = {aP, aD1U, aD1V};
     }
   }
@@ -174,44 +163,29 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
-  const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    gp_Trsf aRotation;
-    aRotation.SetRotation(myAxis, myUParams.Value(i));
+    const double aU = myUParams.Value(i);
 
     for (int j = 1; j <= aNbV; ++j)
     {
       const GeomGridEval::CurveD2& aCurveData = aCurveD2.Value(j);
-      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-      // D1U (before rotation) = Axis Cross (P - AxisLoc)
-      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
-      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
-      {
-        aD1U.SetCoord(0.0, 0.0, 0.0);
-      }
-
-      // D2U (before rotation) = (Axis Dot CQ) * Axis - CQ
-      gp_Vec aD2U(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
-
-      // D2UV (before rotation) = Axis Cross C'(v)
-      gp_Vec aD2UV(aAxisDir.Crossed(aCurveData.D1.XYZ()));
-
-      // Rotate point and all vectors
-      gp_Pnt aP = aCurveData.Point;
-      aP.Transform(aRotation);
-      aD1U.Transform(aRotation);
-      gp_Vec aD1V = aCurveData.D1;
-      aD1V.Transform(aRotation);
-      aD2U.Transform(aRotation);
-      gp_Vec aD2V = aCurveData.D2;
-      aD2V.Transform(aRotation);
-      aD2UV.Transform(aRotation);
-
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      Geom_RevolutionUtils::CalculateD2(aCurveData.Point,
+                                        aCurveData.D1,
+                                        aCurveData.D2,
+                                        aU,
+                                        myAxis,
+                                        aP,
+                                        aD1U,
+                                        aD1V,
+                                        aD2U,
+                                        aD2V,
+                                        aD2UV);
       aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
@@ -242,58 +216,34 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const gp_XYZ&                            aAxisDir = myAxisDirection.XYZ();
-  const gp_XYZ&                            aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    gp_Trsf aRotation;
-    aRotation.SetRotation(myAxis, myUParams.Value(i));
+    const double aU = myUParams.Value(i);
 
     for (int j = 1; j <= aNbV; ++j)
     {
       const GeomGridEval::CurveD3& aCurveData = aCurveD3.Value(j);
-      const gp_XYZ                 aCQ        = aCurveData.Point.XYZ() - aAxisLoc;
 
-      // D1U (before rotation) = Axis Cross (P - AxisLoc)
-      gp_Vec aD1U(aAxisDir.Crossed(aCQ));
-      if (aD1U.SquareMagnitude() < Precision::SquareConfusion())
-      {
-        aD1U.SetCoord(0.0, 0.0, 0.0);
-      }
-
-      // D2U (before rotation) = (Axis Dot CQ) * Axis - CQ
-      gp_Vec aD2U(aAxisDir.Dot(aCQ) * aAxisDir - aCQ);
-
-      // D2UV (before rotation) = Axis Cross C'(v)
-      gp_Vec aD2UV(aAxisDir.Crossed(aCurveData.D1.XYZ()));
-
-      // D3U (before rotation) = -D1U
-      gp_Vec aD3U = -aD1U;
-
-      // D3UUV (before rotation) = (Axis Dot D1V) * Axis - D1V
-      gp_Vec aD3UUV(aAxisDir.Dot(aCurveData.D1.XYZ()) * aAxisDir - aCurveData.D1.XYZ());
-
-      // D3UVV (before rotation) = Axis Cross D2V
-      gp_Vec aD3UVV(aAxisDir.Crossed(aCurveData.D2.XYZ()));
-
-      // Rotate point and all vectors
-      gp_Pnt aP = aCurveData.Point;
-      aP.Transform(aRotation);
-      aD1U.Transform(aRotation);
-      gp_Vec aD1V = aCurveData.D1;
-      aD1V.Transform(aRotation);
-      aD2U.Transform(aRotation);
-      gp_Vec aD2V = aCurveData.D2;
-      aD2V.Transform(aRotation);
-      aD2UV.Transform(aRotation);
-      aD3U.Transform(aRotation);
-      gp_Vec aD3V = aCurveData.D3;
-      aD3V.Transform(aRotation);
-      aD3UUV.Transform(aRotation);
-      aD3UVV.Transform(aRotation);
-
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      Geom_RevolutionUtils::CalculateD3(aCurveData.Point,
+                                        aCurveData.D1,
+                                        aCurveData.D2,
+                                        aCurveData.D3,
+                                        aU,
+                                        myAxis,
+                                        aP,
+                                        aD1U,
+                                        aD1V,
+                                        aD2U,
+                                        aD2V,
+                                        aD2UV,
+                                        aD3U,
+                                        aD3V,
+                                        aD3UUV,
+                                        aD3UVV);
       aResult.ChangeValue(i, j) = {aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
   }
@@ -315,8 +265,6 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
   const int aNbU = myUParams.Size();
   const int aNbV = myVParams.Size();
 
-  const gp_XYZ&              aAxisDir = myAxisDirection.XYZ();
-  const gp_XYZ&              aAxisLoc = myAxisLocation.XYZ();
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
   // Get curve data
@@ -331,14 +279,12 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
 
     for (int i = 1; i <= aNbU; ++i)
     {
-      gp_Trsf aRotation;
-      aRotation.SetRotation(myAxis, myUParams.Value(i));
+      const double aU = myUParams.Value(i);
 
       for (int j = 1; j <= aNbV; ++j)
       {
-        gp_Vec aDV = aCurveDN.Value(j);
-        aDV.Transform(aRotation);
-        aResult.SetValue(i, j, aDV);
+        gp_Vec aDN = Geom_RevolutionUtils::CalculateDN(aCurveDN.Value(j), aU, myAxis, theNU, theNV);
+        aResult.SetValue(i, j, aDN);
       }
     }
   }
@@ -360,47 +306,22 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
 
     for (int i = 1; i <= aNbU; ++i)
     {
-      gp_Trsf aRotation;
-      aRotation.SetRotation(myAxis, myUParams.Value(i));
+      const double aU = myUParams.Value(i);
 
       for (int j = 1; j <= aNbV; ++j)
       {
-        gp_Vec aDV;
+        gp_Vec aCurvePtOrDN;
         if (theNV == 0)
         {
-          // For pure U derivative, the "vector" is the position from axis
-          aDV = gp_Vec(aCurvePts.Value(j).XYZ() - aAxisLoc);
+          // For pure U derivative, pass (P - AxisLocation) as the base vector
+          aCurvePtOrDN = gp_Vec(aCurvePts.Value(j).XYZ() - myAxisLocation.XYZ());
         }
         else
         {
-          aDV = aCurveDV.Value(j);
+          aCurvePtOrDN = aCurveDV.Value(j);
         }
 
-        // Apply U derivative formula based on GeomEvaluator pattern:
-        // theNU % 4 == 1: Axis Cross DV
-        // theNU % 4 == 2: (Axis Dot DV) * Axis - DV
-        // theNU % 4 == 3: -(Axis Cross DV)
-        // theNU % 4 == 0: DV - (Axis Dot DV) * Axis
-        gp_Vec    aDN;
-        const int aModU = theNU % 4;
-        if (aModU == 1)
-        {
-          aDN = gp_Vec(aAxisDir.Crossed(aDV.XYZ()));
-        }
-        else if (aModU == 2)
-        {
-          aDN = gp_Vec(aAxisDir.Dot(aDV.XYZ()) * aAxisDir - aDV.XYZ());
-        }
-        else if (aModU == 3)
-        {
-          aDN = gp_Vec(aAxisDir.Crossed(aDV.XYZ())) * (-1.0);
-        }
-        else // aModU == 0
-        {
-          aDN = gp_Vec(aDV.XYZ() - aAxisDir.Dot(aDV.XYZ()) * aAxisDir);
-        }
-
-        aDN.Transform(aRotation);
+        gp_Vec aDN = Geom_RevolutionUtils::CalculateDN(aCurvePtOrDN, aU, myAxis, theNU, theNV);
         aResult.SetValue(i, j, aDN);
       }
     }
