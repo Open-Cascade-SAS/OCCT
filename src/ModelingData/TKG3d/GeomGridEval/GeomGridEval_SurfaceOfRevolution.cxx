@@ -47,9 +47,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
   // Batch evaluate curve points using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theVParams);
 
-  NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid(theVParams);
   if (aCurvePoints.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
@@ -89,9 +88,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
   // Batch evaluate curve D1
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theVParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1(theVParams);
   if (aCurveD1.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
@@ -140,9 +138,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
   // Batch evaluate curve D2
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theVParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2(theVParams);
   if (aCurveD2.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
@@ -195,9 +192,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
   // Batch evaluate curve D3
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theVParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3(theVParams);
   if (aCurveD3.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
@@ -260,12 +256,11 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(
   // Get curve data
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theVParams);
 
   if (theNU == 0)
   {
     // Pure V derivative = curve derivative, rotated
-    NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theNV);
+    NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theVParams, theNV);
 
     for (int i = 1; i <= aNbU; ++i)
     {
@@ -287,11 +282,11 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(
 
     if (theNV == 0)
     {
-      aCurvePts = aCurveEval.EvaluateGrid();
+      aCurvePts = aCurveEval.EvaluateGrid(theVParams);
     }
     else
     {
-      aCurveDV = aCurveEval.EvaluateGridDN(theNV);
+      aCurveDV = aCurveEval.EvaluateGridDN(theVParams, theNV);
     }
 
     for (int i = 1; i <= aNbU; ++i)

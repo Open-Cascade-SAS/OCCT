@@ -19,26 +19,15 @@
 
 //==================================================================================================
 
-void GeomGridEval_Ellipse::SetParams(const TColStd_Array1OfReal& theParams)
+NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid(
+  const TColStd_Array1OfReal& theParams) const
 {
-  const int aNb = theParams.Size();
-  myParams.Resize(1, aNb, false);
-  for (int i = 1; i <= aNb; ++i)
-  {
-    myParams.SetValue(i, theParams.Value(theParams.Lower() + i - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid() const
-{
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -58,14 +47,14 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid() const
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u    = myParams.Value(i);
+    const double u    = theParams.Value(i);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
     // P = Center + MajorR * cos(u) * XDir + MinorR * sin(u) * YDir
-    aResult.SetValue(i,
+    aResult.SetValue(i - theParams.Lower() + 1,
                      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
                             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
                             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ));
@@ -75,14 +64,15 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -102,35 +92,37 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1()
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u    = myParams.Value(i);
+    const double u    = theParams.Value(i);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
     // P = Center + MajorR * cos(u) * XDir + MinorR * sin(u) * YDir
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
-                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+             -aMajR * sinU * aXY + aMinR * cosU * aYY,
+             -aMajR * sinU * aXZ + aMinR * cosU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -150,9 +142,9 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2()
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u    = myParams.Value(i);
+    const double u    = theParams.Value(i);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
@@ -160,29 +152,31 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2()
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir = -(P - Center)
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
-                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
-                              gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-                                     -aMajR * cosU * aXY - aMinR * sinU * aYY,
-                                     -aMajR * cosU * aXZ - aMinR * sinU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+             -aMajR * sinU * aXY + aMinR * cosU * aYY,
+             -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
+      gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
+             -aMajR * cosU * aXY - aMinR * sinU * aYY,
+             -aMajR * cosU * aXZ - aMinR * sinU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -202,9 +196,9 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3()
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u    = myParams.Value(i);
+    const double u    = theParams.Value(i);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
@@ -213,32 +207,35 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3()
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir
     // D3 =  MajorR * sin(u) * XDir - MinorR * cos(u) * YDir = -D1
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                     aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
-                                     aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
-                              gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                     -aMajR * sinU * aXY + aMinR * cosU * aYY,
-                                     -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
-                              gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-                                     -aMajR * cosU * aXY - aMinR * sinU * aYY,
-                                     -aMajR * cosU * aXZ - aMinR * sinU * aYZ),
-                              gp_Vec(aMajR * sinU * aXX - aMinR * cosU * aYX,
-                                     aMajR * sinU * aXY - aMinR * cosU * aYY,
-                                     aMajR * sinU * aXZ - aMinR * cosU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+             aCY + aMajR * cosU * aXY + aMinR * sinU * aYY,
+             aCZ + aMajR * cosU * aXZ + aMinR * sinU * aYZ),
+      gp_Vec(-aMajR * sinU * aXX + aMinR * cosU * aYX,
+             -aMajR * sinU * aXY + aMinR * cosU * aYY,
+             -aMajR * sinU * aXZ + aMinR * cosU * aYZ),
+      gp_Vec(-aMajR * cosU * aXX - aMinR * sinU * aYX,
+             -aMajR * cosU * aXY - aMinR * sinU * aYY,
+             -aMajR * cosU * aXZ - aMinR * sinU * aYZ),
+      gp_Vec(aMajR * sinU * aXX - aMinR * cosU * aYX,
+             aMajR * sinU * aXY - aMinR * cosU * aYY,
+             aMajR * sinU * aXZ - aMinR * cosU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(int theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(
+  const TColStd_Array1OfReal& theParams,
+  int                         theN) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Elips& anElips = myGeom->Elips();
@@ -261,9 +258,9 @@ NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(int theN) const
   // D4 =  MajR * cos(u) * X + MinR * sin(u) * Y  -> coefficients: (cos, sin) = D0
   const int aPhase = (theN - 1) % 4;
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u    = myParams.Value(i);
+    const double u    = theParams.Value(i);
     const double cosU = std::cos(u);
     const double sinU = std::sin(u);
 
@@ -288,7 +285,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(int theN) const
         break;
     }
 
-    aResult.SetValue(i,
+    aResult.SetValue(i - theParams.Lower() + 1,
                      gp_Vec(aMajR * aCoeffMajR * aXX + aMinR * aCoeffMinR * aYX,
                             aMajR * aCoeffMajR * aXY + aMinR * aCoeffMinR * aYY,
                             aMajR * aCoeffMajR * aXZ + aMinR * aCoeffMinR * aYZ));

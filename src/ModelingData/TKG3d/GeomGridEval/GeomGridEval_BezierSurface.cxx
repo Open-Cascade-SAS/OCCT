@@ -95,14 +95,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
         GeomGridEval_Curve aCurveEval;
         aCurveEval.Initialize(aCurve);
 
-        // Convert to 0-based array for curve evaluator
-        NCollection_Array1<double> aUParamsLocal(0, aNbU - 1);
-        for (int i = 0; i < aNbU; ++i)
-        {
-          aUParamsLocal.SetValue(i, theUParams.Value(theUParams.Lower() + i));
-        }
-        aCurveEval.SetParams(aUParamsLocal);
-        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid(theUParams);
 
         // Reshape 1D curve result to 2D surface result (Nx1 grid)
         NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, 1);

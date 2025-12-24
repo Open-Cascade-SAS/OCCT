@@ -27,8 +27,7 @@
 //! Usage:
 //! @code
 //!   GeomGridEval_Line anEvaluator(myGeomLine);
-//!   anEvaluator.SetParams(myParams);
-//!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+//!   NCollection_Array1<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(myParams);
 //! @endcode
 class GeomGridEval_Line
 {
@@ -48,38 +47,21 @@ public:
   GeomGridEval_Line(GeomGridEval_Line&&)                 = delete;
   GeomGridEval_Line& operator=(GeomGridEval_Line&&)      = delete;
 
-  //! Set parameters for grid evaluation (by const reference).
-  //! @param theParams array of parameter values
-  void SetParams(const TColStd_Array1OfReal& theParams)
-  {
-    myParams.Resize(theParams.Lower(), theParams.Upper(), false);
-    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
-    {
-      myParams.SetValue(i, theParams.Value(i));
-    }
-  }
-
-  //! Set parameters for grid evaluation (by move).
-  //! @param theParams array of parameter values to move
-  void SetParams(NCollection_Array1<double>&& theParams) { myParams = std::move(theParams); }
-
   //! Returns the geometry handle.
   const Handle(Geom_Line)& Geometry() const { return myGeom; }
 
-  //! Returns number of parameters.
-  int NbParams() const { return myParams.Size(); }
-
   //! Evaluate all grid points.
+  //! @param theParams array of parameter values
   //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array1<gp_Pnt> EvaluateGrid() const
+  //!         or empty array if geometry is null or no parameters
+  NCollection_Array1<gp_Pnt> EvaluateGrid(const TColStd_Array1OfReal& theParams) const
   {
-    if (myGeom.IsNull() || myParams.IsEmpty())
+    if (myGeom.IsNull() || theParams.IsEmpty())
     {
       return NCollection_Array1<gp_Pnt>();
     }
 
-    NCollection_Array1<gp_Pnt> aResult(myParams.Lower(), myParams.Upper());
+    NCollection_Array1<gp_Pnt> aResult(1, theParams.Size());
 
     // Extract line data
     const gp_Lin& aLin = myGeom->Lin();
@@ -94,26 +76,29 @@ public:
     const double aDirY = aDir.Y();
     const double aDirZ = aDir.Z();
 
-    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double t = myParams.Value(i);
-      aResult.SetValue(i, gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ));
+      const double t = theParams.Value(i);
+      aResult.SetValue(i - theParams.Lower() + 1,
+                       gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ));
     }
     return aResult;
   }
 
   //! Evaluate all grid points with first derivative.
   //! For a line, D1 is constant (the direction vector).
+  //! @param theParams array of parameter values
   //! @return array of CurveD1 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1() const
+  //!         or empty array if geometry is null or no parameters
+  NCollection_Array1<GeomGridEval::CurveD1> EvaluateGridD1(
+    const TColStd_Array1OfReal& theParams) const
   {
-    if (myGeom.IsNull() || myParams.IsEmpty())
+    if (myGeom.IsNull() || theParams.IsEmpty())
     {
       return NCollection_Array1<GeomGridEval::CurveD1>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD1> aResult(myParams.Lower(), myParams.Upper());
+    NCollection_Array1<GeomGridEval::CurveD1> aResult(1, theParams.Size());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -129,27 +114,30 @@ public:
     // D1 is constant for a line
     const gp_Vec aD1(aDirX, aDirY, aDirZ);
 
-    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double t         = myParams.Value(i);
-      aResult.ChangeValue(i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
-                                aD1};
+      const double t = theParams.Value(i);
+      aResult.ChangeValue(i - theParams.Lower() + 1) = {
+        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+        aD1};
     }
     return aResult;
   }
 
   //! Evaluate all grid points with first and second derivatives.
   //! For a line, D1 is constant and D2 is zero.
+  //! @param theParams array of parameter values
   //! @return array of CurveD2 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2() const
+  //!         or empty array if geometry is null or no parameters
+  NCollection_Array1<GeomGridEval::CurveD2> EvaluateGridD2(
+    const TColStd_Array1OfReal& theParams) const
   {
-    if (myGeom.IsNull() || myParams.IsEmpty())
+    if (myGeom.IsNull() || theParams.IsEmpty())
     {
       return NCollection_Array1<GeomGridEval::CurveD2>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD2> aResult(myParams.Lower(), myParams.Upper());
+    NCollection_Array1<GeomGridEval::CurveD2> aResult(1, theParams.Size());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -165,27 +153,31 @@ public:
     const gp_Vec aD1(aDirX, aDirY, aDirZ);
     const gp_Vec aD2(0, 0, 0); // Second derivative is zero for a line
 
-    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double t = myParams.Value(i);
-      aResult.ChangeValue(
-        i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ), aD1, aD2};
+      const double t = theParams.Value(i);
+      aResult.ChangeValue(i - theParams.Lower() + 1) = {
+        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+        aD1,
+        aD2};
     }
     return aResult;
   }
 
   //! Evaluate all grid points with first, second, and third derivatives.
   //! For a line, D1 is constant, D2 and D3 are zero.
+  //! @param theParams array of parameter values
   //! @return array of CurveD3 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3() const
+  //!         or empty array if geometry is null or no parameters
+  NCollection_Array1<GeomGridEval::CurveD3> EvaluateGridD3(
+    const TColStd_Array1OfReal& theParams) const
   {
-    if (myGeom.IsNull() || myParams.IsEmpty())
+    if (myGeom.IsNull() || theParams.IsEmpty())
     {
       return NCollection_Array1<GeomGridEval::CurveD3>();
     }
 
-    NCollection_Array1<GeomGridEval::CurveD3> aResult(myParams.Lower(), myParams.Upper());
+    NCollection_Array1<GeomGridEval::CurveD3> aResult(1, theParams.Size());
 
     const gp_Lin& aLin = myGeom->Lin();
     const gp_Pnt& aLoc = aLin.Location();
@@ -201,35 +193,39 @@ public:
     const gp_Vec aD1(aDirX, aDirY, aDirZ);
     const gp_Vec aZero(0, 0, 0);
 
-    for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double t = myParams.Value(i);
-      aResult.ChangeValue(
-        i) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ), aD1, aZero, aZero};
+      const double t = theParams.Value(i);
+      aResult.ChangeValue(i - theParams.Lower() + 1) = {
+        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+        aD1,
+        aZero,
+        aZero};
     }
     return aResult;
   }
 
   //! Evaluate Nth derivative at all grid points.
   //! For a line: D1 = Direction, DN = 0 for N > 1.
+  //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array1<gp_Vec> EvaluateGridDN(int theN) const
+  //!         or empty array if geometry is null or no parameters
+  NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams, int theN) const
   {
-    if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+    if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
     {
       return NCollection_Array1<gp_Vec>();
     }
 
-    NCollection_Array1<gp_Vec> aResult(myParams.Lower(), myParams.Upper());
+    NCollection_Array1<gp_Vec> aResult(1, theParams.Size());
 
     if (theN == 1)
     {
       // D1 is constant for a line (the direction)
       const gp_Dir& aDir = myGeom->Lin().Direction();
       const gp_Vec  aD1(aDir.X(), aDir.Y(), aDir.Z());
-      for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+      for (int i = 1; i <= theParams.Size(); ++i)
       {
         aResult.SetValue(i, aD1);
       }
@@ -238,7 +234,7 @@ public:
     {
       // All higher derivatives are zero for a line
       const gp_Vec aZero(0, 0, 0);
-      for (int i = myParams.Lower(); i <= myParams.Upper(); ++i)
+      for (int i = 1; i <= theParams.Size(); ++i)
       {
         aResult.SetValue(i, aZero);
       }
@@ -247,8 +243,7 @@ public:
   }
 
 private:
-  Handle(Geom_Line)          myGeom;
-  NCollection_Array1<double> myParams;
+  Handle(Geom_Line) myGeom;
 };
 
 #endif // _GeomGridEval_Line_HeaderFile

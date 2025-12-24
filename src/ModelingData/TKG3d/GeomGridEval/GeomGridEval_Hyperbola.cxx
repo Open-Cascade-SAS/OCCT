@@ -19,26 +19,15 @@
 
 //==================================================================================================
 
-void GeomGridEval_Hyperbola::SetParams(const TColStd_Array1OfReal& theParams)
+NCollection_Array1<gp_Pnt> GeomGridEval_Hyperbola::EvaluateGrid(
+  const TColStd_Array1OfReal& theParams) const
 {
-  const int aNb = theParams.Size();
-  myParams.Resize(1, aNb, false);
-  for (int i = 1; i <= aNb; ++i)
-  {
-    myParams.SetValue(i, theParams.Value(theParams.Lower() + i - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array1<gp_Pnt> GeomGridEval_Hyperbola::EvaluateGrid() const
-{
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -58,14 +47,14 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Hyperbola::EvaluateGrid() const
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u     = myParams.Value(i);
+    const double u     = theParams.Value(i);
     const double coshU = std::cosh(u);
     const double sinhU = std::sinh(u);
 
     // P = Center + MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir
-    aResult.SetValue(i,
+    aResult.SetValue(i - theParams.Lower() + 1,
                      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
                             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
                             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ));
@@ -75,14 +64,15 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Hyperbola::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -102,35 +92,37 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Hyperbola::EvaluateGridD1
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u     = myParams.Value(i);
+    const double u     = theParams.Value(i);
     const double coshU = std::cosh(u);
     const double sinhU = std::sinh(u);
 
     // P = Center + MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir
     // D1 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
-                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+             aMajR * sinhU * aXY + aMinR * coshU * aYY,
+             aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -150,9 +142,9 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u     = myParams.Value(i);
+    const double u     = theParams.Value(i);
     const double coshU = std::cosh(u);
     const double sinhU = std::sinh(u);
 
@@ -160,29 +152,31 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Hyperbola::EvaluateGridD2
     // D1 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir
     // D2 = MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir = (P - Center)
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
-                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
-                              gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
-                                     aMajR * coshU * aXY + aMinR * sinhU * aYY,
-                                     aMajR * coshU * aXZ + aMinR * sinhU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+             aMajR * sinhU * aXY + aMinR * coshU * aYY,
+             aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
+      gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
+             aMajR * coshU * aXY + aMinR * sinhU * aYY,
+             aMajR * coshU * aXZ + aMinR * sinhU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Hypr& aHypr   = myGeom->Hypr();
@@ -202,9 +196,9 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
   const double aYY = aYDir.Y();
   const double aYZ = aYDir.Z();
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u     = myParams.Value(i);
+    const double u     = theParams.Value(i);
     const double coshU = std::cosh(u);
     const double sinhU = std::sinh(u);
 
@@ -213,32 +207,35 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
     // D2 = MajorR * cosh(u) * XDir + MinorR * sinh(u) * YDir
     // D3 = MajorR * sinh(u) * XDir + MinorR * cosh(u) * YDir = D1
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
-                                     aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
-                                     aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
-                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
-                              gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
-                                     aMajR * coshU * aXY + aMinR * sinhU * aYY,
-                                     aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
-                              gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
-                                     aMajR * sinhU * aXY + aMinR * coshU * aYY,
-                                     aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + aMajR * coshU * aXX + aMinR * sinhU * aYX,
+             aCY + aMajR * coshU * aXY + aMinR * sinhU * aYY,
+             aCZ + aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+             aMajR * sinhU * aXY + aMinR * coshU * aYY,
+             aMajR * sinhU * aXZ + aMinR * coshU * aYZ),
+      gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
+             aMajR * coshU * aXY + aMinR * sinhU * aYY,
+             aMajR * coshU * aXZ + aMinR * sinhU * aYZ),
+      gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
+             aMajR * sinhU * aXY + aMinR * coshU * aYY,
+             aMajR * sinhU * aXZ + aMinR * coshU * aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(int theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(
+  const TColStd_Array1OfReal& theParams,
+  int                         theN) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Hypr& aHypr = myGeom->Hypr();
@@ -260,16 +257,16 @@ NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(int theN) cons
   // D2 = D0, D3 = D1, etc.
   const bool isOdd = (theN % 2) == 1;
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u     = myParams.Value(i);
+    const double u     = theParams.Value(i);
     const double coshU = std::cosh(u);
     const double sinhU = std::sinh(u);
 
     if (isOdd)
     {
       // Odd derivatives (D1, D3, D5, ...): coefficients (sinh, cosh)
-      aResult.SetValue(i,
+      aResult.SetValue(i - theParams.Lower() + 1,
                        gp_Vec(aMajR * sinhU * aXX + aMinR * coshU * aYX,
                               aMajR * sinhU * aXY + aMinR * coshU * aYY,
                               aMajR * sinhU * aXZ + aMinR * coshU * aYZ));
@@ -277,7 +274,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(int theN) cons
     else
     {
       // Even derivatives (D2, D4, D6, ...): coefficients (cosh, sinh) = D0
-      aResult.SetValue(i,
+      aResult.SetValue(i - theParams.Lower() + 1,
                        gp_Vec(aMajR * coshU * aXX + aMinR * sinhU * aYX,
                               aMajR * coshU * aXY + aMinR * sinhU * aYY,
                               aMajR * coshU * aXZ + aMinR * sinhU * aYZ));

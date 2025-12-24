@@ -19,26 +19,15 @@
 
 //==================================================================================================
 
-void GeomGridEval_Parabola::SetParams(const TColStd_Array1OfReal& theParams)
+NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid(
+  const TColStd_Array1OfReal& theParams) const
 {
-  const int aNb = theParams.Size();
-  myParams.Resize(1, aNb, false);
-  for (int i = 1; i <= aNb; ++i)
-  {
-    myParams.SetValue(i, theParams.Value(theParams.Lower() + i - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid() const
-{
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -59,14 +48,14 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid() const
 
   const double aCoeff = 1.0 / (4.0 * aFocal);
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u = myParams.Value(i);
+    const double u = theParams.Value(i);
 
     // P = Center + (u^2 / 4F) * XDir + u * YDir
     const double u2Term = u * u * aCoeff;
 
-    aResult.SetValue(i,
+    aResult.SetValue(i - theParams.Lower() + 1,
                      gp_Pnt(aCX + u2Term * aXX + u * aYX,
                             aCY + u2Term * aXY + u * aYY,
                             aCZ + u2Term * aXZ + u * aYZ));
@@ -76,14 +65,15 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Parabola::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1() const
+NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -105,9 +95,9 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
   const double aCoeff  = 1.0 / (4.0 * aFocal);
   const double aCoeff2 = 1.0 / (2.0 * aFocal); // Derivative of u^2/4F is 2u/4F = u/2F
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u = myParams.Value(i);
+    const double u = theParams.Value(i);
 
     // P = Center + (u^2 / 4F) * XDir + u * YDir
     // D1 = (u / 2F) * XDir + YDir
@@ -115,24 +105,24 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
-                                     aCY + u2Term * aXY + u * aYY,
-                                     aCZ + u2Term * aXZ + u * aYZ),
-                              gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
+      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ)};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2() const
+NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -158,9 +148,9 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
   // D2 is constant for parabola: (1/2F) * XDir
   const gp_Vec aD2(aCoeff3 * aXX, aCoeff3 * aXY, aCoeff3 * aXZ);
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u = myParams.Value(i);
+    const double u = theParams.Value(i);
 
     // P = Center + (u^2 / 4F) * XDir + u * YDir
     // D1 = (u / 2F) * XDir + YDir
@@ -169,25 +159,25 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
-                                     aCY + u2Term * aXY + u * aYY,
-                                     aCZ + u2Term * aXZ + u * aYZ),
-                              gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
-                              aD2};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
+      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
+      aD2};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3() const
+NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
+  const TColStd_Array1OfReal& theParams) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty())
+  if (myGeom.IsNull() || theParams.IsEmpty())
   {
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = myParams.Size();
+  const int                                 aNb = theParams.Size();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Parab& aParab  = myGeom->Parab();
@@ -213,33 +203,34 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
   const gp_Vec aD2(aCoeff3 * aXX, aCoeff3 * aXY, aCoeff3 * aXZ);
   const gp_Vec aD3(0.0, 0.0, 0.0); // D3 is 0
 
-  for (int i = 1; i <= aNb; ++i)
+  for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const double u = myParams.Value(i);
+    const double u = theParams.Value(i);
 
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
-                                     aCY + u2Term * aXY + u * aYY,
-                                     aCZ + u2Term * aXZ + u * aYZ),
-                              gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
-                              aD2,
-                              aD3};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
+      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
+      aD2,
+      aD3};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(int theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(
+  const TColStd_Array1OfReal& theParams,
+  int                         theN) const
 {
-  if (myGeom.IsNull() || myParams.IsEmpty() || theN < 1)
+  if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = myParams.Size();
+  const int                  aNb = theParams.Size();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Parab& aParab = myGeom->Parab();
@@ -259,11 +250,12 @@ NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(int theN) const
   if (theN == 1)
   {
     // D1 = (u/2F) * X + Y (depends on u)
-    for (int i = 1; i <= aNb; ++i)
+    for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double u      = myParams.Value(i);
+      const double u      = theParams.Value(i);
       const double d1Term = u * aCoeff2;
-      aResult.SetValue(i, gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ));
+      aResult.SetValue(i - theParams.Lower() + 1,
+                       gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ));
     }
   }
   else if (theN == 2)

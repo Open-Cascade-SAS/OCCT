@@ -45,9 +45,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
   // Batch evaluate curve points using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theUParams);
 
-  NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid(theUParams);
   if (aCurvePoints.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
@@ -90,9 +89,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
   // Batch evaluate curve D1 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theUParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1(theUParams);
   if (aCurveD1.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
@@ -142,9 +140,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
   // Batch evaluate curve D2 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theUParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2(theUParams);
   if (aCurveD2.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
@@ -199,9 +196,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
   // Batch evaluate curve D3 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(theUParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3(theUParams);
   if (aCurveD3.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
@@ -272,9 +268,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(
     // Pure U derivative = curve derivative
     GeomGridEval_Curve aCurveEval;
     aCurveEval.Initialize(myBasisCurve);
-    aCurveEval.SetParams(theUParams);
 
-    NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theNU);
+    NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theUParams, theNU);
 
     for (int i = 1; i <= aNbU; ++i)
     {

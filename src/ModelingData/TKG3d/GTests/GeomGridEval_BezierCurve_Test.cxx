@@ -56,9 +56,8 @@ TEST(GeomGridEval_BezierCurveTest, BasicEvaluation)
   aParams.SetValue(1, 0.0);
   aParams.SetValue(2, 0.5);
   aParams.SetValue(3, 1.0);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 3);
 
   // Verify points
@@ -81,9 +80,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD1)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -107,9 +105,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD2)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -134,9 +131,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeD3)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -168,9 +164,8 @@ TEST(GeomGridEval_BezierCurveTest, RationalEvaluation)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   for (int i = 1; i <= 11; ++i)
   {
@@ -191,9 +186,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order1)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(1);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -214,9 +208,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order2)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(2);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 2);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -237,9 +230,8 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_Order3)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(3);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 3);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -261,10 +253,9 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_BeyondDegree)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetParams(aParams);
 
   // 4th derivative of cubic Bezier should be zero
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(4);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 4);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -290,12 +281,11 @@ TEST(GeomGridEval_BezierCurveTest, DerivativeDN_RationalCurve)
   GeomGridEval_BezierCurve anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
   // Test DN for orders 1, 2
   for (int aOrder = 1; aOrder <= 2; ++aOrder)
   {
-    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aOrder);
 
     for (int i = 1; i <= 11; ++i)
     {
