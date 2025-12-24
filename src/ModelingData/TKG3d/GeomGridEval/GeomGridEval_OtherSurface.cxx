@@ -17,8 +17,7 @@
 
 void GeomGridEval_OtherSurface::evaluateD0(double theU, double theV, gp_Pnt& thePoint) const
 {
-  std::visit([theU, theV, &thePoint](
-               const auto& theSurf) { theSurf->D0(theU, theV, thePoint); },
+  std::visit([theU, theV, &thePoint](const auto& theSurf) { theSurf->D0(theU, theV, thePoint); },
              mySurface);
 }
 

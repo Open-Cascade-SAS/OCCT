@@ -509,7 +509,7 @@ TEST(GeomGridEval_SurfaceTest, EmptyParams)
   EXPECT_TRUE(anEval.IsInitialized());
 
   // EvaluateGrid with empty params should return empty
-  TColStd_Array1OfReal aEmptyParams;
+  TColStd_Array1OfReal       aEmptyParams;
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams, aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }

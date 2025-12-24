@@ -256,7 +256,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   }
 
   // Allocate linear result buffer
-  const int                    aNbPoints = aNbU * aNbV;
+  const int                  aNbPoints = aNbU * aNbV;
   NCollection_Array1<gp_Pnt> aLinearResult(1, aNbPoints);
 
   // Evaluate using sorted UV points

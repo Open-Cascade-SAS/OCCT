@@ -337,7 +337,7 @@ TEST(GeomGridEval_CylinderTest, PointsDerivativeDN)
 TEST(GeomGridEval_CylinderTest, PointsTransformedCylinder)
 {
   // Cylinder with offset center and tilted axis
-  gp_Ax3 anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  gp_Ax3                          anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
   Handle(Geom_CylindricalSurface) aCyl = new Geom_CylindricalSurface(anAxis, 3.0);
   GeomGridEval_Cylinder           anEval(aCyl);
 

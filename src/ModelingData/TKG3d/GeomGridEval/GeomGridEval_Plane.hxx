@@ -285,8 +285,7 @@ public:
   {
     const int aNbU = theUParams.Size();
     const int aNbV = theVParams.Size();
-    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0 || theNU < 0 || theNV < 0
-        || (theNU + theNV) < 1)
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0 || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
     {
       return NCollection_Array2<gp_Vec>();
     }
@@ -519,8 +518,7 @@ public:
                                               int                                 theNU,
                                               int                                 theNV) const
   {
-    if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0
-        || (theNU + theNV) < 1)
+    if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
     {
       return NCollection_Array1<gp_Vec>();
     }

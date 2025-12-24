@@ -100,11 +100,10 @@ public:
   //! @param[in] theNU derivative order in U direction
   //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams,
-    int                         theNU,
-    int                         theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                                            const TColStd_Array1OfReal& theVParams,
+                                                            int                         theNU,
+                                                            int theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())

@@ -111,11 +111,10 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams,
-    int                         theNU,
-    int                         theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                                            const TColStd_Array1OfReal& theVParams,
+                                                            int                         theNU,
+                                                            int theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! Results are returned in the original input order.
@@ -165,8 +164,8 @@ private:
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @param theUVPoints output array of UV points with span info
-  void prepareGridPoints(const TColStd_Array1OfReal&                       theUParams,
-                         const TColStd_Array1OfReal&                       theVParams,
+  void prepareGridPoints(const TColStd_Array1OfReal&                        theUParams,
+                         const TColStd_Array1OfReal&                        theVParams,
                          NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const;
 
   //! Prepare UV points from pairs and sort for cache-optimal evaluation.

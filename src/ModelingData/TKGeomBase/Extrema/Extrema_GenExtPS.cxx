@@ -542,7 +542,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     GeomGridEval_Surface aGridEval;
     aGridEval.Initialize(*myS);
 
-    NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());
+    NCollection_Array2<gp_Pnt> aGridPoints =
+      aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());
 
     if (aGridPoints.IsEmpty())
     {
@@ -873,7 +874,8 @@ void Extrema_GenExtPS::BuildTree()
   GeomGridEval_Surface aGridEval;
   aGridEval.Initialize(*myS);
 
-  const NCollection_Array2<gp_Pnt> aGridPoints = aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());
+  const NCollection_Array2<gp_Pnt> aGridPoints =
+    aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());
 
   for (NoU = 1; NoU <= myusample; NoU++)
   {

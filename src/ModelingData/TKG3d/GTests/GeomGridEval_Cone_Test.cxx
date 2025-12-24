@@ -337,7 +337,7 @@ TEST(GeomGridEval_ConeTest, PointsDerivativeDN)
 TEST(GeomGridEval_ConeTest, PointsTransformedCone)
 {
   // Cone with offset center and tilted axis
-  gp_Ax3 anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  gp_Ax3                      anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
   Handle(Geom_ConicalSurface) aCone = new Geom_ConicalSurface(anAxis, M_PI / 6, 2.0);
   GeomGridEval_Cone           anEval(aCone);
 

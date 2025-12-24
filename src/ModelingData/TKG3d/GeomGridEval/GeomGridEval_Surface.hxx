@@ -158,7 +158,7 @@ public:
   Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
                                                             const TColStd_Array1OfReal& theVParams,
                                                             int                         theNU,
-                                                            int                         theNV) const;
+                                                            int theNV) const;
 
   //! Evaluate all UV pairs (points mode).
   //! Dispatches to appropriate specialized evaluator.

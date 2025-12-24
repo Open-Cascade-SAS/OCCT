@@ -311,9 +311,9 @@ NCollection_Array1<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluatePoints(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  return GeomGridEval::EvaluatePointsHelper(
-    theUVPairs,
-    [this](double theU, double theV) -> gp_Pnt { return myGeom->Value(theU, theV); });
+  return GeomGridEval::EvaluatePointsHelper(theUVPairs, [this](double theU, double theV) -> gp_Pnt {
+    return myGeom->Value(theU, theV);
+  });
 }
 
 //==================================================================================================

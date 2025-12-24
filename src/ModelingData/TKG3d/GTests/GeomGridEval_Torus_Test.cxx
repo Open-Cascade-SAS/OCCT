@@ -346,7 +346,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
 TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
 {
   // Torus with offset center and tilted axis
-  gp_Ax3 anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  gp_Ax3                       anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
   Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(anAxis, 8.0, 1.5);
   GeomGridEval_Torus           anEval(aTorus);
 
@@ -385,8 +385,8 @@ TEST(GeomGridEval_TorusTest, PointsOnMajorCircle)
   const double aExpectedRadius = 10.0 + 2.0; // Major + Minor
   for (int i = 1; i <= 4; ++i)
   {
-    const gp_Pnt& aPnt             = aPoints.Value(i);
-    double        aRadialDist      = std::sqrt(aPnt.X() * aPnt.X() + aPnt.Y() * aPnt.Y());
+    const gp_Pnt& aPnt        = aPoints.Value(i);
+    double        aRadialDist = std::sqrt(aPnt.X() * aPnt.X() + aPnt.Y() * aPnt.Y());
     EXPECT_NEAR(aRadialDist, aExpectedRadius, THE_TOLERANCE);
     EXPECT_NEAR(aPnt.Z(), 0.0, THE_TOLERANCE);
   }

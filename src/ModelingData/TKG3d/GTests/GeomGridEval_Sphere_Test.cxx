@@ -51,7 +51,7 @@ TEST(GeomGridEval_SphereTest, GridBasicEvaluation)
   GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);           // Longitude
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7); // Latitude
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
@@ -346,7 +346,7 @@ TEST(GeomGridEval_SphereTest, PointsDerivativeDN)
 TEST(GeomGridEval_SphereTest, PointsTransformedSphere)
 {
   // Sphere with offset center and tilted axis
-  gp_Ax3 anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  gp_Ax3                        anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
   Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAxis, 4.0);
   GeomGridEval_Sphere           anEval(aSphere);
 
@@ -405,9 +405,9 @@ TEST(GeomGridEval_SphereTest, PointsOnEquator)
   GeomGridEval_Sphere anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
-  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));         // (5, 0, 0)
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 2, 0.0));    // (0, 5, 0)
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI, 0.0));        // (-5, 0, 0)
+  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));          // (5, 0, 0)
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 2, 0.0));     // (0, 5, 0)
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI, 0.0));         // (-5, 0, 0)
   aUVPairs.SetValue(4, gp_Pnt2d(3 * M_PI / 2, 0.0)); // (0, -5, 0)
 
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);

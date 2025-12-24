@@ -209,7 +209,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
     {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myCache->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      myCache
+        ->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aResult.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
@@ -385,7 +386,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierSurface::EvaluatePoints(
     buildCache();
   }
 
-  const int                aNbPts = theUVPairs.Size();
+  const int                  aNbPts = theUVPairs.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNbPts);
 
   for (int i = 0; i < aNbPts; ++i)
@@ -520,7 +521,8 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluatePoi
                  aD3UUV,
                  aD3UVV);
 
-    aResult.ChangeValue(i + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+    aResult.ChangeValue(i
+                        + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
   }
 
   return aResult;

@@ -98,11 +98,10 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams,
-    int                         theNU,
-    int                         theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                                            const TColStd_Array1OfReal& theVParams,
+                                                            int                         theNU,
+                                                            int theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param theUVPairs array of UV coordinate pairs
@@ -142,19 +141,19 @@ private:
   //! Pre-extracted torus data for efficient evaluation.
   struct Data
   {
-    double CX, CY, CZ;    //!< Center coordinates
-    double XX, XY, XZ;    //!< XDir coordinates
-    double YX, YY, YZ;    //!< YDir coordinates
-    double ZX, ZY, ZZ;    //!< ZDir coordinates
-    double MajorRadius;   //!< Major radius
-    double MinorRadius;   //!< Minor radius
+    double CX, CY, CZ;  //!< Center coordinates
+    double XX, XY, XZ;  //!< XDir coordinates
+    double YX, YY, YZ;  //!< YDir coordinates
+    double ZX, ZY, ZZ;  //!< ZDir coordinates
+    double MajorRadius; //!< Major radius
+    double MinorRadius; //!< Minor radius
   };
 
   //! Pre-computed U-dependent values for optimized grid evaluation.
   struct UContext
   {
     double cosU, sinU;
-    double dirUX, dirUY, dirUZ;   //!< DirU = cosU*XDir + sinU*YDir
+    double dirUX, dirUY, dirUZ;    //!< DirU = cosU*XDir + sinU*YDir
     double dDirUX, dDirUY, dDirUZ; //!< DerivDirU = -sinU*XDir + cosU*YDir
   };
 
