@@ -144,12 +144,7 @@ public:
     int                                 theNV) const;
 
 private:
-  //! Build cache for the Bezier surface (single span).
-  void buildCache() const;
-
-private:
-  Handle(Geom_BezierSurface)     myGeom;
-  mutable Handle(BSplSLib_Cache) myCache;
+  Handle(Geom_BezierSurface) myGeom;
 };
 
 #endif // _GeomGridEval_BezierSurface_HeaderFile

@@ -23,20 +23,29 @@
 
 namespace
 {
+//! Threshold for using cache vs direct evaluation.
+//! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
+constexpr int THE_CACHE_THRESHOLD = 4;
+
 //! @brief Iterates over sorted UV points with cache-optimal span grouping.
 //!
 //! This helper processes UV points that have been sorted by (USpanIdx, VSpanIdx, U).
-//! It tracks span changes and rebuilds the cache only when needed.
+//! It tracks span changes and decides whether to use cache or direct evaluation
+//! based on the number of points in each span group.
 //!
-//! @tparam EvalFunc Functor type: void(const UVPointWithSpan& pt)
+//! @tparam BuildCacheFunc Functor type for cache initialization: void(double U, double V)
+//! @tparam CacheEvalFunc  Functor type for cache-based evaluation: void(const UVPointWithSpan& pt)
+//! @tparam DirectEvalFunc Functor type for direct evaluation: void(const UVPointWithSpan& pt)
 //!
 //! @param theUVPoints    Sorted UV points with span info
-//! @param theBuildCache  Functor to rebuild cache: void(double U, double V)
-//! @param theEval        Functor to evaluate and store result
-template <typename BuildCacheFunc, typename EvalFunc>
+//! @param theBuildCache  Functor to rebuild cache for a span
+//! @param theCacheEval   Functor called for cache-based evaluation (large spans)
+//! @param theDirectEval  Functor called for direct evaluation (small spans)
+template <typename BuildCacheFunc, typename CacheEvalFunc, typename DirectEvalFunc>
 void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints,
                            BuildCacheFunc&&                                         theBuildCache,
-                           EvalFunc&&                                               theEval)
+                           CacheEvalFunc&&                                          theCacheEval,
+                           DirectEvalFunc&&                                         theDirectEval)
 {
   const int aNbPoints = theUVPoints.Size();
   if (aNbPoints == 0)
@@ -44,22 +53,45 @@ void iterateSortedUVPoints(const NCollection_Array1<GeomGridEval::UVPointWithSpa
     return;
   }
 
-  int aCurrentUSpan = -1;
-  int aCurrentVSpan = -1;
-
-  for (int i = 0; i < aNbPoints; ++i)
+  int i = 0;
+  while (i < aNbPoints)
   {
-    const GeomGridEval::UVPointWithSpan& aPt = theUVPoints.Value(i);
+    const GeomGridEval::UVPointWithSpan& aFirstPt = theUVPoints.Value(i);
+    const int                            aUSpan   = aFirstPt.USpanIdx;
+    const int                            aVSpan   = aFirstPt.VSpanIdx;
 
-    // Rebuild cache when span changes
-    if (aPt.USpanIdx != aCurrentUSpan || aPt.VSpanIdx != aCurrentVSpan)
+    // Count points in this span group
+    int aGroupEnd = i + 1;
+    while (aGroupEnd < aNbPoints)
     {
-      theBuildCache(aPt.U, aPt.V);
-      aCurrentUSpan = aPt.USpanIdx;
-      aCurrentVSpan = aPt.VSpanIdx;
+      const GeomGridEval::UVPointWithSpan& aPt = theUVPoints.Value(aGroupEnd);
+      if (aPt.USpanIdx != aUSpan || aPt.VSpanIdx != aVSpan)
+      {
+        break;
+      }
+      ++aGroupEnd;
+    }
+    const int aGroupSize = aGroupEnd - i;
+
+    if (aGroupSize >= THE_CACHE_THRESHOLD)
+    {
+      // Large group: use cache-based evaluation
+      theBuildCache(aFirstPt.U, aFirstPt.V);
+      for (int j = i; j < aGroupEnd; ++j)
+      {
+        theCacheEval(theUVPoints.Value(j));
+      }
+    }
+    else
+    {
+      // Small group: use direct evaluation (skip cache building)
+      for (int j = i; j < aGroupEnd; ++j)
+      {
+        theDirectEval(theUVPoints.Value(j));
+      }
     }
 
-    theEval(aPt);
+    i = aGroupEnd;
   }
 }
 
@@ -243,31 +275,57 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   // Allocate linear result buffer
   const int                  aNbPoints = aNbU * aNbV;
   NCollection_Array1<gp_Pnt> aLinearResult(1, aNbPoints);
 
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
+
   // Evaluate using sorted UV points
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
-      myCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      aCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      aLinearResult.SetValue(thePt.OutputIdx + 1, aPnt);
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPnt;
+      BSplSLib::D0(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPnt);
       aLinearResult.SetValue(thePt.OutputIdx + 1, aPnt);
     });
 
@@ -319,30 +377,56 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   // Allocate result buffer (1-based indexing)
   NCollection_Array1<gp_Pnt> aPoints(1, aNbPoints);
+
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   // Evaluate using sorted UV points
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPnt;
-      myCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      aCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
+      aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPnt;
+      BSplSLib::D0(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPnt);
       aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
     });
 
@@ -416,29 +500,58 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
+
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V;
-      myCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      aCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V;
+      BSplSLib::D1(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V);
       aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
     });
 
@@ -512,29 +625,62 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
+
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aResults.SetValue(thePt.OutputIdx + 1,
+                        GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      BSplSLib::D2(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV);
       aResults.SetValue(thePt.OutputIdx + 1,
                         GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
     });
@@ -821,29 +967,58 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
+
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V;
-      myCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      aCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
+      aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V;
+      BSplSLib::D1(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V);
       aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
     });
 
@@ -886,29 +1061,62 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
   const TColgp_Array2OfPnt&   aPoles      = aPolesHandle->Array2();
   const TColStd_Array2OfReal* aWeights    = myGeom->Weights();
 
-  // Initialize cache if needed
-  if (myCache.IsNull())
-  {
-    myCache = new BSplSLib_Cache(myGeom->UDegree(),
-                                 myGeom->IsUPeriodic(),
-                                 aUFlatKnots,
-                                 myGeom->VDegree(),
-                                 myGeom->IsVPeriodic(),
-                                 aVFlatKnots,
-                                 aWeights);
-  }
+  // Get surface properties for direct evaluation
+  const int  aUDegree    = myGeom->UDegree();
+  const int  aVDegree    = myGeom->VDegree();
+  const bool isUPeriodic = myGeom->IsUPeriodic();
+  const bool isVPeriodic = myGeom->IsVPeriodic();
+  const bool isURational = myGeom->IsURational();
+  const bool isVRational = myGeom->IsVRational();
 
   NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
+
+  // Create local cache for cache-based evaluation (only used for large span groups)
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     isUPeriodic,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     isVPeriodic,
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   iterateSortedUVPoints(
     aUVPoints,
     [&](double theU, double theV) {
-      myCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
     },
     [&](const GeomGridEval::UVPointWithSpan& thePt) {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aResults.SetValue(thePt.OutputIdx + 1,
+                        GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
+    },
+    [&](const GeomGridEval::UVPointWithSpan& thePt) {
+      gp_Pnt aPoint;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      BSplSLib::D2(thePt.U,
+                   thePt.V,
+                   thePt.USpanIdx,
+                   thePt.VSpanIdx,
+                   aPoles,
+                   aWeights,
+                   aUFlatKnots,
+                   aVFlatKnots,
+                   nullptr,
+                   nullptr,
+                   aUDegree,
+                   aVDegree,
+                   isURational,
+                   isVRational,
+                   isUPeriodic,
+                   isVPeriodic,
+                   aPoint,
+                   aD1U,
+                   aD1V,
+                   aD2U,
+                   aD2V,
+                   aD2UV);
       aResults.SetValue(thePt.OutputIdx + 1,
                         GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
     });

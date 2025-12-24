@@ -195,9 +195,6 @@ private:
 
 private:
   Handle(Geom_BSplineSurface) myGeom;
-
-  // Mutable cache for efficient evaluation within spans
-  mutable Handle(BSplSLib_Cache) myCache;
 };
 
 #endif // _GeomGridEval_BSplineSurface_HeaderFile

@@ -27,40 +27,39 @@ namespace
 //! For small grids (e.g., 1x4), cache-based surface evaluation is faster than
 //! extracting an isoline curve and setting up a curve evaluator.
 constexpr int THE_ISOLINE_THRESHOLD = 8;
-} // namespace
 
-//==================================================================================================
-
-void GeomGridEval_BezierSurface::buildCache() const
+//! Create and build cache for Bezier surface evaluation.
+//! Bezier surfaces are single-span, so cache is built once at parameter (0.5, 0.5).
+//! @param theGeom the Bezier surface geometry
+//! @return the built cache
+Handle(BSplSLib_Cache) buildBezierCache(const Handle(Geom_BezierSurface)& theGeom)
 {
-  if (myGeom.IsNull())
-  {
-    return;
-  }
-
-  const int aUDegree = myGeom->UDegree();
-  const int aVDegree = myGeom->VDegree();
+  const int aUDegree = theGeom->UDegree();
+  const int aVDegree = theGeom->VDegree();
 
   // Use pre-defined flat knots from BSplCLib
   TColStd_Array1OfReal aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree), 1, 2 * (aUDegree + 1));
   TColStd_Array1OfReal aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree), 1, 2 * (aVDegree + 1));
 
   // Get poles and weights directly (const references, no copy)
-  const TColgp_Array2OfPnt&   aPoles   = myGeom->Poles();
-  const TColStd_Array2OfReal* aWeights = myGeom->Weights();
+  const TColgp_Array2OfPnt&   aPoles   = theGeom->Poles();
+  const TColStd_Array2OfReal* aWeights = theGeom->Weights();
 
   // Create cache (Bezier is non-periodic)
-  myCache = new BSplSLib_Cache(aUDegree,
-                               false, // not periodic
-                               aUFlatKnots,
-                               aVDegree,
-                               false, // not periodic
-                               aVFlatKnots,
-                               aWeights);
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     false, // not periodic
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     false, // not periodic
+                                                     aVFlatKnots,
+                                                     aWeights);
 
   // Build cache at parameter 0.5 (middle of single span)
-  myCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+  aCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+
+  return aCache;
 }
+} // namespace
 
 //==================================================================================================
 
@@ -120,11 +119,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
     }
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
@@ -135,7 +131,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
     for (int j = 0; j < aNbV; ++j)
     {
       gp_Pnt aPoint;
-      myCache->D0(aU, theVParams.Value(theVParams.Lower() + j), aPoint);
+      aCache->D0(aU, theVParams.Value(theVParams.Lower() + j), aPoint);
       aResult.SetValue(i + 1, j + 1, aPoint);
     }
   }
@@ -154,11 +150,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   const int                                aNbU = theUParams.Size();
   const int                                aNbV = theVParams.Size();
@@ -172,7 +165,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGri
     {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V;
-      myCache->D1(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V);
+      aCache->D1(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V);
       aResult.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V};
     }
   }
@@ -191,11 +184,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   const int                                aNbU = theUParams.Size();
   const int                                aNbV = theVParams.Size();
@@ -209,7 +199,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
     {
       gp_Pnt aPoint;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      myCache
+      aCache
         ->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aResult.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
@@ -380,11 +370,8 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierSurface::EvaluatePoints(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   const int                  aNbPts = theUVPairs.Size();
   NCollection_Array1<gp_Pnt> aResult(1, aNbPts);
@@ -393,7 +380,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_BezierSurface::EvaluatePoints(
   {
     const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i);
     gp_Pnt          aPoint;
-    myCache->D0(aUV.X(), aUV.Y(), aPoint);
+    aCache->D0(aUV.X(), aUV.Y(), aPoint);
     aResult.SetValue(i + 1, aPoint);
   }
 
@@ -410,11 +397,8 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluatePoi
     return NCollection_Array1<GeomGridEval::SurfD1>();
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   const int                                aNbPts = theUVPairs.Size();
   NCollection_Array1<GeomGridEval::SurfD1> aResult(1, aNbPts);
@@ -424,7 +408,7 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluatePoi
     const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i);
     gp_Pnt          aPoint;
     gp_Vec          aD1U, aD1V;
-    myCache->D1(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V);
+    aCache->D1(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V);
     aResult.ChangeValue(i + 1) = {aPoint, aD1U, aD1V};
   }
 
@@ -441,11 +425,8 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluatePoi
     return NCollection_Array1<GeomGridEval::SurfD2>();
   }
 
-  // Build cache if needed
-  if (myCache.IsNull())
-  {
-    buildCache();
-  }
+  // Build cache (Bezier is single span, cache is built once)
+  Handle(BSplSLib_Cache) aCache = buildBezierCache(myGeom);
 
   const int                                aNbPts = theUVPairs.Size();
   NCollection_Array1<GeomGridEval::SurfD2> aResult(1, aNbPts);
@@ -455,7 +436,7 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluatePoi
     const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i);
     gp_Pnt          aPoint;
     gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV;
-    myCache->D2(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    aCache->D2(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
     aResult.ChangeValue(i + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
   }
 
