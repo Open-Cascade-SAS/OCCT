@@ -451,9 +451,9 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
       {
         Handle(Law_Function) fu1, fu2;
         ptch->Func(fu1, fu2);
-        fu1 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu1));
-        fu2 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu2));
-        ptch->Func(fu1, fu2);
+        Handle(Law_Function) ffu1 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu1));
+        Handle(Law_Function) ffu2 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu2));
+        ptch->SetFunc(ffu1, ffu2);
         break;
       }
     }
