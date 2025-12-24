@@ -505,7 +505,10 @@ const TopoDS_Face& BRepPrim_OneAxis::StartFace()
 
     // When heights are inverted, the wire traversal direction changes due to the
     // AxisEdge running in the opposite direction. Reverse the face to compensate.
-    if (IsHeightInverted())
+    // For equal heights with open meridian (not closed), AxisEdge is skipped.
+    // Note: For closed meridian, AreHeightsEqual() may be true but we don't change
+    // the wire structure, so don't apply equal heights reversal.
+    if (IsHeightInverted() || (AreHeightsEqual() && !MeridianClosed()))
     {
       myBuilder.ReverseFace(myFaces[FSTART]);
     }
@@ -517,20 +520,24 @@ const TopoDS_Face& BRepPrim_OneAxis::StartFace()
 
     // parametric curves
     SetMeridianPCurve(myEdges[ESTART], myFaces[FSTART]);
-    if (EdgesBuilt[EAXIS])
+    // Skip AxisEdge pcurve when heights are equal since the edge is not in the wire
+    if (EdgesBuilt[EAXIS] && !AreHeightsEqual())
       myBuilder.SetPCurve(myEdges[EAXIS],
                           myFaces[FSTART],
                           gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::Y)));
+    // When heights are equal, the pcurves for TopStart and BotStart edges
+    // would overlap at Y = height. Use small offsets to separate them.
+    const double heightsEqualOffset = AreHeightsEqual() ? Precision::Confusion() * 10.0 : 0.0;
     if (EdgesBuilt[ETOPSTART])
-      myBuilder.SetPCurve(
-        myEdges[ETOPSTART],
-        myFaces[FSTART],
-        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(myEdges[ETOPSTART],
+                          myFaces[FSTART],
+                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y() + heightsEqualOffset),
+                                   gp_Dir2d(gp_Dir2d::D::X)));
     if (EdgesBuilt[EBOTSTART])
-      myBuilder.SetPCurve(
-        myEdges[EBOTSTART],
-        myFaces[FSTART],
-        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(myEdges[EBOTSTART],
+                          myFaces[FSTART],
+                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y() - heightsEqualOffset),
+                                   gp_Dir2d(gp_Dir2d::D::X)));
 
     myBuilder.CompleteFace(myFaces[FSTART]);
     FacesBuilt[FSTART] = Standard_True;
@@ -555,7 +562,10 @@ const TopoDS_Face& BRepPrim_OneAxis::EndFace()
     myBuilder.MakeFace(myFaces[FEND], gp_Pln(axes));
     // When heights are inverted, the wire traversal direction changes due to the
     // AxisEdge running in the opposite direction. Don't reverse the face in this case.
-    if (!IsHeightInverted())
+    // For equal heights with open meridian (not closed), AxisEdge is skipped.
+    // Note: For closed meridian, AreHeightsEqual() may be true but we don't change
+    // the wire structure, so don't apply equal heights reversal.
+    if (!IsHeightInverted() && !(AreHeightsEqual() && !MeridianClosed()))
     {
       myBuilder.ReverseFace(myFaces[FEND]);
     }
@@ -566,20 +576,24 @@ const TopoDS_Face& BRepPrim_OneAxis::EndFace()
 
     // parametric curves
     SetMeridianPCurve(myEdges[EEND], myFaces[FEND]);
-    if (EdgesBuilt[EAXIS])
+    // Skip AxisEdge pcurve when heights are equal since the edge is not in the wire
+    if (EdgesBuilt[EAXIS] && !AreHeightsEqual())
       myBuilder.SetPCurve(myEdges[EAXIS],
                           myFaces[FEND],
                           gp_Lin2d(gp_Pnt2d(0, 0), gp_Dir2d(gp_Dir2d::D::Y)));
+    // When heights are equal, the pcurves for TopEnd and BotEnd edges
+    // would overlap at Y = height. Use small offsets to separate them.
+    const double heightsEqualOffset = AreHeightsEqual() ? Precision::Confusion() * 10.0 : 0.0;
     if (EdgesBuilt[ETOPEND])
-      myBuilder.SetPCurve(
-        myEdges[ETOPEND],
-        myFaces[FEND],
-        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(myEdges[ETOPEND],
+                          myFaces[FEND],
+                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMax).Y() + heightsEqualOffset),
+                                   gp_Dir2d(gp_Dir2d::D::X)));
     if (EdgesBuilt[EBOTEND])
-      myBuilder.SetPCurve(
-        myEdges[EBOTEND],
-        myFaces[FEND],
-        gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y()), gp_Dir2d(gp_Dir2d::D::X)));
+      myBuilder.SetPCurve(myEdges[EBOTEND],
+                          myFaces[FEND],
+                          gp_Lin2d(gp_Pnt2d(0, MeridianValue(myVMin).Y() - heightsEqualOffset),
+                                   gp_Dir2d(gp_Dir2d::D::X)));
 
     myBuilder.CompleteFace(myFaces[FEND]);
     FacesBuilt[FEND] = Standard_True;
@@ -715,12 +729,15 @@ const TopoDS_Wire& BRepPrim_OneAxis::StartWire()
 
     // When heights are inverted, the AxisEdge direction is flipped.
     // To maintain wire connectivity, we need to flip the reversed flag for AxisEdge.
-    const bool isInverted = IsHeightInverted();
+    // When heights are equal, skip the degenerate AxisEdge - the wire still closes
+    // because AxisTopVertex and AxisBottomVertex are the same vertex.
+    const bool isInverted   = IsHeightInverted();
+    const bool heightsEqual = AreHeightsEqual();
 
     if (HasBottom())
       myBuilder.AddWireEdge(myWires[WSTART], StartBottomEdge(), Standard_True);
 
-    if (!MeridianClosed())
+    if (!MeridianClosed() && !heightsEqual)
     {
       if (!VMaxInfinite() || !VMinInfinite())
         myBuilder.AddWireEdge(myWires[WSTART],
@@ -780,13 +797,14 @@ const TopoDS_Wire& BRepPrim_OneAxis::EndWire()
 
     // When heights are inverted, the AxisEdge direction is flipped.
     // To maintain wire connectivity, we need to flip the reversed flag for AxisEdge.
-    // When heights are equal, the AxisEdge is degenerate but we still include it
-    // to preserve the topology structure for proper shell orientability.
-    const bool isInverted = IsHeightInverted();
+    // When heights are equal, skip the degenerate AxisEdge - the wire still closes
+    // because AxisTopVertex and AxisBottomVertex are the same vertex.
+    const bool isInverted   = IsHeightInverted();
+    const bool heightsEqual = AreHeightsEqual();
 
     if (HasTop())
       myBuilder.AddWireEdge(myWires[WEND], EndTopEdge(), Standard_True);
-    if (!MeridianClosed())
+    if (!MeridianClosed() && !heightsEqual)
     {
       if (!VMaxInfinite() || !VMinInfinite())
       {

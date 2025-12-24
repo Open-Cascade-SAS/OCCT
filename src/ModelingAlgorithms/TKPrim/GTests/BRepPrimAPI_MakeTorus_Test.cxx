@@ -574,3 +574,23 @@ TEST(BRepPrimAPI_MakeTorusTest, DiagnosticTest_EqualHeights)
     std::cout << "Shape is VALID" << std::endl;
   }
 }
+
+// Test full torus (no sides) with equal heights - should work
+TEST(BRepPrimAPI_MakeTorusTest, FullTorus_EqualHeights)
+{
+  const double R1     = 10.0;
+  const double R2     = 2.0;
+  const double angle1 = 0.0;  // 0 degrees
+  const double angle2 = M_PI; // 180 degrees
+
+  gp_Ax2 anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  // Full revolution (2*PI) - no sides
+  BRepPrimAPI_MakeTorus aMakeTorus(anAxis, R1, R2, angle1, angle2);
+  TopoDS_Shape          aShape = aMakeTorus.Shape();
+
+  ASSERT_TRUE(aMakeTorus.IsDone()) << "Torus creation failed";
+  ASSERT_FALSE(aShape.IsNull()) << "Shape is null";
+
+  BRepCheck_Analyzer anAnalyzer(aShape);
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Full torus (no sides) with equal heights should be valid";
+}
