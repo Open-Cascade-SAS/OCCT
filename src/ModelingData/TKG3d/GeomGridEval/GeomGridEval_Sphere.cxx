@@ -114,7 +114,7 @@ GeomGridEval::SurfD2 GeomGridEval_Sphere::computeD2(const Data&     theData,
 
   // D2U = R * cosV * (-DirU) = -R * cosV * DirU
   // D2V = R * (-cosV * DirU - sinV * ZDir) = -(P - Center) = -relP
-  // D2UV = R * sinV * dDirU
+  // D2UV = d/dV(D1U) = d/dV(R * cosV * dDirU) = -R * sinV * dDirU
   return {gp_Pnt(theData.CX + RcosV * theUCtx.dirUX + RsinV * theData.ZX,
                  theData.CY + RcosV * theUCtx.dirUY + RsinV * theData.ZY,
                  theData.CZ + RcosV * theUCtx.dirUZ + RsinV * theData.ZZ),
@@ -126,7 +126,7 @@ GeomGridEval::SurfD2 GeomGridEval_Sphere::computeD2(const Data&     theData,
           gp_Vec(-RcosV * theUCtx.dirUX - RsinV * theData.ZX,
                  -RcosV * theUCtx.dirUY - RsinV * theData.ZY,
                  -RcosV * theUCtx.dirUZ - RsinV * theData.ZZ),
-          gp_Vec(RsinV * theUCtx.dDirUX, RsinV * theUCtx.dDirUY, RsinV * theUCtx.dDirUZ)};
+          gp_Vec(-RsinV * theUCtx.dDirUX, -RsinV * theUCtx.dDirUY, -RsinV * theUCtx.dDirUZ)};
 }
 
 //==================================================================================================
@@ -143,8 +143,8 @@ GeomGridEval::SurfD3 GeomGridEval_Sphere::computeD3(const Data&     theData,
 
   // D3U = R * cosV * dDirU = D1U
   // D3V = R * (sinV * DirU - cosV * ZDir) = -D1V
-  // D3UUV = -R * sinV * DirU
-  // D3UVV = -R * cosV * dDirU = -D1U
+  // D3UUV = d/dV(D2U) = d/dV(-R * cosV * DirU) = R * sinV * DirU
+  // D3UVV = d/dV(D2UV) = d/dV(-R * sinV * dDirU) = -R * cosV * dDirU
   return {gp_Pnt(theData.CX + RcosV * theUCtx.dirUX + RsinV * theData.ZX,
                  theData.CY + RcosV * theUCtx.dirUY + RsinV * theData.ZY,
                  theData.CZ + RcosV * theUCtx.dirUZ + RsinV * theData.ZZ),
@@ -156,12 +156,12 @@ GeomGridEval::SurfD3 GeomGridEval_Sphere::computeD3(const Data&     theData,
           gp_Vec(-RcosV * theUCtx.dirUX - RsinV * theData.ZX,
                  -RcosV * theUCtx.dirUY - RsinV * theData.ZY,
                  -RcosV * theUCtx.dirUZ - RsinV * theData.ZZ),
-          gp_Vec(RsinV * theUCtx.dDirUX, RsinV * theUCtx.dDirUY, RsinV * theUCtx.dDirUZ),
+          gp_Vec(-RsinV * theUCtx.dDirUX, -RsinV * theUCtx.dDirUY, -RsinV * theUCtx.dDirUZ),
           gp_Vec(-RcosV * theUCtx.dDirUX, -RcosV * theUCtx.dDirUY, -RcosV * theUCtx.dDirUZ),
           gp_Vec(RsinV * theUCtx.dirUX - RcosV * theData.ZX,
                  RsinV * theUCtx.dirUY - RcosV * theData.ZY,
                  RsinV * theUCtx.dirUZ - RcosV * theData.ZZ),
-          gp_Vec(-RsinV * theUCtx.dirUX, -RsinV * theUCtx.dirUY, -RsinV * theUCtx.dirUZ),
+          gp_Vec(RsinV * theUCtx.dirUX, RsinV * theUCtx.dirUY, RsinV * theUCtx.dirUZ),
           gp_Vec(-RcosV * theUCtx.dDirUX, -RcosV * theUCtx.dDirUY, -RcosV * theUCtx.dDirUZ)};
 }
 
