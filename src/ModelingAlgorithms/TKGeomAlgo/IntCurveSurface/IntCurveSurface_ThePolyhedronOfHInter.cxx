@@ -103,7 +103,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                          static_cast<Standard_Boolean*>(C_MyIsOnBounds),
                          TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
@@ -132,7 +132,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                             static_cast<Standard_Boolean*>(C_MyIsOnBounds),
                             TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
