@@ -13,8 +13,8 @@
 
 #include <gtest/gtest.h>
 
-#include <Geom_ToroidalSurface.hxx>
-#include <GeomGridEval_Torus.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <GeomGridEval_Sphere.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -42,51 +42,51 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 // Grid evaluation tests
 //==================================================================================================
 
-TEST(GeomGridEval_TorusTest, GridBasicEvaluation)
+TEST(GeomGridEval_SphereTest, GridBasicEvaluation)
 {
-  // Torus: Major=10, Minor=2, Center(0,0,0), Z-axis
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
+  // Sphere: Radius=5, Center(0,0,0), Z-axis
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
-  GeomGridEval_Torus anEval(aTorus);
+  GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Major
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9); // Minor
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);           // Longitude
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7); // Latitude
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
-  EXPECT_EQ(aGrid.RowLength(), 9);
+  EXPECT_EQ(aGrid.RowLength(), 7);
   EXPECT_EQ(aGrid.ColLength(), 9);
 
   // Verify points
   for (int iU = 1; iU <= 9; ++iU)
   {
-    for (int iV = 1; iV <= 9; ++iV)
+    for (int iV = 1; iV <= 7; ++iV)
     {
-      gp_Pnt aExpected = aTorus->Value(aUParams.Value(iU), aVParams.Value(iV));
+      gp_Pnt aExpected = aSphere->Value(aUParams.Value(iU), aVParams.Value(iV));
       EXPECT_NEAR(aGrid.Value(iU, iV).Distance(aExpected), 0.0, THE_TOLERANCE);
     }
   }
 }
 
-TEST(GeomGridEval_TorusTest, GridDerivativeD1)
+TEST(GeomGridEval_SphereTest, GridDerivativeD1)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   for (int iU = 1; iU <= 9; ++iU)
   {
-    for (int iV = 1; iV <= 9; ++iV)
+    for (int iV = 1; iV <= 7; ++iV)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V;
-      aTorus->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
+      aSphere->D1(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -94,24 +94,24 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD1)
   }
 }
 
-TEST(GeomGridEval_TorusTest, GridDerivativeD2)
+TEST(GeomGridEval_SphereTest, GridDerivativeD2)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   for (int iU = 1; iU <= 9; ++iU)
   {
-    for (int iV = 1; iV <= 9; ++iV)
+    for (int iV = 1; iV <= 7; ++iV)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      aTorus->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      aSphere->D2(aUParams.Value(iU), aVParams.Value(iV), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -122,35 +122,35 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD2)
   }
 }
 
-TEST(GeomGridEval_TorusTest, GridDerivativeD3)
+TEST(GeomGridEval_SphereTest, GridDerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   for (int iU = 1; iU <= 9; ++iU)
   {
-    for (int iV = 1; iV <= 9; ++iV)
+    for (int iV = 1; iV <= 7; ++iV)
     {
       gp_Pnt aPnt;
       gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      aTorus->D3(aUParams.Value(iU),
-                 aVParams.Value(iV),
-                 aPnt,
-                 aD1U,
-                 aD1V,
-                 aD2U,
-                 aD2V,
-                 aD2UV,
-                 aD3U,
-                 aD3V,
-                 aD3UUV,
-                 aD3UVV);
+      aSphere->D3(aUParams.Value(iU),
+                  aVParams.Value(iV),
+                  aPnt,
+                  aD1U,
+                  aD1V,
+                  aD2U,
+                  aD2V,
+                  aD2UV,
+                  aD3U,
+                  aD3V,
+                  aD3UUV,
+                  aD3UVV);
       EXPECT_NEAR(aGrid.Value(iU, iV).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -165,14 +165,14 @@ TEST(GeomGridEval_TorusTest, GridDerivativeD3)
   }
 }
 
-TEST(GeomGridEval_TorusTest, GridDerivativeDN)
+TEST(GeomGridEval_SphereTest, GridDerivativeDN)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 4);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 4);
 
   // Test D4U (4th derivative in U)
   NCollection_Array2<gp_Vec> aD4U = anEval.EvaluateGridDN(aUParams, aVParams, 4, 0);
@@ -180,7 +180,7 @@ TEST(GeomGridEval_TorusTest, GridDerivativeDN)
   {
     for (int iV = 1; iV <= 4; ++iV)
     {
-      gp_Vec aExpected = aTorus->DN(aUParams.Value(iU), aVParams.Value(iV), 4, 0);
+      gp_Vec aExpected = aSphere->DN(aUParams.Value(iU), aVParams.Value(iV), 4, 0);
       EXPECT_NEAR((aD4U.Value(iU, iV) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
     }
   }
@@ -190,24 +190,24 @@ TEST(GeomGridEval_TorusTest, GridDerivativeDN)
 // Points evaluation tests
 //==================================================================================================
 
-TEST(GeomGridEval_TorusTest, PointsBasicEvaluation)
+TEST(GeomGridEval_SphereTest, PointsBasicEvaluation)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   // Create arbitrary UV pairs
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 10);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 4));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 2));
-  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, M_PI));
-  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, 3 * M_PI / 2));
-  aUVPairs.SetValue(6, gp_Pnt2d(2 * M_PI, 2 * M_PI));
-  aUVPairs.SetValue(7, gp_Pnt2d(0.5, 1.0));
-  aUVPairs.SetValue(8, gp_Pnt2d(1.5, 2.0));
-  aUVPairs.SetValue(9, gp_Pnt2d(2.5, 3.0));
-  aUVPairs.SetValue(10, gp_Pnt2d(3.5, 4.0));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 6));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 4));
+  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, 0.0));
+  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, -M_PI / 4));
+  aUVPairs.SetValue(6, gp_Pnt2d(2 * M_PI, -M_PI / 6));
+  aUVPairs.SetValue(7, gp_Pnt2d(0.5, 0.2));
+  aUVPairs.SetValue(8, gp_Pnt2d(1.5, -0.3));
+  aUVPairs.SetValue(9, gp_Pnt2d(2.5, 0.4));
+  aUVPairs.SetValue(10, gp_Pnt2d(3.5, -0.1));
 
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
   EXPECT_EQ(aPoints.Length(), 10);
@@ -215,23 +215,23 @@ TEST(GeomGridEval_TorusTest, PointsBasicEvaluation)
   for (int i = 1; i <= 10; ++i)
   {
     const gp_Pnt2d& aUV       = aUVPairs.Value(i);
-    gp_Pnt          aExpected = aTorus->Value(aUV.X(), aUV.Y());
+    gp_Pnt          aExpected = aSphere->Value(aUV.X(), aUV.Y());
     EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsDerivativeD1)
+TEST(GeomGridEval_SphereTest, PointsDerivativeD1)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 3));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 2));
-  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, M_PI));
-  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, 5 * M_PI / 4));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 6));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 4));
+  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, -M_PI / 6));
+  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, -M_PI / 4));
 
   NCollection_Array1<GeomGridEval::SurfD1> aResults = anEval.EvaluatePointsD1(aUVPairs);
 
@@ -240,25 +240,25 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD1)
     const gp_Pnt2d& aUV = aUVPairs.Value(i);
     gp_Pnt          aPnt;
     gp_Vec          aD1U, aD1V;
-    aTorus->D1(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V);
+    aSphere->D1(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V);
     EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsDerivativeD2)
+TEST(GeomGridEval_SphereTest, PointsDerivativeD2)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 3));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 2));
-  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, M_PI));
-  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, 5 * M_PI / 4));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 6));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 4));
+  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, -M_PI / 6));
+  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, -M_PI / 4));
 
   NCollection_Array1<GeomGridEval::SurfD2> aResults = anEval.EvaluatePointsD2(aUVPairs);
 
@@ -267,7 +267,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD2)
     const gp_Pnt2d& aUV = aUVPairs.Value(i);
     gp_Pnt          aPnt;
     gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV;
-    aTorus->D2(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    aSphere->D2(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
     EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -277,18 +277,18 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD2)
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsDerivativeD3)
+TEST(GeomGridEval_SphereTest, PointsDerivativeD3)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 3));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 2));
-  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, M_PI));
-  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, 5 * M_PI / 4));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 6));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 4));
+  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, -M_PI / 6));
+  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, -M_PI / 4));
 
   NCollection_Array1<GeomGridEval::SurfD3> aResults = anEval.EvaluatePointsD3(aUVPairs);
 
@@ -297,7 +297,7 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD3)
     const gp_Pnt2d& aUV = aUVPairs.Value(i);
     gp_Pnt          aPnt;
     gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-    aTorus->D3(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    aSphere->D3(aUV.X(), aUV.Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
     EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
     EXPECT_NEAR((aResults.Value(i).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
@@ -311,25 +311,25 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeD3)
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
+TEST(GeomGridEval_SphereTest, PointsDerivativeDN)
 {
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 3));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 2));
-  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, M_PI));
-  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, 5 * M_PI / 4));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 4, M_PI / 6));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI / 2, M_PI / 4));
+  aUVPairs.SetValue(4, gp_Pnt2d(M_PI, -M_PI / 6));
+  aUVPairs.SetValue(5, gp_Pnt2d(3 * M_PI / 2, -M_PI / 4));
 
   // Test D4U
   NCollection_Array1<gp_Vec> aD4U = anEval.EvaluatePointsDN(aUVPairs, 4, 0);
   for (int i = 1; i <= 5; ++i)
   {
     const gp_Pnt2d& aUV       = aUVPairs.Value(i);
-    gp_Vec          aExpected = aTorus->DN(aUV.X(), aUV.Y(), 4, 0);
+    gp_Vec          aExpected = aSphere->DN(aUV.X(), aUV.Y(), 4, 0);
     EXPECT_NEAR((aD4U.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
   }
 
@@ -338,22 +338,22 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
   for (int i = 1; i <= 5; ++i)
   {
     const gp_Pnt2d& aUV       = aUVPairs.Value(i);
-    gp_Vec          aExpected = aTorus->DN(aUV.X(), aUV.Y(), 2, 2);
+    gp_Vec          aExpected = aSphere->DN(aUV.X(), aUV.Y(), 2, 2);
     EXPECT_NEAR((aD2UV.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
+TEST(GeomGridEval_SphereTest, PointsTransformedSphere)
 {
-  // Torus with offset center and tilted axis
+  // Sphere with offset center and tilted axis
   gp_Ax3 anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
-  Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(anAxis, 8.0, 1.5);
-  GeomGridEval_Torus           anEval(aTorus);
+  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAxis, 4.0);
+  GeomGridEval_Sphere           anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
   for (int i = 1; i <= 8; ++i)
   {
-    aUVPairs.SetValue(i, gp_Pnt2d((i - 1) * M_PI / 4, (i - 1) * M_PI / 3));
+    aUVPairs.SetValue(i, gp_Pnt2d((i - 1) * M_PI / 4, (i - 4) * M_PI / 8));
   }
 
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
@@ -361,33 +361,62 @@ TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
   for (int i = 1; i <= 8; ++i)
   {
     const gp_Pnt2d& aUV       = aUVPairs.Value(i);
-    gp_Pnt          aExpected = aTorus->Value(aUV.X(), aUV.Y());
+    gp_Pnt          aExpected = aSphere->Value(aUV.X(), aUV.Y());
     EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
   }
 }
 
-TEST(GeomGridEval_TorusTest, PointsOnMajorCircle)
+TEST(GeomGridEval_SphereTest, PointsAtPoles)
 {
-  // Test points on major circle (V=0)
-  Handle(Geom_ToroidalSurface) aTorus =
-    new Geom_ToroidalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
-  GeomGridEval_Torus anEval(aTorus);
+  // Test evaluation at sphere poles
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
 
-  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
-  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
-  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 2, 0.0));
-  aUVPairs.SetValue(3, gp_Pnt2d(M_PI, 0.0));
-  aUVPairs.SetValue(4, gp_Pnt2d(3 * M_PI / 2, 0.0));
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
+  // North pole at V = PI/2
+  aUVPairs.SetValue(1, gp_Pnt2d(0.0, M_PI / 2));
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 2, M_PI / 2));
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI, M_PI / 2));
+  // South pole at V = -PI/2
+  aUVPairs.SetValue(4, gp_Pnt2d(0.0, -M_PI / 2));
+  aUVPairs.SetValue(5, gp_Pnt2d(M_PI, -M_PI / 2));
 
   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
 
-  // Points on major circle at V=0 should be at distance (Major+Minor) from Z axis
-  const double aExpectedRadius = 10.0 + 2.0; // Major + Minor
+  // All points at north pole should be at (0, 0, 5)
+  for (int i = 1; i <= 3; ++i)
+  {
+    EXPECT_NEAR(aPoints.Value(i).Distance(gp_Pnt(0, 0, 5)), 0.0, THE_TOLERANCE);
+  }
+
+  // All points at south pole should be at (0, 0, -5)
+  for (int i = 4; i <= 5; ++i)
+  {
+    EXPECT_NEAR(aPoints.Value(i).Distance(gp_Pnt(0, 0, -5)), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_SphereTest, PointsOnEquator)
+{
+  // Test points on equator (V=0)
+  Handle(Geom_SphericalSurface) aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  GeomGridEval_Sphere anEval(aSphere);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));         // (5, 0, 0)
+  aUVPairs.SetValue(2, gp_Pnt2d(M_PI / 2, 0.0));    // (0, 5, 0)
+  aUVPairs.SetValue(3, gp_Pnt2d(M_PI, 0.0));        // (-5, 0, 0)
+  aUVPairs.SetValue(4, gp_Pnt2d(3 * M_PI / 2, 0.0)); // (0, -5, 0)
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+
+  // Points on equator should be at distance 5 from origin and Z=0
   for (int i = 1; i <= 4; ++i)
   {
-    const gp_Pnt& aPnt             = aPoints.Value(i);
-    double        aRadialDist      = std::sqrt(aPnt.X() * aPnt.X() + aPnt.Y() * aPnt.Y());
-    EXPECT_NEAR(aRadialDist, aExpectedRadius, THE_TOLERANCE);
+    const gp_Pnt& aPnt = aPoints.Value(i);
+    EXPECT_NEAR(aPnt.Distance(gp_Pnt(0, 0, 0)), 5.0, THE_TOLERANCE);
     EXPECT_NEAR(aPnt.Z(), 0.0, THE_TOLERANCE);
   }
 }

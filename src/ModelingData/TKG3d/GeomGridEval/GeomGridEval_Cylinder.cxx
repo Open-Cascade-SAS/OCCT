@@ -19,337 +19,141 @@
 
 //==================================================================================================
 
-void GeomGridEval_Cylinder::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                        const TColStd_Array1OfReal& theVParams)
+GeomGridEval_Cylinder::Data GeomGridEval_Cylinder::extractData() const
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
-
-  myUParams.Resize(1, aNbU, false);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-  }
-
-  myVParams.Resize(1, aNbV, false);
-  for (int j = 1; j <= aNbV; ++j)
-  {
-    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array2<gp_Pnt> GeomGridEval_Cylinder::EvaluateGrid() const
-{
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<gp_Pnt>();
-  }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
-
-  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
-
-  // Extract cylinder data
   const gp_Cylinder& aCyl    = myGeom->Cylinder();
   const gp_Pnt&      aCenter = aCyl.Location();
   const gp_Dir&      aXDir   = aCyl.Position().XDirection();
   const gp_Dir&      aYDir   = aCyl.Position().YDirection();
   const gp_Dir&      aZDir   = aCyl.Position().Direction();
-  const double       aRadius = aCyl.Radius();
 
-  // Pre-extract coordinates
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Pre-calculate U-dependent components
-    // Base circle point (relative to center)
-    const double aCircleX = aRadius * (cosU * aXX + sinU * aYX);
-    const double aCircleY = aRadius * (cosU * aXY + sinU * aYY);
-    const double aCircleZ = aRadius * (cosU * aXZ + sinU * aYZ);
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double v = myVParams.Value(iV);
-
-      // P = Center + (Circle Point) + v * ZDir
-      aResult.SetValue(
-        iU,
-        iV,
-        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ));
-    }
-  }
-  return aResult;
+  return {aCenter.X(),
+          aCenter.Y(),
+          aCenter.Z(),
+          aXDir.X(),
+          aXDir.Y(),
+          aXDir.Z(),
+          aYDir.X(),
+          aYDir.Y(),
+          aYDir.Z(),
+          aZDir.X(),
+          aZDir.Y(),
+          aZDir.Z(),
+          aCyl.Radius()};
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Cylinder::EvaluateGridD1() const
+GeomGridEval_Cylinder::UContext GeomGridEval_Cylinder::computeUContext(const Data& theData,
+                                                                       double      theU)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD1>();
-  }
+  const double cosU = std::cos(theU);
+  const double sinU = std::sin(theU);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
-
-  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
-
-  const gp_Cylinder& aCyl    = myGeom->Cylinder();
-  const gp_Pnt&      aCenter = aCyl.Location();
-  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
-  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
-  const gp_Dir&      aZDir   = aCyl.Position().Direction();
-  const double       aRadius = aCyl.Radius();
-
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Pre-calculate U-dependent components
-    // P relative to center (without V component)
-    const double aCircleX = aRadius * (cosU * aXX + sinU * aYX);
-    const double aCircleY = aRadius * (cosU * aXY + sinU * aYY);
-    const double aCircleZ = aRadius * (cosU * aXZ + sinU * aYZ);
-
-    // D1U = R * (-sinU * XDir + cosU * YDir)
-    const double dU1 = aRadius * (-sinU * aXX + cosU * aYX);
-    const double dU2 = aRadius * (-sinU * aXY + cosU * aYY);
-    const double dU3 = aRadius * (-sinU * aXZ + cosU * aYZ);
-
-    // D1V = ZDir (constant)
-    const double dV1 = aZX;
-    const double dV2 = aZY;
-    const double dV3 = aZZ;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double v = myVParams.Value(iV);
-
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3)};
-    }
-  }
-  return aResult;
+  // DirU = cosU*XDir + sinU*YDir (circle point direction at angle U)
+  // dDirU = -sinU*XDir + cosU*YDir (derivative of DirU w.r.t. U)
+  return {cosU,
+          sinU,
+          cosU * theData.XX + sinU * theData.YX,
+          cosU * theData.XY + sinU * theData.YY,
+          cosU * theData.XZ + sinU * theData.YZ,
+          -sinU * theData.XX + cosU * theData.YX,
+          -sinU * theData.XY + cosU * theData.YY,
+          -sinU * theData.XZ + cosU * theData.YZ};
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cylinder::EvaluateGridD2() const
+gp_Pnt GeomGridEval_Cylinder::computeD0(const Data& theData, const UContext& theUCtx, double theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD2>();
-  }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
-
-  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
-
-  const gp_Cylinder& aCyl    = myGeom->Cylinder();
-  const gp_Pnt&      aCenter = aCyl.Location();
-  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
-  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
-  const gp_Dir&      aZDir   = aCyl.Position().Direction();
-  const double       aRadius = aCyl.Radius();
-
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Pre-calculate U-dependent components
-    const double aCircleX = aRadius * (cosU * aXX + sinU * aYX);
-    const double aCircleY = aRadius * (cosU * aXY + sinU * aYY);
-    const double aCircleZ = aRadius * (cosU * aXZ + sinU * aYZ);
-
-    // D1U = R * (-sinU * XDir + cosU * YDir)
-    const double dU1 = aRadius * (-sinU * aXX + cosU * aYX);
-    const double dU2 = aRadius * (-sinU * aXY + cosU * aYY);
-    const double dU3 = aRadius * (-sinU * aXZ + cosU * aYZ);
-
-    // D1V = ZDir
-    const double dV1 = aZX;
-    const double dV2 = aZY;
-    const double dV3 = aZZ;
-
-    // D2U = R * (-cosU * XDir - sinU * YDir) = - (Circle point relative to center)
-    const double d2U1 = -aCircleX;
-    const double d2U2 = -aCircleY;
-    const double d2U3 = -aCircleZ;
-
-    // D2V = 0, D2UV = 0
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double v = myVParams.Value(iV);
-
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(dV1, dV2, dV3),
-        gp_Vec(d2U1, d2U2, d2U3),
-        gp_Vec(0.0, 0.0, 0.0), // D2V
-        gp_Vec(0.0, 0.0, 0.0)  // D2UV
-      };
-    }
-  }
-  return aResult;
+  // P = Center + R * DirU + v * ZDir
+  return gp_Pnt(theData.CX + theData.Radius * theUCtx.dirUX + theV * theData.ZX,
+                theData.CY + theData.Radius * theUCtx.dirUY + theV * theData.ZY,
+                theData.CZ + theData.Radius * theUCtx.dirUZ + theV * theData.ZZ);
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Cylinder::EvaluateGridD3() const
+GeomGridEval::SurfD1 GeomGridEval_Cylinder::computeD1(const Data&     theData,
+                                                      const UContext& theUCtx,
+                                                      double          theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD3>();
-  }
+  // D1U = R * dDirU
+  // D1V = ZDir
+  return {gp_Pnt(theData.CX + theData.Radius * theUCtx.dirUX + theV * theData.ZX,
+                 theData.CY + theData.Radius * theUCtx.dirUY + theV * theData.ZY,
+                 theData.CZ + theData.Radius * theUCtx.dirUZ + theV * theData.ZZ),
+          gp_Vec(theData.Radius * theUCtx.dDirUX,
+                 theData.Radius * theUCtx.dDirUY,
+                 theData.Radius * theUCtx.dDirUZ),
+          gp_Vec(theData.ZX, theData.ZY, theData.ZZ)};
+}
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+//==================================================================================================
 
-  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
-
-  const gp_Cylinder& aCyl    = myGeom->Cylinder();
-  const gp_Pnt&      aCenter = aCyl.Location();
-  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
-  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
-  const gp_Dir&      aZDir   = aCyl.Position().Direction();
-  const double       aRadius = aCyl.Radius();
-
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
+GeomGridEval::SurfD2 GeomGridEval_Cylinder::computeD2(const Data&     theData,
+                                                      const UContext& theUCtx,
+                                                      double          theV)
+{
+  // D2U = R * (-DirU) = -R * DirU
+  // D2V = 0
+  // D2UV = 0
   const gp_Vec aZero(0.0, 0.0, 0.0);
 
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // A1 = R * cosU, A2 = R * sinU
-    const double A1 = aRadius * cosU;
-    const double A2 = aRadius * sinU;
-
-    // Som1 = A1*X + A2*Y (circle point)
-    const double aCircleX = A1 * aXX + A2 * aYX;
-    const double aCircleY = A1 * aXY + A2 * aYY;
-    const double aCircleZ = A1 * aXZ + A2 * aYZ;
-
-    // D1U = R * (-sinU * X + cosU * Y)
-    const double dU1 = aRadius * (-sinU * aXX + cosU * aYX);
-    const double dU2 = aRadius * (-sinU * aXY + cosU * aYY);
-    const double dU3 = aRadius * (-sinU * aXZ + cosU * aYZ);
-
-    // D2U = -Som1 = - circle point
-    const double d2U1 = -aCircleX;
-    const double d2U2 = -aCircleY;
-    const double d2U3 = -aCircleZ;
-
-    // D3U = -D1U (Vuuu = Dif1 where Dif1 = A2*X - A1*Y, which equals -D1U)
-    const double d3U1 = -dU1;
-    const double d3U2 = -dU2;
-    const double d3U3 = -dU3;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double v = myVParams.Value(iV);
-
-      aResult.ChangeValue(iU, iV) = {
-        gp_Pnt(aCX + aCircleX + v * aZX, aCY + aCircleY + v * aZY, aCZ + aCircleZ + v * aZZ),
-        gp_Vec(dU1, dU2, dU3),
-        gp_Vec(aZX, aZY, aZZ), // D1V = ZDir
-        gp_Vec(d2U1, d2U2, d2U3),
-        aZero, // D2V = 0
-        aZero, // D2UV = 0
-        gp_Vec(d3U1, d3U2, d3U3),
-        aZero, // D3V = 0
-        aZero, // D3UUV = 0
-        aZero  // D3UVV = 0
-      };
-    }
-  }
-  return aResult;
+  return {gp_Pnt(theData.CX + theData.Radius * theUCtx.dirUX + theV * theData.ZX,
+                 theData.CY + theData.Radius * theUCtx.dirUY + theV * theData.ZY,
+                 theData.CZ + theData.Radius * theUCtx.dirUZ + theV * theData.ZZ),
+          gp_Vec(theData.Radius * theUCtx.dDirUX,
+                 theData.Radius * theUCtx.dDirUY,
+                 theData.Radius * theUCtx.dDirUZ),
+          gp_Vec(theData.ZX, theData.ZY, theData.ZZ),
+          gp_Vec(-theData.Radius * theUCtx.dirUX,
+                 -theData.Radius * theUCtx.dirUY,
+                 -theData.Radius * theUCtx.dirUZ),
+          aZero,
+          aZero};
 }
 
 //==================================================================================================
 
-NCollection_Array2<gp_Vec> GeomGridEval_Cylinder::EvaluateGridDN(int theNU, int theNV) const
+GeomGridEval::SurfD3 GeomGridEval_Cylinder::computeD3(const Data&     theData,
+                                                      const UContext& theUCtx,
+                                                      double          theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
-      || (theNU + theNV) < 1)
-  {
-    return NCollection_Array2<gp_Vec>();
-  }
+  // D3U = R * (-dDirU) = -D1U
+  // D3V = 0
+  // D3UUV = 0
+  // D3UVV = 0
+  const gp_Vec aZero(0.0, 0.0, 0.0);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  return {gp_Pnt(theData.CX + theData.Radius * theUCtx.dirUX + theV * theData.ZX,
+                 theData.CY + theData.Radius * theUCtx.dirUY + theV * theData.ZY,
+                 theData.CZ + theData.Radius * theUCtx.dirUZ + theV * theData.ZZ),
+          gp_Vec(theData.Radius * theUCtx.dDirUX,
+                 theData.Radius * theUCtx.dDirUY,
+                 theData.Radius * theUCtx.dDirUZ),
+          gp_Vec(theData.ZX, theData.ZY, theData.ZZ),
+          gp_Vec(-theData.Radius * theUCtx.dirUX,
+                 -theData.Radius * theUCtx.dirUY,
+                 -theData.Radius * theUCtx.dirUZ),
+          aZero,
+          aZero,
+          gp_Vec(-theData.Radius * theUCtx.dDirUX,
+                 -theData.Radius * theUCtx.dDirUY,
+                 -theData.Radius * theUCtx.dDirUZ),
+          aZero,
+          aZero,
+          aZero};
+}
 
-  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+//==================================================================================================
 
+gp_Vec GeomGridEval_Cylinder::computeDN(const Data&     theData,
+                                        const UContext& theUCtx,
+                                        double /*theV*/,
+                                        int theNU,
+                                        int theNV)
+{
   // For cylinder P(u,v) = C + R*(cos(u)*X + sin(u)*Y) + v*Z:
   // - V derivatives: only D_{0,1} = Z is non-zero, all D_{nu,nv} = 0 for nv >= 2
   // - Mixed derivatives D_{nu,1} = 0 for nu >= 1 (Z term has no U dependence)
@@ -357,106 +161,336 @@ NCollection_Array2<gp_Vec> GeomGridEval_Cylinder::EvaluateGridDN(int theNU, int 
 
   if (theNV > 1)
   {
-    // All derivatives with NV >= 2 are zero (v is linear)
-    const gp_Vec aZero(0.0, 0.0, 0.0);
-    for (int iU = 1; iU <= aNbU; ++iU)
-    {
-      for (int iV = 1; iV <= aNbV; ++iV)
-      {
-        aResult.SetValue(iU, iV, aZero);
-      }
-    }
-    return aResult;
+    return gp_Vec(0.0, 0.0, 0.0);
   }
 
   if (theNV == 1)
   {
     if (theNU == 0)
     {
-      // D_{0,1} = Z (constant)
-      const gp_Dir& aZDir = myGeom->Cylinder().Position().Direction();
-      const gp_Vec  aD1V(aZDir.X(), aZDir.Y(), aZDir.Z());
-      for (int iU = 1; iU <= aNbU; ++iU)
-      {
-        for (int iV = 1; iV <= aNbV; ++iV)
-        {
-          aResult.SetValue(iU, iV, aD1V);
-        }
-      }
+      return gp_Vec(theData.ZX, theData.ZY, theData.ZZ);
     }
-    else
-    {
-      // D_{nu,1} = 0 for nu >= 1 (mixed derivatives are zero)
-      const gp_Vec aZero(0.0, 0.0, 0.0);
-      for (int iU = 1; iU <= aNbU; ++iU)
-      {
-        for (int iV = 1; iV <= aNbV; ++iV)
-        {
-          aResult.SetValue(iU, iV, aZero);
-        }
-      }
-    }
-    return aResult;
+    return gp_Vec(0.0, 0.0, 0.0);
   }
 
   // Pure U derivatives (theNV == 0, theNU >= 1)
-  // Cyclic with period 4:
-  // Phase 0: cos*X + sin*Y, Phase 1: -sin*X + cos*Y
-  // Phase 2: -cos*X - sin*Y, Phase 3: sin*X - cos*Y
-
-  const gp_Cylinder& aCyl    = myGeom->Cylinder();
-  const gp_Dir&      aXDir   = aCyl.Position().XDirection();
-  const gp_Dir&      aYDir   = aCyl.Position().YDirection();
-  const double       aRadius = aCyl.Radius();
-
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-
+  // d^n/du^n of DirU cycles: DirU, dDirU, -DirU, -dDirU
   const int aPhase = theNU % 4;
+
+  double dirX, dirY, dirZ;
+  switch (aPhase)
+  {
+    case 0:
+      dirX = theUCtx.dirUX;
+      dirY = theUCtx.dirUY;
+      dirZ = theUCtx.dirUZ;
+      break;
+    case 1:
+      dirX = theUCtx.dDirUX;
+      dirY = theUCtx.dDirUY;
+      dirZ = theUCtx.dDirUZ;
+      break;
+    case 2:
+      dirX = -theUCtx.dirUX;
+      dirY = -theUCtx.dirUY;
+      dirZ = -theUCtx.dirUZ;
+      break;
+    case 3:
+      dirX = -theUCtx.dDirUX;
+      dirY = -theUCtx.dDirUY;
+      dirZ = -theUCtx.dDirUZ;
+      break;
+    default:
+      dirX = 0.0;
+      dirY = 0.0;
+      dirZ = 0.0;
+      break;
+  }
+
+  return gp_Vec(theData.Radius * dirX, theData.Radius * dirY, theData.Radius * dirZ);
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Pnt> GeomGridEval_Cylinder::EvaluateGrid(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<gp_Pnt>();
+  }
+
+  const Data aData = extractData();
+  const int  aNbU  = theUParams.Length();
+  const int  aNbV  = theVParams.Length();
+
+  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    double aCoeffX, aCoeffY;
-    switch (aPhase)
-    {
-      case 0:
-        aCoeffX = cosU;
-        aCoeffY = sinU;
-        break;
-      case 1:
-        aCoeffX = -sinU;
-        aCoeffY = cosU;
-        break;
-      case 2:
-        aCoeffX = -cosU;
-        aCoeffY = -sinU;
-        break;
-      case 3:
-        aCoeffX = sinU;
-        aCoeffY = -cosU;
-        break;
-      default:
-        aCoeffX = 0.0;
-        aCoeffY = 0.0;
-        break;
-    }
-
-    const gp_Vec aDerivative(aRadius * (aCoeffX * aXX + aCoeffY * aYX),
-                             aRadius * (aCoeffX * aXY + aCoeffY * aYY),
-                             aRadius * (aCoeffX * aXZ + aCoeffY * aYZ));
+    const double   aU    = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, aU);
 
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      aResult.SetValue(iU, iV, aDerivative);
+      const double aV = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD0(aData, aUCtx, aV));
     }
   }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Cylinder::EvaluateGridD1(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD1>();
+  }
+
+  const Data aData = extractData();
+  const int  aNbU  = theUParams.Length();
+  const int  aNbV  = theVParams.Length();
+
+  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   aU    = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, aU);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double aV = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD1(aData, aUCtx, aV));
+    }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Cylinder::EvaluateGridD2(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD2>();
+  }
+
+  const Data aData = extractData();
+  const int  aNbU  = theUParams.Length();
+  const int  aNbV  = theVParams.Length();
+
+  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   aU    = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, aU);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double aV = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD2(aData, aUCtx, aV));
+    }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Cylinder::EvaluateGridD3(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const Data aData = extractData();
+  const int  aNbU  = theUParams.Length();
+  const int  aNbV  = theVParams.Length();
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   aU    = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, aU);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double aV = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD3(aData, aUCtx, aV));
+    }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Cylinder::EvaluateGridDN(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams,
+  int                         theNU,
+  int                         theNV) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const Data aData = extractData();
+  const int  aNbU  = theUParams.Length();
+  const int  aNbV  = theVParams.Length();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   aU    = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, aU);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double aV = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeDN(aData, aUCtx, aV, theNU, theNV));
+    }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEval_Cylinder::EvaluatePoints(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  const Data                 aData = extractData();
+  const int                  aNb   = theUVPairs.Length();
+  NCollection_Array1<gp_Pnt> aResult(1, aNb);
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(i, computeD0(aData, aUCtx, aUV.Y()));
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_Cylinder::EvaluatePointsD1(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD1>();
+  }
+
+  const Data                               aData = extractData();
+  const int                                aNb   = theUVPairs.Length();
+  NCollection_Array1<GeomGridEval::SurfD1> aResult(1, aNb);
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(i, computeD1(aData, aUCtx, aUV.Y()));
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_Cylinder::EvaluatePointsD2(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD2>();
+  }
+
+  const Data                               aData = extractData();
+  const int                                aNb   = theUVPairs.Length();
+  NCollection_Array1<GeomGridEval::SurfD2> aResult(1, aNb);
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(i, computeD2(aData, aUCtx, aUV.Y()));
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_Cylinder::EvaluatePointsD3(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD3>();
+  }
+
+  const Data                               aData = extractData();
+  const int                                aNb   = theUVPairs.Length();
+  NCollection_Array1<GeomGridEval::SurfD3> aResult(1, aNb);
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(i, computeD3(aData, aUCtx, aUV.Y()));
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_Cylinder::EvaluatePointsDN(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+  int                                 theNU,
+  int                                 theNV) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  const Data                 aData = extractData();
+  const int                  aNb   = theUVPairs.Length();
+  NCollection_Array1<gp_Vec> aResult(1, aNb);
+
+  for (int i = 1; i <= aNb; ++i)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(i, computeDN(aData, aUCtx, aUV.Y(), theNU, theNV));
+  }
+
   return aResult;
 }

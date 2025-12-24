@@ -53,9 +53,8 @@ TEST(GeomGridEval_BezierSurfaceTest, BasicEvaluation)
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 3);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
   EXPECT_EQ(aGrid.RowLength(), 3);
   EXPECT_EQ(aGrid.ColLength(), 3);
 
@@ -90,9 +89,8 @@ TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -116,9 +114,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD1)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aParams, aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -145,9 +142,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aParams, aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -177,9 +173,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aParams, aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -219,9 +214,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V0)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 1, 0);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -244,9 +238,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U0V1)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(0, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 0, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -269,9 +262,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U2V0)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(2, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 2, 0);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -294,9 +286,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V1)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 1, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -320,10 +311,9 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_BeyondDegree)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
   // 3rd derivative in U direction (beyond degree 2) should be zero
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(3, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 3, 0);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -354,7 +344,6 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
   GeomGridEval_BezierSurface anEval(aBezier);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
   // Test DN(1,0), DN(0,1), and DN(1,1)
   for (int aNU = 0; aNU <= 1; ++aNU)
@@ -364,7 +353,7 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
       if (aNU + aNV == 0)
         continue;
 
-      NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aNU, aNV);
+      NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, aNU, aNV);
 
       for (int i = 1; i <= 5; ++i)
       {
@@ -398,8 +387,7 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
   aUParams.SetValue(1, 0.5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 10);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
   EXPECT_EQ(aGrid.RowLength(), 10);
@@ -434,8 +422,7 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
   TColStd_Array1OfReal aVParams(1, 1);
   aVParams.SetValue(1, 0.7);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
   EXPECT_EQ(aGrid.RowLength(), 1);
@@ -473,8 +460,7 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineRational_CompareToGeomD0)
   aUParams.SetValue(1, 0.3);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 15);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int j = 1; j <= 15; ++j)
   {

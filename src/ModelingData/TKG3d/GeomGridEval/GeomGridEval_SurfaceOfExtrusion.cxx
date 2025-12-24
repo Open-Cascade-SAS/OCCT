@@ -30,41 +30,22 @@ GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
 
 //==================================================================================================
 
-void GeomGridEval_SurfaceOfExtrusion::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                                  const TColStd_Array1OfReal& theVParams)
+NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
-
-  myUParams.Resize(1, aNbU, false);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-  }
-
-  myVParams.Resize(1, aNbV, false);
-  for (int j = 1; j <= aNbV; ++j)
-  {
-    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid() const
-{
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve points using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myUParams);
+  aCurveEval.SetParams(theUParams);
 
   NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid();
   if (aCurvePoints.IsEmpty())
@@ -82,7 +63,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid() const
     const gp_Pnt& aCurvePt = aCurvePoints.Value(i);
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV = myVParams.Value(j);
+      const double aV = theVParams.Value(theVParams.Lower() + j - 1);
       gp_Pnt       aP;
       Geom_ExtrusionUtils::CalculateD0(aCurvePt, aV, aDirXYZ, aP);
       aResult.SetValue(i, j, aP);
@@ -94,20 +75,22 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD1(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D1 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myUParams);
+  aCurveEval.SetParams(theUParams);
 
   NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1();
   if (aCurveD1.IsEmpty())
@@ -125,7 +108,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV = myVParams.Value(j);
+      const double aV = theVParams.Value(theVParams.Lower() + j - 1);
       gp_Pnt       aP;
       gp_Vec       aD1U, aD1V;
       Geom_ExtrusionUtils::CalculateD1(aCurveData.Point,
@@ -144,20 +127,22 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD2(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D2 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myUParams);
+  aCurveEval.SetParams(theUParams);
 
   NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2();
   if (aCurveD2.IsEmpty())
@@ -176,7 +161,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV = myVParams.Value(j);
+      const double aV = theVParams.Value(theVParams.Lower() + j - 1);
       gp_Pnt       aP;
       gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV;
       Geom_ExtrusionUtils::CalculateD2(aCurveData.Point,
@@ -199,20 +184,22 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD3() const
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD3(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D3 using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myUParams);
+  aCurveEval.SetParams(theUParams);
 
   NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3();
   if (aCurveD3.IsEmpty())
@@ -232,7 +219,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
 
     for (int j = 1; j <= aNbV; ++j)
     {
-      const double aV = myVParams.Value(j);
+      const double aV = theVParams.Value(theVParams.Lower() + j - 1);
       gp_Pnt       aP;
       gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
       Geom_ExtrusionUtils::CalculateD3(aCurveData.Point,
@@ -260,17 +247,20 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
 
 //==================================================================================================
 
-NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(int theNU,
-                                                                           int theNV) const
+NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams,
+  int                         theNU,
+  int                         theNV) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
-      || (theNU + theNV) < 1)
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0
+      || theNV < 0 || (theNU + theNV) < 1)
   {
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
@@ -282,7 +272,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(int t
     // Pure U derivative = curve derivative
     GeomGridEval_Curve aCurveEval;
     aCurveEval.Initialize(myBasisCurve);
-    aCurveEval.SetParams(myUParams);
+    aCurveEval.SetParams(theUParams);
 
     NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theNU);
 
@@ -309,4 +299,97 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(int t
   }
 
   return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluatePoints(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  return GeomGridEval::EvaluatePointsHelper(
+    theUVPairs,
+    [this](double theU, double theV) -> gp_Pnt { return myGeom->Value(theU, theV); });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::EvaluatePointsD1(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD1>();
+  }
+
+  return GeomGridEval::EvaluatePointsD1Helper(
+    theUVPairs,
+    [this](double theU, double theV) -> GeomGridEval::SurfD1 {
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V;
+      myGeom->D1(theU, theV, aP, aD1U, aD1V);
+      return {aP, aD1U, aD1V};
+    });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::EvaluatePointsD2(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD2>();
+  }
+
+  return GeomGridEval::EvaluatePointsD2Helper(
+    theUVPairs,
+    [this](double theU, double theV) -> GeomGridEval::SurfD2 {
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+      myGeom->D2(theU, theV, aP, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      return {aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
+    });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::EvaluatePointsD3(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD3>();
+  }
+
+  return GeomGridEval::EvaluatePointsD3Helper(
+    theUVPairs,
+    [this](double theU, double theV) -> GeomGridEval::SurfD3 {
+      gp_Pnt aP;
+      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+      myGeom->D3(theU, theV, aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+      return {aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+    });
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluatePointsDN(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+  int                                 theNU,
+  int                                 theNV) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  return GeomGridEval::EvaluatePointsDNHelper(theUVPairs,
+                                              [this, theNU, theNV](double theU, double theV) {
+                                                return myGeom->DN(theU, theV, theNU, theNV);
+                                              });
 }

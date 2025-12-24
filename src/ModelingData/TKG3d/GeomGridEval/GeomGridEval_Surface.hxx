@@ -29,7 +29,9 @@
 #include <GeomGridEval_SurfaceOfRevolution.hxx>
 #include <GeomGridEval_Torus.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -53,6 +55,8 @@
 //! - BezierSurface: Optimized batch evaluation via BSplSLib
 //! - BSplineSurface: Optimized batch evaluation with span-based caching
 //! - OffsetSurface: Optimized batch evaluation using basis surface derivatives
+//! - SurfaceOfRevolution: Batch evaluation using basis curve
+//! - SurfaceOfExtrusion: Batch evaluation using basis curve
 //! - Other: Fallback using Adaptor3d_Surface::D0
 //!
 //! Usage:
@@ -61,8 +65,10 @@
 //!   anEval.Initialize(myAdaptorSurface);
 //!   // OR
 //!   anEval.Initialize(myGeomSurface);
-//!   anEval.SetUVParams(myUParams, myVParams);
-//!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+//!   // Grid evaluation
+//!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(myUParams, myVParams);
+//!   // Or point evaluation
+//!   NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(myUVPairs);
 //! @endcode
 class GeomGridEval_Surface
 {
@@ -108,42 +114,86 @@ public:
   //! @param theSurface geometry to evaluate
   Standard_EXPORT void Initialize(const Handle(Geom_Surface)& theSurface);
 
-  //! Set UV parameters from two 1D arrays.
-  //! @param theUParams array of U parameter values
-  //! @param theVParams array of V parameter values
-  Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                   const TColStd_Array1OfReal& theVParams);
-
   //! Returns true if properly initialized.
   Standard_EXPORT bool IsInitialized() const;
 
-  //! Returns number of U parameters set.
-  Standard_EXPORT int NbUParams() const;
-
-  //! Returns number of V parameters set.
-  Standard_EXPORT int NbVParams() const;
-
-  //! Evaluate grid points at all set parameters.
+  //! Evaluate grid points at all specified parameters.
+  //! @param[in] theUParams array of U parameter values
+  //! @param[in] theVParams array of V parameter values
   //! @return 2D array of 3D points (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
+  Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
   //! Evaluate grid points with first partial derivatives.
+  //! @param[in] theUParams array of U parameter values
+  //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD1 (1-based indexing)
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1() const;
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
   //! Evaluate grid points with first and second partial derivatives.
+  //! @param[in] theUParams array of U parameter values
+  //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD2 (1-based indexing)
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
   //! Evaluate grid points with derivatives up to third order.
+  //! @param[in] theUParams array of U parameter values
+  //! @param[in] theVParams array of V parameter values
   //! @return 2D array of SurfD3 (1-based indexing)
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
-  //! @param theNU derivative order in U direction
-  //! @param theNV derivative order in V direction
+  //! @param[in] theUParams array of U parameter values
+  //! @param[in] theVParams array of V parameter values
+  //! @param[in] theNU derivative order in U direction
+  //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                                            const TColStd_Array1OfReal& theVParams,
+                                                            int                         theNU,
+                                                            int                         theNV) const;
+
+  //! Evaluate all UV pairs (points mode).
+  //! Dispatches to appropriate specialized evaluator.
+  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
+  //! @return 1D array of evaluated points (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluatePoints(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate all UV pairs with first partial derivatives.
+  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
+  //! @return 1D array of SurfD1 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate all UV pairs with first and second partial derivatives.
+  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
+  //! @return 1D array of SurfD2 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate all UV pairs with derivatives up to third order.
+  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
+  //! @return 1D array of SurfD3 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate partial derivative at all UV pairs.
+  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
+  //! @param[in] theNU derivative order in U direction
+  //! @param[in] theNV derivative order in V direction
+  //! @return 1D array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluatePointsDN(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+    int                                 theNU,
+    int                                 theNV) const;
 
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
@@ -169,6 +219,21 @@ private:
 
   //! Apply transformation to grid of vectors.
   void applyTransformation(NCollection_Array2<gp_Vec>& theGrid) const;
+
+  //! Apply transformation to array of points.
+  void applyTransformation(NCollection_Array1<gp_Pnt>& thePoints) const;
+
+  //! Apply transformation to array of D1 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::SurfD1>& thePoints) const;
+
+  //! Apply transformation to array of D2 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::SurfD2>& thePoints) const;
+
+  //! Apply transformation to array of D3 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::SurfD3>& thePoints) const;
+
+  //! Apply transformation to array of vectors.
+  void applyTransformation(NCollection_Array1<gp_Vec>& thePoints) const;
 
   EvaluatorVariant       myEvaluator;
   GeomAbs_SurfaceType    mySurfaceType;

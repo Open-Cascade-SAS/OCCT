@@ -79,8 +79,7 @@ inline void InitUniform(GeomGridEval_Surface& theEval,
   }
 
   // Evaluate grid
-  theEval.SetUVParams(aUParams, aVParams);
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid(aUParams, aVParams);
 
   // Copy results to output arrays (convert from 2D grid to 1D linear indexing)
   int Index = 1;
@@ -122,8 +121,7 @@ inline void InitWithParams(GeomGridEval_Surface&       theEval,
                            Bnd_Box&                    theBnd)
 {
   // Evaluate grid using provided parameters
-  theEval.SetUVParams(theUpars, theVpars);
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid(theUpars, theVpars);
 
   const int i0    = theUpars.Lower();
   const int j0    = theVpars.Lower();
@@ -238,16 +236,9 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
   }
 
   // Evaluate grid: 1xN or Nx1 depending on isoline direction
-  if (theIsUIso)
-  {
-    theEval.SetUVParams(aFixedParams, aVaryingParams);
-  }
-  else
-  {
-    theEval.SetUVParams(aVaryingParams, aFixedParams);
-  }
-
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theIsUIso
+                                             ? theEval.EvaluateGrid(aFixedParams, aVaryingParams)
+                                             : theEval.EvaluateGrid(aVaryingParams, aFixedParams);
 
   // Compute max deflection from pre-evaluated points
   double aDeflection = RealFirst();

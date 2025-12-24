@@ -148,9 +148,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, BasicEvaluation)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -174,9 +173,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, CornerPoints)
   aUParams.SetValue(2, 1.0);
   aVParams.SetValue(1, 0.0);
   aVParams.SetValue(2, 1.0);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   EXPECT_NEAR(aGrid.Value(1, 1).Distance(gp_Pnt(0, 0, 0)), 0.0, THE_TOLERANCE);
   EXPECT_NEAR(aGrid.Value(2, 1).Distance(gp_Pnt(1, 0, 0)), 0.0, THE_TOLERANCE);
@@ -192,9 +190,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, RationalSurface)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int iU = 1; iU <= 11; ++iU)
   {
@@ -214,9 +211,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, MultiSpanSurface)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 21);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 21);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int iU = 1; iU <= 21; ++iU)
   {
@@ -264,9 +260,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, HigherDegree)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 17);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 17);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int iU = 1; iU <= 17; ++iU)
   {
@@ -292,8 +287,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineU_CompareToGeomD0)
   aUParams.SetValue(1, 0.5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 15);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Compare against Geom_BSplineSurface::D0
   // Note: ColLength() = number of U params (rows), RowLength() = number of V params (columns)
@@ -320,8 +314,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineV_CompareToGeomD0)
   TColStd_Array1OfReal aVParams(1, 1);
   aVParams.SetValue(1, 0.7);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Compare against Geom_BSplineSurface::D0
   const int aNbU = aGrid.ColLength();
@@ -347,8 +340,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineMultiSpan_CompareToGeomD0)
   aUParams.SetValue(1, 0.35);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 20);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Compare against Geom_BSplineSurface::D0
   const int aNbU = aGrid.ColLength();
@@ -374,8 +366,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineRational_CompareToGeomD0)
   TColStd_Array1OfReal aVParams(1, 1);
   aVParams.SetValue(1, 0.3);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Compare against Geom_BSplineSurface::D0
   const int aNbU = aGrid.ColLength();
@@ -402,9 +393,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -427,9 +417,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -455,9 +444,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   GeomAdaptor_Surface anAdaptor(aSurf);
   for (int iU = 1; iU <= 11; ++iU)
@@ -503,9 +491,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V0)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 0);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -524,9 +511,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U0V1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(0, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 0, 1);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -545,9 +531,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 1);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -566,9 +551,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_BeyondDegree)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(2, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 2, 0);
 
   for (int iU = 1; iU <= 5; ++iU)
   {
@@ -586,7 +570,6 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_MultiSpan)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetUVParams(aUParams, aVParams);
 
   const int aTestCases[][2] = {{1, 0}, {0, 1}, {1, 1}, {2, 0}, {0, 2}, {2, 1}, {1, 2}};
 
@@ -595,7 +578,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_MultiSpan)
     const int aNU = aCase[0];
     const int aNV = aCase[1];
 
-    NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aNU, aNV);
+    NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, aNU, aNV);
 
     for (int iU = 1; iU <= 11; ++iU)
     {
@@ -615,7 +598,6 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 7);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 7);
-  anEval.SetUVParams(aUParams, aVParams);
 
   for (int aNU = 0; aNU <= 2; ++aNU)
   {
@@ -626,7 +608,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
         continue;
       }
 
-      NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aNU, aNV);
+      NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, aNU, aNV);
 
       for (int iU = 1; iU <= 7; ++iU)
       {
@@ -638,4 +620,260 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
       }
     }
   }
+}
+
+//==================================================================================================
+// UV Pairs Evaluation Tests
+//==================================================================================================
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_BasicEvaluation)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  // Create arbitrary UV pairs
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.5, 0.25));
+  aUVPairs.SetValue(3, gp_Pnt2d(1.0, 1.0));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.3, 0.7));
+  aUVPairs.SetValue(5, gp_Pnt2d(0.8, 0.2));
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+  EXPECT_EQ(aPoints.Size(), 5);
+
+  // Verify results against Geom_BSplineSurface::D0
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Pnt aExpected;
+    aSurf->D0(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aExpected);
+    EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_MultiSpan)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  // Create UV pairs that span multiple knot spans
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 10);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.1, 0.1));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.6, 0.3)); // Different U span
+  aUVPairs.SetValue(3, gp_Pnt2d(0.2, 0.7)); // Different V span
+  aUVPairs.SetValue(4, gp_Pnt2d(0.8, 0.9)); // Both different
+  aUVPairs.SetValue(5, gp_Pnt2d(0.45, 0.45));
+  aUVPairs.SetValue(6, gp_Pnt2d(0.55, 0.55));
+  aUVPairs.SetValue(7, gp_Pnt2d(0.3, 0.4));
+  aUVPairs.SetValue(8, gp_Pnt2d(0.7, 0.2));
+  aUVPairs.SetValue(9, gp_Pnt2d(0.9, 0.1));
+  aUVPairs.SetValue(10, gp_Pnt2d(0.05, 0.95));
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+
+  for (int i = 1; i <= 10; ++i)
+  {
+    gp_Pnt aExpected;
+    aSurf->D0(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aExpected);
+    EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_Rational)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateRationalBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 7);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.5, 0.5));
+  aUVPairs.SetValue(3, gp_Pnt2d(1.0, 1.0));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.25, 0.75));
+  aUVPairs.SetValue(5, gp_Pnt2d(0.75, 0.25));
+  aUVPairs.SetValue(6, gp_Pnt2d(0.33, 0.67));
+  aUVPairs.SetValue(7, gp_Pnt2d(0.67, 0.33));
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+
+  for (int i = 1; i <= 7; ++i)
+  {
+    gp_Pnt aExpected;
+    aSurf->D0(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aExpected);
+    EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD1)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.2, 0.3));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.5, 0.5));
+  aUVPairs.SetValue(3, gp_Pnt2d(0.8, 0.1));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.4, 0.9));
+
+  NCollection_Array1<GeomGridEval::SurfD1> aResults = anEval.EvaluatePointsD1(aUVPairs);
+
+  for (int i = 1; i <= 4; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V;
+    aSurf->D1(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aPnt, aD1U, aD1V);
+    EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD2)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.1, 0.2));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.6, 0.7));
+  aUVPairs.SetValue(3, gp_Pnt2d(0.3, 0.8));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.9, 0.4));
+  aUVPairs.SetValue(5, gp_Pnt2d(0.45, 0.55));
+
+  NCollection_Array1<GeomGridEval::SurfD2> aResults = anEval.EvaluatePointsD2(aUVPairs);
+
+  for (int i = 1; i <= 5; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    aSurf->D2(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D1U - aD1U).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D1V - aD1V).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD3)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+  GeomAdaptor_Surface         anAdaptor(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.15, 0.25));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.65, 0.75));
+  aUVPairs.SetValue(3, gp_Pnt2d(0.35, 0.85));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.85, 0.35));
+
+  NCollection_Array1<GeomGridEval::SurfD3> aResults = anEval.EvaluatePointsD3(aUVPairs);
+
+  for (int i = 1; i <= 4; ++i)
+  {
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+    anAdaptor.D3(aUVPairs.Value(i).X(),
+                 aUVPairs.Value(i).Y(),
+                 aPnt,
+                 aD1U,
+                 aD1V,
+                 aD2U,
+                 aD2V,
+                 aD2UV,
+                 aD3U,
+                 aD3V,
+                 aD3UUV,
+                 aD3UVV);
+    EXPECT_NEAR(aResults.Value(i).Point.Distance(aPnt), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D3U - aD3U).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D3UUV - aD3UUV).Magnitude(), 0.0, THE_TOLERANCE);
+    EXPECT_NEAR((aResults.Value(i).D3UVV - aD3UVV).Magnitude(), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeDN)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 6);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.1, 0.1));
+  aUVPairs.SetValue(2, gp_Pnt2d(0.3, 0.5));
+  aUVPairs.SetValue(3, gp_Pnt2d(0.6, 0.2));
+  aUVPairs.SetValue(4, gp_Pnt2d(0.8, 0.8));
+  aUVPairs.SetValue(5, gp_Pnt2d(0.4, 0.9));
+  aUVPairs.SetValue(6, gp_Pnt2d(0.9, 0.3));
+
+  const int aTestCases[][2] = {{1, 0}, {0, 1}, {1, 1}, {2, 0}, {0, 2}};
+
+  for (const auto& aCase : aTestCases)
+  {
+    const int aNU = aCase[0];
+    const int aNV = aCase[1];
+
+    NCollection_Array1<gp_Vec> aResults = anEval.EvaluatePointsDN(aUVPairs, aNU, aNV);
+
+    for (int i = 1; i <= 6; ++i)
+    {
+      gp_Vec aExpected = aSurf->DN(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aNU, aNV);
+      EXPECT_NEAR((aResults.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_OrderPreservation)
+{
+  // Verify that results are returned in original input order regardless of sorting
+  Handle(Geom_BSplineSurface) aSurf = CreateMultiSpanBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  // Create UV pairs in a specific order that will be reordered during sorting
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 6);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.9, 0.1)); // High U span
+  aUVPairs.SetValue(2, gp_Pnt2d(0.1, 0.9)); // Low U span
+  aUVPairs.SetValue(3, gp_Pnt2d(0.5, 0.5)); // Middle
+  aUVPairs.SetValue(4, gp_Pnt2d(0.2, 0.2)); // Low spans
+  aUVPairs.SetValue(5, gp_Pnt2d(0.8, 0.8)); // High spans
+  aUVPairs.SetValue(6, gp_Pnt2d(0.4, 0.6)); // Mixed
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+
+  // Verify each result corresponds to its original input index
+  for (int i = 1; i <= 6; ++i)
+  {
+    gp_Pnt aExpected;
+    aSurf->D0(aUVPairs.Value(i).X(), aUVPairs.Value(i).Y(), aExpected);
+    EXPECT_NEAR(aPoints.Value(i).Distance(aExpected), 0.0, THE_TOLERANCE)
+      << "Mismatch at index " << i;
+  }
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_EmptyInput)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aEmptyPairs;
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aEmptyPairs);
+  EXPECT_TRUE(aPoints.IsEmpty());
+}
+
+TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_SinglePoint)
+{
+  Handle(Geom_BSplineSurface) aSurf = CreateSimpleBSplineSurface();
+  GeomGridEval_BSplineSurface anEval(aSurf);
+
+  NCollection_Array1<gp_Pnt2d> aUVPairs(1, 1);
+  aUVPairs.SetValue(1, gp_Pnt2d(0.5, 0.5));
+
+  NCollection_Array1<gp_Pnt> aPoints = anEval.EvaluatePoints(aUVPairs);
+
+  EXPECT_EQ(aPoints.Size(), 1);
+
+  gp_Pnt aExpected;
+  aSurf->D0(0.5, 0.5, aExpected);
+  EXPECT_NEAR(aPoints.Value(1).Distance(aExpected), 0.0, THE_TOLERANCE);
 }

@@ -32,41 +32,22 @@ GeomGridEval_SurfaceOfRevolution::GeomGridEval_SurfaceOfRevolution(
 
 //==================================================================================================
 
-void GeomGridEval_SurfaceOfRevolution::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                                   const TColStd_Array1OfReal& theVParams)
+NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
-
-  myUParams.Resize(1, aNbU, false);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-  }
-
-  myVParams.Resize(1, aNbV, false);
-  for (int j = 1; j <= aNbV; ++j)
-  {
-    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-  }
-}
-
-//==================================================================================================
-
-NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid() const
-{
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve points using optimized curve evaluator
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myVParams);
+  aCurveEval.SetParams(theVParams);
 
   NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid();
   if (aCurvePoints.IsEmpty())
@@ -78,7 +59,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid() cons
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double aU = myUParams.Value(i);
+    const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
     for (int j = 1; j <= aNbV; ++j)
     {
@@ -93,20 +74,22 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid() cons
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::EvaluateGridD1(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D1
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myVParams);
+  aCurveEval.SetParams(theVParams);
 
   NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1();
   if (aCurveD1.IsEmpty())
@@ -118,7 +101,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double aU = myUParams.Value(i);
+    const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
     for (int j = 1; j <= aNbV; ++j)
     {
@@ -142,20 +125,22 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::EvaluateGridD2(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D2
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myVParams);
+  aCurveEval.SetParams(theVParams);
 
   NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2();
   if (aCurveD2.IsEmpty())
@@ -167,7 +152,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double aU = myUParams.Value(i);
+    const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
     for (int j = 1; j <= aNbV; ++j)
     {
@@ -195,20 +180,22 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::EvaluateGridD3() const
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::EvaluateGridD3(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D3
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myVParams);
+  aCurveEval.SetParams(theVParams);
 
   NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3();
   if (aCurveD3.IsEmpty())
@@ -220,7 +207,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
 
   for (int i = 1; i <= aNbU; ++i)
   {
-    const double aU = myUParams.Value(i);
+    const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
     for (int j = 1; j <= aNbV; ++j)
     {
@@ -253,24 +240,27 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
 
 //==================================================================================================
 
-NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int theNU,
-                                                                            int theNV) const
+NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams,
+  int                         theNU,
+  int                         theNV) const
 {
-  if (myBasisCurve.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
-      || (theNU + theNV) < 1)
+  if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0
+      || theNV < 0 || (theNU + theNV) < 1)
   {
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
 
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
   // Get curve data
   GeomGridEval_Curve aCurveEval;
   aCurveEval.Initialize(myBasisCurve);
-  aCurveEval.SetParams(myVParams);
+  aCurveEval.SetParams(theVParams);
 
   if (theNU == 0)
   {
@@ -279,7 +269,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
 
     for (int i = 1; i <= aNbU; ++i)
     {
-      const double aU = myUParams.Value(i);
+      const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
       for (int j = 1; j <= aNbV; ++j)
       {
@@ -306,7 +296,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
 
     for (int i = 1; i <= aNbU; ++i)
     {
-      const double aU = myUParams.Value(i);
+      const double aU = theUParams.Value(theUParams.Lower() + i - 1);
 
       for (int j = 1; j <= aNbV; ++j)
       {
@@ -328,4 +318,92 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(int 
   }
 
   return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluatePoints(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  return GeomGridEval::EvaluatePointsHelper(
+    theUVPairs,
+    [this](double theU, double theV) -> gp_Pnt { return myGeom->Value(theU, theV); });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::EvaluatePointsD1(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD1>();
+  }
+
+  return GeomGridEval::EvaluatePointsD1Helper(theUVPairs, [this](double theU, double theV) {
+    gp_Pnt aP;
+    gp_Vec aD1U, aD1V;
+    myGeom->D1(theU, theV, aP, aD1U, aD1V);
+    return GeomGridEval::SurfD1{aP, aD1U, aD1V};
+  });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::EvaluatePointsD2(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD2>();
+  }
+
+  return GeomGridEval::EvaluatePointsD2Helper(theUVPairs, [this](double theU, double theV) {
+    gp_Pnt aP;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+    myGeom->D2(theU, theV, aP, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    return GeomGridEval::SurfD2{aP, aD1U, aD1V, aD2U, aD2V, aD2UV};
+  });
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::EvaluatePointsD3(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD3>();
+  }
+
+  return GeomGridEval::EvaluatePointsD3Helper(theUVPairs, [this](double theU, double theV) {
+    gp_Pnt aP;
+    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+    myGeom->D3(theU, theV, aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    return GeomGridEval::SurfD3{aP, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+  });
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluatePointsDN(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+  int                                 theNU,
+  int                                 theNV) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  return GeomGridEval::EvaluatePointsDNHelper(
+    theUVPairs,
+    [this, theNU, theNV](double theU, double theV) -> gp_Vec {
+      return myGeom->DN(theU, theV, theNU, theNV);
+    });
 }

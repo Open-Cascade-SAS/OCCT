@@ -54,9 +54,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, PlaneOffset)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -82,9 +81,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, CylinderOffset)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -112,9 +110,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -147,9 +144,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 3);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 3);
   EXPECT_EQ(aGrid.ColLength(), 3);
 
@@ -167,9 +163,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -200,9 +195,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   GeomAdaptor_Surface anAdaptor(anOffset);
   for (int i = 1; i <= 5; ++i)
@@ -249,9 +243,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V0)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 0);
 
   // Use Geom_OffsetSurface::DN as reference (GeomAdaptor_Surface::DN doesn't
   // properly handle offset surfaces - it returns base surface derivatives)
@@ -276,9 +269,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U0V1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(0, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 0, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -301,9 +293,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U1V1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(1, 1);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 1, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -326,9 +317,8 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_U2V0)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(2, 0);
+  NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aUParams, aVParams, 2, 0);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -350,11 +340,10 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
   // Test DN(1,0) and DN(0,1) - use Geom_OffsetSurface::DN as reference
-  NCollection_Array2<gp_Vec> aGridU = anEval.EvaluateGridDN(1, 0);
-  NCollection_Array2<gp_Vec> aGridV = anEval.EvaluateGridDN(0, 1);
+  NCollection_Array2<gp_Vec> aGridU = anEval.EvaluateGridDN(aUParams, aVParams, 1, 0);
+  NCollection_Array2<gp_Vec> aGridV = anEval.EvaluateGridDN(aUParams, aVParams, 0, 1);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -368,7 +357,7 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
   }
 
   // For a plane offset, 2nd and higher derivatives should be zero
-  NCollection_Array2<gp_Vec> aGrid2U = anEval.EvaluateGridDN(2, 0);
+  NCollection_Array2<gp_Vec> aGrid2U = anEval.EvaluateGridDN(aUParams, aVParams, 2, 0);
   for (int i = 1; i <= 5; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -392,8 +381,7 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineU_CompareToGeomD0)
   aUParams.SetValue(1, M_PI / 4);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 15);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
   EXPECT_EQ(aGrid.RowLength(), 15);
@@ -422,8 +410,7 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineV_CompareToGeomD0)
   TColStd_Array1OfReal aVParams(1, 1);
   aVParams.SetValue(1, 2.5);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
   EXPECT_EQ(aGrid.RowLength(), 1);
@@ -451,8 +438,7 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolinePlane_CompareToGeomD0)
   aUParams.SetValue(1, 5.0);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-10.0, 10.0, 20);
 
-  anEval.SetUVParams(aUParams, aVParams);
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int j = 1; j <= 20; ++j)
   {
