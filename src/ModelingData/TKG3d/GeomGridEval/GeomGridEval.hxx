@@ -15,7 +15,11 @@
 #define _GeomGridEval_HeaderFile
 
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //! @brief Namespace containing result structures for grid evaluators.
 //!
