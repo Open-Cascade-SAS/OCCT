@@ -24,7 +24,6 @@
 //  modified by ofv Thu Apr  8 14:58:13 2004 fip
 
 #include <Adaptor3d_Surface.hxx>
-#include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <Bnd_Tools.hxx>

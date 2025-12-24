@@ -14,17 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_BoundSortBox.hxx>
-#include <Bnd_HArray1OfBox.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Intf.hxx>
+#include <IntPatch_BVHTraversal.hxx>
 #include <IntPatch_InterferencePolyhedron.hxx>
 #include <IntPatch_Polyhedron.hxx>
+#include <IntPatch_PolyhedronBVH.hxx>
 #include <IntPatch_PolyhedronTool.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <TColStd_ListOfInteger.hxx>
 
 static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};
 
@@ -117,86 +116,20 @@ void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron&) {
 void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& FirstPol,
                                                    const IntPatch_Polyhedron& SeconPol)
 {
-  Standard_Boolean gridOnFirst          = Standard_True;
-  Standard_Integer NbTrianglesFirstPol  = IntPatch_PolyhedronTool::NbTriangles(FirstPol);
-  Standard_Integer NbTrianglesSecondPol = IntPatch_PolyhedronTool::NbTriangles(SeconPol);
-  Standard_Integer iFirst, iSecon;
+  // Build BVH sets for both polyhedra
+  IntPatch_PolyhedronBVH aSet1(FirstPol);
+  IntPatch_PolyhedronBVH aSet2(SeconPol);
 
-  //------------------------------------------------------------------------------------------
-  //-- the same number of triangles it is necessary to test better on
-  //-- the size of boxes.
-  //--
-  //-- the second is chosen if nbTri1 > 2*nbTri2   or   if VolBoit1 > 2*VolBoit2
-  //--
-  //--if (!SelfIntf && NbTrianglesFirstPol>NbTrianglesSecondPol)
-  //--  gridOnFirst=Standard_False;
+  // Find candidate triangle pairs via BVH traversal
+  IntPatch_BVHTraversal aTraversal;
+  aTraversal.Perform(aSet1, aSet2, SelfIntf);
 
-  if (!SelfIntf)
+  // Process each candidate pair
+  const NCollection_Vector<IntPatch_BVHTraversal::TrianglePair>& aPairs = aTraversal.Pairs();
+  for (int anIdx = 0; anIdx < aPairs.Size(); ++anIdx)
   {
-    if (NbTrianglesFirstPol > NbTrianglesSecondPol + NbTrianglesSecondPol)
-      gridOnFirst = Standard_False;
-
-    Standard_Real vol1, vol2, Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
-    IntPatch_PolyhedronTool::Bounding(FirstPol).Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-    vol1 = (Xmax - Xmin) * (Ymax - Ymin) * (Zmax - Zmin);
-
-    IntPatch_PolyhedronTool::Bounding(SeconPol).Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-    vol2 = (Xmax - Xmin) * (Ymax - Ymin) * (Zmax - Zmin);
-
-    if (vol1 > 8.0 * vol2)
-      gridOnFirst = Standard_False;
-  }
-
-  if (gridOnFirst)
-  {
-    Bnd_BoundSortBox TheGridFirst;
-    TheGridFirst.Initialize(IntPatch_PolyhedronTool::Bounding(FirstPol),
-                            IntPatch_PolyhedronTool::ComponentsBounding(FirstPol));
-
-    for (iSecon = 1; iSecon <= NbTrianglesSecondPol; iSecon++)
-    {
-
-      TColStd_ListIteratorOfListOfInteger iLoI(
-        TheGridFirst.Compare(IntPatch_PolyhedronTool::ComponentsBounding(SeconPol)->Value(iSecon)));
-      while (iLoI.More())
-      {
-        iFirst = iLoI.Value();
-        if (SelfIntf)
-        {
-          if (iFirst < iSecon)
-            Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        }
-        else
-          Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        iLoI.Next();
-      }
-    }
-  }
-
-  else
-  {
-    Bnd_BoundSortBox TheGridSecond;
-    TheGridSecond.Initialize(IntPatch_PolyhedronTool::Bounding(SeconPol),
-                             IntPatch_PolyhedronTool::ComponentsBounding(SeconPol));
-
-    for (iFirst = 1; iFirst <= NbTrianglesFirstPol; iFirst++)
-    {
-      TColStd_ListIteratorOfListOfInteger iLoI(TheGridSecond.Compare(
-        IntPatch_PolyhedronTool::ComponentsBounding(FirstPol)->Value(iFirst)));
-
-      while (iLoI.More())
-      {
-        iSecon = iLoI.Value();
-        if (SelfIntf)
-        {
-          if (iFirst < iSecon)
-            Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        }
-        else
-          Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        iLoI.Next();
-      }
-    }
+    const IntPatch_BVHTraversal::TrianglePair& aPair = aPairs.Value(anIdx);
+    Intersect(aPair.First, FirstPol, aPair.Second, SeconPol);
   }
 }
 

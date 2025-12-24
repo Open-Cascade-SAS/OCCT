@@ -6,4 +6,5 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dGcc_Circ2d3Tan_Test.cxx
   GeomFill_CorrectedFrenet_Test.cxx
   GeomPlate_BuildPlateSurface_Test.cxx
+  IntPatch_PolyhedronBVH_Test.cxx
 )
