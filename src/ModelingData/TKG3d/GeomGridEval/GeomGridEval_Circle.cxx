@@ -99,13 +99,13 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Circle::EvaluateGridD1(
 
     // P = C + R * (cos(u) * X + sin(u) * Y)
     // D1 = R * (-sin(u) * X + cos(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
-             aCY + aRadius * (cosU * aXY + sinU * aYY),
-             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
-      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
-             aRadius * (-sinU * aXY + cosU * aYY),
-             aRadius * (-sinU * aXZ + cosU * aYZ))};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+                                       aCY + aRadius * (cosU * aXY + sinU * aYY),
+                                       aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+                                gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+                                       aRadius * (-sinU * aXY + cosU * aYY),
+                                       aRadius * (-sinU * aXZ + cosU * aYZ))};
   }
   return aResult;
 }
@@ -148,16 +148,16 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Circle::EvaluateGridD2(
     // P = C + R * (cos(u) * X + sin(u) * Y)
     // D1 = R * (-sin(u) * X + cos(u) * Y)
     // D2 = R * (-cos(u) * X - sin(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
-             aCY + aRadius * (cosU * aXY + sinU * aYY),
-             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
-      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
-             aRadius * (-sinU * aXY + cosU * aYY),
-             aRadius * (-sinU * aXZ + cosU * aYZ)),
-      gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
-             aRadius * (-cosU * aXY - sinU * aYY),
-             aRadius * (-cosU * aXZ - sinU * aYZ))};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+                                       aCY + aRadius * (cosU * aXY + sinU * aYY),
+                                       aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+                                gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+                                       aRadius * (-sinU * aXY + cosU * aYY),
+                                       aRadius * (-sinU * aXZ + cosU * aYZ)),
+                                gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
+                                       aRadius * (-cosU * aXY - sinU * aYY),
+                                       aRadius * (-cosU * aXZ - sinU * aYZ))};
   }
   return aResult;
 }
@@ -201,27 +201,28 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Circle::EvaluateGridD3(
     // D1 = R * (-sin(u) * X + cos(u) * Y)
     // D2 = R * (-cos(u) * X - sin(u) * Y)
     // D3 = R * (sin(u) * X - cos(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
-             aCY + aRadius * (cosU * aXY + sinU * aYY),
-             aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
-      gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
-             aRadius * (-sinU * aXY + cosU * aYY),
-             aRadius * (-sinU * aXZ + cosU * aYZ)),
-      gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
-             aRadius * (-cosU * aXY - sinU * aYY),
-             aRadius * (-cosU * aXZ - sinU * aYZ)),
-      gp_Vec(aRadius * (sinU * aXX - cosU * aYX),
-             aRadius * (sinU * aXY - cosU * aYY),
-             aRadius * (sinU * aXZ - cosU * aYZ))};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + aRadius * (cosU * aXX + sinU * aYX),
+                                       aCY + aRadius * (cosU * aXY + sinU * aYY),
+                                       aCZ + aRadius * (cosU * aXZ + sinU * aYZ)),
+                                gp_Vec(aRadius * (-sinU * aXX + cosU * aYX),
+                                       aRadius * (-sinU * aXY + cosU * aYY),
+                                       aRadius * (-sinU * aXZ + cosU * aYZ)),
+                                gp_Vec(aRadius * (-cosU * aXX - sinU * aYX),
+                                       aRadius * (-cosU * aXY - sinU * aYY),
+                                       aRadius * (-cosU * aXZ - sinU * aYZ)),
+                                gp_Vec(aRadius * (sinU * aXX - cosU * aYX),
+                                       aRadius * (sinU * aXY - cosU * aYY),
+                                       aRadius * (sinU * aXZ - cosU * aYZ))};
   }
   return aResult;
 }
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Circle::EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                               int theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Circle::EvaluateGridDN(
+  const TColStd_Array1OfReal& theParams,
+  int                         theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {

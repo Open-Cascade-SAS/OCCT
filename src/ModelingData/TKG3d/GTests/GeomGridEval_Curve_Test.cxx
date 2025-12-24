@@ -462,7 +462,7 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
   GeomGridEval_Curve anEval;
   EXPECT_FALSE(anEval.IsInitialized());
 
-  TColStd_Array1OfReal aEmptyParams;
+  TColStd_Array1OfReal       aEmptyParams;
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
@@ -477,7 +477,7 @@ TEST(GeomGridEval_CurveTest, EmptyParams)
   EXPECT_TRUE(anEval.IsInitialized());
 
   // EvaluateGrid with empty params should return empty
-  TColStd_Array1OfReal aEmptyParams;
+  TColStd_Array1OfReal       aEmptyParams;
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }

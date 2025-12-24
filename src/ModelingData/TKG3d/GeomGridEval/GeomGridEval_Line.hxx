@@ -116,10 +116,10 @@ public:
 
     for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      const double t = theParams.Value(i);
-      aResult.ChangeValue(i - theParams.Lower() + 1) = {
-        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
-        aD1};
+      const double t           = theParams.Value(i);
+      aResult.ChangeValue(i - theParams.Lower()
+                          + 1) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
+                                  aD1};
     }
     return aResult;
   }
@@ -156,10 +156,9 @@ public:
     for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
       const double t = theParams.Value(i);
-      aResult.ChangeValue(i - theParams.Lower() + 1) = {
-        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
-        aD1,
-        aD2};
+      aResult.ChangeValue(
+        i - theParams.Lower()
+        + 1) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ), aD1, aD2};
     }
     return aResult;
   }
@@ -196,11 +195,9 @@ public:
     for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
       const double t = theParams.Value(i);
-      aResult.ChangeValue(i - theParams.Lower() + 1) = {
-        gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ),
-        aD1,
-        aZero,
-        aZero};
+      aResult.ChangeValue(
+        i - theParams.Lower()
+        + 1) = {gp_Pnt(aLocX + t * aDirX, aLocY + t * aDirY, aLocZ + t * aDirZ), aD1, aZero, aZero};
     }
     return aResult;
   }

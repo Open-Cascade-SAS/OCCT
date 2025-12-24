@@ -93,7 +93,7 @@ public:
   //! @return array of derivative vectors (1-based indexing),
   //!         or empty array if geometry is null or no parameters
   Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int theN) const;
+                                                            int                         theN) const;
 
 private:
   Handle(Geom_Circle) myGeom;

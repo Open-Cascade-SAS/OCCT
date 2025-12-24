@@ -105,9 +105,11 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Parabola::EvaluateGridD1(
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
-      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ)};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
+                                       aCY + u2Term * aXY + u * aYY,
+                                       aCZ + u2Term * aXZ + u * aYZ),
+                                gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ)};
   }
   return aResult;
 }
@@ -159,10 +161,12 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Parabola::EvaluateGridD2(
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
-      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
-      aD2};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
+                                       aCY + u2Term * aXY + u * aYY,
+                                       aCZ + u2Term * aXZ + u * aYZ),
+                                gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
+                                aD2};
   }
   return aResult;
 }
@@ -210,11 +214,13 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Parabola::EvaluateGridD3(
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {
-      gp_Pnt(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY, aCZ + u2Term * aXZ + u * aYZ),
-      gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
-      aD2,
-      aD3};
+    aResult.ChangeValue(i - theParams.Lower()
+                        + 1) = {gp_Pnt(aCX + u2Term * aXX + u * aYX,
+                                       aCY + u2Term * aXY + u * aYY,
+                                       aCZ + u2Term * aXZ + u * aYZ),
+                                gp_Vec(d1Term * aXX + aYX, d1Term * aXY + aYY, d1Term * aXZ + aYZ),
+                                aD2,
+                                aD3};
   }
   return aResult;
 }

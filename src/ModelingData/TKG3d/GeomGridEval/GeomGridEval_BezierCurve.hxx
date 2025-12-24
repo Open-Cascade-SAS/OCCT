@@ -84,7 +84,7 @@ public:
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
   Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theParams,
-                                                            int theN) const;
+                                                            int                         theN) const;
 
 private:
   Handle(Geom_BezierCurve) myGeom;

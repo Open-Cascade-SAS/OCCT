@@ -132,13 +132,14 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
     if (aD1.SquareMagnitude() <= gp::Resolution())
     {
       gp_Vec aDummyD4;
-      isDirectionChange = Geom_OffsetCurveUtils::AdjustDerivative(*myBasis,
-                                                                  3,
-                                                                  theParams.Value(theParams.Lower() + i - 1),
-                                                                  aD1,
-                                                                  aD2,
-                                                                  aD3,
-                                                                  aDummyD4);
+      isDirectionChange =
+        Geom_OffsetCurveUtils::AdjustDerivative(*myBasis,
+                                                3,
+                                                theParams.Value(theParams.Lower() + i - 1),
+                                                aD1,
+                                                aD2,
+                                                aD3,
+                                                aDummyD4);
     }
 
     Geom_OffsetCurveUtils::CalculateD2(aP, aD1, aD2, aD3, aDirXYZ, myOffset, isDirectionChange);
@@ -189,10 +190,18 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
     bool isDirectionChange = false;
     if (aD1.SquareMagnitude() <= gp::Resolution())
     {
-      isDirectionChange = Geom_OffsetCurveUtils::AdjustDerivative(*myBasis, 4, aParam, aD1, aD2, aD3, aD4);
+      isDirectionChange =
+        Geom_OffsetCurveUtils::AdjustDerivative(*myBasis, 4, aParam, aD1, aD2, aD3, aD4);
     }
 
-    Geom_OffsetCurveUtils::CalculateD3(aP, aD1, aD2, aD3, aD4, aDirXYZ, myOffset, isDirectionChange);
+    Geom_OffsetCurveUtils::CalculateD3(aP,
+                                       aD1,
+                                       aD2,
+                                       aD3,
+                                       aD4,
+                                       aDirXYZ,
+                                       myOffset,
+                                       isDirectionChange);
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }
 

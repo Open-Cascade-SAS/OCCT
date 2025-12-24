@@ -210,9 +210,8 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3(
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(
-  const TColStd_Array1OfReal& theParams,
-  int                         theN) const
+NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(const TColStd_Array1OfReal& theParams,
+                                                              int theN) const
 {
   return std::visit(
     [&theParams, theN](const auto& theEval) -> NCollection_Array1<gp_Vec> {
