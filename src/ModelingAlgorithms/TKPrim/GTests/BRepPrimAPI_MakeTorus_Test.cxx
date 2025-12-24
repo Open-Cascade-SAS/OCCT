@@ -332,7 +332,7 @@ TEST(BRepPrimAPI_MakeTorusTest, RootCause_HeightOrderingAssumption)
 
   // Case 2: Previously failing range (90 to 270 deg) - Bug 23612 (FIXED)
   // Y(90 deg) = +2, Y(270 deg) = -2 => Y(VMax) < Y(VMin) - height ordering is inverted
-  // Fix: BRepPrim_OneAxis now uses VTopGeometric/VBottomGeometric and adjusts
+  // Fix: BRepPrim_OneAxis now detects inverted height ordering and adjusts
   // edge vertex 'first' flags and wire 'reversed' flags accordingly
   {
     const double vMin = M_PI_2;       // 90 deg
