@@ -14,8 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Builder.hxx>
 #include <BRepPrim_OneAxis.hxx>
+
+#include <BRepPrim_Builder.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
@@ -30,39 +31,61 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 
-#define NBVERTICES 6
-#define VAXISTOP 0
-#define VAXISBOT 1
-#define VTOPSTART 2
-#define VTOPEND 3
-#define VBOTSTART 4
-#define VBOTEND 5
-#define NBEDGES 9
-#define EAXIS 0
-#define ESTART 1
-#define EEND 2
-#define ETOPSTART 3
-#define ETOPEND 4
-#define EBOTSTART 5
-#define EBOTEND 6
-#define ETOP 7
-#define EBOTTOM 8
-#define NBWIRES 9
-#define WLATERAL 0
-#define WLATERALSTART 0
-#define WLATERALEND 1
-#define WTOP 2
-#define WBOTTOM 3
-#define WSTART 5
-#define WAXISSTART 6
-#define WEND 7
-#define WAXISEND 8
-#define NBFACES 5
-#define FLATERAL 0
-#define FTOP 1
-#define FBOTTOM 2
-#define FSTART 3
-#define FEND 4
+namespace
+{
+//! Vertex array indices.
+enum VertexIndex
+{
+  VAXISTOP = 0,
+  VAXISBOT,
+  VTOPSTART,
+  VTOPEND,
+  VBOTSTART,
+  VBOTEND,
+  NBVERTICES
+};
+
+//! Edge array indices.
+enum EdgeIndex
+{
+  EAXIS = 0,
+  ESTART,
+  EEND,
+  ETOPSTART,
+  ETOPEND,
+  EBOTSTART,
+  EBOTEND,
+  ETOP,
+  EBOTTOM,
+  NBEDGES
+};
+
+//! Wire array indices.
+enum WireIndex
+{
+  WLATERAL      = 0,
+  WLATERALSTART = WLATERAL,
+  WLATERALEND,
+  WTOP,
+  WBOTTOM,
+  // Note: index 4 is unused
+  WSTART = 5,
+  WAXISSTART,
+  WEND,
+  WAXISEND,
+  NBWIRES
+};
+
+//! Face array indices.
+enum FaceIndex
+{
+  FLATERAL = 0,
+  FTOP,
+  FBOTTOM,
+  FSTART,
+  FEND,
+  NBFACES
+};
 
 //=======================================================================
 // function : BRepPrim_OneAxis_Check
@@ -88,6 +111,7 @@ static void BRepPrim_OneAxis_Check(const Standard_Boolean V[],
     if (F[i])
       throw Standard_DomainError();
 }
+} // namespace
 
 //=================================================================================================
 
