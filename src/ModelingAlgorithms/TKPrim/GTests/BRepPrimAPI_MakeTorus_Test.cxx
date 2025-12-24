@@ -246,7 +246,7 @@ TEST(BRepPrimAPI_MakeTorusTest, PartialTorus_180To360)
 }
 
 // V range with both positive values not crossing 0 (+45 to +135 degrees)
-// This is an "equal heights" case: sin(45) = sin(135) ≈ 0.707
+// This is an "equal heights" case: sin(45) = sin(135) ~ 0.707
 // Known limitation: see PartialTorus_ZeroTo180
 TEST(BRepPrimAPI_MakeTorusTest, PartialTorus_PositiveRange)
 {
@@ -259,7 +259,7 @@ TEST(BRepPrimAPI_MakeTorusTest, PartialTorus_PositiveRange)
 }
 
 // V range with both negative values not crossing 0 (-135 to -45 degrees)
-// This is an "equal heights" case: sin(-135) = sin(-45) ≈ -0.707
+// This is an "equal heights" case: sin(-135) = sin(-45) ~ -0.707
 // Known limitation: see PartialTorus_ZeroTo180
 TEST(BRepPrimAPI_MakeTorusTest, PartialTorus_NegativeRange)
 {
@@ -306,9 +306,9 @@ TEST(BRepPrimAPI_MakeTorusTest, PartialTorus_SmallPositiveRange)
 //!   X(V) = Major + Minor * cos(V)  [distance from axis]
 //!   Y(V) = Minor * sin(V)          [height/Z coordinate]
 //!
-//! Working ranges: Y increases as V increases (e.g., -90° to +90°)
-//! Failing ranges: Y decreases as V increases (e.g., 90° to 270°)
-//!                 or Y is equal at VMin and VMax (e.g., 45° to 135°)
+//! Working ranges: Y increases as V increases (e.g., -90 to +90 deg)
+//! Failing ranges: Y decreases as V increases (e.g., 90 to 270 deg)
+//!                 or Y is equal at VMin and VMax (e.g., 45 to 135 deg)
 TEST(BRepPrimAPI_MakeTorusTest, RootCause_HeightOrderingAssumption)
 {
   const double R1 = 10.0;
@@ -317,8 +317,8 @@ TEST(BRepPrimAPI_MakeTorusTest, RootCause_HeightOrderingAssumption)
   // For a torus meridian: Y(V) = R2 * sin(V)
   auto computeHeight = [R2](double angleRad) { return R2 * std::sin(angleRad); };
 
-  // Case 1: Working range (-90° to +90°)
-  // Y(-90°) = -2, Y(+90°) = +2 => Y(VMax) > Y(VMin) ✓
+  // Case 1: Working range (-90 to +90 deg)
+  // Y(-90 deg) = -2, Y(+90 deg) = +2 => Y(VMax) > Y(VMin)
   {
     const double vMin = -M_PI_2;
     const double vMax = M_PI_2;
@@ -330,13 +330,13 @@ TEST(BRepPrimAPI_MakeTorusTest, RootCause_HeightOrderingAssumption)
     EXPECT_TRUE(isValid) << "Range with correct height ordering should produce valid shape";
   }
 
-  // Case 2: Previously failing range (90° to 270°) - Bug 23612 (FIXED)
-  // Y(90°) = +2, Y(270°) = -2 => Y(VMax) < Y(VMin) - height ordering is inverted
+  // Case 2: Previously failing range (90 to 270 deg) - Bug 23612 (FIXED)
+  // Y(90 deg) = +2, Y(270 deg) = -2 => Y(VMax) < Y(VMin) - height ordering is inverted
   // Fix: BRepPrim_OneAxis now uses VTopGeometric/VBottomGeometric and adjusts
   // edge vertex 'first' flags and wire 'reversed' flags accordingly
   {
-    const double vMin = M_PI_2;       // 90°
-    const double vMax = 3.0 * M_PI_2; // 270°
+    const double vMin = M_PI_2;       // 90 deg
+    const double vMax = 3.0 * M_PI_2; // 270 deg
     double       yMin = computeHeight(vMin);
     double       yMax = computeHeight(vMax);
     EXPECT_LT(yMax, yMin) << "Height ordering is inverted: Y(VMax) < Y(VMin)";
@@ -346,14 +346,14 @@ TEST(BRepPrimAPI_MakeTorusTest, RootCause_HeightOrderingAssumption)
     EXPECT_TRUE(isValid) << "Bug 23612 fixed: inverted height ordering now handled correctly";
   }
 
-  // Case 3: Equal heights (45° to 135°) - Known Limitation
-  // Y(45°) ≈ 1.41, Y(135°) ≈ 1.41 => Heights are equal at endpoints
-  // The range covers distinct geometric regions (arc from 45° to 135°), but the
+  // Case 3: Equal heights (45 to 135 deg) - Known Limitation
+  // Y(45 deg) ~ 1.41, Y(135 deg) ~ 1.41 => Heights are equal at endpoints
+  // The range covers distinct geometric regions (arc from 45 to 135 deg), but the
   // resulting topology has a degenerate AxisEdge (zero length) which cannot form
   // an orientable shell with the current face/wire structure.
   {
-    const double vMin = M_PI / 4.0;       // 45°
-    const double vMax = 3.0 * M_PI / 4.0; // 135°
+    const double vMin = M_PI / 4.0;       // 45 deg
+    const double vMax = 3.0 * M_PI / 4.0; // 135 deg
     double       yMin = computeHeight(vMin);
     double       yMax = computeHeight(vMax);
     EXPECT_NEAR(yMax, yMin, 1e-10) << "Heights at VMin and VMax are equal";

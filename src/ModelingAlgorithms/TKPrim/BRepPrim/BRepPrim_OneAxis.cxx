@@ -242,7 +242,7 @@ bool BRepPrim_OneAxis::IsHeightInverted() const
   }
   const double yMax = MeridianValue(myVMax).Y();
   const double yMin = MeridianValue(myVMin).Y();
-  // Use tolerance to avoid floating-point issues (e.g., for closed meridian where yMax ≈ yMin)
+  // Use tolerance to avoid floating-point issues (e.g., for closed meridian where yMax ~ yMin)
   return yMax < yMin - Precision::Confusion();
 }
 
