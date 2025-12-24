@@ -210,6 +210,63 @@ Standard_Boolean BRepPrim_OneAxis::VMinInfinite() const
 
 //=================================================================================================
 
+bool BRepPrim_OneAxis::IsHeightInverted() const
+{
+  if (VMaxInfinite() || VMinInfinite())
+  {
+    return false;
+  }
+  const double yMax = MeridianValue(myVMax).Y();
+  const double yMin = MeridianValue(myVMin).Y();
+  // Use tolerance to avoid floating-point issues (e.g., for closed meridian where yMax ≈ yMin)
+  return yMax < yMin - Precision::Confusion();
+}
+
+//=================================================================================================
+
+bool BRepPrim_OneAxis::AreHeightsEqual() const
+{
+  if (VMaxInfinite() || VMinInfinite())
+  {
+    return false;
+  }
+  const double yMax = MeridianValue(myVMax).Y();
+  const double yMin = MeridianValue(myVMin).Y();
+  return std::abs(yMax - yMin) < Precision::Confusion();
+}
+
+//=================================================================================================
+
+double BRepPrim_OneAxis::VTopGeometric() const
+{
+  if (VMaxInfinite())
+  {
+    return myVMax;
+  }
+  if (VMinInfinite())
+  {
+    return myVMax;
+  }
+  return IsHeightInverted() ? myVMin : myVMax;
+}
+
+//=================================================================================================
+
+double BRepPrim_OneAxis::VBottomGeometric() const
+{
+  if (VMinInfinite())
+  {
+    return myVMin;
+  }
+  if (VMaxInfinite())
+  {
+    return myVMin;
+  }
+  return IsHeightInverted() ? myVMax : myVMin;
+}
+
+//=================================================================================================
+
 Standard_Boolean BRepPrim_OneAxis::HasTop() const
 {
   if (VMaxInfinite())
@@ -446,6 +503,13 @@ const TopoDS_Face& BRepPrim_OneAxis::StartFace()
     gp_Ax2 axes(myAxes.Location(), myAxes.YDirection().Reversed(), myAxes.XDirection());
     myBuilder.MakeFace(myFaces[FSTART], gp_Pln(axes));
 
+    // When heights are inverted, the wire traversal direction changes due to the
+    // AxisEdge running in the opposite direction. Reverse the face to compensate.
+    if (IsHeightInverted())
+    {
+      myBuilder.ReverseFace(myFaces[FSTART]);
+    }
+
     if (VMaxInfinite() && VMinInfinite())
       myBuilder.AddFaceWire(myFaces[FSTART], AxisStartWire());
 
@@ -489,7 +553,12 @@ const TopoDS_Face& BRepPrim_OneAxis::EndFace()
     gp_Ax2 axes(myAxes.Location(), myAxes.YDirection().Reversed(), myAxes.XDirection());
     axes.Rotate(myAxes.Axis(), myAngle);
     myBuilder.MakeFace(myFaces[FEND], gp_Pln(axes));
-    myBuilder.ReverseFace(myFaces[FEND]);
+    // When heights are inverted, the wire traversal direction changes due to the
+    // AxisEdge running in the opposite direction. Don't reverse the face in this case.
+    if (!IsHeightInverted())
+    {
+      myBuilder.ReverseFace(myFaces[FEND]);
+    }
 
     if (VMaxInfinite() && VMinInfinite())
       myBuilder.AddFaceWire(myFaces[FEND], AxisEndWire());
@@ -644,13 +713,19 @@ const TopoDS_Wire& BRepPrim_OneAxis::StartWire()
 
     myBuilder.MakeWire(myWires[WSTART]);
 
+    // When heights are inverted, the AxisEdge direction is flipped.
+    // To maintain wire connectivity, we need to flip the reversed flag for AxisEdge.
+    const bool isInverted = IsHeightInverted();
+
     if (HasBottom())
       myBuilder.AddWireEdge(myWires[WSTART], StartBottomEdge(), Standard_True);
 
     if (!MeridianClosed())
     {
       if (!VMaxInfinite() || !VMinInfinite())
-        myBuilder.AddWireEdge(myWires[WSTART], AxisEdge(), Standard_False);
+        myBuilder.AddWireEdge(myWires[WSTART],
+                              AxisEdge(),
+                              isInverted ? Standard_True : Standard_False);
     }
 
     if (HasTop())
@@ -703,13 +778,21 @@ const TopoDS_Wire& BRepPrim_OneAxis::EndWire()
 
     myBuilder.MakeWire(myWires[WEND]);
 
+    // When heights are inverted, the AxisEdge direction is flipped.
+    // To maintain wire connectivity, we need to flip the reversed flag for AxisEdge.
+    // When heights are equal, the AxisEdge is degenerate but we still include it
+    // to preserve the topology structure for proper shell orientability.
+    const bool isInverted = IsHeightInverted();
+
     if (HasTop())
       myBuilder.AddWireEdge(myWires[WEND], EndTopEdge(), Standard_True);
     if (!MeridianClosed())
     {
       if (!VMaxInfinite() || !VMinInfinite())
       {
-        myBuilder.AddWireEdge(myWires[WEND], AxisEdge(), Standard_True);
+        myBuilder.AddWireEdge(myWires[WEND],
+                              AxisEdge(),
+                              isInverted ? Standard_False : Standard_True);
       }
     }
     if (HasBottom())
@@ -762,19 +845,39 @@ const TopoDS_Edge& BRepPrim_OneAxis::AxisEdge()
     Standard_DomainError_Raise_if(!HasSides(), "BRepPrim_OneAxis::AxisEdge:no sides");
     Standard_DomainError_Raise_if(MeridianClosed(), "BRepPrim_OneAxis::AxisEdge:closed");
 
-    // build the empty edge.
-    myBuilder.MakeEdge(myEdges[EAXIS], gp_Lin(myAxes.Axis()));
+    const double yMax = MeridianValue(myVMax).Y();
+    const double yMin = MeridianValue(myVMin).Y();
+    const bool   heightsEqual =
+      !VMaxInfinite() && !VMinInfinite() && std::abs(yMax - yMin) < Precision::Confusion();
 
-    if (!VMaxInfinite())
-      myBuilder.AddEdgeVertex(myEdges[EAXIS],
-                              AxisTopVertex(),
-                              MeridianValue(myVMax).Y(),
-                              Standard_False);
-    if (!VMinInfinite())
-      myBuilder.AddEdgeVertex(myEdges[EAXIS],
-                              AxisBottomVertex(),
-                              MeridianValue(myVMin).Y(),
-                              Standard_True);
+    if (heightsEqual)
+    {
+      // When heights are equal, the AxisEdge is degenerate (zero length).
+      // Create a degenerate edge at the shared vertex.
+      myBuilder.MakeDegeneratedEdge(myEdges[EAXIS]);
+      myBuilder.AddEdgeVertex(myEdges[EAXIS], AxisTopVertex(), yMax, yMax);
+    }
+    else
+    {
+      // build the empty edge.
+      myBuilder.MakeEdge(myEdges[EAXIS], gp_Lin(myAxes.Axis()));
+
+      // When heights are inverted (VMax is geometrically below VMin), we need to swap
+      // the first flags to ensure the edge parameter range is valid (increasing).
+      // The edge should always run from the geometrically lower vertex to the higher one.
+      const bool isInverted = IsHeightInverted();
+
+      if (!VMaxInfinite())
+        myBuilder.AddEdgeVertex(myEdges[EAXIS],
+                                AxisTopVertex(),
+                                yMax,
+                                isInverted ? Standard_True : Standard_False);
+      if (!VMinInfinite())
+        myBuilder.AddEdgeVertex(myEdges[EAXIS],
+                                AxisBottomVertex(),
+                                yMin,
+                                isInverted ? Standard_False : Standard_True);
+    }
 
     myBuilder.CompleteEdge(myEdges[EAXIS]);
     EdgesBuilt[EAXIS] = Standard_True;
@@ -1124,6 +1227,12 @@ const TopoDS_Vertex& BRepPrim_OneAxis::AxisTopVertex()
     else if (MeridianOnAxis(myVMax) && VerticesBuilt[VTOPEND])
       myVertices[VAXISTOP] = myVertices[VTOPEND];
 
+    // Share with AxisBottomVertex if heights are equal (handles case when bottom is built first)
+    else if (VerticesBuilt[VAXISBOT] && !VMaxInfinite() && !VMinInfinite()
+             && std::abs(MeridianValue(myVMax).Y() - MeridianValue(myVMin).Y())
+                  < Precision::Confusion())
+      myVertices[VAXISTOP] = myVertices[VAXISBOT];
+
     else
     {
       Standard_DomainError_Raise_if(MeridianClosed(), "BRepPrim_OneAxis::AxisTopVertex");
@@ -1155,6 +1264,12 @@ const TopoDS_Vertex& BRepPrim_OneAxis::AxisBottomVertex()
 
     else if (MeridianOnAxis(myVMin) && VerticesBuilt[VBOTEND])
       myVertices[VAXISBOT] = myVertices[VBOTEND];
+
+    // Share with AxisTopVertex if heights are equal (within tolerance)
+    else if (VerticesBuilt[VAXISTOP]
+             && std::abs(MeridianValue(myVMax).Y() - MeridianValue(myVMin).Y())
+                  < Precision::Confusion())
+      myVertices[VAXISBOT] = myVertices[VAXISTOP];
 
     else
     {
