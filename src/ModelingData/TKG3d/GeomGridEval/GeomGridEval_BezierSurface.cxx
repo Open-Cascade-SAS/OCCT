@@ -15,8 +15,19 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <GeomGridEval_Curve.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
+
+namespace
+{
+//! Minimum number of points along varying dimension to use isoline optimization.
+//! For small grids (e.g., 1x4), cache-based surface evaluation is faster than
+//! extracting an isoline curve and setting up a curve evaluator.
+constexpr int THE_ISOLINE_THRESHOLD = 8;
+} // namespace
 
 //==================================================================================================
 
@@ -84,14 +95,52 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid() const
     return NCollection_Array2<gp_Pnt>();
   }
 
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  // Check for V-isoline case (Nx1) - use 1D curve evaluation
+  // For U-isoline (1xN), cache-based surface evaluation is efficient since U span is fixed.
+  // For V-isoline (Nx1), extracting the isoline curve avoids repeated cache rebuilds.
+  // Only use isoline optimization when varying dimension is large enough.
+  const bool isVIso = (aNbV == 1 && aNbU >= THE_ISOLINE_THRESHOLD);
+
+  if (isVIso)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      // Extract V-isoline curve (parameterized by U)
+      Handle(Geom_Curve) aCurve = myGeom->VIso(myVParams.Value(0));
+
+      if (!aCurve.IsNull())
+      {
+        // Use unified curve evaluator
+        GeomGridEval_Curve aCurveEval;
+        aCurveEval.Initialize(aCurve);
+        aCurveEval.SetParams(myUParams);
+        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+        // Reshape 1D curve result to 2D surface result (Nx1 grid)
+        NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, 1);
+        for (int k = 1; k <= aNbU; ++k)
+        {
+          aResult(k, 1) = aCurveResult(k);
+        }
+        return aResult;
+      }
+    }
+    catch (const Standard_Failure&)
+    {
+      // Isoline extraction failed, fall through to surface evaluation
+    }
+  }
+
   // Build cache if needed
   if (myCache.IsNull())
   {
     buildCache();
   }
 
-  const int                  aNbU = myUParams.Size();
-  const int                  aNbV = myVParams.Size();
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Single span - use cache for all points

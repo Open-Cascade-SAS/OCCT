@@ -377,3 +377,109 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
     }
   }
 }
+
+TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
+{
+  // Create a non-planar Bezier surface
+  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles.SetValue(i, j, gp_Pnt(i - 1, j - 1, std::sin((i - 1) * 0.5 + (j - 1) * 0.5)));
+    }
+  }
+
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  GeomGridEval_BezierSurface anEval(aBezier);
+
+  // U-isoline: 1 U param, multiple V params (triggers isoline path)
+  TColStd_Array1OfReal aUParams(1, 1);
+  aUParams.SetValue(1, 0.5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 10);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 10);
+  EXPECT_EQ(aGrid.ColLength(), 1);
+
+  // Compare against Geom_Surface::D0
+  for (int j = 1; j <= 10; ++j)
+  {
+    gp_Pnt aExpected;
+    aBezier->D0(aUParams.Value(1), aVParams.Value(j), aExpected);
+    EXPECT_NEAR(aGrid.Value(1, j).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
+{
+  // Create a non-planar Bezier surface
+  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles.SetValue(i, j, gp_Pnt(i - 1, j - 1, std::sin((i - 1) * 0.5 + (j - 1) * 0.5)));
+    }
+  }
+
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  GeomGridEval_BezierSurface anEval(aBezier);
+
+  // V-isoline: multiple U params, 1 V param (triggers isoline path)
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 10);
+  TColStd_Array1OfReal aVParams(1, 1);
+  aVParams.SetValue(1, 0.7);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 1);
+  EXPECT_EQ(aGrid.ColLength(), 10);
+
+  // Compare against Geom_Surface::D0
+  for (int i = 1; i <= 10; ++i)
+  {
+    gp_Pnt aExpected;
+    aBezier->D0(aUParams.Value(i), aVParams.Value(1), aExpected);
+    EXPECT_NEAR(aGrid.Value(i, 1).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_BezierSurfaceTest, IsolineRational_CompareToGeomD0)
+{
+  // Rational Bezier surface
+  TColgp_Array2OfPnt   aPoles(1, 3, 1, 3);
+  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles.SetValue(i, j, gp_Pnt(i - 1, j - 1, std::sin((i - 1) * 0.5 + (j - 1) * 0.5)));
+      aWeights.SetValue(i, j, 1.0 + 0.5 * ((i - 1) + (j - 1)));
+    }
+  }
+
+  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles, aWeights);
+  GeomGridEval_BezierSurface anEval(aBezier);
+
+  // U-isoline on rational surface
+  TColStd_Array1OfReal aUParams(1, 1);
+  aUParams.SetValue(1, 0.3);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 15);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  for (int j = 1; j <= 15; ++j)
+  {
+    gp_Pnt aExpected;
+    aBezier->D0(aUParams.Value(1), aVParams.Value(j), aExpected);
+    EXPECT_NEAR(aGrid.Value(1, j).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}

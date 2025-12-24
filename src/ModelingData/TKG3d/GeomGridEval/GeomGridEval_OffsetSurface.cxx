@@ -62,8 +62,9 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
     }
   }
 
-  const int                  aNbU = myUParams.Size();
-  const int                  aNbV = myVParams.Size();
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset D0 requires basis D1)

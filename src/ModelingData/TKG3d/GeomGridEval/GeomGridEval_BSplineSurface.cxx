@@ -15,7 +15,10 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <GeomGridEval_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
@@ -24,6 +27,11 @@ namespace
 //! Threshold for using cache vs direct evaluation.
 //! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
 constexpr int THE_CACHE_THRESHOLD = 4;
+
+//! Minimum number of points along varying dimension to use isoline optimization.
+//! For small grids (e.g., 1x4), cache-based surface evaluation is faster than
+//! extracting an isoline curve and setting up a curve evaluator.
+constexpr int THE_ISOLINE_THRESHOLD = 8;
 
 //! @brief Iterates over UV span blocks and invokes evaluation functors.
 //!
@@ -127,7 +135,7 @@ void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUPa
     myRawVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
 
-  // Clear cached span data and cache
+  // Clear cached data
   myUSpanRanges = NCollection_Array1<SpanRange>();
   myVSpanRanges = NCollection_Array1<SpanRange>();
   myCache.Nullify();
@@ -338,17 +346,54 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
     return NCollection_Array2<gp_Pnt>();
   }
 
+  const int aNbU = myRawUParams.Size();
+  const int aNbV = myRawVParams.Size();
+
+  // Check for V-isoline case (Nx1) - use 1D curve evaluation
+  // For U-isoline (1xN), cache-based surface evaluation is efficient since U span is fixed.
+  // For V-isoline (Nx1), extracting the isoline curve avoids repeated U span transitions.
+  // Only use isoline optimization when varying dimension is large enough.
+  const bool isVIso = (aNbV == 1 && aNbU >= THE_ISOLINE_THRESHOLD);
+
+  if (isVIso)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      // Extract V-isoline curve (parameterized by U)
+      Handle(Geom_Curve) aCurve = myGeom->VIso(myRawVParams.Value(1));
+
+      if (!aCurve.IsNull())
+      {
+        // Use unified curve evaluator
+        GeomGridEval_Curve aCurveEval;
+        aCurveEval.Initialize(aCurve);
+        aCurveEval.SetParams(myRawUParams);
+        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+        // Reshape 1D curve result to 2D surface result (Nx1 grid)
+        NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, 1);
+        for (int k = 1; k <= aNbU; ++k)
+        {
+          aResult(k, 1) = aCurveResult(k);
+        }
+        return aResult;
+      }
+    }
+    catch (const Standard_Failure&)
+    {
+      // Isoline extraction failed, fall through to surface evaluation
+    }
+  }
+
   prepare();
 
-  const int aNbUParams = myUParams.Size();
-  const int aNbVParams = myVParams.Size();
-
-  if (aNbUParams == 0 || aNbVParams == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
+  if (aNbU == 0 || aNbV == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  NCollection_Array2<gp_Pnt> aPoints(1, aNbUParams, 1, aNbVParams);
+  NCollection_Array2<gp_Pnt> aPoints(1, aNbU, 1, aNbV);
 
   const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
   const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
