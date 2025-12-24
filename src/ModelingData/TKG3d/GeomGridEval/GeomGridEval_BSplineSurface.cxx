@@ -17,6 +17,8 @@
 #include <BSplSLib.hxx>
 #include <GeomGridEval_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
@@ -25,6 +27,11 @@ namespace
 //! Threshold for using cache vs direct evaluation.
 //! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
 constexpr int THE_CACHE_THRESHOLD = 4;
+
+//! Minimum number of points along varying dimension to use isoline optimization.
+//! For small grids (e.g., 1x4), cache-based surface evaluation is faster than
+//! extracting an isoline curve and setting up a curve evaluator.
+constexpr int THE_ISOLINE_THRESHOLD = 8;
 
 //! @brief Iterates over UV span blocks and invokes evaluation functors.
 //!
@@ -342,32 +349,40 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
   const int aNbU = myRawUParams.Size();
   const int aNbV = myRawVParams.Size();
 
-  // Check for isoline case (1xN or Nx1) - use 1D curve evaluation
-  const bool isUIso = (aNbU == 1 && aNbV > 1);
-  const bool isVIso = (aNbV == 1 && aNbU > 1);
+  // Check for V-isoline case (Nx1) - use 1D curve evaluation
+  // For U-isoline (1xN), cache-based surface evaluation is efficient since U span is fixed.
+  // For V-isoline (Nx1), extracting the isoline curve avoids repeated U span transitions.
+  // Only use isoline optimization when varying dimension is large enough.
+  const bool isVIso = (aNbV == 1 && aNbU >= THE_ISOLINE_THRESHOLD);
 
-  if (isUIso || isVIso)
+  if (isVIso)
   {
-    // Extract isoline curve
-    Handle(Geom_Curve) aCurve =
-      isUIso ? myGeom->UIso(myRawUParams.Value(1)) : myGeom->VIso(myRawVParams.Value(1));
-
-    if (!aCurve.IsNull())
+    try
     {
-      // Use unified curve evaluator
-      GeomGridEval_Curve aCurveEval;
-      aCurveEval.Initialize(aCurve);
-      aCurveEval.SetParams(isUIso ? myRawVParams : myRawUParams);
-      NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+      OCC_CATCH_SIGNALS
+      // Extract V-isoline curve (parameterized by U)
+      Handle(Geom_Curve) aCurve = myGeom->VIso(myRawVParams.Value(1));
 
-      // Reshape 1D curve result to 2D surface result
-      NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
-      const int                  aNbPts = isUIso ? aNbV : aNbU;
-      for (int k = 1; k <= aNbPts; ++k)
+      if (!aCurve.IsNull())
       {
-        aResult(isUIso ? 1 : k, isUIso ? k : 1) = aCurveResult(k);
+        // Use unified curve evaluator
+        GeomGridEval_Curve aCurveEval;
+        aCurveEval.Initialize(aCurve);
+        aCurveEval.SetParams(myRawUParams);
+        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+        // Reshape 1D curve result to 2D surface result (Nx1 grid)
+        NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, 1);
+        for (int k = 1; k <= aNbU; ++k)
+        {
+          aResult(k, 1) = aCurveResult(k);
+        }
+        return aResult;
       }
-      return aResult;
+    }
+    catch (const Standard_Failure&)
+    {
+      // Isoline extraction failed, fall through to surface evaluation
     }
   }
 
