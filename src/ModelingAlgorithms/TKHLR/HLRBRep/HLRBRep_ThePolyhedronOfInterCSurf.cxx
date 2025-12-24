@@ -146,19 +146,6 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface*            Surface
 
 //==================================================================================================
 
-Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(
-  HLRBRep_Surface*       Surface,
-  const Standard_Integer Triang) const
-{
-  Standard_Integer i1, i2, i3;
-  Triangle(Triang, i1, i2, i3);
-  Standard_Real u1, v1, u2, v2, u3, v3;
-  gp_Pnt        P1 = Point(i1, u1, v1), P2 = Point(i2, u2, v2), P3 = Point(i3, u3, v3);
-  return PolyUtils::DeflectionOnTriangle(Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
-}
-
-//==================================================================================================
-
 void HLRBRep_ThePolyhedronOfInterCSurf::Parameters(const Standard_Integer Index,
                                                    Standard_Real&         U,
                                                    Standard_Real&         V) const

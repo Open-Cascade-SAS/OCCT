@@ -142,61 +142,6 @@ inline void InitWithParams(GeomGridEval_Surface&       theEval,
   }
 }
 
-//! Calculate deflection on a single triangle.
-//! Evaluates the center point on the surface and computes deflection.
-//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface) or pointer)
-//! @param[in] theSurface   The surface (accessed via ->Value())
-//! @param[in] theP1        First vertex point
-//! @param[in] theP2        Second vertex point
-//! @param[in] theP3        Third vertex point
-//! @param[in] theU1        U parameter at first vertex
-//! @param[in] theV1        V parameter at first vertex
-//! @param[in] theU2        U parameter at second vertex
-//! @param[in] theV2        V parameter at second vertex
-//! @param[in] theU3        U parameter at third vertex
-//! @param[in] theV3        V parameter at third vertex
-//! @return Deflection value (distance from triangle center to surface)
-template <typename SurfaceType>
-double DeflectionOnTriangle(const SurfaceType& theSurface,
-                            const gp_Pnt&      theP1,
-                            const gp_Pnt&      theP2,
-                            const gp_Pnt&      theP3,
-                            const double       theU1,
-                            const double       theV1,
-                            const double       theU2,
-                            const double       theV2,
-                            const double       theU3,
-                            const double       theV3)
-{
-  // Check for degenerate triangles
-  if (theP1.SquareDistance(theP2) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-  if (theP1.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-  if (theP2.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-
-  // Compute normal vector
-  const gp_XYZ XYZ1 = theP2.XYZ() - theP1.XYZ();
-  const gp_XYZ XYZ2 = theP3.XYZ() - theP2.XYZ();
-  const gp_XYZ XYZ3 = theP1.XYZ() - theP3.XYZ();
-  gp_Vec       NormalVector((XYZ1 ^ XYZ2) + (XYZ2 ^ XYZ3) + (XYZ3 ^ XYZ1));
-
-  const double aNormLen = NormalVector.Magnitude();
-  if (aNormLen < gp::Resolution())
-    return 0.0;
-
-  NormalVector.Divide(aNormLen);
-
-  // Calculate center point on surface and compute distance to triangle plane
-  const double u       = (theU1 + theU2 + theU3) / 3.0;
-  const double v       = (theV1 + theV2 + theV3) / 3.0;
-  const gp_Pnt aCenter = theSurface->Value(u, v);
-  const gp_Vec P1P(theP1, aCenter);
-
-  return std::abs(P1P.Dot(NormalVector));
-}
-
 //! Compute border deflection for a boundary isoline using grid evaluation.
 //! Uses batch evaluation for better performance on complex surfaces.
 //! @param[in,out] theEval      Grid evaluator (will be reused for isoline evaluation)
