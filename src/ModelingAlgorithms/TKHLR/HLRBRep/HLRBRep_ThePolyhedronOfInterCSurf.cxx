@@ -18,12 +18,12 @@
 
 #include <Bnd_Array1OfBox.hxx>
 #include <Bnd_Box.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <HLRBRep_Surface.hxx>
-#include <HLRBRep_SurfaceTool.hxx>
 #include <Standard_OutOfRange.hxx>
 
 #include "../../TKGeomAlgo/IntCurveSurface/IntCurveSurface_PolyhedronUtils.pxx"
@@ -85,37 +85,29 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface*    Surface,
                                              const Standard_Real U1,
                                              const Standard_Real V1)
 {
-  PolyUtils::InitUniform<HLRBRep_Surface*, HLRBRep_SurfaceTool>(
-    Surface,
-    U0,
-    V0,
-    U1,
-    V1,
-    nbdeltaU,
-    nbdeltaV,
-    static_cast<gp_Pnt*>(C_MyPnts),
-    static_cast<Standard_Real*>(C_MyU),
-    static_cast<Standard_Real*>(C_MyV),
-    static_cast<Standard_Boolean*>(C_MyIsOnBounds),
-    TheBnd);
+  // Initialize grid evaluator with the underlying BRepAdaptor_Surface
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(Surface->Surface());
 
-  Standard_Real tol =
-    PolyUtils::ComputeMaxDeflection<HLRBRep_Surface*,
-                                    HLRBRep_SurfaceTool,
-                                    HLRBRep_ThePolyhedronOfInterCSurf>(Surface,
-                                                                       *this,
-                                                                       NbTriangles());
+  PolyUtils::InitUniform(anEval,
+                         U0,
+                         V0,
+                         U1,
+                         V1,
+                         nbdeltaU,
+                         nbdeltaV,
+                         static_cast<gp_Pnt*>(C_MyPnts),
+                         static_cast<Standard_Real*>(C_MyU),
+                         static_cast<Standard_Real*>(C_MyV),
+                         static_cast<Standard_Boolean*>(C_MyIsOnBounds),
+                         TheBnd);
+
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
   TheBorderDeflection =
-    PolyUtils::ComputeMaxBorderDeflection<HLRBRep_Surface*, HLRBRep_SurfaceTool>(Surface,
-                                                                                 U0,
-                                                                                 V0,
-                                                                                 U1,
-                                                                                 V1,
-                                                                                 nbdeltaU,
-                                                                                 nbdeltaV);
+    PolyUtils::ComputeMaxBorderDeflection(anEval, U0, V0, U1, V1, nbdeltaU, nbdeltaV);
 }
 
 //==================================================================================================
@@ -124,36 +116,32 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface*            Surface
                                              const TColStd_Array1OfReal& Upars,
                                              const TColStd_Array1OfReal& Vpars)
 {
-  PolyUtils::InitWithParams<HLRBRep_Surface*, HLRBRep_SurfaceTool>(
-    Surface,
-    Upars,
-    Vpars,
-    nbdeltaU,
-    nbdeltaV,
-    static_cast<gp_Pnt*>(C_MyPnts),
-    static_cast<Standard_Real*>(C_MyU),
-    static_cast<Standard_Real*>(C_MyV),
-    static_cast<Standard_Boolean*>(C_MyIsOnBounds),
-    TheBnd);
+  // Initialize grid evaluator with the underlying BRepAdaptor_Surface
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(Surface->Surface());
 
-  Standard_Real tol =
-    PolyUtils::ComputeMaxDeflection<HLRBRep_Surface*,
-                                    HLRBRep_SurfaceTool,
-                                    HLRBRep_ThePolyhedronOfInterCSurf>(Surface,
-                                                                       *this,
-                                                                       NbTriangles());
+  PolyUtils::InitWithParams(anEval,
+                            Upars,
+                            Vpars,
+                            nbdeltaU,
+                            nbdeltaV,
+                            static_cast<gp_Pnt*>(C_MyPnts),
+                            static_cast<Standard_Real*>(C_MyU),
+                            static_cast<Standard_Real*>(C_MyV),
+                            static_cast<Standard_Boolean*>(C_MyIsOnBounds),
+                            TheBnd);
+
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
-  TheBorderDeflection =
-    PolyUtils::ComputeMaxBorderDeflection<HLRBRep_Surface*, HLRBRep_SurfaceTool>(
-      Surface,
-      Upars(Upars.Lower()),
-      Vpars(Vpars.Lower()),
-      Upars(Upars.Upper()),
-      Vpars(Vpars.Upper()),
-      nbdeltaU,
-      nbdeltaV);
+  TheBorderDeflection = PolyUtils::ComputeMaxBorderDeflection(anEval,
+                                                              Upars(Upars.Lower()),
+                                                              Vpars(Vpars.Lower()),
+                                                              Upars(Upars.Upper()),
+                                                              Vpars(Vpars.Upper()),
+                                                              nbdeltaU,
+                                                              nbdeltaV);
 }
 
 //==================================================================================================
@@ -166,16 +154,7 @@ Standard_Real HLRBRep_ThePolyhedronOfInterCSurf::DeflectionOnTriangle(
   Triangle(Triang, i1, i2, i3);
   Standard_Real u1, v1, u2, v2, u3, v3;
   gp_Pnt        P1 = Point(i1, u1, v1), P2 = Point(i2, u2, v2), P3 = Point(i3, u3, v3);
-  return PolyUtils::DeflectionOnTriangle<HLRBRep_Surface*, HLRBRep_SurfaceTool>(Surface,
-                                                                                P1,
-                                                                                P2,
-                                                                                P3,
-                                                                                u1,
-                                                                                v1,
-                                                                                u2,
-                                                                                v2,
-                                                                                u3,
-                                                                                v3);
+  return PolyUtils::DeflectionOnTriangle(Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
 }
 
 //==================================================================================================

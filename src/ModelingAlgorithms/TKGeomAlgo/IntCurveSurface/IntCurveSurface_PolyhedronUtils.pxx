@@ -16,10 +16,12 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array2.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
@@ -31,51 +33,65 @@ namespace IntCurveSurface_PolyhedronUtils
 //! Minimum edge length for valid triangles.
 constexpr double THE_MIN_EDGE_LENGTH_SQUARED = 1e-15;
 
-//! Initialize polyhedron with uniform UV sampling.
-//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface))
-//! @tparam SurfaceTool Tool class providing surface operations (D0, Value)
-//! @param[in]     theSurface       The surface to discretize
+//! Initialize polyhedron with uniform UV sampling using grid evaluator.
+//! @param[in,out] theEval          Grid evaluator (must be initialized with surface)
 //! @param[in]     theU0            First U parameter
 //! @param[in]     theV0            First V parameter
 //! @param[in]     theU1            Last U parameter
 //! @param[in]     theV1            Last V parameter
 //! @param[in]     theNbDeltaU      Number of U subdivisions
 //! @param[in]     theNbDeltaV      Number of V subdivisions
-//! @param[out]    thePnts          Array of sampled points (cast to gp_Pnt*)
-//! @param[out]    theU             Array of U parameters (cast to double*)
-//! @param[out]    theV             Array of V parameters (cast to double*)
-//! @param[out]    theIsOnBounds    Array of boundary flags (cast to bool*)
+//! @param[out]    thePnts          Array of sampled points (1-based indexing)
+//! @param[out]    theU             Array of U parameters (1-based indexing)
+//! @param[out]    theV             Array of V parameters (1-based indexing)
+//! @param[out]    theIsOnBounds    Array of boundary flags (1-based indexing)
 //! @param[in,out] theBnd           Bounding box to update
-template <typename SurfaceType, typename SurfaceTool>
-void InitUniform(const SurfaceType& theSurface,
-                 const double       theU0,
-                 const double       theV0,
-                 const double       theU1,
-                 const double       theV1,
-                 const int          theNbDeltaU,
-                 const int          theNbDeltaV,
-                 gp_Pnt*            thePnts,
-                 double*            theU,
-                 double*            theV,
-                 Standard_Boolean*  theIsOnBounds,
-                 Bnd_Box&           theBnd)
+inline void InitUniform(GeomGridEval_Surface& theEval,
+                        const double          theU0,
+                        const double          theV0,
+                        const double          theU1,
+                        const double          theV1,
+                        const int             theNbDeltaU,
+                        const int             theNbDeltaV,
+                        gp_Pnt*               thePnts,
+                        double*               theU,
+                        double*               theV,
+                        Standard_Boolean*     theIsOnBounds,
+                        Bnd_Box&              theBnd)
 {
   const double dU = (theU1 - theU0) / static_cast<double>(theNbDeltaU);
   const double dV = (theV1 - theV0) / static_cast<double>(theNbDeltaV);
 
-  int    Index = 1;
-  double U     = theU0;
+  // Build parameter arrays
+  const int aNbU = theNbDeltaU + 1;
+  const int aNbV = theNbDeltaV + 1;
 
-  for (int i1 = 0; i1 <= theNbDeltaU; ++i1, U += dU)
+  TColStd_Array1OfReal aUParams(1, aNbU);
+  TColStd_Array1OfReal aVParams(1, aNbV);
+
+  for (int i = 0; i < aNbU; ++i)
   {
-    double V = theV0;
-    for (int i2 = 0; i2 <= theNbDeltaV; ++i2, V += dV)
+    aUParams(i + 1) = theU0 + i * dU;
+  }
+  for (int j = 0; j < aNbV; ++j)
+  {
+    aVParams(j + 1) = theV0 + j * dV;
+  }
+
+  // Evaluate grid
+  theEval.SetUVParams(aUParams, aVParams);
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+
+  // Copy results to output arrays (convert from 2D grid to 1D linear indexing)
+  int Index = 1;
+  for (int i1 = 0; i1 < aNbU; ++i1)
+  {
+    for (int i2 = 0; i2 < aNbV; ++i2)
     {
-      gp_Pnt TP;
-      SurfaceTool::D0(theSurface, U, V, TP);
+      const gp_Pnt& TP     = aGrid(i1 + 1, i2 + 1);
       thePnts[Index]       = TP;
-      theU[Index]          = U;
-      theV[Index]          = V;
+      theU[Index]          = aUParams(i1 + 1);
+      theV[Index]          = aVParams(i2 + 1);
       theIsOnBounds[Index] = (i1 == 0 || i1 == theNbDeltaU || i2 == 0 || i2 == theNbDeltaV);
       theBnd.Add(TP);
       ++Index;
@@ -83,46 +99,44 @@ void InitUniform(const SurfaceType& theSurface,
   }
 }
 
-//! Initialize polyhedron with explicit UV parameter arrays.
-//! @tparam SurfaceType Type of surface
-//! @tparam SurfaceTool Tool class providing surface operations
-//! @param[in]     theSurface       The surface to discretize
+//! Initialize polyhedron with explicit UV parameter arrays using grid evaluator.
+//! @param[in,out] theEval          Grid evaluator (must be initialized with surface)
 //! @param[in]     theUpars         Array of U parameters
 //! @param[in]     theVpars         Array of V parameters
 //! @param[in]     theNbDeltaU      Number of U subdivisions
 //! @param[in]     theNbDeltaV      Number of V subdivisions
-//! @param[out]    thePnts          Array of sampled points
-//! @param[out]    theU             Array of U parameters
-//! @param[out]    theV             Array of V parameters
-//! @param[out]    theIsOnBounds    Array of boundary flags
+//! @param[out]    thePnts          Array of sampled points (1-based indexing)
+//! @param[out]    theU             Array of U parameters (1-based indexing)
+//! @param[out]    theV             Array of V parameters (1-based indexing)
+//! @param[out]    theIsOnBounds    Array of boundary flags (1-based indexing)
 //! @param[in,out] theBnd           Bounding box to update
-template <typename SurfaceType, typename SurfaceTool>
-void InitWithParams(const SurfaceType&          theSurface,
-                    const TColStd_Array1OfReal& theUpars,
-                    const TColStd_Array1OfReal& theVpars,
-                    const int                   theNbDeltaU,
-                    const int                   theNbDeltaV,
-                    gp_Pnt*                     thePnts,
-                    double*                     theU,
-                    double*                     theV,
-                    Standard_Boolean*           theIsOnBounds,
-                    Bnd_Box&                    theBnd)
+inline void InitWithParams(GeomGridEval_Surface&       theEval,
+                           const TColStd_Array1OfReal& theUpars,
+                           const TColStd_Array1OfReal& theVpars,
+                           const int                   theNbDeltaU,
+                           const int                   theNbDeltaV,
+                           gp_Pnt*                     thePnts,
+                           double*                     theU,
+                           double*                     theV,
+                           Standard_Boolean*           theIsOnBounds,
+                           Bnd_Box&                    theBnd)
 {
+  // Evaluate grid using provided parameters
+  theEval.SetUVParams(theUpars, theVpars);
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+
   const int i0    = theUpars.Lower();
   const int j0    = theVpars.Lower();
   int       Index = 1;
 
   for (int i1 = 0; i1 <= theNbDeltaU; ++i1)
   {
-    const double U = theUpars(i1 + i0);
     for (int i2 = 0; i2 <= theNbDeltaV; ++i2)
     {
-      const double V = theVpars(i2 + j0);
-      gp_Pnt       TP;
-      SurfaceTool::D0(theSurface, U, V, TP);
+      const gp_Pnt& TP     = aGrid(i1 + 1, i2 + 1);
       thePnts[Index]       = TP;
-      theU[Index]          = U;
-      theV[Index]          = V;
+      theU[Index]          = theUpars(i1 + i0);
+      theV[Index]          = theVpars(i2 + j0);
       theIsOnBounds[Index] = (i1 == 0 || i1 == theNbDeltaU || i2 == 0 || i2 == theNbDeltaV);
       theBnd.Add(TP);
       ++Index;
@@ -131,9 +145,9 @@ void InitWithParams(const SurfaceType&          theSurface,
 }
 
 //! Calculate deflection on a single triangle.
-//! @tparam SurfaceType Type of surface
-//! @tparam SurfaceTool Tool class providing surface operations
-//! @param[in] theSurface   The surface
+//! Evaluates the center point on the surface and computes deflection.
+//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface) or pointer)
+//! @param[in] theSurface   The surface (accessed via ->Value())
 //! @param[in] theP1        First vertex point
 //! @param[in] theP2        Second vertex point
 //! @param[in] theP3        Third vertex point
@@ -144,7 +158,7 @@ void InitWithParams(const SurfaceType&          theSurface,
 //! @param[in] theU3        U parameter at third vertex
 //! @param[in] theV3        V parameter at third vertex
 //! @return Deflection value (distance from triangle center to surface)
-template <typename SurfaceType, typename SurfaceTool>
+template <typename SurfaceType>
 double DeflectionOnTriangle(const SurfaceType& theSurface,
                             const gp_Pnt&      theP1,
                             const gp_Pnt&      theP2,
@@ -176,53 +190,85 @@ double DeflectionOnTriangle(const SurfaceType& theSurface,
 
   NormalVector.Divide(aNormLen);
 
-  // Calculate center point on surface
-  const double u = (theU1 + theU2 + theU3) / 3.0;
-  const double v = (theV1 + theV2 + theV3) / 3.0;
-  const gp_Pnt P = SurfaceTool::Value(theSurface, u, v);
+  // Calculate center point on surface and compute distance to triangle plane
+  const double u       = (theU1 + theU2 + theU3) / 3.0;
+  const double v       = (theV1 + theV2 + theV3) / 3.0;
+  const gp_Pnt aCenter = theSurface->Value(u, v);
+  const gp_Vec P1P(theP1, aCenter);
 
-  // Return distance from center to triangle plane
-  const gp_Vec P1P(theP1, P);
   return std::abs(P1P.Dot(NormalVector));
 }
 
-//! Compute border deflection for a boundary isoline.
-//! @tparam SurfaceType Type of surface
-//! @tparam SurfaceTool Tool class providing surface operations
-//! @param[in] theSurface   The surface
-//! @param[in] theParameter Fixed parameter value (U or V depending on isUIso)
-//! @param[in] thePMin      Start of varying parameter range
-//! @param[in] thePMax      End of varying parameter range
-//! @param[in] theIsUIso    True if this is a U-isoline, false for V-isoline
-//! @param[in] theNbSamples Number of samples along the boundary
+//! Compute border deflection for a boundary isoline using grid evaluation.
+//! Uses batch evaluation for better performance on complex surfaces.
+//! @param[in,out] theEval      Grid evaluator (will be reused for isoline evaluation)
+//! @param[in]     theParameter Fixed parameter value (U or V depending on isUIso)
+//! @param[in]     thePMin      Start of varying parameter range
+//! @param[in]     thePMax      End of varying parameter range
+//! @param[in]     theIsUIso    True if this is a U-isoline, false for V-isoline
+//! @param[in]     theNbSamples Number of samples along the boundary
 //! @return Maximum deflection along the border
-template <typename SurfaceType, typename SurfaceTool>
-double ComputeBorderDeflection(const SurfaceType& theSurface,
-                               const double       theParameter,
-                               const double       thePMin,
-                               const double       thePMax,
-                               const bool         theIsUIso,
-                               const int          theNbSamples)
+inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
+                                      const double          theParameter,
+                                      const double          thePMin,
+                                      const double          thePMax,
+                                      const bool            theIsUIso,
+                                      const int             theNbSamples)
 {
-  const double aDelta      = (thePMax - thePMin) / theNbSamples;
-  double       aPar        = thePMin;
-  double       aDeflection = RealFirst();
+  // Build parameter array with both boundary points and midpoints
+  // For N segments: boundary points at i*delta, midpoints at (i+0.5)*delta
+  // Total: 2*N + 1 points (N+1 boundaries + N midpoints, interleaved)
+  const double aDelta  = (thePMax - thePMin) / theNbSamples;
+  const int    aNbPnts = 2 * theNbSamples + 1;
 
-  for (int i = 0; i <= theNbSamples; ++i, aPar += aDelta)
+  TColStd_Array1OfReal aVaryingParams(1, aNbPnts);
+  TColStd_Array1OfReal aFixedParams(1, 1);
+  aFixedParams(1) = theParameter;
+
+  // Fill varying parameters: alternating boundary and midpoint values
+  // Index 1, 3, 5, ... (odd) = boundary points (0, delta, 2*delta, ...)
+  // Index 2, 4, 6, ... (even) = midpoints (delta/2, 3*delta/2, ...)
+  for (int i = 0; i <= theNbSamples; ++i)
   {
+    aVaryingParams(2 * i + 1) = thePMin + i * aDelta;
+    if (i < theNbSamples)
+    {
+      aVaryingParams(2 * i + 2) = thePMin + (i + 0.5) * aDelta;
+    }
+  }
+
+  // Evaluate grid: 1×N or N×1 depending on isoline direction
+  if (theIsUIso)
+  {
+    theEval.SetUVParams(aFixedParams, aVaryingParams);
+  }
+  else
+  {
+    theEval.SetUVParams(aVaryingParams, aFixedParams);
+  }
+
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+
+  // Compute max deflection from pre-evaluated points
+  double aDeflection = RealFirst();
+
+  for (int i = 0; i < theNbSamples; ++i)
+  {
+    // Boundary points at indices 2*i+1 and 2*i+3 (1-based)
+    // Midpoint at index 2*i+2 (1-based)
     gp_XYZ aP1, aP2, aPParMid;
 
     if (theIsUIso)
     {
-      aP1      = SurfaceTool::Value(theSurface, theParameter, aPar).XYZ();
-      aP2      = SurfaceTool::Value(theSurface, theParameter, aPar + aDelta).XYZ();
-      aPParMid = SurfaceTool::Value(theSurface, theParameter, aPar + aDelta / 2.0).XYZ();
+      aP1      = aGrid(1, 2 * i + 1).XYZ();
+      aP2      = aGrid(1, 2 * i + 3).XYZ();
+      aPParMid = aGrid(1, 2 * i + 2).XYZ();
     }
     else
     {
-      aP1      = SurfaceTool::Value(theSurface, aPar, theParameter).XYZ();
-      aP2      = SurfaceTool::Value(theSurface, aPar + aDelta, theParameter).XYZ();
-      aPParMid = SurfaceTool::Value(theSurface, aPar + aDelta / 2.0, theParameter).XYZ();
+      aP1      = aGrid(2 * i + 1, 1).XYZ();
+      aP2      = aGrid(2 * i + 3, 1).XYZ();
+      aPParMid = aGrid(2 * i + 2, 1).XYZ();
     }
 
     const gp_XYZ aPMid = (aP2 + aP1) / 2.0;
@@ -605,14 +651,13 @@ inline void FillBounding(const gp_Pnt*                   thePnts,
 }
 
 //! Compute the maximum deflection over all triangles.
-//! @tparam SurfaceType Type of surface
-//! @tparam SurfaceTool Tool class providing surface operations
+//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface) or pointer)
 //! @tparam PolyhedronType Type of polyhedron class
-//! @param[in] theSurface     The surface
+//! @param[in] theSurface     The surface (accessed via ->Value())
 //! @param[in] thePolyhedron  The polyhedron object (provides Triangle/Point access)
 //! @param[in] theNbTriangles Number of triangles
 //! @return Maximum deflection value
-template <typename SurfaceType, typename SurfaceTool, typename PolyhedronType>
+template <typename SurfaceType, typename PolyhedronType>
 double ComputeMaxDeflection(const SurfaceType&    theSurface,
                             const PolyhedronType& thePolyhedron,
                             const int             theNbTriangles)
@@ -628,73 +673,49 @@ double ComputeMaxDeflection(const SurfaceType&    theSurface,
     gp_Pnt P2 = thePolyhedron.Point(i2, u2, v2);
     gp_Pnt P3 = thePolyhedron.Point(i3, u3, v3);
 
-    double tol1 = DeflectionOnTriangle<SurfaceType,
-                                       SurfaceTool>(theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
+    double tol1 = DeflectionOnTriangle(theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
     if (tol1 > tol)
       tol = tol1;
   }
   return tol;
 }
 
-//! Compute the maximum border deflection over all four boundaries.
-//! @tparam SurfaceType Type of surface
-//! @tparam SurfaceTool Tool class providing surface operations
-//! @param[in] theSurface  The surface
-//! @param[in] theU0       First U parameter
-//! @param[in] theV0       First V parameter
-//! @param[in] theU1       Last U parameter
-//! @param[in] theV1       Last V parameter
-//! @param[in] theNbDeltaU Number of U subdivisions
-//! @param[in] theNbDeltaV Number of V subdivisions
+//! Compute the maximum border deflection over all four boundaries using grid evaluation.
+//! @param[in,out] theEval     Grid evaluator (will be reused for each boundary)
+//! @param[in]     theU0       First U parameter
+//! @param[in]     theV0       First V parameter
+//! @param[in]     theU1       Last U parameter
+//! @param[in]     theV1       Last V parameter
+//! @param[in]     theNbDeltaU Number of U subdivisions
+//! @param[in]     theNbDeltaV Number of V subdivisions
 //! @return Maximum border deflection
-template <typename SurfaceType, typename SurfaceTool>
-double ComputeMaxBorderDeflection(const SurfaceType& theSurface,
-                                  const double       theU0,
-                                  const double       theV0,
-                                  const double       theU1,
-                                  const double       theV1,
-                                  const int          theNbDeltaU,
-                                  const int          theNbDeltaV)
+inline double ComputeMaxBorderDeflection(GeomGridEval_Surface& theEval,
+                                         const double          theU0,
+                                         const double          theV0,
+                                         const double          theU1,
+                                         const double          theV1,
+                                         const int             theNbDeltaU,
+                                         const int             theNbDeltaV)
 {
   double maxDeflection = RealFirst();
 
-  // Lower bound (U-isoline)
-  double aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
-                                                                         theU0,
-                                                                         theV0,
-                                                                         theV1,
-                                                                         true,
-                                                                         theNbDeltaV);
+  // Lower bound (U-isoline at U=U0, V varies from V0 to V1)
+  double aDeflection = ComputeBorderDeflection(theEval, theU0, theV0, theV1, true, theNbDeltaV);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
-  // Upper bound (U-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
-                                                                  theU1,
-                                                                  theV0,
-                                                                  theV1,
-                                                                  true,
-                                                                  theNbDeltaV);
+  // Upper bound (U-isoline at U=U1, V varies from V0 to V1)
+  aDeflection = ComputeBorderDeflection(theEval, theU1, theV0, theV1, true, theNbDeltaV);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
-  // Lower bound (V-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
-                                                                  theV0,
-                                                                  theU0,
-                                                                  theU1,
-                                                                  false,
-                                                                  theNbDeltaU);
+  // Lower bound (V-isoline at V=V0, U varies from U0 to U1)
+  aDeflection = ComputeBorderDeflection(theEval, theV0, theU0, theU1, false, theNbDeltaU);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
-  // Upper bound (V-isoline)
-  aDeflection = ComputeBorderDeflection<SurfaceType, SurfaceTool>(theSurface,
-                                                                  theV1,
-                                                                  theU0,
-                                                                  theU1,
-                                                                  false,
-                                                                  theNbDeltaU);
+  // Upper bound (V-isoline at V=V1, U varies from U0 to U1)
+  aDeflection = ComputeBorderDeflection(theEval, theV1, theU0, theU1, false, theNbDeltaU);
   if (aDeflection > maxDeflection)
     maxDeflection = aDeflection;
 
