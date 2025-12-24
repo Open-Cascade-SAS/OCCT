@@ -377,3 +377,85 @@ TEST(GeomGridEval_OffsetSurfaceTest, DerivativeDN_PlaneOffset)
     }
   }
 }
+
+TEST(GeomGridEval_OffsetSurfaceTest, IsolineU_CompareToGeomD0)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  // U-isoline: 1 U param, multiple V params (triggers isoline path)
+  TColStd_Array1OfReal aUParams(1, 1);
+  aUParams.SetValue(1, M_PI / 4);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 15);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  EXPECT_EQ(aGrid.RowLength(), 1);
+  EXPECT_EQ(aGrid.ColLength(), 15);
+
+  // Compare against Geom_OffsetSurface::D0
+  for (int j = 1; j <= 15; ++j)
+  {
+    gp_Pnt aExpected;
+    anOffset->D0(aUParams.Value(1), aVParams.Value(j), aExpected);
+    EXPECT_NEAR(aGrid.Value(1, j).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, IsolineV_CompareToGeomD0)
+{
+  // Cylinder offset
+  Handle(Geom_CylindricalSurface) aCyl =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aCyl, 2.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  // V-isoline: multiple U params, 1 V param (triggers isoline path)
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 15);
+  TColStd_Array1OfReal aVParams(1, 1);
+  aVParams.SetValue(1, 2.5);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  EXPECT_EQ(aGrid.RowLength(), 15);
+  EXPECT_EQ(aGrid.ColLength(), 1);
+
+  // Compare against Geom_OffsetSurface::D0
+  for (int i = 1; i <= 15; ++i)
+  {
+    gp_Pnt aExpected;
+    anOffset->D0(aUParams.Value(i), aVParams.Value(1), aExpected);
+    EXPECT_NEAR(aGrid.Value(i, 1).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}
+
+TEST(GeomGridEval_OffsetSurfaceTest, IsolinePlane_CompareToGeomD0)
+{
+  // Plane offset (simple case)
+  Handle(Geom_Plane)         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aPlane, 3.0);
+
+  GeomGridEval_OffsetSurface anEval(anOffset);
+
+  // U-isoline on plane offset
+  TColStd_Array1OfReal aUParams(1, 1);
+  aUParams.SetValue(1, 5.0);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(-10.0, 10.0, 20);
+
+  anEval.SetUVParams(aUParams, aVParams);
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+
+  for (int j = 1; j <= 20; ++j)
+  {
+    gp_Pnt aExpected;
+    anOffset->D0(aUParams.Value(1), aVParams.Value(j), aExpected);
+    EXPECT_NEAR(aGrid.Value(1, j).Distance(aExpected), 0.0, THE_TOLERANCE);
+  }
+}

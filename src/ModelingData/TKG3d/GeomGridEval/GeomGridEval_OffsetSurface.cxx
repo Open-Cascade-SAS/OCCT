@@ -14,8 +14,12 @@
 #include <GeomGridEval_OffsetSurface.hxx>
 
 #include <GeomAdaptor_Surface.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurfaceUtils.pxx>
+#include <GeomGridEval_Curve.hxx>
 #include <GeomGridEval_Surface.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 
 //==================================================================================================
 
@@ -62,8 +66,49 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid() const
     }
   }
 
-  const int                  aNbU = myUParams.Size();
-  const int                  aNbV = myVParams.Size();
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  // Check for isoline case (1×N or N×1) - use 1D curve evaluation
+  const bool isUIso = (aNbU == 1 && aNbV > 1);
+  const bool isVIso = (aNbV == 1 && aNbU > 1);
+
+  if ((isUIso || isVIso) && !myGeom.IsNull())
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      // Extract isoline curve - offset surface isolines are offset curves
+      Handle(Geom_Curve) aCurve =
+        isUIso ? myGeom->UIso(myUParams.Value(1)) : myGeom->VIso(myVParams.Value(1));
+
+      if (!aCurve.IsNull())
+      {
+        // Use unified curve evaluator
+        GeomGridEval_Curve aCurveEval;
+        aCurveEval.Initialize(aCurve);
+        aCurveEval.SetParams(isUIso ? myVParams : myUParams);
+        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+        if (!aCurveResult.IsEmpty())
+        {
+          // Reshape 1D curve result to 2D surface result
+          NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+          const int                  aNbPts = isUIso ? aNbV : aNbU;
+          for (int k = 1; k <= aNbPts; ++k)
+          {
+            aResult(isUIso ? 1 : k, isUIso ? k : 1) = aCurveResult(k);
+          }
+          return aResult;
+        }
+      }
+    }
+    catch (const Standard_Failure&)
+    {
+      // Isoline extraction failed, fall through to surface evaluation
+    }
+  }
+
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset D0 requires basis D1)

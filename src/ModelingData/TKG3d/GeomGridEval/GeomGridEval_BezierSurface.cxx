@@ -15,6 +15,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <GeomGridEval_Curve.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
@@ -84,14 +85,44 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid() const
     return NCollection_Array2<gp_Pnt>();
   }
 
+  const int aNbU = myUParams.Size();
+  const int aNbV = myVParams.Size();
+
+  // Check for isoline case (1×N or N×1) - use 1D curve evaluation
+  const bool isUIso = (aNbU == 1 && aNbV > 1);
+  const bool isVIso = (aNbV == 1 && aNbU > 1);
+
+  if (isUIso || isVIso)
+  {
+    // Extract isoline curve
+    Handle(Geom_Curve) aCurve =
+      isUIso ? myGeom->UIso(myUParams.Value(0)) : myGeom->VIso(myVParams.Value(0));
+
+    if (!aCurve.IsNull())
+    {
+      // Use unified curve evaluator
+      GeomGridEval_Curve aCurveEval;
+      aCurveEval.Initialize(aCurve);
+      aCurveEval.SetParams(isUIso ? myVParams : myUParams);
+      NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+      // Reshape 1D curve result to 2D surface result
+      NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+      const int                  aNbPts = isUIso ? aNbV : aNbU;
+      for (int k = 1; k <= aNbPts; ++k)
+      {
+        aResult(isUIso ? 1 : k, isUIso ? k : 1) = aCurveResult(k);
+      }
+      return aResult;
+    }
+  }
+
   // Build cache if needed
   if (myCache.IsNull())
   {
     buildCache();
   }
 
-  const int                  aNbU = myUParams.Size();
-  const int                  aNbV = myVParams.Size();
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Single span - use cache for all points

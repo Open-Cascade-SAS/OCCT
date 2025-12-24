@@ -15,6 +15,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <GeomGridEval_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -127,7 +128,7 @@ void GeomGridEval_BSplineSurface::SetUVParams(const TColStd_Array1OfReal& theUPa
     myRawVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
   }
 
-  // Clear cached span data and cache
+  // Clear cached data
   myUSpanRanges = NCollection_Array1<SpanRange>();
   myVSpanRanges = NCollection_Array1<SpanRange>();
   myCache.Nullify();
@@ -338,17 +339,46 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid() const
     return NCollection_Array2<gp_Pnt>();
   }
 
+  const int aNbU = myRawUParams.Size();
+  const int aNbV = myRawVParams.Size();
+
+  // Check for isoline case (1×N or N×1) - use 1D curve evaluation
+  const bool isUIso = (aNbU == 1 && aNbV > 1);
+  const bool isVIso = (aNbV == 1 && aNbU > 1);
+
+  if (isUIso || isVIso)
+  {
+    // Extract isoline curve
+    Handle(Geom_Curve) aCurve =
+      isUIso ? myGeom->UIso(myRawUParams.Value(1)) : myGeom->VIso(myRawVParams.Value(1));
+
+    if (!aCurve.IsNull())
+    {
+      // Use unified curve evaluator
+      GeomGridEval_Curve aCurveEval;
+      aCurveEval.Initialize(aCurve);
+      aCurveEval.SetParams(isUIso ? myRawVParams : myRawUParams);
+      NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid();
+
+      // Reshape 1D curve result to 2D surface result
+      NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+      const int                  aNbPts = isUIso ? aNbV : aNbU;
+      for (int k = 1; k <= aNbPts; ++k)
+      {
+        aResult(isUIso ? 1 : k, isUIso ? k : 1) = aCurveResult(k);
+      }
+      return aResult;
+    }
+  }
+
   prepare();
 
-  const int aNbUParams = myUParams.Size();
-  const int aNbVParams = myVParams.Size();
-
-  if (aNbUParams == 0 || aNbVParams == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
+  if (aNbU == 0 || aNbV == 0 || myUSpanRanges.IsEmpty() || myVSpanRanges.IsEmpty())
   {
     return NCollection_Array2<gp_Pnt>();
   }
 
-  NCollection_Array2<gp_Pnt> aPoints(1, aNbUParams, 1, aNbVParams);
+  NCollection_Array2<gp_Pnt> aPoints(1, aNbU, 1, aNbV);
 
   const Handle(TColStd_HArray1OfReal)& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
   const Handle(TColStd_HArray1OfReal)& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
