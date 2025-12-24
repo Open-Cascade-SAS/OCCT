@@ -88,7 +88,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid() const
   const int aNbU = myUParams.Size();
   const int aNbV = myVParams.Size();
 
-  // Check for isoline case (1×N or N×1) - use 1D curve evaluation
+  // Check for isoline case (1xN or Nx1) - use 1D curve evaluation
   const bool isUIso = (aNbU == 1 && aNbV > 1);
   const bool isVIso = (aNbV == 1 && aNbU > 1);
 

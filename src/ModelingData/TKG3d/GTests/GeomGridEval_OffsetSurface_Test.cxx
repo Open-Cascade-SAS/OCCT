@@ -395,8 +395,9 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineU_CompareToGeomD0)
   anEval.SetUVParams(aUParams, aVParams);
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
-  EXPECT_EQ(aGrid.RowLength(), 1);
-  EXPECT_EQ(aGrid.ColLength(), 15);
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 15);
+  EXPECT_EQ(aGrid.ColLength(), 1);
 
   // Compare against Geom_OffsetSurface::D0
   for (int j = 1; j <= 15; ++j)
@@ -424,8 +425,9 @@ TEST(GeomGridEval_OffsetSurfaceTest, IsolineV_CompareToGeomD0)
   anEval.SetUVParams(aUParams, aVParams);
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
-  EXPECT_EQ(aGrid.RowLength(), 15);
-  EXPECT_EQ(aGrid.ColLength(), 1);
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 1);
+  EXPECT_EQ(aGrid.ColLength(), 15);
 
   // Compare against Geom_OffsetSurface::D0
   for (int i = 1; i <= 15; ++i)

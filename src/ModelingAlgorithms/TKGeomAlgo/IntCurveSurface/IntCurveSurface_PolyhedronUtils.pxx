@@ -237,7 +237,7 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
     }
   }
 
-  // Evaluate grid: 1×N or N×1 depending on isoline direction
+  // Evaluate grid: 1xN or Nx1 depending on isoline direction
   if (theIsUIso)
   {
     theEval.SetUVParams(aFixedParams, aVaryingParams);

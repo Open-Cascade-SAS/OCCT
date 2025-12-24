@@ -401,8 +401,9 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
   anEval.SetUVParams(aUParams, aVParams);
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
-  EXPECT_EQ(aGrid.RowLength(), 1);
-  EXPECT_EQ(aGrid.ColLength(), 10);
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 10);
+  EXPECT_EQ(aGrid.ColLength(), 1);
 
   // Compare against Geom_Surface::D0
   for (int j = 1; j <= 10; ++j)
@@ -436,8 +437,9 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
   anEval.SetUVParams(aUParams, aVParams);
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
 
-  EXPECT_EQ(aGrid.RowLength(), 10);
-  EXPECT_EQ(aGrid.ColLength(), 1);
+  // Note: RowLength() = V count (columns), ColLength() = U count (rows)
+  EXPECT_EQ(aGrid.RowLength(), 1);
+  EXPECT_EQ(aGrid.ColLength(), 10);
 
   // Compare against Geom_Surface::D0
   for (int i = 1; i <= 10; ++i)
