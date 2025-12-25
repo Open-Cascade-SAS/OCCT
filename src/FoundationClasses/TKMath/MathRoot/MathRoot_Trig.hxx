@@ -17,7 +17,8 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
-#include <MathPoly.hxx>
+#include <MathPoly_Quadratic.hxx>
+#include <MathPoly_Quartic.hxx>
 
 #include <cmath>
 #include <algorithm>
@@ -164,21 +165,40 @@ inline TrigResult Trigonometric(double theA,
         return aResult;
       }
 
-      aZer[0] = std::acos(aVal);
-      aZer[1] = -aZer[0];
-      aNZer   = 2;
+      double aPrincipal = std::acos(aVal);
+      aZer[0]           = aPrincipal;  // acos gives [0, PI]
+      aZer[1]           = -aPrincipal; // Negative angle
+      aNZer             = 2;
 
+      // For each solution, find the representative in or near the given bounds
       for (size_t i = 0; i < aNZer; ++i)
       {
-        if (aZer[i] <= -theEps)
+        double aAngle = aZer[i];
+        // Shift angle to be near the lower bound
+        double aK = std::floor((theInfBound - aAngle) / THE_2PI);
+        aAngle += (aK + 1) * THE_2PI; // Start from a value >= theInfBound - 2*PI
+
+        // Check both this value and the next period
+        for (int aPeriod = 0; aPeriod < 2; ++aPeriod)
         {
-          aZer[i] = THE_2PI - std::abs(aZer[i]);
-        }
-        aZer[i] += std::trunc(aMod) * THE_2PI;
-        double aX = aZer[i] - aMyBorneInf;
-        if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
-        {
-          aResult.Roots[aResult.NbRoots++] = aZer[i];
+          double aTestAngle = aAngle + aPeriod * THE_2PI;
+          if (aTestAngle >= theInfBound - aDelta_Eps && aTestAngle <= theSupBound + aDelta_Eps)
+          {
+            // Avoid duplicates
+            bool aDup = false;
+            for (int k = 0; k < aResult.NbRoots; ++k)
+            {
+              if (std::abs(aTestAngle - aResult.Roots[k]) < theEps)
+              {
+                aDup = true;
+                break;
+              }
+            }
+            if (!aDup && aResult.NbRoots < 4)
+            {
+              aResult.Roots[aResult.NbRoots++] = aTestAngle;
+            }
+          }
         }
       }
       return aResult;
@@ -186,12 +206,12 @@ inline TrigResult Trigonometric(double theA,
     else
     {
       // c*cos(x) + d*sin(x) + e = 0
-      // Using t = tan(x/2): (e-c) + 2dt + (e+c)t^2 = 0
+      // Using t = tan(x/2): (e-c)*t^2 + 2d*t + (e+c) = 0
       double aAA = theE - theC;
       double aBB = 2.0 * theD;
       double aCC = theE + theC;
 
-      MathPoly::PolyResult aPoly = MathPoly::Quadratic(aCC, aBB, aAA);
+      MathPoly::PolyResult aPoly = MathPoly::Quadratic(aAA, aBB, aCC);
       if (!aPoly.IsDone())
       {
         aResult.Status = aPoly.Status;
@@ -355,26 +375,56 @@ inline TrigResult Trigonometric(double theA,
     double aX = aTeta - aMyBorneInf;
     if (aX >= -aDelta_Eps && aX <= aDelta + aDelta_Eps)
     {
-      // Newton refinement
+      // Newton refinement with Halley's method fallback for double roots
       auto aRefineRoot = [&](double theX) -> double {
-        constexpr int    THE_MAX_ITER = 10;
-        constexpr double THE_TOL      = 1.0e-15;
+        constexpr int    THE_MAX_ITER = 20;
+        constexpr double THE_TOL      = 1.0e-14;
 
         for (int anIter = 0; anIter < THE_MAX_ITER; ++anIter)
         {
-          double aCos = std::cos(theX);
-          double aSin = std::sin(theX);
-          double aF =
-            theA * aCos * aCos + 2.0 * theB * aCos * aSin + theC * aCos + theD * aSin + theE;
-          double aDF = -2.0 * theA * aCos * aSin + 2.0 * theB * (aCos * aCos - aSin * aSin)
-                       - theC * aSin + theD * aCos;
+          double aCos  = std::cos(theX);
+          double aSin  = std::sin(theX);
+          double aCos2 = aCos * aCos;
+          double aSin2 = aSin * aSin;
+          double aCS   = aCos * aSin;
 
-          if (std::abs(aDF) < 1.0e-30)
+          double aF  = theA * aCos2 + 2.0 * theB * aCS + theC * aCos + theD * aSin + theE;
+          double aDF = -2.0 * theA * aCS + 2.0 * theB * (aCos2 - aSin2) - theC * aSin + theD * aCos;
+
+          // Check if already converged
+          if (std::abs(aF) < 1.0e-15)
           {
             break;
           }
 
-          double aDelta = aF / aDF;
+          double aDelta;
+          if (std::abs(aDF) < 1.0e-10 * (std::abs(aF) + 1.0))
+          {
+            // Near double root: use Halley's method for better convergence
+            // F'' = -2*a*(cos²-sin²) - 4*b*cos*sin - c*cos - d*sin
+            double aD2F =
+              -2.0 * theA * (aCos2 - aSin2) - 4.0 * theB * aCS - theC * aCos - theD * aSin;
+            double aDenom = 2.0 * aDF * aDF - aF * aD2F;
+            if (std::abs(aDenom) < 1.0e-30)
+            {
+              // Can't improve further
+              break;
+            }
+            aDelta = 2.0 * aF * aDF / aDenom;
+          }
+          else
+          {
+            // Standard Newton step
+            aDelta = aF / aDF;
+          }
+
+          // Limit step size to avoid overshooting
+          constexpr double THE_MAX_STEP = 0.5;
+          if (std::abs(aDelta) > THE_MAX_STEP)
+          {
+            aDelta = (aDelta > 0) ? THE_MAX_STEP : -THE_MAX_STEP;
+          }
+
           theX -= aDelta;
 
           if (std::abs(aDelta) < THE_TOL)
