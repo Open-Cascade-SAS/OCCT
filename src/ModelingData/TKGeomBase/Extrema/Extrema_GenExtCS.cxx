@@ -256,9 +256,8 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
   // Use batch grid evaluation for optimized surface point computation
   GeomGridEval_Surface anEvaluator;
   anEvaluator.Initialize(*myS);
-  anEvaluator.SetUVParams(aUParams, aVParams);
 
-  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
 
   // aGrid is 1-based, mySurfPnts is 0-based - adjust indexing
   for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++)

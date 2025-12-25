@@ -99,12 +99,8 @@ TEST(GeomGridEval_PlaneTest, BasicEvaluation)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  EXPECT_EQ(anEval.NbUParams(), 6);
-  EXPECT_EQ(anEval.NbVParams(), 4);
-
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 4);
   EXPECT_EQ(aGrid.ColLength(), 6);
 
@@ -130,9 +126,8 @@ TEST(GeomGridEval_PlaneTest, NonOriginPlane)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(-1.0, 1.0, 3);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-1.0, 1.0, 3);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // All points should be at Z=3
   for (int iU = 1; iU <= 3; ++iU)
@@ -163,9 +158,8 @@ TEST(GeomGridEval_SphereTest, BasicEvaluation)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5); // Latitude
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // All points should be at distance 1 from origin
   for (int iU = 1; iU <= 9; ++iU)
@@ -204,9 +198,8 @@ TEST(GeomGridEval_SphereTest, NonUnitSphere)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 17);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 9);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // All points should be at distance 3 from center
   const gp_Pnt aCenter(1, 2, 3);
@@ -231,13 +224,12 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomAdaptor_Surface anAdaptor(aCyl);
 
-  GeomGridEval_OtherSurface anEval(anAdaptor);
+  GeomGridEval_OtherSurface anEval(&anAdaptor);
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -266,9 +258,8 @@ TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(-5.0, 5.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-3.0, 3.0, 7);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 11; ++iU)
@@ -294,9 +285,8 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 13);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 13; ++iU)
@@ -321,9 +311,8 @@ TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 11);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 11; ++iU)
@@ -352,9 +341,8 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_BezierSurface);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aParams, aParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -379,9 +367,8 @@ TEST(GeomGridEval_SurfaceTest, CylinderDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -407,9 +394,8 @@ TEST(GeomGridEval_SurfaceTest, TorusDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -435,9 +421,8 @@ TEST(GeomGridEval_SurfaceTest, ConeDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -467,9 +452,8 @@ TEST(GeomGridEval_SurfaceTest, SurfaceOfRevolutionFallbackDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -495,9 +479,8 @@ TEST(GeomGridEval_SurfaceTest, DirectHandleInit)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_FALSE(aGrid.IsEmpty());
 
   // Verify value
@@ -508,10 +491,11 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 {
   GeomGridEval_Surface anEval;
   EXPECT_FALSE(anEval.IsInitialized());
-  EXPECT_EQ(anEval.NbUParams(), 0);
-  EXPECT_EQ(anEval.NbVParams(), 0);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
+  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
+
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
@@ -523,11 +507,10 @@ TEST(GeomGridEval_SurfaceTest, EmptyParams)
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
-  EXPECT_EQ(anEval.NbUParams(), 0);
-  EXPECT_EQ(anEval.NbVParams(), 0);
 
-  // EvaluateGrid without setting params should return empty
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  // EvaluateGrid with empty params should return empty
+  TColStd_Array1OfReal       aEmptyParams;
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams, aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
@@ -543,9 +526,8 @@ TEST(GeomGridEval_PlaneTest, DerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   // For a plane, D1U and D1V are constant (the X and Y directions of the plane)
   gp_Pnt aPnt;
@@ -569,9 +551,8 @@ TEST(GeomGridEval_PlaneTest, DerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   // For a plane, all second derivatives are zero
   for (int iU = 1; iU <= 6; ++iU)
@@ -593,9 +574,8 @@ TEST(GeomGridEval_SphereTest, DerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   // Verify D1 against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -620,9 +600,8 @@ TEST(GeomGridEval_SphereTest, DerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   // Verify D2 against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -653,9 +632,8 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 9; ++iU)
@@ -682,9 +660,8 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
   // Verify against direct evaluation
   for (int iU = 1; iU <= 5; ++iU)
@@ -715,9 +692,8 @@ TEST(GeomGridEval_PlaneTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 5.0, 6);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 3.0, 4);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   // For a plane, all derivatives >= 2 are zero
   for (int iU = 1; iU <= 6; ++iU)
@@ -744,9 +720,8 @@ TEST(GeomGridEval_SphereTest, DerivativeD3)
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams =
     CreateUniformParams(-M_PI / 2 + 0.1, M_PI / 2 - 0.1, 5); // Avoid poles
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   // Verify D3 against direct evaluation using GeomAdaptor
   GeomAdaptor_Surface anAdaptor(aSphere);
@@ -790,9 +765,8 @@ TEST(GeomGridEval_CylinderTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   GeomAdaptor_Surface anAdaptor(aCyl);
   for (int iU = 1; iU <= 9; ++iU)
@@ -830,9 +804,8 @@ TEST(GeomGridEval_ConeTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   GeomAdaptor_Surface anAdaptor(aCone);
   for (int iU = 1; iU <= 9; ++iU)
@@ -870,9 +843,8 @@ TEST(GeomGridEval_TorusTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   GeomAdaptor_Surface anAdaptor(aTorus);
   for (int iU = 1; iU <= 9; ++iU)
@@ -913,9 +885,8 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
   for (int iU = 1; iU <= 9; ++iU)
   {

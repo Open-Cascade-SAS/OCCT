@@ -85,10 +85,8 @@ TEST(GeomGridEval_LineTest, BasicEvaluation)
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 10.0, 11);
-  anEval.SetParams(aParams);
-  EXPECT_EQ(anEval.NbParams(), 11);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 11);
 
   // Verify points
@@ -110,9 +108,8 @@ TEST(GeomGridEval_LineTest, NonOriginLine)
   GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify first and last point
   EXPECT_NEAR(aGrid.Value(1).Distance(gp_Pnt(1, 2, 3)), 0.0, THE_TOLERANCE);
@@ -142,9 +139,8 @@ TEST(GeomGridEval_CircleTest, BasicEvaluation)
   aParams.SetValue(3, M_PI);
   aParams.SetValue(4, 3 * M_PI / 2);
   aParams.SetValue(5, 2 * M_PI);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // u=0: (2, 0, 0)
   EXPECT_NEAR(aGrid.Value(1).X(), 2.0, THE_TOLERANCE);
@@ -175,9 +171,8 @@ TEST(GeomGridEval_CircleTest, NonStandardCircle)
   GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // All points should be at distance 3 from center (1, 0, 0)
   const gp_Pnt aCenter(1, 0, 0);
@@ -200,9 +195,8 @@ TEST(GeomGridEval_BSplineCurveTest, BasicEvaluation)
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 11);
 
   // Verify against direct evaluation
@@ -222,9 +216,8 @@ TEST(GeomGridEval_BSplineCurveTest, EndpointsMatch)
   TColStd_Array1OfReal aParams(1, 2);
   aParams.SetValue(1, 0.0);
   aParams.SetValue(2, 1.0);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // First point should match first pole
   EXPECT_NEAR(aGrid.Value(1).Distance(gp_Pnt(0, 0, 0)), 0.0, THE_TOLERANCE);
@@ -246,9 +239,8 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
   GeomGridEval_OtherCurve anEval(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 9; ++i)
@@ -273,9 +265,8 @@ TEST(GeomGridEval_CurveTest, LineDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 10.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 11);
 
   // Verify against direct evaluation
@@ -297,9 +288,8 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Circle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 17);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 17; ++i)
@@ -320,9 +310,8 @@ TEST(GeomGridEval_CurveTest, BSplineDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_BSplineCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 21; ++i)
@@ -344,9 +333,8 @@ TEST(GeomGridEval_CurveTest, EllipseDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Ellipse);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 13);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 13; ++i)
@@ -368,9 +356,8 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Hyperbola);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -391,9 +378,8 @@ TEST(GeomGridEval_CurveTest, ParabolaDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Parabola);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -420,9 +406,8 @@ TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_BezierCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -445,9 +430,8 @@ TEST(GeomGridEval_CurveTest, OffsetCurveFallbackDispatch)
   EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 6; ++i)
@@ -467,9 +451,8 @@ TEST(GeomGridEval_CurveTest, DirectHandleInit)
   EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 10.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 11);
   EXPECT_NEAR(aGrid.Value(1).X(), 0.0, THE_TOLERANCE);
 }
@@ -478,9 +461,9 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
 {
   GeomGridEval_Curve anEval;
   EXPECT_FALSE(anEval.IsInitialized());
-  EXPECT_EQ(anEval.NbParams(), 0);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  TColStd_Array1OfReal       aEmptyParams;
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
@@ -492,10 +475,10 @@ TEST(GeomGridEval_CurveTest, EmptyParams)
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
-  EXPECT_EQ(anEval.NbParams(), 0);
 
-  // EvaluateGrid without setting params should return empty
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  // EvaluateGrid with empty params should return empty
+  TColStd_Array1OfReal       aEmptyParams;
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
 
@@ -531,9 +514,8 @@ TEST(GeomGridEval_BSplineCurveTest, RationalBSpline)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 21);
 
   // Verify against direct evaluation
@@ -570,9 +552,8 @@ TEST(GeomGridEval_BSplineCurveTest, MultiSpanBSpline)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 31);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation - should match exactly
   for (int i = 1; i <= 31; ++i)
@@ -605,9 +586,8 @@ TEST(GeomGridEval_BSplineCurveTest, HighDegree)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 51);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 51; ++i)
@@ -628,9 +608,8 @@ TEST(GeomGridEval_LineTest, DerivativeD1)
   GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
   EXPECT_EQ(aGrid.Size(), 6);
 
   // For a line, D1 is constant (the direction vector)
@@ -650,10 +629,9 @@ TEST(GeomGridEval_LineTest, DerivativeD2D3)
   GeomGridEval_Line anEval(aGeomLine);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGridD2 = anEval.EvaluateGridD2();
-  NCollection_Array1<GeomGridEval::CurveD3> aGridD3 = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD2> aGridD2 = anEval.EvaluateGridD2(aParams);
+  NCollection_Array1<GeomGridEval::CurveD3> aGridD3 = anEval.EvaluateGridD3(aParams);
 
   // For a line, D2 and D3 are zero
   for (int i = 1; i <= 6; ++i)
@@ -675,9 +653,8 @@ TEST(GeomGridEval_CircleTest, DerivativeD1)
   aParams.SetValue(3, M_PI);
   aParams.SetValue(4, 3 * M_PI / 2);
   aParams.SetValue(5, 2 * M_PI);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   // Verify D1 against direct evaluation
   for (int i = 1; i <= 5; ++i)
@@ -696,9 +673,8 @@ TEST(GeomGridEval_CircleTest, DerivativeD2)
   GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   // Verify D2 against direct evaluation
   for (int i = 1; i <= 9; ++i)
@@ -718,9 +694,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD1)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -739,9 +714,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD2)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -761,9 +735,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -787,9 +760,8 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 9; ++i)
@@ -811,9 +783,8 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -837,9 +808,8 @@ TEST(GeomGridEval_CircleTest, DerivativeD3)
   GeomGridEval_Circle anEval(aGeomCircle);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   // Verify D3 against direct evaluation
   for (int i = 1; i <= 9; ++i)
@@ -864,9 +834,8 @@ TEST(GeomGridEval_OffsetCurveTest, DerivativeD3)
   GeomGridEval_OtherCurve anEval(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   // Verify D3 against adaptor evaluation
   for (int i = 1; i <= 9; ++i)
@@ -893,9 +862,8 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
   EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 5.0, 6);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   // Verify D3 against adaptor evaluation
   for (int i = 1; i <= 6; ++i)
@@ -919,9 +887,8 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
   anEval.Initialize(anAdaptor);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   // Verify against direct evaluation
   for (int i = 1; i <= 11; ++i)
@@ -946,9 +913,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order1)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(1);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 1);
 
   for (int i = 1; i <= 11; ++i)
   {
@@ -963,9 +929,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order2)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(2);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 2);
 
   for (int i = 1; i <= 11; ++i)
   {
@@ -980,9 +945,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order3)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(3);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 3);
 
   for (int i = 1; i <= 11; ++i)
   {
@@ -998,9 +962,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_BeyondDegree)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 11);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(4);
+  NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, 4);
 
   for (int i = 1; i <= 11; ++i)
   {
@@ -1035,12 +998,11 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_RationalCurve)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 21);
-  anEval.SetParams(aParams);
 
   // Test DN for orders 1, 2, 3
   for (int aOrder = 1; aOrder <= 3; ++aOrder)
   {
-    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aOrder);
 
     for (int i = 1; i <= 21; ++i)
     {
@@ -1074,12 +1036,11 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_MultiSpan)
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 31);
-  anEval.SetParams(aParams);
 
   // Test DN for orders 1, 2, 3
   for (int aOrder = 1; aOrder <= 3; ++aOrder)
   {
-    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aOrder);
+    NCollection_Array1<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aOrder);
 
     for (int i = 1; i <= 31; ++i)
     {

@@ -53,9 +53,8 @@ TEST(GeomGridEval_EllipseTest, BasicEvaluation)
   aParams.SetValue(3, M_PI);
   aParams.SetValue(4, 3 * M_PI / 2);
   aParams.SetValue(5, 2 * M_PI);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
 
   // u=0: (3, 0, 0)
   EXPECT_NEAR(aGrid.Value(1).X(), 3.0, THE_TOLERANCE);
@@ -85,9 +84,8 @@ TEST(GeomGridEval_EllipseTest, DerivativeD1)
   GeomGridEval_Ellipse anEval(anEllipse);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -106,9 +104,8 @@ TEST(GeomGridEval_EllipseTest, DerivativeD2)
   GeomGridEval_Ellipse anEval(anEllipse);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -128,9 +125,8 @@ TEST(GeomGridEval_EllipseTest, DerivativeD3)
   GeomGridEval_Ellipse anEval(anEllipse);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {

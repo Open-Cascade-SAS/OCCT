@@ -79,8 +79,7 @@ inline void InitUniform(GeomGridEval_Surface& theEval,
   }
 
   // Evaluate grid
-  theEval.SetUVParams(aUParams, aVParams);
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid(aUParams, aVParams);
 
   // Copy results to output arrays (convert from 2D grid to 1D linear indexing)
   int Index = 1;
@@ -122,8 +121,7 @@ inline void InitWithParams(GeomGridEval_Surface&       theEval,
                            Bnd_Box&                    theBnd)
 {
   // Evaluate grid using provided parameters
-  theEval.SetUVParams(theUpars, theVpars);
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid(theUpars, theVpars);
 
   const int i0    = theUpars.Lower();
   const int j0    = theVpars.Lower();
@@ -142,61 +140,6 @@ inline void InitWithParams(GeomGridEval_Surface&       theEval,
       ++Index;
     }
   }
-}
-
-//! Calculate deflection on a single triangle.
-//! Evaluates the center point on the surface and computes deflection.
-//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface) or pointer)
-//! @param[in] theSurface   The surface (accessed via ->Value())
-//! @param[in] theP1        First vertex point
-//! @param[in] theP2        Second vertex point
-//! @param[in] theP3        Third vertex point
-//! @param[in] theU1        U parameter at first vertex
-//! @param[in] theV1        V parameter at first vertex
-//! @param[in] theU2        U parameter at second vertex
-//! @param[in] theV2        V parameter at second vertex
-//! @param[in] theU3        U parameter at third vertex
-//! @param[in] theV3        V parameter at third vertex
-//! @return Deflection value (distance from triangle center to surface)
-template <typename SurfaceType>
-double DeflectionOnTriangle(const SurfaceType& theSurface,
-                            const gp_Pnt&      theP1,
-                            const gp_Pnt&      theP2,
-                            const gp_Pnt&      theP3,
-                            const double       theU1,
-                            const double       theV1,
-                            const double       theU2,
-                            const double       theV2,
-                            const double       theU3,
-                            const double       theV3)
-{
-  // Check for degenerate triangles
-  if (theP1.SquareDistance(theP2) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-  if (theP1.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-  if (theP2.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
-    return 0.0;
-
-  // Compute normal vector
-  const gp_XYZ XYZ1 = theP2.XYZ() - theP1.XYZ();
-  const gp_XYZ XYZ2 = theP3.XYZ() - theP2.XYZ();
-  const gp_XYZ XYZ3 = theP1.XYZ() - theP3.XYZ();
-  gp_Vec       NormalVector((XYZ1 ^ XYZ2) + (XYZ2 ^ XYZ3) + (XYZ3 ^ XYZ1));
-
-  const double aNormLen = NormalVector.Magnitude();
-  if (aNormLen < gp::Resolution())
-    return 0.0;
-
-  NormalVector.Divide(aNormLen);
-
-  // Calculate center point on surface and compute distance to triangle plane
-  const double u       = (theU1 + theU2 + theU3) / 3.0;
-  const double v       = (theV1 + theV2 + theV3) / 3.0;
-  const gp_Pnt aCenter = theSurface->Value(u, v);
-  const gp_Vec P1P(theP1, aCenter);
-
-  return std::abs(P1P.Dot(NormalVector));
 }
 
 //! Compute border deflection for a boundary isoline using grid evaluation.
@@ -238,16 +181,9 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
   }
 
   // Evaluate grid: 1xN or Nx1 depending on isoline direction
-  if (theIsUIso)
-  {
-    theEval.SetUVParams(aFixedParams, aVaryingParams);
-  }
-  else
-  {
-    theEval.SetUVParams(aVaryingParams, aFixedParams);
-  }
-
-  const NCollection_Array2<gp_Pnt> aGrid = theEval.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aGrid = theIsUIso
+                                             ? theEval.EvaluateGrid(aFixedParams, aVaryingParams)
+                                             : theEval.EvaluateGrid(aVaryingParams, aFixedParams);
 
   // Compute max deflection from pre-evaluated points
   double aDeflection = RealFirst();
@@ -650,30 +586,93 @@ inline void FillBounding(const gp_Pnt*                   thePnts,
   }
 }
 
-//! Compute the maximum deflection over all triangles.
-//! @tparam SurfaceType Type of surface (e.g., Handle(Adaptor3d_Surface) or pointer)
+//! Compute deflection for a single triangle given a pre-evaluated center point.
+//! @param[in] theP1       First vertex
+//! @param[in] theP2       Second vertex
+//! @param[in] theP3       Third vertex
+//! @param[in] theCenter   Pre-evaluated center point on surface
+//! @return Deflection value (distance from triangle center to surface)
+inline double ComputeDeflectionWithCenter(const gp_Pnt& theP1,
+                                          const gp_Pnt& theP2,
+                                          const gp_Pnt& theP3,
+                                          const gp_Pnt& theCenter)
+{
+  // Check for degenerate triangles
+  if (theP1.SquareDistance(theP2) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+  if (theP1.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+  if (theP2.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+    return 0.0;
+
+  // Compute normal vector
+  const gp_XYZ XYZ1 = theP2.XYZ() - theP1.XYZ();
+  const gp_XYZ XYZ2 = theP3.XYZ() - theP2.XYZ();
+  const gp_XYZ XYZ3 = theP1.XYZ() - theP3.XYZ();
+  gp_Vec       NormalVector((XYZ1 ^ XYZ2) + (XYZ2 ^ XYZ3) + (XYZ3 ^ XYZ1));
+
+  const double aNormLen = NormalVector.Magnitude();
+  if (aNormLen < gp::Resolution())
+    return 0.0;
+
+  NormalVector.Divide(aNormLen);
+
+  // Compute distance from center to triangle plane
+  const gp_Vec P1P(theP1, theCenter);
+  return std::abs(P1P.Dot(NormalVector));
+}
+
+//! Compute the maximum deflection over all triangles using batch evaluation.
+//! Uses GeomGridEval_Surface::EvaluatePoints() to batch-evaluate all triangle centroids.
 //! @tparam PolyhedronType Type of polyhedron class
-//! @param[in] theSurface     The surface (accessed via ->Value())
+//! @param[in] theEval        Pre-initialized grid evaluator
 //! @param[in] thePolyhedron  The polyhedron object (provides Triangle/Point access)
 //! @param[in] theNbTriangles Number of triangles
 //! @return Maximum deflection value
-template <typename SurfaceType, typename PolyhedronType>
-double ComputeMaxDeflection(const SurfaceType&    theSurface,
+template <typename PolyhedronType>
+double ComputeMaxDeflection(GeomGridEval_Surface& theEval,
                             const PolyhedronType& thePolyhedron,
                             const int             theNbTriangles)
 {
-  double tol = 0.0;
+  if (theNbTriangles <= 0)
+    return 0.0;
+
+  // Collect all triangle centroid UV pairs
+  NCollection_Array1<gp_Pnt2d> aCentroidUVs(1, theNbTriangles);
+
   for (int i = 1; i <= theNbTriangles; ++i)
   {
     int i1, i2, i3;
     thePolyhedron.Triangle(i, i1, i2, i3);
 
     double u1, v1, u2, v2, u3, v3;
-    gp_Pnt P1 = thePolyhedron.Point(i1, u1, v1);
-    gp_Pnt P2 = thePolyhedron.Point(i2, u2, v2);
-    gp_Pnt P3 = thePolyhedron.Point(i3, u3, v3);
+    thePolyhedron.Point(i1, u1, v1);
+    thePolyhedron.Point(i2, u2, v2);
+    thePolyhedron.Point(i3, u3, v3);
 
-    double tol1 = DeflectionOnTriangle(theSurface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
+    const double uCenter = (u1 + u2 + u3) / 3.0;
+    const double vCenter = (v1 + v2 + v3) / 3.0;
+    aCentroidUVs.SetValue(i, gp_Pnt2d(uCenter, vCenter));
+  }
+
+  // Batch evaluate all centroids
+  NCollection_Array1<gp_Pnt> aCenterPoints = theEval.EvaluatePoints(aCentroidUVs);
+  if (aCenterPoints.IsEmpty())
+    return 0.0;
+
+  // Compute max deflection using pre-evaluated center points
+  double tol = 0.0;
+  for (int i = 1; i <= theNbTriangles; ++i)
+  {
+    int i1, i2, i3;
+    thePolyhedron.Triangle(i, i1, i2, i3);
+
+    double       u1, v1, u2, v2, u3, v3;
+    const gp_Pnt P1 = thePolyhedron.Point(i1, u1, v1);
+    const gp_Pnt P2 = thePolyhedron.Point(i2, u2, v2);
+    const gp_Pnt P3 = thePolyhedron.Point(i3, u3, v3);
+
+    const double tol1 = ComputeDeflectionWithCenter(P1, P2, P3, aCenterPoints.Value(i));
     if (tol1 > tol)
       tol = tol1;
   }

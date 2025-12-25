@@ -16,6 +16,7 @@
 
 #include <Geom_ConicalSurface.hxx>
 #include <GeomGridEval.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -33,8 +34,8 @@
 //! Usage:
 //! @code
 //!   GeomGridEval_Cone anEvaluator(myGeomCone);
-//!   anEvaluator.SetUVParams(myUParams, myVParams);
-//!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+//!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(myUParams, myVParams);
+//!   NCollection_Array1<gp_Pnt> aPoints = anEvaluator.EvaluatePoints(myUVPairs);
 //! @endcode
 class GeomGridEval_Cone
 {
@@ -54,53 +55,135 @@ public:
   GeomGridEval_Cone(GeomGridEval_Cone&&)                 = delete;
   GeomGridEval_Cone& operator=(GeomGridEval_Cone&&)      = delete;
 
-  //! Set UV parameters from two 1D arrays.
-  //! @param theUParams array of U parameter values (angle)
-  //! @param theVParams array of V parameter values (linear along ruling)
-  Standard_EXPORT void SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                   const TColStd_Array1OfReal& theVParams);
-
   //! Returns the geometry handle.
   const Handle(Geom_ConicalSurface)& Geometry() const { return myGeom; }
 
-  //! Returns number of U parameters.
-  int NbUParams() const { return myUParams.Size(); }
+  //! Evaluate grid points at Cartesian product of U and V parameters.
+  //! @param theUParams array of U parameter values (angle)
+  //! @param theVParams array of V parameter values (linear along ruling)
+  //! @return 2D array of evaluated points (1-based indexing)
+  Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
-  //! Returns number of V parameters.
-  int NbVParams() const { return myVParams.Size(); }
+  //! Evaluate grid points with first partial derivatives.
+  //! @param theUParams array of U parameter values (angle)
+  //! @param theVParams array of V parameter values (linear along ruling)
+  //! @return 2D array of SurfD1 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
-  //! Evaluate all grid points.
-  //! @return 2D array of evaluated points (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid() const;
+  //! Evaluate grid points with first and second partial derivatives.
+  //! @param theUParams array of U parameter values (angle)
+  //! @param theVParams array of V parameter values (linear along ruling)
+  //! @return 2D array of SurfD2 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
-  //! Evaluate all grid points with first partial derivatives.
-  //! @return 2D array of SurfD1 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1() const;
-
-  //! Evaluate all grid points with first and second partial derivatives.
-  //! @return 2D array of SurfD2 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const;
-
-  //! Evaluate all grid points with derivatives up to third order.
-  //! @return 2D array of SurfD3 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const;
+  //! Evaluate grid points with derivatives up to third order.
+  //! @param theUParams array of U parameter values (angle)
+  //! @param theVParams array of V parameter values (linear along ruling)
+  //! @return 2D array of SurfD3 (1-based indexing)
+  Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! For orders 1-3, reuses EvaluateGridD1/D2/D3.
   //! For orders > 3, uses geometry DN method.
+  //! @param theUParams array of U parameter values (angle)
+  //! @param theVParams array of V parameter values (linear along ruling)
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                                            const TColStd_Array1OfReal& theVParams,
+                                                            int                         theNU,
+                                                            int theNV) const;
+
+  //! Evaluate points at arbitrary UV pairs.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of evaluated points (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluatePoints(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate points with first partial derivatives.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD1 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate points with first and second partial derivatives.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD2 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate points with derivatives up to third order.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD3 (1-based indexing)
+  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
+
+  //! Evaluate partial derivative at all UV pairs.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 1D array of derivative vectors (1-based indexing)
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluatePointsDN(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+    int                                 theNU,
+    int                                 theNV) const;
 
 private:
+  //! Pre-extracted cone data for efficient evaluation.
+  struct Data
+  {
+    double CX, CY, CZ; //!< Center coordinates
+    double XX, XY, XZ; //!< XDir coordinates
+    double YX, YY, YZ; //!< YDir coordinates
+    double ZX, ZY, ZZ; //!< ZDir coordinates
+    double RefRadius;  //!< Reference radius
+    double SinAng;     //!< sin(SemiAngle)
+    double CosAng;     //!< cos(SemiAngle)
+  };
+
+  //! Pre-computed U-dependent values for optimized grid evaluation.
+  struct UContext
+  {
+    double cosU, sinU;
+    double dirUX, dirUY, dirUZ;    //!< DirU = cosU*XDir + sinU*YDir
+    double dDirUX, dDirUY, dDirUZ; //!< DerivDirU = -sinU*XDir + cosU*YDir
+  };
+
+  //! Extract cone data for evaluation.
+  Data extractData() const;
+
+  //! Pre-compute U-dependent values.
+  static UContext computeUContext(const Data& theData, double theU);
+
+  //! Compute point with pre-computed U context.
+  static gp_Pnt computeD0(const Data& theData, const UContext& theUCtx, double theV);
+
+  //! Compute point with D1 with pre-computed U context.
+  static GeomGridEval::SurfD1 computeD1(const Data& theData, const UContext& theUCtx, double theV);
+
+  //! Compute point with D2 with pre-computed U context.
+  static GeomGridEval::SurfD2 computeD2(const Data& theData, const UContext& theUCtx, double theV);
+
+  //! Compute point with D3 with pre-computed U context.
+  static GeomGridEval::SurfD3 computeD3(const Data& theData, const UContext& theUCtx, double theV);
+
+  //! Compute DN with pre-computed U context.
+  static gp_Vec computeDN(const Data&     theData,
+                          const UContext& theUCtx,
+                          double          theV,
+                          int             theNU,
+                          int             theNV);
+
   Handle(Geom_ConicalSurface) myGeom;
-  NCollection_Array1<double>  myUParams;
-  NCollection_Array1<double>  myVParams;
 };
 
 #endif // _GeomGridEval_Cone_HeaderFile

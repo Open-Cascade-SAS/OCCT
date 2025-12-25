@@ -59,9 +59,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, BasicEvaluation)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -93,9 +92,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, CircleBasisCurve)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 10.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -126,9 +124,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD1)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD1> aGridD1 = anEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aGridD1 = anEval.EvaluateGridD1(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -164,9 +161,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD2)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD2> aGridD2 = anEval.EvaluateGridD2();
+  NCollection_Array2<GeomGridEval::SurfD2> aGridD2 = anEval.EvaluateGridD2(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -204,9 +200,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, DerivativeD3)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<GeomGridEval::SurfD3> aGridD3 = anEval.EvaluateGridD3();
+  NCollection_Array2<GeomGridEval::SurfD3> aGridD3 = anEval.EvaluateGridD3(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -258,9 +253,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, UnifiedDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -289,9 +283,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, AdaptorDispatch)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 10.0, 5);
   TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 5; ++i)
   {
@@ -318,9 +311,8 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, NonAxisAlignedDirection)
 
   TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
   TColStd_Array1OfReal aVParams = CreateUniformParams(-5.0, 5.0, 5);
-  anEval.SetUVParams(aUParams, aVParams);
 
-  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   for (int i = 1; i <= 9; ++i)
   {

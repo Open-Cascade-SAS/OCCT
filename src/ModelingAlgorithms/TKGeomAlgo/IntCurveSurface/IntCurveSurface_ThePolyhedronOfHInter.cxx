@@ -103,7 +103,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                          static_cast<Standard_Boolean*>(C_MyIsOnBounds),
                          TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
@@ -132,7 +132,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                             static_cast<Standard_Boolean*>(C_MyIsOnBounds),
                             TheBnd);
 
-  Standard_Real tol = PolyUtils::ComputeMaxDeflection(Surface, *this, NbTriangles());
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
@@ -143,19 +143,6 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const Handle(Adaptor3d_Surface)
                                                               Vpars(Vpars.Upper()),
                                                               nbdeltaU,
                                                               nbdeltaV);
-}
-
-//==================================================================================================
-
-Standard_Real IntCurveSurface_ThePolyhedronOfHInter::DeflectionOnTriangle(
-  const Handle(Adaptor3d_Surface)& Surface,
-  const Standard_Integer           Triang) const
-{
-  Standard_Integer i1, i2, i3;
-  Triangle(Triang, i1, i2, i3);
-  Standard_Real u1, v1, u2, v2, u3, v3;
-  gp_Pnt        P1 = Point(i1, u1, v1), P2 = Point(i2, u2, v2), P3 = Point(i3, u3, v3);
-  return PolyUtils::DeflectionOnTriangle(Surface, P1, P2, P3, u1, v1, u2, v2, u3, v3);
 }
 
 //==================================================================================================

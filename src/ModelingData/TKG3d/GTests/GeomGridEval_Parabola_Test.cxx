@@ -53,9 +53,8 @@ TEST(GeomGridEval_ParabolaTest, BasicEvaluation)
 
   // Test from -2 to 2
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 5);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid();
+  NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams);
   EXPECT_EQ(aGrid.Size(), 5);
 
   // Verify points
@@ -72,9 +71,8 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD1)
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -92,9 +90,8 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD2)
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2();
+  NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {
@@ -113,9 +110,8 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD3)
   GeomGridEval_Parabola anEval(aParab);
 
   TColStd_Array1OfReal aParams = CreateUniformParams(-2.0, 2.0, 9);
-  anEval.SetParams(aParams);
 
-  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3();
+  NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 
   for (int i = 1; i <= 9; ++i)
   {

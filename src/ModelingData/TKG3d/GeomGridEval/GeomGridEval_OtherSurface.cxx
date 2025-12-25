@@ -15,46 +15,122 @@
 
 //==================================================================================================
 
-void GeomGridEval_OtherSurface::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                            const TColStd_Array1OfReal& theVParams)
+void GeomGridEval_OtherSurface::evaluateD0(double theU, double theV, gp_Pnt& thePoint) const
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
-
-  myUParams.Resize(1, aNbU, false);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-  }
-
-  myVParams.Resize(1, aNbV, false);
-  for (int j = 1; j <= aNbV; ++j)
-  {
-    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-  }
+  std::visit([theU, theV, &thePoint](const auto& theSurf) { theSurf->D0(theU, theV, thePoint); },
+             mySurface);
 }
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid() const
+void GeomGridEval_OtherSurface::evaluateD1(double  theU,
+                                           double  theV,
+                                           gp_Pnt& thePoint,
+                                           gp_Vec& theD1U,
+                                           gp_Vec& theD1V) const
 {
-  if (myUParams.IsEmpty() || myVParams.IsEmpty())
+  std::visit([theU, theV, &thePoint, &theD1U, &theD1V](
+               const auto& theSurf) { theSurf->D1(theU, theV, thePoint, theD1U, theD1V); },
+             mySurface);
+}
+
+//==================================================================================================
+
+void GeomGridEval_OtherSurface::evaluateD2(double  theU,
+                                           double  theV,
+                                           gp_Pnt& thePoint,
+                                           gp_Vec& theD1U,
+                                           gp_Vec& theD1V,
+                                           gp_Vec& theD2U,
+                                           gp_Vec& theD2V,
+                                           gp_Vec& theD2UV) const
+{
+  std::visit(
+    [theU, theV, &thePoint, &theD1U, &theD1V, &theD2U, &theD2V, &theD2UV](const auto& theSurf) {
+      theSurf->D2(theU, theV, thePoint, theD1U, theD1V, theD2U, theD2V, theD2UV);
+    },
+    mySurface);
+}
+
+//==================================================================================================
+
+void GeomGridEval_OtherSurface::evaluateD3(double  theU,
+                                           double  theV,
+                                           gp_Pnt& thePoint,
+                                           gp_Vec& theD1U,
+                                           gp_Vec& theD1V,
+                                           gp_Vec& theD2U,
+                                           gp_Vec& theD2V,
+                                           gp_Vec& theD2UV,
+                                           gp_Vec& theD3U,
+                                           gp_Vec& theD3V,
+                                           gp_Vec& theD3UUV,
+                                           gp_Vec& theD3UVV) const
+{
+  std::visit(
+    [theU,
+     theV,
+     &thePoint,
+     &theD1U,
+     &theD1V,
+     &theD2U,
+     &theD2V,
+     &theD2UV,
+     &theD3U,
+     &theD3V,
+     &theD3UUV,
+     &theD3UVV](const auto& theSurf) {
+      theSurf->D3(theU,
+                  theV,
+                  thePoint,
+                  theD1U,
+                  theD1V,
+                  theD2U,
+                  theD2V,
+                  theD2UV,
+                  theD3U,
+                  theD3V,
+                  theD3UUV,
+                  theD3UVV);
+    },
+    mySurface);
+}
+
+//==================================================================================================
+
+gp_Vec GeomGridEval_OtherSurface::evaluateDN(double theU, double theV, int theNU, int theNV) const
+{
+  return std::visit(
+    [theU, theV, theNU, theNV](const auto& theSurf) -> gp_Vec {
+      return theSurf->DN(theU, theV, theNU, theNV);
+    },
+    mySurface);
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+  if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<gp_Pnt>();
   }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
 
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u = myUParams.Value(iU);
+    const double u = theUParams.Value(theUParams.Lower() + iU - 1);
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double v = myVParams.Value(iV);
-      aResult.SetValue(iU, iV, mySurface.get().Value(u, v));
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      gp_Pnt       aPoint;
+      evaluateD0(u, v, aPoint);
+      aResult.SetValue(iU, iV, aPoint);
     }
   }
 
@@ -63,27 +139,28 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid() const
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGridD1() const
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGridD1(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myUParams.IsEmpty() || myVParams.IsEmpty())
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+  if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
 
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u = myUParams.Value(iU);
+    const double u = theUParams.Value(theUParams.Lower() + iU - 1);
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double v = myVParams.Value(iV);
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
       gp_Pnt       aPoint;
       gp_Vec       aD1U, aD1V;
-      mySurface.get().D1(u, v, aPoint, aD1U, aD1V);
+      evaluateD1(u, v, aPoint, aD1U, aD1V);
       aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V};
     }
   }
@@ -93,27 +170,28 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGridD2() const
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGridD2(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myUParams.IsEmpty() || myVParams.IsEmpty())
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+  if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
 
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u = myUParams.Value(iU);
+    const double u = theUParams.Value(theUParams.Lower() + iU - 1);
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double v = myVParams.Value(iV);
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
       gp_Pnt       aPoint;
       gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV;
-      mySurface.get().D2(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      evaluateD2(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
       aResult.ChangeValue(iU, iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
     }
   }
@@ -123,27 +201,28 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGridD3() const
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGridD3(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
 {
-  if (myUParams.IsEmpty() || myVParams.IsEmpty())
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+  if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
-
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
 
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u = myUParams.Value(iU);
+    const double u = theUParams.Value(theUParams.Lower() + iU - 1);
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double v = myVParams.Value(iV);
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
       gp_Pnt       aPoint;
       gp_Vec       aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-      mySurface.get().D3(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+      evaluateD3(u, v, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
       aResult.ChangeValue(iU,
                           iV) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
     }
@@ -154,28 +233,154 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
 
 //==================================================================================================
 
-NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(int theNU, int theNV) const
+NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams,
+  int                         theNU,
+  int                         theNV) const
 {
-  if (myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+  if (aNbU == 0 || aNbV == 0 || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
   {
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
-
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
-  // Use adaptor DN method for all requested derivatives
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u = myUParams.Value(iU);
+    const double u = theUParams.Value(theUParams.Lower() + iU - 1);
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double v   = myVParams.Value(iV);
-      const gp_Vec aDN = mySurface.get().DN(u, v, theNU, theNV);
+      const double v   = theVParams.Value(theVParams.Lower() + iV - 1);
+      const gp_Vec aDN = evaluateDN(u, v, theNU, theNV);
       aResult.SetValue(iU, iV, aDN);
     }
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEval_OtherSurface::EvaluatePoints(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  const int                  aNbPoints = theUVPairs.Size();
+  NCollection_Array1<gp_Pnt> aResult(1, aNbPoints);
+
+  for (int i = 1; i <= aNbPoints; ++i)
+  {
+    const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    gp_Pnt          aPoint;
+    evaluateD0(aUV.X(), aUV.Y(), aPoint);
+    aResult.SetValue(i, aPoint);
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluatePointsD1(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD1>();
+  }
+
+  const int                                aNbPoints = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD1> aResult(1, aNbPoints);
+
+  for (int i = 1; i <= aNbPoints; ++i)
+  {
+    const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    gp_Pnt          aPoint;
+    gp_Vec          aD1U, aD1V;
+    evaluateD1(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V);
+    aResult.SetValue(i, {aPoint, aD1U, aD1V});
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluatePointsD2(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD2>();
+  }
+
+  const int                                aNbPoints = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD2> aResult(1, aNbPoints);
+
+  for (int i = 1; i <= aNbPoints; ++i)
+  {
+    const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    gp_Pnt          aPoint;
+    gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV;
+    evaluateD2(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
+    aResult.SetValue(i, {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluatePointsD3(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD3>();
+  }
+
+  const int                                aNbPoints = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD3> aResult(1, aNbPoints);
+
+  for (int i = 1; i <= aNbPoints; ++i)
+  {
+    const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    gp_Pnt          aPoint;
+    gp_Vec          aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
+    evaluateD3(aUV.X(), aUV.Y(), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+    aResult.SetValue(i, {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV});
+  }
+
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_OtherSurface::EvaluatePointsDN(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+  int                                 theNU,
+  int                                 theNV) const
+{
+  if (theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  const int                  aNbPoints = theUVPairs.Size();
+  NCollection_Array1<gp_Vec> aResult(1, aNbPoints);
+
+  for (int i = 1; i <= aNbPoints; ++i)
+  {
+    const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+    const gp_Vec    aDN = evaluateDN(aUV.X(), aUV.Y(), theNU, theNV);
+    aResult.SetValue(i, aDN);
   }
 
   return aResult;

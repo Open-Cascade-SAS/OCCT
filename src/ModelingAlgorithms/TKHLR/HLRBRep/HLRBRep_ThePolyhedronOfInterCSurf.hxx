@@ -55,9 +55,6 @@ public:
 
   Standard_EXPORT void DeflectionOverEstimation(const Standard_Real flec);
 
-  Standard_EXPORT Standard_Real DeflectionOnTriangle(HLRBRep_Surface*       Surface,
-                                                     const Standard_Integer Index) const;
-
   Standard_EXPORT void UMinSingularity(const Standard_Boolean Sing);
 
   Standard_EXPORT void UMaxSingularity(const Standard_Boolean Sing);
