@@ -42,11 +42,11 @@ using namespace MathUtils;
 //! Result of 2D Newton iteration.
 struct Newton2DResult
 {
-  Status Status  = Status::NotConverged; //!< Computation status
-  double U       = 0.0;                  //!< Solution U coordinate
-  double V       = 0.0;                  //!< Solution V coordinate
-  size_t NbIter  = 0;                    //!< Number of iterations performed
-  double FNorm   = 0.0;                  //!< Final |F| norm
+  Status Status = Status::NotConverged; //!< Computation status
+  double U      = 0.0;                  //!< Solution U coordinate
+  double V      = 0.0;                  //!< Solution V coordinate
+  size_t NbIter = 0;                    //!< Number of iterations performed
+  double FNorm  = 0.0;                  //!< Final |F| norm
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == Status::OK; }
@@ -96,7 +96,7 @@ Newton2DResult Newton2D(const Function& theFunc,
 
   // Pre-compute max step limit once
   const double aMaxStep = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
-  const double aTolSq = theTol * theTol;
+  const double aTolSq   = theTol * theTol;
 
   for (size_t i = 0; i < theMaxIter; ++i)
   {
@@ -143,8 +143,8 @@ Newton2DResult Newton2D(const Function& theFunc,
     {
       // Cramer's rule (optimized: compute inverse determinant once)
       const double aInvDet = 1.0 / aDet;
-      aDU = (-aF1 * aDF2dV + aF2 * aDF1dV) * aInvDet;
-      aDV = (-aF2 * aDF1dU + aF1 * aDF2dU) * aInvDet;
+      aDU                  = (-aF1 * aDF2dV + aF2 * aDF1dV) * aInvDet;
+      aDV                  = (-aF2 * aDF1dU + aF1 * aDF2dU) * aInvDet;
 
       // Limit step size (optimized: avoid sqrt when possible)
       const double aStepNormSq = aDU * aDU + aDV * aDV;
@@ -229,14 +229,14 @@ Newton2DResult Newton2D(const Function& theFunc,
 //! @return Newton2DResult containing solution if converged
 template <typename Function>
 Newton2DResult Newton2DSymmetric(const Function& theFunc,
-                                  double          theU0,
-                                  double          theV0,
-                                  double          theUMin,
-                                  double          theUMax,
-                                  double          theVMin,
-                                  double          theVMax,
-                                  double          theTol,
-                                  size_t          theMaxIter = 20)
+                                 double          theU0,
+                                 double          theV0,
+                                 double          theUMin,
+                                 double          theUMax,
+                                 double          theVMin,
+                                 double          theVMax,
+                                 double          theTol,
+                                 size_t          theMaxIter = 20)
 {
   Newton2DResult aRes;
   aRes.U = theU0;
@@ -244,7 +244,7 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
 
   // Pre-compute max step limit once
   const double aMaxStep = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
-  const double aTolSq = theTol * theTol;
+  const double aTolSq   = theTol * theTol;
 
   for (size_t i = 0; i < theMaxIter; ++i)
   {
@@ -283,15 +283,15 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
         return aRes;
       }
       const double aStep = std::sqrt(aFNormSq / aNormSq) * 0.1;
-      aDU = -aStep * aF1;
-      aDV = -aStep * aF2;
+      aDU                = -aStep * aF1;
+      aDV                = -aStep * aF2;
     }
     else
     {
       // Cramer's rule for symmetric matrix
       const double aInvDet = 1.0 / aDet;
-      aDU = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
-      aDV = (-aF2 * aJ11 + aF1 * aJ12) * aInvDet;
+      aDU                  = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
+      aDV                  = (-aF2 * aJ11 + aF1 * aJ12) * aInvDet;
 
       // Limit step size
       const double aStepNormSq = aDU * aDU + aDV * aDV;

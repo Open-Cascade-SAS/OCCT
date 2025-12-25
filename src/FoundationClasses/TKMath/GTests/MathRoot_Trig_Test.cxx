@@ -19,13 +19,18 @@
 
 namespace
 {
-constexpr double THE_TOL  = 1.0e-10;
-constexpr double THE_PI   = 3.14159265358979323846;
-constexpr double THE_2PI  = 2.0 * THE_PI;
+constexpr double THE_TOL = 1.0e-10;
+constexpr double THE_PI  = 3.14159265358979323846;
+constexpr double THE_2PI = 2.0 * THE_PI;
 
 //! Helper to verify that a root satisfies the equation
 //! a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0
-double evaluateEquation(double theA, double theB, double theC, double theD, double theE, double theX)
+double evaluateEquation(double theA,
+                        double theB,
+                        double theC,
+                        double theD,
+                        double theE,
+                        double theX)
 {
   double aCos = std::cos(theX);
   double aSin = std::sin(theX);
@@ -44,8 +49,8 @@ void verifyRoots(const MathRoot::TrigResult& theResult,
   for (int i = 0; i < theResult.NbRoots; ++i)
   {
     double aVal = evaluateEquation(theA, theB, theC, theD, theE, theResult.Roots[i]);
-    EXPECT_NEAR(aVal, 0.0, theTol) << "Root " << i << " = " << theResult.Roots[i]
-                                   << " gives f(x) = " << aVal;
+    EXPECT_NEAR(aVal, 0.0, theTol)
+      << "Root " << i << " = " << theResult.Roots[i] << " gives f(x) = " << aVal;
   }
 }
 
@@ -400,8 +405,7 @@ TEST(MathRoot_TrigTest, Stability_LargeCoefficients)
 TEST(MathRoot_TrigTest, Stability_SmallCoefficients)
 {
   // Equation with small (but not negligible) coefficients
-  MathRoot::TrigResult aResult =
-    MathRoot::Trigonometric(1.0e-6, 0.5e-6, 0.3e-6, 0.4e-6, -0.2e-6);
+  MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0e-6, 0.5e-6, 0.3e-6, 0.4e-6, -0.2e-6);
   ASSERT_TRUE(aResult.IsDone());
   // Verify roots if any found
   if (aResult.NbRoots > 0)
@@ -429,8 +433,7 @@ TEST(MathRoot_TrigTest, RootOrdering_Sorted)
   ASSERT_TRUE(aResult.IsDone());
   for (int i = 1; i < aResult.NbRoots; ++i)
   {
-    EXPECT_LE(aResult.Roots[i - 1], aResult.Roots[i])
-      << "Roots should be in ascending order";
+    EXPECT_LE(aResult.Roots[i - 1], aResult.Roots[i]) << "Roots should be in ascending order";
   }
 }
 
@@ -511,7 +514,7 @@ TEST(MathRoot_TrigTest, Ellipse_PointOnMajorAxis)
   // => sin=0 or cos=2 (impossible)
   // Roots at sin=0: x = 0, PI
   double aB2MinusA2Over2 = (100.0 - 400.0) / 2.0; // -150
-  double aAX             = 20.0 * 30.0;            // 600
+  double aAX             = 20.0 * 30.0;           // 600
   double aBY             = 0.0;
 
   MathRoot::TrigResult aResult =
@@ -529,8 +532,8 @@ TEST(MathRoot_TrigTest, Ellipse_GeneralPoint)
   // Equation from ellipse extrema with point not on axis
   // For ellipse with a=20, b=10 and point at X=15, Y=8:
   double aB2MinusA2Over2 = (100.0 - 400.0) / 2.0; // -150
-  double aAX             = 20.0 * 15.0;            // 300
-  double aBY             = 10.0 * 8.0;             // 80
+  double aAX             = 20.0 * 15.0;           // 300
+  double aBY             = 10.0 * 8.0;            // 80
 
   MathRoot::TrigResult aResult =
     MathRoot::Trigonometric(0.0, aB2MinusA2Over2, -aBY, aAX, 0.0, 0.0, THE_2PI);
