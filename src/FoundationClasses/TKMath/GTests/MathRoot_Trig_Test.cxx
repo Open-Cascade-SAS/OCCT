@@ -191,7 +191,7 @@ TEST(MathRoot_TrigTest, CDE_NoSolution)
 
 TEST(MathRoot_TrigTest, QuadraticCos_TwoSolutions)
 {
-  // cos^2(x) - 1 = 0 => cos(x) = ±1 => x = 0, PI
+  // cos^2(x) - 1 = 0 => cos(x) = +/-1 => x = 0, PI
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, -1.0);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbRoots, 2);
@@ -200,7 +200,7 @@ TEST(MathRoot_TrigTest, QuadraticCos_TwoSolutions)
 
 TEST(MathRoot_TrigTest, QuadraticCos_FourSolutions)
 {
-  // cos^2(x) = 0.25 => cos(x) = ±0.5 => 4 solutions
+  // cos^2(x) = 0.25 => cos(x) = +/-0.5 => 4 solutions
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, -0.25);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbRoots, 4);
@@ -239,7 +239,7 @@ TEST(MathRoot_TrigTest, General_FourRoots)
 {
   // A general equation with 4 roots
   // cos^2(x) + cos(x) - 0.5 = 0
-  // cos(x) = (-1 ± sqrt(3))/2
+  // cos(x) = (-1 +/- sqrt(3))/2
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0, 0.0, 1.0, 0.0, -0.5);
   ASSERT_TRUE(aResult.IsDone());
   // This should have 2-4 roots
@@ -373,7 +373,7 @@ TEST(MathRoot_TrigTest, SpecialCase_PiRootCheck)
   // Need A - C + E = 0: try A=1, C=1, E=0
   // cos^2(x) - cos(x) = 0: that's A=1, C=-1, E=0 => 1-(-1)+0=2
   // Let's try: A=1, C=0, E=-1 => 1-0+(-1)=0
-  // cos^2(x) - 1 = 0 => cos(x) = ±1 => x = 0, PI
+  // cos^2(x) - 1 = 0 => cos(x) = +/-1 => x = 0, PI
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(1.0, 0.0, 0.0, 0.0, -1.0);
   ASSERT_TRUE(aResult.IsDone());
   // Check if PI is in the roots
@@ -506,7 +506,7 @@ TEST(MathRoot_TrigTest, Result_InfiniteRoots)
 
 TEST(MathRoot_TrigTest, Ellipse_PointOnMajorAxis)
 {
-  // Equation from ellipse extrema: (b²-a²)/2 * 2*cos*sin + a*X*sin = 0
+  // Equation from ellipse extrema: (b^2-a^2)/2 * 2*cos*sin + a*X*sin = 0
   // For ellipse with a=20, b=10 and point at X=30, Y=0:
   // (100-400)/2 * 2*cos*sin + 20*30*sin = 0
   // -150 * 2*cos*sin + 600*sin = 0
@@ -565,7 +565,7 @@ TEST(MathRoot_TrigTest, NegativeBounds_CosEquation)
   // cos(x) = 0.5 in [-PI, PI]
   MathRoot::TrigResult aResult = MathRoot::Trigonometric(0.0, 0.0, 1.0, 0.0, -0.5, -THE_PI, THE_PI);
   ASSERT_TRUE(aResult.IsDone());
-  // cos(x) = 0.5 => x = ±PI/3
+  // cos(x) = 0.5 => x = +/-PI/3
   EXPECT_GE(aResult.NbRoots, 2);
   verifyRoots(aResult, 0.0, 0.0, 1.0, 0.0, -0.5);
 }

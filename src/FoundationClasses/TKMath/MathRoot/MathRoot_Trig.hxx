@@ -401,7 +401,7 @@ inline TrigResult Trigonometric(double theA,
           if (std::abs(aDF) < 1.0e-10 * (std::abs(aF) + 1.0))
           {
             // Near double root: use Halley's method for better convergence
-            // F'' = -2*a*(cos²-sin²) - 4*b*cos*sin - c*cos - d*sin
+            // F'' = -2*a*(cos^2-sin^2) - 4*b*cos*sin - c*cos - d*sin
             double aD2F =
               -2.0 * theA * (aCos2 - aSin2) - 4.0 * theB * aCS - theC * aCos - theD * aSin;
             double aDenom = 2.0 * aDF * aDF - aF * aD2F;
