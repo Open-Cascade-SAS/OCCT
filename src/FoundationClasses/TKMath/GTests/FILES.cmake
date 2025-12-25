@@ -79,6 +79,7 @@ set(OCCT_TKMath_GTests_FILES
   MathRoot_Test.cxx
   MathRoot_Multiple_Test.cxx
   MathRoot_Comparison_Test.cxx
+  MathRoot_Trig_Test.cxx
   # MathInteg tests
   MathInteg_Test.cxx
   MathInteg_New_Test.cxx
