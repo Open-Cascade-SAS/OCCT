@@ -17,10 +17,13 @@
 #include <Bnd_BoundSortBox.hxx>
 
 #include <gp_Pln.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_NullValue.hxx>
 
-#include <unordered_map>
+#include <cstring>
 
 //==================================================================================================
 //--  lbr le 27 fev 97
@@ -130,16 +133,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 public:
-  using VectorInt = std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>>;
+  using VectorInt = NCollection_Vector<Standard_Integer>;
 
 private:
-  using VectorBool = std::vector<bool, NCollection_Allocator<bool>>;
-  using VoxelMap =
-    std::unordered_map<Standard_Integer,
-                       VectorInt,
-                       std::hash<Standard_Integer>,
-                       std::equal_to<Standard_Integer>,
-                       NCollection_Allocator<std::pair<const Standard_Integer, VectorInt>>>;
+  using OccupancyArray = NCollection_Array1<Standard_Byte>;
+  using VoxelMap       = NCollection_DataMap<Standard_Integer, VectorInt>;
 
 public:
   // Constructor that initializes the Bnd_VoxelGrid object with a given size.
@@ -219,50 +217,13 @@ private:
                     const Standard_Integer theVoxelIndexMax,
                     const Standard_Integer theBoxIndex);
 
-  // Marks the voxel at the specified coordinates as occupied.
-  // @param theX The x-coordinate of the voxel to mark.
-  // @param theY The y-coordinate of the voxel to mark.
-  // @param theZ The z-coordinate of the voxel to mark.
-  inline void SetOccupied(const Standard_Integer theX,
-                          const Standard_Integer theY,
-                          const Standard_Integer theZ)
-  {
-    myVoxelBits[toIndex(theX, theY, theZ)] = true;
-  }
-
-  // Returns true if the voxel at the specified coordinates is marked as occupied.
-  // @param theX The x-coordinate of the voxel to check.
-  // @param theY The y-coordinate of the voxel to check.
-  // @param theZ The z-coordinate of the voxel to check.
-  // @return True if the voxel is occupied, false otherwise.
-  inline bool IsOccupied(const Standard_Integer theX,
-                         const Standard_Integer theY,
-                         const Standard_Integer theZ) const
-  {
-    return myVoxelBits[toIndex(theX, theY, theZ)];
-  }
-
-  // Converts the 3D grid coordinates to a 1D index.
-  // The index is calculated based on the formula:
-  // index = x * dimensionSize^2 + y * dimensionSize + z
-  // This formula maps the 3D coordinates to a unique index in the 1D array.
-  // @param theX The x-coordinate in the grid.
-  // @param theY The y-coordinate in the grid.
-  // @param theZ The z-coordinate in the grid.
-  // @return The calculated index in the 1D array.
-  inline Standard_Integer toIndex(const Standard_Integer theX,
-                                  const Standard_Integer theY,
-                                  const Standard_Integer theZ) const
-  {
-    return theX * myResolution * myResolution + theY * myResolution + theZ;
-  }
-
 private:
-  const Standard_Integer myResolution; //< Number of voxels in one dimension of the grid.
-  VectorBool myVoxelBits; //< Array of bits representing the occupancy of voxels in the grid.
-  VoxelMap   mySlicesX;   //< Map of voxel indices to lists of box indices for the X-axis.
-  VoxelMap   mySlicesY;   //< Map of voxel indices to lists of box indices for the Y-axis.
-  VoxelMap   mySlicesZ;   //< Map of voxel indices to lists of box indices for the Z-axis.
+  const Standard_Integer myResolution;        //< Number of voxels in one dimension of the grid.
+  const Standard_Integer myResolutionSquared; //< Precomputed resolution squared for index calc.
+  OccupancyArray         myVoxelBits; //< Array representing the occupancy of voxels in the grid.
+  VoxelMap               mySlicesX;   //< Map of voxel indices to lists of box indices for X-axis.
+  VoxelMap               mySlicesY;   //< Map of voxel indices to lists of box indices for Y-axis.
+  VoxelMap               mySlicesZ;   //< Map of voxel indices to lists of box indices for Z-axis.
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
@@ -271,11 +232,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution)
     : myResolution(theResolution),
-      myVoxelBits(theResolution * theResolution * theResolution),
-      mySlicesX(),
-      mySlicesY(),
-      mySlicesZ()
+      myResolutionSquared(theResolution * theResolution),
+      myVoxelBits(0, theResolution * theResolution * theResolution - 1),
+      mySlicesX(theResolution), // Pre-size: max theResolution entries per axis
+      mySlicesY(theResolution),
+      mySlicesZ(theResolution)
 {
+  myVoxelBits.Init(0);
 }
 
 //==================================================================================================
@@ -293,15 +256,17 @@ void Bnd_VoxelGrid::AddBox(const Standard_Integer                 theBoxIndex,
   AppendSliceX(aMinVoxelX, aMaxVoxelX, theBoxIndex);
   AppendSliceY(aMinVoxelY, aMaxVoxelY, theBoxIndex);
   AppendSliceZ(aMinVoxelZ, aMaxVoxelZ, theBoxIndex);
-  // Fill table with bits.
+
+  // Fill table with occupancy flags using direct pointer access.
+  // Get base pointer once and use pointer arithmetic to avoid ChangeValue() overhead.
+  Standard_Byte*         aData   = &myVoxelBits.ChangeFirst();
+  const Standard_Integer aZCount = aMaxVoxelZ - aMinVoxelZ + 1;
   for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
   {
+    Standard_Byte* aRowX = aData + aVoxelX * myResolutionSquared;
     for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
     {
-      for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
-      {
-        SetOccupied(aVoxelX, aVoxelY, aVoxelZ);
-      }
+      std::memset(aRowX + aVoxelY * myResolution + aMinVoxelZ, 1, aZCount);
     }
   }
 }
@@ -310,24 +275,24 @@ void Bnd_VoxelGrid::AddBox(const Standard_Integer                 theBoxIndex,
 
 const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceX(const Standard_Integer theVoxelIndex) const
 {
-  auto it = mySlicesX.find(theVoxelIndex);
-  return it != mySlicesX.end() ? &it->second : nullptr;
+  const VectorInt* aResult = mySlicesX.Seek(theVoxelIndex);
+  return aResult;
 }
 
 //==================================================================================================
 
 const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceY(const Standard_Integer theVoxelIndex) const
 {
-  auto it = mySlicesY.find(theVoxelIndex);
-  return it != mySlicesY.end() ? &it->second : nullptr;
+  const VectorInt* aResult = mySlicesY.Seek(theVoxelIndex);
+  return aResult;
 }
 
 //==================================================================================================
 
 const Bnd_VoxelGrid::VectorInt* Bnd_VoxelGrid::GetSliceZ(const Standard_Integer theVoxelIndex) const
 {
-  auto it = mySlicesZ.find(theVoxelIndex);
-  return it != mySlicesZ.end() ? &it->second : nullptr;
+  const VectorInt* aResult = mySlicesZ.Seek(theVoxelIndex);
+  return aResult;
 }
 
 //==================================================================================================
@@ -341,16 +306,19 @@ bool Bnd_VoxelGrid::IsOccupied(const std::array<Standard_Integer, 6>& theVoxelBo
   const Standard_Integer aMaxVoxelY = theVoxelBox[4];
   const Standard_Integer aMaxVoxelZ = theVoxelBox[5];
 
+  // Use direct pointer access for faster occupancy check.
+  const Standard_Byte*   aData   = &myVoxelBits.First();
+  const Standard_Integer aZCount = aMaxVoxelZ - aMinVoxelZ + 1;
   for (Standard_Integer aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)
   {
+    const Standard_Byte* aRowX = aData + aVoxelX * myResolutionSquared;
     for (Standard_Integer aVoxelY = aMinVoxelY; aVoxelY <= aMaxVoxelY; ++aVoxelY)
     {
-      for (Standard_Integer aVoxelZ = aMinVoxelZ; aVoxelZ <= aMaxVoxelZ; ++aVoxelZ)
+      const Standard_Byte* aRowStart = aRowX + aVoxelY * myResolution + aMinVoxelZ;
+      // Use memchr to find first non-zero byte (value 1) in the Z range.
+      if (std::memchr(aRowStart, 1, aZCount) != nullptr)
       {
-        if (IsOccupied(aVoxelX, aVoxelY, aVoxelZ))
-        {
-          return true; // Found an occupied voxel.
-        }
+        return true; // Found an occupied voxel.
       }
     }
   }
@@ -365,7 +333,13 @@ void Bnd_VoxelGrid::AppendSliceX(const Standard_Integer theVoxelIndexMin,
 {
   for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
-    mySlicesX[i].push_back(theBoxIndex);
+    // ChangeSeek returns pointer if exists, nullptr otherwise. Single lookup for existing keys.
+    VectorInt* aVec = mySlicesX.ChangeSeek(i);
+    if (aVec == nullptr)
+    {
+      aVec = mySlicesX.Bound(i, VectorInt());
+    }
+    aVec->Append(theBoxIndex);
   }
 }
 
@@ -377,7 +351,12 @@ void Bnd_VoxelGrid::AppendSliceY(const Standard_Integer theVoxelIndexMin,
 {
   for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
-    mySlicesY[i].push_back(theBoxIndex);
+    VectorInt* aVec = mySlicesY.ChangeSeek(i);
+    if (aVec == nullptr)
+    {
+      aVec = mySlicesY.Bound(i, VectorInt());
+    }
+    aVec->Append(theBoxIndex);
   }
 }
 
@@ -389,7 +368,12 @@ void Bnd_VoxelGrid::AppendSliceZ(const Standard_Integer theVoxelIndexMin,
 {
   for (Standard_Integer i = theVoxelIndexMin; i <= theVoxelIndexMax; ++i)
   {
-    mySlicesZ[i].push_back(theBoxIndex);
+    VectorInt* aVec = mySlicesZ.ChangeSeek(i);
+    if (aVec == nullptr)
+    {
+      aVec = mySlicesZ.Bound(i, VectorInt());
+    }
+    aVec->Append(theBoxIndex);
   }
 }
 
@@ -632,8 +616,9 @@ void Bnd_BoundSortBox::calculateCoefficients()
 void Bnd_BoundSortBox::resetVoxelGrid()
 {
   myVoxelGrid = new Bnd_VoxelGrid(myResolution);
-  myLargeBoxes.clear();
-  myLargeBoxes.reserve(std::max(myBoxes->Size(), 2));
+  myLargeBoxes.Clear();
+  // Set block size to reduce reallocations when many large boxes are expected.
+  myLargeBoxes.SetIncrement(std::max(myBoxes->Length() / 16, 16));
 }
 
 //==================================================================================================
@@ -721,7 +706,7 @@ void Bnd_BoundSortBox::addBox(const Bnd_Box& theBox, const Standard_Integer theI
   // it is more efficient to test it normally rather than using voxel-based checks.
   if (aBoxMinSide * 4 > myResolution)
   {
-    myLargeBoxes.push_back(theIndex);
+    myLargeBoxes.Append(theIndex);
   }
   else
   {
