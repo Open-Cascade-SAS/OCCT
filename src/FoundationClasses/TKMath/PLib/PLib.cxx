@@ -717,7 +717,7 @@ constexpr int THE_MAX_OPT_DIM = 15;
 template <int dim>
 inline void eval_poly0(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  double aLocal[dim];
+  std::array<double, dim> aLocal;
   for (int i = 0; i < dim; ++i)
   {
     aLocal[i] = theCoeffs[i];
@@ -744,8 +744,8 @@ inline void eval_poly0(double* theResult, const double* theCoeffs, int theDegree
 template <int dim>
 inline void eval_poly1(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  double aLocal0[dim];
-  double aLocal1[dim];
+  std::array<double, dim> aLocal0;
+  std::array<double, dim> aLocal1;
 
   for (int i = 0; i < dim; ++i)
   {
@@ -767,10 +767,7 @@ inline void eval_poly1(double* theResult, const double* theCoeffs, int theDegree
 
   for (int i = 0; i < dim; ++i)
   {
-    theResult[i] = aLocal0[i];
-  }
-  for (int i = 0; i < dim; ++i)
-  {
+    theResult[i]       = aLocal0[i];
     theResult[dim + i] = aLocal1[i];
   }
 }
@@ -780,9 +777,9 @@ inline void eval_poly1(double* theResult, const double* theCoeffs, int theDegree
 template <int dim>
 inline void eval_poly2(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  double aLocal0[dim];
-  double aLocal1[dim];
-  double aLocal2[dim];
+  std::array<double, dim> aLocal0;
+  std::array<double, dim> aLocal1;
+  std::array<double, dim> aLocal2;
 
   for (int i = 0; i < dim; ++i)
   {
@@ -807,14 +804,8 @@ inline void eval_poly2(double* theResult, const double* theCoeffs, int theDegree
 
   for (int i = 0; i < dim; ++i)
   {
-    theResult[i] = aLocal0[i];
-  }
-  for (int i = 0; i < dim; ++i)
-  {
-    theResult[dim + i] = aLocal1[i];
-  }
-  for (int i = 0; i < dim; ++i)
-  {
+    theResult[i]           = aLocal0[i];
+    theResult[dim + i]     = aLocal1[i];
     theResult[2 * dim + i] = aLocal2[i];
   }
 }
@@ -904,10 +895,8 @@ inline void eval_poly2_runtime(double*       theResult,
   }
 }
 
-// Function pointer types for dispatch tables
-using EvalPoly0Func = void (*)(double*, const double*, int, double);
-using EvalPoly1Func = void (*)(double*, const double*, int, double);
-using EvalPoly2Func = void (*)(double*, const double*, int, double);
+// Function pointer type for dispatch tables
+using EvalPolyFunc = void (*)(double*, const double*, int, double);
 
 // Helper to generate dispatch tables at compile time
 template <template <int> class EvalFunc, typename FuncPtr, int... Is>
@@ -936,16 +925,16 @@ struct EvalPoly2Wrapper
 };
 
 // Dispatch tables for dimensions 1..15
-static const std::array<EvalPoly0Func, THE_MAX_OPT_DIM> THE_EVAL_POLY0_TABLE =
-  makeDispatchTable<EvalPoly0Wrapper, EvalPoly0Func>(
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY0_TABLE =
+  makeDispatchTable<EvalPoly0Wrapper, EvalPolyFunc>(
     std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
 
-static const std::array<EvalPoly1Func, THE_MAX_OPT_DIM> THE_EVAL_POLY1_TABLE =
-  makeDispatchTable<EvalPoly1Wrapper, EvalPoly1Func>(
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY1_TABLE =
+  makeDispatchTable<EvalPoly1Wrapper, EvalPolyFunc>(
     std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
 
-static const std::array<EvalPoly2Func, THE_MAX_OPT_DIM> THE_EVAL_POLY2_TABLE =
-  makeDispatchTable<EvalPoly2Wrapper, EvalPoly2Func>(
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY2_TABLE =
+  makeDispatchTable<EvalPoly2Wrapper, EvalPolyFunc>(
     std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
 
 } // namespace
