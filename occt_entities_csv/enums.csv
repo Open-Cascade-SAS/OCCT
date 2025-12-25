@@ -8,7 +8,6 @@
 (unnamed enum at E:\code\occtSrc\Install\inc\Aspect_XRGenericAction.hxx:40:1),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\Aspect_XRGenericAction.hxx:40:1),,(unnamed enum at E:\code\occtSrc\Install\inc\Aspect,Unknown
 (unnamed enum at E:\code\occtSrc\Install\inc\Aspect_XRTrackedDeviceRole.hxx:26:1),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\Aspect_XRTrackedDeviceRole.hxx:26:1),,(unnamed enum at E:\code\occtSrc\Install\inc\Aspect,Unknown
 (unnamed enum at E:\code\occtSrc\Install\inc\BRepFill_AdvancedEvolved.hxx:105:3),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\BRepFill_AdvancedEvolved.hxx:105:3),,(unnamed enum at E:\code\occtSrc\Install\inc\BRepFill,Unknown
-(unnamed enum at E:\code\occtSrc\Install\inc\BRepFill_AdvancedEvolved.hxx:105:3),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\BRepFill_AdvancedEvolved.hxx:105:3),,(unnamed enum at E:\code\occtSrc\Install\inc\BRepFill,Unknown
 (unnamed enum at E:\code\occtSrc\Install\inc\BVH_Constants.hxx:17:1),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\BVH_Constants.hxx:17:1),,(unnamed enum at E:\code\occtSrc\Install\inc\BVH,Unknown
 (unnamed enum at E:\code\occtSrc\Install\inc\BinMXCAFDoc_VisMaterialDriver.hxx:36:3),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\BinMXCAFDoc_VisMaterialDriver.hxx:36:3),,(unnamed enum at E:\code\occtSrc\Install\inc\BinMXCAFDoc,Unknown
 (unnamed enum at E:\code\occtSrc\Install\inc\BinTools_FormatVersion.hxx:33:1),,Enum,(unnamed enum at E:\code\occtSrc\Install\inc\BinTools_FormatVersion.hxx:33:1),,(unnamed enum at E:\code\occtSrc\Install\inc\BinTools,Unknown
@@ -88,7 +87,6 @@ Aspect_GridType,,Enum,Aspect_GridType,,Aspect,TKService
 Aspect_HatchStyle,,Enum,Aspect_HatchStyle,,Aspect,TKService
 Aspect_InteriorStyle,,Enum,Aspect_InteriorStyle,,Aspect,TKService
 Aspect_PolygonOffsetMode,,Enum,Aspect_PolygonOffsetMode,,Aspect,TKService
-Aspect_PolygonOffsetMode,,Enum,Aspect_PolygonOffsetMode,,Aspect,TKService
 Aspect_TypeOfColorScaleData,,Enum,Aspect_TypeOfColorScaleData,,Aspect,TKService
 Aspect_TypeOfColorScaleOrientation,,Enum,Aspect_TypeOfColorScaleOrientation,,Aspect,TKService
 Aspect_TypeOfColorScalePosition,,Enum,Aspect_TypeOfColorScalePosition,,Aspect,TKService
@@ -113,9 +111,6 @@ BOPAlgo_CheckStatus,,Enum,BOPAlgo_CheckStatus,,BOPAlgo,TKBO
 BOPAlgo_GlueEnum,,Enum,BOPAlgo_GlueEnum,,BOPAlgo,TKBO
 BOPAlgo_Operation,,Enum,BOPAlgo_Operation,,BOPAlgo,TKBO
 BOPAlgo_PIOperation,,Enum,BOPAlgo_PIOperation,,BOPAlgo,TKBO
-BOPAlgo_PIOperation,,Enum,BOPAlgo_PIOperation,,BOPAlgo,TKBO
-BOPAlgo_PIOperation,,Enum,BOPAlgo_PIOperation,,BOPAlgo,TKBO
-BOPAlgo_PIOperation,,Enum,BOPAlgo_PIOperation,,BOPAlgo,TKBO
 BRepBuilderAPI_EdgeError,,Enum,BRepBuilderAPI_EdgeError,,BRepBuilderAPI,TKTopAlgo
 BRepBuilderAPI_FaceError,,Enum,BRepBuilderAPI_FaceError,,BRepBuilderAPI,TKTopAlgo
 BRepBuilderAPI_PipeError,,Enum,BRepBuilderAPI_PipeError,,BRepBuilderAPI,TKTopAlgo
@@ -132,8 +127,6 @@ BRepFill_ThruSectionErrorStatus,,Enum,BRepFill_ThruSectionErrorStatus,,BRepFill,
 BRepFill_TransitionStyle,,Enum,BRepFill_TransitionStyle,,BRepFill,TKBool
 BRepFill_TypeOfContact,,Enum,BRepFill_TypeOfContact,,BRepFill,TKBool
 BRepGProp_GaussType,,Enum,BRepGProp_GaussType,,BRepGProp,TKTopAlgo
-BRepGProp_GaussType,,Enum,BRepGProp_GaussType,,BRepGProp,TKTopAlgo
-BRepGProp_MeshObjType,,Enum,BRepGProp_MeshObjType,,BRepGProp,TKTopAlgo
 BRepGProp_MeshObjType,,Enum,BRepGProp_MeshObjType,,BRepGProp,TKTopAlgo
 BRepLib_EdgeError,,Enum,BRepLib_EdgeError,,BRepLib,TKTopAlgo
 BRepLib_FaceError,,Enum,BRepLib_FaceError,,BRepLib,TKTopAlgo
@@ -181,16 +174,12 @@ Convert_ParameterisationType,,Enum,Convert_ParameterisationType,,Convert,TKMath
 Counter,,Enum,Counter,,Counter,Unknown
 DIR_RESPONSE,,Enum,DIR_RESPONSE,,DIR,Unknown
 DataTag,,Enum,DataTag,,DataTag,Unknown
-DataTag,,Enum,DataTag,,DataTag,Unknown
-DataTag,,Enum,DataTag,,DataTag,Unknown
 DisplayMode,,Enum,DisplayMode,,DisplayMode,Unknown
 Draft_ErrorStatus,,Enum,Draft_ErrorStatus,,Draft,TKOffset
 Draw_ColorKind,,Enum,Draw_ColorKind,,Draw,TKDraw
 Draw_MarkerShape,,Enum,Draw_MarkerShape,,Draw,TKDraw
 DsgPrs_ArrowSide,,Enum,DsgPrs_ArrowSide,,DsgPrs,TKV3d
 EMaskFlags,,Enum,EMaskFlags,,EMaskFlags,Unknown
-EMaskFlags,,Enum,EMaskFlags,,EMaskFlags,Unknown
-EMskFlags,,Enum,EMskFlags,,EMskFlags,Unknown
 EMskFlags,,Enum,EMskFlags,,EMskFlags,Unknown
 EdgeType,,Enum,EdgeType,,EdgeType,Unknown
 Extrema_ElementType,,Enum,Extrema_ElementType,,Extrema,TKGeomBase
@@ -320,7 +309,6 @@ Interface_ParamType,,Enum,Interface_ParamType,,Interface,TKXSBase
 Intf_PIType,,Enum,Intf_PIType,,Intf,TKGeomAlgo
 Intrv_Position,,Enum,Intrv_Position,,Intrv,TKHLR
 IterationFilter,,Enum,IterationFilter,,IterationFilter,Unknown
-IterationFilter,,Enum,IterationFilter,,IterationFilter,Unknown
 KeyStatus,,Enum,KeyStatus,,KeyStatus,Unknown
 LProp_CIType,,Enum,LProp_CIType,,LProp,TKG2d
 LProp_Status,,Enum,LProp_Status,,LProp,TKG2d
@@ -331,13 +319,10 @@ LocalAnalysis_StatusErrorType,,Enum,LocalAnalysis_StatusErrorType,,LocalAnalysis
 MAT_Side,,Enum,MAT_Side,,MAT,TKTopAlgo
 ManipulatorSkin,,Enum,ManipulatorSkin,,ManipulatorSkin,Unknown
 MaskFlags,,Enum,MaskFlags,,MaskFlags,Unknown
-MaskFlags,,Enum,MaskFlags,,MaskFlags,Unknown
 Media_PlayerEvent,,Enum,Media_PlayerEvent,,Media,TKService
 MeshVS_DrawerAttribute,,Enum,MeshVS_DrawerAttribute,,MeshVS,TKMeshVS
 MeshVS_EntityType,,Enum,MeshVS_EntityType,,MeshVS,TKMeshVS
-MeshVS_EntityType,,Enum,MeshVS_EntityType,,MeshVS,TKMeshVS
 MeshVS_MeshSelectionMethod,,Enum,MeshVS_MeshSelectionMethod,,MeshVS,TKMeshVS
-MeshVS_SelectionModeFlags,,Enum,MeshVS_SelectionModeFlags,,MeshVS,TKMeshVS
 MeshVS_SelectionModeFlags,,Enum,MeshVS_SelectionModeFlags,,MeshVS,TKMeshVS
 Message_ConsoleColor,,Enum,Message_ConsoleColor,,Message,TKernel
 Message_Gravity,,Enum,Message_Gravity,,Message,TKernel
@@ -347,7 +332,6 @@ Message_StatusType,,Enum,Message_StatusType,,Message,TKernel
 ModeType,,Enum,ModeType,,ModeType,Unknown
 MoniTool_ValueType,,Enum,MoniTool_ValueType,,MoniTool,TKXSBase
 NCollection_CellFilter_Action,,Enum,NCollection_CellFilter_Action,,NCollection,TKernel
-NodeType,,Enum,NodeType,,NodeType,Unknown
 NodeType,,Enum,NodeType,,NodeType,Unknown
 OSD_FromWhere,,Enum,OSD_FromWhere,,OSD,TKernel
 OSD_KindFile,,Enum,OSD_KindFile,,OSD,TKernel
@@ -419,14 +403,10 @@ RaytraceInitStatus,,Enum,RaytraceInitStatus,,RaytraceInitStatus,Unknown
 RaytraceUpdateMode,,Enum,RaytraceUpdateMode,,RaytraceUpdateMode,Unknown
 ReadMode_AssemblyLevel,,Enum,ReadMode_AssemblyLevel,,ReadMode,Unknown
 ReadMode_BSplineContinuity,,Enum,ReadMode_BSplineContinuity,,ReadMode,Unknown
-ReadMode_BSplineContinuity,,Enum,ReadMode_BSplineContinuity,,ReadMode,Unknown
 ReadMode_MaxPrecision,,Enum,ReadMode_MaxPrecision,,ReadMode,Unknown
-ReadMode_MaxPrecision,,Enum,ReadMode_MaxPrecision,,ReadMode,Unknown
-ReadMode_Precision,,Enum,ReadMode_Precision,,ReadMode,Unknown
 ReadMode_Precision,,Enum,ReadMode_Precision,,ReadMode,Unknown
 ReadMode_ProductContext,,Enum,ReadMode_ProductContext,,ReadMode,Unknown
 ReadMode_ShapeRepr,,Enum,ReadMode_ShapeRepr,,ReadMode,Unknown
-ReadMode_SurfaceCurve,,Enum,ReadMode_SurfaceCurve,,ReadMode,Unknown
 ReadMode_SurfaceCurve,,Enum,ReadMode_SurfaceCurve,,ReadMode,Unknown
 RecordType,,Enum,RecordType,,RecordType,Unknown
 RedrawMode,,Enum,RedrawMode,,RedrawMode,Unknown
@@ -443,7 +423,6 @@ SelectMgr_StateOfSelection,,Enum,SelectMgr_StateOfSelection,,SelectMgr,TKV3d
 SelectMgr_TypeOfBVHUpdate,,Enum,SelectMgr_TypeOfBVHUpdate,,SelectMgr,TKV3d
 SelectMgr_TypeOfDepthTolerance,,Enum,SelectMgr_TypeOfDepthTolerance,,SelectMgr,TKV3d
 SelectMgr_TypeOfUpdate,,Enum,SelectMgr_TypeOfUpdate,,SelectMgr,TKV3d
-SelectionMode,,Enum,SelectionMode,,SelectionMode,Unknown
 SelectionMode,,Enum,SelectionMode,,SelectionMode,Unknown
 ShaderImageNames,,Enum,ShaderImageNames,,ShaderImageNames,Unknown
 ShaderVariableIndex,,Enum,ShaderVariableIndex,,ShaderVariableIndex,Unknown
@@ -522,7 +501,6 @@ TFunction_ExecutionStatus,,Enum,TFunction_ExecutionStatus,,TFunction,TKLCAF
 TNaming_Evolution,,Enum,TNaming_Evolution,,TNaming,TKCAF
 TNaming_NameType,,Enum,TNaming_NameType,,TNaming,TKCAF
 TObj_DeletingMode,,Enum,TObj_DeletingMode,,TObj,TKTObj
-TObj_DeletingMode,,Enum,TObj_DeletingMode,,TObj,TKTObj
 TRelationType,,Enum,TRelationType,,TRelationType,Unknown
 TReplacementKind,,Enum,TReplacementKind,,TReplacementKind,Unknown
 TopAbs_Orientation,,Enum,TopAbs_Orientation,,TopAbs,TKG3d
@@ -578,7 +556,6 @@ WriteMode_Assembly,,Enum,WriteMode_Assembly,,WriteMode,Unknown
 WriteMode_BRep,,Enum,WriteMode_BRep,,WriteMode,Unknown
 WriteMode_ConvertSurface,,Enum,WriteMode_ConvertSurface,,WriteMode,Unknown
 WriteMode_PlaneMode,,Enum,WriteMode_PlaneMode,,WriteMode,Unknown
-WriteMode_PrecisionMode,,Enum,WriteMode_PrecisionMode,,WriteMode,Unknown
 WriteMode_PrecisionMode,,Enum,WriteMode_PrecisionMode,,WriteMode,Unknown
 WriteMode_RepresentationType,,Enum,WriteMode_RepresentationType,,WriteMode,Unknown
 WriteMode_StepSchema,,Enum,WriteMode_StepSchema,,WriteMode,Unknown

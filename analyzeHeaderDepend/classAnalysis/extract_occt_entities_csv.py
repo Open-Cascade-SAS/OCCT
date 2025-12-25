@@ -100,6 +100,7 @@ def extract_entities_from_file(filepath):
         return []
 
     entities = []
+    seen_entities = set()  # 用于去重
     target_filename = os.path.basename(filepath).lower()
     
     def visit(node, parent_namespace=""):
@@ -113,46 +114,58 @@ def extract_entities_from_file(filepath):
         if node.kind == CursorKind.CLASS_DECL and node.is_definition():
             if node.spelling:
                 full_name = f"{parent_namespace}::{node.spelling}" if parent_namespace else node.spelling
-                entities.append({
-                    'type': 'Class',
-                    'name': node.spelling,
-                    'full_name': full_name,
-                    'namespace': parent_namespace
-                })
+                entity_key = ('Class', full_name)
+                if entity_key not in seen_entities:
+                    seen_entities.add(entity_key)
+                    entities.append({
+                        'type': 'Class',
+                        'name': node.spelling,
+                        'full_name': full_name,
+                        'namespace': parent_namespace
+                    })
         
         # 结构体
         elif node.kind == CursorKind.STRUCT_DECL and node.is_definition():
             if node.spelling:
                 full_name = f"{parent_namespace}::{node.spelling}" if parent_namespace else node.spelling
-                entities.append({
-                    'type': 'Struct',
-                    'name': node.spelling,
-                    'full_name': full_name,
-                    'namespace': parent_namespace
-                })
+                entity_key = ('Struct', full_name)
+                if entity_key not in seen_entities:
+                    seen_entities.add(entity_key)
+                    entities.append({
+                        'type': 'Struct',
+                        'name': node.spelling,
+                        'full_name': full_name,
+                        'namespace': parent_namespace
+                    })
         
         # 枚举
         elif node.kind == CursorKind.ENUM_DECL and node.is_definition():
             if node.spelling:
                 full_name = f"{parent_namespace}::{node.spelling}" if parent_namespace else node.spelling
-                entities.append({
-                    'type': 'Enum',
-                    'name': node.spelling,
-                    'full_name': full_name,
-                    'namespace': parent_namespace
-                })
+                entity_key = ('Enum', full_name)
+                if entity_key not in seen_entities:
+                    seen_entities.add(entity_key)
+                    entities.append({
+                        'type': 'Enum',
+                        'name': node.spelling,
+                        'full_name': full_name,
+                        'namespace': parent_namespace
+                    })
         
         # 命名空间
         elif node.kind == CursorKind.NAMESPACE:
             if node.spelling:
                 new_namespace = f"{parent_namespace}::{node.spelling}" if parent_namespace else node.spelling
-                entities.append({
-                    'type': 'Namespace',
-                    'name': node.spelling,
-                    'full_name': new_namespace,
-                    'namespace': parent_namespace
-                })
-                # 递归处理命名空间内的实体
+                entity_key = ('Namespace', new_namespace)
+                if entity_key not in seen_entities:
+                    seen_entities.add(entity_key)
+                    entities.append({
+                        'type': 'Namespace',
+                        'name': node.spelling,
+                        'full_name': new_namespace,
+                        'namespace': parent_namespace
+                    })
+                # 递归处理命名空间内的实体（即使已记录过命名空间，也要处理其内容）
                 for child in node.get_children():
                     visit(child, new_namespace)
                 return
@@ -398,6 +411,7 @@ def main():
     
     # 3. 从所有头文件中提取实体
     all_entities = []
+    global_seen_entities = {}  # 全局去重: key=(type, full_name), value=entity_dict
     hxx_files = glob.glob(os.path.join(OCCT_INC_DIR, "*.hxx"))
     
     print(f"\n开始解析 {len(hxx_files)} 个头文件...")
@@ -406,7 +420,13 @@ def main():
             print(f"进度: {i}/{len(hxx_files)} ({(i/len(hxx_files)*100):.1f}%)")
         
         entities = extract_entities_from_file(hxx_file)
-        all_entities.extend(entities)
+        
+        # 全局去重
+        for entity in entities:
+            entity_key = (entity['type'], entity['full_name'])
+            if entity_key not in global_seen_entities:
+                global_seen_entities[entity_key] = entity
+                all_entities.append(entity)
     
     print(f"\n共提取 {len(all_entities)} 个实体:")
     entity_counts = defaultdict(int)

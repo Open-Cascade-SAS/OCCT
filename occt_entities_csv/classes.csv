@@ -174,7 +174,6 @@ Aspect_XRAction,,Class,Aspect_XRAction,,Aspect,TKService
 Aspect_XRActionSet,,Class,Aspect_XRActionSet,,Aspect,TKService
 Aspect_XRSession,,Class,Aspect_XRSession,,Aspect,TKService
 Axis,,Class,Axis,,Axis,Unknown
-Axis,,Class,Axis,,Axis,Unknown
 AxisAspect,,Class,AxisAspect,,AxisAspect,Unknown
 BOPAlgo_AlertAcquiredSelfIntersection,,Class,BOPAlgo_AlertAcquiredSelfIntersection,,BOPAlgo,TKBO
 BOPAlgo_AlertBOPNotAllowed,,Class,BOPAlgo_AlertBOPNotAllowed,,BOPAlgo,TKBO
@@ -859,7 +858,6 @@ CPnts_UniformDeflection,,Class,CPnts_UniformDeflection,,CPnts,TKGeomBase
 CSLib,,Class,CSLib,,CSLib,TKMath
 CSLib_Class2d,,Class,CSLib_Class2d,,CSLib,TKMath
 CSLib_NormalPolyDef,,Class,CSLib_NormalPolyDef,,CSLib,TKMath
-Callback,,Class,Callback,,Callback,Unknown
 Callback,,Class,Callback,,Callback,Unknown
 ChFi2d,,Class,ChFi2d,,ChFi2d,TKFillet
 ChFi2d_AnaFilletAlgo,,Class,ChFi2d_AnaFilletAlgo,,ChFi2d,TKFillet
@@ -1681,7 +1679,6 @@ Geom_UndefinedDerivative,,Class,Geom_UndefinedDerivative,,Geom,TKG3d
 Geom_UndefinedValue,,Class,Geom_UndefinedValue,,Geom,TKG3d
 Geom_Vector,,Class,Geom_Vector,,Geom,TKG3d
 Geom_VectorWithMagnitude,,Class,Geom_VectorWithMagnitude,,Geom,TKG3d
-Geometry,,Class,Geometry,,Geometry,Unknown
 Geometry,,Class,Geometry,,Geometry,Unknown
 GeometryTest,,Class,GeometryTest,,GeometryTest,TKTopTest
 GeometryTest_DrawableQualifiedCurve2d,,Class,GeometryTest_DrawableQualifiedCurve2d,,GeometryTest,TKTopTest
@@ -4605,8 +4602,6 @@ HelixGeom_BuilderHelixGen,,Class,HelixGeom_BuilderHelixGen,,HelixGeom,Unknown
 HelixGeom_HelixCurve,,Class,HelixGeom_HelixCurve,,HelixGeom,Unknown
 HelixGeom_Tools,,Class,HelixGeom_Tools,,HelixGeom,Unknown
 Helper,,Class,Helper,,Helper,Unknown
-Helper,,Class,Helper,,Helper,Unknown
-Helper,,Class,Helper,,Helper,Unknown
 Hermit,,Class,Hermit,,Hermit,TKGeomBase
 IFGraph_AllConnected,,Class,IFGraph_AllConnected,,IFGraph,TKXSBase
 IFGraph_AllShared,,Class,IFGraph_AllShared,,IFGraph,TKXSBase
@@ -5371,25 +5366,6 @@ Intrv_Interval,,Class,Intrv_Interval,,Intrv,TKHLR
 Intrv_Intervals,,Class,Intrv_Intervals,,Intrv,TKHLR
 ItemLocation,,Class,ItemLocation,,ItemLocation,Unknown
 Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
-Iterator,,Class,Iterator,,Iterator,Unknown
 IteratorInterface,,Class,IteratorInterface,,IteratorInterface,Unknown
 IteratorOfLink,,Class,IteratorOfLink,,IteratorOfLink,Unknown
 IteratorOfNode,,Class,IteratorOfNode,,IteratorOfNode,Unknown
@@ -5587,7 +5563,6 @@ NLPlate_HPG2Constraint,,Class,NLPlate_HPG2Constraint,,NLPlate,TKGeomAlgo
 NLPlate_HPG3Constraint,,Class,NLPlate_HPG3Constraint,,NLPlate,TKGeomAlgo
 NLPlate_NLPlate,,Class,NLPlate_NLPlate,,NLPlate,TKGeomAlgo
 Name,,Class,Name,,Name,Unknown
-Name,,Class,Name,,Name,Unknown
 Name_1,,Class,Name_1,,Name,Unknown
 Name_2,,Class,Name_2,,Name,Unknown
 NamedShape,,Class,NamedShape,,NamedShape,Unknown
@@ -5646,7 +5621,6 @@ OSD_Signal,,Class,OSD_Signal,,OSD,TKernel
 OSD_Thread,,Class,OSD_Thread,,OSD,TKernel
 OSD_ThreadPool,,Class,OSD_ThreadPool,,OSD,TKernel
 OSD_Timer,,Class,OSD_Timer,,OSD,TKernel
-ObjectSentry,,Class,ObjectSentry,,ObjectSentry,Unknown
 ObjectSentry,,Class,ObjectSentry,,ObjectSentry,Unknown
 OpenGlTest,,Class,OpenGlTest,,OpenGlTest,TKOpenGlTest
 OpenGl_Aspects,,Class,OpenGl_Aspects,,OpenGl,TKOpenGles
@@ -5739,7 +5713,6 @@ PLib_DoubleJacobiPolynomial,,Class,PLib_DoubleJacobiPolynomial,,PLib,TKMath
 PLib_HermitJacobi,,Class,PLib_HermitJacobi,,PLib,TKMath
 PLib_JacobiPolynomial,,Class,PLib_JacobiPolynomial,,PLib,TKMath
 PeriodicInterval,,Class,PeriodicInterval,,PeriodicInterval,Unknown
-Persistence_,,Class,Persistence_,,Persistence,Unknown
 Persistence_,,Class,Persistence_,,Persistence,Unknown
 Plate_D1,,Class,Plate_D1,,Plate,TKGeomAlgo
 Plate_D2,,Class,Plate_D2,,Plate,TKGeomAlgo
@@ -6012,7 +5985,6 @@ SelectMgr_TriangularFrustumSet,,Class,SelectMgr_TriangularFrustumSet,,SelectMgr,
 SelectMgr_ViewClipRange,,Class,SelectMgr_ViewClipRange,,SelectMgr,TKV3d
 SelectMgr_ViewerSelector,,Class,SelectMgr_ViewerSelector,,SelectMgr,TKV3d
 Selector,,Class,Selector,,Selector,Unknown
-Sentry,,Class,Sentry,,Sentry,Unknown
 Sentry,,Class,Sentry,,Sentry,Unknown
 ShaderSource,,Class,ShaderSource,,ShaderSource,Unknown
 ShapeAlgo,,Class,ShapeAlgo,,ShapeAlgo,TKShHealing
@@ -8138,8 +8110,6 @@ XmlXCAFDrivers_DocumentStorageDriver,,Class,XmlXCAFDrivers_DocumentStorageDriver
 Xw_Window,,Class,Xw_Window,,Xw,TKService
 _void,,Class,_void,,,Unknown
 base,,Class,base,,base,Unknown
-base,,Class,base,,base,Unknown
-base,,Class,base,,base,Unknown
 parser,,Class,exptocas::parser,exptocas,parser,Unknown
 scanner,,Class,exptocas::scanner,exptocas,scanner,Unknown
 slice,,Class,exptocas::slice,exptocas,slice,Unknown
@@ -8256,14 +8226,8 @@ math_TrigonometricFunctionRoots,,Class,math_TrigonometricFunctionRoots,,math,TKM
 math_Uzawa,,Class,math_Uzawa,,math,TKMath
 math_ValueAndWeight,,Class,math_ValueAndWeight,,math,TKMath
 pBSpline,,Class,pBSpline,,pBSpline,Unknown
-pBSpline,,Class,pBSpline,,pBSpline,Unknown
-pBSpline,,Class,pBSpline,,pBSpline,Unknown
-pBezier,,Class,pBezier,,pBezier,Unknown
-pBezier,,Class,pBezier,,pBezier,Unknown
 pBezier,,Class,pBezier,,pBezier,Unknown
 pLinearExtrusion,,Class,pLinearExtrusion,,pLinearExtrusion,Unknown
-pOffset,,Class,pOffset,,pOffset,Unknown
-pOffset,,Class,pOffset,,pOffset,Unknown
 pOffset,,Class,pOffset,,pOffset,Unknown
 pPolygon2D,,Class,pPolygon2D,,pPolygon2D,Unknown
 pPolygon3D,,Class,pPolygon3D,,pPolygon3D,Unknown
@@ -8277,7 +8241,6 @@ pTFace,,Class,pTFace,,pTFace,Unknown
 pTShape,,Class,pTShape,,pTShape,Unknown
 pTVertex,,Class,pTVertex,,pTVertex,Unknown
 pTriangulation,,Class,pTriangulation,,pTriangulation,Unknown
-pTrimmed,,Class,pTrimmed,,pTrimmed,Unknown
 pTrimmed,,Class,pTrimmed,,pTrimmed,Unknown
 context,,Class,step::context,step,context,Unknown
 parser,,Class,step::parser,step,parser,Unknown
