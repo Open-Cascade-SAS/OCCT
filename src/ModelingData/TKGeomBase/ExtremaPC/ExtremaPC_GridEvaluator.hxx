@@ -22,20 +22,12 @@
 #include <MathRoot_Newton.hxx>
 #include <MathUtils_Config.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_KDTree.hxx>
 #include <NCollection_Vector.hxx>
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <utility>
-
-//! Specialization of KD-Tree DefaultAccessor for gp_Pnt.
-template <>
-struct NCollection_KDTree<gp_Pnt, 3>::DefaultAccessor
-{
-  static double Coord(const gp_Pnt& thePnt, int theAxis) { return thePnt.Coord(theAxis + 1); }
-};
 
 //! @brief Grid-based point-curve extrema computation class.
 //!
@@ -168,11 +160,11 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return batch result with one Result per query point
-  [[nodiscard]] ExtremaPC::BatchResult PerformBatch(const Adaptor3d_Curve&           theCurve,
+  [[nodiscard]] ExtremaPC::BatchResult PerformBatch(const Adaptor3d_Curve&            theCurve,
                                                      const NCollection_Array1<gp_Pnt>& thePoints,
-                                                     const ExtremaPC::Domain1D&       theDomain,
-                                                     double                           theTol,
-                                                     ExtremaPC::SearchMode            theMode) const
+                                                     const ExtremaPC::Domain1D&        theDomain,
+                                                     double                            theTol,
+                                                     ExtremaPC::SearchMode             theMode) const
   {
     ExtremaPC::BatchResult aResults(thePoints.Lower(), thePoints.Upper());
 
@@ -181,50 +173,22 @@ public:
       return aResults;
     }
 
-    // Ensure KD-Tree is built
-    ensureKDTree();
-
-    // Number of nearest grid points to check per query
-    // Use sqrt(gridSize) as heuristic, with minimum of 3 and maximum of 15
-    const int aNbGrid = myGrid.Size();
-    const int aK      = std::min(15, std::max(3, static_cast<int>(std::sqrt(aNbGrid))));
-
-    // Pre-allocate vectors before loop (reused via Clear)
-    NCollection_Vector<int>    aKNearestIndices;
-    NCollection_Vector<double> aKNearestDists;
-
-    // Process each query point
+    // Process each query point using full grid scan (same as single-point Perform)
+    // This ensures correctness; optimization via KD-Tree can be added later
+    // if profiling shows it's needed for specific use cases.
     for (int q = thePoints.Lower(); q <= thePoints.Upper(); ++q)
     {
       const gp_Pnt& aQueryPt = thePoints.Value(q);
 
-      // Find K nearest grid points using KD-Tree
-      aKNearestIndices.Clear();
-      aKNearestDists.Clear();
-      myKDTree.FindKNearest(aQueryPt, aK, aKNearestIndices, aKNearestDists);
-
-      // Collect candidate segments (grid indices to check)
-      myCandidateSegments.Clear();
-
-      for (int k = 0; k < aKNearestIndices.Length(); ++k)
-      {
-        int aGridIdx = aKNearestIndices.Value(k);
-
-        // Check this grid point and adjacent segments
-        if (aGridIdx > 0)
-        {
-          addCandidateSegment(aGridIdx - 1);
-        }
-        addCandidateSegment(aGridIdx);
-        if (aGridIdx < aNbGrid - 1)
-        {
-          addCandidateSegment(aGridIdx + 1);
-        }
-      }
-
-      // Now scan only the candidate segments for this query point
-      scanGridForQuery(aQueryPt, theTol, theMode);
+      // Use the same algorithm as single-point Perform
+      myResult.Clear();
+      scanGrid(aQueryPt, theTol, theMode);
       refineCandidates(theCurve, aQueryPt, theDomain, theTol, theMode);
+
+      if (!myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaPC::Status::OK;
+      }
 
       // Move result to batch results
       aResults[q] = std::move(myResult);
@@ -232,150 +196,6 @@ public:
     }
 
     return aResults;
-  }
-
-  //! Invalidate KD-Tree (call after grid changes).
-  void InvalidateKDTree() const { myKDTreeBuilt = false; }
-
-private:
-  //! Ensure KD-Tree is built from grid points.
-  void ensureKDTree() const
-  {
-    if (myKDTreeBuilt)
-    {
-      return;
-    }
-
-    // Build array of grid point positions for KD-Tree
-    const int aNbGrid = myGrid.Size();
-    if (aNbGrid == 0)
-    {
-      return;
-    }
-
-    myKDTreePoints.Resize(0, aNbGrid - 1, false);
-    for (int i = 0; i < aNbGrid; ++i)
-    {
-      myKDTreePoints[i] = myGrid[i].Point;
-    }
-
-    myKDTree.Build(myKDTreePoints);
-    myKDTreeBuilt = true;
-  }
-
-  //! Add candidate segment index if not already present.
-  void addCandidateSegment(int theIdx) const
-  {
-    // Simple linear search is fine for small K
-    for (int i = 0; i < myCandidateSegments.Length(); ++i)
-    {
-      if (myCandidateSegments.Value(i) == theIdx)
-      {
-        return;
-      }
-    }
-    myCandidateSegments.Append(theIdx);
-  }
-
-  //! Scan only candidate segments for a specific query point.
-  void scanGridForQuery(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
-  {
-    myCandidates.Clear();
-    const int aNbGrid = myGrid.Size();
-
-    if (aNbGrid < 2 || myCandidateSegments.IsEmpty())
-    {
-      return;
-    }
-
-    // Resize processed array if needed
-    if (myProcessed.Size() != aNbGrid)
-    {
-      myProcessed = NCollection_Array1<bool>(0, aNbGrid - 1);
-    }
-    myProcessed.Init(false);
-
-    // Process candidate segments
-    for (int s = 0; s < myCandidateSegments.Length(); ++s)
-    {
-      int i = myCandidateSegments.Value(s);
-      if (i < 0 || i >= aNbGrid)
-        continue;
-
-      const GridPoint& aGP = myGrid[i];
-
-      // Compute distance function value: F(u) = (C(u) - P) . C'(u)
-      gp_Vec aVec(theP, aGP.Point);
-      double aF    = aVec.Dot(aGP.D1);
-      double aDist = aVec.SquareMagnitude();
-
-      // Check for sign change with next point
-      if (i < aNbGrid - 1 && !myProcessed[i])
-      {
-        const GridPoint& aNextGP = myGrid[i + 1];
-        gp_Vec           aNextVec(theP, aNextGP.Point);
-        double           aNextF = aNextVec.Dot(aNextGP.D1);
-
-        if (aF * aNextF < 0.0)
-        {
-          Candidate aCand;
-          aCand.Type  = CandidateType::SignChange;
-          aCand.IdxLo = i;
-          aCand.IdxHi = i + 1;
-          // Use linear interpolation for better starting point
-          double aULo  = myGrid[i].Param;
-          double aUHi  = aNextGP.Param;
-          aCand.StartU = aULo - aF * (aUHi - aULo) / (aNextF - aF);
-          myCandidates.Append(aCand);
-          myProcessed[i]     = true;
-          myProcessed[i + 1] = true;
-        }
-      }
-
-      // Check for near-zero F (direct hit on extremum)
-      if (std::abs(aF) < theTol * 10.0 && !myProcessed[i])
-      {
-        Candidate aCand;
-        aCand.Type   = CandidateType::NearZero;
-        aCand.IdxLo  = i;
-        aCand.IdxHi  = i;
-        aCand.StartU = aGP.Param;
-        myCandidates.Append(aCand);
-        myProcessed[i] = true;
-      }
-
-      // Check for local extremum by distance comparison (3-point test)
-      if (i > 0 && i < aNbGrid - 1 && !myProcessed[i])
-      {
-        double aPrevDist = theP.SquareDistance(myGrid[i - 1].Point);
-        double aNextDist = theP.SquareDistance(myGrid[i + 1].Point);
-
-        bool aIsLocalMin = (aDist <= aPrevDist && aDist <= aNextDist);
-        bool aIsLocalMax = (aDist >= aPrevDist && aDist >= aNextDist);
-
-        if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMin)
-        {
-          Candidate aCand;
-          aCand.Type   = CandidateType::NearZero;
-          aCand.IdxLo  = i;
-          aCand.IdxHi  = i;
-          aCand.StartU = aGP.Param;
-          myCandidates.Append(aCand);
-          myProcessed[i] = true;
-        }
-        else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMax
-                 && !aIsLocalMin)
-        {
-          Candidate aCand;
-          aCand.Type   = CandidateType::NearZero;
-          aCand.IdxLo  = i;
-          aCand.IdxHi  = i;
-          aCand.StartU = aGP.Param;
-          myCandidates.Append(aCand);
-          myProcessed[i] = true;
-        }
-      }
-    }
   }
 
 private:
@@ -718,11 +538,6 @@ private:
   mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
   mutable NCollection_Array1<bool>                 myProcessed;     //!< Processed flags for grid scan
 
-  // KD-Tree for batch processing
-  mutable NCollection_Array1<gp_Pnt>        myKDTreePoints;      //!< Grid point positions for KD-Tree
-  mutable NCollection_KDTree<gp_Pnt, 3>     myKDTree;            //!< KD-Tree of grid points
-  mutable bool                              myKDTreeBuilt = false; //!< Whether KD-Tree is built
-  mutable NCollection_Vector<int>           myCandidateSegments; //!< Candidate segment indices for batch
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile
