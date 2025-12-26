@@ -82,7 +82,7 @@ struct PlaneProjector
   }
 
   //! Project point onto plane.
-  //! @return 2D point where X = (P - Origin) · XDirection, Y = (P - Origin) · YDirection
+  //! @return 2D point where X = (P - Origin) x XDirection, Y = (P - Origin) x YDirection
   gp_Pnt2d Project(const gp_Pnt& theP) const
   {
     const double dX = theP.X() - OX;
