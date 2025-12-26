@@ -110,12 +110,13 @@ private:
   //! Build grid for the curve.
   void buildGrid();
 
-  Handle(Geom_BezierCurve)                              myCurve;     //!< Bezier curve
-  GeomAdaptor_Curve                                     myAdaptor;   //!< Curve adaptor
-  ExtremaPC::Domain1D                                   myDomain;    //!< Parameter domain (fixed)
-  int                                                   myNbSamples; //!< Number of samples
-  NCollection_Array1<ExtremaPC_GridEvaluator::GridPoint> myGrid;     //!< Pre-built grid
-  mutable ExtremaPC::Result                             myResult;    //!< Reusable result storage
+  Handle(Geom_BezierCurve) myCurve;     //!< Bezier curve
+  GeomAdaptor_Curve        myAdaptor;   //!< Curve adaptor
+  ExtremaPC::Domain1D      myDomain;    //!< Parameter domain (fixed)
+  int                      myNbSamples; //!< Number of samples
+
+  // Grid evaluator with cached state (grid, result, temporary vectors)
+  mutable ExtremaPC_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPC_BezierCurve_HeaderFile

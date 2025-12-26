@@ -105,10 +105,11 @@ private:
   //! Build grid for the curve.
   void buildGrid();
 
-  const Adaptor3d_Curve*                                 myCurve;  //!< Curve adaptor (not owned)
-  ExtremaPC::Domain1D                                    myDomain; //!< Parameter domain (fixed)
-  NCollection_Array1<ExtremaPC_GridEvaluator::GridPoint> myGrid;   //!< Pre-built grid
-  mutable ExtremaPC::Result                              myResult; //!< Reusable result storage
+  const Adaptor3d_Curve* myCurve;  //!< Curve adaptor (not owned)
+  ExtremaPC::Domain1D    myDomain; //!< Parameter domain (fixed)
+
+  //! Grid evaluator with cached state (grid, result, temporary vectors).
+  mutable ExtremaPC_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPC_OffsetCurve_HeaderFile

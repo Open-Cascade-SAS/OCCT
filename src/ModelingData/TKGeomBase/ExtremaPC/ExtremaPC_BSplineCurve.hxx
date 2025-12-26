@@ -116,11 +116,12 @@ private:
   //! Build grid for the curve.
   void buildGrid();
 
-  Handle(Geom_BSplineCurve)                               myCurve;  //!< BSpline curve
-  GeomAdaptor_Curve                                       myAdaptor; //!< Curve adaptor
-  ExtremaPC::Domain1D                                     myDomain; //!< Parameter domain (fixed)
-  NCollection_Array1<ExtremaPC_GridEvaluator::GridPoint>  myGrid;   //!< Pre-built grid
-  mutable ExtremaPC::Result                               myResult; //!< Reusable result storage
+  Handle(Geom_BSplineCurve) myCurve;   //!< BSpline curve
+  GeomAdaptor_Curve         myAdaptor; //!< Curve adaptor
+  ExtremaPC::Domain1D       myDomain;  //!< Parameter domain (fixed)
+
+  // Grid evaluator with cached state (grid, result, temporary vectors)
+  mutable ExtremaPC_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPC_BSplineCurve_HeaderFile

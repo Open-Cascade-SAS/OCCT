@@ -27,491 +27,413 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <optional>
-#include <tuple>
 #include <utility>
 
-//! @brief Grid-based point-curve extrema computation utilities.
+//! @brief Grid-based point-curve extrema computation class.
 //!
-//! Provides common algorithm for grid-based extrema finding that can be used
-//! by BSpline, Bezier, Offset, and other curve evaluators.
+//! Provides grid-based extrema finding algorithm with cached state for
+//! optimal performance on repeated queries. Used by BSpline, Bezier,
+//! Offset, and other curve evaluators.
 //!
 //! Algorithm:
 //! 1. Build grid of (parameter, point, D1) from GeomGridEval
 //! 2. Linear scan of grid to find candidate intervals (sign changes in F(u))
 //! 3. Newton refinement on each candidate
 //! 4. Optional endpoint handling
-namespace ExtremaPC_GridEvaluator
-{
-
-//! Cached grid point with pre-computed data.
-struct GridPoint
-{
-  double Param; //!< Parameter value
-  gp_Pnt Point; //!< Curve point C(u)
-  gp_Vec D1;    //!< First derivative C'(u)
-};
-
-//! Type of candidate extremum detected during grid scan.
-enum class CandidateType
-{
-  SignChange, //!< F(u) changes sign between grid points
-  NearZero    //!< F(u) is very small at grid point
-};
-
-//! Candidate interval for Newton refinement.
-struct Candidate
-{
-  CandidateType Type;   //!< Type of candidate
-  int           IdxLo;  //!< Lower grid index
-  int           IdxHi;  //!< Upper grid index (same as IdxLo for NearZero)
-  double        StartU; //!< Starting point for Newton
-};
-
-//! @brief Build grid from GeomGridEval D1 results.
 //!
-//! @tparam GridEval type with EvaluateGridD1(params) method returning NCollection_Array1<GeomGridEval::CurveD1>
-//! @param theEval grid evaluator (must have EvaluateGridD1 accepting params)
-//! @param theParams parameter values (math_Vector with Array1() accessor)
-//! @return array of GridPoint (0-based indexing)
-template <typename GridEval>
-inline NCollection_Array1<GridPoint> BuildGrid(GridEval&          theEval,
-                                               const math_Vector& theParams)
+//! All temporary vectors are stored as mutable fields and reused via Clear()
+//! to avoid repeated heap allocations.
+class ExtremaPC_GridEvaluator
 {
-  // Use Array1() accessor to pass to GeomGridEval which expects NCollection_Array1
-  NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams.Array1());
-
-  const int                   aNbParams = theParams.Length();
-  NCollection_Array1<GridPoint> aGrid(0, aNbParams - 1);
-
-  for (int i = 0; i < aNbParams; ++i)
+public:
+  //! Cached grid point with pre-computed data.
+  struct GridPoint
   {
-    const int aD1Idx = aD1Grid.Lower() + i;
+    double Param; //!< Parameter value
+    gp_Pnt Point; //!< Curve point C(u)
+    gp_Vec D1;    //!< First derivative C'(u)
+  };
 
-    aGrid[i].Param = theParams(theParams.Lower() + i);
-    aGrid[i].Point = aD1Grid.Value(aD1Idx).Point;
-    aGrid[i].D1    = aD1Grid.Value(aD1Idx).D1;
-  }
-
-  return aGrid;
-}
-
-//! @brief Build uniform parameter grid.
-//!
-//! Creates uniformly spaced parameters in [theUMin, theUMax].
-//! @param theUMin lower parameter bound
-//! @param theUMax upper parameter bound
-//! @param theNbSamples number of samples
-//! @return math_Vector with 1-based indexing
-inline math_Vector BuildUniformParams(double theUMin, double theUMax, int theNbSamples)
-{
-  math_Vector  aParams(1, theNbSamples);
-  const double aStep = (theUMax - theUMin) / (theNbSamples - 1);
-
-  for (int i = 1; i <= theNbSamples; ++i)
+  //! Type of candidate extremum detected during grid scan.
+  enum class CandidateType
   {
-    aParams(i) = theUMin + (i - 1) * aStep;
-  }
-  // Ensure exact endpoint
-  aParams(theNbSamples) = theUMax;
+    SignChange, //!< F(u) changes sign between grid points
+    NearZero    //!< F(u) is very small at grid point
+  };
 
-  return aParams;
-}
-
-//! @brief Scan grid to find candidate intervals for extrema.
-//!
-//! Detects sign changes in F(u) = (C(u) - P) . C'(u) between grid points
-//! and near-zero F values at grid points.
-//!
-//! @param theGrid cached grid points
-//! @param theP query point
-//! @param theTol tolerance for near-zero detection
-//! @param theMode search mode
-//! @return vector of candidate intervals
-inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array1<GridPoint>& theGrid,
-                                               const gp_Pnt&                         theP,
-                                               double                                theTol,
-                                               ExtremaPC::SearchMode                 theMode)
-{
-  NCollection_Vector<Candidate> aCandidates(8); // Small bucket for typical extrema count
-  const int aNbGrid = theGrid.Size();
-
-  if (aNbGrid < 2)
+  //! Candidate interval for Newton refinement.
+  struct Candidate
   {
-    return aCandidates;
-  }
+    CandidateType Type;   //!< Type of candidate
+    int           IdxLo;  //!< Lower grid index
+    int           IdxHi;  //!< Upper grid index (same as IdxLo for NearZero)
+    double        StartU; //!< Starting point for Newton
+  };
 
-  // Track processed indices to avoid duplicate Newton calls
-  NCollection_Array1<bool> aProcessed(0, aNbGrid - 1);
-  aProcessed.Init(false);
+  //! Default constructor.
+  ExtremaPC_GridEvaluator() = default;
 
-  double aPrevF    = 0.0;
-  double aPrevDist = 0.0;
-  bool   aPrevValid = false;
-
-  for (int i = 0; i < aNbGrid; ++i)
+  //! @brief Build grid from GeomGridEval D1 results.
+  //!
+  //! @tparam GridEval type with EvaluateGridD1(params) method
+  //! @param theEval grid evaluator
+  //! @param theParams parameter values (math_Vector with Array1() accessor)
+  template <typename GridEval>
+  void BuildGrid(GridEval& theEval, const math_Vector& theParams)
   {
-    const GridPoint& aGP = theGrid[i];
+    // Use Array1() accessor to pass to GeomGridEval which expects NCollection_Array1
+    NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams.Array1());
 
-    // Compute distance function value: F(u) = (C(u) - P) . C'(u)
-    gp_Vec aVec(theP, aGP.Point);
-    double aF    = aVec.Dot(aGP.D1);
-    double aDist = aVec.SquareMagnitude();
+    const int aNbParams = theParams.Length();
 
-    // Check for sign change with previous point
-    if (aPrevValid && aPrevF * aF < 0.0 && !aProcessed[i - 1])
+    // Resize grid if needed
+    if (myGrid.Size() != aNbParams)
     {
-      Candidate aCand;
-      aCand.Type  = CandidateType::SignChange;
-      aCand.IdxLo = i - 1;
-      aCand.IdxHi = i;
-      // Use linear interpolation for better starting point (secant method)
-      double aFLo = aPrevF;
-      double aFHi = aF;
-      double aULo = theGrid[i - 1].Param;
-      double aUHi = aGP.Param;
-      aCand.StartU = aULo - aFLo * (aUHi - aULo) / (aFHi - aFLo);
-      aCandidates.Append(aCand);
-      aProcessed[i - 1] = true;
-      aProcessed[i]     = true;
+      myGrid = NCollection_Array1<GridPoint>(0, aNbParams - 1);
     }
 
-    // Check for near-zero F (direct hit on extremum)
-    if (std::abs(aF) < theTol * 10.0 && !aProcessed[i])
+    for (int i = 0; i < aNbParams; ++i)
     {
-      Candidate aCand;
-      aCand.Type   = CandidateType::NearZero;
-      aCand.IdxLo  = i;
-      aCand.IdxHi  = i;
-      aCand.StartU = aGP.Param;
-      aCandidates.Append(aCand);
-      aProcessed[i] = true;
+      const int aD1Idx = aD1Grid.Lower() + i;
+
+      myGrid[i].Param = theParams(theParams.Lower() + i);
+      myGrid[i].Point = aD1Grid.Value(aD1Idx).Point;
+      myGrid[i].D1    = aD1Grid.Value(aD1Idx).D1;
+    }
+  }
+
+  //! Returns the cached grid.
+  const NCollection_Array1<GridPoint>& Grid() const { return myGrid; }
+
+  //! Returns mutable reference to the result for post-processing.
+  ExtremaPC::Result& Result() const { return myResult; }
+
+  //! @brief Perform extrema computation using cached grid (interior only).
+  //!
+  //! @param theCurve curve adaptor
+  //! @param theP query point
+  //! @param theDomain parameter domain
+  //! @param theTol tolerance
+  //! @param theMode search mode
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] const ExtremaPC::Result& Perform(const Adaptor3d_Curve&     theCurve,
+                                                 const gp_Pnt&              theP,
+                                                 const ExtremaPC::Domain1D& theDomain,
+                                                 double                     theTol,
+                                                 ExtremaPC::SearchMode      theMode) const
+  {
+    myResult.Clear();
+    scanGrid(theP, theTol, theMode);
+    refineCandidates(theCurve, theP, theDomain, theTol, theMode);
+
+    if (!myResult.Extrema.IsEmpty())
+    {
+      myResult.Status = ExtremaPC::Status::OK;
+    }
+    return myResult;
+  }
+
+  //! @brief Build uniform parameter grid.
+  //! @return math_Vector with 1-based indexing
+  static math_Vector BuildUniformParams(double theUMin, double theUMax, int theNbSamples)
+  {
+    math_Vector  aParams(1, theNbSamples);
+    const double aStep = (theUMax - theUMin) / (theNbSamples - 1);
+
+    for (int i = 1; i <= theNbSamples; ++i)
+    {
+      aParams(i) = theUMin + (i - 1) * aStep;
+    }
+    aParams(theNbSamples) = theUMax; // Ensure exact endpoint
+
+    return aParams;
+  }
+
+private:
+  //! @brief Scan grid to find candidate intervals for extrema.
+  void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
+  {
+    myCandidates.Clear();
+    const int aNbGrid = myGrid.Size();
+
+    if (aNbGrid < 2)
+    {
+      return;
     }
 
-    // Check for local extremum by distance comparison (3-point test)
-    if (i > 0 && i < aNbGrid - 1 && !aProcessed[i])
+    // Resize processed array if needed
+    if (myProcessed.Size() != aNbGrid)
     {
-      double aNextDist = theP.SquareDistance(theGrid[i + 1].Point);
+      myProcessed = NCollection_Array1<bool>(0, aNbGrid - 1);
+    }
+    myProcessed.Init(false);
 
-      // Local minimum: distance decreases then increases
-      bool aIsLocalMin = (aDist <= aPrevDist && aDist <= aNextDist);
-      // Local maximum: distance increases then decreases
-      bool aIsLocalMax = (aDist >= aPrevDist && aDist >= aNextDist);
+    double aPrevF     = 0.0;
+    double aPrevDist  = 0.0;
+    bool   aPrevValid = false;
 
-      if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMin)
+    for (int i = 0; i < aNbGrid; ++i)
+    {
+      const GridPoint& aGP = myGrid[i];
+
+      // Compute distance function value: F(u) = (C(u) - P) . C'(u)
+      gp_Vec aVec(theP, aGP.Point);
+      double aF    = aVec.Dot(aGP.D1);
+      double aDist = aVec.SquareMagnitude();
+
+      // Check for sign change with previous point
+      if (aPrevValid && aPrevF * aF < 0.0 && !myProcessed[i - 1])
+      {
+        Candidate aCand;
+        aCand.Type  = CandidateType::SignChange;
+        aCand.IdxLo = i - 1;
+        aCand.IdxHi = i;
+        // Use linear interpolation for better starting point (secant method)
+        double aFLo  = aPrevF;
+        double aFHi  = aF;
+        double aULo  = myGrid[i - 1].Param;
+        double aUHi  = aGP.Param;
+        aCand.StartU = aULo - aFLo * (aUHi - aULo) / (aFHi - aFLo);
+        myCandidates.Append(aCand);
+        myProcessed[i - 1] = true;
+        myProcessed[i]     = true;
+      }
+
+      // Check for near-zero F (direct hit on extremum)
+      if (std::abs(aF) < theTol * 10.0 && !myProcessed[i])
       {
         Candidate aCand;
         aCand.Type   = CandidateType::NearZero;
         aCand.IdxLo  = i;
         aCand.IdxHi  = i;
         aCand.StartU = aGP.Param;
-        aCandidates.Append(aCand);
-        aProcessed[i] = true;
+        myCandidates.Append(aCand);
+        myProcessed[i] = true;
       }
-      else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMax && !aIsLocalMin)
+
+      // Check for local extremum by distance comparison (3-point test)
+      if (i > 0 && i < aNbGrid - 1 && !myProcessed[i])
       {
-        Candidate aCand;
-        aCand.Type   = CandidateType::NearZero;
-        aCand.IdxLo  = i;
-        aCand.IdxHi  = i;
-        aCand.StartU = aGP.Param;
-        aCandidates.Append(aCand);
-        aProcessed[i] = true;
-      }
-    }
+        double aNextDist = theP.SquareDistance(myGrid[i + 1].Point);
 
-    aPrevF     = aF;
-    aPrevDist  = aDist;
-    aPrevValid = true;
-  }
+        // Local minimum: distance decreases then increases
+        bool aIsLocalMin = (aDist <= aPrevDist && aDist <= aNextDist);
+        // Local maximum: distance increases then decreases
+        bool aIsLocalMax = (aDist >= aPrevDist && aDist >= aNextDist);
 
-  return aCandidates;
-}
-
-//! Configuration for iterative grid refinement fallback.
-struct RefinementConfig
-{
-  int    MaxRefinementPasses   = 3;    //!< Maximum number of grid refinement passes
-  int    RefinementGridSize    = 20;   //!< Grid size for each refinement pass
-  double RangeNarrowingFactor  = ExtremaPC::THE_RANGE_NARROWING_FACTOR; //!< Factor to narrow range on each pass
-  bool   EnableRefinement      = true; //!< Enable iterative refinement when Newton fails
-};
-
-//! @brief Refine a single candidate using Newton with iterative grid fallback.
-//!
-//! When Newton fails, narrows the parameter range and retries with finer grid.
-//! Inspired by ShapeAnalysis_Curve::ProjectOnSegments pattern.
-//!
-//! @param theCand candidate to refine
-//! @param theGrid cached grid points
-//! @param theCurve curve adaptor
-//! @param theP query point
-//! @param theUMin parameter range lower bound
-//! @param theUMax parameter range upper bound
-//! @param theTol tolerance
-//! @param theConfig Newton configuration
-//! @param theRefConfig refinement configuration
-//! @param theFoundRoots already found roots (for duplicate check)
-//! @return optional (parameter, point, sqDistance, isMin) if found
-inline std::optional<std::tuple<double, gp_Pnt, double, bool>>
-RefineSingleCandidate(const Candidate&                     theCand,
-                      const NCollection_Array1<GridPoint>& theGrid,
-                      const Adaptor3d_Curve&               theCurve,
-                      const gp_Pnt&                        theP,
-                      double                               theUMin,
-                      double                               theUMax,
-                      double                               theTol,
-                      const MathUtils::Config&             theConfig,
-                      const RefinementConfig&              theRefConfig,
-                      const NCollection_Vector<double>&    theFoundRoots)
-{
-  ExtremaPC_DistanceFunction aFunc(theCurve, theP);
-
-  // Determine initial Newton bounds based on candidate type
-  double aULo, aUHi;
-  if (theCand.Type == CandidateType::SignChange)
-  {
-    aULo = theGrid[theCand.IdxLo].Param;
-    aUHi = theGrid[theCand.IdxHi].Param;
-  }
-  else
-  {
-    double aExpand = (theUMax - theUMin) * ExtremaPC::THE_INTERVAL_EXPAND_RATIO;
-    aULo = std::max(theUMin, theCand.StartU - aExpand);
-    aUHi = std::min(theUMax, theCand.StartU + aExpand);
-  }
-
-  double aStartU = theCand.StartU;
-
-  // Try Newton refinement
-  MathUtils::ScalarResult aNewtonRes = MathRoot::NewtonBounded(aFunc, aStartU, aULo, aUHi, theConfig);
-
-  // If Newton succeeds, return result
-  if (aNewtonRes.IsDone())
-  {
-    double aRootU = std::max(theUMin, std::min(theUMax, *aNewtonRes.Root));
-
-    // Check for duplicate
-    for (int r = 0; r < theFoundRoots.Length(); ++r)
-    {
-      if (std::abs(aRootU - theFoundRoots.Value(r)) < theTol)
-      {
-        return std::nullopt;
-      }
-    }
-
-    gp_Pnt aPt     = theCurve.Value(aRootU);
-    double aSqDist = theP.SquareDistance(aPt);
-    double aDF     = aNewtonRes.Derivative.value_or(0.0);
-    bool   aIsMin  = (aDF > 0.0);
-
-    return std::make_tuple(aRootU, aPt, aSqDist, aIsMin);
-  }
-
-  // Newton failed - try iterative grid refinement if enabled
-  if (!theRefConfig.EnableRefinement)
-  {
-    return std::nullopt;
-  }
-
-  // Iterative refinement: progressively narrow range and resample
-  double aRefUMin = aULo;
-  double aRefUMax = aUHi;
-  double aBestU   = aStartU;
-  double aBestDist = std::numeric_limits<double>::max();
-
-  for (int aPass = 0; aPass < theRefConfig.MaxRefinementPasses; ++aPass)
-  {
-    // Sample finer grid in narrowed range
-    const int    aNbSamples = theRefConfig.RefinementGridSize;
-    const double aStep      = (aRefUMax - aRefUMin) / (aNbSamples - 1);
-
-    double aLocalBestU    = aBestU;
-    double aLocalBestDist = aBestDist;
-
-    for (int i = 0; i < aNbSamples; ++i)
-    {
-      double aU    = aRefUMin + i * aStep;
-      gp_Pnt aPt   = theCurve.Value(aU);
-      double aDist = theP.SquareDistance(aPt);
-
-      if (aDist < aLocalBestDist)
-      {
-        aLocalBestDist = aDist;
-        aLocalBestU    = aU;
-      }
-    }
-
-    aBestU    = aLocalBestU;
-    aBestDist = aLocalBestDist;
-
-    // Narrow range around best point for next iteration
-    double aRangeHalf = (aRefUMax - aRefUMin) * theRefConfig.RangeNarrowingFactor * 0.5;
-    aRefUMin = std::max(theUMin, aBestU - aRangeHalf);
-    aRefUMax = std::min(theUMax, aBestU + aRangeHalf);
-
-    // Try Newton again with refined starting point
-    MathUtils::ScalarResult aRetryRes = MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, theConfig);
-    if (aRetryRes.IsDone())
-    {
-      double aRootU = std::max(theUMin, std::min(theUMax, *aRetryRes.Root));
-
-      // Check for duplicate
-      for (int r = 0; r < theFoundRoots.Length(); ++r)
-      {
-        if (std::abs(aRootU - theFoundRoots.Value(r)) < theTol)
+        if ((theMode == ExtremaPC::SearchMode::Min || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMin)
         {
-          return std::nullopt;
+          Candidate aCand;
+          aCand.Type   = CandidateType::NearZero;
+          aCand.IdxLo  = i;
+          aCand.IdxHi  = i;
+          aCand.StartU = aGP.Param;
+          myCandidates.Append(aCand);
+          myProcessed[i] = true;
+        }
+        else if ((theMode == ExtremaPC::SearchMode::Max || theMode == ExtremaPC::SearchMode::MinMax) && aIsLocalMax
+                 && !aIsLocalMin)
+        {
+          Candidate aCand;
+          aCand.Type   = CandidateType::NearZero;
+          aCand.IdxLo  = i;
+          aCand.IdxHi  = i;
+          aCand.StartU = aGP.Param;
+          myCandidates.Append(aCand);
+          myProcessed[i] = true;
         }
       }
 
-      gp_Pnt aPt     = theCurve.Value(aRootU);
-      double aSqDist = theP.SquareDistance(aPt);
-      double aDF     = aRetryRes.Derivative.value_or(0.0);
-      bool   aIsMin  = (aDF > 0.0);
-
-      return std::make_tuple(aRootU, aPt, aSqDist, aIsMin);
+      aPrevF     = aF;
+      aPrevDist  = aDist;
+      aPrevValid = true;
     }
   }
 
-  // All refinement attempts failed - use best grid point as fallback
-  // Check for duplicate
-  for (int r = 0; r < theFoundRoots.Length(); ++r)
+  //! @brief Refine candidates using Newton's method.
+  void refineCandidates(const Adaptor3d_Curve&     theCurve,
+                        const gp_Pnt&              theP,
+                        const ExtremaPC::Domain1D& theDomain,
+                        double                     theTol,
+                        ExtremaPC::SearchMode      theMode) const
   {
-    if (std::abs(aBestU - theFoundRoots.Value(r)) < theTol)
+    myResult.Status = ExtremaPC::Status::OK;
+    myFoundRoots.Clear();
+    mySortedIndices.Clear();
+
+    ExtremaPC_DistanceFunction aFunc(theCurve, theP);
+
+    // Newton configuration
+    MathUtils::Config aConfig;
+    aConfig.XTolerance    = theTol * ExtremaPC::THE_NEWTON_XTOL_FACTOR;
+    aConfig.FTolerance    = theTol * ExtremaPC::THE_NEWTON_FTOL_FACTOR;
+    aConfig.MaxIterations = 20;
+
+    // Build sorted indices by estimated distance
+    for (int c = 0; c < myCandidates.Length(); ++c)
     {
-      return std::nullopt;
-    }
-  }
-
-  // Verify this is actually an extremum by checking F(u) is near zero
-  gp_Pnt aPt;
-  gp_Vec aD1;
-  theCurve.D1(aBestU, aPt, aD1);
-  gp_Vec aVec(theP, aPt);
-  double aF = aVec.Dot(aD1);
-
-  if (std::abs(aF) < theTol * 100.0) // Relaxed tolerance for fallback
-  {
-    double aSqDist = theP.SquareDistance(aPt);
-    // Classify as min/max using second derivative approximation
-    double aStep   = (theUMax - theUMin) * ExtremaPC::THE_REFINEMENT_STEP_RATIO;
-    double aDistPlus  = theP.SquareDistance(theCurve.Value(std::min(theUMax, aBestU + aStep)));
-    double aDistMinus = theP.SquareDistance(theCurve.Value(std::max(theUMin, aBestU - aStep)));
-    bool   aIsMin     = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
-
-    return std::make_tuple(aBestU, aPt, aSqDist, aIsMin);
-  }
-
-  return std::nullopt;
-}
-
-//! @brief Refine candidates using Newton's method and build result.
-//!
-//! For Min mode, candidates are sorted by estimated distance and
-//! early termination is applied when no better result is possible.
-//! When Newton fails, iterative grid refinement is applied as fallback.
-//!
-//! @param theCandidates candidate intervals from ScanGrid
-//! @param theGrid cached grid points
-//! @param theCurve curve adaptor for Newton refinement
-//! @param theP query point
-//! @param theUMin parameter range lower bound
-//! @param theUMax parameter range upper bound
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @param theResult result to populate (should be cleared before call)
-//! @param theRefConfig optional refinement configuration
-inline void RefineCandidates(const NCollection_Vector<Candidate>&  theCandidates,
-                             const NCollection_Array1<GridPoint>&  theGrid,
-                             const Adaptor3d_Curve&                theCurve,
-                             const gp_Pnt&                         theP,
-                             double                                theUMin,
-                             double                                theUMax,
-                             double                                theTol,
-                             ExtremaPC::SearchMode                 theMode,
-                             ExtremaPC::Result&                    theResult,
-                             const RefinementConfig&               theRefConfig = RefinementConfig())
-{
-  theResult.Status = ExtremaPC::Status::OK;
-
-  // Track found roots to avoid duplicates
-  NCollection_Vector<double> aFoundRoots(8); // Small bucket for roots
-
-  // Newton configuration - balanced tolerance and iterations
-  MathUtils::Config aConfig;
-  aConfig.XTolerance    = theTol * ExtremaPC::THE_NEWTON_XTOL_FACTOR;
-  aConfig.FTolerance    = theTol * ExtremaPC::THE_NEWTON_FTOL_FACTOR;
-  aConfig.MaxIterations = 20;
-
-  // For Min/Max mode, compute estimated distances and sort candidates
-  NCollection_Vector<std::pair<int, double>> aSortedIndices(8); // Small bucket for candidates
-  for (int c = 0; c < theCandidates.Length(); ++c)
-  {
-    const Candidate& aCand = theCandidates.Value(c);
-    double anEstDist = theP.SquareDistance(theGrid[aCand.IdxLo].Point);
-    aSortedIndices.Append(std::make_pair(c, anEstDist));
-  }
-
-  // Sort by estimated distance for Min mode (ascending), Max mode (descending)
-  if (theMode == ExtremaPC::SearchMode::Min)
-  {
-    std::sort(aSortedIndices.begin(),
-              aSortedIndices.end(),
-              [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second < b.second; });
-  }
-  else if (theMode == ExtremaPC::SearchMode::Max)
-  {
-    std::sort(aSortedIndices.begin(),
-              aSortedIndices.end(),
-              [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second > b.second; });
-  }
-
-  // Best distance found so far (for early termination)
-  double aBestSqDist = (theMode == ExtremaPC::SearchMode::Min) ? std::numeric_limits<double>::max()
-                                                               : -std::numeric_limits<double>::max();
-
-  for (int s = 0; s < aSortedIndices.Length(); ++s)
-  {
-    int              c         = aSortedIndices.Value(s).first;
-    double           anEstDist = aSortedIndices.Value(s).second;
-    const Candidate& aCand     = theCandidates.Value(c);
-
-    // Early termination: for Min mode, if estimate is worse than best found,
-    // remaining candidates (sorted) can't improve. Allow margin for Newton refinement.
-    constexpr double aMinSkipThreshold = 2.0 - ExtremaPC::THE_MAX_SKIP_THRESHOLD; // 1.1 when threshold is 0.9
-    if (theMode == ExtremaPC::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
-    {
-      break;
-    }
-    if (theMode == ExtremaPC::SearchMode::Max && anEstDist < aBestSqDist * ExtremaPC::THE_MAX_SKIP_THRESHOLD)
-    {
-      break;
+      const Candidate& aCand    = myCandidates.Value(c);
+      double           anEstDist = theP.SquareDistance(myGrid[aCand.IdxLo].Point);
+      mySortedIndices.Append(std::make_pair(c, anEstDist));
     }
 
-    // Skip if too close to already found root
-    bool aSkip = false;
-    for (int r = 0; r < aFoundRoots.Length(); ++r)
+    // Sort by estimated distance for Min mode (ascending), Max mode (descending)
+    if (theMode == ExtremaPC::SearchMode::Min)
     {
-      if (std::abs(aCand.StartU - aFoundRoots.Value(r)) < theTol)
+      std::sort(mySortedIndices.begin(),
+                mySortedIndices.end(),
+                [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second < b.second; });
+    }
+    else if (theMode == ExtremaPC::SearchMode::Max)
+    {
+      std::sort(mySortedIndices.begin(),
+                mySortedIndices.end(),
+                [](const std::pair<int, double>& a, const std::pair<int, double>& b) { return a.second > b.second; });
+    }
+
+    // Best distance found so far (for early termination)
+    double aBestSqDist = (theMode == ExtremaPC::SearchMode::Min) ? std::numeric_limits<double>::max()
+                                                                 : -std::numeric_limits<double>::max();
+
+    for (int s = 0; s < mySortedIndices.Length(); ++s)
+    {
+      int              c         = mySortedIndices.Value(s).first;
+      double           anEstDist = mySortedIndices.Value(s).second;
+      const Candidate& aCand     = myCandidates.Value(c);
+
+      // Early termination
+      constexpr double aMinSkipThreshold = 2.0 - ExtremaPC::THE_MAX_SKIP_THRESHOLD;
+      if (theMode == ExtremaPC::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
       {
-        aSkip = true;
         break;
       }
-    }
-    if (aSkip)
-    {
-      continue;
-    }
+      if (theMode == ExtremaPC::SearchMode::Max && anEstDist < aBestSqDist * ExtremaPC::THE_MAX_SKIP_THRESHOLD)
+      {
+        break;
+      }
 
-    // Refine candidate with Newton + iterative grid fallback
-    auto aRefineRes = RefineSingleCandidate(aCand, theGrid, theCurve, theP,
-                                             theUMin, theUMax, theTol,
-                                             aConfig, theRefConfig, aFoundRoots);
+      // Skip if too close to already found root
+      bool aSkip = false;
+      for (int r = 0; r < myFoundRoots.Length(); ++r)
+      {
+        if (std::abs(aCand.StartU - myFoundRoots.Value(r)) < theTol)
+        {
+          aSkip = true;
+          break;
+        }
+      }
+      if (aSkip)
+      {
+        continue;
+      }
 
-    if (aRefineRes.has_value())
-    {
-      auto [aRootU, aPt, aSqDist, aIsMin] = *aRefineRes;
+      // Determine Newton bounds
+      double aULo, aUHi;
+      if (aCand.Type == CandidateType::SignChange)
+      {
+        aULo = myGrid[aCand.IdxLo].Param;
+        aUHi = myGrid[aCand.IdxHi].Param;
+      }
+      else
+      {
+        double aExpand = (theDomain.Max - theDomain.Min) * ExtremaPC::THE_INTERVAL_EXPAND_RATIO;
+        aULo           = std::max(theDomain.Min, aCand.StartU - aExpand);
+        aUHi           = std::min(theDomain.Max, aCand.StartU + aExpand);
+      }
+
+      // Try Newton refinement
+      MathUtils::ScalarResult aNewtonRes = MathRoot::NewtonBounded(aFunc, aCand.StartU, aULo, aUHi, aConfig);
+
+      double aRootU     = 0.0;
+      bool   aConverged = false;
+
+      if (aNewtonRes.IsDone())
+      {
+        aRootU     = std::max(theDomain.Min, std::min(theDomain.Max, *aNewtonRes.Root));
+        aConverged = true;
+      }
+      else
+      {
+        // Try iterative grid refinement as fallback
+        double aBestU    = aCand.StartU;
+        double aBestDist = std::numeric_limits<double>::max();
+        double aRefUMin  = aULo;
+        double aRefUMax  = aUHi;
+
+        for (int aPass = 0; aPass < 3; ++aPass)
+        {
+          const int    aNbSamples = 20;
+          const double aStep      = (aRefUMax - aRefUMin) / (aNbSamples - 1);
+
+          for (int i = 0; i < aNbSamples; ++i)
+          {
+            double aU    = aRefUMin + i * aStep;
+            gp_Pnt aPt   = theCurve.Value(aU);
+            double aDist = theP.SquareDistance(aPt);
+
+            if (aDist < aBestDist)
+            {
+              aBestDist = aDist;
+              aBestU    = aU;
+            }
+          }
+
+          // Narrow range
+          double aRangeHalf = (aRefUMax - aRefUMin) * ExtremaPC::THE_RANGE_NARROWING_FACTOR * 0.5;
+          aRefUMin          = std::max(theDomain.Min, aBestU - aRangeHalf);
+          aRefUMax          = std::min(theDomain.Max, aBestU + aRangeHalf);
+
+          // Try Newton with refined point
+          MathUtils::ScalarResult aRetryRes = MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, aConfig);
+          if (aRetryRes.IsDone())
+          {
+            aRootU     = std::max(theDomain.Min, std::min(theDomain.Max, *aRetryRes.Root));
+            aConverged = true;
+            break;
+          }
+        }
+
+        // Use best grid point as fallback
+        if (!aConverged)
+        {
+          gp_Pnt aPt;
+          gp_Vec aD1;
+          theCurve.D1(aBestU, aPt, aD1);
+          gp_Vec aVec(theP, aPt);
+          double aF = aVec.Dot(aD1);
+
+          if (std::abs(aF) < theTol * 100.0)
+          {
+            aRootU     = aBestU;
+            aConverged = true;
+          }
+        }
+      }
+
+      if (!aConverged)
+        continue;
+
+      // Check for duplicate
+      bool aDuplicate = false;
+      for (int r = 0; r < myFoundRoots.Length(); ++r)
+      {
+        if (std::abs(aRootU - myFoundRoots.Value(r)) < theTol)
+        {
+          aDuplicate = true;
+          break;
+        }
+      }
+      if (aDuplicate)
+        continue;
+
+      gp_Pnt aPt     = theCurve.Value(aRootU);
+      double aSqDist = theP.SquareDistance(aPt);
+
+      // Classify as min/max using neighbor sampling
+      double aStep = (theDomain.Max - theDomain.Min) * ExtremaPC::THE_REFINEMENT_STEP_RATIO;
+      double aDistPlus  = theP.SquareDistance(theCurve.Value(std::min(theDomain.Max, aRootU + aStep)));
+      double aDistMinus = theP.SquareDistance(theCurve.Value(std::max(theDomain.Min, aRootU - aStep)));
+      bool   aIsMin     = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
 
       // Filter by mode
       bool aKeep = false;
@@ -535,9 +457,9 @@ inline void RefineCandidates(const NCollection_Vector<Candidate>&  theCandidates
         anExt.Point          = aPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = aIsMin;
-        theResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
 
-        aFoundRoots.Append(aRootU);
+        myFoundRoots.Append(aRootU);
 
         // Update best distance for early termination
         if (theMode == ExtremaPC::SearchMode::Min && aSqDist < aBestSqDist)
@@ -550,310 +472,22 @@ inline void RefineCandidates(const NCollection_Vector<Candidate>&  theCandidates
         }
       }
     }
-  }
 
-  if (theResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
-  {
-    theResult.Status = ExtremaPC::Status::NoSolution;
+    if (myResult.Extrema.IsEmpty() && myCandidates.IsEmpty())
+    {
+      myResult.Status = ExtremaPC::Status::NoSolution;
+    }
   }
-}
-
-//! @brief Wrapper for point-on-curve evaluation (for AddEndpointExtrema).
-class PointEvaluator
-{
-public:
-  PointEvaluator(const Adaptor3d_Curve& theCurve)
-      : myCurve(&theCurve)
-  {
-  }
-
-  gp_Pnt Value(double theU) const { return myCurve->Value(theU); }
 
 private:
-  const Adaptor3d_Curve* myCurve;
+  NCollection_Array1<GridPoint> myGrid; //!< Cached grid
+
+  // Mutable cached temporaries (reused via Clear())
+  mutable ExtremaPC::Result                        myResult;        //!< Reusable result
+  mutable NCollection_Vector<Candidate>            myCandidates;    //!< Candidates from grid scan
+  mutable NCollection_Vector<double>               myFoundRoots;    //!< Found roots for dedup
+  mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
+  mutable NCollection_Array1<bool>                 myProcessed;     //!< Processed flags for grid scan
 };
-
-//! @brief Perform grid-based extrema computation with custom parameters.
-//!
-//! Complete algorithm combining grid building, scanning, and refinement.
-//! This overload allows passing custom parameter samples (e.g., knot-aware).
-//!
-//! @tparam GridEval type with SetParams and EvaluateGridD1 methods
-//! @param theEval grid evaluator for batch curve evaluation
-//! @param theCurve curve adaptor for Newton refinement
-//! @param theP query point
-//! @param theParams custom parameter values to sample
-//! @param theUMin parameter range lower bound (for Newton bounds)
-//! @param theUMax parameter range upper bound (for Newton bounds)
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @param theIncludeEndpoints include endpoints as extrema
-//! @param theResult result to populate (should be cleared before call)
-template <typename GridEval>
-inline void PerformGridBasedWithParams(GridEval&              theEval,
-                                       const Adaptor3d_Curve& theCurve,
-                                       const gp_Pnt&          theP,
-                                       const math_Vector&     theParams,
-                                       double                 theUMin,
-                                       double                 theUMax,
-                                       double                 theTol,
-                                       ExtremaPC::SearchMode  theMode,
-                                       bool                   theIncludeEndpoints,
-                                       ExtremaPC::Result&     theResult)
-{
-  // Build grid with D1 evaluation using custom params
-  NCollection_Array1<GridPoint> aGrid = BuildGrid(theEval, theParams);
-
-  // Scan for candidates
-  NCollection_Vector<Candidate> aCandidates = ScanGrid(aGrid, theP, theTol, theMode);
-
-  // Refine candidates
-  RefineCandidates(aCandidates, aGrid, theCurve, theP, theUMin, theUMax, theTol, theMode, theResult);
-
-  // Add endpoint extrema if requested
-  if (theIncludeEndpoints)
-  {
-    PointEvaluator        anEval(theCurve);
-    ExtremaPC::Domain1D   aDomain(theUMin, theUMax);
-    ExtremaPC::AddEndpointExtrema(theResult, theP, aDomain, anEval, theTol, theMode);
-  }
-
-  // Update status based on whether we found any extrema
-  if (!theResult.Extrema.IsEmpty())
-  {
-    theResult.Status = ExtremaPC::Status::OK;
-  }
-}
-
-//! @brief Perform grid-based extrema computation with uniform sampling.
-//!
-//! Complete algorithm combining grid building, scanning, and refinement.
-//!
-//! @tparam GridEval type with SetParams and EvaluateGridD1 methods
-//! @param theEval grid evaluator for batch curve evaluation
-//! @param theCurve curve adaptor for Newton refinement
-//! @param theP query point
-//! @param theUMin parameter range lower bound
-//! @param theUMax parameter range upper bound
-//! @param theNbSamples number of grid samples
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @param theIncludeEndpoints include endpoints as extrema
-//! @param theResult result to populate (should be cleared before call)
-template <typename GridEval>
-inline void PerformGridBased(GridEval&              theEval,
-                             const Adaptor3d_Curve& theCurve,
-                             const gp_Pnt&          theP,
-                             double                 theUMin,
-                             double                 theUMax,
-                             int                    theNbSamples,
-                             double                 theTol,
-                             ExtremaPC::SearchMode  theMode,
-                             bool                   theIncludeEndpoints,
-                             ExtremaPC::Result&     theResult)
-{
-  // Build uniform parameter grid
-  math_Vector aParams = BuildUniformParams(theUMin, theUMax, theNbSamples);
-
-  // Delegate to the params-based version
-  PerformGridBasedWithParams(theEval, theCurve, theP, aParams, theUMin, theUMax, theTol, theMode, theIncludeEndpoints, theResult);
-}
-
-//! @brief Perform extrema using previous solution as hint (NextProject pattern).
-//!
-//! When projecting sequential points along a curve or path, the previous
-//! projection parameter often provides an excellent starting point for Newton.
-//! This function first tries Newton from the hint, falling back to full grid
-//! search only if that fails.
-//!
-//! Inspired by ShapeAnalysis_Curve::NextProject pattern.
-//!
-//! @param theCurve curve adaptor
-//! @param theP query point
-//! @param theHintU parameter hint (e.g., previous solution)
-//! @param theUMin parameter range lower bound
-//! @param theUMax parameter range upper bound
-//! @param theTol tolerance
-//! @param theResult result to populate (should be cleared before call)
-//! @param theSearchRadius how far from hint to search (fraction of range)
-inline void PerformWithHint(const Adaptor3d_Curve& theCurve,
-                            const gp_Pnt&          theP,
-                            double                 theHintU,
-                            double                 theUMin,
-                            double                 theUMax,
-                            double                 theTol,
-                            ExtremaPC::Result&     theResult,
-                            double                 theSearchRadius = ExtremaPC::THE_HINT_SEARCH_RADIUS)
-{
-
-  // Clamp hint to valid range
-  theHintU = std::max(theUMin, std::min(theUMax, theHintU));
-
-  // Newton configuration
-  MathUtils::Config aConfig;
-  aConfig.XTolerance    = theTol * ExtremaPC::THE_NEWTON_XTOL_FACTOR;
-  aConfig.FTolerance    = theTol * ExtremaPC::THE_NEWTON_FTOL_FACTOR;
-  aConfig.MaxIterations = 20;
-
-  ExtremaPC_DistanceFunction aFunc(theCurve, theP);
-
-  // Define search bounds around hint
-  double aRange    = theUMax - theUMin;
-  double aHalfSpan = aRange * theSearchRadius;
-  double aLocalMin = std::max(theUMin, theHintU - aHalfSpan);
-  double aLocalMax = std::min(theUMax, theHintU + aHalfSpan);
-
-  // Try Newton from hint first
-  MathUtils::ScalarResult aNewtonRes = MathRoot::NewtonBounded(aFunc, theHintU, aLocalMin, aLocalMax, aConfig);
-
-  if (aNewtonRes.IsDone())
-  {
-    double aRootU = std::max(theUMin, std::min(theUMax, *aNewtonRes.Root));
-    gp_Pnt aPt    = theCurve.Value(aRootU);
-    double aSqDist = theP.SquareDistance(aPt);
-    double aDF    = aNewtonRes.Derivative.value_or(0.0);
-    bool   aIsMin = (aDF > 0.0);
-
-    ExtremaPC::ExtremumResult anExt;
-    anExt.Parameter      = aRootU;
-    anExt.Point          = aPt;
-    anExt.SquareDistance = aSqDist;
-    anExt.IsMinimum      = aIsMin;
-    theResult.Extrema.Append(anExt);
-    theResult.Status = ExtremaPC::Status::OK;
-    return;
-  }
-
-  // Newton from hint failed - try iterative grid refinement in local region
-  RefinementConfig aRefConfig;
-  aRefConfig.MaxRefinementPasses  = 4;  // More passes for robustness
-  aRefConfig.RefinementGridSize   = 25;
-  // Use slightly larger narrowing factor for hint-based search (more aggressive convergence)
-  aRefConfig.RangeNarrowingFactor = ExtremaPC::THE_RANGE_NARROWING_FACTOR * 1.2;
-
-  double aBestU    = theHintU;
-  double aBestDist = std::numeric_limits<double>::max();
-  double aRefUMin  = aLocalMin;
-  double aRefUMax  = aLocalMax;
-
-  for (int aPass = 0; aPass < aRefConfig.MaxRefinementPasses; ++aPass)
-  {
-    const int    aNbSamples = aRefConfig.RefinementGridSize;
-    const double aStep      = (aRefUMax - aRefUMin) / (aNbSamples - 1);
-
-    for (int i = 0; i < aNbSamples; ++i)
-    {
-      double aU    = aRefUMin + i * aStep;
-      gp_Pnt aPt   = theCurve.Value(aU);
-      double aDist = theP.SquareDistance(aPt);
-
-      if (aDist < aBestDist)
-      {
-        aBestDist = aDist;
-        aBestU    = aU;
-      }
-    }
-
-    // Narrow range
-    double aRangeHalf = (aRefUMax - aRefUMin) * aRefConfig.RangeNarrowingFactor * 0.5;
-    aRefUMin = std::max(theUMin, aBestU - aRangeHalf);
-    aRefUMax = std::min(theUMax, aBestU + aRangeHalf);
-
-    // Try Newton with refined point
-    MathUtils::ScalarResult aRetryRes = MathRoot::NewtonBounded(aFunc, aBestU, aRefUMin, aRefUMax, aConfig);
-    if (aRetryRes.IsDone())
-    {
-      double aRootU = std::max(theUMin, std::min(theUMax, *aRetryRes.Root));
-      gp_Pnt aPt    = theCurve.Value(aRootU);
-      double aSqDist = theP.SquareDistance(aPt);
-      double aDF    = aRetryRes.Derivative.value_or(0.0);
-      bool   aIsMin = (aDF > 0.0);
-
-      ExtremaPC::ExtremumResult anExt;
-      anExt.Parameter      = aRootU;
-      anExt.Point          = aPt;
-      anExt.SquareDistance = aSqDist;
-      anExt.IsMinimum      = aIsMin;
-      theResult.Extrema.Append(anExt);
-      theResult.Status = ExtremaPC::Status::OK;
-      return;
-    }
-  }
-
-  // Use best grid point as fallback
-  gp_Pnt aPt;
-  gp_Vec aD1;
-  theCurve.D1(aBestU, aPt, aD1);
-  gp_Vec aVec(theP, aPt);
-  double aF = aVec.Dot(aD1);
-
-  if (std::abs(aF) < theTol * 100.0)
-  {
-    double aSqDist = theP.SquareDistance(aPt);
-    double aStep   = aRange * ExtremaPC::THE_REFINEMENT_STEP_RATIO;
-    double aDistPlus  = theP.SquareDistance(theCurve.Value(std::min(theUMax, aBestU + aStep)));
-    double aDistMinus = theP.SquareDistance(theCurve.Value(std::max(theUMin, aBestU - aStep)));
-    bool   aIsMin     = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
-
-    ExtremaPC::ExtremumResult anExt;
-    anExt.Parameter      = aBestU;
-    anExt.Point          = aPt;
-    anExt.SquareDistance = aSqDist;
-    anExt.IsMinimum      = aIsMin;
-    theResult.Extrema.Append(anExt);
-    theResult.Status = ExtremaPC::Status::OK;
-    return;
-  }
-
-  theResult.Status = ExtremaPC::Status::NoSolution;
-}
-
-//! @brief Perform extrema using previous solution as hint (by-value wrapper).
-//!
-//! Convenience overload that returns result by value for backward compatibility.
-//! @see PerformWithHint with Result& output parameter for avoiding allocations.
-[[nodiscard]] inline ExtremaPC::Result
-PerformWithHint(const Adaptor3d_Curve& theCurve,
-                const gp_Pnt&          theP,
-                double                 theHintU,
-                double                 theUMin,
-                double                 theUMax,
-                double                 theTol,
-                double                 theSearchRadius = ExtremaPC::THE_HINT_SEARCH_RADIUS)
-{
-  ExtremaPC::Result aResult;
-  PerformWithHint(theCurve, theP, theHintU, theUMin, theUMax, theTol, aResult, theSearchRadius);
-  return aResult;
-}
-
-//! @brief Perform extrema computation using pre-built cached grid (interior only).
-//!
-//! This function uses a pre-computed grid for faster repeated queries.
-//! The grid should be built once with BuildGrid() and reused for multiple points.
-//!
-//! @param theGrid cached grid points
-//! @param theCurve curve adaptor for Newton refinement
-//! @param theP query point
-//! @param theDomain parameter domain
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @param theResult result to populate (should be cleared before call)
-inline void PerformWithCachedGrid(const NCollection_Array1<GridPoint>& theGrid,
-                                  const Adaptor3d_Curve&               theCurve,
-                                  const gp_Pnt&                        theP,
-                                  const ExtremaPC::Domain1D&           theDomain,
-                                  double                               theTol,
-                                  ExtremaPC::SearchMode                theMode,
-                                  ExtremaPC::Result&                   theResult)
-{
-  // Scan for candidates
-  NCollection_Vector<Candidate> aCandidates = ScanGrid(theGrid, theP, theTol, theMode);
-
-  // Refine candidates
-  RefineCandidates(aCandidates, theGrid, theCurve, theP,
-                   theDomain.Min, theDomain.Max, theTol, theMode, theResult);
-}
-
-} // namespace ExtremaPC_GridEvaluator
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

@@ -51,7 +51,7 @@ void ExtremaPC_OtherCurve::buildGrid()
     ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, aNbSamples);
 
   GeomGridEval_OtherCurve aGridEval(*myCurve);
-  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
+  myEvaluator.BuildGrid(aGridEval, aParams);
 }
 
 //==================================================================================================
@@ -67,17 +67,14 @@ const ExtremaPC::Result& ExtremaPC_OtherCurve::Perform(const gp_Pnt&         the
                                                        double                theTol,
                                                        ExtremaPC::SearchMode theMode) const
 {
-  myResult.Clear();
-
   if (myCurve == nullptr)
   {
-    myResult.Status = ExtremaPC::Status::NotDone;
-    return myResult;
+    myEvaluator.Result().Clear();
+    myEvaluator.Result().Status = ExtremaPC::Status::NotDone;
+    return myEvaluator.Result();
   }
 
-  // Use the pre-built grid (interior extrema only)
-  ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, *myCurve, theP, myDomain, theTol, theMode, myResult);
-  return myResult;
+  return myEvaluator.Perform(*myCurve, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
@@ -86,19 +83,21 @@ const ExtremaPC::Result& ExtremaPC_OtherCurve::PerformWithEndpoints(const gp_Pnt
                                                                      double                theTol,
                                                                      ExtremaPC::SearchMode theMode) const
 {
-  (void)Perform(theP, theTol, theMode);
+  // Get interior extrema (populates myEvaluator's result)
+  (void)myEvaluator.Perform(*myCurve, theP, myDomain, theTol, theMode);
 
-  // Add endpoints if interior computation succeeded or found no interior solutions
-  if (myResult.Status == ExtremaPC::Status::OK || myResult.Status == ExtremaPC::Status::NoSolution)
+  // Add endpoints to the result
+  ExtremaPC::Result& aResult = myEvaluator.Result();
+  if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(myResult, theP, myDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
-    if (!myResult.Extrema.IsEmpty())
+    if (!aResult.Extrema.IsEmpty())
     {
-      myResult.Status = ExtremaPC::Status::OK;
+      aResult.Status = ExtremaPC::Status::OK;
     }
   }
 
-  return myResult;
+  return aResult;
 }

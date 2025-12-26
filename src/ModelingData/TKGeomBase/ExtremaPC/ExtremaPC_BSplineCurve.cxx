@@ -120,9 +120,9 @@ void ExtremaPC_BSplineCurve::buildGrid()
   // Build knot-aware parameter grid
   math_Vector aParams = buildKnotAwareParams();
 
-  // Build grid
+  // Build grid using the evaluator
   GeomGridEval_BSplineCurve aGridEval(myCurve);
-  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
+  myEvaluator.BuildGrid(aGridEval, aParams);
 }
 
 //==================================================================================================
@@ -138,17 +138,14 @@ const ExtremaPC::Result& ExtremaPC_BSplineCurve::Perform(const gp_Pnt&         t
                                                          double                theTol,
                                                          ExtremaPC::SearchMode theMode) const
 {
-  myResult.Clear();
-
   if (myCurve.IsNull())
   {
-    myResult.Status = ExtremaPC::Status::NotDone;
-    return myResult;
+    myEvaluator.Result().Clear();
+    myEvaluator.Result().Status = ExtremaPC::Status::NotDone;
+    return myEvaluator.Result();
   }
 
-  // Use the pre-built grid (interior extrema only)
-  ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode, myResult);
-  return myResult;
+  return myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
@@ -157,19 +154,21 @@ const ExtremaPC::Result& ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_P
                                                                        double                theTol,
                                                                        ExtremaPC::SearchMode theMode) const
 {
-  (void)Perform(theP, theTol, theMode);
+  // Get interior extrema (populates myEvaluator's result)
+  (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);
 
-  // Add endpoints if interior computation succeeded or found no interior solutions
-  if (myResult.Status == ExtremaPC::Status::OK || myResult.Status == ExtremaPC::Status::NoSolution)
+  // Add endpoints to the result
+  ExtremaPC::Result& aResult = myEvaluator.Result();
+  if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(myResult, theP, myDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
-    if (!myResult.Extrema.IsEmpty())
+    if (!aResult.Extrema.IsEmpty())
     {
-      myResult.Status = ExtremaPC::Status::OK;
+      aResult.Status = ExtremaPC::Status::OK;
     }
   }
 
-  return myResult;
+  return aResult;
 }
