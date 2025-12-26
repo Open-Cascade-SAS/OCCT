@@ -1,0 +1,830 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _ExtremaPS_GridEvaluator_HeaderFile
+#define _ExtremaPS_GridEvaluator_HeaderFile
+
+#include <Adaptor3d_Surface.hxx>
+#include <ExtremaPS.hxx>
+#include <ExtremaPS_DistanceFunction.hxx>
+#include <GeomGridEval.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Vector.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+#include <algorithm>
+#include <cmath>
+#include <limits>
+
+//! @brief Grid-based point-surface extrema computation utilities.
+//!
+//! Provides common algorithm for grid-based extrema finding that can be used
+//! by BSpline, Bezier, Offset, and other surface evaluators.
+//!
+//! Algorithm:
+//! 1. Build 2D grid of (u, v, point, dU, dV) from GeomGridEval_Surface
+//! 2. Scan grid to find candidate cells (where gradient points toward query point)
+//! 3. Newton refinement on each candidate using ExtremaPS_Newton::Solve
+//! 4. Optional boundary handling
+namespace ExtremaPS_GridEvaluator
+{
+
+//! Cached grid point with pre-computed data.
+struct GridPoint
+{
+  double U;     //!< U parameter value
+  double V;     //!< V parameter value
+  gp_Pnt Point; //!< Surface point S(u,v)
+  gp_Vec DU;    //!< First derivative dS/dU
+  gp_Vec DV;    //!< First derivative dS/dV
+};
+
+//! Candidate cell for Newton refinement.
+struct Candidate
+{
+  int    IdxU;    //!< U grid index
+  int    IdxV;    //!< V grid index
+  double StartU;  //!< Starting U for Newton
+  double StartV;  //!< Starting V for Newton
+  double EstDist; //!< Estimated squared distance
+  double GradMag; //!< Gradient magnitude (smaller = closer to extremum)
+};
+
+//! @brief Build 2D grid from GeomGridEval D1 results.
+//!
+//! @tparam GridEval type with EvaluateGridD1() method
+//! @param theEval grid evaluator
+//! @param theUParams U parameter values
+//! @param theVParams V parameter values
+//! @return 2D array of GridPoint (0-based indexing)
+template <typename GridEval>
+inline NCollection_Array2<GridPoint> BuildGrid(GridEval&                   theEval,
+                                               const TColStd_Array1OfReal& theUParams,
+                                               const TColStd_Array1OfReal& theVParams)
+{
+  theEval.SetUVParams(theUParams, theVParams);
+  NCollection_Array2<GeomGridEval::SurfD1> aD1Grid = theEval.EvaluateGridD1();
+
+  const int                     aNbU = theUParams.Length();
+  const int                     aNbV = theVParams.Length();
+  NCollection_Array2<GridPoint> aGrid(0, aNbU - 1, 0, aNbV - 1);
+
+  for (int i = 0; i < aNbU; ++i)
+  {
+    for (int j = 0; j < aNbV; ++j)
+    {
+      const int aUSrcIdx = theUParams.Lower() + i;
+      const int aVSrcIdx = theVParams.Lower() + j;
+      const int aD1UIdx  = aD1Grid.LowerRow() + i;
+      const int aD1VIdx  = aD1Grid.LowerCol() + j;
+
+      aGrid(i, j).U     = theUParams.Value(aUSrcIdx);
+      aGrid(i, j).V     = theVParams.Value(aVSrcIdx);
+      aGrid(i, j).Point = aD1Grid.Value(aD1UIdx, aD1VIdx).Point;
+      aGrid(i, j).DU    = aD1Grid.Value(aD1UIdx, aD1VIdx).D1U;
+      aGrid(i, j).DV    = aD1Grid.Value(aD1UIdx, aD1VIdx).D1V;
+    }
+  }
+
+  return aGrid;
+}
+
+//! @brief Build uniform parameter grids.
+inline TColStd_Array1OfReal BuildUniformParams(double theMin, double theMax, int theNbSamples)
+{
+  TColStd_Array1OfReal aParams(1, theNbSamples);
+  const double         aStep = (theMax - theMin) / (theNbSamples - 1);
+
+  for (int i = 1; i <= theNbSamples; ++i)
+  {
+    aParams.SetValue(i, theMin + (i - 1) * aStep);
+  }
+  aParams.SetValue(theNbSamples, theMax); // Ensure exact endpoint
+
+  return aParams;
+}
+
+//! @brief Scan 2D grid to find candidate cells for extrema.
+//!
+//! A cell is a candidate if:
+//! - The gradient direction changes within the cell (sign change in Fu or Fv)
+//! - Or the gradient is near zero at a grid point
+//! - Or a grid point is a local distance minimum among neighbors
+//!
+//! @param theGrid cached grid points
+//! @param theP query point
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return vector of candidate cells
+inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array2<GridPoint>& theGrid,
+                                              const gp_Pnt&                        theP,
+                                              double                               theTol,
+                                              ExtremaPS::SearchMode                theMode)
+{
+  NCollection_Vector<Candidate> aCandidates;
+
+  const int aNbU = theGrid.UpperRow() - theGrid.LowerRow() + 1;
+  const int aNbV = theGrid.UpperCol() - theGrid.LowerCol() + 1;
+
+  if (aNbU < 2 || aNbV < 2)
+  {
+    return aCandidates;
+  }
+
+  // Track processed cells to avoid duplicates
+  NCollection_Array2<bool> aProcessed(0, aNbU - 1, 0, aNbV - 1);
+  aProcessed.Init(false);
+
+  // Compute F values and distances for each grid point
+  NCollection_Array2<double> aFU(0, aNbU - 1, 0, aNbV - 1);
+  NCollection_Array2<double> aFV(0, aNbU - 1, 0, aNbV - 1);
+  NCollection_Array2<double> aDist(0, aNbU - 1, 0, aNbV - 1);
+  NCollection_Array2<double> aGradMag(0, aNbU - 1, 0, aNbV - 1);
+
+  for (int i = 0; i < aNbU; ++i)
+  {
+    for (int j = 0; j < aNbV; ++j)
+    {
+      const GridPoint& aGP = theGrid(i, j);
+      gp_Vec           aVec(theP, aGP.Point);
+      aFU(i, j)      = aVec.Dot(aGP.DU);
+      aFV(i, j)      = aVec.Dot(aGP.DV);
+      aDist(i, j)    = aVec.SquareMagnitude();
+      aGradMag(i, j) = aFU(i, j) * aFU(i, j) + aFV(i, j) * aFV(i, j);
+    }
+  }
+
+  // Helper lambda to add candidate with gradient magnitude for priority sorting
+  auto addCandidate = [&](int i, int j, double aStartU, double aStartV, double aEstDist) {
+    if (i < 0 || i >= aNbU - 1 || j < 0 || j >= aNbV - 1)
+      return;
+    if (aProcessed(i, j))
+      return;
+
+    // Compute minimum gradient magnitude in the cell (smaller = closer to extremum)
+    double aMinGradMag =
+      std::min({aGradMag(i, j), aGradMag(i + 1, j), aGradMag(i, j + 1), aGradMag(i + 1, j + 1)});
+
+    Candidate aCand;
+    aCand.IdxU    = i;
+    aCand.IdxV    = j;
+    aCand.StartU  = aStartU;
+    aCand.StartV  = aStartV;
+    aCand.EstDist = aEstDist;
+    aCand.GradMag = aMinGradMag;
+    aCandidates.Append(aCand);
+
+    // Mark cell and neighbors as processed
+    for (int di = 0; di <= 1 && i + di < aNbU; ++di)
+      for (int dj = 0; dj <= 1 && j + dj < aNbV; ++dj)
+        aProcessed(i + di, j + dj) = true;
+  };
+
+  // Phase 1: Gradient-based candidate detection (sign changes)
+  for (int i = 0; i < aNbU - 1; ++i)
+  {
+    for (int j = 0; j < aNbV - 1; ++j)
+    {
+      if (aProcessed(i, j))
+        continue;
+
+      // Check for sign change in Fu across the cell
+      bool aFuSignChange =
+        (aFU(i, j) * aFU(i + 1, j) < 0.0) || (aFU(i, j + 1) * aFU(i + 1, j + 1) < 0.0)
+        || (aFU(i, j) * aFU(i, j + 1) < 0.0) || (aFU(i + 1, j) * aFU(i + 1, j + 1) < 0.0);
+
+      // Check for sign change in Fv across the cell
+      bool aFvSignChange =
+        (aFV(i, j) * aFV(i + 1, j) < 0.0) || (aFV(i, j + 1) * aFV(i + 1, j + 1) < 0.0)
+        || (aFV(i, j) * aFV(i, j + 1) < 0.0) || (aFV(i + 1, j) * aFV(i + 1, j + 1) < 0.0);
+
+      // Compute min distance in the cell first (needed for tolerance scaling)
+      double aMinDist =
+        std::min({aDist(i, j), aDist(i + 1, j), aDist(i, j + 1), aDist(i + 1, j + 1)});
+
+      // Check for near-zero gradient at any corner (more relaxed for dome-like surfaces)
+      // Use both absolute tolerance and relative tolerance (gradient vs distance)
+      double aTolF = theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR; // Relaxed tolerance for robust detection
+
+      // Also check relative gradient: gradient^2 < distance * tolerance
+      // This catches cases where gradient is small compared to the distance
+      double aDistScale = std::sqrt(aMinDist) * ExtremaPS::THE_DISTANCE_SCALE_RATIO;
+      double aTolRel    = std::max(aTolF, aDistScale);
+
+      bool aNearZero =
+        (std::abs(aFU(i, j)) < aTolRel && std::abs(aFV(i, j)) < aTolRel)
+        || (std::abs(aFU(i + 1, j)) < aTolRel && std::abs(aFV(i + 1, j)) < aTolRel)
+        || (std::abs(aFU(i, j + 1)) < aTolRel && std::abs(aFV(i, j + 1)) < aTolRel)
+        || (std::abs(aFU(i + 1, j + 1)) < aTolRel && std::abs(aFV(i + 1, j + 1)) < aTolRel);
+
+      // For interior extremum, we need both Fu=0 and Fv=0, so both sign changes are required
+      if ((aFuSignChange && aFvSignChange) || aNearZero)
+      {
+        double aStartU = (theGrid(i, j).U + theGrid(i + 1, j + 1).U) * 0.5;
+        double aStartV = (theGrid(i, j).V + theGrid(i + 1, j + 1).V) * 0.5;
+        addCandidate(i, j, aStartU, aStartV, aMinDist);
+      }
+    }
+  }
+
+  // Phase 2: Local distance extrema detection - find grid points that are local minima/maxima
+  // This catches extrema that gradient-based detection might miss
+  for (int i = 1; i < aNbU - 1; ++i)
+  {
+    for (int j = 1; j < aNbV - 1; ++j)
+    {
+      double aDCurr = aDist(i, j);
+
+      // Check if this point is a local minimum among 8 neighbors
+      bool aIsLocalMin = true;
+      bool aIsLocalMax = true;
+
+      for (int di = -1; di <= 1 && (aIsLocalMin || aIsLocalMax); ++di)
+      {
+        for (int dj = -1; dj <= 1 && (aIsLocalMin || aIsLocalMax); ++dj)
+        {
+          if (di == 0 && dj == 0)
+            continue;
+          double aNeighDist = aDist(i + di, j + dj);
+          if (aNeighDist < aDCurr)
+            aIsLocalMin = false;
+          if (aNeighDist > aDCurr)
+            aIsLocalMax = false;
+        }
+      }
+
+      // Add candidate for local extremum based on search mode
+      if ((aIsLocalMin && theMode != ExtremaPS::SearchMode::Max)
+          || (aIsLocalMax && theMode != ExtremaPS::SearchMode::Min))
+      {
+        // Add the cell containing this point (lower-left cell)
+        int aCellI = std::max(0, i - 1);
+        int aCellJ = std::max(0, j - 1);
+        addCandidate(aCellI, aCellJ, theGrid(i, j).U, theGrid(i, j).V, aDCurr);
+      }
+    }
+  }
+
+  // Phase 3: Add global minimum/maximum from grid as fallback candidate
+  // These are always added regardless of aProcessed - global extrema are critical to find
+  auto addGlobalCandidate = [&](int i, int j, double aStartU, double aStartV, double aEstDist) {
+    if (i < 0 || i >= aNbU - 1 || j < 0 || j >= aNbV - 1)
+      return;
+
+    // Use minimum gradient magnitude from cell corners
+    double aMinGradMag = std::min({aGradMag(i, j),
+                                   aGradMag(std::min(i + 1, aNbU - 1), j),
+                                   aGradMag(i, std::min(j + 1, aNbV - 1)),
+                                   aGradMag(std::min(i + 1, aNbU - 1), std::min(j + 1, aNbV - 1))});
+
+    Candidate aCand;
+    aCand.IdxU    = i;
+    aCand.IdxV    = j;
+    aCand.StartU  = aStartU;
+    aCand.StartV  = aStartV;
+    aCand.EstDist = aEstDist;
+    aCand.GradMag = aMinGradMag;
+    aCandidates.Append(aCand);
+  };
+
+  if (theMode == ExtremaPS::SearchMode::Min || theMode == ExtremaPS::SearchMode::MinMax)
+  {
+    double aGlobalMinDist = std::numeric_limits<double>::max();
+    int    aMinI = 0, aMinJ = 0;
+    for (int i = 0; i < aNbU; ++i)
+    {
+      for (int j = 0; j < aNbV; ++j)
+      {
+        if (aDist(i, j) < aGlobalMinDist)
+        {
+          aGlobalMinDist = aDist(i, j);
+          aMinI          = i;
+          aMinJ          = j;
+        }
+      }
+    }
+    int aCellI = std::max(0, std::min(aNbU - 2, aMinI));
+    int aCellJ = std::max(0, std::min(aNbV - 2, aMinJ));
+    addGlobalCandidate(aCellI,
+                       aCellJ,
+                       theGrid(aMinI, aMinJ).U,
+                       theGrid(aMinI, aMinJ).V,
+                       aGlobalMinDist);
+  }
+
+  if (theMode == ExtremaPS::SearchMode::Max || theMode == ExtremaPS::SearchMode::MinMax)
+  {
+    double aGlobalMaxDist = -std::numeric_limits<double>::max();
+    int    aMaxI = 0, aMaxJ = 0;
+    for (int i = 0; i < aNbU; ++i)
+    {
+      for (int j = 0; j < aNbV; ++j)
+      {
+        if (aDist(i, j) > aGlobalMaxDist)
+        {
+          aGlobalMaxDist = aDist(i, j);
+          aMaxI          = i;
+          aMaxJ          = j;
+        }
+      }
+    }
+    int aCellI = std::max(0, std::min(aNbU - 2, aMaxI));
+    int aCellJ = std::max(0, std::min(aNbV - 2, aMaxJ));
+    addGlobalCandidate(aCellI,
+                       aCellJ,
+                       theGrid(aMaxI, aMaxJ).U,
+                       theGrid(aMaxI, aMaxJ).V,
+                       aGlobalMaxDist);
+  }
+
+  return aCandidates;
+}
+
+//! @brief Refine candidates using 2D Newton's method with grid fallback.
+//!
+//! When Newton fails to converge, falls back to the best grid point in the candidate cell.
+//! Based on patterns from ShapeAnalysis_Surface::SurfaceNewton.
+//!
+//! @param theCandidates candidate cells from ScanGrid
+//! @param theGrid cached grid points
+//! @param theSurface surface adaptor
+//! @param theP query point
+//! @param theUMin U range lower bound
+//! @param theUMax U range upper bound
+//! @param theVMin V range lower bound
+//! @param theVMax V range upper bound
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return extrema result
+inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& theCandidates,
+                                          const NCollection_Array2<GridPoint>& theGrid,
+                                          const Adaptor3d_Surface&             theSurface,
+                                          const gp_Pnt&                        theP,
+                                          double                               theUMin,
+                                          double                               theUMax,
+                                          double                               theVMin,
+                                          double                               theVMax,
+                                          double                               theTol,
+                                          ExtremaPS::SearchMode                theMode)
+{
+  ExtremaPS::Result aResult;
+  aResult.Status = ExtremaPS::Status::OK;
+
+  NCollection_Vector<std::pair<double, double>> aFoundRoots; // (U, V) pairs
+
+  ExtremaPS_DistanceFunction aFunc(theSurface, theP);
+
+  // Sort candidates by combined score: distance + gradient magnitude
+  // Smaller gradient = closer to extremum = better Newton starting point
+  // This improves convergence speed and accuracy
+  struct SortEntry
+  {
+    int    Idx;
+    double Dist;
+    double GradMag;
+  };
+
+  NCollection_Vector<SortEntry> aSortedEntries;
+  for (int c = 0; c < theCandidates.Length(); ++c)
+  {
+    const Candidate& aCand = theCandidates.Value(c);
+    aSortedEntries.Append({c, aCand.EstDist, aCand.GradMag});
+  }
+
+  if (theMode == ExtremaPS::SearchMode::Min)
+  {
+    // Sort by distance first, then by gradient (smaller gradient = better starting point)
+    std::sort(aSortedEntries.begin(),
+              aSortedEntries.end(),
+              [](const SortEntry& a, const SortEntry& b) {
+                // Primary: distance (ascending for Min)
+                if (std::abs(a.Dist - b.Dist) > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
+                  return a.Dist < b.Dist;
+                // Secondary: gradient magnitude (smaller = better)
+                return a.GradMag < b.GradMag;
+              });
+  }
+  else if (theMode == ExtremaPS::SearchMode::Max)
+  {
+    std::sort(aSortedEntries.begin(),
+              aSortedEntries.end(),
+              [](const SortEntry& a, const SortEntry& b) {
+                if (std::abs(a.Dist - b.Dist) > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
+                  return a.Dist > b.Dist;
+                return a.GradMag < b.GradMag;
+              });
+  }
+
+  double aBestSqDist = (theMode == ExtremaPS::SearchMode::Min)
+                         ? std::numeric_limits<double>::max()
+                         : -std::numeric_limits<double>::max();
+
+  for (int s = 0; s < aSortedEntries.Length(); ++s)
+  {
+    const SortEntry& anEntry   = aSortedEntries.Value(s);
+    double           anEstDist = anEntry.Dist;
+
+    // Early termination - candidates are sorted, so if distance exceeds threshold, remaining are
+    // worse
+    constexpr double aMinSkipThreshold = 2.0 - ExtremaPS::THE_MAX_SKIP_THRESHOLD; // 1.1 when threshold is 0.9
+    if (theMode == ExtremaPS::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
+      break;
+    if (theMode == ExtremaPS::SearchMode::Max && anEstDist < aBestSqDist * ExtremaPS::THE_MAX_SKIP_THRESHOLD)
+      break;
+
+    const Candidate& aCand = theCandidates.Value(anEntry.Idx);
+
+    // Newton bounds from grid cell
+    double aCellUMin = theGrid(aCand.IdxU, aCand.IdxV).U;
+    double aCellUMax = theGrid(aCand.IdxU + 1, aCand.IdxV).U;
+    double aCellVMin = theGrid(aCand.IdxU, aCand.IdxV).V;
+    double aCellVMax = theGrid(aCand.IdxU, aCand.IdxV + 1).V;
+
+    // Expand bounds slightly
+    double aExpandU = (aCellUMax - aCellUMin) * ExtremaPS::THE_CELL_EXPAND_RATIO;
+    double aExpandV = (aCellVMax - aCellVMin) * ExtremaPS::THE_CELL_EXPAND_RATIO;
+    aCellUMin       = std::max(theUMin, aCellUMin - aExpandU);
+    aCellUMax       = std::min(theUMax, aCellUMax + aExpandU);
+    aCellVMin       = std::max(theVMin, aCellVMin - aExpandV);
+    aCellVMax       = std::min(theVMax, aCellVMax + aExpandV);
+
+    // Newton iteration
+    ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                  aCand.StartU,
+                                                                  aCand.StartV,
+                                                                  aCellUMin,
+                                                                  aCellUMax,
+                                                                  aCellVMin,
+                                                                  aCellVMax,
+                                                                  theTol);
+
+    double aRootU     = 0.0;
+    double aRootV     = 0.0;
+    bool   aConverged = false;
+
+    if (aNewtonRes.IsDone)
+    {
+      aRootU     = std::max(theUMin, std::min(theUMax, aNewtonRes.U));
+      aRootV     = std::max(theVMin, std::min(theVMax, aNewtonRes.V));
+      aConverged = true;
+    }
+    else
+    {
+      // Newton fallback: Find best grid point in the candidate cell
+      // This is based on ShapeAnalysis_Surface pattern: when SurfaceNewton fails,
+      // use the best discrete approximation from the grid.
+      double aBestGridDist = std::numeric_limits<double>::max();
+      int    aBestI        = aCand.IdxU;
+      int    aBestJ        = aCand.IdxV;
+
+      // Check all 4 corners of the cell
+      for (int di = 0; di <= 1; ++di)
+      {
+        for (int dj = 0; dj <= 1; ++dj)
+        {
+          int    i     = aCand.IdxU + di;
+          int    j     = aCand.IdxV + dj;
+          double aDist = theP.SquareDistance(theGrid(i, j).Point);
+          if (aDist < aBestGridDist)
+          {
+            aBestGridDist = aDist;
+            aBestI        = i;
+            aBestJ        = j;
+          }
+        }
+      }
+
+      // Use the best corner and try Newton again with this starting point
+      aRootU = theGrid(aBestI, aBestJ).U;
+      aRootV = theGrid(aBestI, aBestJ).V;
+
+      // Try Newton one more time from the best corner
+      ExtremaPS_Newton::Result aRetryRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                   aRootU,
+                                                                   aRootV,
+                                                                   aCellUMin,
+                                                                   aCellUMax,
+                                                                   aCellVMin,
+                                                                   aCellVMax,
+                                                                   theTol * 10.0);
+
+      if (aRetryRes.IsDone)
+      {
+        aRootU     = std::max(theUMin, std::min(theUMax, aRetryRes.U));
+        aRootV     = std::max(theVMin, std::min(theVMax, aRetryRes.V));
+        aConverged = true;
+      }
+      else
+      {
+        // Final fallback: use the best grid point directly
+        // Check if gradient is small enough to consider this an approximate extremum
+        double aFu, aFv;
+        aFunc.Value(aRootU, aRootV, aFu, aFv);
+        double aFNorm = std::sqrt(aFu * aFu + aFv * aFv);
+
+        // Accept as approximate extremum if gradient is reasonably small
+        // (using relaxed gradient tolerance factor)
+        if (aFNorm < theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
+        {
+          aConverged = true;
+        }
+      }
+    }
+
+    if (!aConverged)
+      continue;
+
+    // Check for duplicate
+    bool aSkip = false;
+    for (int r = 0; r < aFoundRoots.Length(); ++r)
+    {
+      if (std::abs(aRootU - aFoundRoots.Value(r).first) < theTol
+          && std::abs(aRootV - aFoundRoots.Value(r).second) < theTol)
+      {
+        aSkip = true;
+        break;
+      }
+    }
+    if (aSkip)
+      continue;
+
+    gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
+    double aSqDist = theP.SquareDistance(aPt);
+
+    // Classify as min or max using second derivative (Hessian positive definite = min)
+    // Note: Hessian classification can be unreliable at curved surfaces, so we don't
+    // use it for filtering. Instead, keep all converged candidates and let the
+    // MinSquareDistance/MaxSquareDistance methods find the actual best result.
+    double aFu, aFv, aDFuu, aDFuv, aDFvv;
+    aFunc.ValueAndJacobian(aRootU, aRootV, aFu, aFv, aDFuu, aDFuv, aDFvv);
+    bool aIsMin = (aDFuu > 0.0 && aDFuu * aDFvv - aDFuv * aDFuv > 0.0);
+
+    // Keep all converged candidates - distance comparison determines actual min/max
+    {
+      ExtremaPS::ExtremumResult anExt;
+      anExt.U              = aRootU;
+      anExt.V              = aRootV;
+      anExt.Point          = aPt;
+      anExt.SquareDistance = aSqDist;
+      anExt.IsMinimum      = aIsMin;
+      aResult.Extrema.Append(anExt);
+
+      aFoundRoots.Append(std::make_pair(aRootU, aRootV));
+
+      if (theMode == ExtremaPS::SearchMode::Min && aSqDist < aBestSqDist)
+        aBestSqDist = aSqDist;
+      else if (theMode == ExtremaPS::SearchMode::Max && aSqDist > aBestSqDist)
+        aBestSqDist = aSqDist;
+    }
+  }
+
+  if (aResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
+  {
+    aResult.Status = ExtremaPS::Status::NoSolution;
+  }
+
+  return aResult;
+}
+
+//! @brief Perform extrema computation using pre-built cached grid (interior only).
+//!
+//! This is the optimized version for repeated queries with the same parameter range.
+//! The grid is built once and reused across multiple Perform calls.
+//!
+//! @param theGrid pre-built grid of (u, v, point, dU, dV)
+//! @param theSurface surface adaptor
+//! @param theP query point
+//! @param theDomain 2D parameter domain
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return extrema result with interior extrema only
+inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoint>& theGrid,
+                                               const Adaptor3d_Surface&             theSurface,
+                                               const gp_Pnt&                        theP,
+                                               const ExtremaPS::Domain2D&           theDomain,
+                                               double                               theTol,
+                                               ExtremaPS::SearchMode                theMode)
+{
+  const int aNbU = theGrid.UpperRow() - theGrid.LowerRow() + 1;
+  const int aNbV = theGrid.UpperCol() - theGrid.LowerCol() + 1;
+
+  // Scan for candidates
+  NCollection_Vector<Candidate> aCandidates = ScanGrid(theGrid, theP, theTol, theMode);
+
+  // Refine candidates
+  ExtremaPS::Result aResult = RefineCandidates(aCandidates,
+                                               theGrid,
+                                               theSurface,
+                                               theP,
+                                               theDomain.UMin,
+                                               theDomain.UMax,
+                                               theDomain.VMin,
+                                               theDomain.VMax,
+                                               theTol,
+                                               theMode);
+
+  // Fallback: refine the best grid point using Newton, then add if it's better than current result
+  if (theMode == ExtremaPS::SearchMode::Min || theMode == ExtremaPS::SearchMode::MinMax)
+  {
+    double aGridMinDist = std::numeric_limits<double>::max();
+    double aGridMinU = 0.0, aGridMinV = 0.0;
+    int    aGridMinI = 0, aGridMinJ = 0;
+
+    for (int i = 0; i < aNbU; ++i)
+    {
+      for (int j = 0; j < aNbV; ++j)
+      {
+        double aDist = theP.SquareDistance(theGrid(i, j).Point);
+        if (aDist < aGridMinDist)
+        {
+          aGridMinDist = aDist;
+          aGridMinU    = theGrid(i, j).U;
+          aGridMinV    = theGrid(i, j).V;
+          aGridMinI    = i;
+          aGridMinJ    = j;
+        }
+      }
+    }
+
+    // Try Newton refinement from the best grid point
+    ExtremaPS_DistanceFunction aFunc(theSurface, theP);
+    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                  aGridMinU,
+                                                                  aGridMinV,
+                                                                  theDomain.UMin,
+                                                                  theDomain.UMax,
+                                                                  theDomain.VMin,
+                                                                  theDomain.VMax,
+                                                                  theTol);
+
+    double aRefinedU    = aGridMinU;
+    double aRefinedV    = aGridMinV;
+    gp_Pnt aRefinedPt   = theGrid(aGridMinI, aGridMinJ).Point;
+    double aRefinedDist = aGridMinDist;
+
+    if (aNewtonRes.IsDone)
+    {
+      aRefinedU    = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
+      aRefinedV    = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+      aRefinedPt   = theSurface.Value(aRefinedU, aRefinedV);
+      aRefinedDist = theP.SquareDistance(aRefinedPt);
+    }
+
+    double aResultMinDist =
+      aResult.Extrema.IsEmpty() ? std::numeric_limits<double>::max() : aResult.MinSquareDistance();
+
+    if (aRefinedDist < aResultMinDist * ExtremaPS::THE_REFINED_DIST_THRESHOLD)
+    {
+      // Check for duplicate
+      bool aSkip = false;
+      for (int i = 0; i < aResult.Extrema.Length(); ++i)
+      {
+        const auto& anExisting = aResult.Extrema.Value(i);
+        if (std::abs(anExisting.U - aRefinedU) < theTol
+            && std::abs(anExisting.V - aRefinedV) < theTol)
+        {
+          aSkip = true;
+          break;
+        }
+      }
+      if (!aSkip)
+      {
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aRefinedU;
+        anExt.V              = aRefinedV;
+        anExt.Point          = aRefinedPt;
+        anExt.SquareDistance = aRefinedDist;
+        anExt.IsMinimum      = true;
+        aResult.Extrema.Append(anExt);
+      }
+    }
+  }
+
+  if (!aResult.Extrema.IsEmpty())
+  {
+    aResult.Status = ExtremaPS::Status::OK;
+  }
+
+  return aResult;
+}
+
+//! @brief Perform extrema computation with boundary using pre-built cached grid.
+//!
+//! This is the optimized version that includes boundary extrema on edges and corners.
+//!
+//! @param theGrid pre-built grid of (u, v, point, dU, dV)
+//! @param theSurface surface adaptor
+//! @param theP query point
+//! @param theDomain 2D parameter domain
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return extrema result with interior + boundary extrema
+inline ExtremaPS::Result PerformWithCachedGridAndBoundary(
+  const NCollection_Array2<GridPoint>& theGrid,
+  const Adaptor3d_Surface&             theSurface,
+  const gp_Pnt&                        theP,
+  const ExtremaPS::Domain2D&           theDomain,
+  double                               theTol,
+  ExtremaPS::SearchMode                theMode)
+{
+  // Start with interior extrema
+  ExtremaPS::Result aResult = PerformWithCachedGrid(theGrid, theSurface, theP, theDomain, theTol, theMode);
+
+  // Add boundary extrema
+  struct SurfaceEvaluator
+  {
+    const Adaptor3d_Surface* Surf;
+
+    gp_Pnt Value(double aU, double aV) const { return Surf->Value(aU, aV); }
+  };
+
+  SurfaceEvaluator anEval{&theSurface};
+  ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, anEval, theTol, theMode);
+
+  if (!aResult.Extrema.IsEmpty())
+  {
+    aResult.Status = ExtremaPS::Status::OK;
+  }
+
+  return aResult;
+}
+
+//! @brief Perform grid-based extrema computation (interior only).
+//!
+//! @tparam GridEval type with SetUVParams and EvaluateGridD1 methods
+//! @param theEval grid evaluator
+//! @param theSurface surface adaptor
+//! @param theP query point
+//! @param theDomain 2D parameter domain
+//! @param theNbUSamples number of U samples
+//! @param theNbVSamples number of V samples
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return extrema result with interior extrema only
+template <typename GridEval>
+inline ExtremaPS::Result PerformGridBased(GridEval&                  theEval,
+                                          const Adaptor3d_Surface&   theSurface,
+                                          const gp_Pnt&              theP,
+                                          const ExtremaPS::Domain2D& theDomain,
+                                          int                        theNbUSamples,
+                                          int                        theNbVSamples,
+                                          double                     theTol,
+                                          ExtremaPS::SearchMode      theMode)
+{
+  // Build uniform parameter grids
+  TColStd_Array1OfReal aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
+  TColStd_Array1OfReal aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
+
+  // Build grid with D1 evaluation
+  NCollection_Array2<GridPoint> aGrid = BuildGrid(theEval, aUParams, aVParams);
+
+  // Use the cached grid version
+  return PerformWithCachedGrid(aGrid, theSurface, theP, theDomain, theTol, theMode);
+}
+
+//! @brief Perform grid-based extrema computation with boundary.
+//!
+//! @tparam GridEval type with SetUVParams and EvaluateGridD1 methods
+//! @param theEval grid evaluator
+//! @param theSurface surface adaptor
+//! @param theP query point
+//! @param theDomain 2D parameter domain
+//! @param theNbUSamples number of U samples
+//! @param theNbVSamples number of V samples
+//! @param theTol tolerance
+//! @param theMode search mode
+//! @return extrema result with interior + boundary extrema
+template <typename GridEval>
+inline ExtremaPS::Result PerformGridBasedWithBoundary(GridEval&                  theEval,
+                                                      const Adaptor3d_Surface&   theSurface,
+                                                      const gp_Pnt&              theP,
+                                                      const ExtremaPS::Domain2D& theDomain,
+                                                      int                        theNbUSamples,
+                                                      int                        theNbVSamples,
+                                                      double                     theTol,
+                                                      ExtremaPS::SearchMode      theMode)
+{
+  // Build uniform parameter grids
+  TColStd_Array1OfReal aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
+  TColStd_Array1OfReal aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
+
+  // Build grid with D1 evaluation
+  NCollection_Array2<GridPoint> aGrid = BuildGrid(theEval, aUParams, aVParams);
+
+  // Use the cached grid version with boundary
+  return PerformWithCachedGridAndBoundary(aGrid, theSurface, theP, theDomain, theTol, theMode);
+}
+
+} // namespace ExtremaPS_GridEvaluator
+
+#endif // _ExtremaPS_GridEvaluator_HeaderFile

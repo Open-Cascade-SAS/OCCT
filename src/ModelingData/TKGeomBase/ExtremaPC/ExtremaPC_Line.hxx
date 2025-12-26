@@ -1,0 +1,137 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _ExtremaPC_Line_HeaderFile
+#define _ExtremaPC_Line_HeaderFile
+
+#include <ExtremaPC.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+#include <algorithm>
+
+//! @brief Point-Line extrema computation.
+//!
+//! Computes the extremum (closest point) between a 3D point and a line.
+//! Uses direct analytical projection via dot product.
+//!
+//! For a line defined by origin O and direction D, the closest point
+//! to P is at parameter u = (P - O) . D, which gives the minimum distance.
+//!
+//! @note Lines always have exactly one extremum (minimum) if within bounds.
+class ExtremaPC_Line
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Constructor with line geometry.
+  //! @param theLine the line to compute extrema for
+  explicit ExtremaPC_Line(const gp_Lin& theLine)
+      : myLine(theLine)
+  {
+  }
+
+  //! Evaluates point on line at parameter.
+  //! @param theU parameter
+  //! @return point on line
+  gp_Pnt Value(double theU) const
+  {
+    return myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
+  }
+
+  //! Compute extrema between point P and the line segment (interior only).
+  //! @param theP query point
+  //! @param theDomain parameter domain
+  //! @param theTol tolerance for parameter comparison
+  //! @param theMode search mode (MinMax, Min, or Max) - not used for lines
+  //! @return result containing the interior extremum (if within bounds)
+  ExtremaPC::Result Perform(const gp_Pnt&                theP,
+                            const ExtremaPC::Domain1D&   theDomain,
+                            double                       theTol,
+                            ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    return performInterior(theP, theDomain, theTol, theMode);
+  }
+
+  //! Compute extrema between point P and the line segment including endpoints.
+  //! @param theP query point
+  //! @param theDomain parameter domain
+  //! @param theTol tolerance for parameter comparison
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing interior + endpoint extrema
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&                theP,
+                                         const ExtremaPC::Domain1D&   theDomain,
+                                         double                       theTol,
+                                         ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+
+    if (aResult.Status == ExtremaPC::Status::OK)
+    {
+      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+    }
+
+    return aResult;
+  }
+
+  //! Returns the line geometry.
+  const gp_Lin& Line() const { return myLine; }
+
+private:
+  //! Core algorithm - finds interior extremum only.
+  ExtremaPC::Result performInterior(const gp_Pnt&                theP,
+                                    const ExtremaPC::Domain1D&   theDomain,
+                                    double                       theTol,
+                                    ExtremaPC::SearchMode        theMode) const
+  {
+    (void)theMode; // Line always has exactly one extremum (minimum)
+    ExtremaPC::Result aResult;
+
+    const double theUMin = theDomain.Min;
+    const double theUMax = theDomain.Max;
+
+    // Compute projection parameter: u = (P - O) . Direction
+    const gp_Dir& aDir = myLine.Direction();
+    const gp_Pnt& aOrigin = myLine.Location();
+    gp_Vec        aVec(aOrigin, theP);
+    double        aU = aVec.Dot(gp_Vec(aDir));
+
+    // Check if projection is within parameter bounds
+    if (aU >= theUMin - theTol && aU <= theUMax + theTol)
+    {
+      // Clamp to bounds
+      aU = std::clamp(aU, theUMin, theUMax);
+
+      // Compute point on line at projected parameter
+      gp_Pnt aPtOnLine = aOrigin.Translated(aU * gp_Vec(aDir));
+
+      // Store result
+      ExtremaPC::ExtremumResult anExt;
+      anExt.Parameter      = aU;
+      anExt.Point          = aPtOnLine;
+      anExt.SquareDistance = theP.SquareDistance(aPtOnLine);
+      anExt.IsMinimum      = true; // Line always has minimum, no maximum
+
+      aResult.Extrema.Append(anExt);
+    }
+
+    aResult.Status = ExtremaPC::Status::OK;
+    return aResult;
+  }
+
+  gp_Lin myLine; //!< Line geometry
+};
+
+#endif // _ExtremaPC_Line_HeaderFile
