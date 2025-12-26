@@ -397,16 +397,14 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_Basic)
 
 TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Min)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  Handle(Geom_SphericalSurface) aGeomSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
+  ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  ExtremaPS_Surface anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Min);
-  EXPECT_EQ(anExtPS.SearchMode(), ExtremaPS::SearchMode::Min);
-
-  gp_Pnt aPoint(25.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aPoint, THE_TOL);
+  gp_Pnt                   aPoint(25.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -415,15 +413,13 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Max)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  Handle(Geom_SphericalSurface) aGeomSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
+  ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  ExtremaPS_Surface anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Max);
-
-  gp_Pnt aPoint(25.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.Perform(aPoint, THE_TOL);
+  gp_Pnt                   aPoint(25.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult = anExtPS.Perform(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);

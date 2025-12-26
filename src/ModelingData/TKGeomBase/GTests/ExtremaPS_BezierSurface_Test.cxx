@@ -475,10 +475,10 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_WithSearchMode)
 {
   GeomAdaptor_Surface anAdaptor(myFlatSurface);
   ExtremaPS_Surface   anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Min);
 
-  gp_Pnt            aP(5.0, 5.0, 7.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 5.0, 7.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   for (int i = 0; i < aResult.Extrema.Length(); ++i)

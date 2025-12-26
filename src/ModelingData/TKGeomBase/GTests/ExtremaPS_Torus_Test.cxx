@@ -420,10 +420,10 @@ TEST_F(ExtremaPS_TorusTest, Aggregator_WithSearchMode)
   Handle(Geom_ToroidalSurface) aGeomTorus = new Geom_ToroidalSurface(myTorus);
   GeomAdaptor_Surface          anAdaptor(aGeomTorus);
   ExtremaPS_Surface            anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Min);
 
-  gp_Pnt            aP(10.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(10.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   for (int i = 0; i < aResult.Extrema.Length(); ++i)

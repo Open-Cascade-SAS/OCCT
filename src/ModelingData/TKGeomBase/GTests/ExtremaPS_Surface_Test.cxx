@@ -464,18 +464,6 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_BSplineSurface)
 // Edge case tests
 //==================================================================================================
 
-TEST_F(ExtremaPS_SurfaceTest, Aggregator_NotInitialized)
-{
-  ExtremaPS_Surface anExtPS;
-  EXPECT_FALSE(anExtPS.IsInitialized());
-
-  gp_Pnt aPoint(1.0, 1.0, 1.0);
-  const ExtremaPS::Result& aResult =anExtPS.Perform(aPoint, THE_TOL);
-
-  EXPECT_FALSE(aResult.IsDone());
-  EXPECT_EQ(aResult.Status, ExtremaPS::Status::NotDone);
-}
-
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_ConstructWithDomain)
 {
   Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
@@ -530,16 +518,14 @@ TEST_F(ExtremaPS_SurfaceTest, Sphere_SearchMode_Max)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Min)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  Handle(Geom_SphericalSurface) aGeomSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
+  ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  ExtremaPS_Surface anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Min);
-  EXPECT_EQ(anExtPS.SearchMode(), ExtremaPS::SearchMode::Min);
-
-  gp_Pnt aPoint(25.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aPoint, THE_TOL);
+  gp_Pnt                   aPoint(25.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -549,16 +535,14 @@ TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Min)
 
 TEST_F(ExtremaPS_SurfaceTest, Aggregator_SearchMode_Max)
 {
-  Handle(Geom_SphericalSurface) aGeomSphere = new Geom_SphericalSurface(
-    gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  Handle(Geom_SphericalSurface) aGeomSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Surface anAdaptor(aGeomSphere);
+  ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  ExtremaPS_Surface anExtPS(anAdaptor);
-  anExtPS.SetSearchMode(ExtremaPS::SearchMode::Max);
-  EXPECT_EQ(anExtPS.SearchMode(), ExtremaPS::SearchMode::Max);
-
-  gp_Pnt aPoint(25.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aPoint, THE_TOL);
+  gp_Pnt                   aPoint(25.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1); // At least max, may include boundary extrema

@@ -58,9 +58,6 @@ class ExtremaPS_Surface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor.
-  Standard_EXPORT ExtremaPS_Surface();
-
   //! Constructor from Adaptor3d_Surface (uses adaptor bounds as domain).
   //! @param[in] theSurface surface adaptor
   Standard_EXPORT ExtremaPS_Surface(const Adaptor3d_Surface& theSurface);
@@ -89,30 +86,29 @@ public:
   //!
   //! @param theP query point
   //! @param theTol tolerance
+  //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result with interior extrema only
-  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& Perform(const gp_Pnt& theP, double theTol) const;
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! Find extrema including boundary edges and corners.
   //! Uses domain specified at construction time.
   //!
   //! @param theP query point
   //! @param theTol tolerance
+  //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result with interior + boundary extrema
-  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt& theP, double theTol) const;
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! @}
 
-  //! Sets the search mode.
-  void SetSearchMode(ExtremaPS::SearchMode theMode) { mySearchMode = theMode; }
-
-  //! Returns current search mode.
-  ExtremaPS::SearchMode SearchMode() const { return mySearchMode; }
-
   //! Returns true if surface evaluator is initialized.
   bool IsInitialized() const;
-
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
 
 private:
   //! Variant type for surface evaluators.
@@ -131,10 +127,7 @@ private:
   void initializeEvaluator(const Adaptor3d_Surface&   theSurface,
                            const ExtremaPS::Domain2D& theDomain);
 
-  EvaluatorVariant          myEvaluator;
-  ExtremaPS::Domain2D       myDomain;        //!< Parameter domain (fixed at construction)
-  ExtremaPS::SearchMode     mySearchMode = ExtremaPS::SearchMode::MinMax;
-  mutable ExtremaPS::Result myResult;        //!< Reusable result storage
+  EvaluatorVariant myEvaluator;
 };
 
 #endif // _ExtremaPS_Surface_HeaderFile
