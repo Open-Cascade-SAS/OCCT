@@ -55,7 +55,24 @@ public:
   //! @return point on hyperbola
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myHyperbola); }
 
-  //! Compute extrema between point P and the hyperbola arc (interior only, no endpoints).
+  //! Compute extrema between point P and the infinite hyperbola (no bounds checking).
+  //! @param theP query point
+  //! @param theTol tolerance for duplicate detection
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing extrema
+  ExtremaPC::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    // Use infinite bounds for unbounded hyperbola
+    return performBounded(
+      theP,
+      ExtremaPC::Domain1D{-Precision::Infinite(), Precision::Infinite()},
+      theTol,
+      theMode);
+  }
+
+  //! Compute extrema between point P and the hyperbola arc (with bounds checking).
   //! @param theP query point
   //! @param theDomain parameter domain
   //! @param theTol tolerance for duplicate detection
@@ -66,7 +83,7 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performInterior(theP, theDomain, theTol, theMode);
+    return performBounded(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the hyperbola arc including endpoints.
@@ -80,7 +97,7 @@ public:
                                          double                     theTol,
                                          ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
 
     // Add endpoints if interior computation succeeded
     if (aResult.Status == ExtremaPC::Status::OK)
@@ -95,11 +112,11 @@ public:
   const gp_Hypr& Hyperbola() const { return myHyperbola; }
 
 private:
-  //! Core algorithm - finds interior extrema only.
-  ExtremaPC::Result performInterior(const gp_Pnt&              theP,
-                                    const ExtremaPC::Domain1D& theDomain,
-                                    double                     theTol,
-                                    ExtremaPC::SearchMode      theMode) const
+  //! Core algorithm - finds extrema with bounds checking.
+  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
+                                   const ExtremaPC::Domain1D& theDomain,
+                                   double                     theTol,
+                                   ExtremaPC::SearchMode      theMode) const
   {
     ExtremaPC::Result aResult;
 

@@ -33,12 +33,23 @@ gp_Pnt ExtremaPC_BezierCurve::Value(double theU) const
 
 //==================================================================================================
 
+ExtremaPC::Result ExtremaPC_BezierCurve::Perform(const gp_Pnt&         theP,
+                                                 double                theTol,
+                                                 ExtremaPC::SearchMode theMode) const
+{
+  // Use curve's natural parameter bounds
+  ExtremaPC::Domain1D aDomain{myCurve->FirstParameter(), myCurve->LastParameter()};
+  return performBounded(theP, aDomain, theTol, theMode);
+}
+
+//==================================================================================================
+
 ExtremaPC::Result ExtremaPC_BezierCurve::Perform(const gp_Pnt&              theP,
                                                  const ExtremaPC::Domain1D& theDomain,
                                                  double                     theTol,
                                                  ExtremaPC::SearchMode      theMode) const
 {
-  return performInterior(theP, theDomain, theTol, theMode);
+  return performBounded(theP, theDomain, theTol, theMode);
 }
 
 //==================================================================================================
@@ -48,7 +59,7 @@ ExtremaPC::Result ExtremaPC_BezierCurve::PerformWithEndpoints(const gp_Pnt&     
                                                               double                     theTol,
                                                               ExtremaPC::SearchMode      theMode) const
 {
-  ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+  ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
 
   // Add endpoints if interior computation succeeded or found no interior solutions
   if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
@@ -91,10 +102,10 @@ void ExtremaPC_BezierCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDo
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_BezierCurve::performInterior(const gp_Pnt&              theP,
-                                                         const ExtremaPC::Domain1D& theDomain,
-                                                         double                     theTol,
-                                                         ExtremaPC::SearchMode      theMode) const
+ExtremaPC::Result ExtremaPC_BezierCurve::performBounded(const gp_Pnt&              theP,
+                                                        const ExtremaPC::Domain1D& theDomain,
+                                                        double                     theTol,
+                                                        ExtremaPC::SearchMode      theMode) const
 {
   ExtremaPC::Result aResult;
 

@@ -50,7 +50,17 @@ public:
   //! @return point on curve
   Standard_EXPORT gp_Pnt Value(double theU) const;
 
-  //! Compute extrema between point P and the curve segment (interior only, no endpoints).
+  //! Compute extrema between point P and the full curve (no bounds checking).
+  //! Uses the curve's natural parameter bounds [FirstParameter, LastParameter].
+  //! @param theP query point
+  //! @param theTol tolerance for root finding
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing extrema
+  Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt&         theP,
+                                            double                theTol,
+                                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
+
+  //! Compute extrema between point P and the curve segment (with bounds checking).
   //! The grid is cached for the parameter range - if the same range is used,
   //! subsequent calls reuse the cached grid for better performance.
   //! @param theP query point
@@ -75,11 +85,11 @@ public:
                                                          ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const;
 
 private:
-  //! Core algorithm - finds interior extrema only.
-  ExtremaPC::Result performInterior(const gp_Pnt&              theP,
-                                    const ExtremaPC::Domain1D& theDomain,
-                                    double                     theTol,
-                                    ExtremaPC::SearchMode      theMode) const;
+  //! Core algorithm - finds extrema with bounds checking.
+  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
+                                   const ExtremaPC::Domain1D& theDomain,
+                                   double                     theTol,
+                                   ExtremaPC::SearchMode      theMode) const;
 
   //! Rebuild cached grid if parameter range has changed.
   void updateCacheIfNeeded(const ExtremaPC::Domain1D& theDomain) const;

@@ -56,7 +56,20 @@ public:
   //! @return point on ellipse
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myEllipse); }
 
-  //! Compute extrema between point P and the ellipse arc (interior only, no endpoints).
+  //! Compute extrema between point P and the full ellipse (no bounds checking).
+  //! @param theP query point
+  //! @param theTol tolerance for degenerate case detection
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing extrema or InfiniteSolutions status
+  ExtremaPC::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    // Use full parameter range [0, 2*PI]
+    return performBounded(theP, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, theTol, theMode);
+  }
+
+  //! Compute extrema between point P and the ellipse arc (with bounds checking).
   //! @param theP query point
   //! @param theDomain parameter domain (radians)
   //! @param theTol tolerance for degenerate case detection
@@ -67,7 +80,7 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performInterior(theP, theDomain, theTol, theMode);
+    return performBounded(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the ellipse arc including endpoints.
@@ -81,7 +94,7 @@ public:
                                          double                     theTol,
                                          ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
 
     // Add endpoints if interior computation succeeded
     if (aResult.Status == ExtremaPC::Status::OK)
@@ -96,11 +109,11 @@ public:
   const gp_Elips& Ellipse() const { return myEllipse; }
 
 private:
-  //! Core algorithm - finds interior extrema only.
-  ExtremaPC::Result performInterior(const gp_Pnt&              theP,
-                                    const ExtremaPC::Domain1D& theDomain,
-                                    double                     theTol,
-                                    ExtremaPC::SearchMode      theMode) const
+  //! Core algorithm - finds extrema with bounds checking.
+  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
+                                   const ExtremaPC::Domain1D& theDomain,
+                                   double                     theTol,
+                                   ExtremaPC::SearchMode      theMode) const
   {
     ExtremaPC::Result aResult;
 

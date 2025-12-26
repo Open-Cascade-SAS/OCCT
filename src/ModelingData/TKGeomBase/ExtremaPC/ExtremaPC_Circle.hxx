@@ -57,18 +57,89 @@ public:
   //! @return point on circle
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myCircle); }
 
-  //! Compute extrema between point P and the circle arc (interior only, no endpoints).
+  //! Compute extrema between point P and the full circle (no bounds checking).
+  //! @param theP query point
+  //! @param theTol tolerance for degenerate case detection
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing extrema or InfiniteSolutions status
+  ExtremaPC::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    ExtremaPC::Result aResult;
+
+    // Step 1: Project point P onto the circle plane
+    const gp_Pnt& aCenter = myCircle.Location();
+    const gp_Dir& aAxis   = myCircle.Axis().Direction();
+    gp_Vec        aToP(aCenter, theP);
+    double        aHeight = aToP.Dot(gp_Vec(aAxis));
+    gp_Vec        aTrsl   = gp_Vec(aAxis) * (-aHeight);
+    gp_Pnt        aPp     = theP.Translated(aTrsl);
+
+    // Step 2: Check for degenerate case - point projects to center
+    gp_Vec aOPp(aCenter, aPp);
+    double aOPpMag = aOPp.Magnitude();
+
+    if (aOPpMag < theTol)
+    {
+      // Point is on the circle axis - all points on circle are equidistant
+      aResult.Status = ExtremaPC::Status::InfiniteSolutions;
+      double aRadius = myCircle.Radius();
+      aResult.InfiniteSquareDistance = aRadius * aRadius + aHeight * aHeight;
+      return aResult;
+    }
+
+    // Step 3: Compute the angle of the closest point
+    double aUs1 = myCircle.XAxis().Direction().AngleWithRef(aOPp, aAxis);
+
+    // Handle angle boundaries
+    constexpr double aAngTol = Precision::Angular();
+    if (aUs1 + M_PI < aAngTol)
+    {
+      aUs1 = -M_PI;
+    }
+    else if (aUs1 - M_PI > -aAngTol)
+    {
+      aUs1 = M_PI;
+    }
+
+    // Us2 = Us1 + PI corresponds to maximum distance (farthest point)
+    double aUs2 = aUs1 + M_PI;
+
+    // Step 4: Add extrema based on search mode
+    double aSolutions[2] = {aUs1, aUs2};
+    int    aStart = (theMode == ExtremaPC::SearchMode::Max) ? 1 : 0;
+    int    aEnd   = (theMode == ExtremaPC::SearchMode::Min) ? 1 : 2;
+
+    for (int i = aStart; i < aEnd; ++i)
+    {
+      gp_Pnt aCurvePt = ElCLib::Value(aSolutions[i], myCircle);
+
+      ExtremaPC::ExtremumResult anExt;
+      anExt.Parameter      = aSolutions[i];
+      anExt.Point          = aCurvePt;
+      anExt.SquareDistance = theP.SquareDistance(aCurvePt);
+      anExt.IsMinimum      = (i == 0);
+
+      aResult.Extrema.Append(anExt);
+    }
+
+    aResult.Status = ExtremaPC::Status::OK;
+    return aResult;
+  }
+
+  //! Compute extrema between point P and the circle arc (with bounds checking).
   //! @param theP query point
   //! @param theDomain parameter domain (radians)
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior extrema or InfiniteSolutions status
-  ExtremaPC::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPC::Domain1D&   theDomain,
-                            double                       theTol,
-                            ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result Perform(const gp_Pnt&              theP,
+                            const ExtremaPC::Domain1D& theDomain,
+                            double                     theTol,
+                            ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performInterior(theP, theDomain, theTol, theMode);
+    return performBounded(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the circle arc including endpoints.
@@ -77,12 +148,12 @@ public:
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema or InfiniteSolutions status
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&                theP,
-                                         const ExtremaPC::Domain1D&   theDomain,
-                                         double                       theTol,
-                                         ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
+                                         const ExtremaPC::Domain1D& theDomain,
+                                         double                     theTol,
+                                         ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
 
     // Add endpoints if interior computation succeeded
     if (aResult.Status == ExtremaPC::Status::OK)
@@ -97,11 +168,11 @@ public:
   const gp_Circ& Circle() const { return myCircle; }
 
 private:
-  //! Core algorithm - finds interior extrema only.
-  ExtremaPC::Result performInterior(const gp_Pnt&                theP,
-                                    const ExtremaPC::Domain1D&   theDomain,
-                                    double                       theTol,
-                                    ExtremaPC::SearchMode        theMode) const
+  //! Core algorithm - finds extrema with bounds checking.
+  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
+                                   const ExtremaPC::Domain1D& theDomain,
+                                   double                     theTol,
+                                   ExtremaPC::SearchMode      theMode) const
   {
     ExtremaPC::Result aResult;
 
