@@ -39,7 +39,7 @@ ExtremaPS::Result ExtremaPS_OtherSurface::Perform(const gp_Pnt&              the
   const int aNbUSamples = 32;
   const int aNbVSamples = 32;
 
-  GeomGridEval_OtherSurface anEval(myAdaptor);
+  GeomGridEval_OtherSurface anEval(&myAdaptor);
 
   return ExtremaPS_GridEvaluator::PerformGridBased(anEval,
                                                     myAdaptor,
@@ -62,7 +62,7 @@ ExtremaPS::Result ExtremaPS_OtherSurface::PerformWithBoundary(const gp_Pnt&     
   const int aNbUSamples = 32;
   const int aNbVSamples = 32;
 
-  GeomGridEval_OtherSurface anEval(myAdaptor);
+  GeomGridEval_OtherSurface anEval(&myAdaptor);
 
   return ExtremaPS_GridEvaluator::PerformGridBasedWithBoundary(anEval,
                                                                 myAdaptor,

@@ -62,7 +62,7 @@ struct Candidate
 
 //! @brief Build 2D grid from GeomGridEval D1 results.
 //!
-//! @tparam GridEval type with EvaluateGridD1() method
+//! @tparam GridEval type with EvaluateGridD1(uParams, vParams) method
 //! @param theEval grid evaluator
 //! @param theUParams U parameter values
 //! @param theVParams V parameter values
@@ -72,8 +72,7 @@ inline NCollection_Array2<GridPoint> BuildGrid(GridEval&                   theEv
                                                const TColStd_Array1OfReal& theUParams,
                                                const TColStd_Array1OfReal& theVParams)
 {
-  theEval.SetUVParams(theUParams, theVParams);
-  NCollection_Array2<GeomGridEval::SurfD1> aD1Grid = theEval.EvaluateGridD1();
+  NCollection_Array2<GeomGridEval::SurfD1> aD1Grid = theEval.EvaluateGridD1(theUParams, theVParams);
 
   const int                     aNbU = theUParams.Length();
   const int                     aNbV = theVParams.Length();

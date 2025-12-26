@@ -69,16 +69,15 @@ struct Candidate
 
 //! @brief Build grid from GeomGridEval D1 results.
 //!
-//! @tparam GridEval type with EvaluateGridD1() method returning NCollection_Array1<GeomGridEval::CurveD1>
-//! @param theEval grid evaluator (must have SetParams and EvaluateGridD1)
+//! @tparam GridEval type with EvaluateGridD1(params) method returning NCollection_Array1<GeomGridEval::CurveD1>
+//! @param theEval grid evaluator (must have EvaluateGridD1 accepting params)
 //! @param theParams parameter values to sample
 //! @return array of GridPoint (0-based indexing)
 template <typename GridEval>
-inline NCollection_Array1<GridPoint> BuildGrid(GridEval&                       theEval,
-                                               const TColStd_Array1OfReal&     theParams)
+inline NCollection_Array1<GridPoint> BuildGrid(GridEval&                   theEval,
+                                               const TColStd_Array1OfReal& theParams)
 {
-  theEval.SetParams(theParams);
-  NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1();
+  NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams);
 
   const int aNbParams = theParams.Length();
   NCollection_Array1<GridPoint> aGrid(0, aNbParams - 1);
