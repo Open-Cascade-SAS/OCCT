@@ -18,6 +18,7 @@
 
 #include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_NullValue.hxx>
@@ -208,9 +209,10 @@ private:
                     const Standard_Integer theBoxIndex);
 
 private:
-  SliceArray mySlicesX; //< Array of box indices lists for each X slice.
-  SliceArray mySlicesY; //< Array of box indices lists for each Y slice.
-  SliceArray mySlicesZ; //< Array of box indices lists for each Z slice.
+  Handle(NCollection_IncAllocator) myAllocator; //< Allocator for all vectors.
+  SliceArray                       mySlicesX;   //< Array of box indices lists for each X slice.
+  SliceArray                       mySlicesY;   //< Array of box indices lists for each Y slice.
+  SliceArray                       mySlicesZ;   //< Array of box indices lists for each Z slice.
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
@@ -219,7 +221,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution,
                              const Standard_Integer theExpectedBoxCount)
-    : mySlicesX(0, theResolution - 1),
+    : myAllocator(new NCollection_IncAllocator()),
+      mySlicesX(0, theResolution - 1),
       mySlicesY(0, theResolution - 1),
       mySlicesZ(0, theResolution - 1)
 {
@@ -227,9 +230,10 @@ Bnd_VoxelGrid::Bnd_VoxelGrid(const Standard_Integer theResolution,
   const Standard_Integer anIncrement = std::max(theExpectedBoxCount / theResolution, 16);
   for (Standard_Integer i = 0; i < theResolution; ++i)
   {
-    mySlicesX[i].SetIncrement(anIncrement);
-    mySlicesY[i].SetIncrement(anIncrement);
-    mySlicesZ[i].SetIncrement(anIncrement);
+    // Assign vectors with the incremental allocator for faster memory allocation.
+    mySlicesX[i] = VectorInt(anIncrement, myAllocator);
+    mySlicesY[i] = VectorInt(anIncrement, myAllocator);
+    mySlicesZ[i] = VectorInt(anIncrement, myAllocator);
   }
 }
 
