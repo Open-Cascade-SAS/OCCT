@@ -143,10 +143,9 @@ public:
     for (int i = thePoints.Lower(); i <= thePoints.Upper(); ++i)
     {
       (void)Perform(thePoints.Value(i), theTol, theMode);
-      // Copy result data (avoids moving internal storage, preserves myResult capacity)
-      aResults[i].Status                 = myResult.Status;
-      aResults[i].InfiniteSquareDistance = myResult.InfiniteSquareDistance;
-      aResults[i].Extrema                = myResult.Extrema;
+      aResults[i] = std::move(myResult);
+      myResult.Status                 = ExtremaPC::Status::NotDone;
+      myResult.InfiniteSquareDistance = 0.0;
     }
 
     return aResults;

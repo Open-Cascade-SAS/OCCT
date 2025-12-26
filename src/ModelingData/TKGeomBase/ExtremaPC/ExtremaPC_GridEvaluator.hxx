@@ -190,10 +190,11 @@ public:
         myResult.Status = ExtremaPC::Status::OK;
       }
 
-      // Copy result data to batch results (avoids moving internal storage)
-      aResults[q].Status                 = myResult.Status;
-      aResults[q].InfiniteSquareDistance = myResult.InfiniteSquareDistance;
-      aResults[q].Extrema                = myResult.Extrema; // Copy, not move - preserves myResult capacity
+      // Move result to batch results
+      aResults[q] = std::move(myResult);
+      // Reset myResult to clean state (Extrema is now empty after move)
+      myResult.Status                 = ExtremaPC::Status::NotDone;
+      myResult.InfiniteSquareDistance = 0.0;
     }
 
     return aResults;
