@@ -936,3 +936,82 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_BSpline)
 
   EXPECT_LT(std::sqrt(aNewResult.MinSquareDistance()), THE_TOL);
 }
+
+//==================================================================================================
+// Offset curve performance tests (D2 is expensive for offset curves)
+//==================================================================================================
+
+TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
+{
+  // Create a BSpline base curve with 10 control points
+  constexpr int aNbPoles = 10;
+  constexpr int aDegree  = 3;
+  constexpr int aNbKnots = aNbPoles - aDegree + 1; // 8 knots
+
+  TColgp_Array1OfPnt aPoles(1, aNbPoles);
+  for (int i = 1; i <= aNbPoles; ++i)
+  {
+    double t = (i - 1.0) / (aNbPoles - 1.0);
+    aPoles(i) = gp_Pnt(t * 10.0,
+                       std::sin(t * M_PI * 2) * 3.0,
+                       0.0); // Planar curve for offset
+  }
+
+  TColStd_Array1OfReal aKnots(1, aNbKnots);
+  TColStd_Array1OfInteger aMults(1, aNbKnots);
+  for (int i = 1; i <= aNbKnots; ++i)
+  {
+    aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
+    aMults(i) = (i == 1 || i == aNbKnots) ? aDegree + 1 : 1;
+  }
+
+  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+
+  // Create offset curve with offset = 2.0
+  Handle(Geom_OffsetCurve) anOffsetCurve = new Geom_OffsetCurve(aBSpline, 2.0, gp_Dir(0, 0, 1));
+  GeomAdaptor_Curve anAdaptor(anOffsetCurve);
+
+  std::mt19937                     aGen(55555);
+  std::uniform_real_distribution<> aDist(-2.0, 12.0);
+
+  const int aNumIterations = 5000;
+
+  std::vector<gp_Pnt> aPoints;
+  aPoints.reserve(aNumIterations);
+  for (int i = 0; i < aNumIterations; ++i)
+  {
+    aPoints.emplace_back(aDist(aGen), aDist(aGen), aDist(aGen));
+  }
+
+  // Time new implementation - WITH CACHING (reuse evaluator)
+  ExtremaPC_Curve anExtPCCached(anAdaptor);
+  auto aStartNewCached = std::chrono::high_resolution_clock::now();
+  for (const auto& aPt : aPoints)
+  {
+    const ExtremaPC::Result& aResult = anExtPCCached.Perform(aPt, THE_TOL);
+    (void)aResult;
+  }
+  auto aEndNewCached     = std::chrono::high_resolution_clock::now();
+  auto aDurationNewCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
+
+  // Time old implementation - WITH CACHING (Initialize once, Perform per point)
+  Extrema_ExtPC anOldExtPCCached;
+  anOldExtPCCached.Initialize(anAdaptor, anAdaptor.FirstParameter(), anAdaptor.LastParameter());
+  auto aStartOldCached = std::chrono::high_resolution_clock::now();
+  for (const auto& aPt : aPoints)
+  {
+    anOldExtPCCached.Perform(aPt);
+  }
+  auto aEndOldCached      = std::chrono::high_resolution_clock::now();
+  auto aDurationOldCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
+
+  std::cout << "[          ] Performance_OffsetBSpline (" << aNumIterations << " iterations, 10-pole base curve):" << std::endl;
+  std::cout << "[          ]   Old (with caching):   " << aDurationOldCached.count() << " us"
+            << " (" << aDurationOldCached.count() / aNumIterations << " us/query)" << std::endl;
+  std::cout << "[          ]   New (with caching):   " << aDurationNewCached.count() << " us"
+            << " (" << aDurationNewCached.count() / aNumIterations << " us/query)" << std::endl;
+  std::cout << "[          ]   New vs Old (cached):  " << std::fixed << std::setprecision(2)
+            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x" << std::endl;
+
+  SUCCEED();
+}
