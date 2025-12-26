@@ -107,10 +107,8 @@ private:
   GeomAdaptor_Surface        myAdaptor;  //!< Surface adaptor (cached)
   ExtremaPS::Domain2D        myDomain;   //!< Parameter domain (fixed at construction)
 
-  // Pre-built grid (immutable after construction)
-  NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
-
-  mutable ExtremaPS::Result myResult;  //!< Reusable result storage
+  // Grid evaluator with cached state (grid, result, temporary vectors)
+  mutable ExtremaPS_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPS_OffsetSurface_HeaderFile

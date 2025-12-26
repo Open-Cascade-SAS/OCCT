@@ -106,13 +106,11 @@ private:
   Handle(Geom_BezierSurface) mySurface;  //!< Surface geometry
   GeomAdaptor_Surface        myAdaptor;  //!< Surface adaptor (cached)
   ExtremaPS::Domain2D        myDomain;   //!< Parameter domain (fixed at construction)
-
-  // Pre-built grid (immutable after construction)
-  NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
   int myNbUSamples = 0;  //!< Number of U samples
   int myNbVSamples = 0;  //!< Number of V samples
 
-  mutable ExtremaPS::Result myResult;  //!< Reusable result storage
+  // Grid evaluator with cached state (grid, result, temporary vectors)
+  mutable ExtremaPS_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPS_BezierSurface_HeaderFile

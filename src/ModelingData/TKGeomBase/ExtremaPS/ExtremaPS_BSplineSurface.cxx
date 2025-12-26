@@ -154,7 +154,7 @@ void ExtremaPS_BSplineSurface::buildGrid()
   math_Vector aVParams = BuildKnotAwareParams(myVKnots, myVDegree, myDomain.VMin, myDomain.VMax);
 
   GeomGridEval_BSplineSurface anEval(mySurface);
-  myGrid = ExtremaPS_GridEvaluator::BuildGrid(anEval, aUParams, aVParams);
+  myEvaluator.BuildGrid(anEval, aUParams, aVParams);
 }
 
 //==================================================================================================
@@ -163,10 +163,7 @@ const ExtremaPS::Result& ExtremaPS_BSplineSurface::Perform(const gp_Pnt&        
                                                             double                theTol,
                                                             ExtremaPS::SearchMode theMode) const
 {
-  myResult.Clear();
-  // Use the pre-built grid (interior extrema only)
-  ExtremaPS_GridEvaluator::PerformWithCachedGrid(myResult, myGrid, myAdaptor, theP, myDomain, theTol, theMode);
-  return myResult;
+  return myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
@@ -175,16 +172,17 @@ const ExtremaPS::Result& ExtremaPS_BSplineSurface::PerformWithBoundary(const gp_
                                                                         double                theTol,
                                                                         ExtremaPS::SearchMode theMode) const
 {
-  // Start with interior extrema (populates myResult)
-  (void)Perform(theP, theTol, theMode);
+  // Get interior extrema (populates myEvaluator's result)
+  (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);
 
-  // Add boundary extrema
-  ExtremaPS::AddBoundaryExtrema(myResult, theP, myDomain, *this, theTol, theMode);
+  // Add boundary extrema to the result
+  ExtremaPS::Result& aResult = myEvaluator.Result();
+  ExtremaPS::AddBoundaryExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
-  if (!myResult.Extrema.IsEmpty())
+  if (!aResult.Extrema.IsEmpty())
   {
-    myResult.Status = ExtremaPS::Status::OK;
+    aResult.Status = ExtremaPS::Status::OK;
   }
 
-  return myResult;
+  return aResult;
 }

@@ -103,20 +103,18 @@ private:
   void buildGrid();
 
 private:
-  Handle(Geom_BSplineSurface) mySurface;  //!< Surface geometry
-  GeomAdaptor_Surface         myAdaptor;  //!< Surface adaptor (cached)
-  ExtremaPS::Domain2D         myDomain;   //!< Parameter domain (fixed at construction)
+  Handle(Geom_BSplineSurface) mySurface; //!< Surface geometry
+  GeomAdaptor_Surface         myAdaptor; //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D         myDomain;  //!< Parameter domain (fixed at construction)
 
   // Knot vectors for knot-aware sampling
-  TColStd_Array1OfReal myUKnots;  //!< U knot vector
-  TColStd_Array1OfReal myVKnots;  //!< V knot vector
-  int myUDegree = 0;  //!< U degree
-  int myVDegree = 0;  //!< V degree
+  TColStd_Array1OfReal myUKnots; //!< U knot vector
+  TColStd_Array1OfReal myVKnots; //!< V knot vector
+  int                  myUDegree = 0; //!< U degree
+  int                  myVDegree = 0; //!< V degree
 
-  // Pre-built grid (immutable after construction)
-  NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
-
-  mutable ExtremaPS::Result myResult;  //!< Reusable result storage
+  // Grid evaluator with cached state (grid, result, temporary vectors)
+  mutable ExtremaPS_GridEvaluator myEvaluator;
 };
 
 #endif // _ExtremaPS_BSplineSurface_HeaderFile
