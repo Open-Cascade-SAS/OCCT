@@ -140,8 +140,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MinMode)
   gp_Pnt aPoint(25.0, 10.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -157,7 +156,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MinMode)
 
 TEST_F(ExtremaPC_SearchModeTest, Line_MaxMode)
 {
-  // For bounded lines, Max mode includes endpoint maxima.
+  // For bounded lines, Max mode with endpoints includes endpoint maxima.
   // The maximum distance is at the farthest endpoint, not the perpendicular projection.
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, -50.0, 50.0);
@@ -165,8 +164,8 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MaxMode)
   gp_Pnt aPoint(0.0, 10.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =
+    anExtPC.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
   // With endpoints included, max mode finds the farthest endpoint
@@ -187,8 +186,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MinMaxMode)
   gp_Pnt aPoint(10.0, 5.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::MinMax);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -215,8 +213,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointOutside)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -239,8 +236,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointOutside)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -263,8 +259,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMode_PointInside)
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aNewResult.IsDone());
   EXPECT_EQ(aNewResult.NbExt(), 1);
@@ -282,8 +277,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MaxMode_PointInside)
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
   EXPECT_EQ(aNewResult.NbExt(), 1);
@@ -301,8 +295,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_MinMaxMode)
   gp_Pnt aPoint(15.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::MinMax);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -330,8 +323,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_PartialArc_MinMode)
   gp_Pnt aPoint(15.0, 15.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -356,8 +348,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_PartialArc_MaxMode)
   gp_Pnt aPoint(15.0, 15.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
@@ -387,8 +378,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_OnMajorAxis)
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -411,8 +401,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MaxMode_OnMajorAxis)
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -435,8 +424,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMode_General)
   gp_Pnt aPoint(15.0, 12.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -457,8 +445,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_MinMaxMode)
   gp_Pnt aPoint(15.0, 8.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::MinMax);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -487,8 +474,7 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_AtVertex)
   gp_Pnt aPoint(0.0, 5.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -509,14 +495,14 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MaxMode)
   gp_Pnt aPoint(0.0, 5.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  // Use PerformWithEndpoints to find maximum which includes endpoints
+  const ExtremaPC::Result& aNewResult =
+    anExtPC.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
   EXPECT_GE(aNewResult.NbExt(), 1);
 
-  // For open curves like parabola, Max mode finds the maximum among
-  // computed extrema (not endpoints). Verify the result is valid.
+  // With endpoints, Max mode finds the maximum at one of the endpoints.
   if (aNewResult.NbExt() > 0)
   {
     const auto& aExtremum = aNewResult[aNewResult.MaxIndex()];
@@ -536,8 +522,7 @@ TEST_F(ExtremaPC_SearchModeTest, Parabola_MinMode_OffAxis)
   gp_Pnt aPoint(10.0, -5.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -562,8 +547,7 @@ TEST_F(ExtremaPC_SearchModeTest, Hyperbola_MinMode)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -586,8 +570,7 @@ TEST_F(ExtremaPC_SearchModeTest, Hyperbola_MaxMode)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
@@ -628,8 +611,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMode)
   gp_Pnt aPoint(2.0, 3.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -665,8 +647,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MaxMode)
   gp_Pnt aPoint(2.0, 1.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
@@ -703,8 +684,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_MinMaxMode)
   gp_Pnt aPoint(2.0, 1.5, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::MinMax);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   ASSERT_TRUE(aNewResult.IsDone());
   EXPECT_GE(aNewResult.NbExt(), 1);
@@ -747,8 +727,7 @@ TEST_F(ExtremaPC_SearchModeTest, Bezier_MinMode)
   gp_Pnt aPoint(2.0, 4.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -774,8 +753,8 @@ TEST_F(ExtremaPC_SearchModeTest, Bezier_MaxMode)
   gp_Pnt aPoint(2.0, 1.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =
+    anExtPC.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
   ASSERT_GE(aNewResult.NbExt(), 1);
@@ -801,8 +780,7 @@ TEST_F(ExtremaPC_SearchModeTest, OffsetCircle_MinMode)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -827,8 +805,7 @@ TEST_F(ExtremaPC_SearchModeTest, OffsetCircle_MaxMode)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
@@ -863,8 +840,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MinMode)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), 0.0);
 
     ExtremaPC_Curve anExtPC(anAdaptor);
-    anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -894,8 +870,7 @@ TEST_F(ExtremaPC_SearchModeTest, Circle_RandomPoints_MaxMode)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), 0.0);
 
     ExtremaPC_Curve anExtPC(anAdaptor);
-    anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -925,8 +900,7 @@ TEST_F(ExtremaPC_SearchModeTest, Ellipse_RandomPoints_MinMode)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), 0.0);
 
     ExtremaPC_Curve anExtPC(anAdaptor);
-    anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -972,8 +946,7 @@ TEST_F(ExtremaPC_SearchModeTest, BSpline_RandomPoints_MinMode)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), 0.0);
 
     ExtremaPC_Curve anExtPC(anAdaptor);
-    anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -1020,12 +993,11 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
 
   // Time MinMax mode
   ExtremaPC_Curve anExtPCMinMax(anAdaptor);
-  anExtPCMinMax.SetSearchMode(ExtremaPC::SearchMode::MinMax);
 
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint);
+    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1033,12 +1005,11 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_Circle)
 
   // Time Min mode
   ExtremaPC_Curve anExtPCMin(anAdaptor);
-  anExtPCMin.SetSearchMode(ExtremaPC::SearchMode::Min);
 
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint);
+    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
@@ -1077,12 +1048,11 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_BSpline)
 
   // Time MinMax mode
   ExtremaPC_Curve anExtPCMinMax(anAdaptor);
-  anExtPCMinMax.SetSearchMode(ExtremaPC::SearchMode::MinMax);
 
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint);
+    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1090,12 +1060,11 @@ TEST_F(ExtremaPC_SearchModeTest, Performance_MinVsMinMax_BSpline)
 
   // Time Min mode
   ExtremaPC_Curve anExtPCMin(anAdaptor);
-  anExtPCMin.SetSearchMode(ExtremaPC::SearchMode::Min);
 
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint);
+    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
@@ -1138,12 +1107,11 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
 
   // Time MinMax mode (no early termination)
   ExtremaPC_Curve anExtPCMinMax(anAdaptor);
-  anExtPCMinMax.SetSearchMode(ExtremaPC::SearchMode::MinMax);
 
   auto aStartMinMax = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMinMax.Perform(aPoint);
+    anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
   }
   auto aEndMinMax = std::chrono::high_resolution_clock::now();
   auto aDurationMinMax =
@@ -1151,20 +1119,19 @@ TEST_F(ExtremaPC_SearchModeTest, EarlyTermination_LargeBezier_MinMode)
 
   // Time Min mode (with early termination)
   ExtremaPC_Curve anExtPCMin(anAdaptor);
-  anExtPCMin.SetSearchMode(ExtremaPC::SearchMode::Min);
 
   auto aStartMin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < aNbIterations; ++i)
   {
-    anExtPCMin.Perform(aPoint);
+    anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
   }
   auto aEndMin = std::chrono::high_resolution_clock::now();
   auto aDurationMin =
     std::chrono::duration_cast<std::chrono::microseconds>(aEndMin - aStartMin).count();
 
   // Verify correctness - Min mode should find the same minimum
-  const ExtremaPC::Result& aMinMaxRes = anExtPCMinMax.Perform(aPoint);
-  const ExtremaPC::Result& aMinRes = anExtPCMin.Perform(aPoint);
+  const ExtremaPC::Result& aMinMaxRes = anExtPCMinMax.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
+  const ExtremaPC::Result& aMinRes = anExtPCMin.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aMinMaxRes.IsDone());
   ASSERT_TRUE(aMinRes.IsDone());

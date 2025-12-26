@@ -190,7 +190,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
   EXPECT_EQ(anExtPC.GetType(), GeomAbs_Line);
 
   gp_Pnt aPoint(5.0, 3.0, 4.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -211,7 +211,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Circle)
   EXPECT_EQ(anExtPC.GetType(), GeomAbs_Circle);
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -247,7 +247,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
 
   // Point near the curve
   gp_Pnt aPoint(1.5, 3.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find at least one extremum
@@ -266,7 +266,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 
   // Point on major axis
   gp_Pnt aPoint(30.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -289,7 +289,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Parabola)
 
   // Point on X axis at focus
   gp_Pnt aPoint(2.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -314,7 +314,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
 
   // Point near the vertex
   gp_Pnt aPoint(10.0, 5.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -346,7 +346,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
 
   // Point above the curve's peak
   gp_Pnt aPoint(2.0, 5.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -374,7 +374,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 
   // Point outside the offset circle
   gp_Pnt aPoint(25.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -397,7 +397,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_TrimmedCurve)
 
   // Point in first quadrant
   gp_Pnt aPoint(15.0, 15.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -424,7 +424,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
 
   // Point exactly on the circle
   gp_Pnt aPoint(10.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -443,7 +443,7 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_IsInitialized)
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   gp_Pnt aPoint(50.0, 5.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -546,11 +546,9 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Min)
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
-  EXPECT_EQ(anExtPC.SearchMode(), ExtremaPC::SearchMode::Min);
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only min
@@ -565,11 +563,9 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_SearchMode_Max)
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Max);
-  EXPECT_EQ(anExtPC.SearchMode(), ExtremaPC::SearchMode::Max);
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only max
@@ -598,11 +594,10 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline_SearchMode_Min)
   GeomAdaptor_Curve anAdaptor(aBSpline);
 
   ExtremaPC_Curve anExtPC(anAdaptor);
-  anExtPC.SetSearchMode(ExtremaPC::SearchMode::Min);
 
   // Point near the curve
   gp_Pnt aPoint(1.5, 3.0, 0.0);
-  const ExtremaPC::Result& aResult =anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   // In Min mode, should only return minimum extrema

@@ -48,13 +48,11 @@
 //! @note The parameter domain is fixed at construction time for optimal performance.
 //!       The inner curve evaluators build their grids eagerly in the constructor,
 //!       so multiple Perform() calls reuse the pre-built data without rebuilding.
-//!       SetDomain() and ClearDomain() are deprecated - use the constructor overloads
-//!       to specify the domain.
 //!
 //! Usage example:
 //! @code
 //! ExtremaPC_Curve anExtPC(myAdaptorCurve);
-//! ExtremaPC::Result aResult = anExtPC.Perform(myPoint);
+//! const ExtremaPC::Result& aResult = anExtPC.Perform(myPoint, 1.0e-9);
 //! if (aResult.IsDone())
 //! {
 //!   for (int i = 0; i < aResult.NbExt(); ++i)
@@ -117,56 +115,27 @@ public:
   //! Move assignment operator.
   ExtremaPC_Curve& operator=(ExtremaPC_Curve&&) = default;
 
-  //! Sets the tolerance for extrema computation.
-  //! @param[in] theTol tolerance value
-  void SetTolerance(double theTol) { myConfig.Tolerance = theTol; }
-
-  //! Sets the number of samples for numerical methods.
-  //! @param[in] theNb number of samples
-  void SetNbSamples(int theNb) { myConfig.NbSamples = theNb; }
-
-  //! Sets the search mode.
-  //! @param[in] theMode search mode (MinMax, Min, or Max)
-  void SetSearchMode(ExtremaPC::SearchMode theMode) { myConfig.Mode = theMode; }
-
-  //! Returns the current search mode.
-  ExtremaPC::SearchMode SearchMode() const { return myConfig.Mode; }
-
-  //! Sets whether to include endpoints as extrema.
-  //! @param[in] theFlag true to include endpoints
-  void SetIncludeEndpoints(bool theFlag) { myConfig.IncludeEndpoints = theFlag; }
-
-  //! Returns whether endpoints are included as extrema.
-  bool IncludeEndpoints() const { return myConfig.IncludeEndpoints; }
-
-  //! @deprecated Domain is now fixed at construction time for performance.
-  //! This method only updates the config domain but not the inner evaluator.
-  //! Use constructor overloads to specify the domain instead.
-  [[deprecated("Domain is fixed at construction time - use constructor overloads")]]
-  void SetDomain(const ExtremaPC::Domain1D& theDomain) { myConfig.Domain = theDomain; }
-
-  //! @deprecated Domain is now fixed at construction time for performance.
-  //! This method only updates the config domain but not the inner evaluator.
-  [[deprecated("Domain is fixed at construction time - use constructor overloads")]]
-  void ClearDomain() { myConfig.Domain.reset(); }
-
-  //! Returns the parameter domain if set.
-  const std::optional<ExtremaPC::Domain1D>& Domain() const { return myConfig.Domain; }
-
   //! Computes extrema between point P and the curve.
-  //! Uses domain from config if set, otherwise uses natural/unbounded behavior.
+  //! Uses domain specified at construction time.
   //! @param[in] theP query point
+  //! @param[in] theTol tolerance for extrema computation
+  //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing all found extrema
-  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(const gp_Pnt& theP) const;
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
-  //! @deprecated Domain parameter is ignored - domain is fixed at construction time.
-  //! Use the single-argument Perform() instead.
+  //! Computes extrema between point P and the curve, including endpoints.
+  //! Uses domain specified at construction time.
   //! @param[in] theP query point
-  //! @param[in] theDomain parameter domain (ignored - uses construction-time domain)
-  //! @return const reference to result containing all found extrema
-  [[deprecated("Domain is fixed at construction time - use Perform(theP) instead")]]
-  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(const gp_Pnt&              theP,
-                                                                  const ExtremaPC::Domain1D& theDomain) const;
+  //! @param[in] theTol tolerance for extrema computation
+  //! @param[in] theMode search mode (MinMax, Min, or Max)
+  //! @return const reference to result containing interior + endpoint extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return !std::holds_alternative<std::monostate>(myEvaluator); }
@@ -174,20 +143,17 @@ public:
   //! Returns the curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
-  //! Returns the configuration.
-  const ExtremaPC::Config& Config() const { return myConfig; }
-
 private:
   //! Helper method to initialize evaluator from a Geom_Curve.
   //! Handles all curve type detection and evaluator creation.
   //! @param[in] theCurve the curve to initialize from (must not be null)
-  void initFromGeomCurve(const Handle(Geom_Curve)& theCurve);
+  //! @param[in] theDomain optional domain to use
+  void initFromGeomCurve(const Handle(Geom_Curve)&                theCurve,
+                         const std::optional<ExtremaPC::Domain1D>& theDomain);
 
   EvaluatorVariant          myEvaluator; //!< Specialized evaluator
-  ExtremaPC::Config         myConfig;    //!< Computation configuration
   GeomAbs_CurveType         myCurveType; //!< Curve type
   Handle(GeomAdaptor_Curve) myAdaptor;   //!< Stored adaptor for Geom-based construction
-  mutable ExtremaPC::Result myResult;    //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_Curve_HeaderFile
