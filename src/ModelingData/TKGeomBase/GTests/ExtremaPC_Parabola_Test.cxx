@@ -40,7 +40,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_AtVertex)
   gp_Pnt   aPoint(0.0, 0.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -55,7 +55,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_Positive)
   gp_Pnt   aPoint(10.0, 0.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -72,7 +72,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_Negative)
   gp_Pnt   aPoint(-10.0, 0.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -92,7 +92,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_Positive)
   gp_Pnt   aPoint(5.0, 10.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -110,7 +110,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_Negative)
   gp_Pnt   aPoint(5.0, -10.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -131,7 +131,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_LargeY)
   gp_Pnt   aPoint(0.0, 50.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -158,7 +158,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointAbovePlane)
   gp_Pnt   aPoint(5.0, 10.0, 7.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -174,7 +174,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointBelowPlane)
   gp_Pnt   aPoint(0.0, 0.0, -5.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -193,8 +193,9 @@ TEST_F(ExtremaPC_ParabolaTest, BoundsPositive)
   gp_Parab aParabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 5.0);
   gp_Pnt   aPoint(0.0, -10.0, 0.0);
 
-  ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 100.0}, THE_TOL);
+  // Create evaluator with positive domain [0, 10]
+  ExtremaPC_Parabola anEval(aParabola, ExtremaPC::Domain1D{0.0, 10.0});
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -210,8 +211,9 @@ TEST_F(ExtremaPC_ParabolaTest, BoundsNegative)
   gp_Parab aParabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 5.0);
   gp_Pnt   aPoint(0.0, 10.0, 0.0);
 
-  ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 0.0}, THE_TOL);
+  // Create evaluator with negative domain [-10, 0]
+  ExtremaPC_Parabola anEval(aParabola, ExtremaPC::Domain1D{-10.0, 0.0});
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -227,8 +229,9 @@ TEST_F(ExtremaPC_ParabolaTest, NarrowBounds)
   gp_Parab aParabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 5.0);
   gp_Pnt   aPoint(5.0, 5.0, 0.0);
 
-  ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{4.0, 6.0}, THE_TOL);
+  // Create evaluator with narrow domain [4, 6]
+  ExtremaPC_Parabola anEval(aParabola, ExtremaPC::Domain1D{4.0, 6.0});
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -251,7 +254,7 @@ TEST_F(ExtremaPC_ParabolaTest, SmallFocalLength)
   gp_Pnt   aPoint(1.0, 2.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -269,7 +272,7 @@ TEST_F(ExtremaPC_ParabolaTest, LargeFocalLength)
   gp_Pnt   aPoint(50.0, 100.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-500.0, 500.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -290,7 +293,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnParabola_AtVertex)
   gp_Pnt   aPoint = ElCLib::Value(0.0, aParabola);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -304,7 +307,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnParabola_Positive)
   gp_Pnt   aPoint = ElCLib::Value(10.0, aParabola);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -318,7 +321,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnParabola_Negative)
   gp_Pnt   aPoint = ElCLib::Value(-15.0, aParabola);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -336,7 +339,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaWithOffset)
   gp_Pnt   aPoint(100.0, 200.0, 50.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -351,7 +354,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaWithOffset_PointOff)
   gp_Pnt   aPoint(110.0, 210.0, 50.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -373,7 +376,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaInYZPlane)
   gp_Pnt   aPoint(3.0, 10.0, 5.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -393,7 +396,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaInXZPlane)
   gp_Pnt   aPoint(10.0, 3.0, 5.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -417,7 +420,7 @@ TEST_F(ExtremaPC_ParabolaTest, VerifyProjectedPoint)
   gp_Pnt   aPoint(10.0, 15.0, 0.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -436,7 +439,7 @@ TEST_F(ExtremaPC_ParabolaTest, VerifyDistanceConsistency)
   gp_Pnt   aPoint(8.0, 12.0, 3.0);
 
   ExtremaPC_Parabola anEval(aParabola);
-  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC::Result  aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);

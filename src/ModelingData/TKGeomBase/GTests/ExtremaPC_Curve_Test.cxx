@@ -50,14 +50,14 @@ protected:
 
 TEST_F(ExtremaPC_CurveTest, Line_PointOnLine)
 {
-  // Line along X axis
+  // Line along X axis with bounded domain
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
   // Point on line
   gp_Pnt aPoint(5.0, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -70,14 +70,14 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOnLine)
 
 TEST_F(ExtremaPC_CurveTest, Line_PointOffLine)
 {
-  // Line along X axis
+  // Line along X axis with bounded domain
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
   // Point off line
   gp_Pnt aPoint(5.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -90,14 +90,14 @@ TEST_F(ExtremaPC_CurveTest, Line_PointOffLine)
 
 TEST_F(ExtremaPC_CurveTest, Line_ProjectionOutsideBounds)
 {
-  // Line along X axis
+  // Line along X axis with bounded domain
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
   // Point that projects outside bounds
   gp_Pnt aPoint(-50.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 0, max at 100
@@ -119,8 +119,8 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointOutside)
   // Point outside circle
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL);
+  ExtremaPC_Circle anEval(aCircle, ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -147,7 +147,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointInside)
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
   ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL);
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2);
@@ -169,7 +169,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_PointAtCenter_Degenerate)
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
   ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL);
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   // Should return infinite solutions
   EXPECT_TRUE(aResult.IsInfinite());
@@ -499,8 +499,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_MinMax)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL,
-                                              ExtremaPC::SearchMode::MinMax);
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 2); // Both min and max
@@ -515,8 +514,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Min)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL,
-                                              ExtremaPC::SearchMode::Min);
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only min
@@ -533,8 +531,7 @@ TEST_F(ExtremaPC_CurveTest, Circle_SearchMode_Max)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Circle anEval(aCircle);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, THE_TOL,
-                                              ExtremaPC::SearchMode::Max);
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL, ExtremaPC::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1); // Only max

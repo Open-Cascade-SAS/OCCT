@@ -20,8 +20,38 @@
 ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve)
     : myCurve(theCurve),
       myAdaptor(theCurve),
+      myDomain{theCurve->FirstParameter(), theCurve->LastParameter()},
       myNbSamples(std::max(24, 3 * (theCurve->Degree() + 1)))
 {
+  buildGrid();
+}
+
+//==================================================================================================
+
+ExtremaPC_BezierCurve::ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve,
+                                             const ExtremaPC::Domain1D&      theDomain)
+    : myCurve(theCurve),
+      myAdaptor(theCurve),
+      myDomain(theDomain),
+      myNbSamples(std::max(24, 3 * (theCurve->Degree() + 1)))
+{
+  buildGrid();
+}
+
+//==================================================================================================
+
+void ExtremaPC_BezierCurve::buildGrid()
+{
+  if (myCurve.IsNull())
+  {
+    return;
+  }
+
+  math_Vector aParams =
+    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, myNbSamples);
+
+  GeomGridEval_BezierCurve aGridEval(myCurve);
+  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
 }
 
 //==================================================================================================
@@ -37,34 +67,30 @@ ExtremaPC::Result ExtremaPC_BezierCurve::Perform(const gp_Pnt&         theP,
                                                  double                theTol,
                                                  ExtremaPC::SearchMode theMode) const
 {
-  // Use curve's natural parameter bounds
-  ExtremaPC::Domain1D aDomain{myCurve->FirstParameter(), myCurve->LastParameter()};
-  return performBounded(theP, aDomain, theTol, theMode);
+  ExtremaPC::Result aResult;
+
+  if (myCurve.IsNull())
+  {
+    aResult.Status = ExtremaPC::Status::NotDone;
+    return aResult;
+  }
+
+  // Use the pre-built grid (interior extrema only)
+  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_BezierCurve::Perform(const gp_Pnt&              theP,
-                                                 const ExtremaPC::Domain1D& theDomain,
-                                                 double                     theTol,
-                                                 ExtremaPC::SearchMode      theMode) const
+ExtremaPC::Result ExtremaPC_BezierCurve::PerformWithEndpoints(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPC::SearchMode theMode) const
 {
-  return performBounded(theP, theDomain, theTol, theMode);
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_BezierCurve::PerformWithEndpoints(const gp_Pnt&              theP,
-                                                              const ExtremaPC::Domain1D& theDomain,
-                                                              double                     theTol,
-                                                              ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+  ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
   // Add endpoints if interior computation succeeded or found no interior solutions
   if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
     if (!aResult.Extrema.IsEmpty())
@@ -74,50 +100,4 @@ ExtremaPC::Result ExtremaPC_BezierCurve::PerformWithEndpoints(const gp_Pnt&     
   }
 
   return aResult;
-}
-
-//==================================================================================================
-
-void ExtremaPC_BezierCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDomain) const
-{
-
-  // Check if cache is still valid
-  if (myGrid.Size() > 0
-      && std::abs(myCachedDomain.Min - theDomain.Min) < ExtremaPC::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.Max - theDomain.Max) < ExtremaPC::THE_PARAM_TOLERANCE)
-  {
-    return; // Cache is valid
-  }
-
-  // Rebuild grid
-  math_Vector aParams =
-    ExtremaPC_GridEvaluator::BuildUniformParams(theDomain.Min, theDomain.Max, myNbSamples);
-
-  GeomGridEval_BezierCurve aGridEval(myCurve);
-  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
-
-  // Update cached domain
-  myCachedDomain = theDomain;
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_BezierCurve::performBounded(const gp_Pnt&              theP,
-                                                        const ExtremaPC::Domain1D& theDomain,
-                                                        double                     theTol,
-                                                        ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult;
-
-  if (myCurve.IsNull())
-  {
-    aResult.Status = ExtremaPC::Status::NotDone;
-    return aResult;
-  }
-
-  // Update cache if parameter range changed
-  updateCacheIfNeeded(theDomain);
-
-  // Use the cached grid (interior extrema only)
-  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, theDomain, theTol, theMode);
 }

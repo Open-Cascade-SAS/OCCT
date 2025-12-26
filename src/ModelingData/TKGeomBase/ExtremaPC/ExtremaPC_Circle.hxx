@@ -34,6 +34,9 @@
 //! 1. Projects point P onto the circle plane -> Pp
 //! 2. Computes angle from OPp to find closest/farthest points
 //!
+//! The domain is fixed at construction time for optimal performance.
+//! For full circle, construct without domain or with nullopt.
+//!
 //! @note Degenerate case: When P projects to the circle center,
 //!       all points on the circle are equidistant (infinite solutions).
 //!       Returns Status::InfiniteSolutions with InfiniteSquareDistance = R² + h²
@@ -46,10 +49,21 @@ class ExtremaPC_Circle
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with circle geometry.
+  //! Constructor with circle geometry (full circle).
   //! @param[in] theCircle the circle to compute extrema for
   explicit ExtremaPC_Circle(const gp_Circ& theCircle)
-      : myCircle(theCircle)
+      : myCircle(theCircle),
+        myDomain(std::nullopt)
+  {
+  }
+
+  //! Constructor with circle geometry and parameter domain.
+  //! @param[in] theCircle the circle to compute extrema for
+  //! @param[in] theDomain parameter domain in radians (fixed for all queries)
+  ExtremaPC_Circle(const gp_Circ& theCircle, const ExtremaPC::Domain1D& theDomain)
+      : myCircle(theCircle),
+        myDomain(theDomain.IsFullPeriod(2.0 * M_PI) ? std::nullopt
+                                                    : std::optional<ExtremaPC::Domain1D>(theDomain))
   {
   }
 
@@ -70,7 +84,14 @@ public:
   //! @return point on circle
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myCircle); }
 
-  //! Compute extrema between point P and the full circle (no bounds checking).
+  //! Returns true if domain is bounded (partial arc).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the domain (only valid if IsBounded() is true).
+  const ExtremaPC::Domain1D& Domain() const { return *myDomain; }
+
+  //! Compute extrema between point P and the circle.
+  //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
@@ -78,66 +99,6 @@ public:
   ExtremaPC::Result Perform(const gp_Pnt&         theP,
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    return performCore(theP, std::nullopt, theTol, theMode);
-  }
-
-  //! Compute extrema between point P and the circle arc (with bounds checking).
-  //! If domain covers full period [0, 2*PI], delegates to unbounded Perform.
-  //! @param theP query point
-  //! @param theDomain parameter domain (radians)
-  //! @param theTol tolerance for degenerate case detection
-  //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior extrema or InfiniteSolutions status
-  ExtremaPC::Result Perform(const gp_Pnt&              theP,
-                            const ExtremaPC::Domain1D& theDomain,
-                            double                     theTol,
-                            ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    // Circle is periodic - if domain covers full period, use unbounded version
-    if (theDomain.IsFullPeriod(2.0 * M_PI))
-    {
-      return Perform(theP, theTol, theMode);
-    }
-    return performCore(theP, theDomain, theTol, theMode);
-  }
-
-  //! Compute extrema between point P and the circle arc including endpoints.
-  //! @param theP query point
-  //! @param theDomain parameter domain (radians)
-  //! @param theTol tolerance for degenerate case detection
-  //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior + endpoint extrema or InfiniteSolutions status
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
-                                         const ExtremaPC::Domain1D& theDomain,
-                                         double                     theTol,
-                                         ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    ExtremaPC::Result aResult = performCore(theP, theDomain, theTol, theMode);
-
-    // Add endpoints if interior computation succeeded
-    if (aResult.Status == ExtremaPC::Status::OK)
-    {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
-    }
-
-    return aResult;
-  }
-
-  //! Returns the circle geometry.
-  const gp_Circ& Circle() const { return myCircle; }
-
-private:
-  //! Core algorithm - finds extrema with optional bounds checking.
-  //! @param theP query point
-  //! @param theDomain optional parameter domain (nullopt for full circle)
-  //! @param theTol tolerance for degenerate case detection
-  //! @param theMode search mode
-  //! @return result containing extrema
-  ExtremaPC::Result performCore(const gp_Pnt&                              theP,
-                                const std::optional<ExtremaPC::Domain1D>& theDomain,
-                                double                                     theTol,
-                                ExtremaPC::SearchMode                      theMode) const
   {
     ExtremaPC::Result aResult;
 
@@ -182,9 +143,9 @@ private:
 
     // Step 4: For bounded case, adjust for periodicity
     double aTolU = Precision::Angular();
-    if (theDomain.has_value())
+    if (myDomain.has_value())
     {
-      const double theUMin = theDomain->Min;
+      const double theUMin = myDomain->Min;
 
       double aRadius = myCircle.Radius();
       if (aRadius > gp::Resolution())
@@ -220,9 +181,9 @@ private:
       double aU = aSolutions[i];
 
       // Check bounds only if domain is specified
-      if (theDomain.has_value())
+      if (myDomain.has_value())
       {
-        if (aU < theDomain->Min - aTolU || aU > theDomain->Max + aTolU)
+        if (aU < myDomain->Min - aTolU || aU > myDomain->Max + aTolU)
           continue;
       }
 
@@ -241,7 +202,33 @@ private:
     return aResult;
   }
 
-  gp_Circ myCircle; //!< Circle geometry
+  //! Compute extrema between point P and the circle arc including endpoints.
+  //! Uses domain specified at construction time.
+  //! @param theP query point
+  //! @param theTol tolerance for degenerate case detection
+  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @return result containing interior + endpoint extrema or InfiniteSolutions status
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
+                                         double                theTol,
+                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
+
+    // Add endpoints if interior computation succeeded and domain is bounded
+    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    {
+      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
+    }
+
+    return aResult;
+  }
+
+  //! Returns the circle geometry.
+  const gp_Circ& Circle() const { return myCircle; }
+
+private:
+  gp_Circ                            myCircle; //!< Circle geometry
+  std::optional<ExtremaPC::Domain1D> myDomain; //!< Parameter domain (nullopt for full circle)
 };
 
 #endif // _ExtremaPC_Circle_HeaderFile

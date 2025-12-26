@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <algorithm>
+#include <optional>
 
 //! @brief Point-Line extrema computation.
 //!
@@ -30,16 +31,29 @@
 //! For a line defined by origin O and direction D, the closest point
 //! to P is at parameter u = (P - O) . D, which gives the minimum distance.
 //!
+//! The domain is fixed at construction time for optimal performance.
+//! For unbounded line, construct without domain or with nullopt.
+//!
 //! @note Lines always have exactly one extremum (minimum) if within bounds.
 class ExtremaPC_Line
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with line geometry.
+  //! Constructor with line geometry (unbounded).
   //! @param[in] theLine the line to compute extrema for
   explicit ExtremaPC_Line(const gp_Lin& theLine)
-      : myLine(theLine)
+      : myLine(theLine),
+        myDomain(std::nullopt)
+  {
+  }
+
+  //! Constructor with line geometry and parameter domain.
+  //! @param[in] theLine the line to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPC_Line(const gp_Lin& theLine, const ExtremaPC::Domain1D& theDomain)
+      : myLine(theLine),
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
   {
   }
 
@@ -63,16 +77,22 @@ public:
     return myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
   }
 
-  //! Compute extrema between point P and the infinite line (no bounds checking).
+  //! Returns true if domain is bounded.
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the domain (only valid if IsBounded() is true).
+  const ExtremaPC::Domain1D& Domain() const { return *myDomain; }
+
+  //! Compute extrema between point P and the line.
+  //! Uses domain specified at construction time.
   //! @param theP query point
-  //! @param theTol tolerance (unused for lines)
+  //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (unused for lines - always returns minimum)
   //! @return result containing the extremum
   ExtremaPC::Result Perform(const gp_Pnt&         theP,
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    (void)theTol;  // Unused for lines
     (void)theMode; // Lines always have exactly one extremum (minimum)
 
     ExtremaPC::Result aResult;
@@ -82,6 +102,19 @@ public:
     const gp_Pnt& aOrigin = myLine.Location();
     gp_Vec        aVec(aOrigin, theP);
     double        aU = aVec.Dot(gp_Vec(aDir));
+
+    // Check bounds if domain is specified
+    if (myDomain.has_value())
+    {
+      if (aU < myDomain->Min - theTol || aU > myDomain->Max + theTol)
+      {
+        // Projection is outside bounds - no interior extremum
+        aResult.Status = ExtremaPC::Status::OK;
+        return aResult;
+      }
+      // Clamp to bounds
+      aU = std::clamp(aU, myDomain->Min, myDomain->Max);
+    }
 
     // Compute point on line at projected parameter
     gp_Pnt aPtOnLine = aOrigin.Translated(aU * gp_Vec(aDir));
@@ -98,42 +131,21 @@ public:
     return aResult;
   }
 
-  //! Compute extrema between point P and the line segment (with bounds checking).
-  //! If domain is infinite, delegates to unbounded Perform.
-  //! @param theP query point
-  //! @param theDomain parameter domain
-  //! @param theTol tolerance for parameter comparison
-  //! @param theMode search mode (MinMax, Min, or Max) - not used for lines
-  //! @return result containing the interior extremum (if within bounds)
-  ExtremaPC::Result Perform(const gp_Pnt&              theP,
-                            const ExtremaPC::Domain1D& theDomain,
-                            double                     theTol,
-                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    // Line is infinite - if domain is infinite, use unbounded version
-    if (!theDomain.IsFinite())
-    {
-      return Perform(theP, theTol, theMode);
-    }
-    return performBounded(theP, theDomain, theTol, theMode);
-  }
-
   //! Compute extrema between point P and the line segment including endpoints.
+  //! Uses domain specified at construction time.
   //! @param theP query point
-  //! @param theDomain parameter domain
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
-                                         const ExtremaPC::Domain1D& theDomain,
-                                         double                     theTol,
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
+                                         double                theTol,
                                          ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
-    if (aResult.Status == ExtremaPC::Status::OK)
+    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
     }
 
     return aResult;
@@ -143,48 +155,8 @@ public:
   const gp_Lin& Line() const { return myLine; }
 
 private:
-  //! Core algorithm - finds interior extremum with bounds checking.
-  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
-                                   const ExtremaPC::Domain1D& theDomain,
-                                   double                     theTol,
-                                   ExtremaPC::SearchMode      theMode) const
-  {
-    (void)theMode; // Line always has exactly one extremum (minimum)
-    ExtremaPC::Result aResult;
-
-    const double theUMin = theDomain.Min;
-    const double theUMax = theDomain.Max;
-
-    // Compute projection parameter: u = (P - O) . Direction
-    const gp_Dir& aDir = myLine.Direction();
-    const gp_Pnt& aOrigin = myLine.Location();
-    gp_Vec        aVec(aOrigin, theP);
-    double        aU = aVec.Dot(gp_Vec(aDir));
-
-    // Check if projection is within parameter bounds
-    if (aU >= theUMin - theTol && aU <= theUMax + theTol)
-    {
-      // Clamp to bounds
-      aU = std::clamp(aU, theUMin, theUMax);
-
-      // Compute point on line at projected parameter
-      gp_Pnt aPtOnLine = aOrigin.Translated(aU * gp_Vec(aDir));
-
-      // Store result
-      ExtremaPC::ExtremumResult anExt;
-      anExt.Parameter      = aU;
-      anExt.Point          = aPtOnLine;
-      anExt.SquareDistance = theP.SquareDistance(aPtOnLine);
-      anExt.IsMinimum      = true; // Line always has minimum, no maximum
-
-      aResult.Extrema.Append(anExt);
-    }
-
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
-  }
-
-  gp_Lin myLine; //!< Line geometry
+  gp_Lin                             myLine;   //!< Line geometry
+  std::optional<ExtremaPC::Domain1D> myDomain; //!< Parameter domain (nullopt for unbounded)
 };
 
 #endif // _ExtremaPC_Line_HeaderFile

@@ -31,44 +31,45 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
     : myEvaluator(std::monostate{}),
       myCurveType(theCurve.GetType())
 {
-  myConfig.Domain = ExtremaPC::Domain1D(theCurve.FirstParameter(), theCurve.LastParameter());
+  ExtremaPC::Domain1D aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
+  myConfig.Domain = aDomain;
 
   switch (myCurveType)
   {
     case GeomAbs_Line:
-      myEvaluator = ExtremaPC_Line(theCurve.Line());
+      myEvaluator = ExtremaPC_Line(theCurve.Line(), aDomain);
       break;
 
     case GeomAbs_Circle:
-      myEvaluator = ExtremaPC_Circle(theCurve.Circle());
+      myEvaluator = ExtremaPC_Circle(theCurve.Circle(), aDomain);
       break;
 
     case GeomAbs_Ellipse:
-      myEvaluator = ExtremaPC_Ellipse(theCurve.Ellipse());
+      myEvaluator = ExtremaPC_Ellipse(theCurve.Ellipse(), aDomain);
       break;
 
     case GeomAbs_Hyperbola:
-      myEvaluator = ExtremaPC_Hyperbola(theCurve.Hyperbola());
+      myEvaluator = ExtremaPC_Hyperbola(theCurve.Hyperbola(), aDomain);
       break;
 
     case GeomAbs_Parabola:
-      myEvaluator = ExtremaPC_Parabola(theCurve.Parabola());
+      myEvaluator = ExtremaPC_Parabola(theCurve.Parabola(), aDomain);
       break;
 
     case GeomAbs_BezierCurve:
-      myEvaluator = ExtremaPC_BezierCurve(theCurve.Bezier());
+      myEvaluator = ExtremaPC_BezierCurve(theCurve.Bezier(), aDomain);
       break;
 
     case GeomAbs_BSplineCurve:
-      myEvaluator = ExtremaPC_BSplineCurve(theCurve.BSpline());
+      myEvaluator = ExtremaPC_BSplineCurve(theCurve.BSpline(), aDomain);
       break;
 
     case GeomAbs_OffsetCurve:
-      myEvaluator = ExtremaPC_OffsetCurve(theCurve);
+      myEvaluator = ExtremaPC_OffsetCurve(theCurve, aDomain);
       break;
 
     default:
-      myEvaluator = ExtremaPC_OtherCurve(theCurve);
+      myEvaluator = ExtremaPC_OtherCurve(theCurve, aDomain);
       break;
   }
 }
@@ -79,44 +80,45 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin
     : myEvaluator(std::monostate{}),
       myCurveType(theCurve.GetType())
 {
-  myConfig.Domain = ExtremaPC::Domain1D(theUMin, theUMax);
+  ExtremaPC::Domain1D aDomain(theUMin, theUMax);
+  myConfig.Domain = aDomain;
 
   switch (myCurveType)
   {
     case GeomAbs_Line:
-      myEvaluator = ExtremaPC_Line(theCurve.Line());
+      myEvaluator = ExtremaPC_Line(theCurve.Line(), aDomain);
       break;
 
     case GeomAbs_Circle:
-      myEvaluator = ExtremaPC_Circle(theCurve.Circle());
+      myEvaluator = ExtremaPC_Circle(theCurve.Circle(), aDomain);
       break;
 
     case GeomAbs_Ellipse:
-      myEvaluator = ExtremaPC_Ellipse(theCurve.Ellipse());
+      myEvaluator = ExtremaPC_Ellipse(theCurve.Ellipse(), aDomain);
       break;
 
     case GeomAbs_Hyperbola:
-      myEvaluator = ExtremaPC_Hyperbola(theCurve.Hyperbola());
+      myEvaluator = ExtremaPC_Hyperbola(theCurve.Hyperbola(), aDomain);
       break;
 
     case GeomAbs_Parabola:
-      myEvaluator = ExtremaPC_Parabola(theCurve.Parabola());
+      myEvaluator = ExtremaPC_Parabola(theCurve.Parabola(), aDomain);
       break;
 
     case GeomAbs_BezierCurve:
-      myEvaluator = ExtremaPC_BezierCurve(theCurve.Bezier());
+      myEvaluator = ExtremaPC_BezierCurve(theCurve.Bezier(), aDomain);
       break;
 
     case GeomAbs_BSplineCurve:
-      myEvaluator = ExtremaPC_BSplineCurve(theCurve.BSpline());
+      myEvaluator = ExtremaPC_BSplineCurve(theCurve.BSpline(), aDomain);
       break;
 
     case GeomAbs_OffsetCurve:
-      myEvaluator = ExtremaPC_OffsetCurve(theCurve);
+      myEvaluator = ExtremaPC_OffsetCurve(theCurve, aDomain);
       break;
 
     default:
-      myEvaluator = ExtremaPC_OtherCurve(theCurve);
+      myEvaluator = ExtremaPC_OtherCurve(theCurve, aDomain);
       break;
   }
 }
@@ -130,7 +132,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aLine.IsNull())
   {
     myCurveType = GeomAbs_Line;
-    myEvaluator = ExtremaPC_Line(aLine->Lin());
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_Line(aLine->Lin(), myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_Line(aLine->Lin());
+    }
     return;
   }
 
@@ -138,7 +147,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aCircle.IsNull())
   {
     myCurveType = GeomAbs_Circle;
-    myEvaluator = ExtremaPC_Circle(aCircle->Circ());
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_Circle(aCircle->Circ(), myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_Circle(aCircle->Circ());
+    }
     return;
   }
 
@@ -146,7 +162,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!anEllipse.IsNull())
   {
     myCurveType = GeomAbs_Ellipse;
-    myEvaluator = ExtremaPC_Ellipse(anEllipse->Elips());
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_Ellipse(anEllipse->Elips(), myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_Ellipse(anEllipse->Elips());
+    }
     return;
   }
 
@@ -154,7 +177,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aHyperbola.IsNull())
   {
     myCurveType = GeomAbs_Hyperbola;
-    myEvaluator = ExtremaPC_Hyperbola(aHyperbola->Hypr());
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_Hyperbola(aHyperbola->Hypr(), myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_Hyperbola(aHyperbola->Hypr());
+    }
     return;
   }
 
@@ -162,7 +192,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aParabola.IsNull())
   {
     myCurveType = GeomAbs_Parabola;
-    myEvaluator = ExtremaPC_Parabola(aParabola->Parab());
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_Parabola(aParabola->Parab(), myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_Parabola(aParabola->Parab());
+    }
     return;
   }
 
@@ -170,7 +207,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aBezier.IsNull())
   {
     myCurveType = GeomAbs_BezierCurve;
-    myEvaluator = ExtremaPC_BezierCurve(aBezier);
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_BezierCurve(aBezier, myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_BezierCurve(aBezier);
+    }
     return;
   }
 
@@ -178,7 +222,14 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
   if (!aBSpline.IsNull())
   {
     myCurveType = GeomAbs_BSplineCurve;
-    myEvaluator = ExtremaPC_BSplineCurve(aBSpline);
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_BSplineCurve(aBSpline, myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_BSplineCurve(aBSpline);
+    }
     return;
   }
 
@@ -196,11 +247,25 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)& theCurve)
 
   if (myCurveType == GeomAbs_OffsetCurve)
   {
-    myEvaluator = ExtremaPC_OffsetCurve(*myAdaptor);
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_OffsetCurve(*myAdaptor, myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_OffsetCurve(*myAdaptor);
+    }
   }
   else
   {
-    myEvaluator = ExtremaPC_OtherCurve(*myAdaptor);
+    if (myConfig.Domain.has_value())
+    {
+      myEvaluator = ExtremaPC_OtherCurve(*myAdaptor, myConfig.Domain.value());
+    }
+    else
+    {
+      myEvaluator = ExtremaPC_OtherCurve(*myAdaptor);
+    }
   }
 }
 
@@ -265,13 +330,6 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theU
 
 ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP) const
 {
-  // If domain is set in config, use bounded Perform; otherwise use unbounded
-  if (myConfig.Domain.has_value())
-  {
-    return Perform(theP, myConfig.Domain.value());
-  }
-
-  // No domain set - use unbounded Perform on evaluator
   return std::visit(
     [&](const auto& theEval) -> ExtremaPC::Result {
       using T = std::decay_t<decltype(theEval)>;
@@ -283,7 +341,15 @@ ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP) const
       }
       else
       {
-        return theEval.Perform(theP, myConfig.Tolerance, myConfig.Mode);
+        // Use the evaluator's stored domain (fixed at construction)
+        if (myConfig.IncludeEndpoints)
+        {
+          return theEval.PerformWithEndpoints(theP, myConfig.Tolerance, myConfig.Mode);
+        }
+        else
+        {
+          return theEval.Perform(theP, myConfig.Tolerance, myConfig.Mode);
+        }
       }
     },
     myEvaluator);
@@ -293,27 +359,7 @@ ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP) const
 
 ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP, const ExtremaPC::Domain1D& theDomain) const
 {
-  return std::visit(
-    [&](const auto& theEval) -> ExtremaPC::Result {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        ExtremaPC::Result aResult;
-        aResult.Status = ExtremaPC::Status::NotDone;
-        return aResult;
-      }
-      else
-      {
-        // Use bounded Perform with domain
-        if (myConfig.IncludeEndpoints)
-        {
-          return theEval.PerformWithEndpoints(theP, theDomain, myConfig.Tolerance, myConfig.Mode);
-        }
-        else
-        {
-          return theEval.Perform(theP, theDomain, myConfig.Tolerance, myConfig.Mode);
-        }
-      }
-    },
-    myEvaluator);
+  (void)theDomain; // Domain is now fixed at construction time
+  // Delegate to the main Perform - the evaluator uses its stored domain
+  return Perform(theP);
 }

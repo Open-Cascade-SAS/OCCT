@@ -38,15 +38,28 @@
 //!    where (X, Y) are coordinates of Pp in parabola local frame.
 //!
 //! @note A parabola can have up to 3 extrema.
+//!
+//! The domain is fixed at construction time for optimal performance.
+//! For infinite parabola, construct without domain or with nullopt.
 class ExtremaPC_Parabola
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with parabola geometry.
+  //! Constructor with parabola geometry (infinite).
   //! @param[in] theParabola the parabola to compute extrema for
   explicit ExtremaPC_Parabola(const gp_Parab& theParabola)
-      : myParabola(theParabola)
+      : myParabola(theParabola),
+        myDomain(std::nullopt)
+  {
+  }
+
+  //! Constructor with parabola geometry and parameter domain.
+  //! @param[in] theParabola the parabola to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPC_Parabola(const gp_Parab& theParabola, const ExtremaPC::Domain1D& theDomain)
+      : myParabola(theParabola),
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
   {
   }
 
@@ -67,7 +80,14 @@ public:
   //! @return point on parabola
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myParabola); }
 
-  //! Compute extrema between point P and the infinite parabola (no bounds checking).
+  //! Returns true if domain is bounded.
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the domain (only valid if IsBounded() is true).
+  const ExtremaPC::Domain1D& Domain() const { return *myDomain; }
+
+  //! Compute extrema between point P and the parabola.
+  //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
@@ -76,46 +96,25 @@ public:
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performCore(theP, std::nullopt, theTol, theMode);
-  }
-
-  //! Compute extrema between point P and the parabola arc (with bounds checking).
-  //! If domain is infinite, delegates to unbounded Perform.
-  //! @param theP query point
-  //! @param theDomain parameter domain
-  //! @param theTol tolerance for duplicate detection
-  //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior extrema
-  ExtremaPC::Result Perform(const gp_Pnt&              theP,
-                            const ExtremaPC::Domain1D& theDomain,
-                            double                     theTol,
-                            ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    // Parabola is infinite - if domain is infinite, use unbounded version
-    if (!theDomain.IsFinite())
-    {
-      return Perform(theP, theTol, theMode);
-    }
-    return performCore(theP, theDomain, theTol, theMode);
+    return performCore(theP, myDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the parabola arc including endpoints.
+  //! Uses domain specified at construction time.
   //! @param theP query point
-  //! @param theDomain parameter domain
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
-                                         const ExtremaPC::Domain1D& theDomain,
-                                         double                     theTol,
-                                         ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
+                                         double                theTol,
+                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performCore(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
-    // Add endpoints if interior computation succeeded
-    if (aResult.Status == ExtremaPC::Status::OK)
+    // Add endpoints if interior computation succeeded and domain is bounded
+    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
     }
 
     return aResult;
@@ -244,7 +243,8 @@ private:
     return aResult;
   }
 
-  gp_Parab myParabola; //!< Parabola geometry
+  gp_Parab                           myParabola; //!< Parabola geometry
+  std::optional<ExtremaPC::Domain1D> myDomain;   //!< Parameter domain (nullopt for infinite)
 };
 
 #endif // _ExtremaPC_Parabola_HeaderFile

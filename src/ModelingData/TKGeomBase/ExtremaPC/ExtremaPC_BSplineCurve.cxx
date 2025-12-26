@@ -20,19 +20,35 @@
 
 ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve)
     : myCurve(theCurve),
-      myAdaptor(theCurve)
+      myAdaptor(theCurve),
+      myDomain{theCurve->FirstParameter(), theCurve->LastParameter()}
 {
+  buildGrid();
 }
 
 //==================================================================================================
 
-math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams(double theUMin, double theUMax) const
+ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve,
+                                               const ExtremaPC::Domain1D&       theDomain)
+    : myCurve(theCurve),
+      myAdaptor(theCurve),
+      myDomain(theDomain)
+{
+  buildGrid();
+}
+
+//==================================================================================================
+
+math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
 {
   if (myCurve.IsNull())
   {
     // Fallback to uniform sampling
-    return ExtremaPC_GridEvaluator::BuildUniformParams(theUMin, theUMax, 32);
+    return ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, 32);
   }
+
+  const double theUMin = myDomain.Min;
+  const double theUMax = myDomain.Max;
 
   const int                   aDegree = myCurve->Degree();
   const TColStd_Array1OfReal& aKnots  = myCurve->Knots();
@@ -94,6 +110,23 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams(double theUMin, double 
 
 //==================================================================================================
 
+void ExtremaPC_BSplineCurve::buildGrid()
+{
+  if (myCurve.IsNull())
+  {
+    return;
+  }
+
+  // Build knot-aware parameter grid
+  math_Vector aParams = buildKnotAwareParams();
+
+  // Build grid
+  GeomGridEval_BSplineCurve aGridEval(myCurve);
+  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
+}
+
+//==================================================================================================
+
 gp_Pnt ExtremaPC_BSplineCurve::Value(double theU) const
 {
   return myCurve->Value(theU);
@@ -105,34 +138,30 @@ ExtremaPC::Result ExtremaPC_BSplineCurve::Perform(const gp_Pnt&         theP,
                                                   double                theTol,
                                                   ExtremaPC::SearchMode theMode) const
 {
-  // Use curve's natural parameter bounds
-  ExtremaPC::Domain1D aDomain{myCurve->FirstParameter(), myCurve->LastParameter()};
-  return performBounded(theP, aDomain, theTol, theMode);
+  ExtremaPC::Result aResult;
+
+  if (myCurve.IsNull())
+  {
+    aResult.Status = ExtremaPC::Status::NotDone;
+    return aResult;
+  }
+
+  // Use the pre-built grid (interior extrema only)
+  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_BSplineCurve::Perform(const gp_Pnt&              theP,
-                                                  const ExtremaPC::Domain1D& theDomain,
-                                                  double                     theTol,
-                                                  ExtremaPC::SearchMode      theMode) const
+ExtremaPC::Result ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&         theP,
+                                                               double                theTol,
+                                                               ExtremaPC::SearchMode theMode) const
 {
-  return performBounded(theP, theDomain, theTol, theMode);
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&              theP,
-                                                               const ExtremaPC::Domain1D& theDomain,
-                                                               double                     theTol,
-                                                               ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+  ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
   // Add endpoints if interior computation succeeded or found no interior solutions
   if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
     if (!aResult.Extrema.IsEmpty())
@@ -142,49 +171,4 @@ ExtremaPC::Result ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&    
   }
 
   return aResult;
-}
-
-//==================================================================================================
-
-void ExtremaPC_BSplineCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDomain) const
-{
-  // Check if cache is still valid
-  if (myGrid.Size() > 0
-      && std::abs(myCachedDomain.Min - theDomain.Min) < ExtremaPC::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.Max - theDomain.Max) < ExtremaPC::THE_PARAM_TOLERANCE)
-  {
-    return; // Cache is valid
-  }
-
-  // Build knot-aware parameter grid
-  math_Vector aParams = buildKnotAwareParams(theDomain.Min, theDomain.Max);
-
-  // Rebuild grid
-  GeomGridEval_BSplineCurve aGridEval(myCurve);
-  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
-
-  // Update cached domain
-  myCachedDomain = theDomain;
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_BSplineCurve::performBounded(const gp_Pnt&              theP,
-                                                         const ExtremaPC::Domain1D& theDomain,
-                                                         double                     theTol,
-                                                         ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult;
-
-  if (myCurve.IsNull())
-  {
-    aResult.Status = ExtremaPC::Status::NotDone;
-    return aResult;
-  }
-
-  // Update cache if parameter range changed
-  updateCacheIfNeeded(theDomain);
-
-  // Use the cached grid (interior extrema only)
-  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, theDomain, theTol, theMode);
 }

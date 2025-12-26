@@ -39,15 +39,28 @@
 //! 3. Filters positive roots (v > 0) and converts back via u = ln(v)
 //!
 //! @note A hyperbola can have up to 4 extrema.
+//!
+//! The domain is fixed at construction time for optimal performance.
+//! For infinite hyperbola, construct without domain or with nullopt.
 class ExtremaPC_Hyperbola
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with hyperbola geometry.
+  //! Constructor with hyperbola geometry (infinite).
   //! @param[in] theHyperbola the hyperbola to compute extrema for
   explicit ExtremaPC_Hyperbola(const gp_Hypr& theHyperbola)
-      : myHyperbola(theHyperbola)
+      : myHyperbola(theHyperbola),
+        myDomain(std::nullopt)
+  {
+  }
+
+  //! Constructor with hyperbola geometry and parameter domain.
+  //! @param[in] theHyperbola the hyperbola to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPC_Hyperbola(const gp_Hypr& theHyperbola, const ExtremaPC::Domain1D& theDomain)
+      : myHyperbola(theHyperbola),
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
   {
   }
 
@@ -68,7 +81,14 @@ public:
   //! @return point on hyperbola
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myHyperbola); }
 
-  //! Compute extrema between point P and the infinite hyperbola (no bounds checking).
+  //! Returns true if domain is bounded.
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the domain (only valid if IsBounded() is true).
+  const ExtremaPC::Domain1D& Domain() const { return *myDomain; }
+
+  //! Compute extrema between point P and the hyperbola.
+  //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
@@ -77,46 +97,25 @@ public:
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performCore(theP, std::nullopt, theTol, theMode);
-  }
-
-  //! Compute extrema between point P and the hyperbola arc (with bounds checking).
-  //! If domain is infinite, delegates to unbounded Perform.
-  //! @param theP query point
-  //! @param theDomain parameter domain
-  //! @param theTol tolerance for duplicate detection
-  //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior extrema
-  ExtremaPC::Result Perform(const gp_Pnt&              theP,
-                            const ExtremaPC::Domain1D& theDomain,
-                            double                     theTol,
-                            ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    // Hyperbola is infinite - if domain is infinite, use unbounded version
-    if (!theDomain.IsFinite())
-    {
-      return Perform(theP, theTol, theMode);
-    }
-    return performCore(theP, theDomain, theTol, theMode);
+    return performCore(theP, myDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the hyperbola arc including endpoints.
+  //! Uses domain specified at construction time.
   //! @param theP query point
-  //! @param theDomain parameter domain
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
-                                         const ExtremaPC::Domain1D& theDomain,
-                                         double                     theTol,
-                                         ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
+                                         double                theTol,
+                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performCore(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
-    // Add endpoints if interior computation succeeded
-    if (aResult.Status == ExtremaPC::Status::OK)
+    // Add endpoints if interior computation succeeded and domain is bounded
+    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
     }
 
     return aResult;
@@ -254,7 +253,8 @@ private:
     return aResult;
   }
 
-  gp_Hypr myHyperbola; //!< Hyperbola geometry
+  gp_Hypr                            myHyperbola; //!< Hyperbola geometry
+  std::optional<ExtremaPC::Domain1D> myDomain;    //!< Parameter domain (nullopt for infinite)
 };
 
 #endif // _ExtremaPC_Hyperbola_HeaderFile

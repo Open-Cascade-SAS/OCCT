@@ -40,8 +40,8 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_AtOrigin)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -57,8 +57,8 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_Positive)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(5.0, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -73,8 +73,8 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_Negative)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(-7.5, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -89,8 +89,8 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_YOffset)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(5.0, 3.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -105,8 +105,8 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_ZOffset)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(5.0, 0.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -121,8 +121,8 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_YZOffset)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(5.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
@@ -142,8 +142,9 @@ TEST_F(ExtremaPC_LineTest, ProjectionOutsideBounds_Left)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(-50.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 100.0}, THE_TOL);
+  // Domain [0, 100] - projection at -50 is outside bounds (left of 0)
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 0, max at 100
@@ -157,8 +158,9 @@ TEST_F(ExtremaPC_LineTest, ProjectionOutsideBounds_Right)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(150.0, 3.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 100.0}, THE_TOL);
+  // Domain [0, 100] - projection at 150 is outside bounds (right of 100)
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 100, max at 0
@@ -172,8 +174,9 @@ TEST_F(ExtremaPC_LineTest, ProjectionAtLowerBound)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(10.0, 5.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{10.0, 100.0}, THE_TOL);
+  // Domain [10, 100] - projection at 10 is exactly at lower bound
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{10.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 10, max at 100
@@ -187,8 +190,8 @@ TEST_F(ExtremaPC_LineTest, ProjectionAtUpperBound)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(100.0, 5.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 100, max at 0
@@ -202,8 +205,8 @@ TEST_F(ExtremaPC_LineTest, NarrowBounds)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(50.0, 1.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{49.0, 51.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // min at 50, max at endpoints
@@ -221,8 +224,8 @@ TEST_F(ExtremaPC_LineTest, LineAlongY)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
   gp_Pnt aPoint(3.0, 5.0, 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -237,8 +240,8 @@ TEST_F(ExtremaPC_LineTest, LineAlongZ)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(3.0, 4.0, 10.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -253,8 +256,8 @@ TEST_F(ExtremaPC_LineTest, LineDiagonal_XY)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 0));
   gp_Pnt aPoint(5.0, 5.0, 3.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -271,8 +274,8 @@ TEST_F(ExtremaPC_LineTest, LineDiagonal_XYZ)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
   gp_Pnt aPoint(3.0, 3.0, 3.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -289,8 +292,8 @@ TEST_F(ExtremaPC_LineTest, LineWithOffset_XAxis)
   gp_Lin aLine(gp_Pnt(10, 20, 30), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(15.0, 20.0, 30.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -305,8 +308,8 @@ TEST_F(ExtremaPC_LineTest, LineWithOffset_PointOff)
   gp_Lin aLine(gp_Pnt(10, 20, 30), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(15.0, 23.0, 34.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -325,8 +328,8 @@ TEST_F(ExtremaPC_LineTest, NegativeParameters)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(-25.0, 0.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, -10.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -340,8 +343,9 @@ TEST_F(ExtremaPC_LineTest, NegativeBoundsClamp)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(-5.0, 1.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-50.0, -10.0}, THE_TOL);
+  // Domain [-50, -10] - projection at -5 is outside (right of -10), clamps to -10
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-50.0, -10.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at -10, max at -50
@@ -359,8 +363,9 @@ TEST_F(ExtremaPC_LineTest, LargeCoordinates)
   gp_Lin aLine(gp_Pnt(1e6, 1e6, 1e6), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(1e6 + 100.0, 1e6 + 3.0, 1e6 + 4.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-1e9, 1e9}, THE_TOL);
+  // Use domain [-100, 200] so projection at 100 is inside bounds
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 200.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -375,8 +380,8 @@ TEST_F(ExtremaPC_LineTest, SmallCoordinates)
   gp_Lin aLine(gp_Pnt(1e-6, 1e-6, 1e-6), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(1e-6 + 1e-3, 1e-6 + 3e-4, 1e-6 + 4e-4);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-1.0, 1.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -395,8 +400,8 @@ TEST_F(ExtremaPC_LineTest, VerifyProjectedPoint)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(7.0, 5.0, 0.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -414,8 +419,8 @@ TEST_F(ExtremaPC_LineTest, VerifyDistanceConsistency)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(10.0, 6.0, 8.0);
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{-100.0, 100.0}, THE_TOL);
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-100.0, 100.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
@@ -437,8 +442,9 @@ TEST_F(ExtremaPC_LineTest, EndpointsAsMaxima)
   gp_Lin aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   gp_Pnt aPoint(5.0, 1.0, 0.0); // Point above line at X=5
 
-  ExtremaPC_Line anEval(aLine);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, ExtremaPC::Domain1D{0.0, 10.0}, THE_TOL);
+  // Domain [0, 10] for specific endpoint checks
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 10.0});
+  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should have 3 extrema: 1 minimum (projection) + 2 maxima (endpoints)

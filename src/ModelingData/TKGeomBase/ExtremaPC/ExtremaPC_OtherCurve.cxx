@@ -19,8 +19,39 @@
 //==================================================================================================
 
 ExtremaPC_OtherCurve::ExtremaPC_OtherCurve(const Adaptor3d_Curve& theCurve)
-    : myCurve(&theCurve)
+    : myCurve(&theCurve),
+      myDomain{theCurve.FirstParameter(), theCurve.LastParameter()}
 {
+  buildGrid();
+}
+
+//==================================================================================================
+
+ExtremaPC_OtherCurve::ExtremaPC_OtherCurve(const Adaptor3d_Curve&     theCurve,
+                                           const ExtremaPC::Domain1D& theDomain)
+    : myCurve(&theCurve),
+      myDomain(theDomain)
+{
+  buildGrid();
+}
+
+//==================================================================================================
+
+void ExtremaPC_OtherCurve::buildGrid()
+{
+  if (myCurve == nullptr)
+  {
+    return;
+  }
+
+  // Use higher number of samples for general curves
+  constexpr int aNbSamples = 64;
+
+  math_Vector aParams =
+    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, aNbSamples);
+
+  GeomGridEval_OtherCurve aGridEval(*myCurve);
+  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
 }
 
 //==================================================================================================
@@ -36,34 +67,30 @@ ExtremaPC::Result ExtremaPC_OtherCurve::Perform(const gp_Pnt&         theP,
                                                 double                theTol,
                                                 ExtremaPC::SearchMode theMode) const
 {
-  // Use curve's natural parameter bounds
-  ExtremaPC::Domain1D aDomain{myCurve->FirstParameter(), myCurve->LastParameter()};
-  return performBounded(theP, aDomain, theTol, theMode);
+  ExtremaPC::Result aResult;
+
+  if (myCurve == nullptr)
+  {
+    aResult.Status = ExtremaPC::Status::NotDone;
+    return aResult;
+  }
+
+  // Use the pre-built grid (interior extrema only)
+  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, *myCurve, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_OtherCurve::Perform(const gp_Pnt&              theP,
-                                                const ExtremaPC::Domain1D& theDomain,
-                                                double                     theTol,
-                                                ExtremaPC::SearchMode      theMode) const
+ExtremaPC::Result ExtremaPC_OtherCurve::PerformWithEndpoints(const gp_Pnt&         theP,
+                                                             double                theTol,
+                                                             ExtremaPC::SearchMode theMode) const
 {
-  return performBounded(theP, theDomain, theTol, theMode);
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_OtherCurve::PerformWithEndpoints(const gp_Pnt&              theP,
-                                                             const ExtremaPC::Domain1D& theDomain,
-                                                             double                     theTol,
-                                                             ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+  ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
   // Add endpoints if interior computation succeeded or found no interior solutions
   if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
     if (!aResult.Extrema.IsEmpty())
@@ -73,52 +100,4 @@ ExtremaPC::Result ExtremaPC_OtherCurve::PerformWithEndpoints(const gp_Pnt&      
   }
 
   return aResult;
-}
-
-//==================================================================================================
-
-void ExtremaPC_OtherCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDomain) const
-{
-  // Check if cache is still valid
-  if (myGrid.Size() > 0
-      && std::abs(myCachedDomain.Min - theDomain.Min) < ExtremaPC::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.Max - theDomain.Max) < ExtremaPC::THE_PARAM_TOLERANCE)
-  {
-    return; // Cache is valid
-  }
-
-  // Use higher number of samples for general curves
-  constexpr int aNbSamples = 64;
-
-  // Rebuild grid
-  math_Vector aParams =
-    ExtremaPC_GridEvaluator::BuildUniformParams(theDomain.Min, theDomain.Max, aNbSamples);
-
-  GeomGridEval_OtherCurve aGridEval(*myCurve);
-  myGrid = ExtremaPC_GridEvaluator::BuildGrid(aGridEval, aParams);
-
-  // Update cached domain
-  myCachedDomain = theDomain;
-}
-
-//==================================================================================================
-
-ExtremaPC::Result ExtremaPC_OtherCurve::performBounded(const gp_Pnt&              theP,
-                                                       const ExtremaPC::Domain1D& theDomain,
-                                                       double                     theTol,
-                                                       ExtremaPC::SearchMode      theMode) const
-{
-  ExtremaPC::Result aResult;
-
-  if (myCurve == nullptr)
-  {
-    aResult.Status = ExtremaPC::Status::NotDone;
-    return aResult;
-  }
-
-  // Update cache if parameter range changed
-  updateCacheIfNeeded(theDomain);
-
-  // Use the cached grid (interior extrema only)
-  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, *myCurve, theP, theDomain, theTol, theMode);
 }

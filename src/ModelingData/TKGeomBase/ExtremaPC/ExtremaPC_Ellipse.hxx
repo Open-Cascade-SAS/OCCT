@@ -23,6 +23,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Ellipse extrema computation.
 //!
@@ -39,15 +40,29 @@
 //!       (i.e., the ellipse is a circle), returns Status::InfiniteSolutions.
 //!
 //! @note An ellipse can have up to 4 extrema.
+//!
+//! The domain is fixed at construction time for optimal performance.
+//! For full ellipse, construct without domain or with nullopt.
 class ExtremaPC_Ellipse
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with ellipse geometry.
+  //! Constructor with ellipse geometry (full ellipse).
   //! @param[in] theEllipse the ellipse to compute extrema for
   explicit ExtremaPC_Ellipse(const gp_Elips& theEllipse)
-      : myEllipse(theEllipse)
+      : myEllipse(theEllipse),
+        myDomain(std::nullopt)
+  {
+  }
+
+  //! Constructor with ellipse geometry and parameter domain.
+  //! @param[in] theEllipse the ellipse to compute extrema for
+  //! @param[in] theDomain parameter domain in radians (fixed for all queries)
+  ExtremaPC_Ellipse(const gp_Elips& theEllipse, const ExtremaPC::Domain1D& theDomain)
+      : myEllipse(theEllipse),
+        myDomain(theDomain.IsFullPeriod(2.0 * M_PI) ? std::nullopt
+                                                    : std::optional<ExtremaPC::Domain1D>(theDomain))
   {
   }
 
@@ -68,7 +83,14 @@ public:
   //! @return point on ellipse
   gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myEllipse); }
 
-  //! Compute extrema between point P and the full ellipse (no bounds checking).
+  //! Returns true if domain is bounded (partial arc).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the domain (only valid if IsBounded() is true).
+  const ExtremaPC::Domain1D& Domain() const { return *myDomain; }
+
+  //! Compute extrema between point P and the ellipse.
+  //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
@@ -77,47 +99,27 @@ public:
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    // Use full parameter range [0, 2*PI]
-    return performBounded(theP, ExtremaPC::Domain1D{0.0, 2.0 * M_PI}, theTol, theMode);
-  }
-
-  //! Compute extrema between point P and the ellipse arc (with bounds checking).
-  //! If domain covers full period [0, 2*PI], delegates to unbounded Perform.
-  //! @param theP query point
-  //! @param theDomain parameter domain (radians)
-  //! @param theTol tolerance for degenerate case detection
-  //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior extrema or InfiniteSolutions status
-  ExtremaPC::Result Perform(const gp_Pnt&              theP,
-                            const ExtremaPC::Domain1D& theDomain,
-                            double                     theTol,
-                            ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    // Ellipse is periodic - if domain covers full period, use unbounded version
-    if (theDomain.IsFullPeriod(2.0 * M_PI))
-    {
-      return Perform(theP, theTol, theMode);
-    }
-    return performBounded(theP, theDomain, theTol, theMode);
+    // Use stored domain or full parameter range [0, 2*PI]
+    ExtremaPC::Domain1D aDomain = myDomain.value_or(ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
+    return performCore(theP, aDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the ellipse arc including endpoints.
+  //! Uses domain specified at construction time.
   //! @param theP query point
-  //! @param theDomain parameter domain (radians)
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema or InfiniteSolutions status
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
-                                         const ExtremaPC::Domain1D& theDomain,
-                                         double                     theTol,
-                                         ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
+                                         double                theTol,
+                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
 
-    // Add endpoints if interior computation succeeded
-    if (aResult.Status == ExtremaPC::Status::OK)
+    // Add endpoints if interior computation succeeded and domain is bounded
+    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
     }
 
     return aResult;
@@ -128,10 +130,10 @@ public:
 
 private:
   //! Core algorithm - finds extrema with bounds checking.
-  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
-                                   const ExtremaPC::Domain1D& theDomain,
-                                   double                     theTol,
-                                   ExtremaPC::SearchMode      theMode) const
+  ExtremaPC::Result performCore(const gp_Pnt&              theP,
+                                const ExtremaPC::Domain1D& theDomain,
+                                double                     theTol,
+                                ExtremaPC::SearchMode      theMode) const
   {
     ExtremaPC::Result aResult;
 
@@ -257,7 +259,8 @@ private:
     return aResult;
   }
 
-  gp_Elips myEllipse; //!< Ellipse geometry
+  gp_Elips                           myEllipse; //!< Ellipse geometry
+  std::optional<ExtremaPC::Domain1D> myDomain;  //!< Parameter domain (nullopt for full ellipse)
 };
 
 #endif // _ExtremaPC_Ellipse_HeaderFile

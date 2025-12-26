@@ -45,6 +45,12 @@
 //! And numerical curves (grid-based with Newton refinement):
 //! - BSpline, Bezier, Offset, and general curves
 //!
+//! @note The parameter domain is fixed at construction time for optimal performance.
+//!       The inner curve evaluators build their grids eagerly in the constructor,
+//!       so multiple Perform() calls reuse the pre-built data without rebuilding.
+//!       SetDomain() and ClearDomain() are deprecated - use the constructor overloads
+//!       to specify the domain.
+//!
 //! Usage example:
 //! @code
 //! ExtremaPC_Curve anExtPC(myAdaptorCurve);
@@ -133,11 +139,15 @@ public:
   //! Returns whether endpoints are included as extrema.
   bool IncludeEndpoints() const { return myConfig.IncludeEndpoints; }
 
-  //! Sets the parameter domain for bounded search.
-  //! @param[in] theDomain parameter domain
+  //! @deprecated Domain is now fixed at construction time for performance.
+  //! This method only updates the config domain but not the inner evaluator.
+  //! Use constructor overloads to specify the domain instead.
+  [[deprecated("Domain is fixed at construction time - use constructor overloads")]]
   void SetDomain(const ExtremaPC::Domain1D& theDomain) { myConfig.Domain = theDomain; }
 
-  //! Clears the parameter domain (use natural/unbounded).
+  //! @deprecated Domain is now fixed at construction time for performance.
+  //! This method only updates the config domain but not the inner evaluator.
+  [[deprecated("Domain is fixed at construction time - use constructor overloads")]]
   void ClearDomain() { myConfig.Domain.reset(); }
 
   //! Returns the parameter domain if set.
@@ -149,10 +159,12 @@ public:
   //! @return result containing all found extrema
   Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP) const;
 
-  //! Computes extrema between point P and the curve within a domain.
+  //! @deprecated Domain parameter is ignored - domain is fixed at construction time.
+  //! Use the single-argument Perform() instead.
   //! @param[in] theP query point
-  //! @param[in] theDomain parameter domain to search within
-  //! @return result containing all found extrema within the domain
+  //! @param[in] theDomain parameter domain (ignored - uses construction-time domain)
+  //! @return result containing all found extrema
+  [[deprecated("Domain is fixed at construction time - use Perform(theP) instead")]]
   Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP, const ExtremaPC::Domain1D& theDomain) const;
 
   //! Returns true if the evaluator is properly initialized.
