@@ -51,18 +51,46 @@ public:
     return myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
   }
 
-  //! Compute extrema between point P and the line segment (interior only).
+  //! Compute extrema between point P and the infinite line (no bounds checking).
+  //! @param theP query point
+  //! @return result containing the extremum
+  ExtremaPC::Result Perform(const gp_Pnt& theP) const
+  {
+    ExtremaPC::Result aResult;
+
+    // Compute projection parameter: u = (P - O) . Direction
+    const gp_Dir& aDir    = myLine.Direction();
+    const gp_Pnt& aOrigin = myLine.Location();
+    gp_Vec        aVec(aOrigin, theP);
+    double        aU = aVec.Dot(gp_Vec(aDir));
+
+    // Compute point on line at projected parameter
+    gp_Pnt aPtOnLine = aOrigin.Translated(aU * gp_Vec(aDir));
+
+    // Store result
+    ExtremaPC::ExtremumResult anExt;
+    anExt.Parameter      = aU;
+    anExt.Point          = aPtOnLine;
+    anExt.SquareDistance = theP.SquareDistance(aPtOnLine);
+    anExt.IsMinimum      = true;
+
+    aResult.Extrema.Append(anExt);
+    aResult.Status = ExtremaPC::Status::OK;
+    return aResult;
+  }
+
+  //! Compute extrema between point P and the line segment (with bounds checking).
   //! @param theP query point
   //! @param theDomain parameter domain
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max) - not used for lines
   //! @return result containing the interior extremum (if within bounds)
-  ExtremaPC::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPC::Domain1D&   theDomain,
-                            double                       theTol,
-                            ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result Perform(const gp_Pnt&              theP,
+                            const ExtremaPC::Domain1D& theDomain,
+                            double                     theTol,
+                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performInterior(theP, theDomain, theTol, theMode);
+    return performBounded(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the line segment including endpoints.
@@ -71,12 +99,12 @@ public:
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&                theP,
-                                         const ExtremaPC::Domain1D&   theDomain,
-                                         double                       theTol,
-                                         ExtremaPC::SearchMode        theMode = ExtremaPC::SearchMode::MinMax) const
+  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&              theP,
+                                         const ExtremaPC::Domain1D& theDomain,
+                                         double                     theTol,
+                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performInterior(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
 
     if (aResult.Status == ExtremaPC::Status::OK)
     {
@@ -90,11 +118,11 @@ public:
   const gp_Lin& Line() const { return myLine; }
 
 private:
-  //! Core algorithm - finds interior extremum only.
-  ExtremaPC::Result performInterior(const gp_Pnt&                theP,
-                                    const ExtremaPC::Domain1D&   theDomain,
-                                    double                       theTol,
-                                    ExtremaPC::SearchMode        theMode) const
+  //! Core algorithm - finds interior extremum with bounds checking.
+  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
+                                   const ExtremaPC::Domain1D& theDomain,
+                                   double                     theTol,
+                                   ExtremaPC::SearchMode      theMode) const
   {
     (void)theMode; // Line always has exactly one extremum (minimum)
     ExtremaPC::Result aResult;
