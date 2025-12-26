@@ -701,3 +701,163 @@ TEST(MathVectorTest, MoveSemantics)
 
   EXPECT_EQ(aVecAssign1.Length(), 0);
 }
+
+// Tests for Resize operation
+TEST(MathVectorTest, Resize_StackToStack_SameSize)
+{
+  // Small vector that fits in stack buffer (THE_BUFFER_SIZE = 32)
+  math_Vector aVec(1, 10);
+  for (Standard_Integer i = 1; i <= 10; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Resize to same size - data should be preserved
+  aVec.Resize(10);
+
+  EXPECT_EQ(aVec.Length(), 10);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 10);
+  for (Standard_Integer i = 1; i <= 10; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
+
+TEST(MathVectorTest, Resize_StackToStack_Grow)
+{
+  // Small vector
+  math_Vector aVec(1, 5);
+  for (Standard_Integer i = 1; i <= 5; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i * 10);
+  }
+
+  // Grow but still within stack buffer
+  aVec.Resize(20);
+
+  EXPECT_EQ(aVec.Length(), 20);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 20);
+
+  // Original data should be preserved
+  for (Standard_Integer i = 1; i <= 5; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i * 10));
+  }
+}
+
+TEST(MathVectorTest, Resize_StackToStack_Shrink)
+{
+  // Small vector
+  math_Vector aVec(1, 20);
+  for (Standard_Integer i = 1; i <= 20; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Shrink but still within stack buffer
+  aVec.Resize(10);
+
+  EXPECT_EQ(aVec.Length(), 10);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 10);
+
+  // Data within new range should be preserved
+  for (Standard_Integer i = 1; i <= 10; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
+
+TEST(MathVectorTest, Resize_StackToHeap)
+{
+  // Small vector that fits in stack
+  math_Vector aVec(1, 20);
+  for (Standard_Integer i = 1; i <= 20; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Resize to larger than stack buffer (>32)
+  aVec.Resize(50);
+
+  EXPECT_EQ(aVec.Length(), 50);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 50);
+
+  // Original data should be preserved
+  for (Standard_Integer i = 1; i <= 20; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
+
+TEST(MathVectorTest, Resize_HeapToStack)
+{
+  // Large vector on heap
+  math_Vector aVec(1, 50);
+  for (Standard_Integer i = 1; i <= 50; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Resize to fit in stack buffer
+  aVec.Resize(20);
+
+  EXPECT_EQ(aVec.Length(), 20);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 20);
+
+  // Data within new range should be preserved
+  for (Standard_Integer i = 1; i <= 20; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
+
+TEST(MathVectorTest, Resize_HeapToHeap)
+{
+  // Large vector on heap
+  math_Vector aVec(1, 50);
+  for (Standard_Integer i = 1; i <= 50; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Resize to different heap size
+  aVec.Resize(100);
+
+  EXPECT_EQ(aVec.Length(), 100);
+  EXPECT_EQ(aVec.Lower(), 1);
+  EXPECT_EQ(aVec.Upper(), 100);
+
+  // Original data should be preserved
+  for (Standard_Integer i = 1; i <= 50; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
+
+TEST(MathVectorTest, Resize_NegativeLowerBound)
+{
+  // Vector with negative lower bound
+  math_Vector aVec(-5, 5);
+  for (Standard_Integer i = -5; i <= 5; ++i)
+  {
+    aVec(i) = static_cast<Standard_Real>(i);
+  }
+
+  // Resize - lower bound preserved
+  aVec.Resize(8);
+
+  EXPECT_EQ(aVec.Length(), 8);
+  EXPECT_EQ(aVec.Lower(), -5);
+  EXPECT_EQ(aVec.Upper(), 2);
+
+  // Original data should be preserved
+  for (Standard_Integer i = -5; i <= 2; ++i)
+  {
+    EXPECT_DOUBLE_EQ(aVec(i), static_cast<Standard_Real>(i));
+  }
+}
