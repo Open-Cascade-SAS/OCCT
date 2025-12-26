@@ -20,6 +20,7 @@
 #include <Precision.hxx>
 
 #include <limits>
+#include <optional>
 
 //! @file ExtremaPC.hxx
 //! @brief Common types and utilities for Point-Curve extrema computation.
@@ -210,12 +211,11 @@ struct Result
 //! Configuration for extrema computation.
 struct Config
 {
-  double     Tolerance        = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding and distance comparison
-  double     UMin             = 0.0;            //!< Lower parameter bound for curve
-  double     UMax             = 0.0;            //!< Upper parameter bound for curve
-  int        NbSamples        = 32;             //!< Number of initial samples for numerical methods
-  SearchMode Mode             = SearchMode::MinMax; //!< Search mode (MinMax, Min, or Max)
-  bool       IncludeEndpoints = true;          //!< Include endpoints as potential extrema for bounded curves
+  double                  Tolerance        = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
+  std::optional<Domain1D> Domain;                    //!< Parameter domain (nullopt = use natural/unbounded)
+  int                     NbSamples        = 32;     //!< Number of samples for numerical methods
+  SearchMode              Mode             = SearchMode::MinMax; //!< Search mode (MinMax, Min, or Max)
+  bool                    IncludeEndpoints = true;   //!< Include endpoints as potential extrema
 };
 
 //! @brief Adds endpoint extrema to result for bounded curves.

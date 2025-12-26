@@ -45,11 +45,23 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with ellipse geometry.
-  //! @param theEllipse the ellipse to compute extrema for
+  //! @param[in] theEllipse the ellipse to compute extrema for
   explicit ExtremaPC_Ellipse(const gp_Elips& theEllipse)
       : myEllipse(theEllipse)
   {
   }
+
+  //! Copy constructor is deleted.
+  ExtremaPC_Ellipse(const ExtremaPC_Ellipse&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_Ellipse& operator=(const ExtremaPC_Ellipse&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_Ellipse(ExtremaPC_Ellipse&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_Ellipse& operator=(ExtremaPC_Ellipse&&) = default;
 
   //! Evaluates point on ellipse at parameter.
   //! @param theU parameter (radians)
@@ -70,6 +82,7 @@ public:
   }
 
   //! Compute extrema between point P and the ellipse arc (with bounds checking).
+  //! If domain covers full period [0, 2*PI], delegates to unbounded Perform.
   //! @param theP query point
   //! @param theDomain parameter domain (radians)
   //! @param theTol tolerance for degenerate case detection
@@ -80,6 +93,11 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    // Ellipse is periodic - if domain covers full period, use unbounded version
+    if (theDomain.IsFullPeriod(2.0 * M_PI))
+    {
+      return Perform(theP, theTol, theMode);
+    }
     return performBounded(theP, theDomain, theTol, theMode);
   }
 

@@ -23,6 +23,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Circle extrema computation.
 //!
@@ -46,11 +47,23 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with circle geometry.
-  //! @param theCircle the circle to compute extrema for
+  //! @param[in] theCircle the circle to compute extrema for
   explicit ExtremaPC_Circle(const gp_Circ& theCircle)
       : myCircle(theCircle)
   {
   }
+
+  //! Copy constructor is deleted.
+  ExtremaPC_Circle(const ExtremaPC_Circle&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_Circle& operator=(const ExtremaPC_Circle&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_Circle(ExtremaPC_Circle&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_Circle& operator=(ExtremaPC_Circle&&) = default;
 
   //! Evaluates point on circle at parameter.
   //! @param theU parameter (radians)
@@ -66,69 +79,11 @@ public:
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult;
-
-    // Step 1: Project point P onto the circle plane
-    const gp_Pnt& aCenter = myCircle.Location();
-    const gp_Dir& aAxis   = myCircle.Axis().Direction();
-    gp_Vec        aToP(aCenter, theP);
-    double        aHeight = aToP.Dot(gp_Vec(aAxis));
-    gp_Vec        aTrsl   = gp_Vec(aAxis) * (-aHeight);
-    gp_Pnt        aPp     = theP.Translated(aTrsl);
-
-    // Step 2: Check for degenerate case - point projects to center
-    gp_Vec aOPp(aCenter, aPp);
-    double aOPpMag = aOPp.Magnitude();
-
-    if (aOPpMag < theTol)
-    {
-      // Point is on the circle axis - all points on circle are equidistant
-      aResult.Status = ExtremaPC::Status::InfiniteSolutions;
-      double aRadius = myCircle.Radius();
-      aResult.InfiniteSquareDistance = aRadius * aRadius + aHeight * aHeight;
-      return aResult;
-    }
-
-    // Step 3: Compute the angle of the closest point
-    double aUs1 = myCircle.XAxis().Direction().AngleWithRef(aOPp, aAxis);
-
-    // Handle angle boundaries
-    constexpr double aAngTol = Precision::Angular();
-    if (aUs1 + M_PI < aAngTol)
-    {
-      aUs1 = -M_PI;
-    }
-    else if (aUs1 - M_PI > -aAngTol)
-    {
-      aUs1 = M_PI;
-    }
-
-    // Us2 = Us1 + PI corresponds to maximum distance (farthest point)
-    double aUs2 = aUs1 + M_PI;
-
-    // Step 4: Add extrema based on search mode
-    double aSolutions[2] = {aUs1, aUs2};
-    int    aStart = (theMode == ExtremaPC::SearchMode::Max) ? 1 : 0;
-    int    aEnd   = (theMode == ExtremaPC::SearchMode::Min) ? 1 : 2;
-
-    for (int i = aStart; i < aEnd; ++i)
-    {
-      gp_Pnt aCurvePt = ElCLib::Value(aSolutions[i], myCircle);
-
-      ExtremaPC::ExtremumResult anExt;
-      anExt.Parameter      = aSolutions[i];
-      anExt.Point          = aCurvePt;
-      anExt.SquareDistance = theP.SquareDistance(aCurvePt);
-      anExt.IsMinimum      = (i == 0);
-
-      aResult.Extrema.Append(anExt);
-    }
-
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    return performCore(theP, std::nullopt, theTol, theMode);
   }
 
   //! Compute extrema between point P and the circle arc (with bounds checking).
+  //! If domain covers full period [0, 2*PI], delegates to unbounded Perform.
   //! @param theP query point
   //! @param theDomain parameter domain (radians)
   //! @param theTol tolerance for degenerate case detection
@@ -139,7 +94,12 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performBounded(theP, theDomain, theTol, theMode);
+    // Circle is periodic - if domain covers full period, use unbounded version
+    if (theDomain.IsFullPeriod(2.0 * M_PI))
+    {
+      return Perform(theP, theTol, theMode);
+    }
+    return performCore(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the circle arc including endpoints.
@@ -153,7 +113,7 @@ public:
                                          double                     theTol,
                                          ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performCore(theP, theDomain, theTol, theMode);
 
     // Add endpoints if interior computation succeeded
     if (aResult.Status == ExtremaPC::Status::OK)
@@ -168,16 +128,18 @@ public:
   const gp_Circ& Circle() const { return myCircle; }
 
 private:
-  //! Core algorithm - finds extrema with bounds checking.
-  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
-                                   const ExtremaPC::Domain1D& theDomain,
-                                   double                     theTol,
-                                   ExtremaPC::SearchMode      theMode) const
+  //! Core algorithm - finds extrema with optional bounds checking.
+  //! @param theP query point
+  //! @param theDomain optional parameter domain (nullopt for full circle)
+  //! @param theTol tolerance for degenerate case detection
+  //! @param theMode search mode
+  //! @return result containing extrema
+  ExtremaPC::Result performCore(const gp_Pnt&                              theP,
+                                const std::optional<ExtremaPC::Domain1D>& theDomain,
+                                double                                     theTol,
+                                ExtremaPC::SearchMode                      theMode) const
   {
     ExtremaPC::Result aResult;
-
-    const double theUMin = theDomain.Min;
-    const double theUMax = theDomain.Max;
 
     // Step 1: Project point P onto the circle plane
     const gp_Pnt& aCenter = myCircle.Location();
@@ -218,30 +180,35 @@ private:
     // Us2 = Us1 + PI corresponds to maximum distance (farthest point)
     double aUs2 = aUs1 + M_PI;
 
-    // Step 4: Adjust for periodicity relative to [theUMin, theUMax]
-    double aRadius = myCircle.Radius();
-    double aTolU   = Precision::Infinite();
-    if (aRadius > gp::Resolution())
+    // Step 4: For bounded case, adjust for periodicity
+    double aTolU = Precision::Angular();
+    if (theDomain.has_value())
     {
-      aTolU = theTol / aRadius;
+      const double theUMin = theDomain->Min;
+
+      double aRadius = myCircle.Radius();
+      if (aRadius > gp::Resolution())
+      {
+        aTolU = theTol / aRadius;
+      }
+
+      // Adjust angles to be within [theUMin, theUMin + 2*PI]
+      double aUinf = theUMin;
+      ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs1);
+      ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs2);
+
+      // Handle boundary tolerance
+      if (std::abs(aUs1 - 2.0 * M_PI - theUMin) < aTolU)
+      {
+        aUs1 = theUMin;
+      }
+      if (std::abs(aUs2 - 2.0 * M_PI - theUMin) < aTolU)
+      {
+        aUs2 = theUMin;
+      }
     }
 
-    // Adjust angles to be within [theUMin, theUMin + 2*PI]
-    double aUinf = theUMin;
-    ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs1);
-    ElCLib::AdjustPeriodic(theUMin, theUMin + 2.0 * M_PI, aTolU, aUinf, aUs2);
-
-    // Handle boundary tolerance
-    if (std::abs(aUs1 - 2.0 * M_PI - theUMin) < aTolU)
-    {
-      aUs1 = theUMin;
-    }
-    if (std::abs(aUs2 - 2.0 * M_PI - theUMin) < aTolU)
-    {
-      aUs2 = theUMin;
-    }
-
-    // Step 5: Add extrema that fall within parameter range
+    // Step 5: Add extrema (with bounds check if domain specified)
     // Skip based on search mode: i=0 is minimum, i=1 is maximum
     int aStart = (theMode == ExtremaPC::SearchMode::Max) ? 1 : 0;
     int aEnd   = (theMode == ExtremaPC::SearchMode::Min) ? 1 : 2;
@@ -251,18 +218,23 @@ private:
     for (int i = aStart; i < aEnd; ++i)
     {
       double aU = aSolutions[i];
-      if (aU >= theUMin - aTolU && aU <= theUMax + aTolU)
+
+      // Check bounds only if domain is specified
+      if (theDomain.has_value())
       {
-        gp_Pnt aCurvePt = ElCLib::Value(aU, myCircle);
-
-        ExtremaPC::ExtremumResult anExt;
-        anExt.Parameter      = aU;
-        anExt.Point          = aCurvePt;
-        anExt.SquareDistance = theP.SquareDistance(aCurvePt);
-        anExt.IsMinimum      = (i == 0); // First solution is minimum, second is maximum
-
-        aResult.Extrema.Append(anExt);
+        if (aU < theDomain->Min - aTolU || aU > theDomain->Max + aTolU)
+          continue;
       }
+
+      gp_Pnt aCurvePt = ElCLib::Value(aU, myCircle);
+
+      ExtremaPC::ExtremumResult anExt;
+      anExt.Parameter      = aU;
+      anExt.Point          = aCurvePt;
+      anExt.SquareDistance = theP.SquareDistance(aCurvePt);
+      anExt.IsMinimum      = (i == 0); // First solution is minimum, second is maximum
+
+      aResult.Extrema.Append(anExt);
     }
 
     aResult.Status = ExtremaPC::Status::OK;

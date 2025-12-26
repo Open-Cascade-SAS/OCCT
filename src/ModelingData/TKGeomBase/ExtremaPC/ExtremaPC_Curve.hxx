@@ -25,7 +25,9 @@
 #include <ExtremaPC_OffsetCurve.hxx>
 #include <ExtremaPC_OtherCurve.hxx>
 #include <ExtremaPC_Parabola.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_DefineAlloc.hxx>
 
@@ -45,8 +47,7 @@
 //!
 //! Usage example:
 //! @code
-//! ExtremaPC_Curve anExtPC;
-//! anExtPC.Initialize(myAdaptorCurve);
+//! ExtremaPC_Curve anExtPC(myAdaptorCurve);
 //! ExtremaPC::Result aResult = anExtPC.Perform(myPoint);
 //! if (aResult.IsDone())
 //! {
@@ -74,56 +75,85 @@ public:
                                         ExtremaPC_OffsetCurve,
                                         ExtremaPC_OtherCurve>;
 
-  //! Default constructor - creates uninitialized evaluator.
-  Standard_EXPORT ExtremaPC_Curve();
-
   //! Constructor with curve adaptor.
-  //! @param theCurve curve adaptor
+  //! Uses the curve's natural parameter bounds as domain.
+  //! @param[in] theCurve curve adaptor
   Standard_EXPORT explicit ExtremaPC_Curve(const Adaptor3d_Curve& theCurve);
 
   //! Constructor with curve adaptor and parameter range.
-  //! @param theCurve curve adaptor
-  //! @param theUMin lower parameter bound
-  //! @param theUMax upper parameter bound
+  //! @param[in] theCurve curve adaptor
+  //! @param[in] theUMin lower parameter bound
+  //! @param[in] theUMax upper parameter bound
   Standard_EXPORT ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax);
 
-  //! Initializes the evaluator with a curve adaptor.
-  //! Uses the curve's natural parameter bounds.
-  //! @param theCurve curve adaptor
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve);
+  //! Constructor with Geom_Curve.
+  //! For non-trimmed curves, does NOT set domain (uses natural/unbounded behavior).
+  //! For trimmed curves, uses the trimmed bounds as domain.
+  //! @param[in] theCurve geometric curve handle
+  Standard_EXPORT explicit ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve);
 
-  //! Initializes the evaluator with a curve adaptor and parameter range.
-  //! @param theCurve curve adaptor
-  //! @param theUMin lower parameter bound
-  //! @param theUMax upper parameter bound
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax);
+  //! Constructor with Geom_Curve and parameter range.
+  //! For trimmed curves, intersects input bounds with trimmed bounds.
+  //! @param[in] theCurve geometric curve handle
+  //! @param[in] theUMin lower parameter bound
+  //! @param[in] theUMax upper parameter bound
+  Standard_EXPORT ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theUMin, double theUMax);
+
+  //! Copy constructor is deleted.
+  ExtremaPC_Curve(const ExtremaPC_Curve&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_Curve& operator=(const ExtremaPC_Curve&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_Curve(ExtremaPC_Curve&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_Curve& operator=(ExtremaPC_Curve&&) = default;
 
   //! Sets the tolerance for extrema computation.
-  //! @param theTol tolerance value
+  //! @param[in] theTol tolerance value
   void SetTolerance(double theTol) { myConfig.Tolerance = theTol; }
 
   //! Sets the number of samples for numerical methods.
-  //! @param theNb number of samples
+  //! @param[in] theNb number of samples
   void SetNbSamples(int theNb) { myConfig.NbSamples = theNb; }
 
   //! Sets the search mode.
-  //! @param theMode search mode (MinMax, Min, or Max)
+  //! @param[in] theMode search mode (MinMax, Min, or Max)
   void SetSearchMode(ExtremaPC::SearchMode theMode) { myConfig.Mode = theMode; }
 
   //! Returns the current search mode.
   ExtremaPC::SearchMode SearchMode() const { return myConfig.Mode; }
 
   //! Sets whether to include endpoints as extrema.
-  //! @param theFlag true to include endpoints
+  //! @param[in] theFlag true to include endpoints
   void SetIncludeEndpoints(bool theFlag) { myConfig.IncludeEndpoints = theFlag; }
 
   //! Returns whether endpoints are included as extrema.
   bool IncludeEndpoints() const { return myConfig.IncludeEndpoints; }
 
+  //! Sets the parameter domain for bounded search.
+  //! @param[in] theDomain parameter domain
+  void SetDomain(const ExtremaPC::Domain1D& theDomain) { myConfig.Domain = theDomain; }
+
+  //! Clears the parameter domain (use natural/unbounded).
+  void ClearDomain() { myConfig.Domain.reset(); }
+
+  //! Returns the parameter domain if set.
+  const std::optional<ExtremaPC::Domain1D>& Domain() const { return myConfig.Domain; }
+
   //! Computes extrema between point P and the curve.
-  //! @param theP query point
+  //! Uses domain from config if set, otherwise uses natural/unbounded behavior.
+  //! @param[in] theP query point
   //! @return result containing all found extrema
   Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP) const;
+
+  //! Computes extrema between point P and the curve within a domain.
+  //! @param[in] theP query point
+  //! @param[in] theDomain parameter domain to search within
+  //! @return result containing all found extrema within the domain
+  Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP, const ExtremaPC::Domain1D& theDomain) const;
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return !std::holds_alternative<std::monostate>(myEvaluator); }
@@ -135,9 +165,15 @@ public:
   const ExtremaPC::Config& Config() const { return myConfig; }
 
 private:
-  EvaluatorVariant  myEvaluator; //!< Specialized evaluator
-  ExtremaPC::Config myConfig;    //!< Computation configuration
-  GeomAbs_CurveType myCurveType; //!< Curve type
+  //! Helper method to initialize evaluator from a Geom_Curve.
+  //! Handles all curve type detection and evaluator creation.
+  //! @param[in] theCurve the curve to initialize from (must not be null)
+  void initFromGeomCurve(const Handle(Geom_Curve)& theCurve);
+
+  EvaluatorVariant          myEvaluator; //!< Specialized evaluator
+  ExtremaPC::Config         myConfig;    //!< Computation configuration
+  GeomAbs_CurveType         myCurveType; //!< Curve type
+  Handle(GeomAdaptor_Curve) myAdaptor;   //!< Stored adaptor for Geom-based construction
 };
 
 #endif // _ExtremaPC_Curve_HeaderFile

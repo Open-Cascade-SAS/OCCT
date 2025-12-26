@@ -37,11 +37,23 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with line geometry.
-  //! @param theLine the line to compute extrema for
+  //! @param[in] theLine the line to compute extrema for
   explicit ExtremaPC_Line(const gp_Lin& theLine)
       : myLine(theLine)
   {
   }
+
+  //! Copy constructor is deleted.
+  ExtremaPC_Line(const ExtremaPC_Line&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_Line& operator=(const ExtremaPC_Line&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_Line(ExtremaPC_Line&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_Line& operator=(ExtremaPC_Line&&) = default;
 
   //! Evaluates point on line at parameter.
   //! @param theU parameter
@@ -53,9 +65,16 @@ public:
 
   //! Compute extrema between point P and the infinite line (no bounds checking).
   //! @param theP query point
+  //! @param theTol tolerance (unused for lines)
+  //! @param theMode search mode (unused for lines - always returns minimum)
   //! @return result containing the extremum
-  ExtremaPC::Result Perform(const gp_Pnt& theP) const
+  ExtremaPC::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    (void)theTol;  // Unused for lines
+    (void)theMode; // Lines always have exactly one extremum (minimum)
+
     ExtremaPC::Result aResult;
 
     // Compute projection parameter: u = (P - O) . Direction
@@ -80,6 +99,7 @@ public:
   }
 
   //! Compute extrema between point P and the line segment (with bounds checking).
+  //! If domain is infinite, delegates to unbounded Perform.
   //! @param theP query point
   //! @param theDomain parameter domain
   //! @param theTol tolerance for parameter comparison
@@ -90,6 +110,11 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    // Line is infinite - if domain is infinite, use unbounded version
+    if (!theDomain.IsFinite())
+    {
+      return Perform(theP, theTol, theMode);
+    }
     return performBounded(theP, theDomain, theTol, theMode);
   }
 

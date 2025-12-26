@@ -42,8 +42,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with curve adaptor.
-  //! @param theCurve curve adaptor for offset curve
+  //! @param[in] theCurve curve adaptor for offset curve
   Standard_EXPORT explicit ExtremaPC_OffsetCurve(const Adaptor3d_Curve& theCurve);
+
+  //! Copy constructor is deleted.
+  ExtremaPC_OffsetCurve(const ExtremaPC_OffsetCurve&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_OffsetCurve& operator=(const ExtremaPC_OffsetCurve&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_OffsetCurve(ExtremaPC_OffsetCurve&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_OffsetCurve& operator=(ExtremaPC_OffsetCurve&&) = default;
 
   //! Evaluates point on curve at parameter.
   //! @param theU parameter

@@ -44,8 +44,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with Bezier curve.
-  //! @param theCurve Bezier curve handle
+  //! @param[in] theCurve Bezier curve handle
   Standard_EXPORT explicit ExtremaPC_BezierCurve(const Handle(Geom_BezierCurve)& theCurve);
+
+  //! Copy constructor is deleted.
+  ExtremaPC_BezierCurve(const ExtremaPC_BezierCurve&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_BezierCurve& operator=(const ExtremaPC_BezierCurve&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_BezierCurve(ExtremaPC_BezierCurve&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_BezierCurve& operator=(ExtremaPC_BezierCurve&&) = default;
 
   //! Evaluates point on curve at parameter.
   //! @param theU parameter

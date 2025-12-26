@@ -45,8 +45,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with BSpline curve.
-  //! @param theCurve BSpline curve handle
+  //! @param[in] theCurve BSpline curve handle
   Standard_EXPORT explicit ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& theCurve);
+
+  //! Copy constructor is deleted.
+  ExtremaPC_BSplineCurve(const ExtremaPC_BSplineCurve&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_BSplineCurve& operator=(const ExtremaPC_BSplineCurve&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_BSplineCurve(ExtremaPC_BSplineCurve&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_BSplineCurve& operator=(ExtremaPC_BSplineCurve&&) = default;
 
   //! Evaluates point on curve at parameter.
   //! @param theU parameter

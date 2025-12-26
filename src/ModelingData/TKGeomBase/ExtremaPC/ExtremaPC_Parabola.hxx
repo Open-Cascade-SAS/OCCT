@@ -24,6 +24,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Parabola extrema computation.
 //!
@@ -43,11 +44,23 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with parabola geometry.
-  //! @param theParabola the parabola to compute extrema for
+  //! @param[in] theParabola the parabola to compute extrema for
   explicit ExtremaPC_Parabola(const gp_Parab& theParabola)
       : myParabola(theParabola)
   {
   }
+
+  //! Copy constructor is deleted.
+  ExtremaPC_Parabola(const ExtremaPC_Parabola&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_Parabola& operator=(const ExtremaPC_Parabola&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_Parabola(ExtremaPC_Parabola&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_Parabola& operator=(ExtremaPC_Parabola&&) = default;
 
   //! Evaluates point on parabola at parameter.
   //! @param theU parameter
@@ -63,15 +76,11 @@ public:
                             double                theTol,
                             ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    // Use infinite bounds for unbounded parabola
-    return performBounded(
-      theP,
-      ExtremaPC::Domain1D{-Precision::Infinite(), Precision::Infinite()},
-      theTol,
-      theMode);
+    return performCore(theP, std::nullopt, theTol, theMode);
   }
 
   //! Compute extrema between point P and the parabola arc (with bounds checking).
+  //! If domain is infinite, delegates to unbounded Perform.
   //! @param theP query point
   //! @param theDomain parameter domain
   //! @param theTol tolerance for duplicate detection
@@ -82,7 +91,12 @@ public:
                             double                     theTol,
                             ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performBounded(theP, theDomain, theTol, theMode);
+    // Parabola is infinite - if domain is infinite, use unbounded version
+    if (!theDomain.IsFinite())
+    {
+      return Perform(theP, theTol, theMode);
+    }
+    return performCore(theP, theDomain, theTol, theMode);
   }
 
   //! Compute extrema between point P and the parabola arc including endpoints.
@@ -96,7 +110,7 @@ public:
                                          double                     theTol,
                                          ExtremaPC::SearchMode      theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = performBounded(theP, theDomain, theTol, theMode);
+    ExtremaPC::Result aResult = performCore(theP, theDomain, theTol, theMode);
 
     // Add endpoints if interior computation succeeded
     if (aResult.Status == ExtremaPC::Status::OK)
@@ -111,20 +125,10 @@ public:
   const gp_Parab& Parabola() const { return myParabola; }
 
 private:
-  //! Core algorithm - finds extrema with bounds checking.
-  ExtremaPC::Result performBounded(const gp_Pnt&              theP,
-                                   const ExtremaPC::Domain1D& theDomain,
-                                   double                     theTol,
-                                   ExtremaPC::SearchMode      theMode) const
+  //! Solve the cubic equation and return polynomial result.
+  MathPoly::PolyResult solveCubic(const gp_Pnt& theP) const
   {
-    (void)theTol; // Tolerance used for endpoint detection
-
-    ExtremaPC::Result aResult;
-
-    const double theUMin = theDomain.Min;
-    const double theUMax = theDomain.Max;
-
-    // Step 1: Project point P onto the parabola plane
+    // Project point P onto the parabola plane
     const gp_Pnt& aVertex = myParabola.Location();
     const gp_Dir& aAxis   = myParabola.Axis().Direction();
     gp_Vec        aToP(aVertex, theP);
@@ -132,16 +136,32 @@ private:
     gp_Vec        aTrsl   = gp_Vec(aAxis) * (-aHeight);
     gp_Pnt        aPp     = theP.Translated(aTrsl);
 
-    // Step 2: Get focal length and compute local coordinates
+    // Get focal length and compute local coordinates
     double aF = myParabola.Focal();
     gp_Vec aOPp(aVertex, aPp);
     double aX = aOPp.Dot(gp_Vec(myParabola.XAxis().Direction()));
     double aY = aOPp.Dot(gp_Vec(myParabola.YAxis().Direction()));
 
-    // Step 3: Solve cubic equation
-    // (1/(4F)) * u^3 + (2F - X) * u - 2F*Y = 0
-    MathPoly::PolyResult aPolyRes =
-      MathPoly::Cubic(1.0 / (4.0 * aF), 0.0, 2.0 * aF - aX, -2.0 * aF * aY);
+    // Solve cubic equation: (1/(4F)) * u^3 + (2F - X) * u - 2F*Y = 0
+    return MathPoly::Cubic(1.0 / (4.0 * aF), 0.0, 2.0 * aF - aX, -2.0 * aF * aY);
+  }
+
+  //! Core algorithm - finds extrema with optional bounds checking.
+  //! @param theP query point
+  //! @param theDomain optional parameter domain (nullopt for unbounded)
+  //! @param theTol tolerance for duplicate detection
+  //! @param theMode search mode
+  //! @return result containing extrema
+  ExtremaPC::Result performCore(const gp_Pnt&                              theP,
+                                const std::optional<ExtremaPC::Domain1D>& theDomain,
+                                double                                     theTol,
+                                ExtremaPC::SearchMode                      theMode) const
+  {
+    (void)theTol; // Tolerance used for endpoint detection
+
+    ExtremaPC::Result aResult;
+
+    MathPoly::PolyResult aPolyRes = solveCubic(theP);
 
     if (!aPolyRes.IsDone())
     {
@@ -158,39 +178,58 @@ private:
       return aResult;
     }
 
-    // Step 4: Filter solutions by parameter range and collect extrema
     double aTol2 = Precision::SquareConfusion();
 
-    // Helper lambda to add an extremum
-    auto addExtremum = [&](double aU) {
+    // Process all roots
+    for (size_t i = 0; i < aPolyRes.NbRoots; ++i)
+    {
+      double aU = aPolyRes.Roots[i];
+
+      // Check bounds if domain is specified
+      if (theDomain.has_value())
+      {
+        if (aU < theDomain->Min || aU > theDomain->Max)
+          continue;
+      }
+
       gp_Pnt aCurvePt = ElCLib::Value(aU, myParabola);
 
       // Check for duplicates
+      bool aDuplicate = false;
       for (int j = 0; j < aResult.Extrema.Length(); ++j)
       {
         if (aCurvePt.SquareDistance(aResult.Extrema.Value(j).Point) < aTol2)
         {
-          return; // Duplicate
+          aDuplicate = true;
+          break;
         }
       }
+      if (aDuplicate)
+        continue;
 
-      // Determine if minimum or maximum
-      double aSqDist     = theP.SquareDistance(aCurvePt);
-      double aNeighborU  = aU + (aU < (theUMin + theUMax) * 0.5 ? 1.0 : -1.0);
-      aNeighborU         = std::max(theUMin, std::min(theUMax, aNeighborU));
-      gp_Pnt aNeighborPt = ElCLib::Value(aNeighborU, myParabola);
+      // Determine if minimum or maximum using neighbor comparison
+      double aSqDist = theP.SquareDistance(aCurvePt);
+      double aNeighborU;
+      if (theDomain.has_value())
+      {
+        // For bounded case, choose neighbor direction based on position in domain
+        aNeighborU = aU + (aU < (theDomain->Min + theDomain->Max) * 0.5 ? 1.0 : -1.0);
+        aNeighborU = std::max(theDomain->Min, std::min(theDomain->Max, aNeighborU));
+      }
+      else
+      {
+        // For unbounded case, just use +1.0
+        aNeighborU = aU + 1.0;
+      }
+      gp_Pnt aNeighborPt   = ElCLib::Value(aNeighborU, myParabola);
       double aNeighborDist = theP.SquareDistance(aNeighborPt);
       bool   aIsMin        = aSqDist <= aNeighborDist;
 
       // Filter by search mode
       if (theMode == ExtremaPC::SearchMode::Min && !aIsMin)
-      {
-        return;
-      }
+        continue;
       if (theMode == ExtremaPC::SearchMode::Max && aIsMin)
-      {
-        return;
-      }
+        continue;
 
       ExtremaPC::ExtremumResult anExt;
       anExt.Parameter      = aU;
@@ -199,18 +238,6 @@ private:
       anExt.IsMinimum      = aIsMin;
 
       aResult.Extrema.Append(anExt);
-    };
-
-    // Add interior extrema from cubic roots
-    for (size_t i = 0; i < aPolyRes.NbRoots; ++i)
-    {
-      double aU = aPolyRes.Roots[i];
-
-      // Check if within parameter bounds
-      if (aU >= theUMin && aU <= theUMax)
-      {
-        addExtremum(aU);
-      }
     }
 
     aResult.Status = ExtremaPC::Status::OK;

@@ -434,27 +434,12 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_PointOnCurve)
   EXPECT_NEAR(aMinDist, 0.0, THE_TOL);
 }
 
-TEST_F(ExtremaPC_CurveTest, Aggregator_NotInitialized)
-{
-  ExtremaPC_Curve anExtPC;
-  EXPECT_FALSE(anExtPC.IsInitialized());
-
-  gp_Pnt aPoint(1.0, 1.0, 1.0);
-  ExtremaPC::Result aResult = anExtPC.Perform(aPoint);
-
-  EXPECT_FALSE(aResult.IsDone());
-  EXPECT_EQ(aResult.Status, ExtremaPC::Status::NotDone);
-}
-
-TEST_F(ExtremaPC_CurveTest, Aggregator_InitializeAfterConstruction)
+TEST_F(ExtremaPC_CurveTest, Aggregator_IsInitialized)
 {
   Handle(Geom_Line) aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   GeomAdaptor_Curve anAdaptor(aGeomLine, 0.0, 100.0);
 
-  ExtremaPC_Curve anExtPC;
-  EXPECT_FALSE(anExtPC.IsInitialized());
-
-  anExtPC.Initialize(anAdaptor);
+  ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
 
   gp_Pnt aPoint(50.0, 5.0, 0.0);

@@ -42,8 +42,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor with curve adaptor.
-  //! @param theCurve curve adaptor
+  //! @param[in] theCurve curve adaptor
   Standard_EXPORT explicit ExtremaPC_OtherCurve(const Adaptor3d_Curve& theCurve);
+
+  //! Copy constructor is deleted.
+  ExtremaPC_OtherCurve(const ExtremaPC_OtherCurve&) = delete;
+
+  //! Copy assignment operator is deleted.
+  ExtremaPC_OtherCurve& operator=(const ExtremaPC_OtherCurve&) = delete;
+
+  //! Move constructor.
+  ExtremaPC_OtherCurve(ExtremaPC_OtherCurve&&) = default;
+
+  //! Move assignment operator.
+  ExtremaPC_OtherCurve& operator=(ExtremaPC_OtherCurve&&) = default;
 
   //! Evaluates point on curve at parameter.
   //! @param theU parameter
