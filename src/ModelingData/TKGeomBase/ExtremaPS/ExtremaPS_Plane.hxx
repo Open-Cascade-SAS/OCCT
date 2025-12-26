@@ -92,6 +92,9 @@ private:
     myYDirX = aYDir.X();
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
+
+    // Cache whether domain is infinite for fast path check
+    myIsInfinite = !myDomain.IsFinite();
   }
 
 public:
@@ -130,27 +133,27 @@ public:
                             double                theTol,
                             ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    ExtremaPS::Result aResult;
-
     // Max mode: no interior extrema for plane (max is always at boundary)
     if (theMode == ExtremaPS::SearchMode::Max)
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
-      return aResult;
+      return ExtremaPS::Result{ExtremaPS::Status::NoSolution, {}, 0.0};
     }
 
-    // Compute signed distance and UV parameters
+    // Compute delta vector from plane location to query point
     const double aDx = theP.X() - myLocX;
     const double aDy = theP.Y() - myLocY;
     const double aDz = theP.Z() - myLocZ;
 
+    // Compute signed distance (dot product with normal) and UV parameters
     const double aSignedDist = aDx * myNormX + aDy * myNormY + aDz * myNormZ;
     const double aU = aDx * myXDirX + aDy * myXDirY + aDz * myXDirZ;
     const double aV = aDx * myYDirX + aDy * myYDirY + aDz * myYDirZ;
 
-    // Fast path: infinite domain - skip bounds check
-    if (!myDomain.IsFinite())
+    // Fast path: infinite domain - most common case, skip all bounds checks
+    if (myIsInfinite)
     {
+      ExtremaPS::Result aResult;
+      aResult.Status = ExtremaPS::Status::OK;
       aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
         aU, aV,
         gp_Pnt(theP.X() - aSignedDist * myNormX,
@@ -159,22 +162,26 @@ public:
         aSignedDist * aSignedDist,
         true
       });
-      aResult.Status = ExtremaPS::Status::OK;
       return aResult;
     }
 
-    // Bounded domain - check if projection is within bounds
-    if (!myDomain.Contains(aU, aV, theTol))
+    // Bounded domain - inline bounds check for speed
+    const double aUMin = myDomain.UMin - theTol;
+    const double aUMax = myDomain.UMax + theTol;
+    const double aVMin = myDomain.VMin - theTol;
+    const double aVMax = myDomain.VMax + theTol;
+
+    if (aU < aUMin || aU > aUMax || aV < aVMin || aV > aVMax)
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
-      return aResult;
+      return ExtremaPS::Result{ExtremaPS::Status::NoSolution, {}, 0.0};
     }
 
-    // Clamp to domain bounds
-    double aClampedU = aU;
-    double aClampedV = aV;
-    myDomain.Clamp(aClampedU, aClampedV);
+    // Inline clamp for speed
+    const double aClampedU = (aU < myDomain.UMin) ? myDomain.UMin : ((aU > myDomain.UMax) ? myDomain.UMax : aU);
+    const double aClampedV = (aV < myDomain.VMin) ? myDomain.VMin : ((aV > myDomain.VMax) ? myDomain.VMax : aV);
 
+    ExtremaPS::Result aResult;
+    aResult.Status = ExtremaPS::Status::OK;
     aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
       aClampedU, aClampedV,
       gp_Pnt(theP.X() - aSignedDist * myNormX,
@@ -183,7 +190,6 @@ public:
       aSignedDist * aSignedDist,
       true
     });
-    aResult.Status = ExtremaPS::Status::OK;
     return aResult;
   }
 
@@ -297,6 +303,7 @@ private:
   double myNormX, myNormY, myNormZ;  //!< Plane normal
   double myXDirX, myXDirY, myXDirZ;  //!< Plane X direction
   double myYDirX, myYDirY, myYDirZ;  //!< Plane Y direction
+  bool   myIsInfinite;               //!< Whether domain is infinite (fast path)
 };
 
 #endif // _ExtremaPS_Plane_HeaderFile

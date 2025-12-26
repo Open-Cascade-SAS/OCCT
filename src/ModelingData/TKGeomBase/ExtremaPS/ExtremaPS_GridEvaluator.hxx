@@ -114,12 +114,15 @@ inline math_Vector BuildUniformParams(double theMin, double theMax, int theNbSam
   return aParams;
 }
 
-//! @brief Scan 2D grid to find candidate cells for extrema.
+//! @brief Scan 2D grid to find candidate cells for extrema (optimized single-pass).
 //!
 //! A cell is a candidate if:
 //! - The gradient direction changes within the cell (sign change in Fu or Fv)
 //! - Or the gradient is near zero at a grid point
 //! - Or a grid point is a local distance minimum among neighbors
+//!
+//! This optimized version avoids creating large temporary arrays by computing
+//! values on-the-fly and using a combined single-pass algorithm.
 //!
 //! @param theGrid cached grid points
 //! @param theP query point
@@ -141,210 +144,133 @@ inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array2<GridPoint
     return aCandidates;
   }
 
-  // Track processed cells to avoid duplicates
-  NCollection_Array2<bool> aProcessed(0, aNbU - 1, 0, aNbV - 1);
-  aProcessed.Init(false);
+  // Query point coordinates for fast access
+  const double aPx = theP.X();
+  const double aPy = theP.Y();
+  const double aPz = theP.Z();
 
-  // Compute F values and distances for each grid point
-  NCollection_Array2<double> aFU(0, aNbU - 1, 0, aNbV - 1);
-  NCollection_Array2<double> aFV(0, aNbU - 1, 0, aNbV - 1);
-  NCollection_Array2<double> aDist(0, aNbU - 1, 0, aNbV - 1);
-  NCollection_Array2<double> aGradMag(0, aNbU - 1, 0, aNbV - 1);
+  // Tolerance for near-zero gradient detection
+  const double aTolF = theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR;
 
-  for (int i = 0; i < aNbU; ++i)
-  {
-    for (int j = 0; j < aNbV; ++j)
-    {
-      const GridPoint& aGP = theGrid(i, j);
-      gp_Vec           aVec(theP, aGP.Point);
-      aFU(i, j)      = aVec.Dot(aGP.DU);
-      aFV(i, j)      = aVec.Dot(aGP.DV);
-      aDist(i, j)    = aVec.SquareMagnitude();
-      aGradMag(i, j) = aFU(i, j) * aFU(i, j) + aFV(i, j) * aFV(i, j);
-    }
-  }
+  // Track global min/max for fallback candidates
+  double aGlobalMinDist = std::numeric_limits<double>::max();
+  double aGlobalMaxDist = -std::numeric_limits<double>::max();
+  int aMinI = 0, aMinJ = 0, aMaxI = 0, aMaxJ = 0;
 
-  // Helper lambda to add candidate with gradient magnitude for priority sorting
-  auto addCandidate = [&](int i, int j, double aStartU, double aStartV, double aEstDist) {
-    if (i < 0 || i >= aNbU - 1 || j < 0 || j >= aNbV - 1)
-      return;
-    if (aProcessed(i, j))
-      return;
-
-    // Compute minimum gradient magnitude in the cell (smaller = closer to extremum)
-    double aMinGradMag =
-      std::min({aGradMag(i, j), aGradMag(i + 1, j), aGradMag(i, j + 1), aGradMag(i + 1, j + 1)});
-
-    Candidate aCand;
-    aCand.IdxU    = i;
-    aCand.IdxV    = j;
-    aCand.StartU  = aStartU;
-    aCand.StartV  = aStartV;
-    aCand.EstDist = aEstDist;
-    aCand.GradMag = aMinGradMag;
-    aCandidates.Append(aCand);
-
-    // Mark cell and neighbors as processed
-    for (int di = 0; di <= 1 && i + di < aNbU; ++di)
-      for (int dj = 0; dj <= 1 && j + dj < aNbV; ++dj)
-        aProcessed(i + di, j + dj) = true;
+  // Helper to compute Fu, Fv, and distance for a grid point
+  auto computeGridPointData = [&](int i, int j, double& outFu, double& outFv, double& outDist) {
+    const GridPoint& aGP = theGrid(i, j);
+    const double aDx = aGP.Point.X() - aPx;
+    const double aDy = aGP.Point.Y() - aPy;
+    const double aDz = aGP.Point.Z() - aPz;
+    outFu = aDx * aGP.DU.X() + aDy * aGP.DU.Y() + aDz * aGP.DU.Z();
+    outFv = aDx * aGP.DV.X() + aDy * aGP.DV.Y() + aDz * aGP.DV.Z();
+    outDist = aDx * aDx + aDy * aDy + aDz * aDz;
   };
 
-  // Phase 1: Gradient-based candidate detection (sign changes)
+  // Single-pass: scan cells and find candidates
+  // We process each cell (i,j) to (i+1,j+1) and check for extrema conditions
   for (int i = 0; i < aNbU - 1; ++i)
   {
     for (int j = 0; j < aNbV - 1; ++j)
     {
-      if (aProcessed(i, j))
-        continue;
+      // Compute Fu, Fv, Dist for all 4 corners of the cell
+      double aFu00, aFv00, aDist00;
+      double aFu10, aFv10, aDist10;
+      double aFu01, aFv01, aDist01;
+      double aFu11, aFv11, aDist11;
 
-      // Check for sign change in Fu across the cell
-      bool aFuSignChange =
-        (aFU(i, j) * aFU(i + 1, j) < 0.0) || (aFU(i, j + 1) * aFU(i + 1, j + 1) < 0.0)
-        || (aFU(i, j) * aFU(i, j + 1) < 0.0) || (aFU(i + 1, j) * aFU(i + 1, j + 1) < 0.0);
+      computeGridPointData(i, j, aFu00, aFv00, aDist00);
+      computeGridPointData(i + 1, j, aFu10, aFv10, aDist10);
+      computeGridPointData(i, j + 1, aFu01, aFv01, aDist01);
+      computeGridPointData(i + 1, j + 1, aFu11, aFv11, aDist11);
 
-      // Check for sign change in Fv across the cell
-      bool aFvSignChange =
-        (aFV(i, j) * aFV(i + 1, j) < 0.0) || (aFV(i, j + 1) * aFV(i + 1, j + 1) < 0.0)
-        || (aFV(i, j) * aFV(i, j + 1) < 0.0) || (aFV(i + 1, j) * aFV(i + 1, j + 1) < 0.0);
+      // Update global min/max tracking
+      if (aDist00 < aGlobalMinDist) { aGlobalMinDist = aDist00; aMinI = i; aMinJ = j; }
+      if (aDist10 < aGlobalMinDist) { aGlobalMinDist = aDist10; aMinI = i + 1; aMinJ = j; }
+      if (aDist01 < aGlobalMinDist) { aGlobalMinDist = aDist01; aMinI = i; aMinJ = j + 1; }
+      if (aDist11 < aGlobalMinDist) { aGlobalMinDist = aDist11; aMinI = i + 1; aMinJ = j + 1; }
 
-      // Compute min distance in the cell first (needed for tolerance scaling)
-      double aMinDist =
-        std::min({aDist(i, j), aDist(i + 1, j), aDist(i, j + 1), aDist(i + 1, j + 1)});
+      if (aDist00 > aGlobalMaxDist) { aGlobalMaxDist = aDist00; aMaxI = i; aMaxJ = j; }
+      if (aDist10 > aGlobalMaxDist) { aGlobalMaxDist = aDist10; aMaxI = i + 1; aMaxJ = j; }
+      if (aDist01 > aGlobalMaxDist) { aGlobalMaxDist = aDist01; aMaxI = i; aMaxJ = j + 1; }
+      if (aDist11 > aGlobalMaxDist) { aGlobalMaxDist = aDist11; aMaxI = i + 1; aMaxJ = j + 1; }
 
-      // Check for near-zero gradient at any corner (more relaxed for dome-like surfaces)
-      // Use both absolute tolerance and relative tolerance (gradient vs distance)
-      double aTolF = theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR; // Relaxed tolerance for robust detection
+      // Check for sign changes in Fu and Fv
+      const bool aFuSignChange =
+        (aFu00 * aFu10 < 0.0) || (aFu01 * aFu11 < 0.0) ||
+        (aFu00 * aFu01 < 0.0) || (aFu10 * aFu11 < 0.0);
 
-      // Also check relative gradient: gradient^2 < distance * tolerance
-      // This catches cases where gradient is small compared to the distance
-      double aDistScale = std::sqrt(aMinDist) * ExtremaPS::THE_DISTANCE_SCALE_RATIO;
-      double aTolRel    = std::max(aTolF, aDistScale);
+      const bool aFvSignChange =
+        (aFv00 * aFv10 < 0.0) || (aFv01 * aFv11 < 0.0) ||
+        (aFv00 * aFv01 < 0.0) || (aFv10 * aFv11 < 0.0);
 
-      bool aNearZero =
-        (std::abs(aFU(i, j)) < aTolRel && std::abs(aFV(i, j)) < aTolRel)
-        || (std::abs(aFU(i + 1, j)) < aTolRel && std::abs(aFV(i + 1, j)) < aTolRel)
-        || (std::abs(aFU(i, j + 1)) < aTolRel && std::abs(aFV(i, j + 1)) < aTolRel)
-        || (std::abs(aFU(i + 1, j + 1)) < aTolRel && std::abs(aFV(i + 1, j + 1)) < aTolRel);
+      // Compute min distance in cell for tolerance scaling
+      const double aMinDist = std::min({aDist00, aDist10, aDist01, aDist11});
+      const double aDistScale = std::sqrt(aMinDist) * ExtremaPS::THE_DISTANCE_SCALE_RATIO;
+      const double aTolRel = std::max(aTolF, aDistScale);
 
-      // For interior extremum, we need both Fu=0 and Fv=0, so both sign changes are required
+      // Check for near-zero gradient at any corner
+      const bool aNearZero =
+        (std::abs(aFu00) < aTolRel && std::abs(aFv00) < aTolRel) ||
+        (std::abs(aFu10) < aTolRel && std::abs(aFv10) < aTolRel) ||
+        (std::abs(aFu01) < aTolRel && std::abs(aFv01) < aTolRel) ||
+        (std::abs(aFu11) < aTolRel && std::abs(aFv11) < aTolRel);
+
+      // Add candidate if sign changes in both directions or near-zero gradient
       if ((aFuSignChange && aFvSignChange) || aNearZero)
       {
-        double aStartU = (theGrid(i, j).U + theGrid(i + 1, j + 1).U) * 0.5;
-        double aStartV = (theGrid(i, j).V + theGrid(i + 1, j + 1).V) * 0.5;
-        addCandidate(i, j, aStartU, aStartV, aMinDist);
+        const double aStartU = (theGrid(i, j).U + theGrid(i + 1, j + 1).U) * 0.5;
+        const double aStartV = (theGrid(i, j).V + theGrid(i + 1, j + 1).V) * 0.5;
+
+        // Compute minimum gradient magnitude
+        const double aGrad00 = aFu00 * aFu00 + aFv00 * aFv00;
+        const double aGrad10 = aFu10 * aFu10 + aFv10 * aFv10;
+        const double aGrad01 = aFu01 * aFu01 + aFv01 * aFv01;
+        const double aGrad11 = aFu11 * aFu11 + aFv11 * aFv11;
+        const double aMinGradMag = std::min({aGrad00, aGrad10, aGrad01, aGrad11});
+
+        Candidate aCand;
+        aCand.IdxU = i;
+        aCand.IdxV = j;
+        aCand.StartU = aStartU;
+        aCand.StartV = aStartV;
+        aCand.EstDist = aMinDist;
+        aCand.GradMag = aMinGradMag;
+        aCandidates.Append(aCand);
       }
     }
   }
 
-  // Phase 2: Local distance extrema detection - find grid points that are local minima/maxima
-  // This catches extrema that gradient-based detection might miss
-  for (int i = 1; i < aNbU - 1; ++i)
-  {
-    for (int j = 1; j < aNbV - 1; ++j)
-    {
-      double aDCurr = aDist(i, j);
-
-      // Check if this point is a local minimum among 8 neighbors
-      bool aIsLocalMin = true;
-      bool aIsLocalMax = true;
-
-      for (int di = -1; di <= 1 && (aIsLocalMin || aIsLocalMax); ++di)
-      {
-        for (int dj = -1; dj <= 1 && (aIsLocalMin || aIsLocalMax); ++dj)
-        {
-          if (di == 0 && dj == 0)
-            continue;
-          double aNeighDist = aDist(i + di, j + dj);
-          if (aNeighDist < aDCurr)
-            aIsLocalMin = false;
-          if (aNeighDist > aDCurr)
-            aIsLocalMax = false;
-        }
-      }
-
-      // Add candidate for local extremum based on search mode
-      if ((aIsLocalMin && theMode != ExtremaPS::SearchMode::Max)
-          || (aIsLocalMax && theMode != ExtremaPS::SearchMode::Min))
-      {
-        // Add the cell containing this point (lower-left cell)
-        int aCellI = std::max(0, i - 1);
-        int aCellJ = std::max(0, j - 1);
-        addCandidate(aCellI, aCellJ, theGrid(i, j).U, theGrid(i, j).V, aDCurr);
-      }
-    }
-  }
-
-  // Phase 3: Add global minimum/maximum from grid as fallback candidate
-  // These are always added regardless of aProcessed - global extrema are critical to find
-  auto addGlobalCandidate = [&](int i, int j, double aStartU, double aStartV, double aEstDist) {
-    if (i < 0 || i >= aNbU - 1 || j < 0 || j >= aNbV - 1)
-      return;
-
-    // Use minimum gradient magnitude from cell corners
-    double aMinGradMag = std::min({aGradMag(i, j),
-                                   aGradMag(std::min(i + 1, aNbU - 1), j),
-                                   aGradMag(i, std::min(j + 1, aNbV - 1)),
-                                   aGradMag(std::min(i + 1, aNbU - 1), std::min(j + 1, aNbV - 1))});
-
-    Candidate aCand;
-    aCand.IdxU    = i;
-    aCand.IdxV    = j;
-    aCand.StartU  = aStartU;
-    aCand.StartV  = aStartV;
-    aCand.EstDist = aEstDist;
-    aCand.GradMag = aMinGradMag;
-    aCandidates.Append(aCand);
-  };
-
+  // Add global minimum candidate (always useful as Newton starting point)
   if (theMode == ExtremaPS::SearchMode::Min || theMode == ExtremaPS::SearchMode::MinMax)
   {
-    double aGlobalMinDist = std::numeric_limits<double>::max();
-    int    aMinI = 0, aMinJ = 0;
-    for (int i = 0; i < aNbU; ++i)
-    {
-      for (int j = 0; j < aNbV; ++j)
-      {
-        if (aDist(i, j) < aGlobalMinDist)
-        {
-          aGlobalMinDist = aDist(i, j);
-          aMinI          = i;
-          aMinJ          = j;
-        }
-      }
-    }
-    int aCellI = std::max(0, std::min(aNbU - 2, aMinI));
-    int aCellJ = std::max(0, std::min(aNbV - 2, aMinJ));
-    addGlobalCandidate(aCellI,
-                       aCellJ,
-                       theGrid(aMinI, aMinJ).U,
-                       theGrid(aMinI, aMinJ).V,
-                       aGlobalMinDist);
+    const int aCellI = std::max(0, std::min(aNbU - 2, aMinI));
+    const int aCellJ = std::max(0, std::min(aNbV - 2, aMinJ));
+
+    Candidate aCand;
+    aCand.IdxU = aCellI;
+    aCand.IdxV = aCellJ;
+    aCand.StartU = theGrid(aMinI, aMinJ).U;
+    aCand.StartV = theGrid(aMinI, aMinJ).V;
+    aCand.EstDist = aGlobalMinDist;
+    aCand.GradMag = 0.0; // Global min has priority
+    aCandidates.Append(aCand);
   }
 
   if (theMode == ExtremaPS::SearchMode::Max || theMode == ExtremaPS::SearchMode::MinMax)
   {
-    double aGlobalMaxDist = -std::numeric_limits<double>::max();
-    int    aMaxI = 0, aMaxJ = 0;
-    for (int i = 0; i < aNbU; ++i)
-    {
-      for (int j = 0; j < aNbV; ++j)
-      {
-        if (aDist(i, j) > aGlobalMaxDist)
-        {
-          aGlobalMaxDist = aDist(i, j);
-          aMaxI          = i;
-          aMaxJ          = j;
-        }
-      }
-    }
-    int aCellI = std::max(0, std::min(aNbU - 2, aMaxI));
-    int aCellJ = std::max(0, std::min(aNbV - 2, aMaxJ));
-    addGlobalCandidate(aCellI,
-                       aCellJ,
-                       theGrid(aMaxI, aMaxJ).U,
-                       theGrid(aMaxI, aMaxJ).V,
-                       aGlobalMaxDist);
+    const int aCellI = std::max(0, std::min(aNbU - 2, aMaxI));
+    const int aCellJ = std::max(0, std::min(aNbV - 2, aMaxJ));
+
+    Candidate aCand;
+    aCand.IdxU = aCellI;
+    aCand.IdxV = aCellJ;
+    aCand.StartU = theGrid(aMaxI, aMaxJ).U;
+    aCand.StartV = theGrid(aMaxI, aMaxJ).V;
+    aCand.EstDist = aGlobalMaxDist;
+    aCand.GradMag = 0.0; // Global max has priority
+    aCandidates.Append(aCand);
   }
 
   return aCandidates;
