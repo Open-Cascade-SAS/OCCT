@@ -29,8 +29,14 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 const double THE_TOL = 1.0e-6;
-const int NUM_POINTS = 10000;
-const int NUM_ITERATIONS = 20;  // Reduced for complex BSpline
+
+// Larger values for analytical surfaces (very fast)
+const int NUM_POINTS_ANALYTICAL = 100000;
+const int NUM_ITERATIONS_ANALYTICAL = 100;
+
+// Smaller values for numerical surfaces (slower)
+const int NUM_POINTS_NUMERICAL = 10000;
+const int NUM_ITERATIONS_NUMERICAL = 20;
 
 std::vector<gp_Pnt> GenerateTestPoints(int count, double range) {
     std::vector<gp_Pnt> points;
@@ -46,9 +52,10 @@ std::vector<gp_Pnt> GenerateTestPoints(int count, double range) {
 }
 
 void RunPerfTest(const char* name, const Handle(Geom_Surface)& surf,
-                 double uMin, double uMax, double vMin, double vMax) {
+                 double uMin, double uMax, double vMin, double vMax,
+                 int numPoints, int numIterations) {
     GeomAdaptor_Surface adaptor(surf);
-    auto points = GenerateTestPoints(NUM_POINTS, 20.0);
+    auto points = GenerateTestPoints(numPoints, 20.0);
 
     const ExtremaPS::Domain2D aDomain(uMin, uMax, vMin, vMax);
 
@@ -65,25 +72,25 @@ void RunPerfTest(const char* name, const Handle(Geom_Surface)& surf,
     Extrema_ExtPS oldExt;
     oldExt.Initialize(adaptor, uMin, uMax, vMin, vMax, THE_TOL, THE_TOL);
     auto oldStart = std::chrono::high_resolution_clock::now();
-    for (int iter = 0; iter < NUM_ITERATIONS; ++iter) {
+    for (int iter = 0; iter < numIterations; ++iter) {
         for (const auto& p : points) {
             oldExt.Perform(p);
         }
     }
     auto oldEnd = std::chrono::high_resolution_clock::now();
-    double oldTime = std::chrono::duration<double, std::milli>(oldEnd - oldStart).count() / NUM_ITERATIONS;
+    double oldTime = std::chrono::duration<double, std::milli>(oldEnd - oldStart).count() / numIterations;
 
     // New implementation - use Perform (interior only, no boundary) to match old behavior
     // Grid is built eagerly at construction time, so no warm-up needed
     ExtremaPS_Surface newExt(adaptor, aDomain);
     auto newStart = std::chrono::high_resolution_clock::now();
-    for (int iter = 0; iter < NUM_ITERATIONS; ++iter) {
+    for (int iter = 0; iter < numIterations; ++iter) {
         for (const auto& p : points) {
             newExt.Perform(p, THE_TOL);
         }
     }
     auto newEnd = std::chrono::high_resolution_clock::now();
-    double newTime = std::chrono::duration<double, std::milli>(newEnd - newStart).count() / NUM_ITERATIONS;
+    double newTime = std::chrono::duration<double, std::milli>(newEnd - newStart).count() / numIterations;
 
     double speedup = oldTime / newTime;
     std::cout << std::setw(20) << name << ": "
@@ -148,56 +155,67 @@ Handle(Geom_BezierSurface) MakeDomeBezier() {
 
 TEST(ExtremaPS_Performance, AllSurfaces) {
     std::cout << "\n=== ExtremaPS Performance Comparison ===" << std::endl;
-    std::cout << "Testing " << NUM_POINTS << " points, " << NUM_ITERATIONS << " iterations each" << std::endl;
+
     std::cout << "\n--- Analytical Surfaces ---" << std::endl;
-    
+    std::cout << "Testing " << NUM_POINTS_ANALYTICAL << " points, "
+              << NUM_ITERATIONS_ANALYTICAL << " iterations each" << std::endl;
+
     // Plane
     {
         Handle(Geom_Plane) surf = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1))));
-        RunPerfTest("Plane", surf, -100, 100, -100, 100);
+        RunPerfTest("Plane", surf, -100, 100, -100, 100,
+                    NUM_POINTS_ANALYTICAL, NUM_ITERATIONS_ANALYTICAL);
     }
-    
+
     // Cylinder
     {
         gp_Cylinder cyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
         Handle(Geom_CylindricalSurface) surf = new Geom_CylindricalSurface(cyl);
-        RunPerfTest("Cylinder", surf, 0, 2*M_PI, -10, 10);
+        RunPerfTest("Cylinder", surf, 0, 2*M_PI, -10, 10,
+                    NUM_POINTS_ANALYTICAL, NUM_ITERATIONS_ANALYTICAL);
     }
-    
+
     // Sphere
     {
         gp_Sphere sph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
         Handle(Geom_SphericalSurface) surf = new Geom_SphericalSurface(sph);
-        RunPerfTest("Sphere", surf, 0, 2*M_PI, -M_PI/2, M_PI/2);
+        RunPerfTest("Sphere", surf, 0, 2*M_PI, -M_PI/2, M_PI/2,
+                    NUM_POINTS_ANALYTICAL, NUM_ITERATIONS_ANALYTICAL);
     }
-    
+
     // Cone
     {
         gp_Cone cone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI/6, 5.0);
         Handle(Geom_ConicalSurface) surf = new Geom_ConicalSurface(cone);
-        RunPerfTest("Cone", surf, 0, 2*M_PI, -5, 20);
+        RunPerfTest("Cone", surf, 0, 2*M_PI, -5, 20,
+                    NUM_POINTS_ANALYTICAL, NUM_ITERATIONS_ANALYTICAL);
     }
-    
+
     // Torus
     {
         gp_Torus tor(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 3.0);
         Handle(Geom_ToroidalSurface) surf = new Geom_ToroidalSurface(tor);
-        RunPerfTest("Torus", surf, 0, 2*M_PI, 0, 2*M_PI);
+        RunPerfTest("Torus", surf, 0, 2*M_PI, 0, 2*M_PI,
+                    NUM_POINTS_ANALYTICAL, NUM_ITERATIONS_ANALYTICAL);
     }
-    
+
     std::cout << "\n--- Numerical Surfaces ---" << std::endl;
-    
+    std::cout << "Testing " << NUM_POINTS_NUMERICAL << " points, "
+              << NUM_ITERATIONS_NUMERICAL << " iterations each" << std::endl;
+
     // BSpline
     {
         Handle(Geom_BSplineSurface) surf = MakeDomeBSpline();
-        RunPerfTest("BSpline (dome)", surf, 0, 1, 0, 1);
+        RunPerfTest("BSpline (dome)", surf, 0, 1, 0, 1,
+                    NUM_POINTS_NUMERICAL, NUM_ITERATIONS_NUMERICAL);
     }
-    
+
     // Bezier
     {
         Handle(Geom_BezierSurface) surf = MakeDomeBezier();
-        RunPerfTest("Bezier (dome)", surf, 0, 1, 0, 1);
+        RunPerfTest("Bezier (dome)", surf, 0, 1, 0, 1,
+                    NUM_POINTS_NUMERICAL, NUM_ITERATIONS_NUMERICAL);
     }
-    
+
     std::cout << "\n=== Done ===" << std::endl;
 }
