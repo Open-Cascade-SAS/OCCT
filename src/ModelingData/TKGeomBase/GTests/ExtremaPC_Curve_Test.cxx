@@ -187,7 +187,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Line)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_Line);
 
   gp_Pnt aPoint(5.0, 3.0, 4.0);
   const ExtremaPC::Result& aResult = anExtPC.PerformWithEndpoints(aPoint, THE_TOL);
@@ -208,7 +207,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Circle)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_Circle);
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
   const ExtremaPC::Result& aResult = anExtPC.Perform(aPoint, THE_TOL);
@@ -243,7 +241,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_BSpline)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_BSplineCurve);
 
   // Point near the curve
   gp_Pnt aPoint(1.5, 3.0, 0.0);
@@ -262,7 +259,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Ellipse)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_Ellipse);
 
   // Point on major axis
   gp_Pnt aPoint(30.0, 0.0, 0.0);
@@ -285,7 +281,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Parabola)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_Parabola);
 
   // Point on X axis at focus
   gp_Pnt aPoint(2.0, 0.0, 0.0);
@@ -310,7 +305,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Hyperbola)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_Hyperbola);
 
   // Point near the vertex
   gp_Pnt aPoint(10.0, 5.0, 0.0);
@@ -342,7 +336,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_Bezier)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_BezierCurve);
 
   // Point above the curve's peak
   gp_Pnt aPoint(2.0, 5.0, 0.0);
@@ -370,7 +363,6 @@ TEST_F(ExtremaPC_CurveTest, Aggregator_OffsetCurve)
 
   ExtremaPC_Curve anExtPC(anAdaptor);
   EXPECT_TRUE(anExtPC.IsInitialized());
-  EXPECT_EQ(anExtPC.GetType(), GeomAbs_OffsetCurve);
 
   // Point outside the offset circle
   gp_Pnt aPoint(25.0, 0.0, 0.0);

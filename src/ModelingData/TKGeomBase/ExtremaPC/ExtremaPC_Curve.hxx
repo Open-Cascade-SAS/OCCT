@@ -26,7 +26,6 @@
 #include <ExtremaPC_OtherCurve.hxx>
 #include <ExtremaPC_Parabola.hxx>
 #include <Geom_Curve.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -140,9 +139,6 @@ public:
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return !std::holds_alternative<std::monostate>(myEvaluator); }
 
-  //! Returns the curve type.
-  GeomAbs_CurveType GetType() const { return myCurveType; }
-
 private:
   //! Helper method to initialize evaluator from a Geom_Curve.
   //! Handles all curve type detection and evaluator creation.
@@ -152,7 +148,6 @@ private:
                          const std::optional<ExtremaPC::Domain1D>& theDomain);
 
   EvaluatorVariant          myEvaluator; //!< Specialized evaluator
-  GeomAbs_CurveType         myCurveType; //!< Curve type
   Handle(GeomAdaptor_Curve) myAdaptor;   //!< Stored adaptor for Geom-based construction
 };
 

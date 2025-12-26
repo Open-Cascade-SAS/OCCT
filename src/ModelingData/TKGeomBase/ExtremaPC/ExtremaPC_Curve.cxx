@@ -38,12 +38,12 @@ static ExtremaPC::Result THE_NOT_DONE_RESULT = [] {
 //==================================================================================================
 
 ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
-    : myEvaluator(std::monostate{}),
-      myCurveType(theCurve.GetType())
+    : myEvaluator(std::monostate{})
 {
-  ExtremaPC::Domain1D aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
+  ExtremaPC::Domain1D      aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
+  const GeomAbs_CurveType aCurveType = theCurve.GetType();
 
-  switch (myCurveType)
+  switch (aCurveType)
   {
     case GeomAbs_Line:
       myEvaluator = ExtremaPC_Line(theCurve.Line(), aDomain);
@@ -86,12 +86,12 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
 //==================================================================================================
 
 ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax)
-    : myEvaluator(std::monostate{}),
-      myCurveType(theCurve.GetType())
+    : myEvaluator(std::monostate{})
 {
-  ExtremaPC::Domain1D aDomain(theUMin, theUMax);
+  ExtremaPC::Domain1D      aDomain(theUMin, theUMax);
+  const GeomAbs_CurveType aCurveType = theCurve.GetType();
 
-  switch (myCurveType)
+  switch (aCurveType)
   {
     case GeomAbs_Line:
       myEvaluator = ExtremaPC_Line(theCurve.Line(), aDomain);
@@ -140,7 +140,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast(theCurve);
   if (!aLine.IsNull())
   {
-    myCurveType = GeomAbs_Line;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_Line(aLine->Lin(), theDomain.value());
@@ -155,7 +154,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(theCurve);
   if (!aCircle.IsNull())
   {
-    myCurveType = GeomAbs_Circle;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_Circle(aCircle->Circ(), theDomain.value());
@@ -170,7 +168,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast(theCurve);
   if (!anEllipse.IsNull())
   {
-    myCurveType = GeomAbs_Ellipse;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_Ellipse(anEllipse->Elips(), theDomain.value());
@@ -185,7 +182,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_Hyperbola) aHyperbola = Handle(Geom_Hyperbola)::DownCast(theCurve);
   if (!aHyperbola.IsNull())
   {
-    myCurveType = GeomAbs_Hyperbola;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_Hyperbola(aHyperbola->Hypr(), theDomain.value());
@@ -200,7 +196,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_Parabola) aParabola = Handle(Geom_Parabola)::DownCast(theCurve);
   if (!aParabola.IsNull())
   {
-    myCurveType = GeomAbs_Parabola;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_Parabola(aParabola->Parab(), theDomain.value());
@@ -215,7 +210,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_BezierCurve) aBezier = Handle(Geom_BezierCurve)::DownCast(theCurve);
   if (!aBezier.IsNull())
   {
-    myCurveType = GeomAbs_BezierCurve;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_BezierCurve(aBezier, theDomain.value());
@@ -230,7 +224,6 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
   if (!aBSpline.IsNull())
   {
-    myCurveType = GeomAbs_BSplineCurve;
     if (theDomain.has_value())
     {
       myEvaluator = ExtremaPC_BSplineCurve(aBSpline, theDomain.value());
@@ -252,9 +245,9 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
   {
     myAdaptor = new GeomAdaptor_Curve(theCurve);
   }
-  myCurveType = myAdaptor->GetType();
+  const GeomAbs_CurveType aCurveType = myAdaptor->GetType();
 
-  if (myCurveType == GeomAbs_OffsetCurve)
+  if (aCurveType == GeomAbs_OffsetCurve)
   {
     if (theDomain.has_value())
     {
@@ -281,8 +274,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
 //==================================================================================================
 
 ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve)
-    : myEvaluator(std::monostate{}),
-      myCurveType(GeomAbs_OtherCurve)
+    : myEvaluator(std::monostate{})
 {
   if (theCurve.IsNull())
   {
@@ -305,8 +297,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve)
 //==================================================================================================
 
 ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theUMin, double theUMax)
-    : myEvaluator(std::monostate{}),
-      myCurveType(GeomAbs_OtherCurve)
+    : myEvaluator(std::monostate{})
 {
   if (theCurve.IsNull())
   {
