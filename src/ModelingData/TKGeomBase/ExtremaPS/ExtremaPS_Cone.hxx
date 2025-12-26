@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Cone extrema computation.
 //!
@@ -47,12 +48,11 @@ class ExtremaPS_Cone
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with cone geometry (uses natural cone domain).
+  //! Constructor with cone geometry (uses natural unbounded domain).
   //! @param[in] theCone the cone to compute extrema for
   explicit ExtremaPS_Cone(const gp_Cone& theCone)
       : myCone(theCone),
-        myDomain{0.0, ExtremaPS::THE_TWO_PI,
-                 -Precision::Infinite(), Precision::Infinite()}
+        myDomain(std::nullopt)
   {
     initCache();
   }
@@ -62,9 +62,17 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Cone(const gp_Cone& theCone, const ExtremaPS::Domain2D& theDomain)
       : myCone(theCone),
-        myDomain(theDomain)
+        myDomain(isNaturalDomain(theDomain) ? std::nullopt
+                                            : std::optional<ExtremaPS::Domain2D>(theDomain))
   {
     initCache();
+  }
+
+private:
+  //! Check if domain is natural (full U period and infinite V).
+  static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
+  {
+    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) && !theDomain.V().IsFinite();
   }
 
 private:
@@ -139,8 +147,8 @@ public:
                             double                theTol,
                             ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
+    constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
     // Vector from location to point
     const double aDx = theP.X() - myLocX;
@@ -175,7 +183,16 @@ public:
         return aResult;
       }
 
-      // On axis but not at apex
+      // Natural domain: all V values are valid, apex is always accessible
+      if (!myDomain.has_value())
+      {
+        aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+        aResult.InfiniteSquareDistance = aDistToApexSq;
+        return aResult;
+      }
+
+      // On axis but not at apex - bounded domain
+      const ExtremaPS::Domain2D& theDomain = *myDomain;
       double aClosestV = theDomain.V().Clamp(aZ);
       double aRadiusAtV = myRefRadius + aClosestV * myTanAngle;
 
@@ -193,7 +210,6 @@ public:
     }
 
     // Compute U from radial direction
-    constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
     const double aInvRho = 1.0 / aRho;
     const double aRadNormX = aRadX * aInvRho;
     const double aRadNormY = aRadY * aInvRho;
@@ -216,6 +232,46 @@ public:
     // For maximum, project onto opposite generator
     const double aGenDistMax = aLocalZ * myCosAngle - aRho * mySinAngle;
     const double aClosestVMax = myApexV + aGenDistMax * myCosAngle;
+
+    // FAST PATH: Natural domain (full U, infinite V) - most common case
+    if (!myDomain.has_value())
+    {
+      // Minimum: point on nearest generator
+      if (theMode != ExtremaPS::SearchMode::Max)
+      {
+        const gp_Pnt aSurfPt = Value(aU, aClosestV);
+        const double aSqDist = theP.SquareDistance(aSurfPt);
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aU;
+        anExt.V              = aClosestV;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aSqDist;
+        anExt.IsMinimum      = true;
+        aResult.Extrema.Append(anExt);
+      }
+
+      // Maximum: point on opposite generator
+      if (theMode != ExtremaPS::SearchMode::Min)
+      {
+        const gp_Pnt aSurfPt = Value(aUOpp, aClosestVMax);
+        const double aSqDist = theP.SquareDistance(aSurfPt);
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aUOpp;
+        anExt.V              = aClosestVMax;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aSqDist;
+        anExt.IsMinimum      = false;
+        aResult.Extrema.Append(anExt);
+      }
+
+      aResult.Status = ExtremaPS::Status::OK;
+      return aResult;
+    }
+
+    // BOUNDED PATH: Handle bounded domain
+    const ExtremaPS::Domain2D& theDomain = *myDomain;
 
     // Check if U domain is full circle
     const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
@@ -297,25 +353,17 @@ public:
                                         double                theTol,
                                         ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
     ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
-    // If infinite solutions, return immediately
-    if (aResult.IsInfinite())
+    // If infinite solutions or natural domain (no boundaries), return immediately
+    if (aResult.IsInfinite() || !myDomain.has_value())
     {
       return aResult;
     }
 
-    // Check if boundary extrema are needed
-    constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
-    const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
-
-    // Add boundary if U is bounded
-    if (!aIsFullU)
-    {
-      ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, *this, theTol, theMode);
-    }
+    // Bounded domain - add boundary extrema
+    ExtremaPS::AddBoundaryExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
 
     // Update status
     if (aResult.Extrema.IsEmpty())
@@ -335,12 +383,15 @@ public:
   //! Returns the cone geometry.
   const gp_Cone& Cone() const { return myCone; }
 
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+  //! Returns true if domain is bounded (not natural domain).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the parameter domain (only valid if IsBounded() is true).
+  const ExtremaPS::Domain2D& Domain() const { return *myDomain; }
 
 private:
-  gp_Cone             myCone;    //!< Cone geometry
-  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
+  gp_Cone                            myCone;   //!< Cone geometry
+  std::optional<ExtremaPS::Domain2D> myDomain; //!< Parameter domain (nullopt for natural)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;        //!< Cone axis location

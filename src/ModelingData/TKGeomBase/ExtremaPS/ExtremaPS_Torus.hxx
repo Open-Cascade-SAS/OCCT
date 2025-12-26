@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Torus extrema computation.
 //!
@@ -53,7 +54,7 @@ public:
   //! @param[in] theTorus the torus to compute extrema for
   explicit ExtremaPS_Torus(const gp_Torus& theTorus)
       : myTorus(theTorus),
-        myDomain{0.0, ExtremaPS::THE_TWO_PI, 0.0, ExtremaPS::THE_TWO_PI}
+        myDomain(std::nullopt)
   {
     initCache();
   }
@@ -63,9 +64,18 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Torus(const gp_Torus& theTorus, const ExtremaPS::Domain2D& theDomain)
       : myTorus(theTorus),
-        myDomain(theDomain)
+        myDomain(isNaturalDomain(theDomain) ? std::nullopt
+                                            : std::optional<ExtremaPS::Domain2D>(theDomain))
   {
     initCache();
+  }
+
+private:
+  //! Check if domain is natural (full torus).
+  static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
+  {
+    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) &&
+           theDomain.IsVFullPeriod(ExtremaPS::THE_TWO_PI);
   }
 
 private:
@@ -140,7 +150,6 @@ public:
                             double                theTol,
                             ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
@@ -224,12 +233,8 @@ public:
     double aVOpp = aV + M_PI;
     if (aVOpp >= aTwoPi) aVOpp -= aTwoPi;
 
-    // Check if domains are full circles
-    const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
-    const bool aIsFullV = theDomain.IsVFullPeriod(aTwoPi, theTol);
-
-    // FAST PATH: Full U and V domains - compute extrema directly without sin/cos
-    if (aIsFullU && aIsFullV)
+    // FAST PATH: Natural domain (full torus) - compute extrema directly without bounds checking
+    if (!myDomain.has_value())
     {
       if (theMode != ExtremaPS::SearchMode::Max)
       {
@@ -327,7 +332,11 @@ public:
       return aResult;
     }
 
-    // GENERAL PATH: Bounded domains
+    // GENERAL PATH: Bounded domains - myDomain is guaranteed to have value here
+    const ExtremaPS::Domain2D& aDomain = *myDomain;
+    const bool aIsFullU = aDomain.IsUFullPeriod(aTwoPi, theTol);
+    const bool aIsFullV = aDomain.IsVFullPeriod(aTwoPi, theTol);
+
     auto checkInRange = [&](double aTestU, double aRangeMin, double aRangeMax, bool aIsFull) -> bool {
       if (aIsFull) return true;
       while (aTestU < aRangeMin) aTestU += aTwoPi;
@@ -336,23 +345,23 @@ public:
     };
 
     auto addExtremum = [&](double aExtU, double aExtV, bool aIsMin) {
-      if (!checkInRange(aExtU, theDomain.UMin, theDomain.UMax, aIsFullU) ||
-          !checkInRange(aExtV, theDomain.VMin, theDomain.VMax, aIsFullV))
+      if (!checkInRange(aExtU, aDomain.UMin, aDomain.UMax, aIsFullU) ||
+          !checkInRange(aExtV, aDomain.VMin, aDomain.VMax, aIsFullV))
         return;
 
       double aClampedU = aExtU;
       double aClampedV = aExtV;
       if (!aIsFullU)
       {
-        while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-        while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
-        aClampedU = theDomain.U().Clamp(aClampedU);
+        while (aClampedU < aDomain.UMin) aClampedU += aTwoPi;
+        while (aClampedU > aDomain.UMax) aClampedU -= aTwoPi;
+        aClampedU = aDomain.U().Clamp(aClampedU);
       }
       if (!aIsFullV)
       {
-        while (aClampedV < theDomain.VMin) aClampedV += aTwoPi;
-        while (aClampedV > theDomain.VMax) aClampedV -= aTwoPi;
-        aClampedV = theDomain.V().Clamp(aClampedV);
+        while (aClampedV < aDomain.VMin) aClampedV += aTwoPi;
+        while (aClampedV > aDomain.VMax) aClampedV -= aTwoPi;
+        aClampedV = aDomain.V().Clamp(aClampedV);
       }
 
       const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
@@ -404,7 +413,6 @@ public:
                                         double                theTol,
                                         ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
     ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
@@ -414,15 +422,22 @@ public:
       return aResult;
     }
 
+    // Natural domain (full torus) - no boundary extrema needed
+    if (!myDomain.has_value())
+    {
+      return aResult;
+    }
+
     // Check if boundary extrema are needed
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
-    const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
-    const bool aIsFullV = theDomain.IsVFullPeriod(aTwoPi, theTol);
+    const ExtremaPS::Domain2D& aDomain = *myDomain;
+    const bool aIsFullU = aDomain.IsUFullPeriod(aTwoPi, theTol);
+    const bool aIsFullV = aDomain.IsVFullPeriod(aTwoPi, theTol);
 
     // Add boundary if not full domain
     if (!aIsFullU || !aIsFullV)
     {
-      ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPS::AddBoundaryExtrema(aResult, theP, aDomain, *this, theTol, theMode);
     }
 
     // Update status
@@ -443,12 +458,15 @@ public:
   //! Returns the torus geometry.
   const gp_Torus& Torus() const { return myTorus; }
 
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+  //! Returns true if domain is bounded (not natural full torus).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the parameter domain (only valid if IsBounded() is true).
+  const ExtremaPS::Domain2D& Domain() const { return *myDomain; }
 
 private:
-  gp_Torus            myTorus;   //!< Torus geometry
-  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
+  gp_Torus                           myTorus;   //!< Torus geometry
+  std::optional<ExtremaPS::Domain2D> myDomain;  //!< Parameter domain (nullopt for full torus)
 
   // Cached components for fast computation
   double myCenterX, myCenterY, myCenterZ;  //!< Torus center

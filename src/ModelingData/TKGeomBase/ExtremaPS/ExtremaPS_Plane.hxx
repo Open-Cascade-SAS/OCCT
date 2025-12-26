@@ -20,6 +20,8 @@
 #include <gp_Pnt.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
+
 //! @brief Point-Plane extrema computation.
 //!
 //! Computes the extrema between a 3D point and a plane.
@@ -47,12 +49,11 @@ class ExtremaPS_Plane
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with plane geometry (uses infinite domain).
+  //! Constructor with plane geometry (unbounded domain).
   //! @param[in] thePlane the plane to compute extrema for
   explicit ExtremaPS_Plane(const gp_Pln& thePlane)
       : myPlane(thePlane),
-        myDomain{-Precision::Infinite(), Precision::Infinite(),
-                 -Precision::Infinite(), Precision::Infinite()}
+        myDomain(std::nullopt)
   {
     initCache();
   }
@@ -62,7 +63,7 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Plane(const gp_Pln& thePlane, const ExtremaPS::Domain2D& theDomain)
       : myPlane(thePlane),
-        myDomain(theDomain)
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPS::Domain2D>(theDomain) : std::nullopt)
   {
     initCache();
   }
@@ -92,9 +93,6 @@ private:
     myYDirX = aYDir.X();
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
-
-    // Cache whether domain is infinite for fast path check
-    myIsInfinite = !myDomain.IsFinite();
   }
 
 public:
@@ -149,8 +147,8 @@ public:
     const double aU = aDx * myXDirX + aDy * myXDirY + aDz * myXDirZ;
     const double aV = aDx * myYDirX + aDy * myYDirY + aDz * myYDirZ;
 
-    // Fast path: infinite domain - most common case, skip all bounds checks
-    if (myIsInfinite)
+    // Fast path: unbounded domain - most common case, skip all bounds checks
+    if (!myDomain.has_value())
     {
       ExtremaPS::Result aResult;
       aResult.Status = ExtremaPS::Status::OK;
@@ -166,10 +164,10 @@ public:
     }
 
     // Bounded domain - inline bounds check for speed
-    const double aUMin = myDomain.UMin - theTol;
-    const double aUMax = myDomain.UMax + theTol;
-    const double aVMin = myDomain.VMin - theTol;
-    const double aVMax = myDomain.VMax + theTol;
+    const double aUMin = myDomain->UMin - theTol;
+    const double aUMax = myDomain->UMax + theTol;
+    const double aVMin = myDomain->VMin - theTol;
+    const double aVMax = myDomain->VMax + theTol;
 
     if (aU < aUMin || aU > aUMax || aV < aVMin || aV > aVMax)
     {
@@ -177,8 +175,8 @@ public:
     }
 
     // Inline clamp for speed
-    const double aClampedU = (aU < myDomain.UMin) ? myDomain.UMin : ((aU > myDomain.UMax) ? myDomain.UMax : aU);
-    const double aClampedV = (aV < myDomain.VMin) ? myDomain.VMin : ((aV > myDomain.VMax) ? myDomain.VMax : aV);
+    const double aClampedU = (aU < myDomain->UMin) ? myDomain->UMin : ((aU > myDomain->UMax) ? myDomain->UMax : aU);
+    const double aClampedV = (aV < myDomain->VMin) ? myDomain->VMin : ((aV > myDomain->VMax) ? myDomain->VMax : aV);
 
     ExtremaPS::Result aResult;
     aResult.Status = ExtremaPS::Status::OK;
@@ -221,9 +219,9 @@ public:
 
     // Add boundary extrema (corners only for plane)
     // For planes, edge extrema don't add value - distance varies linearly
-    if (theMode != ExtremaPS::SearchMode::Min && myDomain.IsFinite())
+    if (theMode != ExtremaPS::SearchMode::Min && myDomain.has_value())
     {
-      addCornerExtrema(aResult, theP, myDomain);
+      addCornerExtrema(aResult, theP, *myDomain);
     }
 
     // Update status if we found any extrema
@@ -244,8 +242,11 @@ public:
   //! Returns the plane geometry.
   const gp_Pln& Plane() const { return myPlane; }
 
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+  //! Returns true if domain is bounded.
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the parameter domain (only valid if IsBounded() is true).
+  const ExtremaPS::Domain2D& Domain() const { return *myDomain; }
 
 private:
   //! Add corner extrema (maximum candidates).
@@ -295,15 +296,14 @@ private:
   }
 
 private:
-  gp_Pln              myPlane;   //!< Plane geometry
-  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
+  gp_Pln                               myPlane;  //!< Plane geometry
+  std::optional<ExtremaPS::Domain2D>   myDomain; //!< Parameter domain (nullopt for unbounded)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;     //!< Plane location
   double myNormX, myNormY, myNormZ;  //!< Plane normal
   double myXDirX, myXDirY, myXDirZ;  //!< Plane X direction
   double myYDirX, myYDirY, myYDirZ;  //!< Plane Y direction
-  bool   myIsInfinite;               //!< Whether domain is infinite (fast path)
 };
 
 #endif // _ExtremaPS_Plane_HeaderFile

@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Cylinder extrema computation.
 //!
@@ -49,12 +50,11 @@ class ExtremaPS_Cylinder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with cylinder geometry (uses natural cylinder domain).
+  //! Constructor with cylinder geometry (uses natural unbounded domain).
   //! @param[in] theCylinder the cylinder to compute extrema for
   explicit ExtremaPS_Cylinder(const gp_Cylinder& theCylinder)
       : myCylinder(theCylinder),
-        myDomain{0.0, ExtremaPS::THE_TWO_PI,
-                 -Precision::Infinite(), Precision::Infinite()}
+        myDomain(std::nullopt)
   {
     initCache();
   }
@@ -64,9 +64,17 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Cylinder(const gp_Cylinder& theCylinder, const ExtremaPS::Domain2D& theDomain)
       : myCylinder(theCylinder),
-        myDomain(theDomain)
+        myDomain(isNaturalDomain(theDomain) ? std::nullopt
+                                            : std::optional<ExtremaPS::Domain2D>(theDomain))
   {
     initCache();
+  }
+
+private:
+  //! Check if domain is natural (full U period and infinite V).
+  static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
+  {
+    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) && !theDomain.V().IsFinite();
   }
 
 private:
@@ -128,7 +136,6 @@ public:
                             double                theTol,
                             ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
@@ -168,14 +175,70 @@ public:
     double aU = std::atan2(aSinU, aCosU);
     if (aU < 0.0) aU += aTwoPi;
 
-    // Check if U domain is full circle (common case)
+    // FAST PATH: Natural domain (full U, infinite V) - most common case
+    if (!myDomain.has_value())
+    {
+      // Precompute axis offset for V (no clamping needed - infinite domain)
+      const double aAxisOffX = myLocX + aV * myAxisX;
+      const double aAxisOffY = myLocY + aV * myAxisY;
+      const double aAxisOffZ = myLocZ + aV * myAxisZ;
+
+      // Precompute R * normalized radial direction
+      const double aRadCompX = myRadius * aRadNormX;
+      const double aRadCompY = myRadius * aRadNormY;
+      const double aRadCompZ = myRadius * aRadNormZ;
+
+      // Minimum extremum (closest point): AxisPoint + R * radialDir
+      if (theMode != ExtremaPS::SearchMode::Max)
+      {
+        const gp_Pnt aSurfPt(aAxisOffX + aRadCompX,
+                             aAxisOffY + aRadCompY,
+                             aAxisOffZ + aRadCompZ);
+        const double aDistMinSq = (aRadialDist - myRadius) * (aRadialDist - myRadius);
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aU;
+        anExt.V              = aV;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aDistMinSq;
+        anExt.IsMinimum      = true;
+        aResult.Extrema.Append(anExt);
+      }
+
+      // Maximum extremum (antipodal point): AxisPoint - R * radialDir
+      if (theMode != ExtremaPS::SearchMode::Min)
+      {
+        const gp_Pnt aSurfPt(aAxisOffX - aRadCompX,
+                             aAxisOffY - aRadCompY,
+                             aAxisOffZ - aRadCompZ);
+        const double aDistMaxSq = (aRadialDist + myRadius) * (aRadialDist + myRadius);
+
+        double aUOpp = aU + M_PI;
+        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aUOpp;
+        anExt.V              = aV;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aDistMaxSq;
+        anExt.IsMinimum      = false;
+        aResult.Extrema.Append(anExt);
+      }
+
+      aResult.Status = ExtremaPS::Status::OK;
+      return aResult;
+    }
+
+    // BOUNDED PATH: Handle bounded domain
+    const ExtremaPS::Domain2D& theDomain = *myDomain;
+
+    // Check if U domain is full circle
     const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
 
     // Check V range
     const bool aVInRange = theDomain.V().Contains(aV, theTol);
 
-    // FAST PATH: Full U domain - most common case
-    // Avoid sin/cos by using the already-computed radial direction
+    // Full U domain with bounded V
     if (aIsFullU)
     {
       const double aClampedV = theDomain.V().Clamp(aV);
@@ -306,15 +369,16 @@ public:
                                         double                theTol,
                                         ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
     ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
-    // If infinite solutions, return immediately
-    if (aResult.IsInfinite())
+    // If infinite solutions or natural domain (no boundaries), return immediately
+    if (aResult.IsInfinite() || !myDomain.has_value())
     {
       return aResult;
     }
+
+    const ExtremaPS::Domain2D& theDomain = *myDomain;
 
     // Check if boundary extrema are needed
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
@@ -351,12 +415,15 @@ public:
   //! Returns the cylinder geometry.
   const gp_Cylinder& Cylinder() const { return myCylinder; }
 
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+  //! Returns true if domain is bounded (not natural domain).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the parameter domain (only valid if IsBounded() is true).
+  const ExtremaPS::Domain2D& Domain() const { return *myDomain; }
 
 private:
-  gp_Cylinder         myCylinder;  //!< Cylinder geometry
-  ExtremaPS::Domain2D myDomain;    //!< Parameter domain (fixed at construction)
+  gp_Cylinder                        myCylinder; //!< Cylinder geometry
+  std::optional<ExtremaPS::Domain2D> myDomain;   //!< Parameter domain (nullopt for natural)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;       //!< Cylinder axis location

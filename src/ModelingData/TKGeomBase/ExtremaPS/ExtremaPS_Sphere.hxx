@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! @brief Point-Sphere extrema computation.
 //!
@@ -53,8 +54,7 @@ public:
   //! @param[in] theSphere the sphere to compute extrema for
   explicit ExtremaPS_Sphere(const gp_Sphere& theSphere)
       : mySphere(theSphere),
-        myDomain{0.0, ExtremaPS::THE_TWO_PI,
-                 -ExtremaPS::THE_HALF_PI, ExtremaPS::THE_HALF_PI}
+        myDomain(std::nullopt)
   {
     initCache();
   }
@@ -64,9 +64,19 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Sphere(const gp_Sphere& theSphere, const ExtremaPS::Domain2D& theDomain)
       : mySphere(theSphere),
-        myDomain(theDomain)
+        myDomain(isNaturalDomain(theDomain) ? std::nullopt
+                                            : std::optional<ExtremaPS::Domain2D>(theDomain))
   {
     initCache();
+  }
+
+private:
+  //! Check if domain is natural (full sphere).
+  static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
+  {
+    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) &&
+           theDomain.VMin <= -ExtremaPS::THE_HALF_PI + 1e-10 &&
+           theDomain.VMax >= ExtremaPS::THE_HALF_PI - 1e-10;
   }
 
 private:
@@ -142,10 +152,8 @@ public:
                             double                theTol,
                             ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
-    constexpr double aHalfPi = ExtremaPS::THE_HALF_PI;
 
     // Vector from center to point
     const double aDx = theP.X() - myCenterX;
@@ -188,12 +196,60 @@ public:
       if (aU < 0.0) aU += aTwoPi;
     }
 
-    // Check if domain is full sphere (common case)
+    // FAST PATH: Natural domain (full sphere) - most common case
+    // Avoid sin/cos by using the already-computed direction
+    if (!myDomain.has_value())
+    {
+      // Minimum: surface point = Center + R * direction (toward query point)
+      if (theMode != ExtremaPS::SearchMode::Max)
+      {
+        const gp_Pnt aSurfPt(myCenterX + myRadius * aDirX,
+                             myCenterY + myRadius * aDirY,
+                             myCenterZ + myRadius * aDirZ);
+        const double aDistToSurf = aDist - myRadius;
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aU;
+        anExt.V              = aV;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aDistToSurf * aDistToSurf;
+        anExt.IsMinimum      = true;
+        aResult.Extrema.Append(anExt);
+      }
+
+      // Maximum: surface point = Center - R * direction (antipodal)
+      if (theMode != ExtremaPS::SearchMode::Min)
+      {
+        const gp_Pnt aSurfPt(myCenterX - myRadius * aDirX,
+                             myCenterY - myRadius * aDirY,
+                             myCenterZ - myRadius * aDirZ);
+        const double aDistToSurf = aDist + myRadius;
+
+        double aUOpp = aU + M_PI;
+        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+
+        ExtremaPS::ExtremumResult anExt;
+        anExt.U              = aUOpp;
+        anExt.V              = -aV;
+        anExt.Point          = aSurfPt;
+        anExt.SquareDistance = aDistToSurf * aDistToSurf;
+        anExt.IsMinimum      = false;
+        aResult.Extrema.Append(anExt);
+      }
+
+      aResult.Status = ExtremaPS::Status::OK;
+      return aResult;
+    }
+
+    // BOUNDED PATH: Handle bounded domain
+    const ExtremaPS::Domain2D& theDomain = *myDomain;
+    constexpr double aHalfPi = ExtremaPS::THE_HALF_PI;
+
+    // Check if domain is full in each direction
     const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
     const bool aIsFullV = (theDomain.VMin <= -aHalfPi + theTol && theDomain.VMax >= aHalfPi - theTol);
 
-    // FAST PATH: Full domain - most common case
-    // Avoid sin/cos by using the already-computed direction
+    // Still full domain? (shouldn't happen if isNaturalDomain worked, but be safe)
     if (aIsFullU && aIsFullV)
     {
       // Minimum: surface point = Center + R * direction (toward query point)
@@ -329,27 +385,17 @@ public:
                                         double                theTol,
                                         ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
     ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
-    // If infinite solutions, return immediately
-    if (aResult.IsInfinite())
+    // If infinite solutions or natural domain (no boundaries), return immediately
+    if (aResult.IsInfinite() || !myDomain.has_value())
     {
       return aResult;
     }
 
-    // Check if boundary extrema are needed
-    constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
-    constexpr double aHalfPi = ExtremaPS::THE_HALF_PI;
-    const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
-    const bool aIsFullV = (theDomain.VMin <= -aHalfPi + theTol && theDomain.VMax >= aHalfPi - theTol);
-
-    // Add boundary if not full domain
-    if (!aIsFullU || !aIsFullV)
-    {
-      ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, *this, theTol, theMode);
-    }
+    // Bounded domain - add boundary extrema
+    ExtremaPS::AddBoundaryExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
 
     // Update status
     if (aResult.Extrema.IsEmpty())
@@ -369,12 +415,15 @@ public:
   //! Returns the sphere geometry.
   const gp_Sphere& Sphere() const { return mySphere; }
 
-  //! Returns the parameter domain.
-  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+  //! Returns true if domain is bounded (not natural domain).
+  bool IsBounded() const { return myDomain.has_value(); }
+
+  //! Returns the parameter domain (only valid if IsBounded() is true).
+  const ExtremaPS::Domain2D& Domain() const { return *myDomain; }
 
 private:
-  gp_Sphere           mySphere;  //!< Sphere geometry
-  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
+  gp_Sphere                          mySphere; //!< Sphere geometry
+  std::optional<ExtremaPS::Domain2D> myDomain; //!< Parameter domain (nullopt for natural)
 
   // Cached components for fast computation
   double myCenterX, myCenterY, myCenterZ;  //!< Sphere center
