@@ -370,10 +370,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_DomeSurface)
           }
           double aNewMin = aNewResult.MinSquareDistance();
 
-          // Use relative tolerance (5%) for numerical surfaces
+          // Pass if results match within tolerance OR new finds closer point
           double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
                             std::max(std::sqrt(aOldMin), 1.0);
-          if (aRelDiff < 0.05)
+          if (aRelDiff < 0.05 || aNewMin < aOldMin)
           {
             ++aPassCount;
           }
@@ -382,8 +382,8 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_DomeSurface)
     }
   }
 
-  // Allow some failures due to numerical differences
-  EXPECT_GE(aPassCount, aTotalCount * 0.70) << "At least 70% should match";
+  // New algorithm must match or find better (closer) results than old algorithm.
+  EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
 
 TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
@@ -417,10 +417,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
           }
           double aNewMin = aNewResult.MinSquareDistance();
 
-          // Use relative tolerance (5%) for numerical surfaces
+          // Pass if results match within tolerance OR new finds closer point
           double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
                             std::max(std::sqrt(aOldMin), 1.0);
-          if (aRelDiff < 0.05)
+          if (aRelDiff < 0.05 || aNewMin < aOldMin)
           {
             ++aPassCount;
           }
@@ -429,8 +429,8 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
     }
   }
 
-  // Allow some failures due to numerical differences
-  EXPECT_GE(aPassCount, aTotalCount * 0.50) << "At least 50% should match";
+  // New algorithm must match or find better (closer) results than old algorithm.
+  EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
 
 TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
@@ -464,10 +464,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
           }
           double aNewMin = aNewResult.MinSquareDistance();
 
-          // Use relative tolerance (10%) for wavy surface
+          // Pass if results match within tolerance OR new finds closer point
           double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
                             std::max(std::sqrt(aOldMin), 1.0);
-          if (aRelDiff < 0.10)
+          if (aRelDiff < 0.10 || aNewMin < aOldMin)
           {
             ++aPassCount;
           }
@@ -476,7 +476,7 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
     }
   }
 
-  // Allow some failures due to numerical differences
-  EXPECT_GE(aPassCount, aTotalCount * 0.50) << "At least 50% should match";
+  // New algorithm must match or find better (closer) results than old algorithm.
+  EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
 

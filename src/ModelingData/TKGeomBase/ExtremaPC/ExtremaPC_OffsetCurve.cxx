@@ -80,7 +80,7 @@ void ExtremaPC_OffsetCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDo
   constexpr int aNbSamples = 64;
 
   // Rebuild grid
-  TColStd_Array1OfReal aParams =
+  math_Vector aParams =
     ExtremaPC_GridEvaluator::BuildUniformParams(theDomain.Min, theDomain.Max, aNbSamples);
 
   GeomGridEval_OtherCurve aGridEval(*myCurve);

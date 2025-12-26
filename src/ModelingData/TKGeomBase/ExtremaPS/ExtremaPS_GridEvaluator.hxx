@@ -18,9 +18,9 @@
 #include <ExtremaPS.hxx>
 #include <ExtremaPS_DistanceFunction.hxx>
 #include <GeomGridEval.hxx>
+#include <math_Vector.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -64,15 +64,17 @@ struct Candidate
 //!
 //! @tparam GridEval type with EvaluateGridD1(uParams, vParams) method
 //! @param theEval grid evaluator
-//! @param theUParams U parameter values
-//! @param theVParams V parameter values
+//! @param theUParams U parameter values (math_Vector with Array1() accessor)
+//! @param theVParams V parameter values (math_Vector with Array1() accessor)
 //! @return 2D array of GridPoint (0-based indexing)
 template <typename GridEval>
-inline NCollection_Array2<GridPoint> BuildGrid(GridEval&                   theEval,
-                                               const TColStd_Array1OfReal& theUParams,
-                                               const TColStd_Array1OfReal& theVParams)
+inline NCollection_Array2<GridPoint> BuildGrid(GridEval&          theEval,
+                                               const math_Vector& theUParams,
+                                               const math_Vector& theVParams)
 {
-  NCollection_Array2<GeomGridEval::SurfD1> aD1Grid = theEval.EvaluateGridD1(theUParams, theVParams);
+  // Use Array1() accessor to pass to GeomGridEval which expects NCollection_Array1
+  NCollection_Array2<GeomGridEval::SurfD1> aD1Grid =
+    theEval.EvaluateGridD1(theUParams.Array1(), theVParams.Array1());
 
   const int                     aNbU = theUParams.Length();
   const int                     aNbV = theVParams.Length();
@@ -82,13 +84,11 @@ inline NCollection_Array2<GridPoint> BuildGrid(GridEval&                   theEv
   {
     for (int j = 0; j < aNbV; ++j)
     {
-      const int aUSrcIdx = theUParams.Lower() + i;
-      const int aVSrcIdx = theVParams.Lower() + j;
-      const int aD1UIdx  = aD1Grid.LowerRow() + i;
-      const int aD1VIdx  = aD1Grid.LowerCol() + j;
+      const int aD1UIdx = aD1Grid.LowerRow() + i;
+      const int aD1VIdx = aD1Grid.LowerCol() + j;
 
-      aGrid(i, j).U     = theUParams.Value(aUSrcIdx);
-      aGrid(i, j).V     = theVParams.Value(aVSrcIdx);
+      aGrid(i, j).U     = theUParams(theUParams.Lower() + i);
+      aGrid(i, j).V     = theVParams(theVParams.Lower() + j);
       aGrid(i, j).Point = aD1Grid.Value(aD1UIdx, aD1VIdx).Point;
       aGrid(i, j).DU    = aD1Grid.Value(aD1UIdx, aD1VIdx).D1U;
       aGrid(i, j).DV    = aD1Grid.Value(aD1UIdx, aD1VIdx).D1V;
@@ -99,16 +99,17 @@ inline NCollection_Array2<GridPoint> BuildGrid(GridEval&                   theEv
 }
 
 //! @brief Build uniform parameter grids.
-inline TColStd_Array1OfReal BuildUniformParams(double theMin, double theMax, int theNbSamples)
+//! @return math_Vector with 1-based indexing
+inline math_Vector BuildUniformParams(double theMin, double theMax, int theNbSamples)
 {
-  TColStd_Array1OfReal aParams(1, theNbSamples);
-  const double         aStep = (theMax - theMin) / (theNbSamples - 1);
+  math_Vector  aParams(1, theNbSamples);
+  const double aStep = (theMax - theMin) / (theNbSamples - 1);
 
   for (int i = 1; i <= theNbSamples; ++i)
   {
-    aParams.SetValue(i, theMin + (i - 1) * aStep);
+    aParams(i) = theMin + (i - 1) * aStep;
   }
-  aParams.SetValue(theNbSamples, theMax); // Ensure exact endpoint
+  aParams(theNbSamples) = theMax; // Ensure exact endpoint
 
   return aParams;
 }
@@ -130,7 +131,7 @@ inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array2<GridPoint
                                               double                               theTol,
                                               ExtremaPS::SearchMode                theMode)
 {
-  NCollection_Vector<Candidate> aCandidates;
+  NCollection_Vector<Candidate> aCandidates(8); // Small bucket for typical extrema count
 
   const int aNbU = theGrid.UpperRow() - theGrid.LowerRow() + 1;
   const int aNbV = theGrid.UpperCol() - theGrid.LowerCol() + 1;
@@ -379,7 +380,7 @@ inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& t
   ExtremaPS::Result aResult;
   aResult.Status = ExtremaPS::Status::OK;
 
-  NCollection_Vector<std::pair<double, double>> aFoundRoots; // (U, V) pairs
+  NCollection_Vector<std::pair<double, double>> aFoundRoots(8); // (U, V) pairs, small bucket for roots
 
   ExtremaPS_DistanceFunction aFunc(theSurface, theP);
 
@@ -393,7 +394,7 @@ inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& t
     double GradMag;
   };
 
-  NCollection_Vector<SortEntry> aSortedEntries;
+  NCollection_Vector<SortEntry> aSortedEntries(8); // Small bucket for candidates
   for (int c = 0; c < theCandidates.Length(); ++c)
   {
     const Candidate& aCand = theCandidates.Value(c);
@@ -781,8 +782,8 @@ inline ExtremaPS::Result PerformGridBased(GridEval&                  theEval,
                                           ExtremaPS::SearchMode      theMode)
 {
   // Build uniform parameter grids
-  TColStd_Array1OfReal aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
-  TColStd_Array1OfReal aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
+  math_Vector aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
+  math_Vector aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
 
   // Build grid with D1 evaluation
   NCollection_Array2<GridPoint> aGrid = BuildGrid(theEval, aUParams, aVParams);
@@ -814,8 +815,8 @@ inline ExtremaPS::Result PerformGridBasedWithBoundary(GridEval&                 
                                                       ExtremaPS::SearchMode      theMode)
 {
   // Build uniform parameter grids
-  TColStd_Array1OfReal aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
-  TColStd_Array1OfReal aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
+  math_Vector aUParams = BuildUniformParams(theDomain.UMin, theDomain.UMax, theNbUSamples);
+  math_Vector aVParams = BuildUniformParams(theDomain.VMin, theDomain.VMax, theNbVSamples);
 
   // Build grid with D1 evaluation
   NCollection_Array2<GridPoint> aGrid = BuildGrid(theEval, aUParams, aVParams);

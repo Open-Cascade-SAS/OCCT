@@ -22,7 +22,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <math_Vector.hxx>
 
 //! @brief Point-BSplineCurve extrema computation using grid-based approach.
 //!
@@ -92,7 +92,7 @@ private:
   //! @param theUMin lower parameter bound
   //! @param theUMax upper parameter bound
   //! @return array of parameter values for grid sampling
-  TColStd_Array1OfReal buildKnotAwareParams(double theUMin, double theUMax) const;
+  math_Vector buildKnotAwareParams(double theUMin, double theUMax) const;
 
   //! Rebuild cached grid if parameter range has changed.
   void updateCacheIfNeeded(const ExtremaPC::Domain1D& theDomain) const;

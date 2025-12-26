@@ -18,6 +18,7 @@
 #include <ExtremaPC.hxx>
 #include <ExtremaPC_DistanceFunction.hxx>
 #include <GeomGridEval.hxx>
+#include <math_Vector.hxx>
 #include <MathRoot_Newton.hxx>
 #include <MathUtils_Config.hxx>
 #include <NCollection_Array1.hxx>
@@ -71,23 +72,23 @@ struct Candidate
 //!
 //! @tparam GridEval type with EvaluateGridD1(params) method returning NCollection_Array1<GeomGridEval::CurveD1>
 //! @param theEval grid evaluator (must have EvaluateGridD1 accepting params)
-//! @param theParams parameter values to sample
+//! @param theParams parameter values (math_Vector with Array1() accessor)
 //! @return array of GridPoint (0-based indexing)
 template <typename GridEval>
-inline NCollection_Array1<GridPoint> BuildGrid(GridEval&                   theEval,
-                                               const TColStd_Array1OfReal& theParams)
+inline NCollection_Array1<GridPoint> BuildGrid(GridEval&          theEval,
+                                               const math_Vector& theParams)
 {
-  NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams);
+  // Use Array1() accessor to pass to GeomGridEval which expects NCollection_Array1
+  NCollection_Array1<GeomGridEval::CurveD1> aD1Grid = theEval.EvaluateGridD1(theParams.Array1());
 
-  const int aNbParams = theParams.Length();
+  const int                   aNbParams = theParams.Length();
   NCollection_Array1<GridPoint> aGrid(0, aNbParams - 1);
 
   for (int i = 0; i < aNbParams; ++i)
   {
-    const int aSrcIdx = theParams.Lower() + i;
-    const int aD1Idx  = aD1Grid.Lower() + i;
+    const int aD1Idx = aD1Grid.Lower() + i;
 
-    aGrid[i].Param = theParams.Value(aSrcIdx);
+    aGrid[i].Param = theParams(theParams.Lower() + i);
     aGrid[i].Point = aD1Grid.Value(aD1Idx).Point;
     aGrid[i].D1    = aD1Grid.Value(aD1Idx).D1;
   }
@@ -101,18 +102,18 @@ inline NCollection_Array1<GridPoint> BuildGrid(GridEval&                   theEv
 //! @param theUMin lower parameter bound
 //! @param theUMax upper parameter bound
 //! @param theNbSamples number of samples
-//! @return array of parameters (1-based indexing for TColStd compatibility)
-inline TColStd_Array1OfReal BuildUniformParams(double theUMin, double theUMax, int theNbSamples)
+//! @return math_Vector with 1-based indexing
+inline math_Vector BuildUniformParams(double theUMin, double theUMax, int theNbSamples)
 {
-  TColStd_Array1OfReal aParams(1, theNbSamples);
+  math_Vector  aParams(1, theNbSamples);
   const double aStep = (theUMax - theUMin) / (theNbSamples - 1);
 
   for (int i = 1; i <= theNbSamples; ++i)
   {
-    aParams.SetValue(i, theUMin + (i - 1) * aStep);
+    aParams(i) = theUMin + (i - 1) * aStep;
   }
   // Ensure exact endpoint
-  aParams.SetValue(theNbSamples, theUMax);
+  aParams(theNbSamples) = theUMax;
 
   return aParams;
 }
@@ -132,7 +133,7 @@ inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array1<GridPoint
                                                double                                theTol,
                                                ExtremaPC::SearchMode                 theMode)
 {
-  NCollection_Vector<Candidate> aCandidates;
+  NCollection_Vector<Candidate> aCandidates(8); // Small bucket for typical extrema count
   const int aNbGrid = theGrid.Size();
 
   if (aNbGrid < 2)
@@ -435,7 +436,7 @@ inline ExtremaPC::Result RefineCandidates(const NCollection_Vector<Candidate>&  
   aResult.Status = ExtremaPC::Status::OK;
 
   // Track found roots to avoid duplicates
-  NCollection_Vector<double> aFoundRoots;
+  NCollection_Vector<double> aFoundRoots(8); // Small bucket for roots
 
   // Newton configuration - balanced tolerance and iterations
   MathUtils::Config aConfig;
@@ -444,7 +445,7 @@ inline ExtremaPC::Result RefineCandidates(const NCollection_Vector<Candidate>&  
   aConfig.MaxIterations = 20;
 
   // For Min/Max mode, compute estimated distances and sort candidates
-  NCollection_Vector<std::pair<int, double>> aSortedIndices;
+  NCollection_Vector<std::pair<int, double>> aSortedIndices(8); // Small bucket for candidates
   for (int c = 0; c < theCandidates.Length(); ++c)
   {
     const Candidate& aCand = theCandidates.Value(c);
@@ -591,15 +592,15 @@ private:
 //! @param theIncludeEndpoints include endpoints as extrema
 //! @return extrema result
 template <typename GridEval>
-inline ExtremaPC::Result PerformGridBasedWithParams(GridEval&                   theEval,
-                                                     const Adaptor3d_Curve&      theCurve,
-                                                     const gp_Pnt&               theP,
-                                                     const TColStd_Array1OfReal& theParams,
-                                                     double                      theUMin,
-                                                     double                      theUMax,
-                                                     double                      theTol,
-                                                     ExtremaPC::SearchMode       theMode,
-                                                     bool                        theIncludeEndpoints)
+inline ExtremaPC::Result PerformGridBasedWithParams(GridEval&              theEval,
+                                                     const Adaptor3d_Curve& theCurve,
+                                                     const gp_Pnt&          theP,
+                                                     const math_Vector&     theParams,
+                                                     double                 theUMin,
+                                                     double                 theUMax,
+                                                     double                 theTol,
+                                                     ExtremaPC::SearchMode  theMode,
+                                                     bool                   theIncludeEndpoints)
 {
   // Build grid with D1 evaluation using custom params
   NCollection_Array1<GridPoint> aGrid = BuildGrid(theEval, theParams);
@@ -654,7 +655,7 @@ inline ExtremaPC::Result PerformGridBased(GridEval&              theEval,
                                           bool                   theIncludeEndpoints)
 {
   // Build uniform parameter grid
-  TColStd_Array1OfReal aParams = BuildUniformParams(theUMin, theUMax, theNbSamples);
+  math_Vector aParams = BuildUniformParams(theUMin, theUMax, theNbSamples);
 
   // Delegate to the params-based version
   return PerformGridBasedWithParams(theEval, theCurve, theP, aParams, theUMin, theUMax, theTol, theMode, theIncludeEndpoints);

@@ -263,8 +263,8 @@ TEST_F(ExtremaPS_ConeComparisonTest, StressTest_ConicalPoints)
           }
           double aNewMin = aNewResult.MinSquareDistance();
 
-          // Use relaxed tolerance for cone (same as individual tests)
-          if (std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) < aConeDistTol)
+          // Pass if results match within tolerance OR new finds closer point
+          if (std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) < aConeDistTol || aNewMin < aOldMin)
           {
             ++aPassCount;
           }
@@ -273,7 +273,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, StressTest_ConicalPoints)
     }
   }
 
-  // Expect at least 80% of test cases to match (due to algorithmic differences)
-  EXPECT_GE(aPassCount, aTotalCount * 0.80) << "At least 80% should match";
+  // New algorithm must match or find better (closer) results than old algorithm.
+  EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
 

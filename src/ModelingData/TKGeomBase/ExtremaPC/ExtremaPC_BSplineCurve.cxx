@@ -14,6 +14,7 @@
 #include <ExtremaPC_BSplineCurve.hxx>
 
 #include <GeomGridEval_BSplineCurve.hxx>
+#include <math_Vector.hxx>
 
 //==================================================================================================
 
@@ -25,7 +26,7 @@ ExtremaPC_BSplineCurve::ExtremaPC_BSplineCurve(const Handle(Geom_BSplineCurve)& 
 
 //==================================================================================================
 
-TColStd_Array1OfReal ExtremaPC_BSplineCurve::buildKnotAwareParams(double theUMin, double theUMax) const
+math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams(double theUMin, double theUMax) const
 {
   if (myCurve.IsNull())
   {
@@ -33,61 +34,60 @@ TColStd_Array1OfReal ExtremaPC_BSplineCurve::buildKnotAwareParams(double theUMin
     return ExtremaPC_GridEvaluator::BuildUniformParams(theUMin, theUMax, 32);
   }
 
-  const int                    aDegree = myCurve->Degree();
-  const TColStd_Array1OfReal&  aKnots  = myCurve->Knots();
-  NCollection_Vector<double>   aParams;
+  const int                   aDegree = myCurve->Degree();
+  const TColStd_Array1OfReal& aKnots  = myCurve->Knots();
 
-  // Always include start point
-  aParams.Append(theUMin);
-
-  // Add knots and intermediate samples for each span
-  // Use 2*(degree+1) samples to ensure we don't miss extrema
+  // First pass: count parameters
+  int aCount = 1; // Start with theUMin
+  // Use 2*(degree+1) samples per span
   const int aSamplesPerSpan = 2 * (aDegree + 1);
 
   for (int i = aKnots.Lower(); i < aKnots.Upper(); ++i)
   {
     double aKnotLo = aKnots.Value(i);
     double aKnotHi = aKnots.Value(i + 1);
-
-    // Clamp to requested range
     double aSpanLo = std::max(aKnotLo, theUMin);
     double aSpanHi = std::min(aKnotHi, theUMax);
-
     if (aSpanHi <= aSpanLo)
-    {
-      continue; // Span outside range
-    }
+      continue;
 
-    // Add intermediate samples within span
     double aStep = (aSpanHi - aSpanLo) / aSamplesPerSpan;
     for (int j = 1; j < aSamplesPerSpan; ++j)
     {
       double aU = aSpanLo + j * aStep;
       if (aU > theUMin && aU < theUMax)
-      {
-        aParams.Append(aU);
-      }
+        ++aCount;
     }
-
-    // Add knot at end of span (if within range and not at end)
     if (aKnotHi > theUMin && aKnotHi < theUMax)
+      ++aCount;
+  }
+  ++aCount; // For theUMax
+
+  // Second pass: fill math_Vector
+  math_Vector aResult(1, aCount);
+  int         aIdx = 1;
+  aResult(aIdx++)  = theUMin;
+
+  for (int i = aKnots.Lower(); i < aKnots.Upper(); ++i)
+  {
+    double aKnotLo = aKnots.Value(i);
+    double aKnotHi = aKnots.Value(i + 1);
+    double aSpanLo = std::max(aKnotLo, theUMin);
+    double aSpanHi = std::min(aKnotHi, theUMax);
+    if (aSpanHi <= aSpanLo)
+      continue;
+
+    double aStep = (aSpanHi - aSpanLo) / aSamplesPerSpan;
+    for (int j = 1; j < aSamplesPerSpan; ++j)
     {
-      aParams.Append(aKnotHi);
+      double aU = aSpanLo + j * aStep;
+      if (aU > theUMin && aU < theUMax)
+        aResult(aIdx++) = aU;
     }
+    if (aKnotHi > theUMin && aKnotHi < theUMax)
+      aResult(aIdx++) = aKnotHi;
   }
-
-  // Always include end point
-  if (aParams.Last() < theUMax)
-  {
-    aParams.Append(theUMax);
-  }
-
-  // Convert to TColStd_Array1OfReal
-  TColStd_Array1OfReal aResult(1, aParams.Length());
-  for (int i = 0; i < aParams.Length(); ++i)
-  {
-    aResult.SetValue(i + 1, aParams.Value(i));
-  }
+  aResult(aIdx) = theUMax;
 
   return aResult;
 }
@@ -146,7 +146,7 @@ void ExtremaPC_BSplineCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theD
   }
 
   // Build knot-aware parameter grid
-  TColStd_Array1OfReal aParams = buildKnotAwareParams(theDomain.Min, theDomain.Max);
+  math_Vector aParams = buildKnotAwareParams(theDomain.Min, theDomain.Max);
 
   // Rebuild grid
   GeomGridEval_BSplineCurve aGridEval(myCurve);

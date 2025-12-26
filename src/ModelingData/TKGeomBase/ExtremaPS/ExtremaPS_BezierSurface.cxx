@@ -13,7 +13,7 @@
 
 #include <ExtremaPS_BezierSurface.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <math_Vector.hxx>
 
 //==================================================================================================
 
@@ -43,9 +43,9 @@ void ExtremaPS_BezierSurface::updateCacheIfNeeded(const ExtremaPS::Domain2D& the
   }
 
   // Rebuild the grid
-  TColStd_Array1OfReal aUParams =
+  math_Vector aUParams =
     ExtremaPS_GridEvaluator::BuildUniformParams(theDomain.UMin, theDomain.UMax, myNbUSamples);
-  TColStd_Array1OfReal aVParams =
+  math_Vector aVParams =
     ExtremaPS_GridEvaluator::BuildUniformParams(theDomain.VMin, theDomain.VMax, myNbVSamples);
 
   GeomGridEval_BezierSurface anEval(mySurface);

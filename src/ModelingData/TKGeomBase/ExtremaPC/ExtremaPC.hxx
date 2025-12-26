@@ -108,7 +108,7 @@ struct ExtremumResult
 struct Result
 {
   Status                             Status = Status::NotDone; //!< Computation status
-  NCollection_Vector<ExtremumResult> Extrema;                  //!< Collection of found extrema
+  NCollection_Vector<ExtremumResult> Extrema{8};               //!< Collection of found extrema
 
   //! For infinite solutions, stores the constant squared distance.
   //! Only meaningful when Status == Status::InfiniteSolutions.

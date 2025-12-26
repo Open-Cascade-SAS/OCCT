@@ -13,43 +13,39 @@
 
 #include <ExtremaPS_BSplineSurface.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <math_Vector.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 namespace
 {
 //! Build knot-aware parameter array (like Extrema_GenExtPS::fillParams).
 //! Ensures samples are placed at knot boundaries plus intermediate points.
-TColStd_Array1OfReal BuildKnotAwareParams(const TColStd_Array1OfReal& theKnots,
-                                           int                         theDegree,
-                                           double                      theParMin,
-                                           double                      theParMax)
+//! @return math_Vector with 1-based indexing
+math_Vector BuildKnotAwareParams(const TColStd_Array1OfReal& theKnots,
+                                  int                         theDegree,
+                                  double                      theParMin,
+                                  double                      theParMax)
 {
-  NCollection_Vector<double> aParams;
-  aParams.Append(theParMin);
-
+  // First pass: count parameters to allocate exact size
+  int    aCount   = 1; // Start with theParMin
   double aPrevPar = theParMin;
-  int    aSamplesPerSpan = std::max(theDegree, 2);
+  // Samples per knot span: degree + 2 ensures accuracy for all surface types.
+  int aSamplesPerSpan = theDegree + 2;
 
   for (int i = theKnots.Lower(); i < theKnots.Upper(); ++i)
   {
     double aKnotLo = theKnots.Value(i);
     double aKnotHi = theKnots.Value(i + 1);
 
-    // Skip knots outside the parameter range
     if (aKnotHi < theParMin + Precision::PConfusion())
       continue;
     if (aKnotLo > theParMax - Precision::PConfusion())
       break;
 
-    // Clamp to parameter range
     aKnotLo = std::max(aKnotLo, theParMin);
     aKnotHi = std::min(aKnotHi, theParMax);
 
     double aStep = (aKnotHi - aKnotLo) / aSamplesPerSpan;
-
-    // Add samples within this knot span (including the knot boundary)
     for (int k = 0; k <= aSamplesPerSpan; ++k)
     {
       double aPar = aKnotLo + k * aStep;
@@ -57,24 +53,49 @@ TColStd_Array1OfReal BuildKnotAwareParams(const TColStd_Array1OfReal& theKnots,
         break;
       if (aPar > aPrevPar + Precision::PConfusion())
       {
-        aParams.Append(aPar);
+        ++aCount;
         aPrevPar = aPar;
       }
     }
   }
-
-  // Ensure the end parameter is included
   if (theParMax > aPrevPar + Precision::PConfusion())
-  {
-    aParams.Append(theParMax);
-  }
+    ++aCount;
 
-  // Convert to TColStd_Array1OfReal
-  TColStd_Array1OfReal aResult(1, aParams.Length());
-  for (int i = 0; i < aParams.Length(); ++i)
+  // Second pass: fill math_Vector
+  math_Vector aResult(1, aCount);
+  int         aIdx    = 1;
+  aPrevPar            = theParMin;
+  aResult(aIdx++)     = theParMin;
+
+  for (int i = theKnots.Lower(); i < theKnots.Upper(); ++i)
   {
-    aResult.SetValue(i + 1, aParams.Value(i));
+    double aKnotLo = theKnots.Value(i);
+    double aKnotHi = theKnots.Value(i + 1);
+
+    if (aKnotHi < theParMin + Precision::PConfusion())
+      continue;
+    if (aKnotLo > theParMax - Precision::PConfusion())
+      break;
+
+    aKnotLo = std::max(aKnotLo, theParMin);
+    aKnotHi = std::min(aKnotHi, theParMax);
+
+    double aStep = (aKnotHi - aKnotLo) / aSamplesPerSpan;
+    for (int k = 0; k <= aSamplesPerSpan; ++k)
+    {
+      double aPar = aKnotLo + k * aStep;
+      if (aPar > theParMax - Precision::PConfusion())
+        break;
+      if (aPar > aPrevPar + Precision::PConfusion())
+      {
+        aResult(aIdx++) = aPar;
+        aPrevPar        = aPar;
+      }
+    }
   }
+  if (theParMax > aPrevPar + Precision::PConfusion())
+    aResult(aIdx) = theParMax;
+
   return aResult;
 }
 } // namespace
@@ -110,8 +131,8 @@ void ExtremaPS_BSplineSurface::updateCacheIfNeeded(const ExtremaPS::Domain2D& th
   }
 
   // Build knot-aware parameter arrays (ensures sampling at knot boundaries)
-  TColStd_Array1OfReal aUParams = BuildKnotAwareParams(myUKnots, myUDegree, theDomain.UMin, theDomain.UMax);
-  TColStd_Array1OfReal aVParams = BuildKnotAwareParams(myVKnots, myVDegree, theDomain.VMin, theDomain.VMax);
+  math_Vector aUParams = BuildKnotAwareParams(myUKnots, myUDegree, theDomain.UMin, theDomain.UMax);
+  math_Vector aVParams = BuildKnotAwareParams(myVKnots, myVDegree, theDomain.VMin, theDomain.VMax);
 
   GeomGridEval_BSplineSurface anEval(mySurface);
   myGrid = ExtremaPS_GridEvaluator::BuildGrid(anEval, aUParams, aVParams);

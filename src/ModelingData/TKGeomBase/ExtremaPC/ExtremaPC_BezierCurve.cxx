@@ -79,7 +79,7 @@ void ExtremaPC_BezierCurve::updateCacheIfNeeded(const ExtremaPC::Domain1D& theDo
   }
 
   // Rebuild grid
-  TColStd_Array1OfReal aParams =
+  math_Vector aParams =
     ExtremaPC_GridEvaluator::BuildUniformParams(theDomain.Min, theDomain.Max, myNbSamples);
 
   GeomGridEval_BezierCurve aGridEval(myCurve);
