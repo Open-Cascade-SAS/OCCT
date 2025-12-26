@@ -26,8 +26,8 @@
 //! Uses grid-based algorithm with knot-aware sampling via
 //! GeomGridEval_BSplineSurface, followed by Newton refinement.
 //!
-//! The grid is cached for efficiency when performing multiple queries
-//! with the same parameter range.
+//! The domain is fixed at construction time and the grid is built eagerly
+//! for optimal performance with multiple queries.
 //!
 //! @section API Design
 //!
@@ -39,8 +39,17 @@ class ExtremaPS_BSplineSurface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor from BSpline surface handle.
-  Standard_EXPORT ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface);
+  //! Constructor from BSpline surface handle (uses full surface domain).
+  //! Grid is built eagerly at construction time.
+  //! @param[in] theSurface BSpline surface handle
+  Standard_EXPORT explicit ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface);
+
+  //! Constructor with BSpline surface and parameter domain.
+  //! Grid is built eagerly at construction time for the specified domain.
+  //! @param[in] theSurface BSpline surface handle
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  Standard_EXPORT ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface,
+                                           const ExtremaPS::Domain2D&         theDomain);
 
   //! @name Surface Evaluation
   //! @{
@@ -58,43 +67,43 @@ public:
   //! @{
 
   //! Find interior extrema only.
-  //! The grid is cached for the parameter range - if the same range is used,
-  //! subsequent calls reuse the cached grid for better performance.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                                             const ExtremaPS::Domain2D&   theDomain,
-                                             double                       theTol,
-                                             ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const;
+  Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                                            double                theTol,
+                                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                                         const ExtremaPS::Domain2D&   theDomain,
-                                                         double                       theTol,
-                                                         ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const;
+  Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                                        double                theTol,
+                                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! @}
 
   //! Returns the surface handle.
   const Handle(Geom_BSplineSurface)& Surface() const { return mySurface; }
 
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+
 private:
-  //! Rebuild cached grid if parameter range has changed.
-  void updateCacheIfNeeded(const ExtremaPS::Domain2D& theDomain) const;
+  //! Build the grid for the current domain.
+  void buildGrid();
 
 private:
   Handle(Geom_BSplineSurface) mySurface;  //!< Surface geometry
   GeomAdaptor_Surface         myAdaptor;  //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D         myDomain;   //!< Parameter domain (fixed at construction)
 
   // Knot vectors for knot-aware sampling
   TColStd_Array1OfReal myUKnots;  //!< U knot vector
@@ -102,9 +111,8 @@ private:
   int myUDegree = 0;  //!< U degree
   int myVDegree = 0;  //!< V degree
 
-  // Cached grid data (mutable for const Perform method)
-  mutable NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
-  mutable ExtremaPS::Domain2D myCachedDomain;  //!< Cached parameter domain
+  // Pre-built grid (immutable after construction)
+  NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
 };
 
 #endif // _ExtremaPS_BSplineSurface_HeaderFile

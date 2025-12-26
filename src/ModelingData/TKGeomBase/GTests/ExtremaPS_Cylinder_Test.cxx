@@ -41,8 +41,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOutside_OnXAxis)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(25.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -57,8 +57,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOutside_OnYAxis)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(0.0, 25.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -73,8 +73,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOutside_Diagonal)
   // Point at 45 degrees, distance from axis = 25*sqrt(2)/sqrt(2) = 25
   gp_Pnt aPoint(25.0, 25.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -91,8 +91,8 @@ TEST_F(ExtremaPS_CylinderTest, PointInside)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(3.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -107,8 +107,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnSurface)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(10.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -126,8 +126,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnAxis_Degenerate)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(0.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   // Should return infinite solutions
   EXPECT_TRUE(aResult.IsInfinite());
@@ -139,8 +139,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnAxis_BottomOfCylinder)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   EXPECT_TRUE(aResult.IsInfinite());
 }
@@ -150,8 +150,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnAxis_TopOfCylinder)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(0.0, 0.0, 20.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   EXPECT_TRUE(aResult.IsInfinite());
 }
@@ -166,8 +166,8 @@ TEST_F(ExtremaPS_CylinderTest, PointNearSeam_Positive)
   // Point near seam (U = 0 and U = 2*PI are the same)
   gp_Pnt aPoint(15.0, -0.1, 5.0); // Slightly off the seam
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -184,8 +184,8 @@ TEST_F(ExtremaPS_CylinderTest, PointNearSeam_Negative)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(15.0, 0.1, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -200,8 +200,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnBoundaryV_Bottom)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(10.0, 0.0, -5.0); // Below V=0
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 10.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -216,8 +216,8 @@ TEST_F(ExtremaPS_CylinderTest, PointOnBoundaryV_Top)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(10.0, 0.0, 25.0); // Above V=20
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -233,9 +233,9 @@ TEST_F(ExtremaPS_CylinderTest, PartialDomain)
   // Point in the first quadrant
   gp_Pnt aPoint(20.0, 20.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
   // Only first quadrant: U in [0, π/2]
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, M_PI / 2.0, 0.0, 10.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, M_PI / 2.0, 0.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -254,8 +254,8 @@ TEST_F(ExtremaPS_CylinderTest, SmallRadius)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.1);
   gp_Pnt aPoint(1.0, 0.0, 0.5);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 1.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 1.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -269,8 +269,8 @@ TEST_F(ExtremaPS_CylinderTest, LargeRadius)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1000.0);
   gp_Pnt aPoint(2000.0, 0.0, 500.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 1000.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 1000.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -288,8 +288,8 @@ TEST_F(ExtremaPS_CylinderTest, CylinderAlongX)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 10.0);
   gp_Pnt aPoint(5.0, 25.0, 0.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -20.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -20.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -303,8 +303,8 @@ TEST_F(ExtremaPS_CylinderTest, CylinderAlongY)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 10.0);
   gp_Pnt aPoint(25.0, 5.0, 0.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -20.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -20.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -321,8 +321,8 @@ TEST_F(ExtremaPS_CylinderTest, CylinderDiagonal)
   // Point perpendicular to diagonal at distance ~25
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -30.0, 30.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -30.0, 30.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -337,8 +337,8 @@ TEST_F(ExtremaPS_CylinderTest, TranslatedCylinder)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(100, 50, 25), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(125.0, 50.0, 30.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -357,8 +357,8 @@ TEST_F(ExtremaPS_CylinderTest, SearchMode_Min)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(25.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL, ExtremaPS::SearchMode::Min);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -370,8 +370,8 @@ TEST_F(ExtremaPS_CylinderTest, SearchMode_Max)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(25.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL, ExtremaPS::SearchMode::Max);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -383,11 +383,11 @@ TEST_F(ExtremaPS_CylinderTest, ModesConsistency)
   gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Pnt aPoint(25.0, 0.0, 5.0);
 
-  ExtremaPS_Cylinder anEval(aCylinder);
+  ExtremaPS_Cylinder anEval(aCylinder, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0));
 
-  ExtremaPS::Result aResultAll = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL, ExtremaPS::SearchMode::MinMax);
-  ExtremaPS::Result aResultMin = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL, ExtremaPS::SearchMode::Min);
-  ExtremaPS::Result aResultMax = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, 0.0, 20.0), THE_TOL, ExtremaPS::SearchMode::Max);
+  ExtremaPS::Result aResultAll = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::MinMax);
+  ExtremaPS::Result aResultMin = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
+  ExtremaPS::Result aResultMax = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResultAll.IsDone());
   ASSERT_TRUE(aResultMin.IsDone());

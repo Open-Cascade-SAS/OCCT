@@ -31,6 +31,8 @@
 //! 2. Closest point is at center + R * direction (minimum)
 //! 3. Farthest point is at center - R * direction (maximum)
 //!
+//! The domain is fixed at construction time for optimal performance with multiple queries.
+//!
 //! @section API Design
 //!
 //! Two methods are provided:
@@ -47,13 +49,32 @@ class ExtremaPS_Sphere
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with sphere geometry.
-  //! @param theSphere the sphere to compute extrema for
+  //! Constructor with sphere geometry (uses full sphere domain).
+  //! @param[in] theSphere the sphere to compute extrema for
   explicit ExtremaPS_Sphere(const gp_Sphere& theSphere)
-      : mySphere(theSphere)
+      : mySphere(theSphere),
+        myDomain{0.0, ExtremaPS::THE_TWO_PI,
+                 -ExtremaPS::THE_HALF_PI, ExtremaPS::THE_HALF_PI}
+  {
+    initCache();
+  }
+
+  //! Constructor with sphere geometry and parameter domain.
+  //! @param[in] theSphere the sphere to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPS_Sphere(const gp_Sphere& theSphere, const ExtremaPS::Domain2D& theDomain)
+      : mySphere(theSphere),
+        myDomain(theDomain)
+  {
+    initCache();
+  }
+
+private:
+  //! Initialize cached components.
+  void initCache()
   {
     // Cache sphere components for fast computation
-    const gp_Ax3& aPos = theSphere.Position();
+    const gp_Ax3& aPos = mySphere.Position();
     const gp_Pnt& aCenter = aPos.Location();
     myCenterX = aCenter.X();
     myCenterY = aCenter.Y();
@@ -74,8 +95,10 @@ public:
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
 
-    myRadius = theSphere.Radius();
+    myRadius = mySphere.Radius();
   }
+
+public:
 
   //! @name Surface Evaluation
   //! @{
@@ -105,21 +128,21 @@ public:
   //! @{
 
   //! Find interior extrema only (min and max on sphere surface).
+  //! Uses domain specified at construction time.
   //!
   //! For a sphere, there are two interior extrema:
   //! - Minimum: closest point (toward query point)
   //! - Maximum: antipodal point (away from query point)
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPS::Domain2D&   theDomain,
-                            double                       theTol,
-                            ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
     constexpr double aHalfPi = ExtremaPS::THE_HALF_PI;
@@ -294,21 +317,21 @@ public:
   }
 
   //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! Adds boundary extrema for truly bounded domains.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                        const ExtremaPS::Domain2D&   theDomain,
-                                        double                       theTol,
-                                        ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                        double                theTol,
+                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theDomain, theTol, theMode);
+    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
     // If infinite solutions, return immediately
     if (aResult.IsInfinite())
@@ -346,8 +369,12 @@ public:
   //! Returns the sphere geometry.
   const gp_Sphere& Sphere() const { return mySphere; }
 
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+
 private:
-  gp_Sphere mySphere; //!< Sphere geometry
+  gp_Sphere           mySphere;  //!< Sphere geometry
+  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
 
   // Cached components for fast computation
   double myCenterX, myCenterY, myCenterZ;  //!< Sphere center

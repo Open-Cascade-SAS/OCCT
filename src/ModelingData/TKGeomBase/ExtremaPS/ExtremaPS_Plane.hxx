@@ -29,6 +29,8 @@
 //!   P_proj = P - ((P - P0) . N) * N
 //! where P0 is any point on the plane and N is the unit normal.
 //!
+//! The domain is fixed at construction time for optimal performance with multiple queries.
+//!
 //! @section API Design
 //!
 //! Two methods are provided:
@@ -45,13 +47,32 @@ class ExtremaPS_Plane
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with plane geometry.
-  //! @param thePlane the plane to compute extrema for
+  //! Constructor with plane geometry (uses infinite domain).
+  //! @param[in] thePlane the plane to compute extrema for
   explicit ExtremaPS_Plane(const gp_Pln& thePlane)
-      : myPlane(thePlane)
+      : myPlane(thePlane),
+        myDomain{-Precision::Infinite(), Precision::Infinite(),
+                 -Precision::Infinite(), Precision::Infinite()}
+  {
+    initCache();
+  }
+
+  //! Constructor with plane geometry and parameter domain.
+  //! @param[in] thePlane the plane to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPS_Plane(const gp_Pln& thePlane, const ExtremaPS::Domain2D& theDomain)
+      : myPlane(thePlane),
+        myDomain(theDomain)
+  {
+    initCache();
+  }
+
+private:
+  //! Initialize cached components.
+  void initCache()
   {
     // Cache plane components for fast computation
-    const gp_Ax3& aPos = thePlane.Position();
+    const gp_Ax3& aPos = myPlane.Position();
     const gp_Pnt& aLoc = aPos.Location();
     myLocX = aLoc.X();
     myLocY = aLoc.Y();
@@ -72,6 +93,8 @@ public:
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
   }
+
+public:
 
   //! @name Surface Evaluation
   //! @{
@@ -94,19 +117,18 @@ public:
   //! @{
 
   //! Find interior extrema only (orthogonal projection).
+  //! Uses domain specified at construction time.
   //!
   //! For a plane, there is exactly one interior extremum - the projection point.
   //! This is the minimum distance point. Maximum distances only occur at boundaries.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPS::Domain2D&   theDomain,
-                            double                       theTol,
-                            ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     ExtremaPS::Result aResult;
 
@@ -126,8 +148,8 @@ public:
     const double aU = aDx * myXDirX + aDy * myXDirY + aDz * myXDirZ;
     const double aV = aDx * myYDirX + aDy * myYDirY + aDz * myYDirZ;
 
-    // Fast path: large domain (effectively unbounded) - skip bounds check
-    if (theDomain.IsLarge())
+    // Fast path: infinite domain - skip bounds check
+    if (!myDomain.IsFinite())
     {
       aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
         aU, aV,
@@ -142,7 +164,7 @@ public:
     }
 
     // Bounded domain - check if projection is within bounds
-    if (!theDomain.Contains(aU, aV, theTol))
+    if (!myDomain.Contains(aU, aV, theTol))
     {
       aResult.Status = ExtremaPS::Status::NoSolution;
       return aResult;
@@ -151,7 +173,7 @@ public:
     // Clamp to domain bounds
     double aClampedU = aU;
     double aClampedV = aV;
-    theDomain.Clamp(aClampedU, aClampedV);
+    myDomain.Clamp(aClampedU, aClampedV);
 
     aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
       aClampedU, aClampedV,
@@ -166,26 +188,25 @@ public:
   }
 
   //! Find extrema including boundary (corners for plane).
+  //! Uses domain specified at construction time.
   //!
   //! For a bounded plane, maximum distances occur at corners.
   //! Edge extrema are not computed because distance is linear along edges.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                        const ExtremaPS::Domain2D&   theDomain,
-                                        double                       theTol,
-                                        ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                        double                theTol,
+                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
     ExtremaPS::Result aResult;
 
     if (theMode != ExtremaPS::SearchMode::Max)
     {
-      aResult = Perform(theP, theDomain, theTol, theMode);
+      aResult = Perform(theP, theTol, theMode);
     }
     else
     {
@@ -194,9 +215,9 @@ public:
 
     // Add boundary extrema (corners only for plane)
     // For planes, edge extrema don't add value - distance varies linearly
-    if (theMode != ExtremaPS::SearchMode::Min && theDomain.IsFinite())
+    if (theMode != ExtremaPS::SearchMode::Min && myDomain.IsFinite())
     {
-      addCornerExtrema(aResult, theP, theDomain);
+      addCornerExtrema(aResult, theP, myDomain);
     }
 
     // Update status if we found any extrema
@@ -216,6 +237,9 @@ public:
 
   //! Returns the plane geometry.
   const gp_Pln& Plane() const { return myPlane; }
+
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
 
 private:
   //! Add corner extrema (maximum candidates).
@@ -265,7 +289,8 @@ private:
   }
 
 private:
-  gp_Pln myPlane;  //!< Plane geometry
+  gp_Pln              myPlane;   //!< Plane geometry
+  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;     //!< Plane location

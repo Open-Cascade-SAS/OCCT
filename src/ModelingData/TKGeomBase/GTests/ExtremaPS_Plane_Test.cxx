@@ -44,8 +44,8 @@ TEST_F(ExtremaPS_PlaneTest, PointAbove_XYPlane)
   // Point above plane
   gp_Pnt aPoint(5.0, 3.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -65,8 +65,8 @@ TEST_F(ExtremaPS_PlaneTest, PointBelow_XYPlane)
   // Point below plane
   gp_Pnt aPoint(5.0, 3.0, -10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -85,8 +85,8 @@ TEST_F(ExtremaPS_PlaneTest, PointOnPlane)
   // Point on plane
   gp_Pnt aPoint(5.0, 3.0, 0.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -103,8 +103,8 @@ TEST_F(ExtremaPS_PlaneTest, PointVeryClose)
   // Point very close to plane
   gp_Pnt aPoint(5.0, 3.0, 1.0e-10);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -125,8 +125,8 @@ TEST_F(ExtremaPS_PlaneTest, TiltedPlane_45Deg_X)
   // Point above tilted plane
   gp_Pnt aPoint(0.0, 10.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -144,8 +144,8 @@ TEST_F(ExtremaPS_PlaneTest, TiltedPlane_45Deg_Y)
   // Point offset
   gp_Pnt aPoint(5.0, 0.0, 5.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -162,8 +162,8 @@ TEST_F(ExtremaPS_PlaneTest, TiltedPlane_Arbitrary)
 
   gp_Pnt aPoint(15.0, 25.0, 35.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -185,8 +185,8 @@ TEST_F(ExtremaPS_PlaneTest, TranslatedPlane_Positive)
 
   gp_Pnt aPoint(5.0, 3.0, 25.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -202,8 +202,8 @@ TEST_F(ExtremaPS_PlaneTest, TranslatedPlane_Negative)
 
   gp_Pnt aPoint(0.0, 0.0, 5.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -219,8 +219,8 @@ TEST_F(ExtremaPS_PlaneTest, TranslatedPlane_LargeOffset)
 
   gp_Pnt aPoint(1005.0, 2003.0, 3010.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-1000.0, 1000.0, -1000.0, 1000.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-1000.0, 1000.0, -1000.0, 1000.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -243,9 +243,9 @@ TEST_F(ExtremaPS_PlaneTest, ProjectionOutsideBounds)
   // Point that projects outside bounds
   gp_Pnt aPoint(50.0, 50.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Bounded to [0,10] x [0,10]
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find at least one extremum (boundary corner)
@@ -264,9 +264,9 @@ TEST_F(ExtremaPS_PlaneTest, VerySmallRange)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(0.5, 0.5, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Very small parametric range
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -282,9 +282,9 @@ TEST_F(ExtremaPS_PlaneTest, NegativeBounds)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(-5.0, -3.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Negative parametric range
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-10.0, 0.0, -10.0, 0.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-10.0, 0.0, -10.0, 0.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -299,9 +299,9 @@ TEST_F(ExtremaPS_PlaneTest, MixedSignBounds)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(3.0, -4.0, 5.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Mixed sign bounds
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-10.0, 10.0, -10.0, 10.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-10.0, 10.0, -10.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -320,8 +320,8 @@ TEST_F(ExtremaPS_PlaneTest, SearchMode_Min)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(5.0, 3.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL, ExtremaPS::SearchMode::Min);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -333,9 +333,9 @@ TEST_F(ExtremaPS_PlaneTest, SearchMode_Max)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(5.0, 5.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Bounded region with corners
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0), THE_TOL, ExtremaPS::SearchMode::Max);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -346,9 +346,9 @@ TEST_F(ExtremaPS_PlaneTest, SearchMode_MinMax)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(5.0, 5.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
   // Bounded region
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0), THE_TOL, ExtremaPS::SearchMode::MinMax);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(0.0, 10.0, 0.0, 10.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find both min and max (corner extrema)
@@ -405,8 +405,8 @@ TEST_F(ExtremaPS_PlaneTest, Origin_XYPlane)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -422,8 +422,8 @@ TEST_F(ExtremaPS_PlaneTest, LargeCoordinates)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(1.0e6, 1.0e6, 100.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-1.0e7, 1.0e7, -1.0e7, 1.0e7), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-1.0e7, 1.0e7, -1.0e7, 1.0e7));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -438,8 +438,8 @@ TEST_F(ExtremaPS_PlaneTest, SmallCoordinates)
   gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Pnt aPoint(1.0e-6, 1.0e-6, 1.0e-3);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-1.0, 1.0, -1.0, 1.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-1.0, 1.0, -1.0, 1.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -461,8 +461,8 @@ TEST_F(ExtremaPS_PlaneTest, YZPlane)
 
   gp_Pnt aPoint(10.0, 5.0, 3.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -478,8 +478,8 @@ TEST_F(ExtremaPS_PlaneTest, XZPlane)
 
   gp_Pnt aPoint(5.0, 10.0, 3.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -495,8 +495,8 @@ TEST_F(ExtremaPS_PlaneTest, NegativeNormal)
 
   gp_Pnt aPoint(5.0, 3.0, 10.0);
 
-  ExtremaPS_Plane anEval(aPlane);
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0), THE_TOL);
+  ExtremaPS_Plane anEval(aPlane, ExtremaPS::Domain2D(-100.0, 100.0, -100.0, 100.0));
+  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);

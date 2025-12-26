@@ -49,13 +49,31 @@ class ExtremaPS_Torus
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with torus geometry.
-  //! @param theTorus the torus to compute extrema for
+  //! Constructor with torus geometry (uses full torus domain).
+  //! @param[in] theTorus the torus to compute extrema for
   explicit ExtremaPS_Torus(const gp_Torus& theTorus)
-      : myTorus(theTorus)
+      : myTorus(theTorus),
+        myDomain{0.0, ExtremaPS::THE_TWO_PI, 0.0, ExtremaPS::THE_TWO_PI}
+  {
+    initCache();
+  }
+
+  //! Constructor with torus geometry and parameter domain.
+  //! @param[in] theTorus the torus to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPS_Torus(const gp_Torus& theTorus, const ExtremaPS::Domain2D& theDomain)
+      : myTorus(theTorus),
+        myDomain(theDomain)
+  {
+    initCache();
+  }
+
+private:
+  //! Initialize cached components.
+  void initCache()
   {
     // Cache torus components for fast computation
-    const gp_Ax3& aPos = theTorus.Position();
+    const gp_Ax3& aPos = myTorus.Position();
     const gp_Pnt& aCenter = aPos.Location();
     myCenterX = aCenter.X();
     myCenterY = aCenter.Y();
@@ -76,9 +94,11 @@ public:
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
 
-    myMajorRadius = theTorus.MajorRadius();
-    myMinorRadius = theTorus.MinorRadius();
+    myMajorRadius = myTorus.MajorRadius();
+    myMinorRadius = myTorus.MinorRadius();
   }
+
+public:
 
   //! @name Surface Evaluation
   //! @{
@@ -108,19 +128,19 @@ public:
   //! @{
 
   //! Find interior extrema only.
+  //! Uses domain specified at construction time.
   //!
   //! A torus can have up to 4 interior extrema for a general point.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPS::Domain2D&   theDomain,
-                            double                       theTol,
-                            ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
@@ -374,19 +394,19 @@ public:
   }
 
   //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                        const ExtremaPS::Domain2D&   theDomain,
-                                        double                       theTol,
-                                        ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                        double                theTol,
+                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theDomain, theTol, theMode);
+    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
     // If infinite solutions, return immediately
     if (aResult.IsInfinite())
@@ -423,8 +443,12 @@ public:
   //! Returns the torus geometry.
   const gp_Torus& Torus() const { return myTorus; }
 
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+
 private:
-  gp_Torus myTorus; //!< Torus geometry
+  gp_Torus            myTorus;   //!< Torus geometry
+  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
 
   // Cached components for fast computation
   double myCenterX, myCenterY, myCenterZ;  //!< Torus center

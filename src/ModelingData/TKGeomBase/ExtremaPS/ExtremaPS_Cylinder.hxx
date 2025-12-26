@@ -32,6 +32,8 @@
 //! 3. This gives one minimum (closest point on cylinder)
 //! 4. The antipodal point (U + PI) gives one maximum
 //!
+//! The domain is fixed at construction time for optimal performance with multiple queries.
+//!
 //! @section API Design
 //!
 //! Two methods are provided:
@@ -47,13 +49,32 @@ class ExtremaPS_Cylinder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with cylinder geometry.
-  //! @param theCylinder the cylinder to compute extrema for
+  //! Constructor with cylinder geometry (uses natural cylinder domain).
+  //! @param[in] theCylinder the cylinder to compute extrema for
   explicit ExtremaPS_Cylinder(const gp_Cylinder& theCylinder)
-      : myCylinder(theCylinder)
+      : myCylinder(theCylinder),
+        myDomain{0.0, ExtremaPS::THE_TWO_PI,
+                 -Precision::Infinite(), Precision::Infinite()}
+  {
+    initCache();
+  }
+
+  //! Constructor with cylinder geometry and parameter domain.
+  //! @param[in] theCylinder the cylinder to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPS_Cylinder(const gp_Cylinder& theCylinder, const ExtremaPS::Domain2D& theDomain)
+      : myCylinder(theCylinder),
+        myDomain(theDomain)
+  {
+    initCache();
+  }
+
+private:
+  //! Initialize cached components.
+  void initCache()
   {
     // Cache geometry components for fast computation
-    const gp_Ax3& aPos  = theCylinder.Position();
+    const gp_Ax3& aPos  = myCylinder.Position();
     const gp_Pnt& aLoc  = aPos.Location();
     const gp_Dir& aAxis = aPos.Direction();
     const gp_Dir& aXDir = aPos.XDirection();
@@ -63,8 +84,10 @@ public:
     myAxisX = aAxis.X(); myAxisY = aAxis.Y(); myAxisZ = aAxis.Z();
     myXDirX = aXDir.X(); myXDirY = aXDir.Y(); myXDirZ = aXDir.Z();
     myYDirX = aYDir.X(); myYDirY = aYDir.Y(); myYDirZ = aYDir.Z();
-    myRadius = theCylinder.Radius();
+    myRadius = myCylinder.Radius();
   }
+
+public:
 
   //! @name Surface Evaluation
   //! @{
@@ -91,21 +114,21 @@ public:
   //! @{
 
   //! Find interior extrema only (min and/or max on cylinder surface).
+  //! Uses domain specified at construction time.
   //!
   //! For a cylinder, there are two interior extrema:
   //! - Minimum: closest point (radial projection)
   //! - Maximum: antipodal point (opposite side of cylinder)
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPS::Domain2D&   theDomain,
-                            double                       theTol,
-                            ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
@@ -270,22 +293,22 @@ public:
   }
 
   //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! Adds boundary extrema for truly bounded domains or when the V projection
   //! falls outside the V range.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                        const ExtremaPS::Domain2D&   theDomain,
-                                        double                       theTol,
-                                        ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                        double                theTol,
+                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theDomain, theTol, theMode);
+    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
     // If infinite solutions, return immediately
     if (aResult.IsInfinite())
@@ -328,8 +351,12 @@ public:
   //! Returns the cylinder geometry.
   const gp_Cylinder& Cylinder() const { return myCylinder; }
 
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+
 private:
-  gp_Cylinder myCylinder; //!< Cylinder geometry
+  gp_Cylinder         myCylinder;  //!< Cylinder geometry
+  ExtremaPS::Domain2D myDomain;    //!< Parameter domain (fixed at construction)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;       //!< Cylinder axis location

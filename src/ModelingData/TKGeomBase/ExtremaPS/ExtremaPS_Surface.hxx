@@ -48,6 +48,8 @@
 //!
 //! @section API Design
 //!
+//! The domain is fixed at construction time for optimal performance with multiple queries.
+//!
 //! Two methods are provided:
 //! - `Perform()` - finds interior extrema only
 //! - `PerformWithBoundary()` - includes edge and corner extrema for bounded domains
@@ -59,54 +61,44 @@ public:
   //! Default constructor.
   Standard_EXPORT ExtremaPS_Surface();
 
-  //! Constructor from Adaptor3d_Surface.
+  //! Constructor from Adaptor3d_Surface (uses adaptor bounds as domain).
+  //! @param[in] theSurface surface adaptor
   Standard_EXPORT ExtremaPS_Surface(const Adaptor3d_Surface& theSurface);
 
-  //! Constructor from GeomAdaptor_Surface.
+  //! Constructor from Adaptor3d_Surface with specified domain.
+  //! @param[in] theSurface surface adaptor
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  Standard_EXPORT ExtremaPS_Surface(const Adaptor3d_Surface&   theSurface,
+                                    const ExtremaPS::Domain2D& theDomain);
+
+  //! Constructor from GeomAdaptor_Surface (uses adaptor bounds as domain).
+  //! @param[in] theSurface surface adaptor
   Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface);
 
-  //! Initialize from Adaptor3d_Surface.
-  Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
-
-  //! Initialize from GeomAdaptor_Surface.
-  Standard_EXPORT void Initialize(const GeomAdaptor_Surface& theSurface);
+  //! Constructor from GeomAdaptor_Surface with specified domain.
+  //! @param[in] theSurface surface adaptor
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
+                                    const ExtremaPS::Domain2D& theDomain);
 
   //! @name Extrema Computation
   //! @{
 
-  //! Find interior extrema only, using full parameter range from adaptor.
+  //! Find interior extrema only.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
   //! @param theTol tolerance
   //! @return result with interior extrema only
   Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt& theP, double theTol) const;
 
-  //! Find interior extrema only within specified parameter bounds.
-  //!
-  //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
-  //! @param theTol tolerance
-  //! @return result with interior extrema only
-  Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt&              theP,
-                                             const ExtremaPS::Domain2D& theDomain,
-                                             double                     theTol) const;
-
-  //! Find extrema including boundary, using full parameter range.
+  //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
   //! @param theTol tolerance
   //! @return result with interior + boundary extrema
   Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt& theP, double theTol) const;
-
-  //! Find extrema including boundary within specified parameter bounds.
-  //!
-  //! @param theP query point
-  //! @param theDomain 2D parameter domain
-  //! @param theTol tolerance
-  //! @return result with interior + boundary extrema
-  Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt&              theP,
-                                                         const ExtremaPS::Domain2D& theDomain,
-                                                         double                     theTol) const;
 
   //! @}
 
@@ -119,8 +111,8 @@ public:
   //! Returns true if surface evaluator is initialized.
   bool IsInitialized() const;
 
-  //! Returns the default parameter domain.
-  ExtremaPS::Domain2D DefaultDomain() const { return myDomain; }
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
 
 private:
   //! Variant type for surface evaluators.
@@ -135,11 +127,12 @@ private:
                                         ExtremaPS_OffsetSurface,
                                         ExtremaPS_OtherSurface>;
 
-  //! Initialize evaluator from adaptor.
-  void initializeEvaluator(const Adaptor3d_Surface& theSurface);
+  //! Initialize evaluator from adaptor with specified domain.
+  void initializeEvaluator(const Adaptor3d_Surface&   theSurface,
+                           const ExtremaPS::Domain2D& theDomain);
 
   EvaluatorVariant        myEvaluator;
-  ExtremaPS::Domain2D     myDomain;        //!< Default parameter domain from adaptor
+  ExtremaPS::Domain2D     myDomain;        //!< Parameter domain (fixed at construction)
   ExtremaPS::SearchMode   mySearchMode = ExtremaPS::SearchMode::MinMax;
 };
 

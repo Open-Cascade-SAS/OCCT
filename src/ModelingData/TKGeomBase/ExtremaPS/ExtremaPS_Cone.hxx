@@ -47,13 +47,32 @@ class ExtremaPS_Cone
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructor with cone geometry.
-  //! @param theCone the cone to compute extrema for
+  //! Constructor with cone geometry (uses natural cone domain).
+  //! @param[in] theCone the cone to compute extrema for
   explicit ExtremaPS_Cone(const gp_Cone& theCone)
-      : myCone(theCone)
+      : myCone(theCone),
+        myDomain{0.0, ExtremaPS::THE_TWO_PI,
+                 -Precision::Infinite(), Precision::Infinite()}
+  {
+    initCache();
+  }
+
+  //! Constructor with cone geometry and parameter domain.
+  //! @param[in] theCone the cone to compute extrema for
+  //! @param[in] theDomain parameter domain (fixed for all queries)
+  ExtremaPS_Cone(const gp_Cone& theCone, const ExtremaPS::Domain2D& theDomain)
+      : myCone(theCone),
+        myDomain(theDomain)
+  {
+    initCache();
+  }
+
+private:
+  //! Initialize cached components.
+  void initCache()
   {
     // Cache cone components for fast computation
-    const gp_Ax3& aPos = theCone.Position();
+    const gp_Ax3& aPos = myCone.Position();
     const gp_Pnt& aLoc = aPos.Location();
     myLocX = aLoc.X();
     myLocY = aLoc.Y();
@@ -74,13 +93,15 @@ public:
     myYDirY = aYDir.Y();
     myYDirZ = aYDir.Z();
 
-    myRefRadius = theCone.RefRadius();
-    mySemiAngle = theCone.SemiAngle();
+    myRefRadius = myCone.RefRadius();
+    mySemiAngle = myCone.SemiAngle();
     myTanAngle  = std::tan(mySemiAngle);
     myCosAngle  = std::cos(mySemiAngle);
     mySinAngle  = std::sin(mySemiAngle);
     myApexV     = std::abs(myTanAngle) > ExtremaPS::THE_CONE_APEX_TOLERANCE ? -myRefRadius / myTanAngle : 0.0;
   }
+
+public:
 
   //! @name Surface Evaluation
   //! @{
@@ -108,17 +129,17 @@ public:
   //! @{
 
   //! Find interior extrema only.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain [UMin,UMax] x [VMin,VMax]
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&                theP,
-                            const ExtremaPS::Domain2D&   theDomain,
-                            double                       theTol,
-                            ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result Perform(const gp_Pnt&         theP,
+                            double                theTol,
+                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     ExtremaPS::Result aResult;
 
     // Vector from location to point
@@ -266,19 +287,19 @@ public:
   }
 
   //! Find extrema including boundary edges and corners.
+  //! Uses domain specified at construction time.
   //!
   //! @param theP query point
-  //! @param theDomain 2D parameter domain
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&                theP,
-                                        const ExtremaPS::Domain2D&   theDomain,
-                                        double                       theTol,
-                                        ExtremaPS::SearchMode        theMode = ExtremaPS::SearchMode::MinMax) const
+  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
+                                        double                theTol,
+                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    const ExtremaPS::Domain2D& theDomain = myDomain;
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theDomain, theTol, theMode);
+    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
     // If infinite solutions, return immediately
     if (aResult.IsInfinite())
@@ -314,8 +335,12 @@ public:
   //! Returns the cone geometry.
   const gp_Cone& Cone() const { return myCone; }
 
+  //! Returns the parameter domain.
+  const ExtremaPS::Domain2D& Domain() const { return myDomain; }
+
 private:
-  gp_Cone myCone; //!< Cone geometry
+  gp_Cone             myCone;    //!< Cone geometry
+  ExtremaPS::Domain2D myDomain;  //!< Parameter domain (fixed at construction)
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;        //!< Cone axis location

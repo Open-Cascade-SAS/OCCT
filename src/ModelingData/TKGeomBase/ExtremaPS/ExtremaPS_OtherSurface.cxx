@@ -13,12 +13,51 @@
 
 #include <ExtremaPS_OtherSurface.hxx>
 
+#include <math_Vector.hxx>
+
+namespace
+{
+// Default grid density for general surfaces
+constexpr int THE_NB_U_SAMPLES = 32;
+constexpr int THE_NB_V_SAMPLES = 32;
+} // namespace
+
 //==================================================================================================
 
 ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface)
     : mySurface(theSurface),
-      myAdaptor(theSurface)
+      myAdaptor(theSurface),
+      myDomain{myAdaptor.FirstUParameter(), myAdaptor.LastUParameter(),
+               myAdaptor.FirstVParameter(), myAdaptor.LastVParameter()}
 {
+  // Build grid eagerly at construction time
+  buildGrid();
+}
+
+//==================================================================================================
+
+ExtremaPS_OtherSurface::ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface,
+                                               const ExtremaPS::Domain2D&  theDomain)
+    : mySurface(theSurface),
+      myAdaptor(theSurface),
+      myDomain(theDomain)
+{
+  // Build grid eagerly at construction time
+  buildGrid();
+}
+
+//==================================================================================================
+
+void ExtremaPS_OtherSurface::buildGrid()
+{
+  // Build the grid for the current domain
+  math_Vector aUParams =
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax, THE_NB_U_SAMPLES);
+  math_Vector aVParams =
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin, myDomain.VMax, THE_NB_V_SAMPLES);
+
+  GeomGridEval_OtherSurface anEval(&myAdaptor);
+  myGrid = ExtremaPS_GridEvaluator::BuildGrid(anEval, aUParams, aVParams);
 }
 
 //==================================================================================================
@@ -30,46 +69,30 @@ gp_Pnt ExtremaPS_OtherSurface::Value(double theU, double theV) const
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_OtherSurface::Perform(const gp_Pnt&              theP,
-                                                   const ExtremaPS::Domain2D& theDomain,
-                                                   double                     theTol,
-                                                   ExtremaPS::SearchMode      theMode) const
+ExtremaPS::Result ExtremaPS_OtherSurface::Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPS::SearchMode theMode) const
 {
-  // Default grid density for general surfaces
-  const int aNbUSamples = 32;
-  const int aNbVSamples = 32;
-
-  GeomGridEval_OtherSurface anEval(&myAdaptor);
-
-  return ExtremaPS_GridEvaluator::PerformGridBased(anEval,
-                                                    myAdaptor,
-                                                    theP,
-                                                    theDomain,
-                                                    aNbUSamples,
-                                                    aNbVSamples,
-                                                    theTol,
-                                                    theMode);
+  // Use the pre-built grid (interior extrema only)
+  return ExtremaPS_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_OtherSurface::PerformWithBoundary(const gp_Pnt&              theP,
-                                                               const ExtremaPS::Domain2D& theDomain,
-                                                               double                     theTol,
-                                                               ExtremaPS::SearchMode      theMode) const
+ExtremaPS::Result ExtremaPS_OtherSurface::PerformWithBoundary(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPS::SearchMode theMode) const
 {
-  // Default grid density for general surfaces
-  const int aNbUSamples = 32;
-  const int aNbVSamples = 32;
+  // Start with interior extrema
+  ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
-  GeomGridEval_OtherSurface anEval(&myAdaptor);
+  // Add boundary extrema
+  ExtremaPS::AddBoundaryExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
-  return ExtremaPS_GridEvaluator::PerformGridBasedWithBoundary(anEval,
-                                                                myAdaptor,
-                                                                theP,
-                                                                theDomain,
-                                                                aNbUSamples,
-                                                                aNbVSamples,
-                                                                theTol,
-                                                                theMode);
+  if (!aResult.Extrema.IsEmpty())
+  {
+    aResult.Status = ExtremaPS::Status::OK;
+  }
+
+  return aResult;
 }

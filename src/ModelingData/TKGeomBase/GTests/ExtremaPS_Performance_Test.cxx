@@ -55,10 +55,10 @@ void RunPerfTest(const char* name, const Handle(Geom_Surface)& surf,
     // Warm up - both with Initialize+Perform pattern
     Extrema_ExtPS oldExtWarmup;
     oldExtWarmup.Initialize(adaptor, uMin, uMax, vMin, vMax, THE_TOL, THE_TOL);
-    ExtremaPS_Surface newExtWarmup(adaptor);
+    ExtremaPS_Surface newExtWarmup(adaptor, aDomain);
     for (int i = 0; i < 10; ++i) {
         oldExtWarmup.Perform(points[i]);
-        newExtWarmup.Perform(points[i], aDomain, THE_TOL);
+        newExtWarmup.Perform(points[i], THE_TOL);
     }
 
     // Old implementation - fair comparison with Initialize+Perform pattern
@@ -74,13 +74,12 @@ void RunPerfTest(const char* name, const Handle(Geom_Surface)& surf,
     double oldTime = std::chrono::duration<double, std::milli>(oldEnd - oldStart).count() / NUM_ITERATIONS;
 
     // New implementation - use Perform (interior only, no boundary) to match old behavior
-    ExtremaPS_Surface newExt(adaptor);
-    // Warm up the cache (builds grid on first call for BSpline/Bezier)
-    newExt.Perform(points[0], aDomain, THE_TOL);
+    // Grid is built eagerly at construction time, so no warm-up needed
+    ExtremaPS_Surface newExt(adaptor, aDomain);
     auto newStart = std::chrono::high_resolution_clock::now();
     for (int iter = 0; iter < NUM_ITERATIONS; ++iter) {
         for (const auto& p : points) {
-            newExt.Perform(p, aDomain, THE_TOL);
+            newExt.Perform(p, THE_TOL);
         }
     }
     auto newEnd = std::chrono::high_resolution_clock::now();

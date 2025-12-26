@@ -106,6 +106,11 @@ ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurf
     : mySurface(theSurface),
       myAdaptor(theSurface)
 {
+  // Get bounds from surface
+  double aU1, aU2, aV1, aV2;
+  theSurface->Bounds(aU1, aU2, aV1, aV2);
+  myDomain = ExtremaPS::Domain2D(aU1, aU2, aV1, aV2);
+
   // Cache knots for knot-aware sampling
   myUKnots.Resize(1, mySurface->NbUKnots(), false);
   myVKnots.Resize(1, mySurface->NbVKnots(), false);
@@ -114,59 +119,65 @@ ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurf
 
   myUDegree = mySurface->UDegree();
   myVDegree = mySurface->VDegree();
+
+  // Build grid eagerly at construction time
+  buildGrid();
 }
 
 //==================================================================================================
 
-void ExtremaPS_BSplineSurface::updateCacheIfNeeded(const ExtremaPS::Domain2D& theDomain) const
+ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface,
+                                                   const ExtremaPS::Domain2D&         theDomain)
+    : mySurface(theSurface),
+      myAdaptor(theSurface),
+      myDomain(theDomain)
 {
-  // Check if cache is still valid
-  if (myGrid.Size() > 0
-      && std::abs(myCachedDomain.UMin - theDomain.UMin) < ExtremaPS::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.UMax - theDomain.UMax) < ExtremaPS::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.VMin - theDomain.VMin) < ExtremaPS::THE_PARAM_TOLERANCE
-      && std::abs(myCachedDomain.VMax - theDomain.VMax) < ExtremaPS::THE_PARAM_TOLERANCE)
-  {
-    return; // Cache is valid
-  }
+  // Cache knots for knot-aware sampling
+  myUKnots.Resize(1, mySurface->NbUKnots(), false);
+  myVKnots.Resize(1, mySurface->NbVKnots(), false);
+  mySurface->UKnots(myUKnots);
+  mySurface->VKnots(myVKnots);
 
+  myUDegree = mySurface->UDegree();
+  myVDegree = mySurface->VDegree();
+
+  // Build grid eagerly at construction time
+  buildGrid();
+}
+
+//==================================================================================================
+
+void ExtremaPS_BSplineSurface::buildGrid()
+{
   // Build knot-aware parameter arrays (ensures sampling at knot boundaries)
-  math_Vector aUParams = BuildKnotAwareParams(myUKnots, myUDegree, theDomain.UMin, theDomain.UMax);
-  math_Vector aVParams = BuildKnotAwareParams(myVKnots, myVDegree, theDomain.VMin, theDomain.VMax);
+  math_Vector aUParams = BuildKnotAwareParams(myUKnots, myUDegree, myDomain.UMin, myDomain.UMax);
+  math_Vector aVParams = BuildKnotAwareParams(myVKnots, myVDegree, myDomain.VMin, myDomain.VMax);
 
   GeomGridEval_BSplineSurface anEval(mySurface);
   myGrid = ExtremaPS_GridEvaluator::BuildGrid(anEval, aUParams, aVParams);
-
-  // Update cached domain
-  myCachedDomain = theDomain;
 }
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_BSplineSurface::Perform(const gp_Pnt&              theP,
-                                                     const ExtremaPS::Domain2D& theDomain,
-                                                     double                     theTol,
-                                                     ExtremaPS::SearchMode      theMode) const
+ExtremaPS::Result ExtremaPS_BSplineSurface::Perform(const gp_Pnt&         theP,
+                                                    double                theTol,
+                                                    ExtremaPS::SearchMode theMode) const
 {
-  // Update cache if parameter range changed
-  updateCacheIfNeeded(theDomain);
-
-  // Use the cached grid (interior extrema only)
-  return ExtremaPS_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, theDomain, theTol, theMode);
+  // Use the pre-built grid (interior extrema only)
+  return ExtremaPS_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
 }
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_BSplineSurface::PerformWithBoundary(const gp_Pnt&              theP,
-                                                                 const ExtremaPS::Domain2D& theDomain,
-                                                                 double                     theTol,
-                                                                 ExtremaPS::SearchMode      theMode) const
+ExtremaPS::Result ExtremaPS_BSplineSurface::PerformWithBoundary(const gp_Pnt&         theP,
+                                                                double                theTol,
+                                                                ExtremaPS::SearchMode theMode) const
 {
   // Start with interior extrema
-  ExtremaPS::Result aResult = Perform(theP, theDomain, theTol, theMode);
+  ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
 
   // Add boundary extrema
-  ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+  ExtremaPS::AddBoundaryExtrema(aResult, theP, myDomain, *this, theTol, theMode);
 
   if (!aResult.Extrema.IsEmpty())
   {

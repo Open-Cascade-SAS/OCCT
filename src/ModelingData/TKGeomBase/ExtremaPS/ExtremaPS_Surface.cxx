@@ -34,7 +34,21 @@ ExtremaPS_Surface::ExtremaPS_Surface()
 ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface& theSurface)
     : myEvaluator(std::monostate{})
 {
-  Initialize(theSurface);
+  myDomain = ExtremaPS::Domain2D(theSurface.FirstUParameter(),
+                                  theSurface.LastUParameter(),
+                                  theSurface.FirstVParameter(),
+                                  theSurface.LastVParameter());
+  initializeEvaluator(theSurface, myDomain);
+}
+
+//==================================================================================================
+
+ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface&   theSurface,
+                                      const ExtremaPS::Domain2D& theDomain)
+    : myEvaluator(std::monostate{}),
+      myDomain(theDomain)
+{
+  initializeEvaluator(theSurface, myDomain);
 }
 
 //==================================================================================================
@@ -42,67 +56,58 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface& theSurface)
 ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface)
     : myEvaluator(std::monostate{})
 {
-  Initialize(theSurface);
-}
-
-//==================================================================================================
-
-void ExtremaPS_Surface::Initialize(const Adaptor3d_Surface& theSurface)
-{
   myDomain = ExtremaPS::Domain2D(theSurface.FirstUParameter(),
                                   theSurface.LastUParameter(),
                                   theSurface.FirstVParameter(),
                                   theSurface.LastVParameter());
-
-  initializeEvaluator(theSurface);
+  initializeEvaluator(theSurface, myDomain);
 }
 
 //==================================================================================================
 
-void ExtremaPS_Surface::Initialize(const GeomAdaptor_Surface& theSurface)
+ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
+                                      const ExtremaPS::Domain2D& theDomain)
+    : myEvaluator(std::monostate{}),
+      myDomain(theDomain)
 {
-  myDomain = ExtremaPS::Domain2D(theSurface.FirstUParameter(),
-                                  theSurface.LastUParameter(),
-                                  theSurface.FirstVParameter(),
-                                  theSurface.LastVParameter());
-
-  initializeEvaluator(theSurface);
+  initializeEvaluator(theSurface, myDomain);
 }
 
 //==================================================================================================
 
-void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface& theSurface)
+void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurface,
+                                             const ExtremaPS::Domain2D& theDomain)
 {
   const GeomAbs_SurfaceType aSurfType = theSurface.GetType();
 
   switch (aSurfType)
   {
     case GeomAbs_Plane:
-      myEvaluator = ExtremaPS_Plane(theSurface.Plane());
+      myEvaluator = ExtremaPS_Plane(theSurface.Plane(), theDomain);
       break;
 
     case GeomAbs_Cylinder:
-      myEvaluator = ExtremaPS_Cylinder(theSurface.Cylinder());
+      myEvaluator = ExtremaPS_Cylinder(theSurface.Cylinder(), theDomain);
       break;
 
     case GeomAbs_Cone:
-      myEvaluator = ExtremaPS_Cone(theSurface.Cone());
+      myEvaluator = ExtremaPS_Cone(theSurface.Cone(), theDomain);
       break;
 
     case GeomAbs_Sphere:
-      myEvaluator = ExtremaPS_Sphere(theSurface.Sphere());
+      myEvaluator = ExtremaPS_Sphere(theSurface.Sphere(), theDomain);
       break;
 
     case GeomAbs_Torus:
-      myEvaluator = ExtremaPS_Torus(theSurface.Torus());
+      myEvaluator = ExtremaPS_Torus(theSurface.Torus(), theDomain);
       break;
 
     case GeomAbs_BezierSurface:
-      myEvaluator = ExtremaPS_BezierSurface(theSurface.Bezier());
+      myEvaluator = ExtremaPS_BezierSurface(theSurface.Bezier(), theDomain);
       break;
 
     case GeomAbs_BSplineSurface:
-      myEvaluator = ExtremaPS_BSplineSurface(theSurface.BSpline());
+      myEvaluator = ExtremaPS_BSplineSurface(theSurface.BSpline(), theDomain);
       break;
 
     case GeomAbs_OffsetSurface:
@@ -117,14 +122,14 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface& theSurface)
           Handle(Geom_OffsetSurface)::DownCast(aGeomAdaptor->Surface());
         if (!anOffsetSurf.IsNull())
         {
-          myEvaluator = ExtremaPS_OffsetSurface(anOffsetSurf);
+          myEvaluator = ExtremaPS_OffsetSurface(anOffsetSurf, theDomain);
           break;
         }
       }
       // Fallback to OtherSurface if we can't get the offset surface handle
       if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface());
+        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
       }
       break;
     }
@@ -136,7 +141,7 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface& theSurface)
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
       if (aGeomAdaptor != nullptr && !aGeomAdaptor->Surface().IsNull())
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGeomAdaptor->Surface());
+        myEvaluator = ExtremaPS_OtherSurface(aGeomAdaptor->Surface(), theDomain);
       }
       break;
     }
@@ -147,15 +152,6 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface& theSurface)
 
 ExtremaPS::Result ExtremaPS_Surface::Perform(const gp_Pnt& theP, double theTol) const
 {
-  return Perform(theP, myDomain, theTol);
-}
-
-//==================================================================================================
-
-ExtremaPS::Result ExtremaPS_Surface::Perform(const gp_Pnt&              theP,
-                                              const ExtremaPS::Domain2D& theDomain,
-                                              double                     theTol) const
-{
   return std::visit(
     [&](const auto& theEval) -> ExtremaPS::Result {
       using T = std::decay_t<decltype(theEval)>;
@@ -167,7 +163,7 @@ ExtremaPS::Result ExtremaPS_Surface::Perform(const gp_Pnt&              theP,
       }
       else
       {
-        return theEval.Perform(theP, theDomain, theTol, mySearchMode);
+        return theEval.Perform(theP, theTol, mySearchMode);
       }
     },
     myEvaluator);
@@ -177,15 +173,6 @@ ExtremaPS::Result ExtremaPS_Surface::Perform(const gp_Pnt&              theP,
 
 ExtremaPS::Result ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt& theP, double theTol) const
 {
-  return PerformWithBoundary(theP, myDomain, theTol);
-}
-
-//==================================================================================================
-
-ExtremaPS::Result ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt&              theP,
-                                                          const ExtremaPS::Domain2D& theDomain,
-                                                          double                     theTol) const
-{
   return std::visit(
     [&](const auto& theEval) -> ExtremaPS::Result {
       using T = std::decay_t<decltype(theEval)>;
@@ -197,7 +184,7 @@ ExtremaPS::Result ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt&          
       }
       else
       {
-        return theEval.PerformWithBoundary(theP, theDomain, theTol, mySearchMode);
+        return theEval.PerformWithBoundary(theP, theTol, mySearchMode);
       }
     },
     myEvaluator);
