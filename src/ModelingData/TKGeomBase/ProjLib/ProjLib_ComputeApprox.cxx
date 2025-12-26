@@ -51,6 +51,49 @@
 // static Standard_Boolean AffichValue = Standard_False;
 #endif
 
+namespace
+{
+
+//! Helper for optimized point-to-plane projection without gp_Trsf overhead.
+//! Pre-computes plane basis for efficient batch projection of multiple points.
+struct PlaneProjector
+{
+  double OX, OY, OZ;    //!< Plane origin
+  double DXx, DXy, DXz; //!< X direction components
+  double DYx, DYy, DYz; //!< Y direction components
+
+  //! Initialize from plane position.
+  PlaneProjector(const gp_Ax3& thePos)
+  {
+    const gp_Pnt& aLoc = thePos.Location();
+    OX                 = aLoc.X();
+    OY                 = aLoc.Y();
+    OZ                 = aLoc.Z();
+
+    const gp_Dir& aXDir = thePos.XDirection();
+    DXx                 = aXDir.X();
+    DXy                 = aXDir.Y();
+    DXz                 = aXDir.Z();
+
+    const gp_Dir& aYDir = thePos.YDirection();
+    DYx                 = aYDir.X();
+    DYy                 = aYDir.Y();
+    DYz                 = aYDir.Z();
+  }
+
+  //! Project point onto plane.
+  //! @return 2D point where X = (P - Origin) x XDirection, Y = (P - Origin) x YDirection
+  gp_Pnt2d Project(const gp_Pnt& theP) const
+  {
+    const double dX = theP.X() - OX;
+    const double dY = theP.Y() - OY;
+    const double dZ = theP.Z() - OZ;
+    return gp_Pnt2d(dX * DXx + dY * DXy + dZ * DXz, dX * DYx + dY * DYy + dZ * DYz);
+  }
+};
+
+} // namespace
+
 //=================================================================================================
 
 // OFV:
@@ -1106,12 +1149,12 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     if (BS->IsRational())
       BS->Weights(Weights);
     BS->Poles(P3d);
-    gp_Pln        Plane = S->Plane();
-    Standard_Real U, V;
+
+    // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
+    const PlaneProjector aProj(S->Plane().Position());
     for (Standard_Integer i = 1; i <= NbPoles; i++)
     {
-      ElSLib::Parameters(Plane, P3d(i), U, V);
-      Poles.SetValue(i, gp_Pnt2d(U, V));
+      Poles.SetValue(i, aProj.Project(P3d(i)));
     }
     NbKnots = BS->NbKnots();
     TColStd_Array1OfReal    Knots(1, NbKnots);
@@ -1144,14 +1187,11 @@ void ProjLib_ComputeApprox::Perform(const Handle(Adaptor3d_Curve)&   C,
     }
     BezierCurvePtr->Poles(P3d);
 
-    // project the 3D-Poles on the plane
-
-    gp_Pln        Plane = S->Plane();
-    Standard_Real U, V;
+    // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
+    const PlaneProjector aProj(S->Plane().Position());
     for (Standard_Integer i = 1; i <= NbPoles; i++)
     {
-      ElSLib::Parameters(Plane, P3d(i), U, V);
-      Poles.SetValue(i, gp_Pnt2d(U, V));
+      Poles.SetValue(i, aProj.Project(P3d(i)));
     }
     if (BezierCurvePtr->IsRational())
     {
