@@ -361,3 +361,22 @@ const ExtremaPC::Result& ExtremaPC_Curve::PerformWithEndpoints(const gp_Pnt&    
     myEvaluator);
   return *aResultPtr;
 }
+
+//==================================================================================================
+
+ExtremaPC::BatchResult ExtremaPC_Curve::PerformBatch(const NCollection_Array1<gp_Pnt>& thePoints,
+                                                      double                           theTol,
+                                                      ExtremaPC::SearchMode            theMode) const
+{
+  ExtremaPC::BatchResult aResult;
+  std::visit(
+    [&](auto& theEval) {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        aResult = theEval.PerformBatch(thePoints, theTol, theMode);
+      }
+    },
+    myEvaluator);
+  return aResult;
+}

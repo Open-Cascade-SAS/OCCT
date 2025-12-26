@@ -1,0 +1,324 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+double NCollection_KDTree<PointType, N, CoordAccessor>::getCoord(const PointType& thePnt,
+                                                                  int              theAxis)
+{
+  // Use DefaultAccessor's static method for coordinate access
+  return DefaultAccessor::Coord(thePnt, theAxis);
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+double NCollection_KDTree<PointType, N, CoordAccessor>::squareDistance(const PointType& thePnt1,
+                                                                        const PointType& thePnt2)
+{
+  double aSqDist = 0.0;
+  for (int i = 0; i < N; ++i)
+  {
+    const double aDiff = getCoord(thePnt1, i) - getCoord(thePnt2, i);
+    aSqDist += aDiff * aDiff;
+  }
+  return aSqDist;
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+void NCollection_KDTree<PointType, N, CoordAccessor>::Build(
+  const NCollection_Array1<PointType>& thePoints)
+{
+  Clear();
+
+  if (thePoints.IsEmpty())
+  {
+    return;
+  }
+
+  myPoints = &thePoints;
+
+  // Create index array
+  const int                aNbPoints = thePoints.Length();
+  NCollection_Vector<int> anIndices;
+  anIndices.SetIncrement(aNbPoints);
+  for (int i = thePoints.Lower(); i <= thePoints.Upper(); ++i)
+  {
+    anIndices.Append(i);
+  }
+
+  // Reserve approximate space for nodes (at most 2*N - 1 nodes for N points)
+  myNodes.SetIncrement(aNbPoints);
+
+  // Build tree recursively
+  buildSubtree(anIndices, 0, aNbPoints, 0);
+
+  myIsBuilt = true;
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+int NCollection_KDTree<PointType, N, CoordAccessor>::buildSubtree(
+  NCollection_Vector<int>& theIndices,
+  int                      theStart,
+  int                      theEnd,
+  int                      theDepth)
+{
+  if (theStart >= theEnd)
+  {
+    return -1;
+  }
+
+  // Choose split axis based on depth
+  const int aSplitAxis = theDepth % N;
+
+  // Find median by partial sorting
+  const int aMid = theStart + (theEnd - theStart) / 2;
+
+  // Sort indices by coordinate on split axis
+  // Using simple selection for median - stable and works well for KD-tree
+  std::nth_element(
+    theIndices.begin() + theStart,
+    theIndices.begin() + aMid,
+    theIndices.begin() + theEnd,
+    [this, aSplitAxis](int theIdx1, int theIdx2) {
+      return getCoord(myPoints->Value(theIdx1), aSplitAxis)
+             < getCoord(myPoints->Value(theIdx2), aSplitAxis);
+    });
+
+  // Create node
+  Node aNode;
+  aNode.PointIndex = theIndices.Value(aMid);
+  aNode.SplitAxis  = aSplitAxis;
+
+  // Add node and get its index
+  const int aNodeIdx = myNodes.Length();
+  myNodes.Append(aNode);
+
+  // Build subtrees recursively
+  const int aLeftIdx  = buildSubtree(theIndices, theStart, aMid, theDepth + 1);
+  const int aRightIdx = buildSubtree(theIndices, aMid + 1, theEnd, theDepth + 1);
+
+  // Update node with child indices
+  myNodes.ChangeValue(aNodeIdx).Left  = aLeftIdx;
+  myNodes.ChangeValue(aNodeIdx).Right = aRightIdx;
+
+  return aNodeIdx;
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+bool NCollection_KDTree<PointType, N, CoordAccessor>::FindNearest(const PointType& theQuery,
+                                                                   int&             theIndex,
+                                                                   double&          theSquareDistance) const
+{
+  theIndex          = -1;
+  theSquareDistance = std::numeric_limits<double>::max();
+
+  if (!myIsBuilt || myNodes.IsEmpty())
+  {
+    return false;
+  }
+
+  NCollection_Vector<int>    anIndices;
+  NCollection_Vector<double> aDistances;
+  FindKNearest(theQuery, 1, anIndices, aDistances);
+
+  if (anIndices.IsEmpty())
+  {
+    return false;
+  }
+
+  theIndex          = anIndices.First();
+  theSquareDistance = aDistances.First();
+  return true;
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+void NCollection_KDTree<PointType, N, CoordAccessor>::FindKNearest(
+  const PointType&            theQuery,
+  int                         theK,
+  NCollection_Vector<int>&    theIndices,
+  NCollection_Vector<double>& theSquareDistances) const
+{
+  theIndices.Clear();
+  theSquareDistances.Clear();
+
+  if (!myIsBuilt || myNodes.IsEmpty() || theK <= 0)
+  {
+    return;
+  }
+
+  // Use max-heap to track K nearest neighbors
+  // The top of heap is the farthest among current K nearest
+  std::priority_queue<NearestEntry, std::vector<NearestEntry>> aHeap;
+
+  // Search recursively
+  searchKNearest(0, theQuery, theK, aHeap);
+
+  // Extract results from heap (will be in reverse order - farthest first)
+  const int aNbFound = static_cast<int>(aHeap.size());
+  theIndices.SetIncrement(aNbFound);
+  theSquareDistances.SetIncrement(aNbFound);
+
+  // Collect in reverse order
+  NCollection_Vector<NearestEntry> aResults;
+  aResults.SetIncrement(aNbFound);
+  while (!aHeap.empty())
+  {
+    aResults.Append(aHeap.top());
+    aHeap.pop();
+  }
+
+  // Output in sorted order (nearest first)
+  for (int i = aResults.Length() - 1; i >= 0; --i)
+  {
+    theIndices.Append(aResults.Value(i).Index);
+    theSquareDistances.Append(aResults.Value(i).SquareDistance);
+  }
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+void NCollection_KDTree<PointType, N, CoordAccessor>::searchKNearest(
+  int                                                            theNodeIdx,
+  const PointType&                                               theQuery,
+  int                                                            theK,
+  std::priority_queue<NearestEntry, std::vector<NearestEntry>>& theHeap) const
+{
+  if (theNodeIdx < 0)
+  {
+    return;
+  }
+
+  const Node& aNode    = myNodes.Value(theNodeIdx);
+  const int   aPtIdx   = aNode.PointIndex;
+  const auto& aNodePnt = myPoints->Value(aPtIdx);
+
+  // Compute distance from query to this node's point
+  const double aSqDist = squareDistance(theQuery, aNodePnt);
+
+  // Update heap if this point is among K nearest
+  if (static_cast<int>(theHeap.size()) < theK)
+  {
+    theHeap.push(NearestEntry(aPtIdx, aSqDist));
+  }
+  else if (aSqDist < theHeap.top().SquareDistance)
+  {
+    theHeap.pop();
+    theHeap.push(NearestEntry(aPtIdx, aSqDist));
+  }
+
+  // Get split axis and compute distance to splitting plane
+  const int    aSplitAxis  = aNode.SplitAxis;
+  const double aQueryCoord = getCoord(theQuery, aSplitAxis);
+  const double aNodeCoord  = getCoord(aNodePnt, aSplitAxis);
+  const double aDiff       = aQueryCoord - aNodeCoord;
+  const double aPlaneDist  = aDiff * aDiff;
+
+  // Determine which subtree to search first
+  const int aFirstChild  = (aDiff < 0.0) ? aNode.Left : aNode.Right;
+  const int aSecondChild = (aDiff < 0.0) ? aNode.Right : aNode.Left;
+
+  // Search the closer subtree first
+  searchKNearest(aFirstChild, theQuery, theK, theHeap);
+
+  // Search the farther subtree if it might contain closer points
+  if (static_cast<int>(theHeap.size()) < theK || aPlaneDist < theHeap.top().SquareDistance)
+  {
+    searchKNearest(aSecondChild, theQuery, theK, theHeap);
+  }
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+void NCollection_KDTree<PointType, N, CoordAccessor>::FindInRadius(
+  const PointType&            theQuery,
+  double                      theRadius,
+  NCollection_Vector<int>&    theIndices,
+  NCollection_Vector<double>* theSquareDistances) const
+{
+  theIndices.Clear();
+  if (theSquareDistances != nullptr)
+  {
+    theSquareDistances->Clear();
+  }
+
+  if (!myIsBuilt || myNodes.IsEmpty() || theRadius <= 0.0)
+  {
+    return;
+  }
+
+  const double aRadiusSq = theRadius * theRadius;
+  searchInRadius(0, theQuery, aRadiusSq, theIndices, theSquareDistances);
+}
+
+//==================================================================================================
+
+template <class PointType, int N, class CoordAccessor>
+void NCollection_KDTree<PointType, N, CoordAccessor>::searchInRadius(
+  int                         theNodeIdx,
+  const PointType&            theQuery,
+  double                      theRadiusSq,
+  NCollection_Vector<int>&    theIndices,
+  NCollection_Vector<double>* theSquareDistances) const
+{
+  if (theNodeIdx < 0)
+  {
+    return;
+  }
+
+  const Node& aNode    = myNodes.Value(theNodeIdx);
+  const int   aPtIdx   = aNode.PointIndex;
+  const auto& aNodePnt = myPoints->Value(aPtIdx);
+
+  // Check if this point is within radius
+  const double aSqDist = squareDistance(theQuery, aNodePnt);
+  if (aSqDist <= theRadiusSq)
+  {
+    theIndices.Append(aPtIdx);
+    if (theSquareDistances != nullptr)
+    {
+      theSquareDistances->Append(aSqDist);
+    }
+  }
+
+  // Get split axis and compute distance to splitting plane
+  const int    aSplitAxis  = aNode.SplitAxis;
+  const double aQueryCoord = getCoord(theQuery, aSplitAxis);
+  const double aNodeCoord  = getCoord(aNodePnt, aSplitAxis);
+  const double aDiff       = aQueryCoord - aNodeCoord;
+  const double aPlaneDist  = aDiff * aDiff;
+
+  // Determine which subtree to search first
+  const int aFirstChild  = (aDiff < 0.0) ? aNode.Left : aNode.Right;
+  const int aSecondChild = (aDiff < 0.0) ? aNode.Right : aNode.Left;
+
+  // Always search the closer subtree
+  searchInRadius(aFirstChild, theQuery, theRadiusSq, theIndices, theSquareDistances);
+
+  // Search the farther subtree only if the splitting plane is within radius
+  if (aPlaneDist <= theRadiusSq)
+  {
+    searchInRadius(aSecondChild, theQuery, theRadiusSq, theIndices, theSquareDistances);
+  }
+}

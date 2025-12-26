@@ -139,6 +139,21 @@ public:
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return !std::holds_alternative<std::monostate>(myEvaluator); }
 
+  //! @brief Batch extrema computation for multiple query points.
+  //!
+  //! Uses KD-Tree spatial indexing for efficient grid segment search
+  //! on grid-based curves. Analytical curves use simple loop.
+  //! Uses domain specified at construction time.
+  //!
+  //! @param thePoints array of query points
+  //! @param theTol tolerance
+  //! @param theMode search mode
+  //! @return batch result with one Result per query point
+  [[nodiscard]] Standard_EXPORT ExtremaPC::BatchResult PerformBatch(
+    const NCollection_Array1<gp_Pnt>& thePoints,
+    double                            theTol,
+    ExtremaPC::SearchMode             theMode = ExtremaPC::SearchMode::MinMax) const;
+
 private:
   //! Helper method to initialize evaluator from a Geom_Curve.
   //! Handles all curve type detection and evaluator creation.

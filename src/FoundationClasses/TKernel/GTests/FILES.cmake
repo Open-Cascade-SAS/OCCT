@@ -12,6 +12,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_DoubleMap_Test.cxx
   NCollection_IndexedDataMap_Test.cxx
   NCollection_IndexedMap_Test.cxx
+  NCollection_KDTree_Test.cxx
   NCollection_List_Test.cxx
   NCollection_LocalArray_Test.cxx
   NCollection_Map_Test.cxx

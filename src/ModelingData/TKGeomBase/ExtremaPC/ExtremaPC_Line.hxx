@@ -154,6 +154,31 @@ public:
   //! Returns the line geometry.
   const gp_Lin& Line() const { return myLine; }
 
+  //! @brief Batch extrema computation for multiple query points.
+  //!
+  //! For analytical curves like Line, this is a simple loop over Perform().
+  //! Uses domain specified at construction time.
+  //!
+  //! @param thePoints array of query points
+  //! @param theTol tolerance
+  //! @param theMode search mode
+  //! @return batch result with one Result per query point
+  [[nodiscard]] ExtremaPC::BatchResult PerformBatch(const NCollection_Array1<gp_Pnt>& thePoints,
+                                                     double                           theTol,
+                                                     ExtremaPC::SearchMode            theMode = ExtremaPC::SearchMode::MinMax) const
+  {
+    ExtremaPC::BatchResult aResults(thePoints.Lower(), thePoints.Upper());
+
+    for (int i = thePoints.Lower(); i <= thePoints.Upper(); ++i)
+    {
+      (void)Perform(thePoints.Value(i), theTol, theMode);
+      aResults[i] = std::move(myResult);
+      myResult    = ExtremaPC::Result(); // Reset for next query
+    }
+
+    return aResults;
+  }
+
 private:
   gp_Lin                             myLine;   //!< Line geometry
   std::optional<ExtremaPC::Domain1D> myDomain; //!< Parameter domain (nullopt for unbounded)
