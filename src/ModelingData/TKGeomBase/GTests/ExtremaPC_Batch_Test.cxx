@@ -17,6 +17,7 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
@@ -27,7 +28,10 @@
 #include <TColgp_Array1OfPnt.hxx>
 
 #include <gtest/gtest.h>
+#include <chrono>
 #include <cmath>
+#include <iomanip>
+#include <iostream>
 #include <random>
 
 namespace
@@ -361,4 +365,325 @@ TEST(ExtremaPC_BatchTest, LargeBatch_Performance)
 
   // All queries should succeed
   EXPECT_EQ(1000, aDoneCount);
+}
+
+//==================================================================================================
+// Performance comparison tests: Batch vs Loop
+//==================================================================================================
+
+//! Helper to create a complex BSpline curve with many poles for performance testing.
+Handle(Geom_BSplineCurve) createComplexBSpline(int theNbPoles, int theSeed)
+{
+  std::mt19937                     aGen(theSeed);
+  std::uniform_real_distribution<> aDist(-5.0, 5.0);
+
+  TColgp_Array1OfPnt aPoles(1, theNbPoles);
+  for (int i = 1; i <= theNbPoles; ++i)
+  {
+    // Create a wavy curve along X axis with random Y and Z perturbations
+    double aX = static_cast<double>(i - 1) * 10.0 / (theNbPoles - 1);
+    double aY = std::sin(aX * 2.0) * 2.0 + aDist(aGen) * 0.3;
+    double aZ = std::cos(aX * 1.5) * 1.5 + aDist(aGen) * 0.3;
+    aPoles.SetValue(i, gp_Pnt(aX, aY, aZ));
+  }
+
+  GeomAPI_PointsToBSpline aBuilder(aPoles, 3, 8);
+  return aBuilder.Curve();
+}
+
+//! Generate random query points in a box around the curve.
+NCollection_Array1<gp_Pnt> generateQueryPoints(int theCount, int theSeed)
+{
+  std::mt19937                     aGen(theSeed);
+  std::uniform_real_distribution<> aDistX(-2.0, 12.0);
+  std::uniform_real_distribution<> aDistYZ(-5.0, 5.0);
+
+  NCollection_Array1<gp_Pnt> aPoints(0, theCount - 1);
+  for (int i = 0; i < theCount; ++i)
+  {
+    aPoints.SetValue(i, gp_Pnt(aDistX(aGen), aDistYZ(aGen), aDistYZ(aGen)));
+  }
+  return aPoints;
+}
+
+// Performance test: Batch vs Loop on BSpline with many poles
+TEST(ExtremaPC_BatchPerformanceTest, BSpline_BatchVsLoop_ManyPoles)
+{
+  constexpr int    THE_NB_POLES      = 50;   // Complex curve with 50 poles
+  constexpr int    THE_NB_POINTS     = 500;  // 500 query points
+  constexpr int    THE_NB_ITERATIONS = 20;   // Run multiple times for averaging
+  constexpr double THE_TOL           = 1.0e-9;
+
+  // Create complex BSpline
+  Handle(Geom_BSplineCurve) aBSpline = createComplexBSpline(THE_NB_POLES, 12345);
+  ASSERT_FALSE(aBSpline.IsNull());
+
+  // Generate query points
+  NCollection_Array1<gp_Pnt> aPoints = generateQueryPoints(THE_NB_POINTS, 54321);
+
+  // Warm-up run
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    (void)anExtPC.PerformBatch(aPoints, THE_TOL);
+  }
+
+  // Measure batch processing time
+  auto aBatchStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    ExtremaPC::BatchResult aBatchResult = anExtPC.PerformBatch(aPoints, THE_TOL);
+    (void)aBatchResult.Size(); // Prevent optimization
+  }
+  auto aBatchEnd  = std::chrono::high_resolution_clock::now();
+  auto aBatchTime = std::chrono::duration_cast<std::chrono::microseconds>(aBatchEnd - aBatchStart).count();
+
+  // Measure loop processing time
+  auto aLoopStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    int             aCount = 0;
+    for (int i = aPoints.Lower(); i <= aPoints.Upper(); ++i)
+    {
+      const ExtremaPC::Result& aResult = anExtPC.Perform(aPoints.Value(i), THE_TOL);
+      if (aResult.IsDone())
+      {
+        ++aCount;
+      }
+    }
+    (void)aCount; // Prevent optimization
+  }
+  auto aLoopEnd  = std::chrono::high_resolution_clock::now();
+  auto aLoopTime = std::chrono::duration_cast<std::chrono::microseconds>(aLoopEnd - aLoopStart).count();
+
+  // Report performance
+  double aBatchAvg = static_cast<double>(aBatchTime) / THE_NB_ITERATIONS;
+  double aLoopAvg  = static_cast<double>(aLoopTime) / THE_NB_ITERATIONS;
+  double aRatio    = aLoopAvg / aBatchAvg;
+
+  std::cout << "  [PERF] BSpline Batch vs Loop (" << THE_NB_POLES << " poles, " << THE_NB_POINTS
+            << " points, " << THE_NB_ITERATIONS << " iterations):\n"
+            << "    Batch avg: " << static_cast<int>(aBatchAvg) << " us\n"
+            << "    Loop avg:  " << static_cast<int>(aLoopAvg) << " us\n"
+            << "    Ratio (Loop/Batch): " << std::fixed << std::setprecision(2) << aRatio << "\n";
+
+  // Verify correctness: batch and loop should produce same results
+  ExtremaPC_Curve            anExtPC(aBSpline);
+  ExtremaPC::BatchResult     aBatchResult = anExtPC.PerformBatch(aPoints, THE_TOL);
+
+  int aMismatchCount = 0;
+  for (int i = aPoints.Lower(); i <= aPoints.Upper(); ++i)
+  {
+    const ExtremaPC::Result& aSingleResult = anExtPC.Perform(aPoints.Value(i), THE_TOL);
+    const ExtremaPC::Result& aBatchItem    = aBatchResult[i];
+
+    if (aSingleResult.IsDone() && aBatchItem.IsDone() && aSingleResult.NbExt() > 0 && aBatchItem.NbExt() > 0)
+    {
+      if (std::abs(aSingleResult.MinSquareDistance() - aBatchItem.MinSquareDistance()) > 1e-8)
+      {
+        ++aMismatchCount;
+      }
+    }
+  }
+  EXPECT_EQ(0, aMismatchCount) << "Batch and loop results differ";
+}
+
+// Performance test: Batch vs Loop with very large number of query points
+TEST(ExtremaPC_BatchPerformanceTest, BSpline_BatchVsLoop_ManyPoints)
+{
+  constexpr int    THE_NB_POLES      = 20;    // Moderate complexity curve
+  constexpr int    THE_NB_POINTS     = 5000;  // 5000 query points
+  constexpr int    THE_NB_ITERATIONS = 5;     // Fewer iterations due to larger workload
+  constexpr double THE_TOL           = 1.0e-9;
+
+  // Create BSpline
+  Handle(Geom_BSplineCurve) aBSpline = createComplexBSpline(THE_NB_POLES, 11111);
+  ASSERT_FALSE(aBSpline.IsNull());
+
+  // Generate many query points
+  NCollection_Array1<gp_Pnt> aPoints = generateQueryPoints(THE_NB_POINTS, 22222);
+
+  // Warm-up run
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    (void)anExtPC.PerformBatch(aPoints, THE_TOL);
+  }
+
+  // Measure batch processing time
+  auto aBatchStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    ExtremaPC::BatchResult aBatchResult = anExtPC.PerformBatch(aPoints, THE_TOL);
+    (void)aBatchResult.Size();
+  }
+  auto aBatchEnd  = std::chrono::high_resolution_clock::now();
+  auto aBatchTime = std::chrono::duration_cast<std::chrono::microseconds>(aBatchEnd - aBatchStart).count();
+
+  // Measure loop processing time
+  auto aLoopStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    int             aCount = 0;
+    for (int i = aPoints.Lower(); i <= aPoints.Upper(); ++i)
+    {
+      const ExtremaPC::Result& aResult = anExtPC.Perform(aPoints.Value(i), THE_TOL);
+      if (aResult.IsDone())
+      {
+        ++aCount;
+      }
+    }
+    (void)aCount;
+  }
+  auto aLoopEnd  = std::chrono::high_resolution_clock::now();
+  auto aLoopTime = std::chrono::duration_cast<std::chrono::microseconds>(aLoopEnd - aLoopStart).count();
+
+  // Report performance
+  double aBatchAvg = static_cast<double>(aBatchTime) / THE_NB_ITERATIONS;
+  double aLoopAvg  = static_cast<double>(aLoopTime) / THE_NB_ITERATIONS;
+  double aRatio    = aLoopAvg / aBatchAvg;
+
+  std::cout << "  [PERF] BSpline Batch vs Loop (" << THE_NB_POLES << " poles, " << THE_NB_POINTS
+            << " points, " << THE_NB_ITERATIONS << " iterations):\n"
+            << "    Batch avg: " << static_cast<int>(aBatchAvg) << " us\n"
+            << "    Loop avg:  " << static_cast<int>(aLoopAvg) << " us\n"
+            << "    Ratio (Loop/Batch): " << std::fixed << std::setprecision(2) << aRatio << "\n";
+
+  // Test should complete without hanging
+  EXPECT_GT(aBatchTime, 0);
+  EXPECT_GT(aLoopTime, 0);
+}
+
+// Performance test: Circle (analytical) - Batch vs Loop
+TEST(ExtremaPC_BatchPerformanceTest, Circle_BatchVsLoop)
+{
+  constexpr int    THE_NB_POINTS     = 10000; // 10000 query points
+  constexpr int    THE_NB_ITERATIONS = 10;
+  constexpr double THE_TOL           = 1.0e-9;
+
+  // Create circle
+  gp_Circ               aCirc(gp::XOY(), 5.0);
+  Handle(Geom_Circle)   aCircle = new Geom_Circle(aCirc);
+  GeomAdaptor_Curve     anAdaptor(aCircle);
+
+  // Generate query points
+  NCollection_Array1<gp_Pnt> aPoints = generateQueryPoints(THE_NB_POINTS, 33333);
+
+  // Warm-up
+  {
+    ExtremaPC_Curve anExtPC(anAdaptor);
+    (void)anExtPC.PerformBatch(aPoints, THE_TOL);
+  }
+
+  // Measure batch time
+  auto aBatchStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(anAdaptor);
+    ExtremaPC::BatchResult aBatchResult = anExtPC.PerformBatch(aPoints, THE_TOL);
+    (void)aBatchResult.Size();
+  }
+  auto aBatchEnd  = std::chrono::high_resolution_clock::now();
+  auto aBatchTime = std::chrono::duration_cast<std::chrono::microseconds>(aBatchEnd - aBatchStart).count();
+
+  // Measure loop time
+  auto aLoopStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(anAdaptor);
+    int             aCount = 0;
+    for (int i = aPoints.Lower(); i <= aPoints.Upper(); ++i)
+    {
+      const ExtremaPC::Result& aResult = anExtPC.Perform(aPoints.Value(i), THE_TOL);
+      if (aResult.IsDone())
+      {
+        ++aCount;
+      }
+    }
+    (void)aCount;
+  }
+  auto aLoopEnd  = std::chrono::high_resolution_clock::now();
+  auto aLoopTime = std::chrono::duration_cast<std::chrono::microseconds>(aLoopEnd - aLoopStart).count();
+
+  // Report performance
+  double aBatchAvg = static_cast<double>(aBatchTime) / THE_NB_ITERATIONS;
+  double aLoopAvg  = static_cast<double>(aLoopTime) / THE_NB_ITERATIONS;
+  double aRatio    = aLoopAvg / aBatchAvg;
+
+  std::cout << "  [PERF] Circle Batch vs Loop (" << THE_NB_POINTS << " points, " << THE_NB_ITERATIONS
+            << " iterations):\n"
+            << "    Batch avg: " << static_cast<int>(aBatchAvg) << " us\n"
+            << "    Loop avg:  " << static_cast<int>(aLoopAvg) << " us\n"
+            << "    Ratio (Loop/Batch): " << std::fixed << std::setprecision(2) << aRatio << "\n";
+
+  EXPECT_GT(aBatchTime, 0);
+  EXPECT_GT(aLoopTime, 0);
+}
+
+// Performance test: Complex BSpline with 100 poles and 10000 points
+TEST(ExtremaPC_BatchPerformanceTest, BSpline_LargeScale)
+{
+  constexpr int    THE_NB_POLES      = 100;   // Very complex curve
+  constexpr int    THE_NB_POINTS     = 10000; // Many query points
+  constexpr int    THE_NB_ITERATIONS = 3;     // Fewer iterations due to large workload
+  constexpr double THE_TOL           = 1.0e-9;
+
+  // Create very complex BSpline
+  Handle(Geom_BSplineCurve) aBSpline = createComplexBSpline(THE_NB_POLES, 77777);
+  ASSERT_FALSE(aBSpline.IsNull());
+
+  // Generate many query points
+  NCollection_Array1<gp_Pnt> aPoints = generateQueryPoints(THE_NB_POINTS, 88888);
+
+  // Warm-up
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    (void)anExtPC.PerformBatch(aPoints, THE_TOL);
+  }
+
+  // Measure batch time
+  auto aBatchStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    ExtremaPC::BatchResult aBatchResult = anExtPC.PerformBatch(aPoints, THE_TOL);
+    (void)aBatchResult.Size();
+  }
+  auto aBatchEnd  = std::chrono::high_resolution_clock::now();
+  auto aBatchTime = std::chrono::duration_cast<std::chrono::microseconds>(aBatchEnd - aBatchStart).count();
+
+  // Measure loop time
+  auto aLoopStart = std::chrono::high_resolution_clock::now();
+  for (int iter = 0; iter < THE_NB_ITERATIONS; ++iter)
+  {
+    ExtremaPC_Curve anExtPC(aBSpline);
+    int             aCount = 0;
+    for (int i = aPoints.Lower(); i <= aPoints.Upper(); ++i)
+    {
+      const ExtremaPC::Result& aResult = anExtPC.Perform(aPoints.Value(i), THE_TOL);
+      if (aResult.IsDone())
+      {
+        ++aCount;
+      }
+    }
+    (void)aCount;
+  }
+  auto aLoopEnd  = std::chrono::high_resolution_clock::now();
+  auto aLoopTime = std::chrono::duration_cast<std::chrono::microseconds>(aLoopEnd - aLoopStart).count();
+
+  // Report performance
+  double aBatchAvg = static_cast<double>(aBatchTime) / THE_NB_ITERATIONS;
+  double aLoopAvg  = static_cast<double>(aLoopTime) / THE_NB_ITERATIONS;
+  double aRatio    = aLoopAvg / aBatchAvg;
+
+  std::cout << "  [PERF] Large Scale BSpline (" << THE_NB_POLES << " poles, " << THE_NB_POINTS
+            << " points, " << THE_NB_ITERATIONS << " iterations):\n"
+            << "    Batch avg: " << static_cast<int>(aBatchAvg / 1000) << " ms\n"
+            << "    Loop avg:  " << static_cast<int>(aLoopAvg / 1000) << " ms\n"
+            << "    Ratio (Loop/Batch): " << std::fixed << std::setprecision(2) << aRatio << "\n";
+
+  EXPECT_GT(aBatchTime, 0);
+  EXPECT_GT(aLoopTime, 0);
 }
