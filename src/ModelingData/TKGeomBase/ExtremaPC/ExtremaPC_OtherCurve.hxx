@@ -101,22 +101,6 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
-  //! @brief Batch extrema computation for multiple query points.
-  //!
-  //! Uses KD-Tree spatial indexing for efficient grid segment search.
-  //! Uses domain specified at construction time.
-  //!
-  //! @param thePoints array of query points
-  //! @param theTol tolerance
-  //! @param theMode search mode
-  //! @return batch result with one Result per query point
-  [[nodiscard]] ExtremaPC::BatchResult PerformBatch(const NCollection_Array1<gp_Pnt>& thePoints,
-                                                     double                           theTol,
-                                                     ExtremaPC::SearchMode            theMode = ExtremaPC::SearchMode::MinMax) const
-  {
-    return myEvaluator.PerformBatch(*myCurve, thePoints, myDomain, theTol, theMode);
-  }
-
 private:
   //! Build grid for the curve.
   void buildGrid();

@@ -16,7 +16,6 @@
 
 #include <gp_Pnt.hxx>
 #include <MathUtils_Domain.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 
@@ -232,106 +231,6 @@ struct Result
     Extrema.Clear();
     InfiniteSquareDistance = 0.0;
   }
-};
-
-//! @brief Result container for batch point-curve extrema computation.
-//!
-//! Stores results for multiple query points efficiently using a single array.
-//! Each query point has exactly one Result entry at the corresponding index.
-//! The array uses the same lower/upper bounds as the input points array.
-//!
-//! Move-only to prevent expensive copies. Use std::move or const reference.
-class BatchResult
-{
-public:
-  //! Default constructor creates empty result.
-  BatchResult() = default;
-
-  //! Constructor with explicit bounds (same as input points array).
-  //! @param[in] theLower lower index
-  //! @param[in] theUpper upper index
-  explicit BatchResult(int theLower, int theUpper)
-      : myResults(theLower, theUpper)
-  {
-  }
-
-  //! Copy constructor is deleted.
-  BatchResult(const BatchResult&) = delete;
-
-  //! Copy assignment is deleted.
-  BatchResult& operator=(const BatchResult&) = delete;
-
-  //! Move constructor.
-  BatchResult(BatchResult&&) = default;
-
-  //! Move assignment.
-  BatchResult& operator=(BatchResult&&) = default;
-
-  //! Access result for query point by index (mutable).
-  //! @param[in] theIndex query point index (same as in input array)
-  //! @return reference to result for that query point
-  Result& operator[](int theIndex) { return myResults.ChangeValue(theIndex); }
-
-  //! Access result for query point by index (const).
-  //! @param[in] theIndex query point index (same as in input array)
-  //! @return const reference to result for that query point
-  const Result& operator[](int theIndex) const { return myResults.Value(theIndex); }
-
-  //! Access result for query point by index (mutable).
-  //! @param[in] theIndex query point index (same as in input array)
-  //! @return reference to result for that query point
-  Result& Value(int theIndex) { return myResults.ChangeValue(theIndex); }
-
-  //! Access result for query point by index (const).
-  //! @param[in] theIndex query point index (same as in input array)
-  //! @return const reference to result for that query point
-  const Result& Value(int theIndex) const { return myResults.Value(theIndex); }
-
-  //! @return number of results (number of query points)
-  int Size() const { return myResults.Size(); }
-
-  //! @return lower index bound
-  int Lower() const { return myResults.Lower(); }
-
-  //! @return upper index bound
-  int Upper() const { return myResults.Upper(); }
-
-  //! @return true if empty
-  bool IsEmpty() const { return myResults.IsEmpty(); }
-
-  //! Find the global minimum across all query points.
-  //! @param[out] thePointIndex index of query point with minimum distance
-  //! @param[out] theExtremumIndex index of the extremum within that result
-  //! @return minimum squared distance (infinity if no extrema found)
-  double GlobalMinSquareDistance(int& thePointIndex, int& theExtremumIndex) const
-  {
-    thePointIndex    = -1;
-    theExtremumIndex = -1;
-    double aMinSqDist = std::numeric_limits<double>::infinity();
-
-    for (int i = myResults.Lower(); i <= myResults.Upper(); ++i)
-    {
-      const Result& aRes = myResults.Value(i);
-      if (aRes.IsDone() && aRes.NbExt() > 0)
-      {
-        int aLocalMinIdx = aRes.MinIndex();
-        if (aLocalMinIdx >= 0)
-        {
-          double aLocalMinDist = aRes[aLocalMinIdx].SquareDistance;
-          if (aLocalMinDist < aMinSqDist)
-          {
-            aMinSqDist       = aLocalMinDist;
-            thePointIndex    = i;
-            theExtremumIndex = aLocalMinIdx;
-          }
-        }
-      }
-    }
-    return aMinSqDist;
-  }
-
-private:
-  NCollection_Array1<Result> myResults; //!< Results array with same indexing as input points
 };
 
 //! Configuration for extrema computation.

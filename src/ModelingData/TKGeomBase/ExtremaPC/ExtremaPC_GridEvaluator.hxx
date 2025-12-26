@@ -149,57 +149,6 @@ public:
     return aParams;
   }
 
-  //! @brief Perform batch extrema computation using KD-Tree optimization.
-  //!
-  //! Uses KD-Tree spatial indexing to find candidate grid segments efficiently
-  //! for multiple query points. The KD-Tree is built lazily on first call.
-  //!
-  //! @param theCurve curve adaptor
-  //! @param thePoints array of query points
-  //! @param theDomain parameter domain
-  //! @param theTol tolerance
-  //! @param theMode search mode
-  //! @return batch result with one Result per query point
-  [[nodiscard]] ExtremaPC::BatchResult PerformBatch(const Adaptor3d_Curve&            theCurve,
-                                                     const NCollection_Array1<gp_Pnt>& thePoints,
-                                                     const ExtremaPC::Domain1D&        theDomain,
-                                                     double                            theTol,
-                                                     ExtremaPC::SearchMode             theMode) const
-  {
-    ExtremaPC::BatchResult aResults(thePoints.Lower(), thePoints.Upper());
-
-    if (thePoints.IsEmpty() || myGrid.IsEmpty())
-    {
-      return aResults;
-    }
-
-    // Process each query point using full grid scan (same as single-point Perform)
-    // This ensures correctness; optimization via KD-Tree can be added later
-    // if profiling shows it's needed for specific use cases.
-    for (int q = thePoints.Lower(); q <= thePoints.Upper(); ++q)
-    {
-      const gp_Pnt& aQueryPt = thePoints.Value(q);
-
-      // Use the same algorithm as single-point Perform
-      myResult.Clear();
-      scanGrid(aQueryPt, theTol, theMode);
-      refineCandidates(theCurve, aQueryPt, theDomain, theTol, theMode);
-
-      if (!myResult.Extrema.IsEmpty())
-      {
-        myResult.Status = ExtremaPC::Status::OK;
-      }
-
-      // Move result to batch results
-      aResults[q] = std::move(myResult);
-      // Reset myResult to clean state (Extrema is now empty after move)
-      myResult.Status                 = ExtremaPC::Status::NotDone;
-      myResult.InfiniteSquareDistance = 0.0;
-    }
-
-    return aResults;
-  }
-
 private:
   //! @brief Scan grid to find candidate intervals for extrema.
   void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
@@ -539,7 +488,6 @@ private:
   mutable NCollection_Vector<double>               myFoundRoots;    //!< Found roots for dedup
   mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
   mutable NCollection_Array1<bool>                 myProcessed;     //!< Processed flags for grid scan
-
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

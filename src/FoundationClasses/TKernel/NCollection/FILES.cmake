@@ -45,8 +45,6 @@ set(OCCT_NCollection_FILES
   NCollection_IndexedIterator.hxx
   NCollection_IndexedMap.hxx
   NCollection_Iterator.hxx
-  NCollection_KDTree.hxx
-  NCollection_KDTree.lxx
   NCollection_Lerp.hxx
   NCollection_List.hxx
   NCollection_ListNode.hxx
