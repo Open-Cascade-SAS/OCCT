@@ -328,36 +328,43 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theU
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP) const
+const ExtremaPC::Result& ExtremaPC_Curve::Perform(const gp_Pnt& theP) const
 {
-  return std::visit(
-    [&](const auto& theEval) -> ExtremaPC::Result {
+  myResult.Clear();
+
+  std::visit(
+    [&](const auto& theEval) {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
-        ExtremaPC::Result aResult;
-        aResult.Status = ExtremaPC::Status::NotDone;
-        return aResult;
+        myResult.Status = ExtremaPC::Status::NotDone;
       }
       else
       {
         // Use the evaluator's stored domain (fixed at construction)
-        if (myConfig.IncludeEndpoints)
+        const ExtremaPC::Result& anInnerResult =
+          myConfig.IncludeEndpoints
+            ? theEval.PerformWithEndpoints(theP, myConfig.Tolerance, myConfig.Mode)
+            : theEval.Perform(theP, myConfig.Tolerance, myConfig.Mode);
+
+        // Copy result data (Result is non-copyable, so copy members individually)
+        myResult.Status                 = anInnerResult.Status;
+        myResult.InfiniteSquareDistance = anInnerResult.InfiniteSquareDistance;
+        for (int i = 0; i < anInnerResult.Extrema.Length(); ++i)
         {
-          return theEval.PerformWithEndpoints(theP, myConfig.Tolerance, myConfig.Mode);
-        }
-        else
-        {
-          return theEval.Perform(theP, myConfig.Tolerance, myConfig.Mode);
+          myResult.Extrema.Append(anInnerResult.Extrema.Value(i));
         }
       }
     },
     myEvaluator);
+
+  return myResult;
 }
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_Curve::Perform(const gp_Pnt& theP, const ExtremaPC::Domain1D& theDomain) const
+const ExtremaPC::Result& ExtremaPC_Curve::Perform(const gp_Pnt&              theP,
+                                                   const ExtremaPC::Domain1D& theDomain) const
 {
   (void)theDomain; // Domain is now fixed at construction time
   // Delegate to the main Perform - the evaluator uses its stored domain

@@ -134,41 +134,42 @@ gp_Pnt ExtremaPC_BSplineCurve::Value(double theU) const
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_BSplineCurve::Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_BSplineCurve::Perform(const gp_Pnt&         theP,
+                                                         double                theTol,
+                                                         ExtremaPC::SearchMode theMode) const
 {
-  ExtremaPC::Result aResult;
+  myResult.Clear();
 
   if (myCurve.IsNull())
   {
-    aResult.Status = ExtremaPC::Status::NotDone;
-    return aResult;
+    myResult.Status = ExtremaPC::Status::NotDone;
+    return myResult;
   }
 
   // Use the pre-built grid (interior extrema only)
-  return ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
+  ExtremaPC_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode, myResult);
+  return myResult;
 }
 
 //==================================================================================================
 
-ExtremaPC::Result ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode) const
+const ExtremaPC::Result& ExtremaPC_BSplineCurve::PerformWithEndpoints(const gp_Pnt&         theP,
+                                                                       double                theTol,
+                                                                       ExtremaPC::SearchMode theMode) const
 {
-  ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
+  (void)Perform(theP, theTol, theMode);
 
   // Add endpoints if interior computation succeeded or found no interior solutions
-  if (aResult.Status == ExtremaPC::Status::OK || aResult.Status == ExtremaPC::Status::NoSolution)
+  if (myResult.Status == ExtremaPC::Status::OK || myResult.Status == ExtremaPC::Status::NoSolution)
   {
-    ExtremaPC::AddEndpointExtrema(aResult, theP, myDomain, *this, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(myResult, theP, myDomain, *this, theTol, theMode);
 
     // Update status if we found any extrema (including endpoints)
-    if (!aResult.Extrema.IsEmpty())
+    if (!myResult.Extrema.IsEmpty())
     {
-      aResult.Status = ExtremaPC::Status::OK;
+      myResult.Status = ExtremaPC::Status::OK;
     }
   }
 
-  return aResult;
+  return myResult;
 }

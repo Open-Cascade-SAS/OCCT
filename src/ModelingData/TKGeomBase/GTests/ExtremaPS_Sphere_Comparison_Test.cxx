@@ -45,7 +45,7 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                            THE_TOLERANCE, THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // New implementation must always succeed
   ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
@@ -226,7 +226,7 @@ TEST_F(ExtremaPS_SphereComparisonTest, StressTest_SphericalPoints)
                                  THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, -M_PI / 2, M_PI / 2));
-        ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 

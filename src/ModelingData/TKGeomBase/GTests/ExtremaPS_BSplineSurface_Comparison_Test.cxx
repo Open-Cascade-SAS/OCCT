@@ -43,7 +43,7 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                            THE_TOLERANCE, THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   ASSERT_TRUE(anOldExtPS.IsDone()) << theTestName << ": Old implementation failed";
   ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
@@ -357,7 +357,7 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_DomeSurface)
                                  THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -404,7 +404,7 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
                                  THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -451,7 +451,7 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
                                  THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 

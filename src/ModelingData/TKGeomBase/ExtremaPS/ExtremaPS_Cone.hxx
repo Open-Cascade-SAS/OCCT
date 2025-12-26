@@ -142,12 +142,12 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
-  //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    ExtremaPS::Result aResult;
+    myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
     // Vector from location to point
@@ -178,17 +178,17 @@ public:
 
       if (aDistToApexSq < theTol * theTol)
       {
-        aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-        aResult.InfiniteSquareDistance = 0.0;
-        return aResult;
+        myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+        myResult.InfiniteSquareDistance = 0.0;
+        return myResult;
       }
 
       // Natural domain: all V values are valid, apex is always accessible
       if (!myDomain.has_value())
       {
-        aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-        aResult.InfiniteSquareDistance = aDistToApexSq;
-        return aResult;
+        myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+        myResult.InfiniteSquareDistance = aDistToApexSq;
+        return myResult;
       }
 
       // On axis but not at apex - bounded domain
@@ -198,15 +198,15 @@ public:
 
       if (aRadiusAtV < theTol && theDomain.V().Contains(myApexV, theTol))
       {
-        aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-        aResult.InfiniteSquareDistance = aDistToApexSq;
-        return aResult;
+        myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+        myResult.InfiniteSquareDistance = aDistToApexSq;
+        return myResult;
       }
 
-      aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+      myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
       const double aDeltaZ = aZ - aClosestV;
-      aResult.InfiniteSquareDistance = aRadiusAtV * aRadiusAtV + aDeltaZ * aDeltaZ;
-      return aResult;
+      myResult.InfiniteSquareDistance = aRadiusAtV * aRadiusAtV + aDeltaZ * aDeltaZ;
+      return myResult;
     }
 
     // Compute U from radial direction
@@ -248,7 +248,7 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
       // Maximum: point on opposite generator
@@ -263,11 +263,11 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = false;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
-      aResult.Status = ExtremaPS::Status::OK;
-      return aResult;
+      myResult.Status = ExtremaPS::Status::OK;
+      return myResult;
     }
 
     // BOUNDED PATH: Handle bounded domain
@@ -307,7 +307,7 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
     }
 
@@ -334,12 +334,12 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = false;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
     }
 
-    aResult.Status = aResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
-    return aResult;
+    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    return myResult;
   }
 
   //! Find extrema including boundary edges and corners.
@@ -348,34 +348,34 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
-                                        double                theTol,
-                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
     // If infinite solutions or natural domain (no boundaries), return immediately
-    if (aResult.IsInfinite() || !myDomain.has_value())
+    if (myResult.IsInfinite() || !myDomain.has_value())
     {
-      return aResult;
+      return myResult;
     }
 
     // Bounded domain - add boundary extrema
-    ExtremaPS::AddBoundaryExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
+    ExtremaPS::AddBoundaryExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
 
     // Update status
-    if (aResult.Extrema.IsEmpty())
+    if (myResult.Extrema.IsEmpty())
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
+      myResult.Status = ExtremaPS::Status::NoSolution;
     }
     else
     {
-      aResult.Status = ExtremaPS::Status::OK;
+      myResult.Status = ExtremaPS::Status::OK;
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! @}
@@ -392,6 +392,7 @@ public:
 private:
   gp_Cone                            myCone;   //!< Cone geometry
   std::optional<ExtremaPS::Domain2D> myDomain; //!< Parameter domain (nullopt for natural)
+  mutable ExtremaPS::Result          myResult; //!< Reusable result storage
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;        //!< Cone axis location

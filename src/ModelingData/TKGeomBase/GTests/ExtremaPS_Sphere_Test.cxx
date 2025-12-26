@@ -42,7 +42,7 @@ TEST_F(ExtremaPS_SphereTest, PointOutside_OnXAxis)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -60,7 +60,7 @@ TEST_F(ExtremaPS_SphereTest, PointOutside_OnYAxis)
   gp_Pnt aPoint(0.0, 25.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -75,7 +75,7 @@ TEST_F(ExtremaPS_SphereTest, PointOutside_OnZAxis)
   gp_Pnt aPoint(0.0, 0.0, 25.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -92,7 +92,7 @@ TEST_F(ExtremaPS_SphereTest, PointOutside_Diagonal)
   gp_Pnt aPoint(aCoord, aCoord, aCoord);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -107,7 +107,7 @@ TEST_F(ExtremaPS_SphereTest, PointInside)
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -127,7 +127,7 @@ TEST_F(ExtremaPS_SphereTest, PointOnSurface)
   gp_Pnt aPoint(10.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -146,7 +146,7 @@ TEST_F(ExtremaPS_SphereTest, PointAtCenter_Degenerate)
   gp_Pnt aPoint(0.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   EXPECT_TRUE(aResult.IsInfinite());
   EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), 10.0, THE_TOL);
@@ -158,7 +158,7 @@ TEST_F(ExtremaPS_SphereTest, PointOnNorthPole)
   gp_Pnt aPoint(0.0, 0.0, 25.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -176,7 +176,7 @@ TEST_F(ExtremaPS_SphereTest, PointOnSouthPole)
   gp_Pnt aPoint(0.0, 0.0, -25.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -191,7 +191,7 @@ TEST_F(ExtremaPS_SphereTest, PointNearPole)
   gp_Pnt aPoint(0.001, 0.0, 15.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -211,7 +211,7 @@ TEST_F(ExtremaPS_SphereTest, ClosestToBoundaryU)
   gp_Pnt aPoint(20.0, -0.001, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -228,7 +228,7 @@ TEST_F(ExtremaPS_SphereTest, ClosestToCorner)
   gp_Pnt aPoint(0.1, -0.001, 20.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -241,7 +241,7 @@ TEST_F(ExtremaPS_SphereTest, PartialDomain)
 
   // Only first quadrant
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, M_PI / 2.0, 0.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -262,7 +262,7 @@ TEST_F(ExtremaPS_SphereTest, SmallRadius)
   gp_Pnt aPoint(1.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -277,7 +277,7 @@ TEST_F(ExtremaPS_SphereTest, LargeRadius)
   gp_Pnt aPoint(2000.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -296,7 +296,7 @@ TEST_F(ExtremaPS_SphereTest, TranslatedSphere)
   gp_Pnt aPoint(125.0, 50.0, 25.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -318,7 +318,7 @@ TEST_F(ExtremaPS_SphereTest, SearchMode_Min)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -332,7 +332,7 @@ TEST_F(ExtremaPS_SphereTest, SearchMode_Max)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, THE_TOL, ExtremaPS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -348,7 +348,7 @@ TEST_F(ExtremaPS_SphereTest, TightTolerance)
 
   // Very tight tolerance
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, 1.0e-12);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, 1.0e-12);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
@@ -364,7 +364,7 @@ TEST_F(ExtremaPS_SphereTest, LargeTolerance)
 
   // Large tolerance
   ExtremaPS_Sphere anEval(aSphere, ExtremaPS::Domain2D(0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0));
-  ExtremaPS::Result aResult = anEval.PerformWithBoundary(aPoint, 0.1);
+  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aPoint, 0.1);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
@@ -387,7 +387,7 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_Basic)
   EXPECT_TRUE(anExtPS.IsInitialized());
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
-  ExtremaPS::Result aResult = anExtPS.Perform(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anExtPS.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -406,7 +406,7 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Min)
   EXPECT_EQ(anExtPS.SearchMode(), ExtremaPS::SearchMode::Min);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
-  ExtremaPS::Result aResult = anExtPS.PerformWithBoundary(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbExt(), 1);
@@ -423,7 +423,7 @@ TEST_F(ExtremaPS_SphereTest, Aggregator_SearchMode_Max)
   anExtPS.SetSearchMode(ExtremaPS::SearchMode::Max);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
-  ExtremaPS::Result aResult = anExtPS.Perform(aPoint, THE_TOL);
+  const ExtremaPS::Result& aResult =anExtPS.Perform(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);

@@ -66,30 +66,32 @@ void ExtremaPS_BezierSurface::buildGrid()
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_BezierSurface::Perform(const gp_Pnt&         theP,
-                                                   double                theTol,
-                                                   ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_BezierSurface::Perform(const gp_Pnt&         theP,
+                                                          double                theTol,
+                                                          ExtremaPS::SearchMode theMode) const
 {
+  myResult.Clear();
   // Use the pre-built grid (interior extrema only)
-  return ExtremaPS_GridEvaluator::PerformWithCachedGrid(myGrid, myAdaptor, theP, myDomain, theTol, theMode);
+  ExtremaPS_GridEvaluator::PerformWithCachedGrid(myResult, myGrid, myAdaptor, theP, myDomain, theTol, theMode);
+  return myResult;
 }
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_BezierSurface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_BezierSurface::PerformWithBoundary(const gp_Pnt&         theP,
+                                                                       double                theTol,
+                                                                       ExtremaPS::SearchMode theMode) const
 {
-  // Start with interior extrema
-  ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
+  // Start with interior extrema (populates myResult)
+  (void)Perform(theP, theTol, theMode);
 
   // Add boundary extrema
-  ExtremaPS::AddBoundaryExtrema(aResult, theP, myDomain, *this, theTol, theMode);
+  ExtremaPS::AddBoundaryExtrema(myResult, theP, myDomain, *this, theTol, theMode);
 
-  if (!aResult.Extrema.IsEmpty())
+  if (!myResult.Extrema.IsEmpty())
   {
-    aResult.Status = ExtremaPS::Status::OK;
+    myResult.Status = ExtremaPS::Status::OK;
   }
 
-  return aResult;
+  return myResult;
 }

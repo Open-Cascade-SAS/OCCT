@@ -72,10 +72,11 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
-  //! @return result with interior extrema only
-  Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt&         theP,
-                                            double                theTol,
-                                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! Find extrema including boundary edges and corners.
   //! Uses domain specified at construction time.
@@ -83,10 +84,11 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return result with interior + boundary extrema
-  Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
-                                                        double                theTol,
-                                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const;
 
   //! @}
 
@@ -109,6 +111,8 @@ private:
   NCollection_Array2<ExtremaPS_GridEvaluator::GridPoint> myGrid;
   int myNbUSamples = 0;  //!< Number of U samples
   int myNbVSamples = 0;  //!< Number of V samples
+
+  mutable ExtremaPS::Result myResult;  //!< Reusable result storage
 };
 
 #endif // _ExtremaPS_BezierSurface_HeaderFile

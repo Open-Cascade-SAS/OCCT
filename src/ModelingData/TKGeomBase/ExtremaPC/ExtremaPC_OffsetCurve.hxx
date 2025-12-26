@@ -84,28 +84,31 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for root finding
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing extrema
-  Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt&         theP,
-                                            double                theTol,
-                                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
+  //! @return const reference to result containing extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
   //! Compute extrema between point P and the curve including endpoints.
   //! Uses domain specified at construction time.
   //! @param theP query point
   //! @param theTol tolerance for root finding
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior + endpoint extrema
-  Standard_EXPORT ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
-                                                         double                theTol,
-                                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
+  //! @return const reference to result containing interior + endpoint extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const;
 
 private:
   //! Build grid for the curve.
   void buildGrid();
 
-  const Adaptor3d_Curve*                             myCurve;  //!< Curve adaptor (not owned)
-  ExtremaPC::Domain1D                                myDomain; //!< Parameter domain (fixed)
-  NCollection_Array1<ExtremaPC_GridEvaluator::GridPoint> myGrid; //!< Pre-built grid
+  const Adaptor3d_Curve*                                 myCurve;  //!< Curve adaptor (not owned)
+  ExtremaPC::Domain1D                                    myDomain; //!< Parameter domain (fixed)
+  NCollection_Array1<ExtremaPC_GridEvaluator::GridPoint> myGrid;   //!< Pre-built grid
+  mutable ExtremaPC::Result                              myResult; //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_OffsetCurve_HeaderFile

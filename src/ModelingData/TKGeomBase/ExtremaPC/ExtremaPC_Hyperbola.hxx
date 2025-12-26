@@ -92,12 +92,13 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing extrema
-  ExtremaPC::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing extrema
+  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    return performCore(theP, myDomain, theTol, theMode);
+    performCore(theP, myDomain, theTol, theMode);
+    return myResult;
   }
 
   //! Compute extrema between point P and the hyperbola arc including endpoints.
@@ -105,20 +106,20 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
-                                         double                theTol,
-                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing interior + endpoint extrema
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
+                                                               double                theTol,
+                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
     // Add endpoints if interior computation succeeded and domain is bounded
-    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! Returns the hyperbola geometry.
@@ -154,17 +155,17 @@ private:
   }
 
   //! Core algorithm - finds extrema with optional bounds checking.
+  //! Stores results in myResult.
   //! @param theP query point
   //! @param theDomain optional parameter domain (nullopt for unbounded)
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode
-  //! @return result containing extrema
-  ExtremaPC::Result performCore(const gp_Pnt&                              theP,
-                                const std::optional<ExtremaPC::Domain1D>& theDomain,
-                                double                                     theTol,
-                                ExtremaPC::SearchMode                      theMode) const
+  void performCore(const gp_Pnt&                              theP,
+                   const std::optional<ExtremaPC::Domain1D>& theDomain,
+                   double                                     theTol,
+                   ExtremaPC::SearchMode                      theMode) const
   {
-    ExtremaPC::Result aResult;
+    myResult.Clear();
 
     MathPoly::PolyResult aPolyRes = solveQuartic(theP);
 
@@ -172,15 +173,15 @@ private:
     {
       if (aPolyRes.Status == MathUtils::Status::InfiniteSolutions)
       {
-        aResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
-        gp_Pnt aPtOnCurve              = ElCLib::Value(0.0, myHyperbola);
-        aResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
+        myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+        gp_Pnt aPtOnCurve               = ElCLib::Value(0.0, myHyperbola);
+        myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
       }
       else
       {
-        aResult.Status = ExtremaPC::Status::NumericalError;
+        myResult.Status = ExtremaPC::Status::NumericalError;
       }
-      return aResult;
+      return;
     }
 
     double aTol2 = theTol * theTol;
@@ -205,9 +206,9 @@ private:
 
       // Check for duplicates
       bool aDuplicate = false;
-      for (int j = 0; j < aResult.Extrema.Length(); ++j)
+      for (int j = 0; j < myResult.Extrema.Length(); ++j)
       {
-        if (aCurvePt.SquareDistance(aResult.Extrema.Value(j).Point) < aTol2)
+        if (aCurvePt.SquareDistance(myResult.Extrema.Value(j).Point) < aTol2)
         {
           aDuplicate = true;
           break;
@@ -246,15 +247,15 @@ private:
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
 
-      aResult.Extrema.Append(anExt);
+      myResult.Extrema.Append(anExt);
     }
 
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    myResult.Status = ExtremaPC::Status::OK;
   }
 
   gp_Hypr                            myHyperbola; //!< Hyperbola geometry
   std::optional<ExtremaPC::Domain1D> myDomain;    //!< Parameter domain (nullopt for infinite)
+  mutable ExtremaPC::Result          myResult;    //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_Hyperbola_HeaderFile

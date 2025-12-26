@@ -45,7 +45,7 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                            THE_TOLERANCE, THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // Handle infinite solutions case (e.g., point on torus axis)
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
@@ -264,7 +264,7 @@ TEST_F(ExtremaPS_TorusComparisonTest, StressTest_ToroidalPoints)
                                  THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, 0.0, 2 * M_PI));
-        ExtremaPS::Result aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 

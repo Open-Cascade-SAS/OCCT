@@ -150,44 +150,58 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_Surface::Perform(const gp_Pnt& theP, double theTol) const
+const ExtremaPS::Result& ExtremaPS_Surface::Perform(const gp_Pnt& theP, double theTol) const
 {
-  return std::visit(
-    [&](const auto& theEval) -> ExtremaPS::Result {
+  myResult.Clear();
+  std::visit(
+    [&](const auto& theEval) {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
-        ExtremaPS::Result aResult;
-        aResult.Status = ExtremaPS::Status::NotDone;
-        return aResult;
+        myResult.Status = ExtremaPS::Status::NotDone;
       }
       else
       {
-        return theEval.Perform(theP, theTol, mySearchMode);
+        const ExtremaPS::Result& anInnerResult = theEval.Perform(theP, theTol, mySearchMode);
+        // Copy result data from inner evaluator
+        myResult.Status                 = anInnerResult.Status;
+        myResult.InfiniteSquareDistance = anInnerResult.InfiniteSquareDistance;
+        for (int i = 0; i < anInnerResult.Extrema.Length(); ++i)
+        {
+          myResult.Extrema.Append(anInnerResult.Extrema.Value(i));
+        }
       }
     },
     myEvaluator);
+  return myResult;
 }
 
 //==================================================================================================
 
-ExtremaPS::Result ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt& theP, double theTol) const
+const ExtremaPS::Result& ExtremaPS_Surface::PerformWithBoundary(const gp_Pnt& theP, double theTol) const
 {
-  return std::visit(
-    [&](const auto& theEval) -> ExtremaPS::Result {
+  myResult.Clear();
+  std::visit(
+    [&](const auto& theEval) {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (std::is_same_v<T, std::monostate>)
       {
-        ExtremaPS::Result aResult;
-        aResult.Status = ExtremaPS::Status::NotDone;
-        return aResult;
+        myResult.Status = ExtremaPS::Status::NotDone;
       }
       else
       {
-        return theEval.PerformWithBoundary(theP, theTol, mySearchMode);
+        const ExtremaPS::Result& anInnerResult = theEval.PerformWithBoundary(theP, theTol, mySearchMode);
+        // Copy result data from inner evaluator
+        myResult.Status                 = anInnerResult.Status;
+        myResult.InfiniteSquareDistance = anInnerResult.InfiniteSquareDistance;
+        for (int i = 0; i < anInnerResult.Extrema.Length(); ++i)
+        {
+          myResult.Extrema.Append(anInnerResult.Extrema.Value(i));
+        }
       }
     },
     myEvaluator);
+  return myResult;
 }
 
 //==================================================================================================

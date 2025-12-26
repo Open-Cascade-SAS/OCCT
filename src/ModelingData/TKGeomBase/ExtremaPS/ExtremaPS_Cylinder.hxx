@@ -131,12 +131,12 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
-  //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    ExtremaPS::Result aResult;
+    myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
     // Vector from location to point
@@ -156,9 +156,9 @@ public:
     // Check for degenerate case: point on axis
     if (aRadialDistSq < theTol * theTol)
     {
-      aResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-      aResult.InfiniteSquareDistance = myRadius * myRadius;
-      return aResult;
+      myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
+      myResult.InfiniteSquareDistance = myRadius * myRadius;
+      return myResult;
     }
 
     const double aRadialDist = std::sqrt(aRadialDistSq);
@@ -202,7 +202,7 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aDistMinSq;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
       // Maximum extremum (antipodal point): AxisPoint - R * radialDir
@@ -222,11 +222,11 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aDistMaxSq;
         anExt.IsMinimum      = false;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
-      aResult.Status = ExtremaPS::Status::OK;
-      return aResult;
+      myResult.Status = ExtremaPS::Status::OK;
+      return myResult;
     }
 
     // BOUNDED PATH: Handle bounded domain
@@ -268,7 +268,7 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aDistMinSq;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
       // Maximum extremum (antipodal point): AxisPoint - R * radialDir
@@ -289,11 +289,11 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aDistMaxSq;
         anExt.IsMinimum      = false;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
-      aResult.Status = ExtremaPS::Status::OK;
-      return aResult;
+      myResult.Status = ExtremaPS::Status::OK;
+      return myResult;
     }
 
     // GENERAL PATH: Handle bounded U domain
@@ -324,7 +324,7 @@ public:
       anExt.Point          = aSurfPt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = true;
-      aResult.Extrema.Append(anExt);
+      myResult.Extrema.Append(anExt);
     }
 
     // Antipodal point for maximum
@@ -348,11 +348,11 @@ public:
       anExt.Point          = aSurfPt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = false;
-      aResult.Extrema.Append(anExt);
+      myResult.Extrema.Append(anExt);
     }
 
-    aResult.Status = aResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
-    return aResult;
+    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    return myResult;
   }
 
   //! Find extrema including boundary edges and corners.
@@ -364,18 +364,18 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
-                                        double                theTol,
-                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
     // If infinite solutions or natural domain (no boundaries), return immediately
-    if (aResult.IsInfinite() || !myDomain.has_value())
+    if (myResult.IsInfinite() || !myDomain.has_value())
     {
-      return aResult;
+      return myResult;
     }
 
     const ExtremaPS::Domain2D& theDomain = *myDomain;
@@ -394,20 +394,20 @@ public:
     // Add boundary if U is bounded or V is out of range
     if (!aIsFullU || aVOutOfRange)
     {
-      ExtremaPS::AddBoundaryExtrema(aResult, theP, theDomain, *this, theTol, theMode);
+      ExtremaPS::AddBoundaryExtrema(myResult, theP, theDomain, *this, theTol, theMode);
     }
 
     // Update status
-    if (aResult.Extrema.IsEmpty())
+    if (myResult.Extrema.IsEmpty())
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
+      myResult.Status = ExtremaPS::Status::NoSolution;
     }
     else
     {
-      aResult.Status = ExtremaPS::Status::OK;
+      myResult.Status = ExtremaPS::Status::OK;
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! @}
@@ -424,6 +424,7 @@ public:
 private:
   gp_Cylinder                        myCylinder; //!< Cylinder geometry
   std::optional<ExtremaPS::Domain2D> myDomain;   //!< Parameter domain (nullopt for natural)
+  mutable ExtremaPS::Result          myResult;   //!< Reusable result storage
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;       //!< Cylinder axis location

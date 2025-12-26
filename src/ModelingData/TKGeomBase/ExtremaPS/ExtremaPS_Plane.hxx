@@ -126,15 +126,18 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
-  //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
+    myResult.Clear();
+
     // Max mode: no interior extrema for plane (max is always at boundary)
     if (theMode == ExtremaPS::SearchMode::Max)
     {
-      return ExtremaPS::Result{ExtremaPS::Status::NoSolution, {}, 0.0};
+      myResult.Status = ExtremaPS::Status::NoSolution;
+      return myResult;
     }
 
     // Compute delta vector from plane location to query point
@@ -150,17 +153,17 @@ public:
     // Fast path: unbounded domain - most common case, skip all bounds checks
     if (!myDomain.has_value())
     {
-      ExtremaPS::Result aResult;
-      aResult.Status = ExtremaPS::Status::OK;
-      aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
-        aU, aV,
-        gp_Pnt(theP.X() - aSignedDist * myNormX,
-               theP.Y() - aSignedDist * myNormY,
-               theP.Z() - aSignedDist * myNormZ),
-        aSignedDist * aSignedDist,
-        true
-      });
-      return aResult;
+      myResult.Status = ExtremaPS::Status::OK;
+      ExtremaPS::ExtremumResult anExt;
+      anExt.U              = aU;
+      anExt.V              = aV;
+      anExt.Point          = gp_Pnt(theP.X() - aSignedDist * myNormX,
+                                    theP.Y() - aSignedDist * myNormY,
+                                    theP.Z() - aSignedDist * myNormZ);
+      anExt.SquareDistance = aSignedDist * aSignedDist;
+      anExt.IsMinimum      = true;
+      myResult.Extrema.Append(anExt);
+      return myResult;
     }
 
     // Bounded domain - inline bounds check for speed
@@ -171,24 +174,25 @@ public:
 
     if (aU < aUMin || aU > aUMax || aV < aVMin || aV > aVMax)
     {
-      return ExtremaPS::Result{ExtremaPS::Status::NoSolution, {}, 0.0};
+      myResult.Status = ExtremaPS::Status::NoSolution;
+      return myResult;
     }
 
     // Inline clamp for speed
     const double aClampedU = (aU < myDomain->UMin) ? myDomain->UMin : ((aU > myDomain->UMax) ? myDomain->UMax : aU);
     const double aClampedV = (aV < myDomain->VMin) ? myDomain->VMin : ((aV > myDomain->VMax) ? myDomain->VMax : aV);
 
-    ExtremaPS::Result aResult;
-    aResult.Status = ExtremaPS::Status::OK;
-    aResult.Extrema.SetValue(0, ExtremaPS::ExtremumResult{
-      aClampedU, aClampedV,
-      gp_Pnt(theP.X() - aSignedDist * myNormX,
-             theP.Y() - aSignedDist * myNormY,
-             theP.Z() - aSignedDist * myNormZ),
-      aSignedDist * aSignedDist,
-      true
-    });
-    return aResult;
+    myResult.Status = ExtremaPS::Status::OK;
+    ExtremaPS::ExtremumResult anExt;
+    anExt.U              = aClampedU;
+    anExt.V              = aClampedV;
+    anExt.Point          = gp_Pnt(theP.X() - aSignedDist * myNormX,
+                                  theP.Y() - aSignedDist * myNormY,
+                                  theP.Z() - aSignedDist * myNormZ);
+    anExt.SquareDistance = aSignedDist * aSignedDist;
+    anExt.IsMinimum      = true;
+    myResult.Extrema.Append(anExt);
+    return myResult;
   }
 
   //! Find extrema including boundary (corners for plane).
@@ -200,41 +204,40 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
-                                        double                theTol,
-                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
-    ExtremaPS::Result aResult;
-
     if (theMode != ExtremaPS::SearchMode::Max)
     {
-      aResult = Perform(theP, theTol, theMode);
+      (void)Perform(theP, theTol, theMode);
     }
     else
     {
-      aResult.Status = ExtremaPS::Status::OK;
+      myResult.Clear();
+      myResult.Status = ExtremaPS::Status::OK;
     }
 
     // Add boundary extrema (corners only for plane)
     // For planes, edge extrema don't add value - distance varies linearly
     if (theMode != ExtremaPS::SearchMode::Min && myDomain.has_value())
     {
-      addCornerExtrema(aResult, theP, *myDomain);
+      addCornerExtrema(myResult, theP, *myDomain);
     }
 
     // Update status if we found any extrema
-    if (aResult.Extrema.IsEmpty())
+    if (myResult.Extrema.IsEmpty())
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
+      myResult.Status = ExtremaPS::Status::NoSolution;
     }
     else
     {
-      aResult.Status = ExtremaPS::Status::OK;
+      myResult.Status = ExtremaPS::Status::OK;
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! @}
@@ -298,6 +301,7 @@ private:
 private:
   gp_Pln                               myPlane;  //!< Plane geometry
   std::optional<ExtremaPS::Domain2D>   myDomain; //!< Parameter domain (nullopt for unbounded)
+  mutable ExtremaPS::Result            myResult; //!< Reusable result storage
 
   // Cached components for fast computation
   double myLocX, myLocY, myLocZ;     //!< Plane location

@@ -88,14 +88,14 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (unused for lines - always returns minimum)
-  //! @return result containing the extremum
-  ExtremaPC::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing the extremum
+  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)theMode; // Lines always have exactly one extremum (minimum)
 
-    ExtremaPC::Result aResult;
+    myResult.Clear();
 
     // Compute projection parameter: u = (P - O) . Direction
     const gp_Dir& aDir    = myLine.Direction();
@@ -109,8 +109,8 @@ public:
       if (aU < myDomain->Min - theTol || aU > myDomain->Max + theTol)
       {
         // Projection is outside bounds - no interior extremum
-        aResult.Status = ExtremaPC::Status::OK;
-        return aResult;
+        myResult.Status = ExtremaPC::Status::OK;
+        return myResult;
       }
       // Clamp to bounds
       aU = std::clamp(aU, myDomain->Min, myDomain->Max);
@@ -126,9 +126,9 @@ public:
     anExt.SquareDistance = theP.SquareDistance(aPtOnLine);
     anExt.IsMinimum      = true;
 
-    aResult.Extrema.Append(anExt);
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    myResult.Extrema.Append(anExt);
+    myResult.Status = ExtremaPC::Status::OK;
+    return myResult;
   }
 
   //! Compute extrema between point P and the line segment including endpoints.
@@ -136,19 +136,19 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior + endpoint extrema
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
-                                         double                theTol,
-                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing interior + endpoint extrema
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
+                                                               double                theTol,
+                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
-    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! Returns the line geometry.
@@ -157,6 +157,7 @@ public:
 private:
   gp_Lin                             myLine;   //!< Line geometry
   std::optional<ExtremaPC::Domain1D> myDomain; //!< Parameter domain (nullopt for unbounded)
+  mutable ExtremaPC::Result          myResult; //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_Line_HeaderFile

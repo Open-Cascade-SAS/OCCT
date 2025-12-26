@@ -156,16 +156,17 @@ public:
   //! Computes extrema between point P and the curve.
   //! Uses domain from config if set, otherwise uses natural/unbounded behavior.
   //! @param[in] theP query point
-  //! @return result containing all found extrema
-  Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP) const;
+  //! @return const reference to result containing all found extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(const gp_Pnt& theP) const;
 
   //! @deprecated Domain parameter is ignored - domain is fixed at construction time.
   //! Use the single-argument Perform() instead.
   //! @param[in] theP query point
   //! @param[in] theDomain parameter domain (ignored - uses construction-time domain)
-  //! @return result containing all found extrema
+  //! @return const reference to result containing all found extrema
   [[deprecated("Domain is fixed at construction time - use Perform(theP) instead")]]
-  Standard_EXPORT ExtremaPC::Result Perform(const gp_Pnt& theP, const ExtremaPC::Domain1D& theDomain) const;
+  [[nodiscard]] Standard_EXPORT const ExtremaPC::Result& Perform(const gp_Pnt&              theP,
+                                                                  const ExtremaPC::Domain1D& theDomain) const;
 
   //! Returns true if the evaluator is properly initialized.
   bool IsInitialized() const { return !std::holds_alternative<std::monostate>(myEvaluator); }
@@ -186,6 +187,7 @@ private:
   ExtremaPC::Config         myConfig;    //!< Computation configuration
   GeomAbs_CurveType         myCurveType; //!< Curve type
   Handle(GeomAdaptor_Curve) myAdaptor;   //!< Stored adaptor for Geom-based construction
+  mutable ExtremaPC::Result myResult;    //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_Curve_HeaderFile

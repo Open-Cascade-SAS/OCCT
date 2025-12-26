@@ -89,16 +89,16 @@ public:
   //!
   //! @param theP query point
   //! @param theTol tolerance
-  //! @return result with interior extrema only
-  Standard_EXPORT ExtremaPS::Result Perform(const gp_Pnt& theP, double theTol) const;
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& Perform(const gp_Pnt& theP, double theTol) const;
 
   //! Find extrema including boundary edges and corners.
   //! Uses domain specified at construction time.
   //!
   //! @param theP query point
   //! @param theTol tolerance
-  //! @return result with interior + boundary extrema
-  Standard_EXPORT ExtremaPS::Result PerformWithBoundary(const gp_Pnt& theP, double theTol) const;
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] Standard_EXPORT const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt& theP, double theTol) const;
 
   //! @}
 
@@ -131,9 +131,10 @@ private:
   void initializeEvaluator(const Adaptor3d_Surface&   theSurface,
                            const ExtremaPS::Domain2D& theDomain);
 
-  EvaluatorVariant        myEvaluator;
-  ExtremaPS::Domain2D     myDomain;        //!< Parameter domain (fixed at construction)
-  ExtremaPS::SearchMode   mySearchMode = ExtremaPS::SearchMode::MinMax;
+  EvaluatorVariant          myEvaluator;
+  ExtremaPS::Domain2D       myDomain;        //!< Parameter domain (fixed at construction)
+  ExtremaPS::SearchMode     mySearchMode = ExtremaPS::SearchMode::MinMax;
+  mutable ExtremaPS::Result myResult;        //!< Reusable result storage
 };
 
 #endif // _ExtremaPS_Surface_HeaderFile

@@ -280,31 +280,32 @@ inline NCollection_Vector<Candidate> ScanGrid(const NCollection_Array2<GridPoint
 //!
 //! When Newton fails to converge, falls back to the best grid point in the candidate cell.
 //! Based on patterns from ShapeAnalysis_Surface::SurfaceNewton.
+//! This overload populates an existing Result object.
 //!
-//! @param theCandidates candidate cells from ScanGrid
-//! @param theGrid cached grid points
-//! @param theSurface surface adaptor
-//! @param theP query point
-//! @param theUMin U range lower bound
-//! @param theUMax U range upper bound
-//! @param theVMin V range lower bound
-//! @param theVMax V range upper bound
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @return extrema result
-inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& theCandidates,
-                                          const NCollection_Array2<GridPoint>& theGrid,
-                                          const Adaptor3d_Surface&             theSurface,
-                                          const gp_Pnt&                        theP,
-                                          double                               theUMin,
-                                          double                               theUMax,
-                                          double                               theVMin,
-                                          double                               theVMax,
-                                          double                               theTol,
-                                          ExtremaPS::SearchMode                theMode)
+//! @param[out] theResult result to populate
+//! @param[in] theCandidates candidate cells from ScanGrid
+//! @param[in] theGrid cached grid points
+//! @param[in] theSurface surface adaptor
+//! @param[in] theP query point
+//! @param[in] theUMin U range lower bound
+//! @param[in] theUMax U range upper bound
+//! @param[in] theVMin V range lower bound
+//! @param[in] theVMax V range upper bound
+//! @param[in] theTol tolerance
+//! @param[in] theMode search mode
+inline void RefineCandidates(ExtremaPS::Result&                   theResult,
+                             const NCollection_Vector<Candidate>& theCandidates,
+                             const NCollection_Array2<GridPoint>& theGrid,
+                             const Adaptor3d_Surface&             theSurface,
+                             const gp_Pnt&                        theP,
+                             double                               theUMin,
+                             double                               theUMax,
+                             double                               theVMin,
+                             double                               theVMax,
+                             double                               theTol,
+                             ExtremaPS::SearchMode                theMode)
 {
-  ExtremaPS::Result aResult;
-  aResult.Status = ExtremaPS::Status::OK;
+  theResult.Status = ExtremaPS::Status::OK;
 
   NCollection_Vector<std::pair<double, double>> aFoundRoots(8); // (U, V) pairs, small bucket for roots
 
@@ -503,7 +504,7 @@ inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& t
       anExt.Point          = aPt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
-      aResult.Extrema.Append(anExt);
+      theResult.Extrema.Append(anExt);
 
       aFoundRoots.Append(std::make_pair(aRootU, aRootV));
 
@@ -514,11 +515,41 @@ inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& t
     }
   }
 
-  if (aResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
+  if (theResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
   {
-    aResult.Status = ExtremaPS::Status::NoSolution;
+    theResult.Status = ExtremaPS::Status::NoSolution;
   }
+}
 
+//! @brief Refine candidates using 2D Newton's method with grid fallback.
+//!
+//! When Newton fails to converge, falls back to the best grid point in the candidate cell.
+//! This overload returns a new Result object.
+//!
+//! @param[in] theCandidates candidate cells from ScanGrid
+//! @param[in] theGrid cached grid points
+//! @param[in] theSurface surface adaptor
+//! @param[in] theP query point
+//! @param[in] theUMin U range lower bound
+//! @param[in] theUMax U range upper bound
+//! @param[in] theVMin V range lower bound
+//! @param[in] theVMax V range upper bound
+//! @param[in] theTol tolerance
+//! @param[in] theMode search mode
+//! @return extrema result
+inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& theCandidates,
+                                          const NCollection_Array2<GridPoint>& theGrid,
+                                          const Adaptor3d_Surface&             theSurface,
+                                          const gp_Pnt&                        theP,
+                                          double                               theUMin,
+                                          double                               theUMax,
+                                          double                               theVMin,
+                                          double                               theVMax,
+                                          double                               theTol,
+                                          ExtremaPS::SearchMode                theMode)
+{
+  ExtremaPS::Result aResult;
+  RefineCandidates(aResult, theCandidates, theGrid, theSurface, theP, theUMin, theUMax, theVMin, theVMax, theTol, theMode);
   return aResult;
 }
 
@@ -526,20 +557,22 @@ inline ExtremaPS::Result RefineCandidates(const NCollection_Vector<Candidate>& t
 //!
 //! This is the optimized version for repeated queries with the same parameter range.
 //! The grid is built once and reused across multiple Perform calls.
+//! This overload populates an existing Result object (useful for avoiding allocations).
 //!
-//! @param theGrid pre-built grid of (u, v, point, dU, dV)
-//! @param theSurface surface adaptor
-//! @param theP query point
-//! @param theDomain 2D parameter domain
-//! @param theTol tolerance
-//! @param theMode search mode
-//! @return extrema result with interior extrema only
-inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoint>& theGrid,
-                                               const Adaptor3d_Surface&             theSurface,
-                                               const gp_Pnt&                        theP,
-                                               const ExtremaPS::Domain2D&           theDomain,
-                                               double                               theTol,
-                                               ExtremaPS::SearchMode                theMode)
+//! @param[out] theResult result to populate (should be cleared before calling)
+//! @param[in] theGrid pre-built grid of (u, v, point, dU, dV)
+//! @param[in] theSurface surface adaptor
+//! @param[in] theP query point
+//! @param[in] theDomain 2D parameter domain
+//! @param[in] theTol tolerance
+//! @param[in] theMode search mode
+inline void PerformWithCachedGrid(ExtremaPS::Result&                   theResult,
+                                  const NCollection_Array2<GridPoint>& theGrid,
+                                  const Adaptor3d_Surface&             theSurface,
+                                  const gp_Pnt&                        theP,
+                                  const ExtremaPS::Domain2D&           theDomain,
+                                  double                               theTol,
+                                  ExtremaPS::SearchMode                theMode)
 {
   const int aNbU = theGrid.UpperRow() - theGrid.LowerRow() + 1;
   const int aNbV = theGrid.UpperCol() - theGrid.LowerCol() + 1;
@@ -547,17 +580,18 @@ inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoin
   // Scan for candidates
   NCollection_Vector<Candidate> aCandidates = ScanGrid(theGrid, theP, theTol, theMode);
 
-  // Refine candidates
-  ExtremaPS::Result aResult = RefineCandidates(aCandidates,
-                                               theGrid,
-                                               theSurface,
-                                               theP,
-                                               theDomain.UMin,
-                                               theDomain.UMax,
-                                               theDomain.VMin,
-                                               theDomain.VMax,
-                                               theTol,
-                                               theMode);
+  // Refine candidates (populates theResult)
+  RefineCandidates(theResult,
+                   aCandidates,
+                   theGrid,
+                   theSurface,
+                   theP,
+                   theDomain.UMin,
+                   theDomain.UMax,
+                   theDomain.VMin,
+                   theDomain.VMax,
+                   theTol,
+                   theMode);
 
   // Fallback: refine the best grid point using Newton, then add if it's better than current result
   if (theMode == ExtremaPS::SearchMode::Min || theMode == ExtremaPS::SearchMode::MinMax)
@@ -607,15 +641,15 @@ inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoin
     }
 
     double aResultMinDist =
-      aResult.Extrema.IsEmpty() ? std::numeric_limits<double>::max() : aResult.MinSquareDistance();
+      theResult.Extrema.IsEmpty() ? std::numeric_limits<double>::max() : theResult.MinSquareDistance();
 
     if (aRefinedDist < aResultMinDist * ExtremaPS::THE_REFINED_DIST_THRESHOLD)
     {
       // Check for duplicate
       bool aSkip = false;
-      for (int i = 0; i < aResult.Extrema.Length(); ++i)
+      for (int i = 0; i < theResult.Extrema.Length(); ++i)
       {
-        const auto& anExisting = aResult.Extrema.Value(i);
+        const auto& anExisting = theResult.Extrema.Value(i);
         if (std::abs(anExisting.U - aRefinedU) < theTol
             && std::abs(anExisting.V - aRefinedV) < theTol)
         {
@@ -631,16 +665,39 @@ inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoin
         anExt.Point          = aRefinedPt;
         anExt.SquareDistance = aRefinedDist;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        theResult.Extrema.Append(anExt);
       }
     }
   }
 
-  if (!aResult.Extrema.IsEmpty())
+  if (!theResult.Extrema.IsEmpty())
   {
-    aResult.Status = ExtremaPS::Status::OK;
+    theResult.Status = ExtremaPS::Status::OK;
   }
+}
 
+//! @brief Perform extrema computation using pre-built cached grid (interior only).
+//!
+//! This is the optimized version for repeated queries with the same parameter range.
+//! The grid is built once and reused across multiple Perform calls.
+//! This overload returns a new Result object.
+//!
+//! @param[in] theGrid pre-built grid of (u, v, point, dU, dV)
+//! @param[in] theSurface surface adaptor
+//! @param[in] theP query point
+//! @param[in] theDomain 2D parameter domain
+//! @param[in] theTol tolerance
+//! @param[in] theMode search mode
+//! @return extrema result with interior extrema only
+inline ExtremaPS::Result PerformWithCachedGrid(const NCollection_Array2<GridPoint>& theGrid,
+                                               const Adaptor3d_Surface&             theSurface,
+                                               const gp_Pnt&                        theP,
+                                               const ExtremaPS::Domain2D&           theDomain,
+                                               double                               theTol,
+                                               ExtremaPS::SearchMode                theMode)
+{
+  ExtremaPS::Result aResult;
+  PerformWithCachedGrid(aResult, theGrid, theSurface, theP, theDomain, theTol, theMode);
   return aResult;
 }
 

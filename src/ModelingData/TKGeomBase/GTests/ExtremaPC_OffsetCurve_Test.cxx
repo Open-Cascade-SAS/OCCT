@@ -54,7 +54,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutside)
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -78,7 +78,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointInside)
   gp_Pnt aPoint(12.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -102,7 +102,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_NegativeOffset)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -126,7 +126,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOnOffsetCurve)
   gp_Pnt aPoint(15.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -154,7 +154,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetEllipse_PointOutside)
   gp_Pnt aPoint(40.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -179,7 +179,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetEllipse_PointOnMinorAxis)
   gp_Pnt aPoint(0.0, 25.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -211,7 +211,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetLine_PointNear)
   gp_Pnt aPoint(50.0, aOffsetPt.Y() + 5.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -240,7 +240,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, PartialRange_FirstQuadrant)
 
   // Create evaluator with domain limited to first quadrant [0, PI/2]
   ExtremaPC_OffsetCurve anEval(anAdaptor, ExtremaPC::Domain1D{0.0, THE_PI / 2.0});
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult =anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -271,7 +271,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, OffsetCircle_PointOutOfPlane)
   gp_Pnt aPoint(15.0, 0.0, 10.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -300,7 +300,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyExtremumCondition)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -327,7 +327,7 @@ TEST_F(ExtremaPC_OffsetCurveTest, VerifyDistanceConsistency)
   gp_Pnt aPoint(18.0, 12.0, 3.0);
 
   ExtremaPC_OffsetCurve anEval(anAdaptor);
-  ExtremaPC::Result aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);

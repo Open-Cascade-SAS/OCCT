@@ -120,7 +120,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtStart)
   gp_Pnt aPoint = aBezier->Value(0.0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -136,7 +136,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtEnd)
   gp_Pnt aPoint = aBezier->Value(1.0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -152,7 +152,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointOnCurve_AtMiddle)
   gp_Pnt aPoint = aBezier->Value(0.5);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -171,7 +171,7 @@ TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointProjection)
   gp_Pnt                   aPoint(5, 3, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -186,7 +186,7 @@ TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointAtPole)
   gp_Pnt                   aPoint(0, 0, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   double aMinDist = aResult.MinSquareDistance();
@@ -199,7 +199,7 @@ TEST_F(ExtremaPC_BezierCurveTest, LinearBezier_PointBeforeStart)
   gp_Pnt                   aPoint(-5, 0, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -221,7 +221,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_SymmetricArc)
   gp_Pnt aPoint(0, 3, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -247,7 +247,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_PointBelowApex)
   gp_Pnt aPoint(0, 0, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   // Should find extrema - at least one
@@ -269,7 +269,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_AsymmetricArc)
   gp_Pnt aPoint(3, 3, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -293,7 +293,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_SCurve)
   gp_Pnt aPoint(2, 0, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -312,7 +312,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_LoopedCurve)
   gp_Pnt aPoint(1, 1.5, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -332,7 +332,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_MultipleExtrema)
   gp_Pnt aPoint(2, -1, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -359,7 +359,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_WavyCurve)
   gp_Pnt aPoint(2, 1, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -382,7 +382,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_PointOnCurve)
   gp_Pnt aPoint = aBezier->Value(0.25);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -402,7 +402,7 @@ TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_CircularArc)
   gp_Pnt aPoint(0, 0, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -419,7 +419,7 @@ TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_HighWeight)
   gp_Pnt aPoint(1, 1.5, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -442,7 +442,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_HelixLike)
   gp_Pnt aPoint(1.5, 0.5, 1.5);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -460,7 +460,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_PointOnCurve)
   gp_Pnt                   aPoint  = aBezier->Value(0.3);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   double aMinDist = aResult.MinSquareDistance();
@@ -478,7 +478,7 @@ TEST_F(ExtremaPC_BezierCurveTest, BoundedRange_ExtremumInside)
   gp_Pnt aPoint = aBezier->Value(0.5);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -494,7 +494,7 @@ TEST_F(ExtremaPC_BezierCurveTest, BoundedRange_ExtremumAtBound)
 
   // Create evaluator with restricted domain [0, 0.3]
   ExtremaPC_BezierCurve anEval(aBezier, ExtremaPC::Domain1D{0.0, 0.3});
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -520,7 +520,7 @@ TEST_F(ExtremaPC_BezierCurveTest, DegenerateBezier_AllPolesSame)
   gp_Pnt aPoint(2, 1, 1);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -537,7 +537,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointFarFromCurve)
   gp_Pnt aPoint(100, 100, 100);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -560,7 +560,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointVeryCloseButNotOn)
   gp_Pnt aPoint(aOnCurve.X(), aOnCurve.Y() + 1e-8, aOnCurve.Z());
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
@@ -580,7 +580,7 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
   gp_Pnt aPoint(2, 3, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
 
@@ -627,7 +627,7 @@ TEST_F(ExtremaPC_BezierCurveTest, ConsistentDistanceCalculation)
   gp_Pnt aPoint(1.5, 2, 0);
 
   ExtremaPC_BezierCurve anEval(aBezier);
-  ExtremaPC::Result     aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);

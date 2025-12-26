@@ -121,6 +121,7 @@ struct ExtremumResult
 };
 
 //! Result of extrema computation containing all found extrema.
+//! Non-copyable to enforce use of const reference from Perform().
 struct Result
 {
   Status Status = Status::NotDone; //!< Computation status
@@ -132,6 +133,21 @@ struct Result
   //! For infinite solutions, stores the constant squared distance.
   //! Only meaningful when Status == Status::InfiniteSolutions.
   double InfiniteSquareDistance = 0.0;
+
+  //! Default constructor.
+  Result() = default;
+
+  //! Copy constructor is deleted.
+  Result(const Result&) = delete;
+
+  //! Copy assignment is deleted.
+  Result& operator=(const Result&) = delete;
+
+  //! Move constructor.
+  Result(Result&&) = default;
+
+  //! Move assignment.
+  Result& operator=(Result&&) = default;
 
   //! Returns true if computation succeeded with finite number of extrema.
   bool IsDone() const { return Status == Status::OK; }
@@ -223,6 +239,15 @@ struct Result
       }
     }
     return aMaxIdx;
+  }
+
+  //! Clear the result for reuse.
+  //! Preserves allocated memory in Extrema vector.
+  void Clear()
+  {
+    Status = Status::NotDone;
+    Extrema.Clear();
+    InfiniteSquareDistance = 0.0;
   }
 };
 

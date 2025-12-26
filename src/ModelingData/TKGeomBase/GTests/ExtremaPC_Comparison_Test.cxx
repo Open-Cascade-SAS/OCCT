@@ -175,7 +175,7 @@ TEST_F(ExtremaPC_ComparisonTest, Line_PointOnLine)
 
   // New implementation
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   // Old implementation
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -191,7 +191,7 @@ TEST_F(ExtremaPC_ComparisonTest, Line_PointOffLine)
   gp_Pnt aPoint(5.0, 3.0, 4.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -211,7 +211,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOutside)
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -227,7 +227,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointInside)
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -243,7 +243,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOffPlane)
   gp_Pnt aPoint(15.0, 0.0, 5.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -263,7 +263,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointOnMajorAxis)
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -279,7 +279,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointGeneral)
   gp_Pnt aPoint(15.0, 12.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -299,7 +299,7 @@ TEST_F(ExtremaPC_ComparisonTest, Parabola_PointNearVertex)
   gp_Pnt aPoint(1.0, 2.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -319,7 +319,7 @@ TEST_F(ExtremaPC_ComparisonTest, Hyperbola_PointNearBranch)
   gp_Pnt aPoint(15.0, 3.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -352,7 +352,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_CubicCurve)
   gp_Pnt aPoint(1.5, 3.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -389,7 +389,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
   gp_Pnt aPoint(3.0, 4.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -447,7 +447,7 @@ TEST_F(ExtremaPC_ComparisonTest, Bezier_CubicCurve)
   gp_Pnt aPoint(2.0, 4.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -467,7 +467,7 @@ TEST_F(ExtremaPC_ComparisonTest, OffsetCircle)
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -495,7 +495,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_RandomPoints)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -557,7 +557,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_RandomPoints)
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+    const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -609,7 +609,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Circle)
   for (const auto& aPt : aPoints)
   {
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aResult = anExtPC.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPC.Perform(aPt);
     (void)aResult;
   }
   auto aEndNew     = std::chrono::high_resolution_clock::now();
@@ -685,7 +685,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   for (const auto& aPt : aPoints)
   {
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aResult = anExtPC.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPC.Perform(aPt);
     (void)aResult;
   }
   auto aEndNewNoCaching     = std::chrono::high_resolution_clock::now();
@@ -696,7 +696,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   auto aStartNewCached = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC::Result aResult = anExtPCCached.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPCCached.Perform(aPt);
     (void)aResult;
   }
   auto aEndNewCached     = std::chrono::high_resolution_clock::now();
@@ -765,7 +765,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
   for (const auto& aPt : aPoints)
   {
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aResult = anExtPC.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPC.Perform(aPt);
     (void)aResult;
   }
   auto aEndNew     = std::chrono::high_resolution_clock::now();
@@ -824,7 +824,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   for (const auto& aPt : aPoints)
   {
     ExtremaPC_Curve   anExtPC(anAdaptor);
-    ExtremaPC::Result aResult = anExtPC.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPC.Perform(aPt);
     (void)aResult;
   }
   auto aEndNewNoCaching     = std::chrono::high_resolution_clock::now();
@@ -835,7 +835,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   auto aStartNewCached = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC::Result aResult = anExtPCCached.Perform(aPt);
+    const ExtremaPC::Result& aResult =anExtPCCached.Perform(aPt);
     (void)aResult;
   }
   auto aEndNewCached     = std::chrono::high_resolution_clock::now();
@@ -895,7 +895,7 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_Circle)
   gp_Pnt aPoint(10.0, 0.0, 0.0);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
@@ -928,7 +928,7 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_BSpline)
   gp_Pnt aPoint = aBSpline->Value(0.5);
 
   ExtremaPC_Curve   anExtPC(anAdaptor);
-  ExtremaPC::Result aNewResult = anExtPC.Perform(aPoint);
+  const ExtremaPC::Result& aNewResult =anExtPC.Perform(aPoint);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 

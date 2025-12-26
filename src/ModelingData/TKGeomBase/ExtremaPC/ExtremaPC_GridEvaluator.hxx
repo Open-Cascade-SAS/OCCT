@@ -420,20 +420,20 @@ RefineSingleCandidate(const Candidate&                     theCand,
 //! @param theUMax parameter range upper bound
 //! @param theTol tolerance
 //! @param theMode search mode
+//! @param theResult result to populate (should be cleared before call)
 //! @param theRefConfig optional refinement configuration
-//! @return extrema result
-inline ExtremaPC::Result RefineCandidates(const NCollection_Vector<Candidate>&  theCandidates,
-                                          const NCollection_Array1<GridPoint>&  theGrid,
-                                          const Adaptor3d_Curve&                theCurve,
-                                          const gp_Pnt&                         theP,
-                                          double                                theUMin,
-                                          double                                theUMax,
-                                          double                                theTol,
-                                          ExtremaPC::SearchMode                 theMode,
-                                          const RefinementConfig&               theRefConfig = RefinementConfig())
+inline void RefineCandidates(const NCollection_Vector<Candidate>&  theCandidates,
+                             const NCollection_Array1<GridPoint>&  theGrid,
+                             const Adaptor3d_Curve&                theCurve,
+                             const gp_Pnt&                         theP,
+                             double                                theUMin,
+                             double                                theUMax,
+                             double                                theTol,
+                             ExtremaPC::SearchMode                 theMode,
+                             ExtremaPC::Result&                    theResult,
+                             const RefinementConfig&               theRefConfig = RefinementConfig())
 {
-  ExtremaPC::Result aResult;
-  aResult.Status = ExtremaPC::Status::OK;
+  theResult.Status = ExtremaPC::Status::OK;
 
   // Track found roots to avoid duplicates
   NCollection_Vector<double> aFoundRoots(8); // Small bucket for roots
@@ -535,7 +535,7 @@ inline ExtremaPC::Result RefineCandidates(const NCollection_Vector<Candidate>&  
         anExt.Point          = aPt;
         anExt.SquareDistance = aSqDist;
         anExt.IsMinimum      = aIsMin;
-        aResult.Extrema.Append(anExt);
+        theResult.Extrema.Append(anExt);
 
         aFoundRoots.Append(aRootU);
 
@@ -552,12 +552,10 @@ inline ExtremaPC::Result RefineCandidates(const NCollection_Vector<Candidate>&  
     }
   }
 
-  if (aResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
+  if (theResult.Extrema.IsEmpty() && theCandidates.IsEmpty())
   {
-    aResult.Status = ExtremaPC::Status::NoSolution;
+    theResult.Status = ExtremaPC::Status::NoSolution;
   }
-
-  return aResult;
 }
 
 //! @brief Wrapper for point-on-curve evaluation (for AddEndpointExtrema).
@@ -590,17 +588,18 @@ private:
 //! @param theTol tolerance
 //! @param theMode search mode
 //! @param theIncludeEndpoints include endpoints as extrema
-//! @return extrema result
+//! @param theResult result to populate (should be cleared before call)
 template <typename GridEval>
-inline ExtremaPC::Result PerformGridBasedWithParams(GridEval&              theEval,
-                                                     const Adaptor3d_Curve& theCurve,
-                                                     const gp_Pnt&          theP,
-                                                     const math_Vector&     theParams,
-                                                     double                 theUMin,
-                                                     double                 theUMax,
-                                                     double                 theTol,
-                                                     ExtremaPC::SearchMode  theMode,
-                                                     bool                   theIncludeEndpoints)
+inline void PerformGridBasedWithParams(GridEval&              theEval,
+                                       const Adaptor3d_Curve& theCurve,
+                                       const gp_Pnt&          theP,
+                                       const math_Vector&     theParams,
+                                       double                 theUMin,
+                                       double                 theUMax,
+                                       double                 theTol,
+                                       ExtremaPC::SearchMode  theMode,
+                                       bool                   theIncludeEndpoints,
+                                       ExtremaPC::Result&     theResult)
 {
   // Build grid with D1 evaluation using custom params
   NCollection_Array1<GridPoint> aGrid = BuildGrid(theEval, theParams);
@@ -609,23 +608,21 @@ inline ExtremaPC::Result PerformGridBasedWithParams(GridEval&              theEv
   NCollection_Vector<Candidate> aCandidates = ScanGrid(aGrid, theP, theTol, theMode);
 
   // Refine candidates
-  ExtremaPC::Result aResult = RefineCandidates(aCandidates, aGrid, theCurve, theP, theUMin, theUMax, theTol, theMode);
+  RefineCandidates(aCandidates, aGrid, theCurve, theP, theUMin, theUMax, theTol, theMode, theResult);
 
   // Add endpoint extrema if requested
   if (theIncludeEndpoints)
   {
     PointEvaluator        anEval(theCurve);
     ExtremaPC::Domain1D   aDomain(theUMin, theUMax);
-    ExtremaPC::AddEndpointExtrema(aResult, theP, aDomain, anEval, theTol, theMode);
+    ExtremaPC::AddEndpointExtrema(theResult, theP, aDomain, anEval, theTol, theMode);
   }
 
   // Update status based on whether we found any extrema
-  if (!aResult.Extrema.IsEmpty())
+  if (!theResult.Extrema.IsEmpty())
   {
-    aResult.Status = ExtremaPC::Status::OK;
+    theResult.Status = ExtremaPC::Status::OK;
   }
-
-  return aResult;
 }
 
 //! @brief Perform grid-based extrema computation with uniform sampling.
@@ -642,23 +639,24 @@ inline ExtremaPC::Result PerformGridBasedWithParams(GridEval&              theEv
 //! @param theTol tolerance
 //! @param theMode search mode
 //! @param theIncludeEndpoints include endpoints as extrema
-//! @return extrema result
+//! @param theResult result to populate (should be cleared before call)
 template <typename GridEval>
-inline ExtremaPC::Result PerformGridBased(GridEval&              theEval,
-                                          const Adaptor3d_Curve& theCurve,
-                                          const gp_Pnt&          theP,
-                                          double                 theUMin,
-                                          double                 theUMax,
-                                          int                    theNbSamples,
-                                          double                 theTol,
-                                          ExtremaPC::SearchMode  theMode,
-                                          bool                   theIncludeEndpoints)
+inline void PerformGridBased(GridEval&              theEval,
+                             const Adaptor3d_Curve& theCurve,
+                             const gp_Pnt&          theP,
+                             double                 theUMin,
+                             double                 theUMax,
+                             int                    theNbSamples,
+                             double                 theTol,
+                             ExtremaPC::SearchMode  theMode,
+                             bool                   theIncludeEndpoints,
+                             ExtremaPC::Result&     theResult)
 {
   // Build uniform parameter grid
   math_Vector aParams = BuildUniformParams(theUMin, theUMax, theNbSamples);
 
   // Delegate to the params-based version
-  return PerformGridBasedWithParams(theEval, theCurve, theP, aParams, theUMin, theUMax, theTol, theMode, theIncludeEndpoints);
+  PerformGridBasedWithParams(theEval, theCurve, theP, aParams, theUMin, theUMax, theTol, theMode, theIncludeEndpoints, theResult);
 }
 
 //! @brief Perform extrema using previous solution as hint (NextProject pattern).
@@ -676,17 +674,17 @@ inline ExtremaPC::Result PerformGridBased(GridEval&              theEval,
 //! @param theUMin parameter range lower bound
 //! @param theUMax parameter range upper bound
 //! @param theTol tolerance
+//! @param theResult result to populate (should be cleared before call)
 //! @param theSearchRadius how far from hint to search (fraction of range)
-//! @return extrema result (typically single minimum)
-inline ExtremaPC::Result PerformWithHint(const Adaptor3d_Curve& theCurve,
-                                          const gp_Pnt&          theP,
-                                          double                 theHintU,
-                                          double                 theUMin,
-                                          double                 theUMax,
-                                          double                 theTol,
-                                          double                 theSearchRadius = ExtremaPC::THE_HINT_SEARCH_RADIUS)
+inline void PerformWithHint(const Adaptor3d_Curve& theCurve,
+                            const gp_Pnt&          theP,
+                            double                 theHintU,
+                            double                 theUMin,
+                            double                 theUMax,
+                            double                 theTol,
+                            ExtremaPC::Result&     theResult,
+                            double                 theSearchRadius = ExtremaPC::THE_HINT_SEARCH_RADIUS)
 {
-  ExtremaPC::Result aResult;
 
   // Clamp hint to valid range
   theHintU = std::max(theUMin, std::min(theUMax, theHintU));
@@ -721,9 +719,9 @@ inline ExtremaPC::Result PerformWithHint(const Adaptor3d_Curve& theCurve,
     anExt.Point          = aPt;
     anExt.SquareDistance = aSqDist;
     anExt.IsMinimum      = aIsMin;
-    aResult.Extrema.Append(anExt);
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    theResult.Extrema.Append(anExt);
+    theResult.Status = ExtremaPC::Status::OK;
+    return;
   }
 
   // Newton from hint failed - try iterative grid refinement in local region
@@ -776,9 +774,9 @@ inline ExtremaPC::Result PerformWithHint(const Adaptor3d_Curve& theCurve,
       anExt.Point          = aPt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
-      aResult.Extrema.Append(anExt);
-      aResult.Status = ExtremaPC::Status::OK;
-      return aResult;
+      theResult.Extrema.Append(anExt);
+      theResult.Status = ExtremaPC::Status::OK;
+      return;
     }
   }
 
@@ -802,12 +800,29 @@ inline ExtremaPC::Result PerformWithHint(const Adaptor3d_Curve& theCurve,
     anExt.Point          = aPt;
     anExt.SquareDistance = aSqDist;
     anExt.IsMinimum      = aIsMin;
-    aResult.Extrema.Append(anExt);
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    theResult.Extrema.Append(anExt);
+    theResult.Status = ExtremaPC::Status::OK;
+    return;
   }
 
-  aResult.Status = ExtremaPC::Status::NoSolution;
+  theResult.Status = ExtremaPC::Status::NoSolution;
+}
+
+//! @brief Perform extrema using previous solution as hint (by-value wrapper).
+//!
+//! Convenience overload that returns result by value for backward compatibility.
+//! @see PerformWithHint with Result& output parameter for avoiding allocations.
+[[nodiscard]] inline ExtremaPC::Result
+PerformWithHint(const Adaptor3d_Curve& theCurve,
+                const gp_Pnt&          theP,
+                double                 theHintU,
+                double                 theUMin,
+                double                 theUMax,
+                double                 theTol,
+                double                 theSearchRadius = ExtremaPC::THE_HINT_SEARCH_RADIUS)
+{
+  ExtremaPC::Result aResult;
+  PerformWithHint(theCurve, theP, theHintU, theUMin, theUMax, theTol, aResult, theSearchRadius);
   return aResult;
 }
 
@@ -822,22 +837,21 @@ inline ExtremaPC::Result PerformWithHint(const Adaptor3d_Curve& theCurve,
 //! @param theDomain parameter domain
 //! @param theTol tolerance
 //! @param theMode search mode
-//! @return extrema result (interior only, no endpoints)
-inline ExtremaPC::Result PerformWithCachedGrid(const NCollection_Array1<GridPoint>& theGrid,
-                                                const Adaptor3d_Curve&               theCurve,
-                                                const gp_Pnt&                        theP,
-                                                const ExtremaPC::Domain1D&           theDomain,
-                                                double                               theTol,
-                                                ExtremaPC::SearchMode                theMode)
+//! @param theResult result to populate (should be cleared before call)
+inline void PerformWithCachedGrid(const NCollection_Array1<GridPoint>& theGrid,
+                                  const Adaptor3d_Curve&               theCurve,
+                                  const gp_Pnt&                        theP,
+                                  const ExtremaPC::Domain1D&           theDomain,
+                                  double                               theTol,
+                                  ExtremaPC::SearchMode                theMode,
+                                  ExtremaPC::Result&                   theResult)
 {
   // Scan for candidates
   NCollection_Vector<Candidate> aCandidates = ScanGrid(theGrid, theP, theTol, theMode);
 
   // Refine candidates
-  ExtremaPC::Result aResult = RefineCandidates(aCandidates, theGrid, theCurve, theP,
-                                                theDomain.Min, theDomain.Max, theTol, theMode);
-
-  return aResult;
+  RefineCandidates(aCandidates, theGrid, theCurve, theP,
+                   theDomain.Min, theDomain.Max, theTol, theMode, theResult);
 }
 
 } // namespace ExtremaPC_GridEvaluator

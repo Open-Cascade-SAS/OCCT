@@ -94,14 +94,15 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing extrema or InfiniteSolutions status
-  ExtremaPC::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing extrema or InfiniteSolutions status
+  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     // Use stored domain or full parameter range [0, 2*PI]
     ExtremaPC::Domain1D aDomain = myDomain.value_or(ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
-    return performCore(theP, aDomain, theTol, theMode);
+    performCore(theP, aDomain, theTol, theMode);
+    return myResult;
   }
 
   //! Compute extrema between point P and the ellipse arc including endpoints.
@@ -109,20 +110,20 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return result containing interior + endpoint extrema or InfiniteSolutions status
-  ExtremaPC::Result PerformWithEndpoints(const gp_Pnt&         theP,
-                                         double                theTol,
-                                         ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing interior + endpoint extrema or InfiniteSolutions status
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
+                                                               double                theTol,
+                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
-    ExtremaPC::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
     // Add endpoints if interior computation succeeded and domain is bounded
-    if (aResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(aResult, theP, *myDomain, *this, theTol, theMode);
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! Returns the ellipse geometry.
@@ -130,12 +131,13 @@ public:
 
 private:
   //! Core algorithm - finds extrema with bounds checking.
-  ExtremaPC::Result performCore(const gp_Pnt&              theP,
-                                const ExtremaPC::Domain1D& theDomain,
-                                double                     theTol,
-                                ExtremaPC::SearchMode      theMode) const
+  //! Stores results in myResult.
+  void performCore(const gp_Pnt&              theP,
+                   const ExtremaPC::Domain1D& theDomain,
+                   double                     theTol,
+                   ExtremaPC::SearchMode      theMode) const
   {
-    ExtremaPC::Result aResult;
+    myResult.Clear();
 
     const double theUMin = theDomain.Min;
     const double theUMax = theDomain.Max;
@@ -161,9 +163,9 @@ private:
       if (std::abs(aA - aB) < theTol)
       {
         // Point at center of a circle - infinite solutions
-        aResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
-        aResult.InfiniteSquareDistance = aA * aA + aHeight * aHeight;
-        return aResult;
+        myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+        myResult.InfiniteSquareDistance = aA * aA + aHeight * aHeight;
+        return;
       }
       // For non-circular ellipse at center, we still get valid extrema at semi-axes
     }
@@ -188,16 +190,16 @@ private:
     {
       if (aTrigRes.InfiniteRoots)
       {
-        aResult.Status = ExtremaPC::Status::InfiniteSolutions;
+        myResult.Status = ExtremaPC::Status::InfiniteSolutions;
         // For infinite case, compute distance to any point (use U=0)
-        gp_Pnt aPtOnCurve              = ElCLib::Value(0.0, myEllipse);
-        aResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
+        gp_Pnt aPtOnCurve               = ElCLib::Value(0.0, myEllipse);
+        myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
       }
       else
       {
-        aResult.Status = ExtremaPC::Status::NumericalError;
+        myResult.Status = ExtremaPC::Status::NumericalError;
       }
-      return aResult;
+      return;
     }
 
     // Step 4: Collect extrema
@@ -207,13 +209,13 @@ private:
       gp_Pnt aCurvePt = ElCLib::Value(aU, myEllipse);
 
       // Check for duplicates using parameter proximity (more robust)
-      for (int j = 0; j < aResult.Extrema.Length(); ++j)
+      for (int j = 0; j < myResult.Extrema.Length(); ++j)
       {
-        if (std::abs(aResult.Extrema.Value(j).Parameter - aU) < theTol)
+        if (std::abs(myResult.Extrema.Value(j).Parameter - aU) < theTol)
         {
           return;
         }
-        if (aCurvePt.SquareDistance(aResult.Extrema.Value(j).Point) < aTol2)
+        if (aCurvePt.SquareDistance(myResult.Extrema.Value(j).Point) < aTol2)
         {
           return;
         }
@@ -246,7 +248,7 @@ private:
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
 
-      aResult.Extrema.Append(anExt);
+      myResult.Extrema.Append(anExt);
     };
 
     // Add solutions from solver
@@ -255,12 +257,12 @@ private:
       addExtremum(aTrigRes.Roots[i]);
     }
 
-    aResult.Status = ExtremaPC::Status::OK;
-    return aResult;
+    myResult.Status = ExtremaPC::Status::OK;
   }
 
   gp_Elips                           myEllipse; //!< Ellipse geometry
   std::optional<ExtremaPC::Domain1D> myDomain;  //!< Parameter domain (nullopt for full ellipse)
+  mutable ExtremaPC::Result          myResult;  //!< Reusable result storage
 };
 
 #endif // _ExtremaPC_Ellipse_HeaderFile

@@ -145,12 +145,12 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
-  //! @return result with interior extrema only
-  ExtremaPS::Result Perform(const gp_Pnt&         theP,
-                            double                theTol,
-                            ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior extrema only
+  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
+                                                  double                theTol,
+                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
-    ExtremaPS::Result aResult;
+    myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
     // Vector from center to point
@@ -170,11 +170,11 @@ public:
     // Check for degenerate case: point on axis
     if (aRadialDistSq < theTol * theTol)
     {
-      aResult.Status = ExtremaPS::Status::InfiniteSolutions;
+      myResult.Status = ExtremaPS::Status::InfiniteSolutions;
       const double aDistToCircle = std::sqrt(aHeight * aHeight + myMajorRadius * myMajorRadius);
       const double aMinDist = std::abs(aDistToCircle - myMinorRadius);
-      aResult.InfiniteSquareDistance = aMinDist * aMinDist;
-      return aResult;
+      myResult.InfiniteSquareDistance = aMinDist * aMinDist;
+      return myResult;
     }
 
     const double aRadialDist = std::sqrt(aRadialDistSq);
@@ -251,7 +251,7 @@ public:
         anExt.Point          = aSurfPt;
         anExt.SquareDistance = aDistToSurf * aDistToSurf;
         anExt.IsMinimum      = true;
-        aResult.Extrema.Append(anExt);
+        myResult.Extrema.Append(anExt);
       }
 
       if (theMode != ExtremaPS::SearchMode::Min)
@@ -269,7 +269,7 @@ public:
         anExt1.Point          = aSurfPt1;
         anExt1.SquareDistance = aDistToSurf1 * aDistToSurf1;
         anExt1.IsMinimum      = false;
-        aResult.Extrema.Append(anExt1);
+        myResult.Extrema.Append(anExt1);
 
         // Maximum 2 & 3: opposite generating circle
         const double aOppCircleCenterX = myCenterX - myMajorRadius * aRadNormX;
@@ -307,7 +307,7 @@ public:
           anExt2.Point          = aSurfPt2;
           anExt2.SquareDistance = aDistToSurf2 * aDistToSurf2;
           anExt2.IsMinimum      = false;
-          aResult.Extrema.Append(anExt2);
+          myResult.Extrema.Append(anExt2);
 
           double aVOpp3 = aVOpp2 + M_PI;
           if (aVOpp3 >= aTwoPi) aVOpp3 -= aTwoPi;
@@ -324,12 +324,12 @@ public:
           anExt3.Point          = aSurfPt3;
           anExt3.SquareDistance = aDistToSurf3 * aDistToSurf3;
           anExt3.IsMinimum      = false;
-          aResult.Extrema.Append(anExt3);
+          myResult.Extrema.Append(anExt3);
         }
       }
 
-      aResult.Status = ExtremaPS::Status::OK;
-      return aResult;
+      myResult.Status = ExtremaPS::Status::OK;
+      return myResult;
     }
 
     // GENERAL PATH: Bounded domains - myDomain is guaranteed to have value here
@@ -368,9 +368,9 @@ public:
       const double aSqDist = theP.SquareDistance(aSurfPt);
 
       // Check for duplicates
-      for (int i = 0; i < aResult.Extrema.Length(); ++i)
+      for (int i = 0; i < myResult.Extrema.Length(); ++i)
       {
-        const ExtremaPS::ExtremumResult& anExisting = aResult.Extrema.Value(i);
+        const ExtremaPS::ExtremumResult& anExisting = myResult.Extrema.Value(i);
         if (std::abs(anExisting.U - aClampedU) < theTol && std::abs(anExisting.V - aClampedV) < theTol)
           return;
         if (anExisting.Point.SquareDistance(aSurfPt) < theTol * theTol)
@@ -383,7 +383,7 @@ public:
       anExt.Point          = aSurfPt;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
-      aResult.Extrema.Append(anExt);
+      myResult.Extrema.Append(anExt);
     };
 
     if (theMode != ExtremaPS::SearchMode::Max)
@@ -398,8 +398,8 @@ public:
       addExtremum(aUOpp, aVOpp, false);
     }
 
-    aResult.Status = aResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
-    return aResult;
+    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    return myResult;
   }
 
   //! Find extrema including boundary edges and corners.
@@ -408,24 +408,24 @@ public:
   //! @param theP query point
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return result with interior + boundary extrema
-  ExtremaPS::Result PerformWithBoundary(const gp_Pnt&         theP,
-                                        double                theTol,
-                                        ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  //! @return const reference to result with interior + boundary extrema
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
+                                                              double                theTol,
+                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
-    ExtremaPS::Result aResult = Perform(theP, theTol, theMode);
+    (void)Perform(theP, theTol, theMode);
 
     // If infinite solutions, return immediately
-    if (aResult.IsInfinite())
+    if (myResult.IsInfinite())
     {
-      return aResult;
+      return myResult;
     }
 
     // Natural domain (full torus) - no boundary extrema needed
     if (!myDomain.has_value())
     {
-      return aResult;
+      return myResult;
     }
 
     // Check if boundary extrema are needed
@@ -437,20 +437,20 @@ public:
     // Add boundary if not full domain
     if (!aIsFullU || !aIsFullV)
     {
-      ExtremaPS::AddBoundaryExtrema(aResult, theP, aDomain, *this, theTol, theMode);
+      ExtremaPS::AddBoundaryExtrema(myResult, theP, aDomain, *this, theTol, theMode);
     }
 
     // Update status
-    if (aResult.Extrema.IsEmpty())
+    if (myResult.Extrema.IsEmpty())
     {
-      aResult.Status = ExtremaPS::Status::NoSolution;
+      myResult.Status = ExtremaPS::Status::NoSolution;
     }
     else
     {
-      aResult.Status = ExtremaPS::Status::OK;
+      myResult.Status = ExtremaPS::Status::OK;
     }
 
-    return aResult;
+    return myResult;
   }
 
   //! @}
@@ -467,6 +467,7 @@ public:
 private:
   gp_Torus                           myTorus;   //!< Torus geometry
   std::optional<ExtremaPS::Domain2D> myDomain;  //!< Parameter domain (nullopt for full torus)
+  mutable ExtremaPS::Result          myResult;  //!< Reusable result storage
 
   // Cached components for fast computation
   double myCenterX, myCenterY, myCenterZ;  //!< Torus center
