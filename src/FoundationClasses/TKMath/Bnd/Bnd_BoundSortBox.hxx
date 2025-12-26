@@ -23,12 +23,12 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
 #include <array>
-#include <vector>
 
 class gp_Pln;
 class Bnd_VoxelGrid;
@@ -53,7 +53,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  using VectorInt = std::vector<Standard_Integer, NCollection_Allocator<Standard_Integer>>;
+  using VectorInt = NCollection_Vector<Standard_Integer>;
 
 public:
   //! Constructs an empty comparison algorithm for bounding boxes.
