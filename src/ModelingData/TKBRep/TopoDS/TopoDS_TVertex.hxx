@@ -18,6 +18,7 @@
 #define _TopoDS_TVertex_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
@@ -30,21 +31,31 @@ class TopoDS_TVertex;
 DEFINE_STANDARD_HANDLE(TopoDS_TVertex, TopoDS_TShape)
 
 //! A Vertex is a topological point in two or three dimensions.
+//! A vertex has no sub-shapes (children).
 class TopoDS_TVertex : public TopoDS_TShape
 {
 public:
-  //! Returns VERTEX.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
+  //! Returns 0 - vertices have no children.
+  int NbChildren() const Standard_OVERRIDE { return 0; }
+
+  //! Throws Standard_OutOfRange - vertices have no children.
+  //! @param theIndex unused
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE
+  {
+    (void)theIndex;
+    throw Standard_OutOfRange("TopoDS_TVertex::GetChild - vertex has no children");
+  }
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 
 protected:
   //! Construct a vertex.
+  //! Vertices are always closed and convex by definition.
   TopoDS_TVertex()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_VERTEX)
   {
-    Closed(Standard_True);
-    Convex(Standard_True);
+    Closed(true);
+    Convex(true);
   }
 };
 

@@ -18,30 +18,49 @@
 #define _TopoDS_TShell_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_TShape.hxx>
 
 class TopoDS_TShell;
 DEFINE_STANDARD_HANDLE(TopoDS_TShell, TopoDS_TShape)
 
 //! A set of faces connected by their edges.
+//!
+//! A shell can have many faces (tetrahedron=4, box=6, complex=many).
+//! Uses dynamic array storage with bucket size 8.
 class TopoDS_TShell : public TopoDS_TShape
 {
 public:
+  //! Bucket size for dynamic array (tetrahedron=4, box=6 needs 2 buckets)
+  static constexpr int BucketSize = 6;
+
   //! Creates an empty TShell.
   TopoDS_TShell()
-      : TopoDS_TShape()
+      : TopoDS_TShape(TopAbs_SHELL),
+        mySubShapes(BucketSize)
   {
   }
-
-  //! Returns SHELL.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
 
   //! Returns an empty TShell.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
+  //! Returns the number of sub-shapes.
+  int NbChildren() const Standard_OVERRIDE { return mySubShapes.Size(); }
+
+  //! Returns the sub-shape at the given index (0-based).
+  //! @param theIndex index of the sub-shape (0 <= theIndex < NbChildren())
+  const TopoDS_Shape& GetChild(int theIndex) const Standard_OVERRIDE { return mySubShapes.Value(theIndex); }
+
   DEFINE_STANDARD_RTTIEXT(TopoDS_TShell, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  //! Storage for sub-shapes.
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes;
 };
 
 #endif // _TopoDS_TShell_HeaderFile

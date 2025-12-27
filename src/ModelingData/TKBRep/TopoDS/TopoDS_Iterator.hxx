@@ -19,8 +19,9 @@
 
 #include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_TShape.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopLoc_Location.hxx>
 
 //! Iterates on the underlying shape underlying a given
@@ -35,7 +36,11 @@ public:
 
   //! Creates an empty Iterator.
   TopoDS_Iterator()
-      : myOrientation(TopAbs_FORWARD)
+      : myTShape(nullptr),
+        myIndex(0),
+        myNbChildren(0),
+        myShapeType(TopAbs_SHAPE),
+        myOrientation(TopAbs_FORWARD)
   {
   }
 
@@ -46,9 +51,12 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  TopoDS_Iterator(const TopoDS_Shape&    S,
-                  const Standard_Boolean cumOri = Standard_True,
-                  const Standard_Boolean cumLoc = Standard_True)
+  TopoDS_Iterator(const TopoDS_Shape& S, bool cumOri = true, bool cumLoc = true)
+      : myTShape(nullptr),
+        myIndex(0),
+        myNbChildren(0),
+        myShapeType(TopAbs_SHAPE),
+        myOrientation(TopAbs_FORWARD)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -60,13 +68,11 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-  Standard_EXPORT void Initialize(const TopoDS_Shape&    S,
-                                  const Standard_Boolean cumOri = Standard_True,
-                                  const Standard_Boolean cumLoc = Standard_True);
+  Standard_EXPORT void Initialize(const TopoDS_Shape& S, bool cumOri = true, bool cumLoc = true);
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  Standard_Boolean More() const { return myShapes.More(); }
+  Standard_EXPORT bool More() const;
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -84,11 +90,30 @@ public:
     return myShape;
   }
 
+  //! Refreshes the cached number of children.
+  //! Call this method if the shape was modified during iteration
+  //! and you want to continue iterating over newly added children.
+  Standard_EXPORT void Refresh();
+
 private:
-  TopoDS_Shape                     myShape;
-  TopoDS_ListIteratorOfListOfShape myShapes;
-  TopAbs_Orientation               myOrientation;
-  TopLoc_Location                  myLocation;
+  //! Updates myShape from current index
+  void updateCurrentShape();
+
+private:
+  //! Gets child shape at current index using type-switch for direct access (no virtual call)
+  const TopoDS_Shape& getChildByType() const;
+
+  //! Gets current number of children using type-switch for direct access (no virtual call)
+  int getCurrentNbChildren() const;
+
+private:
+  TopoDS_Shape     myShape;      //!< Current composed sub-shape
+  TopoDS_TShape*   myTShape;     //!< Pointer to parent TShape (for child access)
+  int              myIndex;      //!< Current child index (0-based)
+  mutable int      myNbChildren; //!< Cached number of children (mutable for lazy refresh in More())
+  TopAbs_ShapeEnum myShapeType;  //!< Shape type for type-switch optimization
+  TopAbs_Orientation myOrientation; //!< Cumulative orientation
+  TopLoc_Location    myLocation;    //!< Cumulative location
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

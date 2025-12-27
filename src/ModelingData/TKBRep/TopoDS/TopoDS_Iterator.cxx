@@ -18,45 +18,173 @@
 
 #include <TopoDS_Iterator.hxx>
 
-//=================================================================================================
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TEdge.hxx>
+#include <TopoDS_TFace.hxx>
+#include <TopoDS_TShell.hxx>
+#include <TopoDS_TSolid.hxx>
+#include <TopoDS_TVertex.hxx>
+#include <TopoDS_TWire.hxx>
 
-void TopoDS_Iterator::Initialize(const TopoDS_Shape&    S,
-                                 const Standard_Boolean cumOri,
-                                 const Standard_Boolean cumLoc)
+#include <Standard_Assert.hxx>
+
+//==================================================================================================
+
+void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, bool cumOri, bool cumLoc)
 {
   if (cumLoc)
+  {
     myLocation = S.Location();
+  }
   else
+  {
     myLocation.Identity();
+  }
+
   if (cumOri)
+  {
     myOrientation = S.Orientation();
+  }
   else
+  {
     myOrientation = TopAbs_FORWARD;
+  }
 
   if (S.IsNull())
-    myShapes = TopoDS_ListIteratorOfListOfShape();
-  else
-    myShapes.Initialize(S.TShape()->myShapes);
-
-  if (More())
   {
-    myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
-    if (!myLocation.IsIdentity())
-      myShape.Move(myLocation, Standard_False);
+    myTShape     = nullptr;
+    myIndex      = 0;
+    myNbChildren = 0;
+    myShapeType  = TopAbs_SHAPE;
+  }
+  else
+  {
+    myTShape     = S.TShape().get();
+    myIndex      = 0;
+    myShapeType  = myTShape->ShapeType();
+    myNbChildren = getCurrentNbChildren();
+  }
+
+  if (myIndex < myNbChildren)
+  {
+    updateCurrentShape();
   }
 }
 
-//=================================================================================================
+//==================================================================================================
+
+void TopoDS_Iterator::Refresh()
+{
+  myNbChildren = getCurrentNbChildren();
+}
+
+//==================================================================================================
+
+bool TopoDS_Iterator::More() const
+{
+  if (myIndex < myNbChildren)
+  {
+    return true;
+  }
+  // Reached cached limit - check if more children were added
+  const int aCurrentNb = getCurrentNbChildren();
+#ifdef OCCT_DEBUG
+  Standard_ASSERT_RAISE(aCurrentNb >= myNbChildren,
+                        "TopoDS_Iterator: children were removed during iteration");
+#endif
+  if (aCurrentNb > myNbChildren)
+  {
+    myNbChildren = aCurrentNb;
+    return true;
+  }
+  return false;
+}
+
+//==================================================================================================
 
 void TopoDS_Iterator::Next()
 {
-  myShapes.Next();
+  ++myIndex;
   if (More())
   {
-    myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
-    if (!myLocation.IsIdentity())
-      myShape.Move(myLocation, Standard_False);
+    updateCurrentShape();
+  }
+}
+
+//==================================================================================================
+
+const TopoDS_Shape& TopoDS_Iterator::getChildByType() const
+{
+  // Type-switch for direct storage access (no virtual call)
+  switch (myShapeType)
+  {
+    case TopAbs_EDGE:
+      return static_cast<TopoDS_TEdge*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_WIRE:
+      return static_cast<TopoDS_TWire*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_FACE:
+      return static_cast<TopoDS_TFace*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_SHELL:
+      return static_cast<TopoDS_TShell*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_SOLID:
+      return static_cast<TopoDS_TSolid*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_COMPSOLID:
+      return static_cast<TopoDS_TCompSolid*>(myTShape)->mySubShapes.Value(myIndex);
+    case TopAbs_COMPOUND:
+      return static_cast<TopoDS_TCompound*>(myTShape)->mySubShapes.Value(myIndex);
+    default:
+      // TopAbs_VERTEX and TopAbs_SHAPE have no children - this is a programming error
+      throw Standard_NoSuchObject("TopoDS_Iterator::getChildByType - shape type has no children");
+  }
+}
+
+//==================================================================================================
+
+void TopoDS_Iterator::updateCurrentShape()
+{
+  // Get child shape using type-switch for direct access (no virtual call)
+  myShape = getChildByType();
+
+  // Compose orientation with parent
+  myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
+
+  // Apply location transformation if needed
+  if (!myLocation.IsIdentity())
+  {
+    myShape.Move(myLocation, false);
+  }
+}
+
+//==================================================================================================
+
+int TopoDS_Iterator::getCurrentNbChildren() const
+{
+  if (myTShape == nullptr)
+  {
+    return 0;
+  }
+
+  // Type-switch for direct storage access (no virtual call)
+  switch (myShapeType)
+  {
+    case TopAbs_VERTEX:
+      return 0; // Vertices have no children
+    case TopAbs_EDGE:
+      return static_cast<const TopoDS_TEdge*>(myTShape)->mySubShapes.Size();
+    case TopAbs_WIRE:
+      return static_cast<const TopoDS_TWire*>(myTShape)->mySubShapes.Size();
+    case TopAbs_FACE:
+      return static_cast<const TopoDS_TFace*>(myTShape)->mySubShapes.Size();
+    case TopAbs_SHELL:
+      return static_cast<const TopoDS_TShell*>(myTShape)->mySubShapes.Size();
+    case TopAbs_SOLID:
+      return static_cast<const TopoDS_TSolid*>(myTShape)->mySubShapes.Size();
+    case TopAbs_COMPSOLID:
+      return static_cast<const TopoDS_TCompSolid*>(myTShape)->mySubShapes.Size();
+    case TopAbs_COMPOUND:
+      return static_cast<const TopoDS_TCompound*>(myTShape)->mySubShapes.Size();
+    default:
+      return 0;
   }
 }
