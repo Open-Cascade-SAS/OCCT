@@ -159,7 +159,7 @@ inline Result Solve(const ExtremaPS_DistanceFunction& theFunc,
                     double                            theVMin,
                     double                            theVMax,
                     double                            theTol,
-                    int                               theMaxIter = 20)
+                    int                               theMaxIter = 12)
 {
   // Use MathSys::Newton2DSymmetric for the core algorithm
   auto aMathResult = MathSys::Newton2DSymmetric(theFunc, theU0, theV0,
