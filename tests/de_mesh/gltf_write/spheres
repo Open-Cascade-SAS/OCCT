@@ -5,7 +5,7 @@ puts "========"
 vclear
 vclose ALL
 Close *
-source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/vis_pbr_spheres.tcl
 vdump "${imagedir}/${casename}_0.png"
 
 set aTmpGltf1  "${imagedir}/${casename}_tmp1.glb"

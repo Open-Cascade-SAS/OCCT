@@ -3,7 +3,7 @@ puts "0031279: Visualization, TKOpenGl - environment background is misplaced wit
 puts "============"
 puts ""
 
-source $env(CSF_OCCTSamplesPath)/tcl/raytrace.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/raytrace.tcl
 vrenderparams -env
 vcamera -persp
 vviewparams -scale 1.3 -proj 0.57 -0.57 0.57 -up -0.4 0.4 0.8 -at -62 -111 -15

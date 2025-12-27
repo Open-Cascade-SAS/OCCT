@@ -152,7 +152,6 @@ function(OCCT_SET_GTEST_ENVIRONMENT)
       "CSF_OCCTResourcePath=${OCCT_ROOT_DIR}/resources"
       "CSF_OCCTDataPath=${OCCT_ROOT_DIR}/data"
       "CSF_OCCTDocPath=${OCCT_ROOT_DIR}/doc"
-      "CSF_OCCTSamplesPath=${OCCT_ROOT_DIR}/tests/samples"
       "CSF_OCCTTestsPath=${OCCT_ROOT_DIR}/tests"
       "CSF_OCCTBinPath=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
       "CSF_OCCTLibPath=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}"

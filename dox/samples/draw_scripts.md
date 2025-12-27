@@ -1,12 +1,12 @@
 ﻿Draw: Demo Scripts {#samples__draw_scripts}
 ================
 
-All demo scripts are provided with OCCT sources and locate in <i>CASROOT/samples/tcl</i>. To play around them please 
+All demo scripts are provided with OCCT sources and locate in <i>CASROOT/resources/samples/tcl</i>. To play around them please
 follow the steps below:
 
-1. Start DRAWEXE 
+1. Start DRAWEXE
 2. Type *cd ../..* to return to the root directory
-3. Type *cd samples/tcl* to reach the *DrawResources* directory
+3. Type *cd resources/samples/tcl* to reach the demo scripts directory
 4. Type *source \<demo_file\>* to run the demonstration file provided with Open CASCADE. The following demonstration 
 files are available:
   * <b>DataExchangeDemo.tcl</b>: demonstrates sample sequence of operations with writing and reading IGES file
@@ -105,7 +105,7 @@ Type pload ALL
 **Running demonstration files**
 
 1. Type *cd ../..* to return to the root directory
-2. Type *cd samples/tcl* to reach the *DrawResources* directory
+2. Type *cd resources/samples/tcl* to reach the demo scripts directory
 3. Type *source \<demo_file\>* to run the demonstration file provided with Open CASCADE. The following demonstration files are available:
   * DataExchangeDemo.tcl: demonstrates sample sequence of operations with writing and reading IGES file
   * ModelingDemo.tcl: demonstrates creation of simple shape and displaying it in HLR mode

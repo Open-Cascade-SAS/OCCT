@@ -4,7 +4,7 @@ puts "========"
 
 pload VISUALIZATION
 vcaps -sprites
-source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/markers.tcl
 
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png

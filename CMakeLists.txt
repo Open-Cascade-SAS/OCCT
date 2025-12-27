@@ -1121,9 +1121,8 @@ endif()
 
 list (FIND BUILD_TOOLKITS DRAWEXE DRAWEXE_INDEX)
 if (${DRAWEXE_INDEX} GREATER -1)
-  # copy data folder and tcl samples to install folder
+  # copy data folder (includes tcl samples) to install folder
   OCCT_INSTALL_FILE_OR_DIR ("data/" "${INSTALL_DIR_DATA}")
-  OCCT_INSTALL_FILE_OR_DIR ("tests/samples/tcl" "${INSTALL_DIR_DATA}")
 
   install (FILES "${OCCT_ROOT_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
           PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
@@ -1188,7 +1187,6 @@ if (LAYOUT_IS_VCPKG)
     set \"CSF_OCCTIncludePath=%CASCONTENTROOT%\\include\"
     set \"CSF_OCCTResourcePath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\"
     set \"CSF_OCCTDataPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\"
-    set \"CSF_OCCTSamplesPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\samples\"
     set \"CSF_OCCTTestsPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\tests\"
     set \"CSF_OCCTDocPath=%CASCONTENTROOT%\\share\\${OCCT_PROJECT_NAME}\\doc\"")
   else()
@@ -1202,7 +1200,6 @@ if (LAYOUT_IS_VCPKG)
     export CSF_OCCTIncludePath=\"\${CASCONTENTROOT}/include\"
     export CSF_OCCTResourcePath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}\"
     export CSF_OCCTDataPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}\"
-    export CSF_OCCTSamplesPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/samples\"
     export CSF_OCCTTestsPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/tests\"
     export CSF_OCCTDocPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/doc\"")
   endif()
@@ -1217,7 +1214,6 @@ else()
     set (OCCT_CUSTOM_ADDITIONAL_PATHS "set \"CSF_OCCTIncludePath=%CASROOT%/${INSTALL_DIR_INCLUDE}\"
     set \"CSF_OCCTResourcePath=%CASROOT%/${INSTALL_DIR_RESOURCE}\"
     set \"CSF_OCCTDataPath=%CASROOT%/${INSTALL_DIR_DATA}\"
-    set \"CSF_OCCTSamplesPath=%CASROOT%/${INSTALL_DIR_SAMPLES}\"
     set \"CSF_OCCTTestsPath=%CASROOT%/${INSTALL_DIR_TESTS}\"
     set \"CSF_OCCTDocPath=%CASROOT%/${INSTALL_DIR_DOC}\"")
   else()
@@ -1226,7 +1222,6 @@ else()
     set (OCCT_CUSTOM_ADDITIONAL_PATHS "export CSF_OCCTIncludePath=\"\${CASROOT}/${INSTALL_DIR_INCLUDE}\"
     export CSF_OCCTResourcePath=\"\${CASROOT}/${INSTALL_DIR_RESOURCE}\"
     export CSF_OCCTDataPath=\"\${CASROOT}/${INSTALL_DIR_DATA}\"
-    export CSF_OCCTSamplesPath=\"\${CASROOT}/${INSTALL_DIR_SAMPLES}\"
     export CSF_OCCTTestsPath=\"\${CASROOT}/${INSTALL_DIR_TESTS}\"
     export CSF_OCCTDocPath=\"\${CASROOT}/${INSTALL_DIR_DOC}\"")
   endif()

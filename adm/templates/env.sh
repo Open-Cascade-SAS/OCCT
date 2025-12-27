@@ -188,7 +188,6 @@ fi
 # ----- Default paths to sub-folders (can be different in install env) -----
 export CSF_OCCTIncludePath="${CSF_OCCTIncludePath:-$CASROOT/inc}"
 export CSF_OCCTResourcePath="${CSF_OCCTResourcePath:-$CASROOT/src}"
-export CSF_OCCTSamplesPath="${CSF_OCCTSamplesPath:-$CASROOT/tests/samples}"
 export CSF_OCCTDataPath="${CSF_OCCTDataPath:-$CASROOT/data}"
 export CSF_OCCTTestsPath="${CSF_OCCTTestsPath:-$CASROOT/tests}"
 

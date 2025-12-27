@@ -469,13 +469,6 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
         setOcctTclEnv("CSF_OCCTResourcePath", aResPath);
       }
 
-      TCollection_AsciiString aSamplesPath;
-      if (OSD_Environment("CSF_OCCTSamplesPath").Value().IsEmpty()
-          && searchResources(aCasRoot, aSamplesPath, "samples", "tcl/Readme.txt"))
-      {
-        setOcctTclEnv("CSF_OCCTSamplesPath", aSamplesPath);
-      }
-
       TCollection_AsciiString aTestsPath;
       if (OSD_Environment("CSF_TestScriptsPath").Value().IsEmpty()
           && searchResources(aCasRoot, aTestsPath, "tests", "parse.rules"))

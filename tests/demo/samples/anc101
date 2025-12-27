@@ -1,5 +1,5 @@
 # test for creation of ANC101 shape
-source $env(CSF_OCCTSamplesPath)/tcl/ANC101.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/ANC101.tcl
 
 # check result for validity and make a snapshot
 checkshape result
