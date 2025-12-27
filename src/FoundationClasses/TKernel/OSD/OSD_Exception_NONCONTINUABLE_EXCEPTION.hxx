@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_NONCONTINUABLE_EXCEPTION;
-DEFINE_STANDARD_HANDLE(OSD_Exception_NONCONTINUABLE_EXCEPTION, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_NONCONTINUABLE_EXCEPTION
   #define OSD_Exception_NONCONTINUABLE_EXCEPTION_Raise_if(CONDITION, MESSAGE)                      \
     if (CONDITION)                                                                                 \

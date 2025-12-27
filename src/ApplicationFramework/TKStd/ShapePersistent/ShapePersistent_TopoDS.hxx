@@ -41,19 +41,19 @@ public:
     Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const { return "PTopoDS_HShape"; }
+    virtual const char* PName() const { return "PTopoDS_HShape"; }
 
   private:
-    Handle(StdObjMgt_Persistent) myEntry;
+    occ::handle<StdObjMgt_Persistent> myEntry;
   };
 
 protected:
   class pTBase : public pTShape
   {
   public:
-    inline Handle(TopoDS_TShape) Import() const
+    inline occ::handle<TopoDS_TShape> Import() const
     {
-      Handle(TopoDS_TShape) aTShape = createTShape();
+      occ::handle<TopoDS_TShape> aTShape = createTShape();
 
       TopoDS_Shape aWrapperShape;
       aWrapperShape.TShape(aTShape);
@@ -65,11 +65,11 @@ protected:
     }
 
   private:
-    virtual Handle(TopoDS_TShape) createTShape() const = 0;
+    virtual occ::handle<TopoDS_TShape> createTShape() const = 0;
 
     virtual void addShapes(TopoDS_Shape& theParent) const = 0;
 
-    void setFlags(const Handle(TopoDS_TShape)& theTShape) const;
+    void setFlags(const occ::handle<TopoDS_TShape>& theTShape) const;
 
   protected:
     template <class ShapesArray>
@@ -80,10 +80,10 @@ private:
   template <class Target>
   class pTSimple : public pTBase
   {
-    virtual Handle(TopoDS_TShape) createTShape() const;
+    virtual occ::handle<TopoDS_TShape> createTShape() const;
 
   public:
-    inline Standard_CString PName() const;
+    inline const char* PName() const;
   };
 
   template <class Persistent, class ShapesArray>
@@ -128,37 +128,37 @@ public:
 
 public:
   //! Create a persistent object for a shape
-  Standard_EXPORT static Handle(HShape) Translate(const TopoDS_Shape&               theShape,
-                                                  StdObjMgt_TransientPersistentMap& theMap,
+  Standard_EXPORT static occ::handle<HShape> Translate(const TopoDS_Shape&               theShape,
+                                                  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
                                                   ShapePersistent_TriangleMode theTriangleMode);
 };
 
 template <>
-inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TWire>::PName() const
+inline const char* ShapePersistent_TopoDS::pTSimple<TopoDS_TWire>::PName() const
 {
   return "PTopoDS_TWire";
 }
 
 template <>
-inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TShell>::PName() const
+inline const char* ShapePersistent_TopoDS::pTSimple<TopoDS_TShell>::PName() const
 {
   return "PTopoDS_TShell";
 }
 
 template <>
-inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TSolid>::PName() const
+inline const char* ShapePersistent_TopoDS::pTSimple<TopoDS_TSolid>::PName() const
 {
   return "PTopoDS_TSolid";
 }
 
 template <>
-inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TCompSolid>::PName() const
+inline const char* ShapePersistent_TopoDS::pTSimple<TopoDS_TCompSolid>::PName() const
 {
   return "PTopoDS_TCompSolid";
 }
 
 template <>
-inline Standard_CString ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>::PName() const
+inline const char* ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>::PName() const
 {
   return "PTopoDS_TCompound";
 }

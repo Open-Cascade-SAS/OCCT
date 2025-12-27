@@ -24,24 +24,28 @@
 #include <MAT2d_Circuit.hxx>
 #include <MAT2d_CutCurve.hxx>
 #include <MAT2d_Mat2d.hxx>
-#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <NCollection_Sequence.hxx>
 #include <MAT2d_Tool2d.hxx>
 #include <MAT_BasicElt.hxx>
-#include <MAT_DataMapOfIntegerBasicElt.hxx>
+#include <Standard_Integer.hxx>
+#include <MAT_BasicElt.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MAT_Graph.hxx>
 #include <MAT_ListOfBisector.hxx>
 #include <MAT_Node.hxx>
 #include <Precision.hxx>
-#include <TColGeom2d_SequenceOfGeometry.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
 
-static void CutSketch(MAT2d_SequenceOfSequenceOfGeometry& Figure,
-                      MAT2d_DataMapOfBiIntInteger&        NbSect);
+static void CutSketch(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+                      NCollection_DataMap<MAT2d_BiInt, int>&        NbSect);
 
 //=================================================================================================
 
 BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
-    : isDone(Standard_False),
+    : isDone(false),
       nbContours(0)
 {
 }
@@ -52,15 +56,15 @@ BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
 //           <anExplo>.
 //=============================================================================
 void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
-                                       const Standard_Integer IndexLine,
+                                       const int IndexLine,
                                        const MAT_Side         aSide,
                                        const GeomAbs_JoinType aJoinType,
-                                       const Standard_Boolean IsOpenResult)
+                                       const bool IsOpenResult)
 {
   MAT2d_Mat2d                        TheMAT(IsOpenResult);
-  Handle(MAT_ListOfBisector)         TheRoots = new MAT_ListOfBisector();
-  MAT2d_SequenceOfSequenceOfGeometry Figure;
-  Standard_Integer                   i;
+  occ::handle<MAT_ListOfBisector>         TheRoots = new MAT_ListOfBisector();
+  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>> Figure;
+  int                   i;
 
   nbSect.Clear();
   theGraph   = new MAT_Graph();
@@ -75,7 +79,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
   //---------------------------------
   for (i = 1; i <= anExplo.NumberOfContours(); i++)
   {
-    TColGeom2d_SequenceOfGeometry Line;
+    NCollection_Sequence<occ::handle<Geom2d_Geometry>> Line;
     Figure.Append(Line);
     for (anExplo.Init(i); anExplo.More(); anExplo.Next())
     {
@@ -91,7 +95,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
   //----------------------------------------------------------
   // Construction du circuit sur lequel est calcule la carte.
   //----------------------------------------------------------
-  Handle(MAT2d_Circuit) ACircuit = new MAT2d_Circuit(aJoinType, IsOpenResult);
+  occ::handle<MAT2d_Circuit> ACircuit = new MAT2d_Circuit(aJoinType, IsOpenResult);
   //  Modified by Sergey KHROMOV - Wed Mar  6 17:43:47 2002 Begin
   //   ACircuit->Perform(Figure,IndexLine,(aSide == MAT_Left));
   ACircuit->Perform(Figure, anExplo.GetIsClosed(), IndexLine, (aSide == MAT_Left));
@@ -134,8 +138,8 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
   //-----------------------------------------------------------------------
   if (anExplo.NumberOfContours() > 1)
   {
-    MAT_DataMapOfIntegerBasicElt NewMap;
-    Standard_Integer             IndexLast = 1;
+    NCollection_DataMap<int, occ::handle<MAT_BasicElt>> NewMap;
+    int             IndexLast = 1;
 
     //-----------------------------------------------------------------------
     // Construction de NewMap dont les elements sont ordonnes suivant les
@@ -160,19 +164,19 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&    anExplo,
 
 //=================================================================================================
 
-void BRepMAT2d_BisectingLocus::RenumerationAndFusion(const Standard_Integer        ILine,
-                                                     const Standard_Integer        LengthLine,
-                                                     Standard_Integer&             IndexLast,
-                                                     MAT_DataMapOfIntegerBasicElt& NewMap)
+void BRepMAT2d_BisectingLocus::RenumerationAndFusion(const int        ILine,
+                                                     const int        LengthLine,
+                                                     int&             IndexLast,
+                                                     NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap)
 {
-  Standard_Integer IndFirst;
-  Standard_Integer i, j;
-  Standard_Integer GeomIndexArc1, GeomIndexArc2, GeomIndexArc3, GeomIndexArc4;
-  Standard_Boolean MergeArc1, MergeArc2;
+  int IndFirst;
+  int i, j;
+  int GeomIndexArc1, GeomIndexArc2, GeomIndexArc3, GeomIndexArc4;
+  bool MergeArc1, MergeArc2;
 
   for (i = 1; i <= LengthLine; i++)
   {
-    const TColStd_SequenceOfInteger& S = theTool.Circuit()->RefToEqui(ILine, i);
+    const NCollection_Sequence<int>& S = theTool.Circuit()->RefToEqui(ILine, i);
 
     IndFirst = S.Value(1);
     NewMap.Bind(IndexLast, theGraph->ChangeBasicElt(IndFirst));
@@ -202,7 +206,7 @@ void BRepMAT2d_BisectingLocus::RenumerationAndFusion(const Standard_Integer     
 
 //=================================================================================================
 
-Standard_Boolean BRepMAT2d_BisectingLocus::IsDone() const
+bool BRepMAT2d_BisectingLocus::IsDone() const
 {
   return isDone;
 }
@@ -211,7 +215,7 @@ Standard_Boolean BRepMAT2d_BisectingLocus::IsDone() const
 // function : Graph
 //
 //=============================================================================
-Handle(MAT_Graph) BRepMAT2d_BisectingLocus::Graph() const
+occ::handle<MAT_Graph> BRepMAT2d_BisectingLocus::Graph() const
 {
   return theGraph;
 }
@@ -220,7 +224,7 @@ Handle(MAT_Graph) BRepMAT2d_BisectingLocus::Graph() const
 // function : NumberOfContours
 //
 //=============================================================================
-Standard_Integer BRepMAT2d_BisectingLocus::NumberOfContours() const
+int BRepMAT2d_BisectingLocus::NumberOfContours() const
 {
   return nbContours;
 }
@@ -229,7 +233,7 @@ Standard_Integer BRepMAT2d_BisectingLocus::NumberOfContours() const
 // function : NumberOfElts
 //
 //=============================================================================
-Standard_Integer BRepMAT2d_BisectingLocus::NumberOfElts(const Standard_Integer IndLine) const
+int BRepMAT2d_BisectingLocus::NumberOfElts(const int IndLine) const
 {
   return theTool.Circuit()->LineLength(IndLine);
 }
@@ -238,8 +242,8 @@ Standard_Integer BRepMAT2d_BisectingLocus::NumberOfElts(const Standard_Integer I
 // function : NumberOfSect
 //
 //=============================================================================
-Standard_Integer BRepMAT2d_BisectingLocus::NumberOfSections(const Standard_Integer IndLine,
-                                                            const Standard_Integer Index) const
+int BRepMAT2d_BisectingLocus::NumberOfSections(const int IndLine,
+                                                            const int Index) const
 {
   MAT2d_BiInt B(IndLine, Index);
   return nbSect(B);
@@ -249,11 +253,11 @@ Standard_Integer BRepMAT2d_BisectingLocus::NumberOfSections(const Standard_Integ
 // function : BasicElt
 //
 //=============================================================================
-Handle(MAT_BasicElt) BRepMAT2d_BisectingLocus::BasicElt(const Standard_Integer IndLine,
-                                                        const Standard_Integer Index) const
+occ::handle<MAT_BasicElt> BRepMAT2d_BisectingLocus::BasicElt(const int IndLine,
+                                                        const int Index) const
 {
-  Standard_Integer i;
-  Standard_Integer Ind = Index;
+  int i;
+  int Ind = Index;
 
   for (i = 1; i < IndLine; i++)
   {
@@ -266,16 +270,16 @@ Handle(MAT_BasicElt) BRepMAT2d_BisectingLocus::BasicElt(const Standard_Integer I
 // function : GeomBis
 //
 //=============================================================================
-Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const Handle(MAT_Arc)& anArc,
-                                                 Standard_Boolean&      Reverse) const
+Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const occ::handle<MAT_Arc>& anArc,
+                                                 bool&      Reverse) const
 {
-  Reverse = Standard_False;
+  Reverse = false;
 
-  Handle(Geom2d_Curve) Bis(theTool.GeomBis(anArc->GeomIndex()).Value());
+  occ::handle<Geom2d_Curve> Bis(theTool.GeomBis(anArc->GeomIndex()).Value());
 
   if (Bis->FirstParameter() <= -Precision::Infinite())
   {
-    Reverse = Standard_True;
+    Reverse = true;
   }
   else if (Bis->LastParameter() < Precision::Infinite())
   {
@@ -283,7 +287,7 @@ Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const Handle(MAT_Arc)& anArc,
     gp_Pnt2d PL    = Bis->Value(Bis->LastParameter());
     gp_Pnt2d PNode = GeomElt(anArc->FirstNode());
     if (PNode.SquareDistance(PF) > PNode.SquareDistance(PL))
-      Reverse = Standard_True;
+      Reverse = true;
   }
   return theTool.GeomBis(anArc->GeomIndex());
 }
@@ -292,8 +296,8 @@ Bisector_Bisec BRepMAT2d_BisectingLocus::GeomBis(const Handle(MAT_Arc)& anArc,
 // function : GeomElt
 //
 //=============================================================================
-Handle(Geom2d_Geometry) BRepMAT2d_BisectingLocus::GeomElt(
-  const Handle(MAT_BasicElt)& aBasicElt) const
+occ::handle<Geom2d_Geometry> BRepMAT2d_BisectingLocus::GeomElt(
+  const occ::handle<MAT_BasicElt>& aBasicElt) const
 {
   return theTool.GeomElt(aBasicElt->GeomIndex());
 }
@@ -302,7 +306,7 @@ Handle(Geom2d_Geometry) BRepMAT2d_BisectingLocus::GeomElt(
 // function : GeomElt
 //
 //=============================================================================
-gp_Pnt2d BRepMAT2d_BisectingLocus::GeomElt(const Handle(MAT_Node)& aNode) const
+gp_Pnt2d BRepMAT2d_BisectingLocus::GeomElt(const occ::handle<MAT_Node>& aNode) const
 {
   return theTool.GeomPnt(aNode->GeomIndex());
 }
@@ -311,23 +315,23 @@ gp_Pnt2d BRepMAT2d_BisectingLocus::GeomElt(const Handle(MAT_Node)& aNode) const
 // function : CutSketch
 //
 //=============================================================================
-static void CutSketch(MAT2d_SequenceOfSequenceOfGeometry& Figure,
-                      MAT2d_DataMapOfBiIntInteger&        NbSect)
+static void CutSketch(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+                      NCollection_DataMap<MAT2d_BiInt, int>&        NbSect)
 {
   MAT2d_CutCurve   Cuter;
-  Standard_Integer i, j, k, ico;
-  Standard_Integer ICurveInit;
-  Standard_Integer NbSection;
+  int i, j, k, ico;
+  int ICurveInit;
+  int NbSection;
 
   for (i = 1; i <= Figure.Length(); i++)
   {
-    TColGeom2d_SequenceOfGeometry& Contour = Figure.ChangeValue(i);
+    NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Contour = Figure.ChangeValue(i);
     ICurveInit                             = 0;
 
     for (j = 1; j <= Contour.Length(); j++)
     {
       ICurveInit++;
-      Cuter.Perform(Handle(Geom2d_Curve)::DownCast(Contour.ChangeValue(j)));
+      Cuter.Perform(occ::down_cast<Geom2d_Curve>(Contour.ChangeValue(j)));
       NbSection = 1;
       if (!Cuter.UnModified())
       {

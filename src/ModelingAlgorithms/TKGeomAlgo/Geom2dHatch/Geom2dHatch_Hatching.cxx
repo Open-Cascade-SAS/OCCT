@@ -27,9 +27,9 @@
 //=================================================================================================
 
 Geom2dHatch_Hatching::Geom2dHatch_Hatching()
-    : myTrimDone(Standard_False),
-      myTrimFailed(Standard_False),
-      myIsDone(Standard_False),
+    : myTrimDone(false),
+      myTrimFailed(false),
+      myIsDone(false),
       myStatus(HatchGen_NoProblem)
 {
 }
@@ -38,9 +38,9 @@ Geom2dHatch_Hatching::Geom2dHatch_Hatching()
 
 Geom2dHatch_Hatching::Geom2dHatch_Hatching(const Geom2dAdaptor_Curve& Curve)
     : myCurve(Curve),
-      myTrimDone(Standard_False),
-      myTrimFailed(Standard_False),
-      myIsDone(Standard_False),
+      myTrimDone(false),
+      myTrimFailed(false),
+      myIsDone(false),
       myStatus(HatchGen_NoProblem)
 {
 }
@@ -71,7 +71,7 @@ Geom2dAdaptor_Curve& Geom2dHatch_Hatching::ChangeCurve()
 //            value.
 //=======================================================================
 
-void Geom2dHatch_Hatching::TrimDone(const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::TrimDone(const bool Flag)
 {
   myTrimDone = Flag;
 }
@@ -81,7 +81,7 @@ void Geom2dHatch_Hatching::TrimDone(const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the trimmings computation.
 //=======================================================================
 
-Standard_Boolean Geom2dHatch_Hatching::TrimDone() const
+bool Geom2dHatch_Hatching::TrimDone() const
 {
   return myTrimDone;
 }
@@ -92,7 +92,7 @@ Standard_Boolean Geom2dHatch_Hatching::TrimDone() const
 //            value.
 //=======================================================================
 
-void Geom2dHatch_Hatching::TrimFailed(const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::TrimFailed(const bool Flag)
 {
   myTrimFailed = Flag;
   if (myTrimFailed)
@@ -104,7 +104,7 @@ void Geom2dHatch_Hatching::TrimFailed(const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the trimmings failure.
 //=======================================================================
 
-Standard_Boolean Geom2dHatch_Hatching::TrimFailed() const
+bool Geom2dHatch_Hatching::TrimFailed() const
 {
   return myTrimFailed;
 }
@@ -115,7 +115,7 @@ Standard_Boolean Geom2dHatch_Hatching::TrimFailed() const
 //            value.
 //=======================================================================
 
-void Geom2dHatch_Hatching::IsDone(const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::IsDone(const bool Flag)
 {
   myIsDone = Flag;
 }
@@ -125,7 +125,7 @@ void Geom2dHatch_Hatching::IsDone(const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the domains computation.
 //=======================================================================
 
-Standard_Boolean Geom2dHatch_Hatching::IsDone() const
+bool Geom2dHatch_Hatching::IsDone() const
 {
   return myIsDone;
 }
@@ -156,11 +156,11 @@ HatchGen_ErrorStatus Geom2dHatch_Hatching::Status() const
 //=======================================================================
 
 void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point,
-                                    const Standard_Real             Confusion)
+                                    const double             Confusion)
 {
-  Standard_Integer NbPoints = myPoints.Length();
-  // for (Standard_Integer IPntH = 1 ; IPntH <= NbPoints ; IPntH++) {
-  Standard_Integer IPntH;
+  int NbPoints = myPoints.Length();
+  // for (int IPntH = 1 ; IPntH <= NbPoints ; IPntH++) {
+  int IPntH;
   for (IPntH = 1; IPntH <= NbPoints; IPntH++)
   {
     const HatchGen_PointOnHatching& PntH = myPoints.Value(IPntH);
@@ -180,7 +180,7 @@ void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point,
     }
     else
     {
-      for (Standard_Integer IPntE = 1; IPntE <= Point.NbPoints(); IPntE++)
+      for (int IPntE = 1; IPntE <= Point.NbPoints(); IPntE++)
       {
         const HatchGen_PointOnElement& PntE = Point.Point(IPntE);
         PntH.AddPoint(PntE, Confusion);
@@ -196,7 +196,7 @@ void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point,
 // Purpose  : Returns the number of intersection points on the hatching.
 //=======================================================================
 
-Standard_Integer Geom2dHatch_Hatching::NbPoints() const
+int Geom2dHatch_Hatching::NbPoints() const
 {
   return myPoints.Length();
 }
@@ -206,10 +206,10 @@ Standard_Integer Geom2dHatch_Hatching::NbPoints() const
 // Purpose  : Returns the Index-th intersection point on the hatching.
 //=======================================================================
 
-const HatchGen_PointOnHatching& Geom2dHatch_Hatching::Point(const Standard_Integer Index) const
+const HatchGen_PointOnHatching& Geom2dHatch_Hatching::Point(const int Index) const
 {
 #if RAISE_IF_NOSUCHOBJECT
-  Standard_Integer NbPoints = myPoints.Length();
+  int NbPoints = myPoints.Length();
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints, "");
 #endif
   const HatchGen_PointOnHatching& Point = myPoints.Value(Index);
@@ -221,10 +221,10 @@ const HatchGen_PointOnHatching& Geom2dHatch_Hatching::Point(const Standard_Integ
 // Purpose  : Returns the Index-th intersection point on the hatching.
 //=======================================================================
 
-HatchGen_PointOnHatching& Geom2dHatch_Hatching::ChangePoint(const Standard_Integer Index)
+HatchGen_PointOnHatching& Geom2dHatch_Hatching::ChangePoint(const int Index)
 {
 #if RAISE_IF_NOSUCHOBJECT
-  Standard_Integer NbPoints = myPoints.Length();
+  int NbPoints = myPoints.Length();
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints, "");
 #endif
   HatchGen_PointOnHatching& Point = myPoints.ChangeValue(Index);
@@ -236,10 +236,10 @@ HatchGen_PointOnHatching& Geom2dHatch_Hatching::ChangePoint(const Standard_Integ
 // Purpose  : Removes the Index-th intersection point of the hatching.
 //=======================================================================
 
-void Geom2dHatch_Hatching::RemPoint(const Standard_Integer Index)
+void Geom2dHatch_Hatching::RemPoint(const int Index)
 {
 #if RAISE_IF_NOSUCHOBJECT
-  Standard_Integer NbPoints = myPoints.Length();
+  int NbPoints = myPoints.Length();
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints, "");
 #endif
   if (myIsDone)
@@ -256,14 +256,14 @@ void Geom2dHatch_Hatching::ClrPoints()
 {
   if (myIsDone)
     ClrDomains();
-  for (Standard_Integer IPntH = 1; IPntH <= myPoints.Length(); IPntH++)
+  for (int IPntH = 1; IPntH <= myPoints.Length(); IPntH++)
   {
     HatchGen_PointOnHatching& Point = myPoints.ChangeValue(IPntH);
     Point.ClrPoints();
   }
   myPoints.Clear();
-  myTrimDone   = Standard_False;
-  myTrimFailed = Standard_False;
+  myTrimDone   = false;
+  myTrimFailed = false;
 }
 
 //=======================================================================
@@ -281,7 +281,7 @@ void Geom2dHatch_Hatching::AddDomain(const HatchGen_Domain& Domain)
 // Purpose  : Returns the number of domains on the hatching.
 //=======================================================================
 
-Standard_Integer Geom2dHatch_Hatching::NbDomains() const
+int Geom2dHatch_Hatching::NbDomains() const
 {
   return myDomains.Length();
 }
@@ -291,10 +291,10 @@ Standard_Integer Geom2dHatch_Hatching::NbDomains() const
 // Purpose  : Returns the Index-th domain on the hatching.
 //=======================================================================
 
-const HatchGen_Domain& Geom2dHatch_Hatching::Domain(const Standard_Integer Index) const
+const HatchGen_Domain& Geom2dHatch_Hatching::Domain(const int Index) const
 {
 #if RAISE_IF_NOSUCHOBJECT
-  Standard_Integer NbDomains = myDomains.Length();
+  int NbDomains = myDomains.Length();
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbDomains, "");
 #endif
   const HatchGen_Domain& Domain = myDomains.Value(Index);
@@ -306,10 +306,10 @@ const HatchGen_Domain& Geom2dHatch_Hatching::Domain(const Standard_Integer Index
 // Purpose  : Removes the Index-th domain of the hatching.
 //=======================================================================
 
-void Geom2dHatch_Hatching::RemDomain(const Standard_Integer Index)
+void Geom2dHatch_Hatching::RemDomain(const int Index)
 {
 #if RAISE_IF_NOSUCHOBJECT
-  Standard_Integer NbDomains = myDomains.Length();
+  int NbDomains = myDomains.Length();
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbDomains, "");
 #endif
   myDomains.Remove(Index);
@@ -323,7 +323,7 @@ void Geom2dHatch_Hatching::RemDomain(const Standard_Integer Index)
 void Geom2dHatch_Hatching::ClrDomains()
 {
   myDomains.Clear();
-  myIsDone = Standard_False;
+  myIsDone = false;
 }
 
 //=======================================================================
@@ -332,7 +332,7 @@ void Geom2dHatch_Hatching::ClrDomains()
 //=======================================================================
 gp_Pnt2d Geom2dHatch_Hatching::ClassificationPoint() const
 {
-  Standard_Real t, a, b;
+  double t, a, b;
   a = myCurve.FirstParameter();
   b = myCurve.LastParameter();
   if (b >= Precision::Infinite())

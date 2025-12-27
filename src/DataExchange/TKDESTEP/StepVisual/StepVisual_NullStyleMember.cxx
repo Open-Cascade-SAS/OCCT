@@ -27,17 +27,17 @@ StepVisual_NullStyleMember::StepVisual_NullStyleMember() {}
 
 //=================================================================================================
 
-Standard_CString StepVisual_NullStyleMember::EnumText() const
+const char* StepVisual_NullStyleMember::EnumText() const
 {
   return tool.Text(Int()).ToCString();
 }
 
 //=================================================================================================
 
-void StepVisual_NullStyleMember::SetEnumText(const Standard_Integer /*theValue*/,
-                                             const Standard_CString theText)
+void StepVisual_NullStyleMember::SetEnumText(const int /*theValue*/,
+                                             const char* theText)
 {
-  Standard_Integer aVal = tool.Value(theText);
+  int aVal = tool.Value(theText);
   if (aVal >= 0)
     SetInt(aVal);
 }
@@ -46,7 +46,7 @@ void StepVisual_NullStyleMember::SetEnumText(const Standard_Integer /*theValue*/
 
 void StepVisual_NullStyleMember::SetValue(const StepVisual_NullStyle theValue)
 {
-  SetInt(Standard_Integer(theValue));
+  SetInt(int(theValue));
 }
 
 //=================================================================================================

@@ -24,31 +24,31 @@ NLPlate_HPG0Constraint::NLPlate_HPG0Constraint(const gp_XY& UV, const gp_XYZ& Va
 {
   SetUV(UV);
   SetActiveOrder(0);
-  UVIsFree                  = Standard_False;
-  IncrementalLoadingAllowed = Standard_False;
+  UVIsFree                  = false;
+  IncrementalLoadingAllowed = false;
 }
 
-void NLPlate_HPG0Constraint::SetUVFreeSliding(const Standard_Boolean UVFree)
+void NLPlate_HPG0Constraint::SetUVFreeSliding(const bool UVFree)
 {
   UVIsFree = UVFree;
 }
 
-void NLPlate_HPG0Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA)
+void NLPlate_HPG0Constraint::SetIncrementalLoadAllowed(const bool ILA)
 {
   IncrementalLoadingAllowed = ILA;
 }
 
-Standard_Boolean NLPlate_HPG0Constraint::UVFreeSliding() const
+bool NLPlate_HPG0Constraint::UVFreeSliding() const
 {
   return UVIsFree;
 }
 
-Standard_Boolean NLPlate_HPG0Constraint::IncrementalLoadAllowed() const
+bool NLPlate_HPG0Constraint::IncrementalLoadAllowed() const
 {
   return IncrementalLoadingAllowed;
 }
 
-Standard_Integer NLPlate_HPG0Constraint::ActiveOrder() const
+int NLPlate_HPG0Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 0)
     return myActiveOrder;
@@ -56,9 +56,9 @@ Standard_Integer NLPlate_HPG0Constraint::ActiveOrder() const
     return 0;
 }
 
-Standard_Boolean NLPlate_HPG0Constraint::IsG0() const
+bool NLPlate_HPG0Constraint::IsG0() const
 {
-  return Standard_True;
+  return true;
 }
 
 const gp_XYZ& NLPlate_HPG0Constraint::G0Target() const

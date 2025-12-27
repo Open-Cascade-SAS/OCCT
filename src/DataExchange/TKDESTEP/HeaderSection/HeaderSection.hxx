@@ -29,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! creates a Protocol
-  Standard_EXPORT static Handle(HeaderSection_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<HeaderSection_Protocol> Protocol();
 };
 
 #endif // _HeaderSection_HeaderFile

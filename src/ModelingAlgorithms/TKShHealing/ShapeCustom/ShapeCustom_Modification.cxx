@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_Modification, BRepTools_Modification)
 //=================================================================================================
 
 void ShapeCustom_Modification::SetMsgRegistrator(
-  const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg)
+  const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg)
 {
   myMsgReg = msgreg;
 }
@@ -32,7 +32,7 @@ void ShapeCustom_Modification::SetMsgRegistrator(
 // purpose  : Returns message registrator
 //=======================================================================
 
-Handle(ShapeExtend_BasicMsgRegistrator) ShapeCustom_Modification::MsgRegistrator() const
+occ::handle<ShapeExtend_BasicMsgRegistrator> ShapeCustom_Modification::MsgRegistrator() const
 {
   return myMsgReg;
 }

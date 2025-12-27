@@ -27,7 +27,7 @@ GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation()
 
 //=================================================================================================
 
-GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation(const Standard_Real      P,
+GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation(const double      P,
                                                                  const TopAbs_Orientation Or1,
                                                                  const TopAbs_Orientation Or2)
     : prm(P),
@@ -52,7 +52,7 @@ void GeomInt_ParameterAndOrientation::SetOrientation2(const TopAbs_Orientation O
 
 //=================================================================================================
 
-Standard_Real GeomInt_ParameterAndOrientation::Parameter() const
+double GeomInt_ParameterAndOrientation::Parameter() const
 {
   return prm;
 }

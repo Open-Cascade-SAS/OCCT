@@ -23,7 +23,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_GeometryDriver, XmlMDF_ADriver)
 
 static const XmlObjMgt_DOMString& GeometryTypeString(const TDataXtd_GeometryEnum);
-static Standard_Boolean           GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
+static bool           GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
                                                    TDataXtd_GeometryEnum&     theResult);
 
 IMPLEMENT_DOMSTRING(TypeString, "geomtype")
@@ -40,53 +40,53 @@ IMPLEMENT_DOMSTRING(GeomCylinderString, "cylinder")
 //=================================================================================================
 
 XmlMDataXtd_GeometryDriver::XmlMDataXtd_GeometryDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataXtd_GeometryDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataXtd_GeometryDriver::NewEmpty() const
 {
   return (new TDataXtd_Geometry());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
                                                    XmlObjMgt_RRelocationTable&) const
 {
-  Handle(TDataXtd_Geometry) aT = Handle(TDataXtd_Geometry)::DownCast(theTarget);
+  occ::handle<TDataXtd_Geometry> aT = occ::down_cast<TDataXtd_Geometry>(theTarget);
 
   XmlObjMgt_DOMString   aType = theSource.Element().getAttribute(::TypeString());
   TDataXtd_GeometryEnum aTypeEnum;
-  if (GeometryTypeEnum(aType, aTypeEnum) == Standard_False)
+  if (GeometryTypeEnum(aType, aTypeEnum) == false)
   {
     myMessageDriver->Send("TDataXtd_GeometryEnum; "
                           "string value without enum term equivalence",
                           Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   aT->SetType(aTypeEnum);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void XmlMDataXtd_GeometryDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataXtd_GeometryDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataXtd_Geometry) aG = Handle(TDataXtd_Geometry)::DownCast(theSource);
+  occ::handle<TDataXtd_Geometry> aG = occ::down_cast<TDataXtd_Geometry>(theSource);
   theTarget.Element().setAttribute(::TypeString(), GeometryTypeString(aG->GetType()));
 }
 
 //=================================================================================================
 
-static Standard_Boolean GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
+static bool GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
                                          TDataXtd_GeometryEnum&     theResult)
 {
   TDataXtd_GeometryEnum aResult = TDataXtd_ANY_GEOM;
@@ -107,10 +107,10 @@ static Standard_Boolean GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
     else if (theString.equals(::GeomCylinderString()))
       aResult = TDataXtd_CYLINDER;
     else
-      return Standard_False;
+      return false;
   }
   theResult = aResult;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================

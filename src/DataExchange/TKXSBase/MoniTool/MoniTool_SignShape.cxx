@@ -21,18 +21,18 @@ IMPLEMENT_STANDARD_RTTIEXT(MoniTool_SignShape, MoniTool_SignText)
 
 MoniTool_SignShape::MoniTool_SignShape() {}
 
-Standard_CString MoniTool_SignShape::Name() const
+const char* MoniTool_SignShape::Name() const
 {
   return "SHAPE";
 }
 
 TCollection_AsciiString MoniTool_SignShape::Text(
-  const Handle(Standard_Transient)& ent,
-  const Handle(Standard_Transient)& /*context*/) const
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Standard_Transient>& /*context*/) const
 {
   if (ent.IsNull())
     return "";
-  Handle(TopoDS_HShape) HS = Handle(TopoDS_HShape)::DownCast(ent);
+  occ::handle<TopoDS_HShape> HS = occ::down_cast<TopoDS_HShape>(ent);
   if (HS.IsNull())
     return ent->DynamicType()->Name();
   TopoDS_Shape sh = HS->Shape();

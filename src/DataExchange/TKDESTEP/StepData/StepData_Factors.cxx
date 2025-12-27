@@ -27,9 +27,9 @@ StepData_Factors::StepData_Factors()
 
 //=================================================================================================
 
-void StepData_Factors::InitializeFactors(const Standard_Real theLengthFactor,
-                                         const Standard_Real thePlaneAngleFactor,
-                                         const Standard_Real theSolidAngleFactor)
+void StepData_Factors::InitializeFactors(const double theLengthFactor,
+                                         const double thePlaneAngleFactor,
+                                         const double theSolidAngleFactor)
 {
   myLengthFactor     = theLengthFactor;
   myPlaneAngleFactor = thePlaneAngleFactor;
@@ -40,49 +40,49 @@ void StepData_Factors::InitializeFactors(const Standard_Real theLengthFactor,
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::LengthFactor() const
+double StepData_Factors::LengthFactor() const
 {
   return myLengthFactor;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::PlaneAngleFactor() const
+double StepData_Factors::PlaneAngleFactor() const
 {
   return myPlaneAngleFactor;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::SolidAngleFactor() const
+double StepData_Factors::SolidAngleFactor() const
 {
   return mySolidAngleFactor;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::FactorRadianDegree() const
+double StepData_Factors::FactorRadianDegree() const
 {
   return myFactRD;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::FactorDegreeRadian() const
+double StepData_Factors::FactorDegreeRadian() const
 {
   return myFactDR;
 }
 
 //=================================================================================================
 
-void StepData_Factors::SetCascadeUnit(const Standard_Real theUnit)
+void StepData_Factors::SetCascadeUnit(const double theUnit)
 {
   myCascadeUnit = theUnit;
 }
 
 //=================================================================================================
 
-Standard_Real StepData_Factors::CascadeUnit() const
+double StepData_Factors::CascadeUnit() const
 {
   return myCascadeUnit;
 }

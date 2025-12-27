@@ -18,7 +18,7 @@
 
 struct Select3D_Pnt
 {
-  Standard_ShortReal x, y, z;
+  float x, y, z;
 
   operator gp_Pnt() const { return gp_Pnt(x, y, z); }
 

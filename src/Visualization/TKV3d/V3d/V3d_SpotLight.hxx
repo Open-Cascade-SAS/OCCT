@@ -53,6 +53,4 @@ public:
   using Graphic3d_CLight::SetPosition;
 };
 
-DEFINE_STANDARD_HANDLE(V3d_SpotLight, V3d_PositionLight)
-
 #endif // _V3d_SpotLight_HeaderFile

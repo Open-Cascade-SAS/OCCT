@@ -17,10 +17,11 @@
 #ifndef TransferBRep_HSequenceOfTransferResultInfo_HeaderFile
 #define TransferBRep_HSequenceOfTransferResultInfo_HeaderFile
 
-#include <TransferBRep_SequenceOfTransferResultInfo.hxx>
+#include <TransferBRep_TransferResultInfo.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(TransferBRep_HSequenceOfTransferResultInfo,
-                 TransferBRep_SequenceOfTransferResultInfo)
+                 NCollection_Sequence<occ::handle<TransferBRep_TransferResultInfo>>)
 
 #endif

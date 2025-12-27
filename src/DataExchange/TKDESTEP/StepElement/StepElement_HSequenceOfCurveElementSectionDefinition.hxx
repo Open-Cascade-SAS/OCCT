@@ -14,10 +14,11 @@
 #ifndef StepElement_HSequenceOfCurveElementSectionDefinition_HeaderFile
 #define StepElement_HSequenceOfCurveElementSectionDefinition_HeaderFile
 
-#include <StepElement_SequenceOfCurveElementSectionDefinition.hxx>
+#include <StepElement_CurveElementSectionDefinition.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepElement_HSequenceOfCurveElementSectionDefinition,
-                 StepElement_SequenceOfCurveElementSectionDefinition)
+                 NCollection_Sequence<occ::handle<StepElement_CurveElementSectionDefinition>>)
 
 #endif

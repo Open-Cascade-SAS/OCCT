@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
-class Standard_DimensionError;
-DEFINE_STANDARD_HANDLE(Standard_DimensionError, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_Standard_DimensionError
   #define Standard_DimensionError_Raise_if(CONDITION, MESSAGE)                                     \
     if (CONDITION)                                                                                 \

@@ -16,14 +16,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean GeomFill_Profiler::IsPeriodic() const
+inline bool GeomFill_Profiler::IsPeriodic() const
 {
   return myIsPeriodic;
 }
 
 //=================================================================================================
 
-inline const Handle(Geom_Curve)& GeomFill_Profiler::Curve(const Standard_Integer Index) const
+inline const occ::handle<Geom_Curve>& GeomFill_Profiler::Curve(const int Index) const
 {
   return mySequence(Index);
 }

@@ -23,16 +23,16 @@ class BOPAlgo_SectionAttribute
 public:
   //! Default constructor
   BOPAlgo_SectionAttribute()
-      : myApproximation(Standard_True),
-        myPCurve1(Standard_True),
-        myPCurve2(Standard_True)
+      : myApproximation(true),
+        myPCurve1(true),
+        myPCurve2(true)
   {
   }
 
   //! Constructor
-  BOPAlgo_SectionAttribute(const Standard_Boolean theAproximation,
-                           const Standard_Boolean thePCurveOnS1,
-                           const Standard_Boolean thePCurveOnS2)
+  BOPAlgo_SectionAttribute(const bool theAproximation,
+                           const bool thePCurveOnS1,
+                           const bool thePCurveOnS2)
       : myApproximation(theAproximation),
         myPCurve1(thePCurveOnS1),
         myPCurve2(thePCurveOnS2)
@@ -40,28 +40,27 @@ public:
   }
 
   //! Sets the Approximation flag
-  void Approximation(const Standard_Boolean theApprox) { myApproximation = theApprox; }
+  void Approximation(const bool theApprox) { myApproximation = theApprox; }
 
   //! Sets the PCurveOnS1 flag
-  void PCurveOnS1(const Standard_Boolean thePCurveOnS1) { myPCurve1 = thePCurveOnS1; }
+  void PCurveOnS1(const bool thePCurveOnS1) { myPCurve1 = thePCurveOnS1; }
 
   //! Sets the PCurveOnS2 flag
-  void PCurveOnS2(const Standard_Boolean thePCurveOnS2) { myPCurve2 = thePCurveOnS2; }
+  void PCurveOnS2(const bool thePCurveOnS2) { myPCurve2 = thePCurveOnS2; }
 
   //! Returns the Approximation flag
-  Standard_Boolean Approximation() const { return myApproximation; }
+  bool Approximation() const { return myApproximation; }
 
   //! Returns the PCurveOnS1 flag
-  Standard_Boolean PCurveOnS1() const { return myPCurve1; }
+  bool PCurveOnS1() const { return myPCurve1; }
 
   //! Returns the PCurveOnS2 flag
-  Standard_Boolean PCurveOnS2() const { return myPCurve2; }
+  bool PCurveOnS2() const { return myPCurve2; }
 
-protected:
 private:
-  Standard_Boolean myApproximation;
-  Standard_Boolean myPCurve1;
-  Standard_Boolean myPCurve2;
+  bool myApproximation;
+  bool myPCurve1;
+  bool myPCurve2;
 };
 
 #endif // _BOPAlgo_SectionAttribute_HeaderFile

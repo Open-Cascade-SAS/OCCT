@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 class gp_Pnt;
 
-class IGESGeom_Line;
-DEFINE_STANDARD_HANDLE(IGESGeom_Line, IGESData_IGESEntity)
-
 //! defines IGESLine, Type <110> Form <0>
 //! in package IGESGeom
 //! A line is a bounded, connected portion of a parent straight
@@ -50,11 +47,11 @@ public:
   Standard_EXPORT void Init(const gp_XYZ& aStart, const gp_XYZ& anEnd);
 
   //! Returns the Infinite status i.e. the Form Number : 0 1 2
-  Standard_EXPORT Standard_Integer Infinite() const;
+  Standard_EXPORT int Infinite() const;
 
   //! Sets the Infinite status
   //! Does nothing if <status> is not 0 1 or 2
-  Standard_EXPORT void SetInfinite(const Standard_Integer status);
+  Standard_EXPORT void SetInfinite(const int status);
 
   //! returns the start point of the line
   Standard_EXPORT gp_Pnt StartPoint() const;
@@ -70,7 +67,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Line, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XYZ theStart;
   gp_XYZ theEnd;

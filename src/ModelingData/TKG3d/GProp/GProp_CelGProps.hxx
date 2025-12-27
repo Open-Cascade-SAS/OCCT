@@ -39,23 +39,21 @@ public:
   Standard_EXPORT GProp_CelGProps(const gp_Circ& C, const gp_Pnt& CLocation);
 
   Standard_EXPORT GProp_CelGProps(const gp_Circ&      C,
-                                  const Standard_Real U1,
-                                  const Standard_Real U2,
+                                  const double U1,
+                                  const double U2,
                                   const gp_Pnt&       CLocation);
 
   Standard_EXPORT GProp_CelGProps(const gp_Lin&       C,
-                                  const Standard_Real U1,
-                                  const Standard_Real U2,
+                                  const double U1,
+                                  const double U2,
                                   const gp_Pnt&       CLocation);
 
   Standard_EXPORT void SetLocation(const gp_Pnt& CLocation);
 
-  Standard_EXPORT void Perform(const gp_Circ& C, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT void Perform(const gp_Circ& C, const double U1, const double U2);
 
-  Standard_EXPORT void Perform(const gp_Lin& C, const Standard_Real U1, const Standard_Real U2);
+  Standard_EXPORT void Perform(const gp_Lin& C, const double U1, const double U2);
 
-protected:
-private:
 };
 
 #endif // _GProp_CelGProps_HeaderFile

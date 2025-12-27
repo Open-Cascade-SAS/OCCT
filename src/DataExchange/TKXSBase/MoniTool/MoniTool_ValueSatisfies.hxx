@@ -18,6 +18,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-typedef Standard_Boolean (*MoniTool_ValueSatisfies)(const Handle(TCollection_HAsciiString)& val);
+typedef bool (*MoniTool_ValueSatisfies)(const occ::handle<TCollection_HAsciiString>& val);
 
 #endif

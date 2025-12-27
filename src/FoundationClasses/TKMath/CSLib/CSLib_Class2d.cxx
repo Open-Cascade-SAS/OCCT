@@ -99,7 +99,7 @@ void CSLib_Class2d::init(const TCol_Containers2d& thePnts2d,
 
 //=================================================================================================
 
-CSLib_Class2d::CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
+CSLib_Class2d::CSLib_Class2d(const NCollection_Array1<gp_Pnt2d>& thePnts2d,
                              const double                theTolU,
                              const double                theTolV,
                              const double                theUMin,
@@ -112,7 +112,7 @@ CSLib_Class2d::CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
 
 //=================================================================================================
 
-CSLib_Class2d::CSLib_Class2d(const TColgp_SequenceOfPnt2d& thePnts2d,
+CSLib_Class2d::CSLib_Class2d(const NCollection_Sequence<gp_Pnt2d>& thePnts2d,
                              const double                  theTolU,
                              const double                  theTolV,
                              const double                  theUMin,

@@ -30,9 +30,6 @@ class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
-class Geom2d_Hyperbola;
-DEFINE_STANDARD_HANDLE(Geom2d_Hyperbola, Geom2d_Conic)
-
 //! Describes a branch of a hyperbola in the plane (2D space).
 //! A hyperbola is defined by its major and minor radii
 //! and, as with any conic curve, is positioned in the
@@ -96,9 +93,9 @@ public:
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
   Standard_EXPORT Geom2d_Hyperbola(const gp_Ax2d&         MajorAxis,
-                                   const Standard_Real    MajorRadius,
-                                   const Standard_Real    MinorRadius,
-                                   const Standard_Boolean Sense = Standard_True);
+                                   const double    MajorRadius,
+                                   const double    MinorRadius,
+                                   const bool Sense = true);
 
   //! The XDirection of "Axis" is the "XAxis" of the hyperbola and
   //! the YDirection of "Axis" is the "YAxis".
@@ -106,8 +103,8 @@ public:
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
   Standard_EXPORT Geom2d_Hyperbola(const gp_Ax22d&     Axis,
-                                   const Standard_Real MajorRadius,
-                                   const Standard_Real MinorRadius);
+                                   const double MajorRadius,
+                                   const double MinorRadius);
 
   //! Converts the gp_Hypr2d hyperbola H into this hyperbola.
   Standard_EXPORT void SetHypr2d(const gp_Hypr2d& H);
@@ -117,14 +114,14 @@ public:
   //! Standard_ConstructionError if:
   //! - MajorRadius is less than 0.0,
   //! - MinorRadius is less than 0.0.
-  Standard_EXPORT void SetMajorRadius(const Standard_Real MajorRadius);
+  Standard_EXPORT void SetMajorRadius(const double MajorRadius);
 
   //! Assigns a value to the major or minor radius of this hyperbola.
   //! Exceptions
   //! Standard_ConstructionError if:
   //! - MajorRadius is less than 0.0,
   //! - MinorRadius is less than 0.0.
-  Standard_EXPORT void SetMinorRadius(const Standard_Real MinorRadius);
+  Standard_EXPORT void SetMinorRadius(const double MinorRadius);
 
   //! Converts this hyperbola into a gp_Hypr2d one.
   Standard_EXPORT gp_Hypr2d Hypr2d() const;
@@ -132,19 +129,19 @@ public:
   //! Computes the parameter on the reversed hyperbola,
   //! for the point of parameter U on this hyperbola.
   //! For a hyperbola, the returned value is -U.
-  Standard_EXPORT Standard_Real ReversedParameter(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT double ReversedParameter(const double U) const override;
 
   //! Returns RealFirst from Standard.
-  Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double FirstParameter() const override;
 
   //! returns RealLast from Standard.
-  Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
+  Standard_EXPORT double LastParameter() const override;
 
   //! Returns False.
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
   //! return False for an hyperbola.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
   //! In the local coordinate system of the hyperbola the
   //! equation of the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0
@@ -191,11 +188,11 @@ public:
   //! If f is the distance between the location of the hyperbola
   //! and the Focus1 then the eccentricity e = f / MajorRadius.
   //! raised if MajorRadius = 0.0
-  Standard_EXPORT Standard_Real Eccentricity() const Standard_OVERRIDE;
+  Standard_EXPORT double Eccentricity() const override;
 
   //! Computes the focal distance. It is the distance between the
   //! two focus of the hyperbola.
-  Standard_EXPORT Standard_Real Focal() const;
+  Standard_EXPORT double Focal() const;
 
   //! Returns the first focus of the hyperbola. This focus is on the
   //! positive side of the "XAxis" of the hyperbola.
@@ -209,13 +206,13 @@ public:
   //! The major radius is also the distance between the
   //! center of the hyperbola and the apex of the main
   //! branch (located on the "X Axis" of the hyperbola).
-  Standard_EXPORT Standard_Real MajorRadius() const;
+  Standard_EXPORT double MajorRadius() const;
 
   //! Returns the major or minor radius of this hyperbola.
   //! The minor radius is also the distance between the
   //! center of the hyperbola and the apex of a conjugate
   //! branch (located on the "Y Axis" of the hyperbola).
-  Standard_EXPORT Standard_Real MinorRadius() const;
+  Standard_EXPORT double MinorRadius() const;
 
   //! Computes the "other" branch of this hyperbola. This
   //! is a symmetrical branch with respect to the center of this hyperbola.
@@ -246,55 +243,54 @@ public:
   //! Exceptions
   //! Standard_DomainError if the major radius of this
   //! hyperbola is null.
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
   //! Returns in P the point of parameter U.
   //! P = C + MajorRadius * std::cosh(U) * XDir +
   //! MinorRadius * std::sinh(U) * YDir
   //! where C is the center of the hyperbola , XDir the XDirection and
   //! YDir the YDirection of the hyperbola's local coordinate system.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt2d& P) const Standard_OVERRIDE;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const Standard_Real U,
+  Standard_EXPORT void D2(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const Standard_OVERRIDE;
+                          gp_Vec2d&           V2) const override;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const Standard_Real U,
+  Standard_EXPORT void D3(const double U,
                           gp_Pnt2d&           P,
                           gp_Vec2d&           V1,
                           gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const Standard_OVERRIDE;
+                          gp_Vec2d&           V3) const override;
 
   //! For the point of parameter U of this hyperbola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const Standard_Real    U,
-                              const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Applies the transformation T to this hyperbola.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Creates a new object which is a copy of this hyperbola.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Hyperbola, Geom2d_Conic)
 
-protected:
 private:
-  Standard_Real majorRadius;
-  Standard_Real minorRadius;
+  double majorRadius;
+  double minorRadius;
 };
 
 #endif // _Geom2d_Hyperbola_HeaderFile

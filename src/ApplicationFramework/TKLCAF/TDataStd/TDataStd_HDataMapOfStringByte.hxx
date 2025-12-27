@@ -18,28 +18,27 @@
 
 #include <Standard.hxx>
 
-#include <TDataStd_DataMapOfStringByte.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 
-//! Extension of TDataStd_DataMapOfStringByte class
+//! Extension of NCollection_DataMap<TCollection_ExtendedString, uint8_t> class
 //! to be manipulated by handle.
 class TDataStd_HDataMapOfStringByte : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringByte, Standard_Transient)
 public:
-  Standard_EXPORT TDataStd_HDataMapOfStringByte(const Standard_Integer NbBuckets = 1);
+  Standard_EXPORT TDataStd_HDataMapOfStringByte(const int NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringByte(const TDataStd_DataMapOfStringByte& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringByte(const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theOther);
 
-  const TDataStd_DataMapOfStringByte& Map() const { return myMap; }
+  const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& Map() const { return myMap; }
 
-  TDataStd_DataMapOfStringByte& ChangeMap() { return myMap; }
+  NCollection_DataMap<TCollection_ExtendedString, uint8_t>& ChangeMap() { return myMap; }
 
 private:
-  TDataStd_DataMapOfStringByte myMap;
+  NCollection_DataMap<TCollection_ExtendedString, uint8_t> myMap;
 };
-
-DEFINE_STANDARD_HANDLE(TDataStd_HDataMapOfStringByte, Standard_Transient)
 
 #endif // _TDataStd_HDataMapOfStringByte_HeaderFile

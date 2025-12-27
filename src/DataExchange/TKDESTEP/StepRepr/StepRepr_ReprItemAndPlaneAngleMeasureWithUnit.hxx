@@ -22,10 +22,6 @@
 #include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 class StepBasic_PlaneAngleMeasureWithUnit;
 
-class StepRepr_ReprItemAndPlaneAngleMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,
-                       StepRepr_ReprItemAndMeasureWithUnit)
-
 class StepRepr_ReprItemAndPlaneAngleMeasureWithUnit : public StepRepr_ReprItemAndMeasureWithUnit
 {
 
@@ -33,14 +29,14 @@ public:
   Standard_EXPORT StepRepr_ReprItemAndPlaneAngleMeasureWithUnit();
 
   Standard_EXPORT void SetPlaneAngleMeasureWithUnit(
-    const Handle(StepBasic_PlaneAngleMeasureWithUnit)& aLMWU);
+    const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& aLMWU);
 
-  Standard_EXPORT Handle(StepBasic_PlaneAngleMeasureWithUnit) GetPlaneAngleMeasureWithUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_PlaneAngleMeasureWithUnit> GetPlaneAngleMeasureWithUnit() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit,
                           StepRepr_ReprItemAndMeasureWithUnit)
 
 private:
-  Handle(StepBasic_PlaneAngleMeasureWithUnit) myPlaneAngleMeasureWithUnit;
+  occ::handle<StepBasic_PlaneAngleMeasureWithUnit> myPlaneAngleMeasureWithUnit;
 };
 #endif // _StepRepr_ReprItemAndPlaneAngleMeasureWithUnit_HeaderFile

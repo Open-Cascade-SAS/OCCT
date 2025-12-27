@@ -19,9 +19,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Signal.hxx>
 
-class OSD_SIGINT;
-DEFINE_STANDARD_HANDLE(OSD_SIGINT, OSD_Signal)
-
 #if !defined No_Exception && !defined No_OSD_SIGINT
   #define OSD_SIGINT_Raise_if(CONDITION, MESSAGE)                                                  \
     if (CONDITION)                                                                                 \

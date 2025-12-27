@@ -27,7 +27,7 @@ StepBasic_RoleAssociation::StepBasic_RoleAssociation() {}
 
 //=================================================================================================
 
-void StepBasic_RoleAssociation::Init(const Handle(StepBasic_ObjectRole)& aRole,
+void StepBasic_RoleAssociation::Init(const occ::handle<StepBasic_ObjectRole>& aRole,
                                      const StepBasic_RoleSelect&         aItemWithRole)
 {
 
@@ -38,14 +38,14 @@ void StepBasic_RoleAssociation::Init(const Handle(StepBasic_ObjectRole)& aRole,
 
 //=================================================================================================
 
-Handle(StepBasic_ObjectRole) StepBasic_RoleAssociation::Role() const
+occ::handle<StepBasic_ObjectRole> StepBasic_RoleAssociation::Role() const
 {
   return theRole;
 }
 
 //=================================================================================================
 
-void StepBasic_RoleAssociation::SetRole(const Handle(StepBasic_ObjectRole)& aRole)
+void StepBasic_RoleAssociation::SetRole(const occ::handle<StepBasic_ObjectRole>& aRole)
 {
   theRole = aRole;
 }

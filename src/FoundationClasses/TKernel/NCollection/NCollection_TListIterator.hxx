@@ -41,7 +41,7 @@ public:
   }
 
   //! Check end
-  Standard_Boolean More(void) const noexcept { return (myCurrent != NULL); }
+  bool More(void) const noexcept { return (myCurrent != NULL); }
 
   //! Make step
   void Next(void) noexcept

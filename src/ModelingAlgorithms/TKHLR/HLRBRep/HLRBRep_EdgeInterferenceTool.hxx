@@ -35,13 +35,13 @@ class HLRBRep_EdgeInterferenceTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRBRep_EdgeInterferenceTool(const Handle(HLRBRep_Data)& DS);
+  Standard_EXPORT HLRBRep_EdgeInterferenceTool(const occ::handle<HLRBRep_Data>& DS);
 
   Standard_EXPORT void LoadEdge();
 
   void InitVertices();
 
-  Standard_Boolean MoreVertices() const;
+  bool MoreVertices() const;
 
   void NextVertex();
 
@@ -49,28 +49,28 @@ public:
 
   TopAbs_Orientation CurrentOrientation() const;
 
-  Standard_Real CurrentParameter() const;
+  double CurrentParameter() const;
 
-  Standard_Boolean IsPeriodic() const;
+  bool IsPeriodic() const;
 
   //! Returns local geometric description of the Edge at
   //! parameter <Para>. See method Reset of class
   //! EdgeFaceTransition from TopCnx for other arguments.
-  Standard_EXPORT void EdgeGeometry(const Standard_Real Param,
+  Standard_EXPORT void EdgeGeometry(const double Param,
                                     gp_Dir&             Tgt,
                                     gp_Dir&             Nrm,
-                                    Standard_Real&      Curv) const;
+                                    double&      Curv) const;
 
-  Standard_Real ParameterOfInterference(const HLRAlgo_Interference& I) const;
+  double ParameterOfInterference(const HLRAlgo_Interference& I) const;
 
   //! True if the two interferences are on the same
   //! geometric locus.
-  Standard_EXPORT Standard_Boolean SameInterferences(const HLRAlgo_Interference& I1,
+  Standard_EXPORT bool SameInterferences(const HLRAlgo_Interference& I1,
                                                      const HLRAlgo_Interference& I2) const;
 
   //! True if the Interference and the current Vertex
   //! are on the same geometric locus.
-  Standard_EXPORT Standard_Boolean SameVertexAndInterference(const HLRAlgo_Interference& I) const;
+  Standard_EXPORT bool SameVertexAndInterference(const HLRAlgo_Interference& I) const;
 
   //! Returns the geometry of the boundary at the
   //! interference <I>. See the AddInterference method
@@ -79,13 +79,12 @@ public:
   Standard_EXPORT void InterferenceBoundaryGeometry(const HLRAlgo_Interference& I,
                                                     gp_Dir&                     Tang,
                                                     gp_Dir&                     Norm,
-                                                    Standard_Real&              Curv) const;
+                                                    double&              Curv) const;
 
-protected:
 private:
-  Handle(HLRBRep_Data) myDS;
+  occ::handle<HLRBRep_Data> myDS;
   HLRAlgo_Intersection inter[2];
-  Standard_Integer     cur;
+  int     cur;
 };
 
 #include <HLRBRep_EdgeInterferenceTool.lxx>

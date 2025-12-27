@@ -17,9 +17,10 @@
 #ifndef StepAP214_HArray1OfGroupItem_HeaderFile
 #define StepAP214_HArray1OfGroupItem_HeaderFile
 
-#include <StepAP214_Array1OfGroupItem.hxx>
+#include <StepAP214_GroupItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfGroupItem, StepAP214_Array1OfGroupItem)
+DEFINE_HARRAY1(StepAP214_HArray1OfGroupItem, NCollection_Array1<StepAP214_GroupItem>)
 
 #endif

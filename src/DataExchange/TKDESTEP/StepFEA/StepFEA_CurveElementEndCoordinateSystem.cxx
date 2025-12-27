@@ -27,8 +27,8 @@ StepFEA_CurveElementEndCoordinateSystem::StepFEA_CurveElementEndCoordinateSystem
 
 //=================================================================================================
 
-Standard_Integer StepFEA_CurveElementEndCoordinateSystem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepFEA_CurveElementEndCoordinateSystem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -43,24 +43,24 @@ Standard_Integer StepFEA_CurveElementEndCoordinateSystem::CaseNum(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaAxis2Placement3d) StepFEA_CurveElementEndCoordinateSystem::FeaAxis2Placement3d()
+occ::handle<StepFEA_FeaAxis2Placement3d> StepFEA_CurveElementEndCoordinateSystem::FeaAxis2Placement3d()
   const
 {
-  return Handle(StepFEA_FeaAxis2Placement3d)::DownCast(Value());
+  return occ::down_cast<StepFEA_FeaAxis2Placement3d>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepFEA_AlignedCurve3dElementCoordinateSystem) StepFEA_CurveElementEndCoordinateSystem::
+occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem> StepFEA_CurveElementEndCoordinateSystem::
   AlignedCurve3dElementCoordinateSystem() const
 {
-  return Handle(StepFEA_AlignedCurve3dElementCoordinateSystem)::DownCast(Value());
+  return occ::down_cast<StepFEA_AlignedCurve3dElementCoordinateSystem>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepFEA_ParametricCurve3dElementCoordinateSystem) StepFEA_CurveElementEndCoordinateSystem::
+occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem> StepFEA_CurveElementEndCoordinateSystem::
   ParametricCurve3dElementCoordinateSystem() const
 {
-  return Handle(StepFEA_ParametricCurve3dElementCoordinateSystem)::DownCast(Value());
+  return occ::down_cast<StepFEA_ParametricCurve3dElementCoordinateSystem>(Value());
 }

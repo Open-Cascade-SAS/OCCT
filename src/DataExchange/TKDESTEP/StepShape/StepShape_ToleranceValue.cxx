@@ -18,29 +18,29 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ToleranceValue, Standard_Transient)
 
 StepShape_ToleranceValue::StepShape_ToleranceValue() {}
 
-void StepShape_ToleranceValue::Init(const Handle(Standard_Transient)& lower_bound,
-                                    const Handle(Standard_Transient)& upper_bound)
+void StepShape_ToleranceValue::Init(const occ::handle<Standard_Transient>& lower_bound,
+                                    const occ::handle<Standard_Transient>& upper_bound)
 {
   theLowerBound = lower_bound;
   theUpperBound = upper_bound;
 }
 
-Handle(Standard_Transient) StepShape_ToleranceValue::LowerBound() const
+occ::handle<Standard_Transient> StepShape_ToleranceValue::LowerBound() const
 {
   return theLowerBound;
 }
 
-void StepShape_ToleranceValue::SetLowerBound(const Handle(Standard_Transient)& lower_bound)
+void StepShape_ToleranceValue::SetLowerBound(const occ::handle<Standard_Transient>& lower_bound)
 {
   theLowerBound = lower_bound;
 }
 
-Handle(Standard_Transient) StepShape_ToleranceValue::UpperBound() const
+occ::handle<Standard_Transient> StepShape_ToleranceValue::UpperBound() const
 {
   return theUpperBound;
 }
 
-void StepShape_ToleranceValue::SetUpperBound(const Handle(Standard_Transient)& upper_bound)
+void StepShape_ToleranceValue::SetUpperBound(const occ::handle<Standard_Transient>& upper_bound)
 {
   theUpperBound = upper_bound;
 }

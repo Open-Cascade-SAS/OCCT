@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-LDOM_Attr::LDOM_Attr(const LDOM_BasicAttribute& anAttr, const Handle(LDOM_MemManager)& aDoc)
+LDOM_Attr::LDOM_Attr(const LDOM_BasicAttribute& anAttr, const occ::handle<LDOM_MemManager>& aDoc)
     : LDOM_Node(anAttr, aDoc)
 {
 }

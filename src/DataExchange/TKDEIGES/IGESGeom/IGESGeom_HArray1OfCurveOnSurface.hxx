@@ -17,9 +17,10 @@
 #ifndef IGESGeom_HArray1OfCurveOnSurface_HeaderFile
 #define IGESGeom_HArray1OfCurveOnSurface_HeaderFile
 
-#include <IGESGeom_Array1OfCurveOnSurface.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESGeom_HArray1OfCurveOnSurface, IGESGeom_Array1OfCurveOnSurface)
+DEFINE_HARRAY1(IGESGeom_HArray1OfCurveOnSurface, NCollection_Array1<occ::handle<IGESGeom_CurveOnSurface>>)
 
 #endif

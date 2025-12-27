@@ -40,38 +40,37 @@ public:
   //! abs(Xi - Xi-1) <= Tolerance;
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_BracketedRoot(math_Function&         F,
-                                     const Standard_Real    Bound1,
-                                     const Standard_Real    Bound2,
-                                     const Standard_Real    Tolerance,
-                                     const Standard_Integer NbIterations = 100,
-                                     const Standard_Real    ZEPS         = 1.0e-12);
+                                     const double    Bound1,
+                                     const double    Bound2,
+                                     const double    Tolerance,
+                                     const int NbIterations = 100,
+                                     const double    ZEPS         = 1.0e-12);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Root() const;
+  double Root() const;
 
   //! returns the value of the function at the root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! returns the number of iterations really done during the
   //! computation of the Root.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Boolean Done;
-  Standard_Real    TheRoot;
-  Standard_Real    TheError;
-  Standard_Integer NbIter;
+  bool Done;
+  double    TheRoot;
+  double    TheError;
+  int NbIter;
 };
 
 #include <math_BracketedRoot.lxx>

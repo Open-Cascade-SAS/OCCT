@@ -24,9 +24,6 @@
 class IGESGeom_Point;
 class IGESGeom_Direction;
 
-class IGESSolid_PlaneSurface;
-DEFINE_STANDARD_HANDLE(IGESSolid_PlaneSurface, IGESData_IGESEntity)
-
 //! defines PlaneSurface, Type <190> Form Number <0,1>
 //! in package IGESSolid
 //! A plane surface entity is defined by a point on the
@@ -43,30 +40,29 @@ public:
   //! - aNormal   : the surface normal direction
   //! - refdir    : the reference direction (default NULL) for
   //! unparameterised curves
-  Standard_EXPORT void Init(const Handle(IGESGeom_Point)&     aLocation,
-                            const Handle(IGESGeom_Direction)& aNormal,
-                            const Handle(IGESGeom_Direction)& refdir);
+  Standard_EXPORT void Init(const occ::handle<IGESGeom_Point>&     aLocation,
+                            const occ::handle<IGESGeom_Direction>& aNormal,
+                            const occ::handle<IGESGeom_Direction>& refdir);
 
   //! returns the point on the surface
-  Standard_EXPORT Handle(IGESGeom_Point) LocationPoint() const;
+  Standard_EXPORT occ::handle<IGESGeom_Point> LocationPoint() const;
 
   //! returns the normal to the surface
-  Standard_EXPORT Handle(IGESGeom_Direction) Normal() const;
+  Standard_EXPORT occ::handle<IGESGeom_Direction> Normal() const;
 
   //! returns the reference direction (for parameterised curve)
   //! returns NULL for unparameterised curve
-  Standard_EXPORT Handle(IGESGeom_Direction) ReferenceDir() const;
+  Standard_EXPORT occ::handle<IGESGeom_Direction> ReferenceDir() const;
 
   //! returns True if parameterised, else False
-  Standard_EXPORT Standard_Boolean IsParametrised() const;
+  Standard_EXPORT bool IsParametrised() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_PlaneSurface, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESGeom_Point)     theLocationPoint;
-  Handle(IGESGeom_Direction) theNormal;
-  Handle(IGESGeom_Direction) theRefDir;
+  occ::handle<IGESGeom_Point>     theLocationPoint;
+  occ::handle<IGESGeom_Direction> theNormal;
+  occ::handle<IGESGeom_Direction> theRefDir;
 };
 
 #endif // _IGESSolid_PlaneSurface_HeaderFile

@@ -25,11 +25,11 @@ StepBasic_ProductDefinitionReference::StepBasic_ProductDefinitionReference() {}
 //=================================================================================================
 
 void StepBasic_ProductDefinitionReference::Init(
-  const Handle(StepBasic_ExternalSource)& theSource,
-  const Handle(TCollection_HAsciiString)& theProductId,
-  const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
-  const Handle(TCollection_HAsciiString)& theProductDefinitionId,
-  const Handle(TCollection_HAsciiString)& theIdOwningOrganizationName)
+  const occ::handle<StepBasic_ExternalSource>& theSource,
+  const occ::handle<TCollection_HAsciiString>& theProductId,
+  const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
+  const occ::handle<TCollection_HAsciiString>& theProductDefinitionId,
+  const occ::handle<TCollection_HAsciiString>& theIdOwningOrganizationName)
 {
   mySource                       = theSource;
   myProductId                    = theProductId;
@@ -42,14 +42,14 @@ void StepBasic_ProductDefinitionReference::Init(
 //=================================================================================================
 
 void StepBasic_ProductDefinitionReference::Init(
-  const Handle(StepBasic_ExternalSource)& theSource,
-  const Handle(TCollection_HAsciiString)& theProductId,
-  const Handle(TCollection_HAsciiString)& theProductDefinitionFormationId,
-  const Handle(TCollection_HAsciiString)& theProductDefinitionId)
+  const occ::handle<StepBasic_ExternalSource>& theSource,
+  const occ::handle<TCollection_HAsciiString>& theProductId,
+  const occ::handle<TCollection_HAsciiString>& theProductDefinitionFormationId,
+  const occ::handle<TCollection_HAsciiString>& theProductDefinitionId)
 {
   mySource                       = theSource;
   myProductId                    = theProductId;
   myProductDefinitionFormationId = theProductDefinitionFormationId;
   myProductDefinitionId          = theProductDefinitionId;
-  hasIdOwningOrganizationName    = Standard_False;
+  hasIdOwningOrganizationName    = false;
 }

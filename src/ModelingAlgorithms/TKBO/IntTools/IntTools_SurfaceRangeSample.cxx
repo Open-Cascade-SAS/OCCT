@@ -18,10 +18,10 @@
 
 IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample() {}
 
-IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample(const Standard_Integer theIndexU,
-                                                         const Standard_Integer theDepthU,
-                                                         const Standard_Integer theIndexV,
-                                                         const Standard_Integer theDepthV)
+IntTools_SurfaceRangeSample::IntTools_SurfaceRangeSample(const int theIndexU,
+                                                         const int theDepthU,
+                                                         const int theIndexV,
+                                                         const int theDepthV)
 {
   myRangeU.SetRangeIndex(theIndexU);
   myRangeU.SetDepth(theDepthU);
@@ -49,16 +49,16 @@ IntTools_SurfaceRangeSample& IntTools_SurfaceRangeSample::Assign(
   return (*this);
 }
 
-IntTools_Range IntTools_SurfaceRangeSample::GetRangeU(const Standard_Real    theFirstU,
-                                                      const Standard_Real    theLastU,
-                                                      const Standard_Integer theNbSampleU) const
+IntTools_Range IntTools_SurfaceRangeSample::GetRangeU(const double    theFirstU,
+                                                      const double    theLastU,
+                                                      const int theNbSampleU) const
 {
   return myRangeU.GetRange(theFirstU, theLastU, theNbSampleU);
 }
 
-IntTools_Range IntTools_SurfaceRangeSample::GetRangeV(const Standard_Real    theFirstV,
-                                                      const Standard_Real    theLastV,
-                                                      const Standard_Integer theNbSampleV) const
+IntTools_Range IntTools_SurfaceRangeSample::GetRangeV(const double    theFirstV,
+                                                      const double    theLastV,
+                                                      const int theNbSampleV) const
 {
   return myRangeV.GetRange(theFirstV, theLastV, theNbSampleV);
 }

@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline const Handle(Geom_BezierSurface)& GeomFill_BezierCurves::Surface() const
+inline const occ::handle<Geom_BezierSurface>& GeomFill_BezierCurves::Surface() const
 {
   return mySurface;
 }

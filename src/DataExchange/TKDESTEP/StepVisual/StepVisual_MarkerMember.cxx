@@ -27,37 +27,37 @@ static StepData_EnumTool tool(".DOT.",
 
 StepVisual_MarkerMember::StepVisual_MarkerMember() {}
 
-Standard_Boolean StepVisual_MarkerMember::HasName() const
+bool StepVisual_MarkerMember::HasName() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_CString StepVisual_MarkerMember::Name() const
+const char* StepVisual_MarkerMember::Name() const
 {
   return "MARKER_TYPE";
 }
 
-Standard_Boolean StepVisual_MarkerMember::SetName(const Standard_CString /*name*/)
+bool StepVisual_MarkerMember::SetName(const char* /*name*/)
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_CString StepVisual_MarkerMember::EnumText() const
+const char* StepVisual_MarkerMember::EnumText() const
 {
   return tool.Text(Int()).ToCString();
 }
 
-void StepVisual_MarkerMember::SetEnumText(const Standard_Integer /*val*/,
-                                          const Standard_CString text)
+void StepVisual_MarkerMember::SetEnumText(const int /*val*/,
+                                          const char* text)
 {
-  Standard_Integer vl = tool.Value(text);
+  int vl = tool.Value(text);
   if (vl >= 0)
     SetInt(vl);
 }
 
 void StepVisual_MarkerMember::SetValue(const StepVisual_MarkerType val)
 {
-  SetInt(Standard_Integer(val));
+  SetInt(int(val));
 }
 
 StepVisual_MarkerType StepVisual_MarkerMember::Value() const

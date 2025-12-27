@@ -28,26 +28,26 @@
 
 Interface_Recognizer::Interface_Recognizer()
 {
-  hasnext = Standard_False;
+  hasnext = false;
 }
 
 // thekey.Nullify();  useless, done by the constructor ...
 
-Standard_Boolean Interface_Recognizer::Evaluate(const TheKey& akey, Handle(TheResul)& res)
+bool Interface_Recognizer::Evaluate(const TheKey& akey, occ::handle<TheResul>& res)
 {
   theres.Nullify();
   Eval(akey);
   if (!theres.IsNull())
   {
     res = theres;
-    return Standard_True;
+    return true;
   }
   else if (hasnext)
     return thenext->Evaluate(akey, res);
-  return Standard_False;
+  return false;
 }
 
-Handle(TheResul) Interface_Recognizer::Result() const
+occ::handle<TheResul> Interface_Recognizer::Result() const
 {
   if (!theres.IsNull())
     return theres;
@@ -56,13 +56,13 @@ Handle(TheResul) Interface_Recognizer::Result() const
   throw Standard_NoSuchObject("Recognizer evaluation has failed");
 }
 
-void Interface_Recognizer::Add(const Handle(Interface_Recognizer)& reco)
+void Interface_Recognizer::Add(const occ::handle<Interface_Recognizer>& reco)
 {
   thenext = reco;
-  hasnext = Standard_True;
+  hasnext = true;
 }
 
-void Interface_Recognizer::SetOK(const Handle(TheResul)& aresult)
+void Interface_Recognizer::SetOK(const occ::handle<TheResul>& aresult)
 {
   theres = aresult;
 }

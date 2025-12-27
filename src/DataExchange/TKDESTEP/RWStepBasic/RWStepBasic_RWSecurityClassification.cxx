@@ -21,10 +21,10 @@
 RWStepBasic_RWSecurityClassification::RWStepBasic_RWSecurityClassification() {}
 
 void RWStepBasic_RWSecurityClassification::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepBasic_SecurityClassification)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepBasic_SecurityClassification>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,20 +34,20 @@ void RWStepBasic_RWSecurityClassification::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : purpose ---
 
-  Handle(TCollection_HAsciiString) aPurpose;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aPurpose;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "purpose", ach, aPurpose);
 
   // --- own field : securityLevel ---
 
-  Handle(StepBasic_SecurityClassificationLevel) aSecurityLevel;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepBasic_SecurityClassificationLevel> aSecurityLevel;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "security_level",
@@ -62,7 +62,7 @@ void RWStepBasic_RWSecurityClassification::ReadStep(
 
 void RWStepBasic_RWSecurityClassification::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepBasic_SecurityClassification)& ent) const
+  const occ::handle<StepBasic_SecurityClassification>& ent) const
 {
 
   // --- own field : name ---
@@ -79,7 +79,7 @@ void RWStepBasic_RWSecurityClassification::WriteStep(
 }
 
 void RWStepBasic_RWSecurityClassification::Share(
-  const Handle(StepBasic_SecurityClassification)& ent,
+  const occ::handle<StepBasic_SecurityClassification>& ent,
   Interface_EntityIterator&                       iter) const
 {
 

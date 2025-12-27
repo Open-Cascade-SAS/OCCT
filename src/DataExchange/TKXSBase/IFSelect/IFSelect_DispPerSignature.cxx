@@ -28,20 +28,20 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerSignature, IFSelect_Dispatch)
 
 IFSelect_DispPerSignature::IFSelect_DispPerSignature() {}
 
-Handle(IFSelect_SignCounter) IFSelect_DispPerSignature::SignCounter() const
+occ::handle<IFSelect_SignCounter> IFSelect_DispPerSignature::SignCounter() const
 {
   return thesign;
 }
 
-void IFSelect_DispPerSignature::SetSignCounter(const Handle(IFSelect_SignCounter)& sign)
+void IFSelect_DispPerSignature::SetSignCounter(const occ::handle<IFSelect_SignCounter>& sign)
 {
   thesign = sign;
-  thesign->SetList(Standard_True);
+  thesign->SetList(true);
 }
 
-Standard_CString IFSelect_DispPerSignature::SignName() const
+const char* IFSelect_DispPerSignature::SignName() const
 {
-  return (Standard_CString)(thesign.IsNull() ? "???" : thesign->Name());
+  return (const char*)(thesign.IsNull() ? "???" : thesign->Name());
 }
 
 TCollection_AsciiString IFSelect_DispPerSignature::Label() const
@@ -51,11 +51,11 @@ TCollection_AsciiString IFSelect_DispPerSignature::Label() const
   return TCollection_AsciiString(lab);
 }
 
-Standard_Boolean IFSelect_DispPerSignature::LimitedMax(const Standard_Integer nbent,
-                                                       Standard_Integer&      max) const
+bool IFSelect_DispPerSignature::LimitedMax(const int nbent,
+                                                       int&      max) const
 {
   max = nbent;
-  return Standard_True;
+  return true;
 }
 
 void IFSelect_DispPerSignature::Packets(const Interface_Graph&    G,
@@ -70,10 +70,10 @@ void IFSelect_DispPerSignature::Packets(const Interface_Graph&    G,
 
   thesign->Clear();
   thesign->AddList(FinalSelection()->RootResult(G).Content(), G.Model());
-  Handle(TColStd_HSequenceOfHAsciiString) list = thesign->List();
-  Standard_Integer                        i, nb, is, nbs = list->Length();
-  Handle(TCollection_HAsciiString)        asign;
-  Handle(TColStd_HSequenceOfTransient)    ents;
+  occ::handle<TColStd_HSequenceOfHAsciiString> list = thesign->List();
+  int                        i, nb, is, nbs = list->Length();
+  occ::handle<TCollection_HAsciiString>        asign;
+  occ::handle<TColStd_HSequenceOfTransient>    ents;
   for (is = 1; is <= nbs; is++)
   {
     asign = list->Value(is);
@@ -83,6 +83,6 @@ void IFSelect_DispPerSignature::Packets(const Interface_Graph&    G,
     packs.AddPart();
     nb = ents->Length();
     for (i = 1; i <= nb; i++)
-      packs.GetFromEntity(ents->Value(i), Standard_False);
+      packs.GetFromEntity(ents->Value(i), false);
   }
 }

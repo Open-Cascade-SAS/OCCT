@@ -26,8 +26,7 @@ set(OCCT_PCDM_FILES
   PCDM_ReferenceIterator.hxx
   PCDM_RetrievalDriver.cxx
   PCDM_RetrievalDriver.hxx
-  PCDM_SequenceOfDocument.hxx
-  PCDM_SequenceOfReference.hxx
+
   PCDM_StorageDriver.cxx
   PCDM_StorageDriver.hxx
   PCDM_StoreStatus.hxx

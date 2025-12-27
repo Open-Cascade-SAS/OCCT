@@ -29,11 +29,11 @@ public:
   //! @param[in] theNbStacks     number of stacks within V parameter
   //! @param[in] theTrsf         optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create(
-    const Standard_Real    theInnerRadius,
-    const Standard_Real    theOuterRadius,
-    const Standard_Integer theNbSlices,
-    const Standard_Integer theNbStacks,
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(
+    const double    theInnerRadius,
+    const double    theOuterRadius,
+    const int theNbSlices,
+    const int theNbStacks,
     const gp_Trsf&         theTrsf);
 
 public:
@@ -42,15 +42,15 @@ public:
   //! @param[in] theOuterRadius  outer disk radius
   //! @param[in] theNbSlices     number of slices within U parameter
   //! @param[in] theNbStacks     number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolDisk(const Standard_Real    theInnerRadius,
-                                 const Standard_Real    theOuterRadius,
-                                 const Standard_Integer theNbSlices,
-                                 const Standard_Integer theNbStacks);
+  Standard_EXPORT Prs3d_ToolDisk(const double    theInnerRadius,
+                                 const double    theOuterRadius,
+                                 const int theNbSlices,
+                                 const int theNbStacks);
 
   //! Set angle range in radians [0, 2*PI] by default.
   //! @param[in] theStartAngle  Start angle in counter clockwise order
   //! @param[in] theEndAngle    End   angle in counter clockwise order
-  void SetAngleRange(Standard_Real theStartAngle, Standard_Real theEndAngle)
+  void SetAngleRange(double theStartAngle, double theEndAngle)
   {
     myStartAngle = theStartAngle;
     myEndAngle   = theEndAngle;
@@ -58,20 +58,20 @@ public:
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const Standard_Real theU,
-                                        const Standard_Real theV) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Vertex(const double theU,
+                                        const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal(const Standard_Real, const Standard_Real) const Standard_OVERRIDE
+  virtual gp_Dir Normal(const double, const double) const override
   {
     return gp_Dir(gp_Dir::D::NZ);
   }
 
 protected:
-  Standard_Real myInnerRadius; //!< Inner disk radius
-  Standard_Real myOuterRadius; //!< Outer disk radius
-  Standard_Real myStartAngle;  //!< Start angle in counter clockwise order
-  Standard_Real myEndAngle;    //!< End   angle in counter clockwise order
+  double myInnerRadius; //!< Inner disk radius
+  double myOuterRadius; //!< Outer disk radius
+  double myStartAngle;  //!< Start angle in counter clockwise order
+  double myEndAngle;    //!< End   angle in counter clockwise order
 };
 
 #endif

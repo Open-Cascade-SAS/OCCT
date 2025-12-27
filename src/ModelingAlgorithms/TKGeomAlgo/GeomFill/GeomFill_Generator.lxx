@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline const Handle(Geom_Surface)& GeomFill_Generator::Surface() const
+inline const occ::handle<Geom_Surface>& GeomFill_Generator::Surface() const
 {
   return mySurface;
 }

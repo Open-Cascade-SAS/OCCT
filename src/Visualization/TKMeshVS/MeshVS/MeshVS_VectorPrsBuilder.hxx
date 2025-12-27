@@ -16,11 +16,14 @@
 #ifndef _MeshVS_VectorPrsBuilder_HeaderFile
 #define _MeshVS_VectorPrsBuilder_HeaderFile
 
-#include <MeshVS_DataMapOfIntegerVector.hxx>
+#include <Standard_Integer.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 class MeshVS_Mesh;
 class Quantity_Color;
@@ -28,8 +31,6 @@ class MeshVS_DataSource;
 class gp_Trsf;
 class Graphic3d_ArrayOfPrimitives;
 class gp_Vec;
-
-DEFINE_STANDARD_HANDLE(MeshVS_VectorPrsBuilder, MeshVS_PrsBuilder)
 
 //! This class provides methods to create vector data presentation.
 //! It store map of vectors assigned with nodes or elements.
@@ -39,66 +40,66 @@ class MeshVS_VectorPrsBuilder : public MeshVS_PrsBuilder
 
 public:
   Standard_EXPORT MeshVS_VectorPrsBuilder(
-    const Handle(MeshVS_Mesh)&       Parent,
-    const Standard_Real              MaxLength,
+    const occ::handle<MeshVS_Mesh>&       Parent,
+    const double              MaxLength,
     const Quantity_Color&            VectorColor,
     const MeshVS_DisplayModeFlags&   Flags       = MeshVS_DMF_VectorDataPrs,
-    const Handle(MeshVS_DataSource)& DS          = 0,
-    const Standard_Integer           Id          = -1,
+    const occ::handle<MeshVS_DataSource>& DS          = 0,
+    const int           Id          = -1,
     const MeshVS_BuilderPriority&    Priority    = MeshVS_BP_Vector,
-    const Standard_Boolean           IsSimplePrs = Standard_False);
+    const bool           IsSimplePrs = false);
 
   //! Builds vector data presentation
-  Standard_EXPORT virtual void Build(const Handle(Prs3d_Presentation)& Prs,
+  Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
                                      const TColStd_PackedMapOfInteger& IDs,
                                      TColStd_PackedMapOfInteger&       IDsToExclude,
-                                     const Standard_Boolean            IsElement,
-                                     const Standard_Integer theDisplayMode) const Standard_OVERRIDE;
+                                     const bool            IsElement,
+                                     const int theDisplayMode) const override;
 
   //! Adds to array of polygons and polylines some primitive representing single vector
   Standard_EXPORT void DrawVector(const gp_Trsf&                             theTrsf,
-                                  const Standard_Real                        Length,
-                                  const Standard_Real                        MaxLength,
-                                  const TColgp_Array1OfPnt&                  ArrowPoints,
-                                  const Handle(Graphic3d_ArrayOfPrimitives)& Lines,
-                                  const Handle(Graphic3d_ArrayOfPrimitives)& ArrowLines,
-                                  const Handle(Graphic3d_ArrayOfPrimitives)& Triangles) const;
+                                  const double                        Length,
+                                  const double                        MaxLength,
+                                  const NCollection_Array1<gp_Pnt>&                  ArrowPoints,
+                                  const occ::handle<Graphic3d_ArrayOfPrimitives>& Lines,
+                                  const occ::handle<Graphic3d_ArrayOfPrimitives>& ArrowLines,
+                                  const occ::handle<Graphic3d_ArrayOfPrimitives>& Triangles) const;
 
   //! Calculates points of arrow presentation
-  Standard_EXPORT static Standard_Real calculateArrow(TColgp_Array1OfPnt& Points,
-                                                      const Standard_Real Length,
-                                                      const Standard_Real ArrowPart);
+  Standard_EXPORT static double calculateArrow(NCollection_Array1<gp_Pnt>& Points,
+                                                      const double Length,
+                                                      const double ArrowPart);
 
   //! Returns map of vectors assigned with nodes or elements
-  Standard_EXPORT const MeshVS_DataMapOfIntegerVector& GetVectors(
-    const Standard_Boolean IsElement) const;
+  Standard_EXPORT const NCollection_DataMap<int, gp_Vec>& GetVectors(
+    const bool IsElement) const;
 
   //! Sets map of vectors assigned with nodes or elements
-  Standard_EXPORT void SetVectors(const Standard_Boolean               IsElement,
-                                  const MeshVS_DataMapOfIntegerVector& Map);
+  Standard_EXPORT void SetVectors(const bool               IsElement,
+                                  const NCollection_DataMap<int, gp_Vec>& Map);
 
   //! Returns true, if map isn't empty
-  Standard_EXPORT Standard_Boolean HasVectors(const Standard_Boolean IsElement) const;
+  Standard_EXPORT bool HasVectors(const bool IsElement) const;
 
   //! Returns vector assigned with certain node or element
-  Standard_EXPORT Standard_Boolean GetVector(const Standard_Boolean IsElement,
-                                             const Standard_Integer ID,
+  Standard_EXPORT bool GetVector(const bool IsElement,
+                                             const int ID,
                                              gp_Vec&                Vect) const;
 
   //! Sets vector assigned with certain node or element
-  Standard_EXPORT void SetVector(const Standard_Boolean IsElement,
-                                 const Standard_Integer ID,
+  Standard_EXPORT void SetVector(const bool IsElement,
+                                 const int ID,
                                  const gp_Vec&          Vect);
 
   //! Calculates minimal and maximal length of vectors in map
   //! ( nodal, if IsElement = False or elemental, if IsElement = True )
-  Standard_EXPORT void GetMinMaxVectorValue(const Standard_Boolean IsElement,
-                                            Standard_Real&         MinValue,
-                                            Standard_Real&         MaxValue) const;
+  Standard_EXPORT void GetMinMaxVectorValue(const bool IsElement,
+                                            double&         MinValue,
+                                            double&         MaxValue) const;
 
   //! Sets flag that indicates is simple vector arrow mode uses or not
   //! default value is False
-  Standard_EXPORT void SetSimplePrsMode(const Standard_Boolean IsSimpleArrow);
+  Standard_EXPORT void SetSimplePrsMode(const bool IsSimpleArrow);
 
   //! Sets parameters of simple vector arrwo presentation
   //! theLineWidthParam - coefficient of vector line width (to draw line instead of arrow)
@@ -108,20 +109,19 @@ public:
   //! theLineWidthParam = 2.5
   //! theStartParam     = 0.85
   //! theEndParam       = 0.95
-  Standard_EXPORT void SetSimplePrsParams(const Standard_Real theLineWidthParam,
-                                          const Standard_Real theStartParam,
-                                          const Standard_Real theEndParam);
+  Standard_EXPORT void SetSimplePrsParams(const double theLineWidthParam,
+                                          const double theStartParam,
+                                          const double theEndParam);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_VectorPrsBuilder, MeshVS_PrsBuilder)
 
-protected:
 private:
-  Standard_Boolean              myIsSimplePrs;
-  Standard_Real                 mySimpleWidthPrm;
-  Standard_Real                 mySimpleStartPrm;
-  Standard_Real                 mySimpleEndPrm;
-  MeshVS_DataMapOfIntegerVector myNodeVectorMap;
-  MeshVS_DataMapOfIntegerVector myElemVectorMap;
+  bool              myIsSimplePrs;
+  double                 mySimpleWidthPrm;
+  double                 mySimpleStartPrm;
+  double                 mySimpleEndPrm;
+  NCollection_DataMap<int, gp_Vec> myNodeVectorMap;
+  NCollection_DataMap<int, gp_Vec> myElemVectorMap;
 };
 
 #endif // _MeshVS_VectorPrsBuilder_HeaderFile

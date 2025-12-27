@@ -24,20 +24,20 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ExternalRefLibName, IGESData_IGESEntity)
 
 IGESBasic_ExternalRefLibName::IGESBasic_ExternalRefLibName() {}
 
-void IGESBasic_ExternalRefLibName::Init(const Handle(TCollection_HAsciiString)& aLibName,
-                                        const Handle(TCollection_HAsciiString)& anExtName)
+void IGESBasic_ExternalRefLibName::Init(const occ::handle<TCollection_HAsciiString>& aLibName,
+                                        const occ::handle<TCollection_HAsciiString>& anExtName)
 {
   theLibName              = aLibName;
   theExtRefEntitySymbName = anExtName;
   InitTypeAndForm(416, 4);
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefLibName::LibraryName() const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefLibName::LibraryName() const
 {
   return theLibName;
 }
 
-Handle(TCollection_HAsciiString) IGESBasic_ExternalRefLibName::ReferenceName() const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalRefLibName::ReferenceName() const
 {
   return theExtRefEntitySymbName;
 }

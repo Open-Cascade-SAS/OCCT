@@ -5,7 +5,7 @@ set(OCCT_HatchGen_FILES
   HatchGen_Domain.cxx
   HatchGen_Domain.hxx
   HatchGen_Domain.lxx
-  HatchGen_Domains.hxx
+
   HatchGen_ErrorStatus.hxx
   HatchGen_IntersectionPoint.cxx
   HatchGen_IntersectionPoint.hxx
@@ -15,6 +15,5 @@ set(OCCT_HatchGen_FILES
   HatchGen_PointOnElement.lxx
   HatchGen_PointOnHatching.cxx
   HatchGen_PointOnHatching.hxx
-  HatchGen_PointsOnElement.hxx
-  HatchGen_PointsOnHatching.hxx
+
 )

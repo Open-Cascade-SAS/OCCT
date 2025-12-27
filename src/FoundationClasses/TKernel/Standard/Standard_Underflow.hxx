@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_NumericError.hxx>
 
-class Standard_Underflow;
-DEFINE_STANDARD_HANDLE(Standard_Underflow, Standard_NumericError)
-
 #if !defined No_Exception && !defined No_Standard_Underflow
   #define Standard_Underflow_Raise_if(CONDITION, MESSAGE)                                          \
     if (CONDITION)                                                                                 \

@@ -40,7 +40,7 @@ public:
   //! Tolerance <T> on the face described by <F>.
   Standard_EXPORT BRepClass_FaceClassifier(BRepClass_FaceExplorer& F,
                                            const gp_Pnt2d&         P,
-                                           const Standard_Real     Tol);
+                                           const double     Tol);
 
   //! Creates an algorithm to classify the Point P with
   //! Tolerance <T> on the face <F>.
@@ -48,9 +48,9 @@ public:
   //! and the geometry is mostly spline
   Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face&     theF,
                                            const gp_Pnt2d&        theP,
-                                           const Standard_Real    theTol,
-                                           const Standard_Boolean theUseBndBox   = Standard_False,
-                                           const Standard_Real    theGapCheckTol = 0.1);
+                                           const double    theTol,
+                                           const bool theUseBndBox   = false,
+                                           const double    theGapCheckTol = 0.1);
 
   //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
@@ -58,9 +58,9 @@ public:
   //! and the geometry is mostly spline
   Standard_EXPORT void Perform(const TopoDS_Face&     theF,
                                const gp_Pnt2d&        theP,
-                               const Standard_Real    theTol,
-                               const Standard_Boolean theUseBndBox   = Standard_False,
-                               const Standard_Real    theGapCheckTol = 0.1);
+                               const double    theTol,
+                               const bool theUseBndBox   = false,
+                               const double    theGapCheckTol = 0.1);
 
   //! Creates an algorithm to classify the Point P with
   //! Tolerance <T> on the face <F>.
@@ -68,9 +68,9 @@ public:
   //! and the geometry is mostly spline
   Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face&     theF,
                                            const gp_Pnt&          theP,
-                                           const Standard_Real    theTol,
-                                           const Standard_Boolean theUseBndBox   = Standard_False,
-                                           const Standard_Real    theGapCheckTol = 0.1);
+                                           const double    theTol,
+                                           const bool theUseBndBox   = false,
+                                           const double    theGapCheckTol = 0.1);
 
   //! Classify the Point P with Tolerance <T> on the
   //! face described by <F>.
@@ -78,12 +78,10 @@ public:
   //! and the geometry is mostly spline
   Standard_EXPORT void Perform(const TopoDS_Face&     theF,
                                const gp_Pnt&          theP,
-                               const Standard_Real    theTol,
-                               const Standard_Boolean theUseBndBox   = Standard_False,
-                               const Standard_Real    theGapCheckTol = 0.1);
+                               const double    theTol,
+                               const bool theUseBndBox   = false,
+                               const double    theGapCheckTol = 0.1);
 
-protected:
-private:
 };
 
 #endif // _BRepClass_FaceClassifier_HeaderFile

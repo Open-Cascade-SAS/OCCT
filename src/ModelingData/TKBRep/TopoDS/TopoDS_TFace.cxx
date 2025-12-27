@@ -29,7 +29,7 @@ TopAbs_ShapeEnum TopoDS_TFace::ShapeType() const
 
 //=================================================================================================
 
-Handle(TopoDS_TShape) TopoDS_TFace::EmptyCopy() const
+occ::handle<TopoDS_TShape> TopoDS_TFace::EmptyCopy() const
 {
-  return Handle(TopoDS_TFace)(new TopoDS_TFace());
+  return occ::handle<TopoDS_TFace>(new TopoDS_TFace());
 }

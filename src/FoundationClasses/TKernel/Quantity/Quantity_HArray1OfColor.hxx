@@ -17,9 +17,10 @@
 #ifndef Quantity_HArray1OfColor_HeaderFile
 #define Quantity_HArray1OfColor_HeaderFile
 
-#include <Quantity_Array1OfColor.hxx>
+#include <Quantity_Color.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Quantity_HArray1OfColor, Quantity_Array1OfColor)
+DEFINE_HARRAY1(Quantity_HArray1OfColor, NCollection_Array1<Quantity_Color>)
 
 #endif

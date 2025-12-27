@@ -20,9 +20,6 @@
 #include <gp_Ax22d.hxx>
 #include <Geom2d_Curve.hxx>
 
-class Geom2d_Conic;
-DEFINE_STANDARD_HANDLE(Geom2d_Conic, Geom2d_Curve)
-
 //! The abstract class Conic describes the common
 //! behavior of conic curves in 2D space and, in
 //! particular, their general characteristics. The Geom2d
@@ -81,7 +78,7 @@ public:
   //! 0 < e < 1 for an ellipse (e = 0 if MajorRadius = MinorRadius)
   //! e > 1 for a hyperbola
   //! e = 1 for a parabola
-  Standard_EXPORT virtual Standard_Real Eccentricity() const = 0;
+  Standard_EXPORT virtual double Eccentricity() const = 0;
 
   //! Returns the location point of the conic.
   //! For the circle, the ellipse and the hyperbola it is the center of
@@ -93,22 +90,22 @@ public:
 
   //! Reverses the direction of parameterization of <me>.
   //! The local coordinate system of the conic is modified.
-  Standard_EXPORT void Reverse() Standard_OVERRIDE;
+  Standard_EXPORT void Reverse() override;
 
   //! Returns the parameter on the reversed curve for
   //! the point of parameter U on <me>.
-  Standard_EXPORT virtual Standard_Real ReversedParameter(const Standard_Real U) const
-    Standard_OVERRIDE = 0;
+  Standard_EXPORT virtual double ReversedParameter(const double U) const
+    override = 0;
 
   //! Returns GeomAbs_CN which is the global continuity of any conic.
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns True, the order of continuity of a conic is infinite.
-  Standard_EXPORT Standard_Boolean IsCN(const Standard_Integer N) const Standard_OVERRIDE;
+  Standard_EXPORT bool IsCN(const int N) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Conic, Geom2d_Curve)
 

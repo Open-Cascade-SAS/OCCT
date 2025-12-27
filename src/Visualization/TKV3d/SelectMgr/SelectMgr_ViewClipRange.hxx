@@ -37,25 +37,25 @@ public:
 
   //! Check if the given depth is not within clipping range(s),
   //! e.g. TRUE means depth is clipped.
-  Standard_Boolean IsClipped(const Standard_Real theDepth) const
+  bool IsClipped(const double theDepth) const
   {
     if (myUnclipRange.IsOut(theDepth))
     {
-      return Standard_True;
+      return true;
     }
     for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
     {
       if (!myClipRanges[aRangeIter].IsOut(theDepth))
       {
-        return Standard_True;
+        return true;
       }
     }
-    return Standard_False;
+    return false;
   }
 
   //! Calculates the min not clipped value from the range.
   //! Returns FALSE if the whole range is clipped.
-  Standard_Boolean GetNearestDepth(const Bnd_Range& theRange, Standard_Real& theDepth) const
+  bool GetNearestDepth(const Bnd_Range& theRange, double& theDepth) const
   {
     if (!myUnclipRange.IsVoid() && myUnclipRange.IsOut(theRange))
     {
@@ -116,7 +116,7 @@ public:
   void AddClipSubRange(const Bnd_Range& theRange) { myClipRanges.push_back(theRange); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   std::vector<Bnd_Range> myClipRanges;

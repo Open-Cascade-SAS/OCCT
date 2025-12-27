@@ -28,8 +28,8 @@
 
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                                        const math_Vector&     theXTolerance,
-                                                       const Standard_Real    theFTolerance,
-                                                       const Standard_Integer theNbIterations)
+                                                       const double    theFTolerance,
+                                                       const int theNbIterations)
 
     : TolX(1, theFunction.NbVariables()),
       TolF(theFTolerance),
@@ -39,7 +39,7 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDeriv
       DeltaX(1, theFunction.NbVariables()),
       FValues(1, theFunction.NbVariables()),
       Jacobian(1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
-      Done(Standard_False),
+      Done(false),
       State(0),
       Iter(0),
       Itermax(theNbIterations)
@@ -50,8 +50,8 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDeriv
 //=================================================================================================
 
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                                       const Standard_Real    theFTolerance,
-                                                       const Standard_Integer theNbIterations)
+                                                       const double    theFTolerance,
+                                                       const int theNbIterations)
 
     : TolX(1, theFunction.NbVariables()),
       TolF(theFTolerance),
@@ -61,7 +61,7 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDeriv
       DeltaX(1, theFunction.NbVariables()),
       FValues(1, theFunction.NbVariables()),
       Jacobian(1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
-      Done(Standard_False),
+      Done(false),
       State(0),
       Iter(0),
       Itermax(theNbIterations)
@@ -76,7 +76,7 @@ math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot() {}
 
 void math_NewtonFunctionSetRoot::SetTolerance(const math_Vector& theXTolerance)
 {
-  for (Standard_Integer i = 1; i <= TolX.Length(); ++i)
+  for (int i = 1; i <= TolX.Length(); ++i)
     TolX(i) = theXTolerance(i);
 }
 
@@ -99,18 +99,18 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                          const math_Vector&               SupBound)
 {
 
-  Standard_Real    d;
-  Standard_Boolean OK;
-  Standard_Integer Error;
+  double    d;
+  bool OK;
+  int Error;
 
-  Done = Standard_False;
+  Done = false;
   Sol  = StartingPoint;
   OK   = F.Values(Sol, FValues, Jacobian);
   if (!OK)
     return;
   for (Iter = 1; Iter <= Itermax; Iter++)
   {
-    for (Standard_Integer k = 1; k <= DeltaX.Length(); k++)
+    for (int k = 1; k <= DeltaX.Length(); k++)
     {
       DeltaX(k) = -FValues(k);
     }
@@ -118,7 +118,7 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     if (Error)
       return;
     LU_Solve(Jacobian, Indx, DeltaX);
-    for (Standard_Integer i = 1; i <= Sol.Length(); i++)
+    for (int i = 1; i <= Sol.Length(); i++)
     {
       Sol(i) += DeltaX(i);
 
@@ -134,7 +134,7 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     if (IsSolutionReached(F))
     {
       State = F.GetStateNumber();
-      Done  = Standard_True;
+      Done  = true;
       return;
     }
   }

@@ -47,7 +47,7 @@ public:
 
   //    Copy constructor
 
-  LDOMString(const Standard_Integer aValue)
+  LDOMString(const int aValue)
       : LDOMBasicString(aValue),
         myPtrDoc(NULL)
   {
@@ -55,7 +55,7 @@ public:
 
   //    Integer => LDOMString
 
-  //  Standard_EXPORT LDOMString (const Standard_Real aValue);
+  //  Standard_EXPORT LDOMString (const double aValue);
 
   LDOMString(const char* aValue)
       : LDOMBasicString(aValue),
@@ -98,7 +98,7 @@ private:
 
   //    Plain copy from LDOMBasicString
 
-  LDOMString(const LDOMBasicString& anOther, const Handle(LDOM_MemManager)& aDoc);
+  LDOMString(const LDOMBasicString& anOther, const occ::handle<LDOM_MemManager>& aDoc);
   //    Copy from another string with allocation in the document space
 
 private:

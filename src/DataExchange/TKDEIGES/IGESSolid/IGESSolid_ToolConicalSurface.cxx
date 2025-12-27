@@ -28,20 +28,20 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESSolid_ToolConicalSurface::IGESSolid_ToolConicalSurface() {}
 
-void IGESSolid_ToolConicalSurface::ReadOwnParams(const Handle(IGESSolid_ConicalSurface)& ent,
-                                                 const Handle(IGESData_IGESReaderData)&  IR,
+void IGESSolid_ToolConicalSurface::ReadOwnParams(const occ::handle<IGESSolid_ConicalSurface>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>&  IR,
                                                  IGESData_ParamReader&                   PR) const
 {
-  Handle(IGESGeom_Point)     tempLocation;
-  Handle(IGESGeom_Direction) tempAxis;
-  Handle(IGESGeom_Direction) tempRefdir; // default Unparametrised
-  Standard_Real              tempRadius, tempAngle;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESGeom_Point>     tempLocation;
+  occ::handle<IGESGeom_Direction> tempAxis;
+  occ::handle<IGESGeom_Direction> tempRefdir; // default Unparametrised
+  double              tempRadius, tempAngle;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -70,7 +70,7 @@ void IGESSolid_ToolConicalSurface::ReadOwnParams(const Handle(IGESSolid_ConicalS
   ent->Init(tempLocation, tempAxis, tempRadius, tempAngle, tempRefdir);
 }
 
-void IGESSolid_ToolConicalSurface::WriteOwnParams(const Handle(IGESSolid_ConicalSurface)& ent,
+void IGESSolid_ToolConicalSurface::WriteOwnParams(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                                   IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->LocationPoint());
@@ -81,7 +81,7 @@ void IGESSolid_ToolConicalSurface::WriteOwnParams(const Handle(IGESSolid_Conical
     IW.Send(ent->ReferenceDir()); // see FormNumber
 }
 
-void IGESSolid_ToolConicalSurface::OwnShared(const Handle(IGESSolid_ConicalSurface)& ent,
+void IGESSolid_ToolConicalSurface::OwnShared(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                              Interface_EntityIterator&               iter) const
 {
   iter.GetOneItem(ent->LocationPoint());
@@ -89,12 +89,12 @@ void IGESSolid_ToolConicalSurface::OwnShared(const Handle(IGESSolid_ConicalSurfa
   iter.GetOneItem(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolConicalSurface::OwnCopy(const Handle(IGESSolid_ConicalSurface)& another,
-                                           const Handle(IGESSolid_ConicalSurface)& ent,
+void IGESSolid_ToolConicalSurface::OwnCopy(const occ::handle<IGESSolid_ConicalSurface>& another,
+                                           const occ::handle<IGESSolid_ConicalSurface>& ent,
                                            Interface_CopyTool&                     TC) const
 {
-  Standard_Real tempRadius, tempAngle;
-  // Standard_Boolean IsItParametrised = Standard_False; //szv#4:S4163:12Mar99 unused
+  double tempRadius, tempAngle;
+  // bool IsItParametrised = false; //szv#4:S4163:12Mar99 unused
 
   DeclareAndCast(IGESGeom_Point, tempLocation, TC.Transferred(another->LocationPoint()));
   DeclareAndCast(IGESGeom_Direction, tempAxis, TC.Transferred(another->Axis()));
@@ -107,13 +107,13 @@ void IGESSolid_ToolConicalSurface::OwnCopy(const Handle(IGESSolid_ConicalSurface
   }
   else
   {
-    Handle(IGESGeom_Direction) tempRefdir;
+    occ::handle<IGESGeom_Direction> tempRefdir;
     ent->Init(tempLocation, tempAxis, tempRadius, tempAngle, tempRefdir);
   }
 }
 
 IGESData_DirChecker IGESSolid_ToolConicalSurface::DirChecker(
-  const Handle(IGESSolid_ConicalSurface)& /*ent*/) const
+  const occ::handle<IGESSolid_ConicalSurface>& /*ent*/) const
 {
   IGESData_DirChecker DC(194, 0, 1);
 
@@ -127,29 +127,29 @@ IGESData_DirChecker IGESSolid_ToolConicalSurface::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolConicalSurface::OwnCheck(const Handle(IGESSolid_ConicalSurface)& ent,
+void IGESSolid_ToolConicalSurface::OwnCheck(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& ach) const
+                                            occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() < 0.0)
     ach->AddFail("Radius : Value Negative");
   if (ent->SemiAngle() < 0.0 || ent->SemiAngle() > 90.0)
     ach->AddFail("Semi-angle : Value not in the range [0 - 90]");
-  Standard_Integer fn = 0;
+  int fn = 0;
   if (ent->IsParametrised())
     fn = 1;
   if (fn != ent->FormNumber())
     ach->AddFail("Parametrised Status Mismatches with Form Number");
 }
 
-void IGESSolid_ToolConicalSurface::OwnDump(const Handle(IGESSolid_ConicalSurface)& ent,
+void IGESSolid_ToolConicalSurface::OwnDump(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                            const IGESData_IGESDumper&              dumper,
                                            Standard_OStream&                       S,
-                                           const Standard_Integer                  level) const
+                                           const int                  level) const
 {
   S << "IGESSolid_ConicalSurface\n";
 
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis  : ";
   dumper.Dump(ent->LocationPoint(), S, sublevel);
   S << "\n"

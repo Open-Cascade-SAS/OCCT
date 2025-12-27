@@ -17,10 +17,11 @@
 #ifndef StepRepr_HArray1OfPropertyDefinitionRepresentation_HeaderFile
 #define StepRepr_HArray1OfPropertyDefinitionRepresentation_HeaderFile
 
-#include <StepRepr_Array1OfPropertyDefinitionRepresentation.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepRepr_HArray1OfPropertyDefinitionRepresentation,
-               StepRepr_Array1OfPropertyDefinitionRepresentation)
+               NCollection_Array1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>)
 
 #endif

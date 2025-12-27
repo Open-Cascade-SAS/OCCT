@@ -22,8 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ValueRepresentationItem, StepRepr_Representa
 StepRepr_ValueRepresentationItem::StepRepr_ValueRepresentationItem() {}
 
 void StepRepr_ValueRepresentationItem::Init(
-  const Handle(TCollection_HAsciiString)&     theName,
-  const Handle(StepBasic_MeasureValueMember)& theValueComponentMember)
+  const occ::handle<TCollection_HAsciiString>&     theName,
+  const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember)
 {
   valueComponentMember = theValueComponentMember;
   StepRepr_RepresentationItem::Init(theName);

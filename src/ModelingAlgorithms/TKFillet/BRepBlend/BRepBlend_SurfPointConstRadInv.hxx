@@ -38,31 +38,31 @@ class BRepBlend_SurfPointConstRadInv : public Blend_SurfPointFuncInv
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepBlend_SurfPointConstRadInv(const Handle(Adaptor3d_Surface)& S,
-                                                 const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT BRepBlend_SurfPointConstRadInv(const occ::handle<Adaptor3d_Surface>& S,
+                                                 const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT void Set(const Standard_Real R, const Standard_Integer Choix);
+  Standard_EXPORT void Set(const double R, const int Choix);
 
   //! returns 3.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   //! Set the Point on which a solution has to be found.
   Standard_EXPORT void Set(const gp_Pnt& P);
@@ -70,7 +70,7 @@ public:
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const;
+  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 3 variables.
@@ -78,17 +78,16 @@ public:
   //! for each of the 3 variables.
   Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const;
 
-  //! Returns Standard_True if Sol is a zero of the function.
+  //! Returns true if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT Standard_Boolean IsSolution(const math_Vector& Sol, const Standard_Real Tol);
+  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol);
 
-protected:
 private:
-  Handle(Adaptor3d_Surface) surf;
-  Handle(Adaptor3d_Curve)   curv;
+  occ::handle<Adaptor3d_Surface> surf;
+  occ::handle<Adaptor3d_Curve>   curv;
   gp_Pnt                    point;
-  Standard_Real             ray;
-  Standard_Integer          choix;
+  double             ray;
+  int          choix;
 };
 
 #endif // _BRepBlend_SurfPointConstRadInv_HeaderFile

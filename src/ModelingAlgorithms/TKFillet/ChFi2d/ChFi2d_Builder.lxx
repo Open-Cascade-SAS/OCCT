@@ -32,42 +32,42 @@ inline TopoDS_Face ChFi2d_Builder::Result() const
 
 //=================================================================================================
 
-inline Standard_Boolean ChFi2d_Builder::IsModified(const TopoDS_Edge& E) const
+inline bool ChFi2d_Builder::IsModified(const TopoDS_Edge& E) const
 {
   return history.IsBound(E);
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& ChFi2d_Builder::FilletEdges() const
+inline const NCollection_Sequence<TopoDS_Shape>& ChFi2d_Builder::FilletEdges() const
 {
   return fillets;
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& ChFi2d_Builder::ChamferEdges() const
+inline const NCollection_Sequence<TopoDS_Shape>& ChFi2d_Builder::ChamferEdges() const
 {
   return chamfers;
 }
 
 //=================================================================================================
 
-inline Standard_Integer ChFi2d_Builder::NbFillet() const
+inline int ChFi2d_Builder::NbFillet() const
 {
   return fillets.Length();
 }
 
 //=================================================================================================
 
-inline Standard_Integer ChFi2d_Builder::NbChamfer() const
+inline int ChFi2d_Builder::NbChamfer() const
 {
   return chamfers.Length();
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ChFi2d_Builder::HasDescendant(const TopoDS_Edge& E) const
+inline bool ChFi2d_Builder::HasDescendant(const TopoDS_Edge& E) const
 {
   return history.IsBound(E);
 }

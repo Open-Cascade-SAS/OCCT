@@ -30,7 +30,7 @@ protected:
   BVH_TreeBaseTransient() {}
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     (void)theOStream;
     (void)theDepth;
@@ -39,7 +39,7 @@ protected:
   //! Dumps the content of me into the stream
   virtual void DumpNode(const int         theNodeIndex,
                         Standard_OStream& theOStream,
-                        Standard_Integer  theDepth) const
+                        int  theDepth) const
   {
     (void)theNodeIndex;
     (void)theOStream;
@@ -173,13 +173,13 @@ public: //! @name methods for accessing serialized tree data
 
   //! Dumps the content of me into the stream
   virtual void DumpJson(Standard_OStream& theOStream,
-                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE
+                        int  theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myDepth)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Length())
 
-    for (Standard_Integer aNodeIdx = 0; aNodeIdx < Length(); ++aNodeIdx)
+    for (int aNodeIdx = 0; aNodeIdx < Length(); ++aNodeIdx)
     {
       DumpNode(aNodeIdx, theOStream, theDepth);
     }
@@ -188,7 +188,7 @@ public: //! @name methods for accessing serialized tree data
   //! Dumps the content of node into the stream
   virtual void DumpNode(const int         theNodeIndex,
                         Standard_OStream& theOStream,
-                        Standard_Integer  theDepth) const Standard_OVERRIDE
+                        int  theDepth) const override
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, BVH_TreeNode)
 

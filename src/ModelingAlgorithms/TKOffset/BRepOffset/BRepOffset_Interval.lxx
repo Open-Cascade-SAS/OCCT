@@ -16,14 +16,14 @@
 
 //=================================================================================================
 
-inline void BRepOffset_Interval::First(const Standard_Real U)
+inline void BRepOffset_Interval::First(const double U)
 {
   f = U;
 }
 
 //=================================================================================================
 
-inline void BRepOffset_Interval::Last(const Standard_Real U)
+inline void BRepOffset_Interval::Last(const double U)
 {
   l = U;
 }
@@ -37,14 +37,14 @@ inline void BRepOffset_Interval::Type(const ChFiDS_TypeOfConcavity T)
 
 //=================================================================================================
 
-inline Standard_Real BRepOffset_Interval::First() const
+inline double BRepOffset_Interval::First() const
 {
   return f;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRepOffset_Interval::Last() const
+inline double BRepOffset_Interval::Last() const
 {
   return l;
 }

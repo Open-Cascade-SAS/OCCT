@@ -18,12 +18,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Transfer_MapContainer, Standard_Transient)
 
 Transfer_MapContainer::Transfer_MapContainer() {}
 
-void Transfer_MapContainer::SetMapObjects(TColStd_DataMapOfTransientTransient& theMapObjects)
+void Transfer_MapContainer::SetMapObjects(NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& theMapObjects)
 {
   myMapObj = theMapObjects;
 }
 
-TColStd_DataMapOfTransientTransient& Transfer_MapContainer::GetMapObjects()
+NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& Transfer_MapContainer::GetMapObjects()
 {
   return myMapObj;
 }

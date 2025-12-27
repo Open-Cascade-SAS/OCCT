@@ -16,9 +16,9 @@
 #define TShort_HArray1OfShortReal_HeaderFile
 
 #include <Standard_ShortReal.hxx>
-#include <TShort_Array1OfShortReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TShort_HArray1OfShortReal, TShort_Array1OfShortReal)
+DEFINE_HARRAY1(TShort_HArray1OfShortReal, NCollection_Array1<float>)
 
 #endif

@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Sphere, StepGeom_GeometricRepresentationIte
 
 StepShape_Sphere::StepShape_Sphere() {}
 
-void StepShape_Sphere::Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Standard_Real                     aRadius,
-                            const Handle(StepGeom_Point)&           aCentre)
+void StepShape_Sphere::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const double                     aRadius,
+                            const occ::handle<StepGeom_Point>&           aCentre)
 {
   // --- classe own fields ---
   radius = aRadius;
@@ -30,22 +30,22 @@ void StepShape_Sphere::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_Sphere::SetRadius(const Standard_Real aRadius)
+void StepShape_Sphere::SetRadius(const double aRadius)
 {
   radius = aRadius;
 }
 
-Standard_Real StepShape_Sphere::Radius() const
+double StepShape_Sphere::Radius() const
 {
   return radius;
 }
 
-void StepShape_Sphere::SetCentre(const Handle(StepGeom_Point)& aCentre)
+void StepShape_Sphere::SetCentre(const occ::handle<StepGeom_Point>& aCentre)
 {
   centre = aCentre;
 }
 
-Handle(StepGeom_Point) StepShape_Sphere::Centre() const
+occ::handle<StepGeom_Point> StepShape_Sphere::Centre() const
 {
   return centre;
 }

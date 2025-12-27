@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepRepr_ConfigurationItem;
 
-class StepRepr_ConfigurationDesign;
-DEFINE_STANDARD_HANDLE(StepRepr_ConfigurationDesign, Standard_Transient)
-
 //! Representation of STEP entity ConfigurationDesign
 class StepRepr_ConfigurationDesign : public Standard_Transient
 {
@@ -35,14 +32,14 @@ public:
   Standard_EXPORT StepRepr_ConfigurationDesign();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepRepr_ConfigurationItem)& aConfiguration,
+  Standard_EXPORT void Init(const occ::handle<StepRepr_ConfigurationItem>& aConfiguration,
                             const StepRepr_ConfigurationDesignItem&   aDesign);
 
   //! Returns field Configuration
-  Standard_EXPORT Handle(StepRepr_ConfigurationItem) Configuration() const;
+  Standard_EXPORT occ::handle<StepRepr_ConfigurationItem> Configuration() const;
 
   //! Set field Configuration
-  Standard_EXPORT void SetConfiguration(const Handle(StepRepr_ConfigurationItem)& Configuration);
+  Standard_EXPORT void SetConfiguration(const occ::handle<StepRepr_ConfigurationItem>& Configuration);
 
   //! Returns field Design
   Standard_EXPORT StepRepr_ConfigurationDesignItem Design() const;
@@ -52,9 +49,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationDesign, Standard_Transient)
 
-protected:
 private:
-  Handle(StepRepr_ConfigurationItem) theConfiguration;
+  occ::handle<StepRepr_ConfigurationItem> theConfiguration;
   StepRepr_ConfigurationDesignItem   theDesign;
 };
 

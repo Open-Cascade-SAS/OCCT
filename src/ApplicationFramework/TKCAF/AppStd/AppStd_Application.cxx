@@ -22,15 +22,15 @@ IMPLEMENT_STANDARD_RTTIEXT(AppStd_Application, TDocStd_Application)
 
 //=================================================================================================
 
-Standard_CString AppStd_Application::ResourcesName()
+const char* AppStd_Application::ResourcesName()
 {
-  const Standard_CString aRes = "Standard";
+  const char* aRes = "Standard";
   return aRes;
 }
 
 //=================================================================================================
 
-void AppStd_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void AppStd_Application::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

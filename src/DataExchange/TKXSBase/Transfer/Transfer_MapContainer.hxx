@@ -19,11 +19,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_DataMapOfTransientTransient.hxx>
 #include <Standard_Transient.hxx>
-
-class Transfer_MapContainer;
-DEFINE_STANDARD_HANDLE(Transfer_MapContainer, Standard_Transient)
+#include <NCollection_DataMap.hxx>
+#include <Standard_Transient.hxx>
 
 class Transfer_MapContainer : public Standard_Transient
 {
@@ -32,16 +30,15 @@ public:
   Standard_EXPORT Transfer_MapContainer();
 
   //! Set map already translated geometry objects.
-  Standard_EXPORT void SetMapObjects(TColStd_DataMapOfTransientTransient& theMapObjects);
+  Standard_EXPORT void SetMapObjects(NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& theMapObjects);
 
   //! Get map already translated geometry objects.
-  Standard_EXPORT TColStd_DataMapOfTransientTransient& GetMapObjects();
+  Standard_EXPORT NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& GetMapObjects();
 
   DEFINE_STANDARD_RTTIEXT(Transfer_MapContainer, Standard_Transient)
 
-protected:
 private:
-  TColStd_DataMapOfTransientTransient myMapObj;
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMapObj;
 };
 
 #endif // _Transfer_MapContainer_HeaderFile

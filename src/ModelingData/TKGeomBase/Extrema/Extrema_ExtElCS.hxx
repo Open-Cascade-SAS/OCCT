@@ -114,31 +114,30 @@ public:
   Standard_EXPORT void Perform(const gp_Hypr& C, const gp_Pln& S);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if the curve is on a parallel surface.
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  Standard_EXPORT bool IsParallel() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N = 1) const;
+  Standard_EXPORT double SquareDistance(const int N = 1) const;
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the curve, P2 on the surface.
-  Standard_EXPORT void Points(const Standard_Integer N,
+  Standard_EXPORT void Points(const int N,
                               Extrema_POnCurv&       P1,
                               Extrema_POnSurf&       P2) const;
 
-protected:
 private:
-  Standard_Boolean                 myDone;
-  Standard_Integer                 myNbExt;
-  Standard_Boolean                 myIsPar;
-  Handle(TColStd_HArray1OfReal)    mySqDist;
-  Handle(Extrema_HArray1OfPOnCurv) myPoint1;
-  Handle(Extrema_HArray1OfPOnSurf) myPoint2;
+  bool                 myDone;
+  int                 myNbExt;
+  bool                 myIsPar;
+  occ::handle<TColStd_HArray1OfReal>    mySqDist;
+  occ::handle<Extrema_HArray1OfPOnCurv> myPoint1;
+  occ::handle<Extrema_HArray1OfPOnSurf> myPoint2;
 };
 
 #endif // _Extrema_ExtElCS_HeaderFile

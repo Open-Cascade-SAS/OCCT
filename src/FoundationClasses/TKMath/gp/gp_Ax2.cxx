@@ -31,12 +31,12 @@
 gp_Ax2::gp_Ax2(const gp_Pnt& P, const gp_Dir& V)
     : axis(P, V)
 {
-  const Standard_Real A    = V.X();
-  const Standard_Real B    = V.Y();
-  const Standard_Real C    = V.Z();
-  const Standard_Real Aabs = std::abs(A);
-  const Standard_Real Babs = std::abs(B);
-  const Standard_Real Cabs = std::abs(C);
+  const double A    = V.X();
+  const double B    = V.Y();
+  const double C    = V.Z();
+  const double Aabs = std::abs(A);
+  const double Babs = std::abs(B);
+  const double Cabs = std::abs(C);
   gp_Dir              D;
 
   //  pour determiner l axe X :
@@ -118,7 +118,7 @@ gp_Ax2 gp_Ax2::Mirrored(const gp_Ax2& A2) const
   return Temp;
 }
 
-void gp_Ax2::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void gp_Ax2::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_VECTOR_CLASS(theOStream,
                          "Location",
                          3,
@@ -134,10 +134,10 @@ void gp_Ax2::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
     OCCT_DUMP_VECTOR_CLASS(theOStream, "XDirection", 3, vxdir.X(), vxdir.Y(), vxdir.Z())
       OCCT_DUMP_VECTOR_CLASS(theOStream, "YDirection", 3, vydir.X(), vydir.Y(), vydir.Z())}
 
-Standard_Boolean gp_Ax2::InitFromJson(const Standard_SStream& theSStream,
-                                      Standard_Integer&       theStreamPos)
+bool gp_Ax2::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
-  Standard_Integer        aPos       = theStreamPos;
+  int        aPos       = theStreamPos;
   TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
   gp_XYZ anXYZLoc;
@@ -180,8 +180,8 @@ Standard_Boolean gp_Ax2::InitFromJson(const Standard_SStream& theSStream,
   vydir = gp_Dir(anYDir);
 
   if (!Direction().IsEqual(aDir, Precision::Confusion()))
-    return Standard_False;
+    return false;
 
   theStreamPos = aPos;
-  return Standard_True;
+  return true;
 }

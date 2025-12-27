@@ -28,9 +28,6 @@
 
 class TCollection_HAsciiString;
 
-class StepGeom_CartesianPoint;
-DEFINE_STANDARD_HANDLE(StepGeom_CartesianPoint, StepGeom_Point)
-
 class StepGeom_CartesianPoint : public StepGeom_Point
 {
 
@@ -38,35 +35,35 @@ public:
   //! Returns a CartesianPoint
   Standard_EXPORT StepGeom_CartesianPoint();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Handle(TColStd_HArray1OfReal)&    theCoordinates);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<TColStd_HArray1OfReal>&    theCoordinates);
 
-  Standard_EXPORT void Init2D(const Handle(TCollection_HAsciiString)& theName,
-                              const Standard_Real                     theX,
-                              const Standard_Real                     theY);
+  Standard_EXPORT void Init2D(const occ::handle<TCollection_HAsciiString>& theName,
+                              const double                     theX,
+                              const double                     theY);
 
-  Standard_EXPORT void Init3D(const Handle(TCollection_HAsciiString)& theName,
-                              const Standard_Real                     theX,
-                              const Standard_Real                     theY,
-                              const Standard_Real                     theZ);
+  Standard_EXPORT void Init3D(const occ::handle<TCollection_HAsciiString>& theName,
+                              const double                     theX,
+                              const double                     theY,
+                              const double                     theZ);
 
-  Standard_EXPORT void SetCoordinates(const Handle(TColStd_HArray1OfReal)& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const occ::handle<TColStd_HArray1OfReal>& theCoordinates);
 
-  Standard_EXPORT void SetCoordinates(const std::array<Standard_Real, 3>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const std::array<double, 3>& theCoordinates);
 
-  Standard_EXPORT const std::array<Standard_Real, 3>& Coordinates() const;
+  Standard_EXPORT const std::array<double, 3>& Coordinates() const;
 
-  Standard_EXPORT Standard_Real CoordinatesValue(const Standard_Integer theInd) const;
+  Standard_EXPORT double CoordinatesValue(const int theInd) const;
 
-  Standard_EXPORT void SetNbCoordinates(const Standard_Integer theSize);
+  Standard_EXPORT void SetNbCoordinates(const int theSize);
 
-  Standard_EXPORT Standard_Integer NbCoordinates() const;
+  Standard_EXPORT int NbCoordinates() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianPoint, StepGeom_Point)
 
 private:
-  Standard_Integer             myNbCoord;
-  std::array<Standard_Real, 3> myCoords;
+  int             myNbCoord;
+  std::array<double, 3> myCoords;
 };
 
 #endif // _StepGeom_CartesianPoint_HeaderFile

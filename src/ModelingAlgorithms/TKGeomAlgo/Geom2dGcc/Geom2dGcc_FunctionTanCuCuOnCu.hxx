@@ -40,62 +40,62 @@ public:
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Circ2d&           OnCi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Circ2d&           OnCi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Circ2d&           OnCi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const gp_Pnt2d&            P2,
                                                 const gp_Circ2d&           OnCi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Lin2d&            OnLi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Lin2d&            OnLi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const gp_Lin2d&            OnLi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const gp_Pnt2d&            P2,
                                                 const gp_Lin2d&            OnLi,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const Geom2dAdaptor_Curve& OnCu,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const Geom2dAdaptor_Curve& OnCu,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&            L1,
                                                 const Geom2dAdaptor_Curve& C2,
                                                 const Geom2dAdaptor_Curve& OnCu,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1,
                                                 const gp_Pnt2d&            P1,
                                                 const Geom2dAdaptor_Curve& OnCu,
-                                                const Standard_Real        Rad);
+                                                const double        Rad);
 
   Standard_EXPORT void InitDerivative(const math_Vector& X,
                                       gp_Pnt2d&          Point1,
@@ -109,22 +109,21 @@ public:
                                       gp_Vec2d&          D23);
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! Returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! Computes the values of the Functions for the variable <X>.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! Returns the values of the derivatives for the variable <X>.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
   //! Returns the values of the functions and the derivatives
   //! for the variable <X>.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
-protected:
 private:
   Geom2dAdaptor_Curve Curv1;
   Geom2dAdaptor_Curve Curv2;
@@ -134,7 +133,7 @@ private:
   gp_Circ2d           Circon;
   gp_Lin2d            Linon;
   Geom2dAdaptor_Curve Curvon;
-  Standard_Real       FirstRad;
+  double       FirstRad;
   Geom2dGcc_Type2     TheType;
 };
 

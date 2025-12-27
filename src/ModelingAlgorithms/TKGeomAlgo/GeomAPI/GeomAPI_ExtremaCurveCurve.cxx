@@ -26,10 +26,10 @@
 //=================================================================================================
 
 GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve()
-    : myIsDone(Standard_False),
+    : myIsDone(false),
       myIndex(0),
-      myTotalExt(Standard_False),
-      myIsInfinite(Standard_False),
+      myTotalExt(false),
+      myIsInfinite(false),
       myTotalDist(0.0)
 {
   memset(myTotalPars, 0, sizeof(myTotalPars));
@@ -37,32 +37,32 @@ GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve()
 
 //=================================================================================================
 
-GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1,
-                                                     const Handle(Geom_Curve)& C2)
+GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curve>& C1,
+                                                     const occ::handle<Geom_Curve>& C2)
 {
   Init(C1, C2);
 }
 
 //=================================================================================================
 
-GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const Handle(Geom_Curve)& C1,
-                                                     const Handle(Geom_Curve)& C2,
-                                                     const Standard_Real       U1min,
-                                                     const Standard_Real       U1max,
-                                                     const Standard_Real       U2min,
-                                                     const Standard_Real       U2max)
+GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve(const occ::handle<Geom_Curve>& C1,
+                                                     const occ::handle<Geom_Curve>& C2,
+                                                     const double       U1min,
+                                                     const double       U1max,
+                                                     const double       U2min,
+                                                     const double       U2max)
 {
   Init(C1, C2, U1min, U1max, U2min, U2max);
 }
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2)
+void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1, const occ::handle<Geom_Curve>& C2)
 {
 
-  myTotalExt = Standard_False;
+  myTotalExt = false;
 
-  constexpr Standard_Real Tol = Precision::PConfusion();
+  constexpr double Tol = Precision::PConfusion();
   myC1.Load(C1);
   myC2.Load(C2);
 
@@ -75,10 +75,10 @@ void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1, const Handle(
 
     // evaluate the lower distance and its index;
 
-    Standard_Real Dist2, Dist2Min = myExtCC.SquareDistance(1);
+    double Dist2, Dist2Min = myExtCC.SquareDistance(1);
     myIndex = 1;
 
-    for (Standard_Integer i = 2; i <= myExtCC.NbExt(); i++)
+    for (int i = 2; i <= myExtCC.NbExt(); i++)
     {
       Dist2 = myExtCC.SquareDistance(i);
       if (Dist2 < Dist2Min)
@@ -92,17 +92,17 @@ void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1, const Handle(
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1,
-                                     const Handle(Geom_Curve)& C2,
-                                     const Standard_Real       U1min,
-                                     const Standard_Real       U1max,
-                                     const Standard_Real       U2min,
-                                     const Standard_Real       U2max)
+void GeomAPI_ExtremaCurveCurve::Init(const occ::handle<Geom_Curve>& C1,
+                                     const occ::handle<Geom_Curve>& C2,
+                                     const double       U1min,
+                                     const double       U1max,
+                                     const double       U2min,
+                                     const double       U2max)
 {
 
-  myTotalExt = Standard_False;
+  myTotalExt = false;
 
-  constexpr Standard_Real Tol = Precision::PConfusion();
+  constexpr double Tol = Precision::PConfusion();
   myC1.Load(C1);
   myC2.Load(C2);
 
@@ -116,10 +116,10 @@ void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1,
 
     // evaluate the lower distance and its index;
 
-    Standard_Real Dist2, Dist2Min = myExtCC.SquareDistance(1);
+    double Dist2, Dist2Min = myExtCC.SquareDistance(1);
     myIndex = 1;
 
-    for (Standard_Integer i = 2; i <= myExtCC.NbExt(); i++)
+    for (int i = 2; i <= myExtCC.NbExt(); i++)
     {
       Dist2 = myExtCC.SquareDistance(i);
       if (Dist2 < Dist2Min)
@@ -133,7 +133,7 @@ void GeomAPI_ExtremaCurveCurve::Init(const Handle(Geom_Curve)& C1,
 
 //=================================================================================================
 
-Standard_Integer GeomAPI_ExtremaCurveCurve::NbExtrema() const
+int GeomAPI_ExtremaCurveCurve::NbExtrema() const
 {
   if (myIsDone)
     return myExtCC.NbExt();
@@ -143,7 +143,7 @@ Standard_Integer GeomAPI_ExtremaCurveCurve::NbExtrema() const
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Points(const Standard_Integer Index, gp_Pnt& P1, gp_Pnt& P2) const
+void GeomAPI_ExtremaCurveCurve::Points(const int Index, gp_Pnt& P1, gp_Pnt& P2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Points");
@@ -157,9 +157,9 @@ void GeomAPI_ExtremaCurveCurve::Points(const Standard_Integer Index, gp_Pnt& P1,
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::Parameters(const Standard_Integer Index,
-                                           Standard_Real&         U1,
-                                           Standard_Real&         U2) const
+void GeomAPI_ExtremaCurveCurve::Parameters(const int Index,
+                                           double&         U1,
+                                           double&         U2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Parameters");
@@ -173,7 +173,7 @@ void GeomAPI_ExtremaCurveCurve::Parameters(const Standard_Integer Index,
 
 //=================================================================================================
 
-Standard_Real GeomAPI_ExtremaCurveCurve::Distance(const Standard_Integer Index) const
+double GeomAPI_ExtremaCurveCurve::Distance(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Distance");
@@ -192,7 +192,7 @@ void GeomAPI_ExtremaCurveCurve::NearestPoints(gp_Pnt& P1, gp_Pnt& P2) const
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveCurve::LowerDistanceParameters(Standard_Real& U1, Standard_Real& U2) const
+void GeomAPI_ExtremaCurveCurve::LowerDistanceParameters(double& U1, double& U2) const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveCurve::LowerDistanceParameters");
 
@@ -201,7 +201,7 @@ void GeomAPI_ExtremaCurveCurve::LowerDistanceParameters(Standard_Real& U1, Stand
 
 //=================================================================================================
 
-Standard_Real GeomAPI_ExtremaCurveCurve::LowerDistance() const
+double GeomAPI_ExtremaCurveCurve::LowerDistance() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveCurve::LowerDistance");
 
@@ -210,63 +210,63 @@ Standard_Real GeomAPI_ExtremaCurveCurve::LowerDistance() const
 
 //=================================================================================================
 
-GeomAPI_ExtremaCurveCurve::operator Standard_Real() const
+GeomAPI_ExtremaCurveCurve::operator double() const
 {
   return LowerDistance();
 }
 
 //=================================================================================================
 
-GeomAPI_ExtremaCurveCurve::operator Standard_Integer() const
+GeomAPI_ExtremaCurveCurve::operator int() const
 {
   return myExtCC.NbExt();
 }
 
-Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2)
+bool GeomAPI_ExtremaCurveCurve::TotalNearestPoints(gp_Pnt& P1, gp_Pnt& P2)
 {
 
   if (!myTotalExt)
   {
 
     TotalPerform();
-    myTotalExt = Standard_True;
+    myTotalExt = true;
   }
 
   if (myIsInfinite)
-    return Standard_False;
+    return false;
 
   P1 = myTotalPoints[0];
   P2 = myTotalPoints[1];
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(Standard_Real& U1,
-                                                                         Standard_Real& U2)
+bool GeomAPI_ExtremaCurveCurve::TotalLowerDistanceParameters(double& U1,
+                                                                         double& U2)
 {
   if (!myTotalExt)
   {
 
     TotalPerform();
-    myTotalExt = Standard_True;
+    myTotalExt = true;
   }
 
   if (myIsInfinite)
-    return Standard_False;
+    return false;
 
   U1 = myTotalPars[0];
   U2 = myTotalPars[1];
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Real GeomAPI_ExtremaCurveCurve::TotalLowerDistance()
+double GeomAPI_ExtremaCurveCurve::TotalLowerDistance()
 {
   if (!myTotalExt)
   {
 
     TotalPerform();
-    myTotalExt = Standard_True;
+    myTotalExt = true;
   }
 
   return myTotalDist;
@@ -278,20 +278,20 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
   //  StdFail_NotDone_Raise_if
   //    (!myExtCC.IsDone(), "GeomAPI_ExtremaCurveCurve::TotalPerform");
 
-  Standard_Real u11 = myC1.FirstParameter();
-  Standard_Real u12 = myC1.LastParameter();
-  Standard_Real u21 = myC2.FirstParameter();
-  Standard_Real u22 = myC2.LastParameter();
+  double u11 = myC1.FirstParameter();
+  double u12 = myC1.LastParameter();
+  double u21 = myC2.FirstParameter();
+  double u22 = myC2.LastParameter();
 
-  Standard_Boolean infinite = Precision::IsInfinite(u11) && Precision::IsInfinite(u12)
+  bool infinite = Precision::IsInfinite(u11) && Precision::IsInfinite(u12)
                               && Precision::IsInfinite(u21) && Precision::IsInfinite(u22);
 
-  myIsInfinite = Standard_False;
+  myIsInfinite = false;
 
   if (infinite && myExtCC.IsParallel())
   {
 
-    myIsInfinite = Standard_True;
+    myIsInfinite = true;
 
     // calculate distance between any suitable point on C1 and C2
 
@@ -316,10 +316,10 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
   }
 
   gp_Pnt        P11, P12, P21, P22;
-  Standard_Real d11, d12, d21, d22;
+  double d11, d12, d21, d22;
   myExtCC.TrimmedSquareDistances(d11, d12, d21, d22, P11, P12, P21, P22);
 
-  Standard_Real aTotalDist2 = myTotalDist * myTotalDist;
+  double aTotalDist2 = myTotalDist * myTotalDist;
   if (aTotalDist2 > d11)
   {
     myTotalDist      = sqrt(d11);
@@ -377,7 +377,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     if (proj.NbPoints() > 0)
     {
 
-      Standard_Real dmin = proj.LowerDistance();
+      double dmin = proj.LowerDistance();
       if (myTotalDist > dmin)
       {
         myTotalDist      = dmin;
@@ -399,7 +399,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     if (proj.NbPoints() > 0)
     {
 
-      Standard_Real dmin = proj.LowerDistance();
+      double dmin = proj.LowerDistance();
       if (myTotalDist > dmin)
       {
         myTotalDist      = dmin;
@@ -421,7 +421,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     if (proj.NbPoints() > 0)
     {
 
-      Standard_Real dmin = proj.LowerDistance();
+      double dmin = proj.LowerDistance();
       if (myTotalDist > dmin)
       {
         myTotalDist      = dmin;
@@ -443,7 +443,7 @@ void GeomAPI_ExtremaCurveCurve::TotalPerform()
     if (proj.NbPoints() > 0)
     {
 
-      Standard_Real dmin = proj.LowerDistance();
+      double dmin = proj.LowerDistance();
       if (myTotalDist > dmin)
       {
         myTotalDist      = dmin;

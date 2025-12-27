@@ -11,10 +11,7 @@ set(OCCT_ShapeExtend_FILES
   ShapeExtend_ComplexCurve.lxx
   ShapeExtend_CompositeSurface.cxx
   ShapeExtend_CompositeSurface.hxx
-  ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg.hxx
-  ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg.hxx
-  ShapeExtend_DataMapOfShapeListOfMsg.hxx
-  ShapeExtend_DataMapOfTransientListOfMsg.hxx
+
   ShapeExtend_Explorer.cxx
   ShapeExtend_Explorer.hxx
   ShapeExtend_MsgRegistrator.cxx

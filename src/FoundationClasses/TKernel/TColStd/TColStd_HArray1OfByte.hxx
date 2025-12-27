@@ -15,9 +15,9 @@
 #ifndef TColStd_HArray1OfByte_HeaderFile
 #define TColStd_HArray1OfByte_HeaderFile
 
-#include <TColStd_Array1OfByte.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColStd_HArray1OfByte, TColStd_Array1OfByte)
+DEFINE_HARRAY1(TColStd_HArray1OfByte, NCollection_Array1<uint8_t>)
 
 #endif

@@ -30,10 +30,10 @@ RWStepRepr_RWConfigurationDesign::RWStepRepr_RWConfigurationDesign() {}
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationDesign::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepRepr_ConfigurationDesign)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepRepr_ConfigurationDesign>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "configuration_design"))
@@ -41,7 +41,7 @@ void RWStepRepr_RWConfigurationDesign::ReadStep(
 
   // Own fields of ConfigurationDesign
 
-  Handle(StepRepr_ConfigurationItem) aConfiguration;
+  occ::handle<StepRepr_ConfigurationItem> aConfiguration;
   data->ReadEntity(num,
                    1,
                    "configuration",
@@ -60,7 +60,7 @@ void RWStepRepr_RWConfigurationDesign::ReadStep(
 
 void RWStepRepr_RWConfigurationDesign::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepRepr_ConfigurationDesign)& ent) const
+  const occ::handle<StepRepr_ConfigurationDesign>& ent) const
 {
 
   // Own fields of ConfigurationDesign
@@ -72,7 +72,7 @@ void RWStepRepr_RWConfigurationDesign::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWConfigurationDesign::Share(const Handle(StepRepr_ConfigurationDesign)& ent,
+void RWStepRepr_RWConfigurationDesign::Share(const occ::handle<StepRepr_ConfigurationDesign>& ent,
                                              Interface_EntityIterator&                   iter) const
 {
 

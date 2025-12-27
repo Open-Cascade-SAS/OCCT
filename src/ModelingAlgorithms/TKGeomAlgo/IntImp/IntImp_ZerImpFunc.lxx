@@ -16,25 +16,25 @@
 
 inline void IntImp_ZerImpFunc::Set(const ThePSurface& PS)
 {
-  surf = (Standard_Address)(&PS);
+  surf = (void*)(&PS);
 }
 
 inline void IntImp_ZerImpFunc::SetImplicitSurface(const TheISurface& IS)
 {
-  func = (Standard_Address)(&IS);
+  func = (void*)(&IS);
 }
 
-inline void IntImp_ZerImpFunc::Set(const Standard_Real Tol)
+inline void IntImp_ZerImpFunc::Set(const double Tol)
 {
   tol = Tol;
 }
 
-inline Standard_Real IntImp_ZerImpFunc::Root() const
+inline double IntImp_ZerImpFunc::Root() const
 {
   return valf;
 }
 
-inline Standard_Real IntImp_ZerImpFunc::Tolerance() const
+inline double IntImp_ZerImpFunc::Tolerance() const
 {
   return tol;
 }

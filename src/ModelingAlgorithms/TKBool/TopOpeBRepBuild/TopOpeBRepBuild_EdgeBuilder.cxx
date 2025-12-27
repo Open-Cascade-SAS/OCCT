@@ -26,7 +26,7 @@ TopOpeBRepBuild_EdgeBuilder::TopOpeBRepBuild_EdgeBuilder() {}
 
 TopOpeBRepBuild_EdgeBuilder::TopOpeBRepBuild_EdgeBuilder(TopOpeBRepBuild_PaveSet&        LS,
                                                          TopOpeBRepBuild_PaveClassifier& LC,
-                                                         const Standard_Boolean          ForceClass)
+                                                         const bool          ForceClass)
 {
   InitEdgeBuilder(LS, LC, ForceClass);
 }
@@ -35,7 +35,7 @@ TopOpeBRepBuild_EdgeBuilder::TopOpeBRepBuild_EdgeBuilder(TopOpeBRepBuild_PaveSet
 
 void TopOpeBRepBuild_EdgeBuilder::InitEdgeBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                   TopOpeBRepBuild_LoopClassifier& LC,
-                                                  const Standard_Boolean          ForceClass)
+                                                  const bool          ForceClass)
 {
   InitAreaBuilder(LS, LC, ForceClass);
 }
@@ -49,9 +49,9 @@ void TopOpeBRepBuild_EdgeBuilder::InitEdge()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_EdgeBuilder::MoreEdge() const
+bool TopOpeBRepBuild_EdgeBuilder::MoreEdge() const
 {
-  Standard_Boolean b = MoreArea();
+  bool b = MoreArea();
   return b;
 }
 
@@ -71,9 +71,9 @@ void TopOpeBRepBuild_EdgeBuilder::InitVertex()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_EdgeBuilder::MoreVertex() const
+bool TopOpeBRepBuild_EdgeBuilder::MoreVertex() const
 {
-  Standard_Boolean b = MoreLoop();
+  bool b = MoreLoop();
   return b;
 }
 
@@ -88,18 +88,18 @@ void TopOpeBRepBuild_EdgeBuilder::NextVertex()
 
 const TopoDS_Shape& TopOpeBRepBuild_EdgeBuilder::Vertex() const
 {
-  const Handle(TopOpeBRepBuild_Loop)& L = Loop();
-  Handle(TopOpeBRepBuild_Pave)        PV(Handle(TopOpeBRepBuild_Pave)::DownCast(L));
+  const occ::handle<TopOpeBRepBuild_Loop>& L = Loop();
+  occ::handle<TopOpeBRepBuild_Pave>        PV(occ::down_cast<TopOpeBRepBuild_Pave>(L));
   const TopoDS_Shape&                 V = PV->Vertex();
   return V;
 }
 
 //=================================================================================================
 
-Standard_Real TopOpeBRepBuild_EdgeBuilder::Parameter() const
+double TopOpeBRepBuild_EdgeBuilder::Parameter() const
 {
-  const Handle(TopOpeBRepBuild_Loop)& L = Loop();
-  Handle(TopOpeBRepBuild_Pave)        PV(Handle(TopOpeBRepBuild_Pave)::DownCast(L));
-  Standard_Real                       parV = PV->Parameter();
+  const occ::handle<TopOpeBRepBuild_Loop>& L = Loop();
+  occ::handle<TopOpeBRepBuild_Pave>        PV(occ::down_cast<TopOpeBRepBuild_Pave>(L));
+  double                       parV = PV->Parameter();
   return parV;
 }

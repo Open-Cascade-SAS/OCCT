@@ -14,10 +14,11 @@
 #ifndef StepElement_HSequenceOfSurfaceElementPurposeMember_HeaderFile
 #define StepElement_HSequenceOfSurfaceElementPurposeMember_HeaderFile
 
-#include <StepElement_SequenceOfSurfaceElementPurposeMember.hxx>
+#include <StepElement_SurfaceElementPurposeMember.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepElement_HSequenceOfSurfaceElementPurposeMember,
-                 StepElement_SequenceOfSurfaceElementPurposeMember)
+                 NCollection_Sequence<occ::handle<StepElement_SurfaceElementPurposeMember>>)
 
 #endif

@@ -20,30 +20,30 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_Alert, Standard_Transient)
 
 //=================================================================================================
 
-Standard_CString Message_Alert::GetMessageKey() const
+const char* Message_Alert::GetMessageKey() const
 {
   return DynamicType()->Name();
 }
 
 //=================================================================================================
 
-Standard_Boolean Message_Alert::SupportsMerge() const
+bool Message_Alert::SupportsMerge() const
 {
   // by default, support merge
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message_Alert::Merge(const Handle(Message_Alert)& /*theTarget*/)
+bool Message_Alert::Merge(const occ::handle<Message_Alert>& /*theTarget*/)
 {
   // by default, merge trivially
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Message_Alert::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Message_Alert::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

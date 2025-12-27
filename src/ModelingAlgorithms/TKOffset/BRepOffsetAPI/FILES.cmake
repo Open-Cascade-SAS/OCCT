@@ -26,8 +26,7 @@ set(OCCT_BRepOffsetAPI_FILES
   BRepOffsetAPI_MiddlePath.hxx
   BRepOffsetAPI_NormalProjection.cxx
   BRepOffsetAPI_NormalProjection.hxx
-  BRepOffsetAPI_SequenceOfSequenceOfReal.hxx
-  BRepOffsetAPI_SequenceOfSequenceOfShape.hxx
+
   BRepOffsetAPI_Sewing.hxx
   BRepOffsetAPI_ThruSections.cxx
   BRepOffsetAPI_ThruSections.hxx

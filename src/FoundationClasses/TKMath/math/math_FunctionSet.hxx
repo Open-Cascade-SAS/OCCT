@@ -31,16 +31,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of variables of the function.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
+  Standard_EXPORT virtual int NbVariables() const = 0;
 
   //! Returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const = 0;
+  Standard_EXPORT virtual int NbEquations() const = 0;
 
   //! Computes the values <F> of the functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, math_Vector& F) = 0;
+  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) = 0;
 
   //! Returns the state of the function corresponding to the
   //! latestcall of any methods associated with the function.
@@ -56,11 +56,9 @@ public:
   //! responsibility of the programmer to decide if he needs
   //! to save the current state of the function and to return
   //! an Integer that allows retrieval of the state.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber();
+  Standard_EXPORT virtual int GetStateNumber();
   Standard_EXPORT virtual ~math_FunctionSet();
 
-protected:
-private:
 };
 
 #endif // _math_FunctionSet_HeaderFile

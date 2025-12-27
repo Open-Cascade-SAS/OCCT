@@ -32,8 +32,8 @@
 //==============================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
                                            const gp_Pnt2d&     Point2,
-                                           const Standard_Real Radius,
-                                           const Standard_Real Tolerance)
+                                           const double Radius,
+                                           const double Tolerance)
     : qualifier1(1, 2),
       qualifier2(1, 2),
       TheSame1(1, 2),
@@ -48,9 +48,9 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol = std::abs(Tolerance);
+  double Tol = std::abs(Tolerance);
   NbrSol            = 0;
-  WellDone          = Standard_False;
+  WellDone          = false;
   if (Radius < 0.0)
   {
     throw Standard_NegativeValue();
@@ -59,13 +59,13 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
   {
     if (Point1.Distance(Point2) - Radius * 2.0 > Tol)
     {
-      WellDone = Standard_True;
+      WellDone = true;
     }
     else
     {
       if (Point1.Distance(Point2) - Radius * 2.0 > 0.0)
       {
-        WellDone = Standard_True;
+        WellDone = true;
         NbrSol   = 1;
         gp_Ax2d axe(gp_Pnt2d(0.5 * (Point1.XY() + Point2.XY())), dirx);
         cirsol(1) = gp_Circ2d(axe, Radius);
@@ -86,7 +86,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
         {
           if (!Intp.IsEmpty())
           {
-            for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+            for (int i = 1; i <= Intp.NbPoints(); i++)
             {
               NbrSol++;
               gp_Pnt2d Center(Intp.Point(i).Value());
@@ -100,12 +100,12 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
               pnttg2sol(NbrSol)  = Point2;
             }
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }
   }
-  for (Standard_Integer i = 1; i <= NbrSol; i++)
+  for (int i = 1; i <= NbrSol; i++)
   {
     pararg1(i) = 0.;
     pararg2(i) = 0.;

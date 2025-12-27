@@ -31,9 +31,6 @@ class CDM_Application;
 class Message_Messenger;
 class XmlMDF_ADriver;
 
-class XmlLDrivers_DocumentRetrievalDriver;
-DEFINE_STANDARD_HANDLE(XmlLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
-
 class XmlLDrivers_DocumentRetrievalDriver : public PCDM_RetrievalDriver
 {
 
@@ -42,48 +39,47 @@ public:
 
   Standard_EXPORT virtual void Read(
     const TCollection_ExtendedString& theFileName,
-    const Handle(CDM_Document)&       theNewDocument,
-    const Handle(CDM_Application)&    theApplication,
-    const Handle(PCDM_ReaderFilter)&  theFilter = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&      theRange  = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<CDM_Document>&       theNewDocument,
+    const occ::handle<CDM_Application>&    theApplication,
+    const occ::handle<PCDM_ReaderFilter>&  theFilter = occ::handle<PCDM_ReaderFilter>(),
+    const Message_ProgressRange&      theRange  = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void Read(
     Standard_IStream&                theIStream,
-    const Handle(Storage_Data)&      theStorageData,
-    const Handle(CDM_Document)&      theDoc,
-    const Handle(CDM_Application)&   theApplication,
-    const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
-    const Message_ProgressRange&     theRange  = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<Storage_Data>&      theStorageData,
+    const occ::handle<CDM_Document>&      theDoc,
+    const occ::handle<CDM_Application>&   theApplication,
+    const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
+    const Message_ProgressRange&     theRange  = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver);
 
   DEFINE_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 
 protected:
   Standard_EXPORT virtual void ReadFromDomDocument(
     const XmlObjMgt_Element&       theDomElement,
-    const Handle(CDM_Document)&    theNewDocument,
-    const Handle(CDM_Application)& theApplication,
+    const occ::handle<CDM_Document>&    theNewDocument,
+    const occ::handle<CDM_Application>& theApplication,
     const Message_ProgressRange&   theRange = Message_ProgressRange());
 
-  Standard_EXPORT virtual Standard_Boolean MakeDocument(
+  Standard_EXPORT virtual bool MakeDocument(
     const XmlObjMgt_Element&     thePDoc,
-    const Handle(CDM_Document)&  theTDoc,
+    const occ::handle<CDM_Document>&  theTDoc,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection(
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriver> ReadShapeSection(
     const XmlObjMgt_Element&         thePDoc,
-    const Handle(Message_Messenger)& theMsgDriver,
+    const occ::handle<Message_Messenger>& theMsgDriver,
     const Message_ProgressRange&     theRange = Message_ProgressRange());
 
-  Standard_EXPORT virtual void ShapeSetCleaning(const Handle(XmlMDF_ADriver)& theDriver);
+  Standard_EXPORT virtual void ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver);
 
-  Handle(XmlMDF_ADriverTable) myDrivers;
+  occ::handle<XmlMDF_ADriverTable> myDrivers;
   XmlObjMgt_RRelocationTable  myRelocTable;
   TCollection_ExtendedString  myFileName;
 
-private:
 };
 
 #endif // _XmlLDrivers_DocumentRetrievalDriver_HeaderFile

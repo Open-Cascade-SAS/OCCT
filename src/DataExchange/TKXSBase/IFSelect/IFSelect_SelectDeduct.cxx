@@ -21,29 +21,29 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectDeduct, IFSelect_Selection)
 
-void IFSelect_SelectDeduct::SetInput(const Handle(IFSelect_Selection)& sel)
+void IFSelect_SelectDeduct::SetInput(const occ::handle<IFSelect_Selection>& sel)
 {
   thesel = sel;
 }
 
-Handle(IFSelect_Selection) IFSelect_SelectDeduct::Input() const
+occ::handle<IFSelect_Selection> IFSelect_SelectDeduct::Input() const
 {
   return thesel;
 }
 
-Standard_Boolean IFSelect_SelectDeduct::HasInput() const
+bool IFSelect_SelectDeduct::HasInput() const
 {
   return (!thesel.IsNull());
 }
 
-Standard_Boolean IFSelect_SelectDeduct::HasAlternate() const
+bool IFSelect_SelectDeduct::HasAlternate() const
 {
   if (!thealt.IsNull())
     return thealt->IsSet();
-  return Standard_False;
+  return false;
 }
 
-Handle(IFSelect_SelectPointed)& IFSelect_SelectDeduct::Alternate()
+occ::handle<IFSelect_SelectPointed>& IFSelect_SelectDeduct::Alternate()
 {
   if (thealt.IsNull())
     thealt = new IFSelect_SelectPointed;

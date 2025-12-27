@@ -35,25 +35,24 @@ public:
   //! Creates a Sphere at origin with Radius. The axes
   //! of the sphere are the reference axes. An error is
   //! raised if the radius is < Resolution.
-  Standard_EXPORT BRepPrim_Sphere(const Standard_Real Radius);
+  Standard_EXPORT BRepPrim_Sphere(const double Radius);
 
   //! Creates a Sphere with Center and Radius.
   //! Axes are the reference axes.
   //! This is the STEP constructor.
-  Standard_EXPORT BRepPrim_Sphere(const gp_Pnt& Center, const Standard_Real Radius);
+  Standard_EXPORT BRepPrim_Sphere(const gp_Pnt& Center, const double Radius);
 
   //! Creates a sphere with given axes system.
-  Standard_EXPORT BRepPrim_Sphere(const gp_Ax2& Axes, const Standard_Real Radius);
+  Standard_EXPORT BRepPrim_Sphere(const gp_Ax2& Axes, const double Radius);
 
   //! The surface normal should be directed towards the
   //! outside.
-  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const override;
 
-protected:
 private:
   Standard_EXPORT void SetMeridian();
 
-  Standard_Real myRadius;
+  double myRadius;
 };
 
 #endif // _BRepPrim_Sphere_HeaderFile

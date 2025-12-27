@@ -36,13 +36,13 @@ MAT2d_Connexion::MAT2d_Connexion()
 
 //=================================================================================================
 
-MAT2d_Connexion::MAT2d_Connexion(const Standard_Integer LineA,
-                                 const Standard_Integer LineB,
-                                 const Standard_Integer ItemA,
-                                 const Standard_Integer ItemB,
-                                 const Standard_Real    Distance,
-                                 const Standard_Real    ParameterOnA,
-                                 const Standard_Real    ParameterOnB,
+MAT2d_Connexion::MAT2d_Connexion(const int LineA,
+                                 const int LineB,
+                                 const int ItemA,
+                                 const int ItemB,
+                                 const double    Distance,
+                                 const double    ParameterOnA,
+                                 const double    ParameterOnB,
                                  const gp_Pnt2d&        PointA,
                                  const gp_Pnt2d&        PointB)
     : lineA(LineA),
@@ -59,42 +59,42 @@ MAT2d_Connexion::MAT2d_Connexion(const Standard_Integer LineA,
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Connexion::IndexFirstLine() const
+int MAT2d_Connexion::IndexFirstLine() const
 {
   return lineA;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Connexion::IndexSecondLine() const
+int MAT2d_Connexion::IndexSecondLine() const
 {
   return lineB;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Connexion::IndexItemOnFirst() const
+int MAT2d_Connexion::IndexItemOnFirst() const
 {
   return itemA;
 }
 
 //=================================================================================================
 
-Standard_Integer MAT2d_Connexion::IndexItemOnSecond() const
+int MAT2d_Connexion::IndexItemOnSecond() const
 {
   return itemB;
 }
 
 //=================================================================================================
 
-Standard_Real MAT2d_Connexion::ParameterOnFirst() const
+double MAT2d_Connexion::ParameterOnFirst() const
 {
   return parameterOnA;
 }
 
 //=================================================================================================
 
-Standard_Real MAT2d_Connexion::ParameterOnSecond() const
+double MAT2d_Connexion::ParameterOnSecond() const
 {
   return parameterOnB;
 }
@@ -115,49 +115,49 @@ gp_Pnt2d MAT2d_Connexion::PointOnSecond() const
 
 //=================================================================================================
 
-Standard_Real MAT2d_Connexion::Distance() const
+double MAT2d_Connexion::Distance() const
 {
   return distance;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::IndexFirstLine(const Standard_Integer anIndex)
+void MAT2d_Connexion::IndexFirstLine(const int anIndex)
 {
   lineA = anIndex;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::IndexSecondLine(const Standard_Integer anIndex)
+void MAT2d_Connexion::IndexSecondLine(const int anIndex)
 {
   lineB = anIndex;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::IndexItemOnFirst(const Standard_Integer anIndex)
+void MAT2d_Connexion::IndexItemOnFirst(const int anIndex)
 {
   itemA = anIndex;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::IndexItemOnSecond(const Standard_Integer anIndex)
+void MAT2d_Connexion::IndexItemOnSecond(const int anIndex)
 {
   itemB = anIndex;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::ParameterOnFirst(const Standard_Real aParameter)
+void MAT2d_Connexion::ParameterOnFirst(const double aParameter)
 {
   parameterOnA = aParameter;
 }
 
 //=================================================================================================
 
-void MAT2d_Connexion::ParameterOnSecond(const Standard_Real aParameter)
+void MAT2d_Connexion::ParameterOnSecond(const double aParameter)
 {
   parameterOnB = aParameter;
 }
@@ -178,14 +178,14 @@ void MAT2d_Connexion::PointOnSecond(const gp_Pnt2d& aPoint)
 
 //=================================================================================================
 
-void MAT2d_Connexion::Distance(const Standard_Real d)
+void MAT2d_Connexion::Distance(const double d)
 {
   distance = d;
 }
 
 //=================================================================================================
 
-Handle(MAT2d_Connexion) MAT2d_Connexion::Reverse() const
+occ::handle<MAT2d_Connexion> MAT2d_Connexion::Reverse() const
 {
   return new MAT2d_Connexion(lineB,
                              lineA,
@@ -200,23 +200,23 @@ Handle(MAT2d_Connexion) MAT2d_Connexion::Reverse() const
 
 //=================================================================================================
 
-Standard_Boolean MAT2d_Connexion::IsAfter(const Handle(MAT2d_Connexion)& C2,
-                                          const Standard_Real            Sense) const
+bool MAT2d_Connexion::IsAfter(const occ::handle<MAT2d_Connexion>& C2,
+                                          const double            Sense) const
 {
   if (lineA != C2->IndexFirstLine())
   {
-    return Standard_False;
+    return false;
   }
 
   if (itemA > C2->IndexItemOnFirst())
   {
-    return Standard_True;
+    return true;
   }
   else if (itemA == C2->IndexItemOnFirst())
   {
     if (parameterOnA > C2->ParameterOnFirst())
     {
-      return Standard_True;
+      return true;
     }
     else if (parameterOnA == C2->ParameterOnFirst())
     {
@@ -224,18 +224,18 @@ Standard_Boolean MAT2d_Connexion::IsAfter(const Handle(MAT2d_Connexion)& C2,
       gp_Vec2d Vect2(pointA, pointB);
       if ((Vect1 ^ Vect2) * Sense > 0)
       {
-        return Standard_True;
+        return true;
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
-static void Indent(const Standard_Integer Offset)
+static void Indent(const int Offset)
 {
   if (Offset > 0)
   {
-    for (Standard_Integer i = 0; i < Offset; i++)
+    for (int i = 0; i < Offset; i++)
     {
       std::cout << " ";
     }
@@ -244,9 +244,9 @@ static void Indent(const Standard_Integer Offset)
 
 //=================================================================================================
 
-void MAT2d_Connexion::Dump(const Standard_Integer, const Standard_Integer Offset) const
+void MAT2d_Connexion::Dump(const int, const int Offset) const
 {
-  Standard_Integer MyOffset = Offset;
+  int MyOffset = Offset;
   Indent(Offset);
   std::cout << "MAT2d_Connexion :" << std::endl;
   MyOffset++;

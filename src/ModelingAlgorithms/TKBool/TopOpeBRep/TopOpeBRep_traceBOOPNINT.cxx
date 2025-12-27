@@ -18,9 +18,25 @@
 
   #include <Standard_Type.hxx>
   #include <TCollection_AsciiString.hxx>
-  #include <TColStd_ListOfInteger.hxx>
-  #include <TColStd_ListIteratorOfListOfInteger.hxx>
-  #include <TopOpeBRepTool_define.hxx>
+  #include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+  #include <Standard_Integer.hxx>
+  #include <NCollection_List.hxx>
+  #include <TopAbs_ShapeEnum.hxx>
+  #include <TopAbs_Orientation.hxx>
+  #include <TopAbs_State.hxx>
+  #include <TopoDS_Shape.hxx>
+  #include <TopTools_ShapeMapHasher.hxx>
+  #include <NCollection_Map.hxx>
+  #include <NCollection_List.hxx>
+  #include <NCollection_IndexedMap.hxx>
+  #include <NCollection_DataMap.hxx>
+  #include <Standard_Integer.hxx>
+  #include <NCollection_IndexedDataMap.hxx>
+  #include <TopoDS_Face.hxx>
+  #include <TopoDS_Edge.hxx>
+  #include <TopoDS_Vertex.hxx>
+  #include <TCollection_AsciiString.hxx>
 
   #define AS(x) (Standard_PCharacter) TCollection_AsciiString((x)).ToCString();
   #define I 10
@@ -34,28 +50,28 @@ class BOOPNINTL
 {
 public:
   BOOPNINTL();
-  Standard_Boolean Get(Standard_Integer n, char** a);
-  Standard_Integer Set(const Standard_Boolean b, Standard_Integer n, char** a);
+  bool Get(int n, char** a);
+  int Set(const bool b, int n, char** a);
 
 private:
-  TColStd_ListOfInteger myTL[I];
-  Standard_Boolean      myTB[I];
-  Standard_Integer      mynl;
+  NCollection_List<int> myTL[I];
+  bool      myTB[I];
+  int      mynl;
 };
 
 BOOPNINTL::BOOPNINTL()
 {
-  Set(Standard_False, 0, NULL);
+  Set(false, 0, NULL);
 }
 
-Standard_Integer BOOPNINTL::Set(const Standard_Boolean b, Standard_Integer n, char** a)
+int BOOPNINTL::Set(const bool b, int n, char** a)
 {
   if (n == 0)
   {
-    Standard_Integer i;
+    int i;
     L0(i, I)
     {
-      myTB[i] = Standard_False;
+      myTB[i] = false;
       myTL[i].Clear();
     }
     mynl = 0;
@@ -64,7 +80,7 @@ Standard_Integer BOOPNINTL::Set(const Standard_Boolean b, Standard_Integer n, ch
   else if (mynl + 1 < I)
   {
     myTB[mynl] = b;
-    Standard_Integer i;
+    int i;
     L0(i, n) myTL[mynl].Append(atoi(a[i]));
     mynl++;
     return 0;
@@ -75,26 +91,26 @@ Standard_Integer BOOPNINTL::Set(const Standard_Boolean b, Standard_Integer n, ch
   }
 }
 
-Standard_Boolean BOOPNINTL::Get(Standard_Integer n, char** a)
+bool BOOPNINTL::Get(int n, char** a)
 {
   if (!n)
-    return Standard_False;
-  Standard_Integer il;
+    return false;
+  int il;
   L0(il, mynl)
   {
-    const TColStd_ListOfInteger& L = myTL[il];
+    const NCollection_List<int>& L = myTL[il];
     if (L.IsEmpty())
       continue;
-    TColStd_ListIteratorOfListOfInteger itL(L);
-    Standard_Integer                    ia    = 0;
-    Standard_Boolean                    found = Standard_True;
+    NCollection_List<int>::Iterator itL(L);
+    int                    ia    = 0;
+    bool                    found = true;
     for (; itL.More() && (ia < n); itL.Next(), ia++)
     {
-      Standard_Integer Lval = itL.Value();
-      Standard_Integer aval = atoi(a[ia]);
+      int Lval = itL.Value();
+      int aval = atoi(a[ia]);
       if (Lval != aval)
       {
-        found = Standard_False;
+        found = false;
         break;
       }
     }
@@ -103,89 +119,89 @@ Standard_Boolean BOOPNINTL::Get(Standard_Integer n, char** a)
       return myTB[il];
     }
   }
-  return Standard_False;
+  return false;
 }
 
 // ===========
-static Standard_Boolean TopOpeBRep_traceEEFF = Standard_False;
+static bool TopOpeBRep_traceEEFF = false;
 
-Standard_EXPORT void TopOpeBRep_SettraceEEFF(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRep_SettraceEEFF(const bool b)
 {
   TopOpeBRep_traceEEFF = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceEEFF()
+Standard_EXPORT bool TopOpeBRep_GettraceEEFF()
 {
   return TopOpeBRep_traceEEFF;
 }
 
 BOOPNINTL BOOPEEFF;
 
-Standard_EXPORT Standard_Integer TopOpeBRep_SettraceEEFF(const Standard_Boolean b,
-                                                         Standard_Integer       n,
+Standard_EXPORT int TopOpeBRep_SettraceEEFF(const bool b,
+                                                         int       n,
                                                          char**                 a)
 {
-  Standard_Integer err = BOOPEEFF.Set(b, n, a);
+  int err = BOOPEEFF.Set(b, n, a);
   if (n == 0)
     TopOpeBRep_SettraceEEFF(b);
   return err;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceEEFF(Standard_Integer n, char** a)
+Standard_EXPORT bool TopOpeBRep_GettraceEEFF(int n, char** a)
 {
-  Standard_Boolean b = BOOPEEFF.Get(n, a);
+  bool b = BOOPEEFF.Get(n, a);
   return b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceEEFF(const Standard_Integer i1,
-                                                         const Standard_Integer i2,
-                                                         const Standard_Integer i3,
-                                                         const Standard_Integer i4)
+Standard_EXPORT bool TopOpeBRep_GettraceEEFF(const int i1,
+                                                         const int i2,
+                                                         const int i3,
+                                                         const int i4)
 {
   char* t[4];
   t[0]               = AS(i1);
   t[1]               = AS(i2);
   t[2]               = AS(i3);
   t[3]               = AS(i4);
-  Standard_Boolean b = BOOPEEFF.Get(4, t);
+  bool b = BOOPEEFF.Get(4, t);
   return b;
 }
 
 // ===========
-static Standard_Boolean TopOpeBRep_traceNVP = Standard_False;
+static bool TopOpeBRep_traceNVP = false;
 
-Standard_EXPORT void TopOpeBRep_SettraceNVP(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRep_SettraceNVP(const bool b)
 {
   TopOpeBRep_traceNVP = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP()
+Standard_EXPORT bool TopOpeBRep_GettraceNVP()
 {
   return TopOpeBRep_traceNVP;
 }
 
 BOOPNINTL BOOPNVP;
 
-Standard_EXPORT Standard_Integer TopOpeBRep_SettraceNVP(const Standard_Boolean b,
-                                                        Standard_Integer       n,
+Standard_EXPORT int TopOpeBRep_SettraceNVP(const bool b,
+                                                        int       n,
                                                         char**                 a)
 {
-  Standard_Integer err = BOOPNVP.Set(b, n, a);
+  int err = BOOPNVP.Set(b, n, a);
   if (n == 0)
     TopOpeBRep_SettraceNVP(b);
   return err;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer n, char** a)
+Standard_EXPORT bool TopOpeBRep_GettraceNVP(int n, char** a)
 {
   return BOOPNVP.Get(n, a);
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer i1,
-                                                        Standard_Integer i2,
-                                                        Standard_Integer i3,
-                                                        Standard_Integer i4,
-                                                        Standard_Integer i5)
+Standard_EXPORT bool TopOpeBRep_GettraceNVP(int i1,
+                                                        int i2,
+                                                        int i3,
+                                                        int i4,
+                                                        int i5)
 {
   char* t[5];
   t[0]               = AS(i1);
@@ -193,41 +209,41 @@ Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer i1,
   t[2]               = AS(i3);
   t[3]               = AS(i4);
   t[4]               = AS(i5);
-  Standard_Boolean b = BOOPNVP.Get(5, t);
+  bool b = BOOPNVP.Get(5, t);
   return b;
 }
 
 // ===========
-static Standard_Boolean TopOpeBRep_traceSHA = Standard_False;
+static bool TopOpeBRep_traceSHA = false;
 
-Standard_EXPORT void TopOpeBRep_SettraceSHA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRep_SettraceSHA(const bool b)
 {
   TopOpeBRep_traceSHA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA()
+Standard_EXPORT bool TopOpeBRep_GettraceSHA()
 {
   return TopOpeBRep_traceSHA;
 }
 
 BOOPNINTL BOOPSHA;
 
-Standard_EXPORT Standard_Integer TopOpeBRep_SettraceSHA(const Standard_Boolean b,
-                                                        Standard_Integer       n,
+Standard_EXPORT int TopOpeBRep_SettraceSHA(const bool b,
+                                                        int       n,
                                                         char**                 a)
 {
-  Standard_Integer err = BOOPSHA.Set(b, n, a);
+  int err = BOOPSHA.Set(b, n, a);
   if (n == 0)
     TopOpeBRep_SettraceSHA(b);
   return err;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA(Standard_Integer n, char** a)
+Standard_EXPORT bool TopOpeBRep_GettraceSHA(int n, char** a)
 {
   return BOOPSHA.Get(n, a);
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i1)
+Standard_EXPORT bool TopOpeBRep_GettraceSHA(const int i1)
 {
   char* t[1];
   t[0] = AS(i1);

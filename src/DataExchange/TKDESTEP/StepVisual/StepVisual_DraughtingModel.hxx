@@ -21,9 +21,6 @@
 
 #include <StepRepr_Representation.hxx>
 
-class StepVisual_DraughtingModel;
-DEFINE_STANDARD_HANDLE(StepVisual_DraughtingModel, StepRepr_Representation)
-
 //! Representation of STEP entity DraughtingModel
 class StepVisual_DraughtingModel : public StepRepr_Representation
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingModel, StepRepr_Representation)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_DraughtingModel_HeaderFile

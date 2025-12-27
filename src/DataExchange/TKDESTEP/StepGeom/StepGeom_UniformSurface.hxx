@@ -22,9 +22,6 @@
 
 #include <StepGeom_BSplineSurface.hxx>
 
-class StepGeom_UniformSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_UniformSurface, StepGeom_BSplineSurface)
-
 class StepGeom_UniformSurface : public StepGeom_BSplineSurface
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_UniformSurface, StepGeom_BSplineSurface)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_UniformSurface_HeaderFile

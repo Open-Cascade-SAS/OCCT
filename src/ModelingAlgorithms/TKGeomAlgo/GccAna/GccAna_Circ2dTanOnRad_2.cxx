@@ -43,8 +43,8 @@ typedef math_DirectPolynomialRoots Roots;
 
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
                                              const gp_Lin2d&     OnLine,
-                                             const Standard_Real Radius,
-                                             const Standard_Real Tolerance)
+                                             const double Radius,
+                                             const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -56,10 +56,10 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
 {
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol    = std::abs(Tolerance);
-  WellDone             = Standard_False;
+  double Tol    = std::abs(Tolerance);
+  WellDone             = false;
   NbrSol               = 0;
-  Standard_Real dp1lin = OnLine.Distance(Point1);
+  double dp1lin = OnLine.Distance(Point1);
 
   if (Radius < 0.0)
   {
@@ -69,20 +69,20 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
   {
     if (dp1lin > Radius + Tol)
     {
-      WellDone = Standard_True;
+      WellDone = true;
     }
-    Standard_Real xc;
-    Standard_Real yc;
-    Standard_Real x1    = Point1.X();
-    Standard_Real y1    = Point1.Y();
-    Standard_Real xbid  = 0;
-    Standard_Real xdir  = (OnLine.Direction()).X();
-    Standard_Real ydir  = (OnLine.Direction()).Y();
-    Standard_Real lxloc = (OnLine.Location()).X();
-    Standard_Real lyloc = (OnLine.Location()).Y();
+    double xc;
+    double yc;
+    double x1    = Point1.X();
+    double y1    = Point1.Y();
+    double xbid  = 0;
+    double xdir  = (OnLine.Direction()).X();
+    double ydir  = (OnLine.Direction()).Y();
+    double lxloc = (OnLine.Location()).X();
+    double lyloc = (OnLine.Location()).Y();
     if (std::abs(dp1lin - Radius) < Tol)
     {
-      WellDone = Standard_True;
+      WellDone = true;
       NbrSol   = 1;
       if (-ydir * (x1 - lxloc) + xdir * (y1 - lyloc) < 0.0)
       {
@@ -129,9 +129,9 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
     }
     else
     {
-      Standard_Real A, B, C;
+      double A, B, C;
       OnLine.Coefficients(A, B, C);
-      Standard_Real D = A;
+      double D = A;
       if (A == 0.0)
       {
         A    = B;
@@ -147,7 +147,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
                   x1 * x1 + y1 * y1 + C * C / (A * A) - Radius * Radius + 2.0 * C * x1 / A);
         if (Sol.IsDone())
         {
-          for (Standard_Integer i = 1; i <= Sol.NbSolutions(); i++)
+          for (int i = 1; i <= Sol.NbSolutions(); i++)
           {
             if (D != 0.0)
             {
@@ -171,7 +171,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
             par1sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
             parcen3(NbrSol)    = ElCLib::Parameter(OnLine, pntcen3(NbrSol));
           }
-          WellDone = Standard_True;
+          WellDone = true;
         }
       }
     }

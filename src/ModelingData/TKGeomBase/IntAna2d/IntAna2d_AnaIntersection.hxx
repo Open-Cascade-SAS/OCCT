@@ -94,13 +94,13 @@ public:
   Standard_EXPORT void Perform(const gp_Hypr2d& H, const IntAna2d_Conic& C);
 
   //! Returns TRUE if the computation was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns TRUE when there is no intersection, i-e
   //! - no intersection point
   //! - the elements are not identical.
   //! The element may be parallel in this case.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! For the intersection between an element of gp and a conic
   //! known by an implicit equation, the result will be TRUE
@@ -108,27 +108,26 @@ public:
   //! For the intersection between two Lin2d or two Circ2d, the
   //! result will be TRUE if the elements are identical.
   //! The function returns FALSE in all the other cases.
-  Standard_Boolean IdenticalElements() const;
+  bool IdenticalElements() const;
 
   //! For the intersection between two Lin2d or two Circ2d,
   //! the function returns TRUE if the elements are parallel.
   //! The function returns FALSE in all the other cases.
-  Standard_Boolean ParallelElements() const;
+  bool ParallelElements() const;
 
   //! returns the number of IntPoint between the 2 curves.
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! returns the intersection point of range N;
   //! If (N<=0) or (N>NbPoints), an exception is raised.
-  const IntAna2d_IntPoint& Point(const Standard_Integer N) const;
+  const IntAna2d_IntPoint& Point(const int N) const;
 
-protected:
 private:
-  Standard_Boolean  done;
-  Standard_Boolean  para;
-  Standard_Boolean  iden;
-  Standard_Boolean  empt;
-  Standard_Integer  nbp;
+  bool  done;
+  bool  para;
+  bool  iden;
+  bool  empt;
+  int  nbp;
   IntAna2d_IntPoint lpnt[4];
 };
 

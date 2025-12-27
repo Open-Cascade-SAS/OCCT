@@ -18,18 +18,18 @@
 #include <Geom2dLProp_CurAndInf2d.hxx>
 #include <Geom2dLProp_NumericCurInf2d.hxx>
 #include <LProp_AnalyticCurInf.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 Geom2dLProp_CurAndInf2d::Geom2dLProp_CurAndInf2d()
-    : isDone(Standard_False)
+    : isDone(false)
 {
 }
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::Perform(const Handle(Geom2d_Curve)& C)
+void Geom2dLProp_CurAndInf2d::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   PerformCurExt(C);
   PerformInf(C);
@@ -37,9 +37,9 @@ void Geom2dLProp_CurAndInf2d::Perform(const Handle(Geom2d_Curve)& C)
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C)
+void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
 {
-  isDone = Standard_True;
+  isDone = true;
 
   Geom2dAdaptor_Curve         CC(C);
   LProp_AnalyticCurInf        AC;
@@ -70,16 +70,16 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C)
       else
       {
         // Decoupage en intervalles C3.
-        isDone                     = Standard_True;
-        Standard_Integer     NbInt = CC.NbIntervals(GeomAbs_C3);
-        TColStd_Array1OfReal Param(1, NbInt + 1);
+        isDone                     = true;
+        int     NbInt = CC.NbIntervals(GeomAbs_C3);
+        NCollection_Array1<double> Param(1, NbInt + 1);
         CC.Intervals(Param, GeomAbs_C3);
-        for (Standard_Integer i = 1; i <= NbInt; i++)
+        for (int i = 1; i <= NbInt; i++)
         {
           NC.PerformCurExt(C, Param(i), Param(i + 1), *this);
           if (!NC.IsDone())
           {
-            isDone = Standard_False;
+            isDone = false;
           }
         }
       }
@@ -95,9 +95,9 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const Handle(Geom2d_Curve)& C)
 
 //=================================================================================================
 
-void Geom2dLProp_CurAndInf2d::PerformInf(const Handle(Geom2d_Curve)& C)
+void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
 {
-  isDone = Standard_True;
+  isDone = true;
 
   Geom2dAdaptor_Curve         CC(C);
   GeomAbs_CurveType           CType = CC.GetType();
@@ -124,17 +124,17 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const Handle(Geom2d_Curve)& C)
       else
       {
         // Decoupage en intervalles C3.
-        isDone                     = Standard_True;
-        Standard_Integer     NbInt = CC.NbIntervals(GeomAbs_C3);
-        TColStd_Array1OfReal Param(1, NbInt + 1);
+        isDone                     = true;
+        int     NbInt = CC.NbIntervals(GeomAbs_C3);
+        NCollection_Array1<double> Param(1, NbInt + 1);
         CC.Intervals(Param, GeomAbs_C3);
 
-        for (Standard_Integer i = 1; i <= NbInt; i++)
+        for (int i = 1; i <= NbInt; i++)
         {
           NC.PerformInf(C, Param(i), Param(i + 1), *this);
           if (!NC.IsDone())
           {
-            isDone = Standard_False;
+            isDone = false;
           }
         }
       }
@@ -150,7 +150,7 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const Handle(Geom2d_Curve)& C)
 
 //=================================================================================================
 
-Standard_Boolean Geom2dLProp_CurAndInf2d::IsDone() const
+bool Geom2dLProp_CurAndInf2d::IsDone() const
 {
   return isDone;
 }

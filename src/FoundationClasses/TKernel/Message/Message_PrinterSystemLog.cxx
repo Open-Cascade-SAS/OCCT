@@ -122,7 +122,7 @@ Message_PrinterSystemLog::Message_PrinterSystemLog(
   myEventSource = NULL;
 #elif defined(_WIN32)
   const TCollection_ExtendedString aWideSrcName(theEventSourceName);
-  myEventSource = (Standard_Address)RegisterEventSourceW(NULL, aWideSrcName.ToWideString());
+  myEventSource = (void*)RegisterEventSourceW(NULL, aWideSrcName.ToWideString());
 #elif defined(__ANDROID__)
   //
 #elif defined(__EMSCRIPTEN__)

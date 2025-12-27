@@ -33,10 +33,10 @@ typedef gp_Vec              Vec;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Axis2Placement::Copy() const
+occ::handle<Geom_Geometry> Geom_Axis2Placement::Copy() const
 {
 
-  Handle(Geom_Axis2Placement) A2;
+  occ::handle<Geom_Axis2Placement> A2;
   A2 = new Axis2Placement(axis.Location(), axis.Direction(), vxdir, vydir);
   return A2;
 }

@@ -40,62 +40,66 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
-#include <IntTools_ListOfBox.hxx>
-#include <IntTools_ListOfCurveRangeSample.hxx>
-#include <IntTools_ListOfSurfaceRangeSample.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_List.hxx>
+#include <IntTools_CurveRangeSample.hxx>
+#include <NCollection_List.hxx>
+#include <IntTools_SurfaceRangeSample.hxx>
+#include <NCollection_List.hxx>
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter,
+static bool SetEmptyResultRange(const double      theParameter,
                                             IntTools_MarkedRangeSet& theMarkedRange);
 
-static Bnd_Box GetSurfaceBox(const Handle(Geom_BSplineSurface)& theSurf,
-                             const Standard_Real                theFirstU,
-                             const Standard_Real                theLastU,
-                             const Standard_Real                theFirstV,
-                             const Standard_Real                theLastV,
-                             const Standard_Real                theTolerance,
+static Bnd_Box GetSurfaceBox(const occ::handle<Geom_BSplineSurface>& theSurf,
+                             const double                theFirstU,
+                             const double                theLastU,
+                             const double                theFirstV,
+                             const double                theLastV,
+                             const double                theTolerance,
                              IntTools_SurfaceRangeLocalizeData& theSurfaceData);
 
-static void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
-                              const Standard_Real                theFirstU,
-                              const Standard_Real                theLastU,
-                              const Standard_Real                theFirstV,
-                              const Standard_Real                theLastV,
-                              const Standard_Real                theTolerance,
+static void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
+                              const double                theFirstU,
+                              const double                theLastU,
+                              const double                theFirstV,
+                              const double                theLastV,
+                              const double                theTolerance,
                               IntTools_SurfaceRangeLocalizeData& theSurfaceData);
 
-static void BuildBox(const Handle(Geom_BSplineSurface)& theSurf,
-                     const Standard_Real                theFirstU,
-                     const Standard_Real                theLastU,
-                     const Standard_Real                theFirstV,
-                     const Standard_Real                theLastV,
+static void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
+                     const double                theFirstU,
+                     const double                theLastU,
+                     const double                theFirstV,
+                     const double                theLastV,
                      IntTools_SurfaceRangeLocalizeData& theSurfaceData,
                      Bnd_Box&                           theBox);
 
-static void MergeSolutions(const IntTools_ListOfCurveRangeSample&   theListCurveRange,
-                           const IntTools_ListOfSurfaceRangeSample& theListSurfaceRange,
-                           IntTools_ListOfCurveRangeSample&         theListCurveRangeSort,
-                           IntTools_ListOfSurfaceRangeSample&       theListSurfaceRangeSort);
+static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   theListCurveRange,
+                           const NCollection_List<IntTools_SurfaceRangeSample>& theListSurfaceRange,
+                           NCollection_List<IntTools_CurveRangeSample>&         theListCurveRangeSort,
+                           NCollection_List<IntTools_SurfaceRangeSample>&       theListSurfaceRangeSort);
 
 static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange,
                           const IntTools_SurfaceRangeSample&       theSurfaceRange,
                           const IntTools_CurveRangeLocalizeData&   theCurveData,
                           const IntTools_SurfaceRangeLocalizeData& theSurfaceData,
-                          const Standard_Real                      DiffC,
-                          const Standard_Real                      DiffU,
-                          const Standard_Real                      DiffV,
-                          Standard_Boolean&                        bAllowSamplingC,
-                          Standard_Boolean&                        bAllowSamplingU,
-                          Standard_Boolean&                        bAllowSamplingV);
+                          const double                      DiffC,
+                          const double                      DiffU,
+                          const double                      DiffV,
+                          bool&                        bAllowSamplingC,
+                          bool&                        bAllowSamplingU,
+                          bool&                        bAllowSamplingV);
 
 //=================================================================================================
 
@@ -108,7 +112,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector()
       myVMaxParameter(0.),
       myBeanTolerance(0.),
       myFaceTolerance(0.),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myMinSqDistance(RealLast())
 {
   myCriteria        = Precision::Confusion();
@@ -127,7 +131,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const TopoDS_Edge& th
       myVMaxParameter(0.),
       myBeanTolerance(0.),
       myFaceTolerance(0.),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myMinSqDistance(RealLast())
 {
   Init(theEdge, theFace);
@@ -137,15 +141,15 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const TopoDS_Edge& th
 
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
                                                            const BRepAdaptor_Surface& theSurface,
-                                                           const Standard_Real theBeanTolerance,
-                                                           const Standard_Real theFaceTolerance)
+                                                           const double theBeanTolerance,
+                                                           const double theFaceTolerance)
     : myFirstParameter(0.),
       myLastParameter(0.),
       myUMinParameter(0.),
       myUMaxParameter(0.),
       myVMinParameter(0.),
       myVMaxParameter(0.),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myMinSqDistance(RealLast())
 {
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
@@ -155,14 +159,14 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
 
 IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Curve&   theCurve,
                                                            const BRepAdaptor_Surface& theSurface,
-                                                           const Standard_Real theFirstParOnCurve,
-                                                           const Standard_Real theLastParOnCurve,
-                                                           const Standard_Real theUMinParameter,
-                                                           const Standard_Real theUMaxParameter,
-                                                           const Standard_Real theVMinParameter,
-                                                           const Standard_Real theVMaxParameter,
-                                                           const Standard_Real theBeanTolerance,
-                                                           const Standard_Real theFaceTolerance)
+                                                           const double theFirstParOnCurve,
+                                                           const double theLastParOnCurve,
+                                                           const double theUMinParameter,
+                                                           const double theUMaxParameter,
+                                                           const double theVMinParameter,
+                                                           const double theVMaxParameter,
+                                                           const double theBeanTolerance,
+                                                           const double theFaceTolerance)
     : myFirstParameter(theFirstParOnCurve),
       myLastParameter(theLastParOnCurve),
       myUMinParameter(theUMinParameter),
@@ -171,7 +175,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
       myVMaxParameter(theVMaxParameter),
       myBeanTolerance(theBeanTolerance),
       myFaceTolerance(theFaceTolerance),
-      myIsDone(Standard_False),
+      myIsDone(false),
       myMinSqDistance(RealLast())
 {
   myCurve = theCurve;
@@ -181,7 +185,7 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
 
   mySurface = theSurface;
   myTrsfSurface =
-    Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
+    occ::down_cast<Geom_Surface>(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
 }
 
 //=================================================================================================
@@ -196,7 +200,7 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge, const TopoDS
   myCurve.Initialize(theEdge);
   mySurface = myContext->SurfaceAdaptor(theFace);
   myTrsfSurface =
-    Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
+    occ::down_cast<Geom_Surface>(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
   myBeanTolerance = BRep_Tool::Tolerance(theEdge);
   myFaceTolerance = BRep_Tool::Tolerance(theFace);
 
@@ -214,13 +218,13 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge, const TopoDS
 
 void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
                                         const BRepAdaptor_Surface& theSurface,
-                                        const Standard_Real        theBeanTolerance,
-                                        const Standard_Real        theFaceTolerance)
+                                        const double        theBeanTolerance,
+                                        const double        theFaceTolerance)
 {
   myCurve   = theCurve;
   mySurface = theSurface;
   myTrsfSurface =
-    Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
+    occ::down_cast<Geom_Surface>(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
   myBeanTolerance = theBeanTolerance;
   myFaceTolerance = theFaceTolerance;
 
@@ -238,14 +242,14 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
 
 void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
                                         const BRepAdaptor_Surface& theSurface,
-                                        const Standard_Real        theFirstParOnCurve,
-                                        const Standard_Real        theLastParOnCurve,
-                                        const Standard_Real        theUMinParameter,
-                                        const Standard_Real        theUMaxParameter,
-                                        const Standard_Real        theVMinParameter,
-                                        const Standard_Real        theVMaxParameter,
-                                        const Standard_Real        theBeanTolerance,
-                                        const Standard_Real        theFaceTolerance)
+                                        const double        theFirstParOnCurve,
+                                        const double        theLastParOnCurve,
+                                        const double        theUMinParameter,
+                                        const double        theUMaxParameter,
+                                        const double        theVMinParameter,
+                                        const double        theVMaxParameter,
+                                        const double        theBeanTolerance,
+                                        const double        theFaceTolerance)
 {
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
   SetBeanParameters(theFirstParOnCurve, theLastParOnCurve);
@@ -254,22 +258,22 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
 
 //=================================================================================================
 
-void IntTools_BeanFaceIntersector::SetContext(const Handle(IntTools_Context)& theContext)
+void IntTools_BeanFaceIntersector::SetContext(const occ::handle<IntTools_Context>& theContext)
 {
   myContext = theContext;
 }
 
 //=================================================================================================
 
-const Handle(IntTools_Context)& IntTools_BeanFaceIntersector::Context() const
+const occ::handle<IntTools_Context>& IntTools_BeanFaceIntersector::Context() const
 {
   return myContext;
 }
 
 //=================================================================================================
 
-void IntTools_BeanFaceIntersector::SetBeanParameters(const Standard_Real theFirstParOnCurve,
-                                                     const Standard_Real theLastParOnCurve)
+void IntTools_BeanFaceIntersector::SetBeanParameters(const double theFirstParOnCurve,
+                                                     const double theLastParOnCurve)
 {
   myFirstParameter = theFirstParOnCurve;
   myLastParameter  = theLastParOnCurve;
@@ -277,10 +281,10 @@ void IntTools_BeanFaceIntersector::SetBeanParameters(const Standard_Real theFirs
 
 //=================================================================================================
 
-void IntTools_BeanFaceIntersector::SetSurfaceParameters(const Standard_Real theUMinParameter,
-                                                        const Standard_Real theUMaxParameter,
-                                                        const Standard_Real theVMinParameter,
-                                                        const Standard_Real theVMaxParameter)
+void IntTools_BeanFaceIntersector::SetSurfaceParameters(const double theUMinParameter,
+                                                        const double theUMaxParameter,
+                                                        const double theVMinParameter,
+                                                        const double theVMaxParameter)
 {
   myUMinParameter = theUMinParameter;
   myUMaxParameter = theUMaxParameter;
@@ -292,7 +296,7 @@ void IntTools_BeanFaceIntersector::SetSurfaceParameters(const Standard_Real theU
 
 void IntTools_BeanFaceIntersector::Perform()
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
   myResults.Clear();
 
   if (myContext.IsNull())
@@ -311,7 +315,7 @@ void IntTools_BeanFaceIntersector::Perform()
   if (FastComputeAnalytic())
   {
     // no further computation is necessary
-    myIsDone = Standard_True;
+    myIsDone = true;
     return;
   }
 
@@ -319,18 +323,18 @@ void IntTools_BeanFaceIntersector::Perform()
   myRangeManager.SetBoundaries(myFirstParameter, myLastParameter, 0);
 
   // Check coincidence
-  Standard_Boolean isCoincide = TestComputeCoinside();
+  bool isCoincide = TestComputeCoinside();
   if (isCoincide)
   {
     myResults.Append(IntTools_Range(myFirstParameter, myLastParameter));
-    myIsDone = Standard_True;
+    myIsDone = true;
     return;
   }
 
   // Perform intersection
 
   // try to find localized solution
-  Standard_Boolean bLocalize =
+  bool bLocalize =
     (!Precision::IsInfinite(myUMinParameter) && !Precision::IsInfinite(myUMaxParameter)
      && !Precision::IsInfinite(myVMinParameter) && !Precision::IsInfinite(myVMaxParameter));
   bLocalize =
@@ -340,7 +344,7 @@ void IntTools_BeanFaceIntersector::Perform()
             && (mySurface.UDegree() > 2 || mySurface.VDegree() > 2)
             && (mySurface.NbUKnots() > 2 && mySurface.NbVKnots() > 2)));
 
-  Standard_Boolean isLocalized = bLocalize && ComputeLocalized();
+  bool isLocalized = bLocalize && ComputeLocalized();
 
   // Perform real intersection
   if (!isLocalized)
@@ -352,16 +356,16 @@ void IntTools_BeanFaceIntersector::Perform()
     ComputeNearRangeBoundaries();
   }
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 
   // Treatment of the results
-  for (Standard_Integer i = 1; i <= myRangeManager.Length(); i++)
+  for (int i = 1; i <= myRangeManager.Length(); i++)
   {
     if (myRangeManager.Flag(i) != 2)
       continue;
 
     IntTools_Range   aRange     = myRangeManager.Range(i);
-    Standard_Integer iLastRange = myResults.Length();
+    int iLastRange = myResults.Length();
     if (iLastRange > 0)
     {
       IntTools_Range& aLastRange = myResults.ChangeValue(iLastRange);
@@ -381,21 +385,21 @@ void IntTools_BeanFaceIntersector::Perform()
 
 //=================================================================================================
 
-const IntTools_SequenceOfRanges& IntTools_BeanFaceIntersector::Result() const
+const NCollection_Sequence<IntTools_Range>& IntTools_BeanFaceIntersector::Result() const
 {
   return myResults;
 }
 
 //=================================================================================================
 
-void IntTools_BeanFaceIntersector::Result(IntTools_SequenceOfRanges& theResults) const
+void IntTools_BeanFaceIntersector::Result(NCollection_Sequence<IntTools_Range>& theResults) const
 {
   theResults = myResults;
 }
 
 //=================================================================================================
 
-Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
+double IntTools_BeanFaceIntersector::Distance(const double theArg)
 {
   gp_Pnt aPoint = myCurve.Value(theArg);
 
@@ -407,16 +411,16 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
     return aProjector.LowerDistance();
   }
   //
-  Standard_Real aDistance = RealLast();
+  double aDistance = RealLast();
 
-  for (Standard_Integer i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
-    Standard_Real anIsoParameter =
+    double anIsoParameter =
       (i == 0) ? myUMinParameter
                : ((i == 1) ? myUMaxParameter : ((i == 2) ? myVMinParameter : myVMaxParameter));
-    Standard_Real aMinParameter = (i < 2) ? myVMinParameter : myUMinParameter;
-    Standard_Real aMaxParameter = (i < 2) ? myVMaxParameter : myUMaxParameter;
-    Standard_Real aMidParameter = (aMinParameter + aMaxParameter) * 0.5;
+    double aMinParameter = (i < 2) ? myVMinParameter : myUMinParameter;
+    double aMaxParameter = (i < 2) ? myVMaxParameter : myUMaxParameter;
+    double aMidParameter = (aMinParameter + aMaxParameter) * 0.5;
     gp_Pnt        aPointMin     = (i < 2) ? mySurface.Value(anIsoParameter, aMinParameter)
                                           : mySurface.Value(aMinParameter, anIsoParameter);
     gp_Pnt        aPointMax     = (i < 2) ? mySurface.Value(anIsoParameter, aMaxParameter)
@@ -424,24 +428,24 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
     gp_Pnt        aPointMid     = (i < 2) ? mySurface.Value(anIsoParameter, aMidParameter)
                                           : mySurface.Value(aMidParameter, anIsoParameter);
 
-    Standard_Boolean useMinMaxPoints = Standard_True;
-    Standard_Boolean computeisoline  = Standard_True;
+    bool useMinMaxPoints = true;
+    bool computeisoline  = true;
 
     if (aPointMin.IsEqual(aPointMax, myCriteria) && aPointMin.IsEqual(aPointMid, myCriteria)
         && aPointMax.IsEqual(aPointMid, myCriteria))
     {
-      computeisoline = Standard_False;
+      computeisoline = false;
     }
 
     if (computeisoline)
     {
-      Handle(Geom_Curve) aCurve =
+      occ::handle<Geom_Curve> aCurve =
         (i < 2) ? myTrsfSurface->UIso(anIsoParameter) : myTrsfSurface->VIso(anIsoParameter);
       GeomAPI_ProjectPointOnCurve aProjectorOnCurve(aPoint, aCurve, aMinParameter, aMaxParameter);
 
       if (aProjectorOnCurve.NbPoints() > 0)
       {
-        useMinMaxPoints = Standard_False;
+        useMinMaxPoints = false;
 
         if (aDistance > aProjectorOnCurve.LowerDistance())
           aDistance = aProjectorOnCurve.LowerDistance();
@@ -450,7 +454,7 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
 
     if (useMinMaxPoints)
     {
-      Standard_Real aPPDistance = aPoint.Distance(aPointMin);
+      double aPPDistance = aPoint.Distance(aPointMin);
       aDistance                 = (aPPDistance < aDistance) ? aPPDistance : aDistance;
       aPPDistance               = aPoint.Distance(aPointMax);
       aDistance                 = (aPPDistance < aDistance) ? aPPDistance : aDistance;
@@ -461,17 +465,17 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
 
 //=================================================================================================
 
-Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
-                                                     Standard_Real&      theUParameter,
-                                                     Standard_Real&      theVParameter)
+double IntTools_BeanFaceIntersector::Distance(const double theArg,
+                                                     double&      theUParameter,
+                                                     double&      theVParameter)
 {
   gp_Pnt aPoint = myCurve.Value(theArg);
 
   theUParameter = myUMinParameter;
   theVParameter = myVMinParameter;
   //
-  Standard_Real    aDistance       = RealLast();
-  Standard_Boolean projectionfound = Standard_False;
+  double    aDistance       = RealLast();
+  bool projectionfound = false;
 
   GeomAPI_ProjectPointOnSurf& aProjector = myContext->ProjPS(mySurface.Face());
   aProjector.Perform(aPoint);
@@ -480,20 +484,20 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
   {
     aProjector.LowerDistanceParameters(theUParameter, theVParameter);
     aDistance       = aProjector.LowerDistance();
-    projectionfound = Standard_True;
+    projectionfound = true;
   }
 
   if (!projectionfound)
   {
     //
-    for (Standard_Integer i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
-      Standard_Real anIsoParameter =
+      double anIsoParameter =
         (i == 0) ? myUMinParameter
                  : ((i == 1) ? myUMaxParameter : ((i == 2) ? myVMinParameter : myVMaxParameter));
-      Standard_Real aMinParameter = (i < 2) ? myVMinParameter : myUMinParameter;
-      Standard_Real aMaxParameter = (i < 2) ? myVMaxParameter : myUMaxParameter;
-      Standard_Real aMidParameter = (aMinParameter + aMaxParameter) * 0.5;
+      double aMinParameter = (i < 2) ? myVMinParameter : myUMinParameter;
+      double aMaxParameter = (i < 2) ? myVMaxParameter : myUMaxParameter;
+      double aMidParameter = (aMinParameter + aMaxParameter) * 0.5;
       gp_Pnt        aPointMin     = (i < 2) ? mySurface.Value(anIsoParameter, aMinParameter)
                                             : mySurface.Value(aMinParameter, anIsoParameter);
       gp_Pnt        aPointMax     = (i < 2) ? mySurface.Value(anIsoParameter, aMaxParameter)
@@ -501,24 +505,24 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
       gp_Pnt        aPointMid     = (i < 2) ? mySurface.Value(anIsoParameter, aMidParameter)
                                             : mySurface.Value(aMidParameter, anIsoParameter);
 
-      Standard_Boolean useMinMaxPoints = Standard_True;
-      Standard_Boolean computeisoline  = Standard_True;
+      bool useMinMaxPoints = true;
+      bool computeisoline  = true;
 
       if (aPointMin.IsEqual(aPointMax, myCriteria) && aPointMin.IsEqual(aPointMid, myCriteria)
           && aPointMax.IsEqual(aPointMid, myCriteria))
       {
-        computeisoline = Standard_False;
+        computeisoline = false;
       }
 
       if (computeisoline)
       {
-        Handle(Geom_Curve) aCurve =
+        occ::handle<Geom_Curve> aCurve =
           (i < 2) ? myTrsfSurface->UIso(anIsoParameter) : myTrsfSurface->VIso(anIsoParameter);
         GeomAPI_ProjectPointOnCurve aProjectorOnCurve(aPoint, aCurve, aMinParameter, aMaxParameter);
 
         if (aProjectorOnCurve.NbPoints() > 0)
         {
-          useMinMaxPoints = Standard_False;
+          useMinMaxPoints = false;
 
           if (aDistance > aProjectorOnCurve.LowerDistance())
           {
@@ -531,7 +535,7 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
 
       if (useMinMaxPoints)
       {
-        Standard_Real aPPDistance = aPoint.Distance(aPointMin);
+        double aPPDistance = aPoint.Distance(aPointMin);
 
         if (aPPDistance < aDistance)
         {
@@ -564,14 +568,14 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 {
   IntCurveSurface_HInter anExactIntersector;
 
-  Handle(BRepAdaptor_Curve)   aCurve   = new BRepAdaptor_Curve(myCurve);
-  Handle(BRepAdaptor_Surface) aSurface = new BRepAdaptor_Surface(mySurface);
+  occ::handle<BRepAdaptor_Curve>   aCurve   = new BRepAdaptor_Curve(myCurve);
+  occ::handle<BRepAdaptor_Surface> aSurface = new BRepAdaptor_Surface(mySurface);
 
   anExactIntersector.Perform(aCurve, aSurface);
 
   if (anExactIntersector.IsDone())
   {
-    Standard_Integer i = 0;
+    int i = 0;
 
     if (anExactIntersector.NbPoints() > 1)
     {
@@ -588,26 +592,26 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 
       if ((aPoint.W() >= myFirstParameter) && (aPoint.W() <= myLastParameter))
       {
-        Standard_Boolean UIsNotValid =
+        bool UIsNotValid =
           ((myUMinParameter > aPoint.U()) || (aPoint.U() > myUMaxParameter));
-        Standard_Boolean VIsNotValid =
+        bool VIsNotValid =
           ((myVMinParameter > aPoint.V()) || (aPoint.V() > myVMaxParameter));
-        Standard_Boolean solutionIsValid = !UIsNotValid && !VIsNotValid;
-        Standard_Real    U               = aPoint.U();
-        Standard_Real    V               = aPoint.V();
+        bool solutionIsValid = !UIsNotValid && !VIsNotValid;
+        double    U               = aPoint.U();
+        double    V               = aPoint.V();
 
         if (UIsNotValid || VIsNotValid)
         {
-          Standard_Boolean bUCorrected = Standard_True;
+          bool bUCorrected = true;
 
           if (UIsNotValid)
           {
-            bUCorrected     = Standard_False;
-            solutionIsValid = Standard_False;
+            bUCorrected     = false;
+            solutionIsValid = false;
             //
             if (mySurface.IsUPeriodic())
             {
-              Standard_Real aNewU, aUPeriod, aEps, du;
+              double aNewU, aUPeriod, aEps, du;
               //
               aUPeriod = mySurface.UPeriod();
               aEps     = Epsilon(aUPeriod);
@@ -619,19 +623,19 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
                                       aNewU,
                                       du,
                                       aEps);
-              solutionIsValid = Standard_True;
-              bUCorrected     = Standard_True;
+              solutionIsValid = true;
+              bUCorrected     = true;
               U               = aNewU;
             }
           }
           //   if(solutionIsValid && VIsNotValid) {
           if (bUCorrected && VIsNotValid)
           {
-            solutionIsValid = Standard_False;
+            solutionIsValid = false;
             //
             if (mySurface.IsVPeriodic())
             {
-              Standard_Real aNewV, aVPeriod, aEps, dv;
+              double aNewV, aVPeriod, aEps, dv;
               //
               aVPeriod = mySurface.VPeriod();
               aEps     = Epsilon(aVPeriod);
@@ -643,7 +647,7 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
                                       aNewV,
                                       dv,
                                       aEps);
-              solutionIsValid = Standard_True;
+              solutionIsValid = true;
               V               = aNewV;
             }
           }
@@ -652,10 +656,10 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
         if (!solutionIsValid)
           continue;
 
-        Standard_Integer aNbRanges = myRangeManager.Length();
+        int aNbRanges = myRangeManager.Length();
 
-        ComputeRangeFromStartPoint(Standard_False, aPoint.W(), U, V);
-        ComputeRangeFromStartPoint(Standard_True, aPoint.W(), U, V);
+        ComputeRangeFromStartPoint(false, aPoint.W(), U, V);
+        ComputeRangeFromStartPoint(true, aPoint.W(), U, V);
 
         if (aNbRanges == myRangeManager.Length())
         {
@@ -674,15 +678,15 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
       IntCurveSurface_IntersectionPoint          aPoint1, aPoint2;
       aSegment.Values(aPoint1, aPoint2);
 
-      Standard_Real aFirstParameter =
+      double aFirstParameter =
         (aPoint1.W() < myFirstParameter) ? myFirstParameter : aPoint1.W();
-      Standard_Real aLastParameter =
+      double aLastParameter =
         (myLastParameter < aPoint2.W()) ? myLastParameter : aPoint2.W();
 
       myRangeManager.InsertRange(aFirstParameter, aLastParameter, 2);
 
-      ComputeRangeFromStartPoint(Standard_False, aPoint1.W(), aPoint1.U(), aPoint1.V());
-      ComputeRangeFromStartPoint(Standard_True, aPoint2.W(), aPoint2.U(), aPoint2.V());
+      ComputeRangeFromStartPoint(false, aPoint1.W(), aPoint1.U(), aPoint1.V());
+      ComputeRangeFromStartPoint(true, aPoint2.W(), aPoint2.U(), aPoint2.V());
       myMinSqDistance = 0.0;
     }
   }
@@ -690,18 +694,18 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 
 //=================================================================================================
 
-Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
+bool IntTools_BeanFaceIntersector::FastComputeAnalytic()
 {
   GeomAbs_CurveType aCT = myCurve.GetType();
   if (aCT == GeomAbs_BezierCurve || aCT == GeomAbs_BSplineCurve || aCT == GeomAbs_OffsetCurve
       || aCT == GeomAbs_OtherCurve)
   {
     // not supported type
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean isCoincide      = Standard_False;
-  Standard_Boolean hasIntersection = Standard_True;
+  bool isCoincide      = false;
+  bool hasIntersection = true;
 
   GeomAbs_SurfaceType aST = mySurface.GetType();
 
@@ -735,16 +739,16 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
         break;
       }
       default:
-        return Standard_False;
+        return false;
     }
 
-    Standard_Real anAngle = aDir.Angle(surfPlane.Axis().Direction());
+    double anAngle = aDir.Angle(surfPlane.Axis().Direction());
     if (anAngle > Precision::Angular())
-      return Standard_False;
+      return false;
 
-    hasIntersection = Standard_False;
+    hasIntersection = false;
 
-    Standard_Real aDist = surfPlane.Distance(aPLoc);
+    double aDist = surfPlane.Distance(aPLoc);
     isCoincide          = aDist < myCriteria;
   }
 
@@ -754,17 +758,17 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
     gp_Cylinder   aCylinder  = mySurface.Cylinder();
     const gp_Ax1& aCylAxis   = aCylinder.Axis();
     const gp_Dir& aCylDir    = aCylAxis.Direction();
-    Standard_Real aCylRadius = aCylinder.Radius();
+    double aCylRadius = aCylinder.Radius();
 
     if (aCT == GeomAbs_Line)
     {
       gp_Lin aLin = myCurve.Line();
       if (!aLin.Direction().IsParallel(aCylDir, Precision::Angular()))
-        return Standard_False;
+        return false;
 
-      hasIntersection = Standard_False;
+      hasIntersection = false;
 
-      Standard_Real aDist = std::abs(aLin.Distance(aCylAxis.Location()) - aCylRadius);
+      double aDist = std::abs(aLin.Distance(aCylAxis.Location()) - aCylRadius);
       isCoincide          = (aDist < myCriteria);
     }
 
@@ -772,12 +776,12 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
     {
       gp_Circ aCircle = myCurve.Circle();
 
-      Standard_Real anAngle = aCylDir.Angle(aCircle.Axis().Direction());
+      double anAngle = aCylDir.Angle(aCircle.Axis().Direction());
       if (anAngle > Precision::Angular())
-        return Standard_False;
+        return false;
 
-      Standard_Real aDistLoc = gp_Lin(aCylAxis).Distance(aCircle.Location());
-      Standard_Real aDist    = aDistLoc + std::abs(aCircle.Radius() - aCylRadius);
+      double aDistLoc = gp_Lin(aCylAxis).Distance(aCircle.Location());
+      double aDist    = aDistLoc + std::abs(aCircle.Radius() - aCylRadius);
       isCoincide             = (aDist < myCriteria);
 
       if (!isCoincide)
@@ -794,7 +798,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
     if (aCT == GeomAbs_Line)
     {
       gp_Lin        aLin  = myCurve.Line();
-      Standard_Real aDist = aLin.Distance(aSphLoc) - aSph.Radius();
+      double aDist = aLin.Distance(aSphLoc) - aSph.Radius();
       hasIntersection     = aDist < myCriteria;
     }
   }
@@ -812,15 +816,15 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeAnalytic()
 
 void IntTools_BeanFaceIntersector::ComputeLinePlane()
 {
-  Standard_Real Tolang = 1.e-9;
+  double Tolang = 1.e-9;
   gp_Pln        P      = mySurface.Plane();
   gp_Lin        L      = myCurve.Line();
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 
-  Standard_Real A, B, C, D;
-  Standard_Real Al, Bl, Cl;
-  Standard_Real Dis, Direc;
+  double A, B, C, D;
+  double Al, Bl, Cl;
+  double Dis, Direc;
 
   P.Coefficients(A, B, C, D);
   gp_Pnt Orig(L.Location());
@@ -829,32 +833,32 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   Direc = A * Al + B * Bl + C * Cl;
   Dis   = A * Orig.X() + B * Orig.Y() + C * Orig.Z() + D;
 
-  Standard_Boolean parallel = Standard_False, inplane = Standard_False;
+  bool parallel = false, inplane = false;
   if (std::abs(Direc) < Tolang)
   {
-    parallel = Standard_True;
+    parallel = true;
     if (std::abs(Dis) < myCriteria)
     {
-      inplane = Standard_True;
+      inplane = true;
     }
     else
     {
-      inplane = Standard_False;
+      inplane = false;
     }
   }
   else
   {
     gp_Pnt        p1 = ElCLib::Value(myFirstParameter, L);
     gp_Pnt        p2 = ElCLib::Value(myLastParameter, L);
-    Standard_Real d1 = A * p1.X() + B * p1.Y() + C * p1.Z() + D;
+    double d1 = A * p1.X() + B * p1.Y() + C * p1.Z() + D;
     if (d1 < 0)
       d1 = -d1;
-    Standard_Real d2 = A * p2.X() + B * p2.Y() + C * p2.Z() + D;
+    double d2 = A * p2.X() + B * p2.Y() + C * p2.Z() + D;
     if (d2 < 0)
       d2 = -d2;
     if (d1 <= myCriteria && d2 <= myCriteria)
     {
-      inplane = Standard_True;
+      inplane = true;
     }
   }
 
@@ -870,7 +874,7 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
     return;
   }
 
-  Standard_Real t = -Dis / Direc;
+  double t = -Dis / Direc;
   if (t < myFirstParameter || t > myLastParameter)
   {
     return;
@@ -878,7 +882,7 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
 
   gp_Pnt pint(Orig.X() + t * Al, Orig.Y() + t * Bl, Orig.Z() + t * Cl);
 
-  Standard_Real u, v;
+  double u, v;
   ElSLib::Parameters(P, pint, u, v);
   if (myUMinParameter > u || u > myUMaxParameter || myVMinParameter > v || v > myVMaxParameter)
   {
@@ -886,7 +890,7 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   }
   //
   // compute correct range on the edge
-  Standard_Real anAngle, aDt;
+  double anAngle, aDt;
   gp_Dir        aDL, aDP;
   //
   aDL     = L.Position().Direction();
@@ -895,8 +899,8 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   //
   aDt = IntTools_Tools::ComputeIntRange(myBeanTolerance, myFaceTolerance, anAngle);
   //
-  Standard_Real  t1 = std::max(myFirstParameter, t - aDt);
-  Standard_Real  t2 = std::min(myLastParameter, t + aDt);
+  double  t1 = std::max(myFirstParameter, t - aDt);
+  double  t2 = std::min(myLastParameter, t + aDt);
   IntTools_Range aRange(t1, t2);
   myResults.Append(aRange);
 
@@ -907,24 +911,24 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
 
 void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 {
-  Standard_Real Tol, af, al;
+  double Tol, af, al;
   Tol                        = Precision::PConfusion();
-  Handle(Geom_Curve)  aCurve = BRep_Tool::Curve(myCurve.Edge(), af, al);
+  occ::handle<Geom_Curve>  aCurve = BRep_Tool::Curve(myCurve.Edge(), af, al);
   GeomAdaptor_Surface aGASurface(myTrsfSurface,
                                  myUMinParameter,
                                  myUMaxParameter,
                                  myVMinParameter,
                                  myVMaxParameter);
 
-  for (Standard_Integer i = 1; i <= myRangeManager.Length(); i++)
+  for (int i = 1; i <= myRangeManager.Length(); i++)
   {
 
     if (myRangeManager.Flag(i) > 0)
       continue;
 
     IntTools_Range aParamRange = myRangeManager.Range(i);
-    Standard_Real  anarg1      = aParamRange.First();
-    Standard_Real  anarg2      = aParamRange.Last();
+    double  anarg1      = aParamRange.First();
+    double  anarg2      = aParamRange.Last();
 
     if (anarg2 - anarg1 < Precision::PConfusion())
     {
@@ -946,7 +950,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
                        myVMaxParameter,
                        Tol,
                        Tol);
-    Standard_Real first = aCurve->FirstParameter(), last = aCurve->LastParameter();
+    double first = aCurve->FirstParameter(), last = aCurve->LastParameter();
     if (aCurve->IsPeriodic()
         || (anarg1 >= first - Precision::PConfusion() && anarg2 <= last + Precision::PConfusion()))
     {
@@ -956,19 +960,19 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 
     if (anExtCS.IsDone() && (anExtCS.NbExt() || anExtCS.IsParallel()))
     {
-      Standard_Integer anOldNbRanges = myRangeManager.Length();
+      int anOldNbRanges = myRangeManager.Length();
 
       if (anExtCS.IsParallel())
       {
-        const Standard_Real aSqDist = anExtCS.SquareDistance(1);
+        const double aSqDist = anExtCS.SquareDistance(1);
         myMinSqDistance             = std::min(myMinSqDistance, aSqDist);
         if (aSqDist < myCriteria * myCriteria)
         {
-          Standard_Real    U1, V1, U2, V2;
-          Standard_Real    adistance1     = Distance(anarg1, U1, V1);
-          Standard_Real    adistance2     = Distance(anarg2, U2, V2);
-          Standard_Boolean validdistance1 = (adistance1 < myCriteria);
-          Standard_Boolean validdistance2 = (adistance2 < myCriteria);
+          double    U1, V1, U2, V2;
+          double    adistance1     = Distance(anarg1, U1, V1);
+          double    adistance2     = Distance(anarg2, U2, V2);
+          bool validdistance1 = (adistance1 < myCriteria);
+          bool validdistance2 = (adistance2 < myCriteria);
 
           if (validdistance1 && validdistance2)
           {
@@ -979,31 +983,31 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
           {
             if (validdistance1)
             {
-              ComputeRangeFromStartPoint(Standard_True, anarg1, U1, V1);
+              ComputeRangeFromStartPoint(true, anarg1, U1, V1);
             }
             else
             {
               if (validdistance2)
               {
-                ComputeRangeFromStartPoint(Standard_False, anarg2, U2, V2);
+                ComputeRangeFromStartPoint(false, anarg2, U2, V2);
               }
               else
               {
-                Standard_Real    a         = anarg1;
-                Standard_Real    b         = anarg2;
-                Standard_Real    da        = adistance1;
-                Standard_Real    db        = adistance2;
-                Standard_Real    asolution = a;
-                Standard_Boolean found     = Standard_False;
+                double    a         = anarg1;
+                double    b         = anarg2;
+                double    da        = adistance1;
+                double    db        = adistance2;
+                double    asolution = a;
+                bool found     = false;
 
                 while (((b - a) > myCurveResolution) && !found)
                 {
                   asolution           = (a + b) * 0.5;
-                  Standard_Real adist = Distance(asolution, U1, V1);
+                  double adist = Distance(asolution, U1, V1);
 
                   if (adist < myCriteria)
                   {
-                    found = Standard_True;
+                    found = true;
                   }
                   else
                   {
@@ -1022,8 +1026,8 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 
                 if (found)
                 {
-                  ComputeRangeFromStartPoint(Standard_False, asolution, U1, V1);
-                  ComputeRangeFromStartPoint(Standard_True, asolution, U1, V1);
+                  ComputeRangeFromStartPoint(false, asolution, U1, V1);
+                  ComputeRangeFromStartPoint(true, asolution, U1, V1);
                 }
                 else
                 {
@@ -1040,22 +1044,22 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
       }
       else
       {
-        Standard_Boolean solutionfound = Standard_False;
+        bool solutionfound = false;
 
-        for (Standard_Integer j = 1; j <= anExtCS.NbExt(); j++)
+        for (int j = 1; j <= anExtCS.NbExt(); j++)
         {
           if (anExtCS.SquareDistance(j) < myCriteria * myCriteria)
           {
             Extrema_POnCurv p1;
             Extrema_POnSurf p2;
             anExtCS.Points(j, p1, p2);
-            Standard_Real U, V;
+            double U, V;
             p2.Parameter(U, V);
 
-            Standard_Integer aNbRanges = myRangeManager.Length();
-            ComputeRangeFromStartPoint(Standard_False, p1.Parameter(), U, V);
-            ComputeRangeFromStartPoint(Standard_True, p1.Parameter(), U, V);
-            solutionfound = Standard_True;
+            int aNbRanges = myRangeManager.Length();
+            ComputeRangeFromStartPoint(false, p1.Parameter(), U, V);
+            ComputeRangeFromStartPoint(true, p1.Parameter(), U, V);
+            solutionfound = true;
 
             if (aNbRanges == myRangeManager.Length())
             {
@@ -1071,7 +1075,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
           myRangeManager.SetFlag(i, 1);
         }
       }
-      Standard_Integer adifference = myRangeManager.Length() - anOldNbRanges;
+      int adifference = myRangeManager.Length() - anOldNbRanges;
 
       if (adifference > 0)
       {
@@ -1085,10 +1089,10 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
 
 void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
 {
-  Standard_Real U = myUMinParameter;
-  Standard_Real V = myVMinParameter;
+  double U = myUMinParameter;
+  double V = myVMinParameter;
 
-  for (Standard_Integer i = 1; i <= myRangeManager.Length(); i++)
+  for (int i = 1; i <= myRangeManager.Length(); i++)
   {
 
     if (myRangeManager.Flag(i) > 0)
@@ -1101,13 +1105,13 @@ void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
 
     if (Distance(aParamRange.First(), U, V) < myCriteria)
     {
-      Standard_Integer aNbRanges = myRangeManager.Length();
+      int aNbRanges = myRangeManager.Length();
 
       if (i > 1)
       {
-        ComputeRangeFromStartPoint(Standard_False, aParamRange.First(), U, V, i - 1);
+        ComputeRangeFromStartPoint(false, aParamRange.First(), U, V, i - 1);
       }
-      ComputeRangeFromStartPoint(Standard_True,
+      ComputeRangeFromStartPoint(true,
                                  aParamRange.First(),
                                  U,
                                  V,
@@ -1126,9 +1130,9 @@ void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
 
     if (Distance(aParamRange.Last(), U, V) < myCriteria)
     {
-      Standard_Integer aNbRanges = myRangeManager.Length();
+      int aNbRanges = myRangeManager.Length();
 
-      ComputeRangeFromStartPoint(Standard_False, aParamRange.Last(), U, V, myRangeManager.Length());
+      ComputeRangeFromStartPoint(false, aParamRange.Last(), U, V, myRangeManager.Length());
 
       if (aNbRanges == myRangeManager.Length())
       {
@@ -1141,16 +1145,16 @@ void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
 // ==================================================================================
 // function: ComputeRangeFromStartPoint
 // purpose:  Compute range using start point according to parameter theParameter,
-//           increasing parameter on curve if ToIncreaseParameter == Standard_True or
-//           decreasing parameter on curve if ToIncreaseParameter == Standard_False
+//           increasing parameter on curve if ToIncreaseParameter == true or
+//           decreasing parameter on curve if ToIncreaseParameter == false
 // ==================================================================================
 void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
-  const Standard_Boolean ToIncreaseParameter,
-  const Standard_Real    theParameter,
-  const Standard_Real    theUParameter,
-  const Standard_Real    theVParameter)
+  const bool ToIncreaseParameter,
+  const double    theParameter,
+  const double    theUParameter,
+  const double    theVParameter)
 {
-  Standard_Integer aFoundIndex = myRangeManager.GetIndex(theParameter, ToIncreaseParameter);
+  int aFoundIndex = myRangeManager.GetIndex(theParameter, ToIncreaseParameter);
 
   if (aFoundIndex == 0)
   {
@@ -1167,55 +1171,55 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
 // ==================================================================================
 // function: ComputeRangeFromStartPoint
 // purpose:  Compute range using start point according to parameter theParameter,
-//           increasing parameter on curve if ToIncreaseParameter == Standard_True or
-//           decreasing parameter on curve if ToIncreaseParameter == Standard_False.
+//           increasing parameter on curve if ToIncreaseParameter == true or
+//           decreasing parameter on curve if ToIncreaseParameter == false.
 //           theIndex indicate that theParameter belong the range number theIndex.
 // ==================================================================================
 void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
-  const Standard_Boolean ToIncreaseParameter,
-  const Standard_Real    theParameter,
-  const Standard_Real    theUParameter,
-  const Standard_Real    theVParameter,
-  const Standard_Integer theIndex)
+  const bool ToIncreaseParameter,
+  const double    theParameter,
+  const double    theUParameter,
+  const double    theVParameter,
+  const int theIndex)
 {
   if (myRangeManager.Flag(theIndex) > 0)
     return;
 
-  Standard_Integer aValidIndex = theIndex;
+  int aValidIndex = theIndex;
 
-  Standard_Real aMinDelta        = myCurveResolution * 0.5;
-  Standard_Real aDeltaRestrictor = 0.1 * (myLastParameter - myFirstParameter);
+  double aMinDelta        = myCurveResolution * 0.5;
+  double aDeltaRestrictor = 0.1 * (myLastParameter - myFirstParameter);
 
   if (aMinDelta > aDeltaRestrictor)
     aMinDelta = aDeltaRestrictor * 0.5;
 
-  Standard_Real tenOfMinDelta = aMinDelta * 10.;
-  Standard_Real aDelta        = myCurveResolution;
+  double tenOfMinDelta = aMinDelta * 10.;
+  double aDelta        = myCurveResolution;
 
-  Standard_Real aCurPar = (ToIncreaseParameter) ? (theParameter + aDelta) : (theParameter - aDelta);
-  Standard_Real aPrevPar       = theParameter;
+  double aCurPar = (ToIncreaseParameter) ? (theParameter + aDelta) : (theParameter - aDelta);
+  double aPrevPar       = theParameter;
   IntTools_Range aCurrentRange = myRangeManager.Range(aValidIndex);
 
-  Standard_Boolean BoundaryCondition =
+  bool BoundaryCondition =
     (ToIncreaseParameter) ? (aCurPar > aCurrentRange.Last()) : (aCurPar < aCurrentRange.First());
 
   if (BoundaryCondition)
   {
     aCurPar           = (ToIncreaseParameter) ? aCurrentRange.Last() : aCurrentRange.First();
-    BoundaryCondition = Standard_False;
+    BoundaryCondition = false;
   }
 
-  Standard_Integer loopcounter          = 0; // necessary as infinite loop restricter
-  Standard_Real    U                    = theUParameter;
-  Standard_Real    V                    = theVParameter;
-  Standard_Boolean anotherSolutionFound = Standard_False;
+  int loopcounter          = 0; // necessary as infinite loop restricter
+  double    U                    = theUParameter;
+  double    V                    = theVParameter;
+  bool anotherSolutionFound = false;
 
-  Standard_Boolean isboundaryindex = Standard_False;
-  Standard_Boolean isvalidindex    = Standard_True;
+  bool isboundaryindex = false;
+  bool isvalidindex    = true;
 
   while ((aDelta >= aMinDelta) && (loopcounter <= 10))
   {
-    Standard_Boolean pointfound = Standard_False;
+    bool pointfound = false;
 
     //
     gp_Pnt                 aPoint = myCurve.Value(aCurPar);
@@ -1228,7 +1232,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
       {
         Extrema_POnSurf aPOnSurf = anExtrema.Point();
         aPOnSurf.Parameter(U, V);
-        pointfound = Standard_True;
+        pointfound = true;
       }
     }
     else
@@ -1239,7 +1243,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
     if (pointfound)
     {
       aPrevPar             = aCurPar;
-      anotherSolutionFound = Standard_True;
+      anotherSolutionFound = true;
 
       if (BoundaryCondition && (isboundaryindex || !isvalidindex))
         break;
@@ -1266,8 +1270,8 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
     BoundaryCondition =
       (ToIncreaseParameter) ? (aCurPar > aCurrentRange.Last()) : (aCurPar < aCurrentRange.First());
 
-    isboundaryindex = Standard_False;
-    isvalidindex    = Standard_True;
+    isboundaryindex = false;
+    isvalidindex    = true;
 
     if (BoundaryCondition)
     {
@@ -1279,7 +1283,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
 
         if (pointfound)
         {
-          Standard_Integer aFlag = (ToIncreaseParameter) ? myRangeManager.Flag(aValidIndex + 1)
+          int aFlag = (ToIncreaseParameter) ? myRangeManager.Flag(aValidIndex + 1)
                                                          : myRangeManager.Flag(aValidIndex - 1);
 
           if (aFlag == 0)
@@ -1296,7 +1300,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
           }
           else
           {
-            isvalidindex = Standard_False;
+            isvalidindex = false;
             aCurPar      = (ToIncreaseParameter) ? aCurrentRange.Last() : aCurrentRange.First();
           }
         }
@@ -1330,18 +1334,18 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(
 // static function: SetEmptyResultRange
 // purpose:
 // ---------------------------------------------------------------------------------
-static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter,
+static bool SetEmptyResultRange(const double      theParameter,
                                             IntTools_MarkedRangeSet& theMarkedRange)
 {
 
-  const TColStd_SequenceOfInteger& anIndices = theMarkedRange.GetIndices(theParameter);
-  Standard_Boolean                 add       = (anIndices.Length() > 0);
+  const NCollection_Sequence<int>& anIndices = theMarkedRange.GetIndices(theParameter);
+  bool                 add       = (anIndices.Length() > 0);
 
-  for (Standard_Integer k = 1; k <= anIndices.Length(); k++)
+  for (int k = 1; k <= anIndices.Length(); k++)
   {
     if (theMarkedRange.Flag(anIndices(k)) == 2)
     {
-      add = Standard_False;
+      add = false;
       break;
     }
   }
@@ -1358,18 +1362,18 @@ static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParamete
 // static function: TestCoinside
 // purpose:
 // ---------------------------------------------------------------------------------
-// static Standard_Boolean TestClose(const Extrema_ExtPS & theExt,
-//                                   const Standard_Real   theDist)
+// static bool TestClose(const Extrema_ExtPS & theExt,
+//                                   const double   theDist)
 // {
-//   Standard_Boolean close = Standard_False;
+//   bool close = false;
 //   if(!theExt.IsDone() || theExt.NbExt() == 0)
 //     return close;
 //   else {
-//     Standard_Integer ie;
+//     int ie;
 //     for(ie = 1; ie <= theExt.NbExt(); ie++) {
-//       Standard_Real dist = theExt.Value(ie);
+//       double dist = theExt.Value(ie);
 //       if(dist <= theDist) {
-//         close = Standard_True;
+//         close = true;
 //         break;
 //       }
 //     }
@@ -1377,36 +1381,36 @@ static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParamete
 //   return close;
 // }
 
-// Standard_Boolean TestCoinside(const BRepAdaptor_Curve&   theCurve,
+// bool TestCoinside(const BRepAdaptor_Curve&   theCurve,
 //                               const BRepAdaptor_Surface& theSurface)
 // {
-//   Standard_Real cfp = theCurve.FirstParameter(), clp = theCurve.LastParameter();
-//   Standard_Real cdp = fabs(clp - cfp) / 23.;
+//   double cfp = theCurve.FirstParameter(), clp = theCurve.LastParameter();
+//   double cdp = fabs(clp - cfp) / 23.;
 
-//   Standard_Integer i = 0;
-//   Standard_Real tolE = theCurve.Tolerance(), tolF = theSurface.Tolerance();
-//   Standard_Real tolT = tolE + tolF, tolU = 1.e-9, tolV = 1.e-9;
+//   int i = 0;
+//   double tolE = theCurve.Tolerance(), tolF = theSurface.Tolerance();
+//   double tolT = tolE + tolF, tolU = 1.e-9, tolV = 1.e-9;
 //   gp_Pnt aP;
 
 //   theCurve.D0(cfp,aP);
 //   Extrema_ExtPS eps(aP,theSurface,tolU,tolV);
 
 //   if(!TestClose(eps,tolT))
-//     return Standard_False;
+//     return false;
 
 //   theCurve.D0(clp,aP);
 //   eps.Perform(aP);
 
 //   if(!TestClose(eps,tolT))
-//     return Standard_False;
+//     return false;
 
-//   Standard_Boolean close = Standard_True;
+//   bool close = true;
 
 //   for(i = 1; i <= 22; i++) {
-//     theCurve.D0((cfp+((Standard_Real)i)*cdp),aP);
+//     theCurve.D0((cfp+((double)i)*cdp),aP);
 //     eps.Perform(aP);
 //     if(!TestClose(eps,tolT)) {
-//       close = Standard_False;
+//       close = false;
 //       break;
 //     }
 //   }
@@ -1415,17 +1419,17 @@ static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParamete
 
 //=================================================================================================
 
-Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
+bool IntTools_BeanFaceIntersector::LocalizeSolutions(
   const IntTools_CurveRangeSample&   theCurveRange,
   const Bnd_Box&                     theBoxCurve,
   const IntTools_SurfaceRangeSample& theSurfaceRange,
   const Bnd_Box&                     theBoxSurface,
   IntTools_CurveRangeLocalizeData&   theCurveData,
   IntTools_SurfaceRangeLocalizeData& theSurfaceData,
-  IntTools_ListOfCurveRangeSample&   theListCurveRange,
-  IntTools_ListOfSurfaceRangeSample& theListSurfaceRange)
+  NCollection_List<IntTools_CurveRangeSample>&   theListCurveRange,
+  NCollection_List<IntTools_SurfaceRangeSample>& theListSurfaceRange)
 {
-  Standard_Integer tIt = 0, uIt = 0, vIt = 0;
+  int tIt = 0, uIt = 0, vIt = 0;
 
   //
   IntTools_CurveRangeSample aRootRangeC(0);
@@ -1434,29 +1438,29 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
   Bnd_Box          aMainBoxC      = theBoxCurve;
   Bnd_Box          aMainBoxS      = theBoxSurface;
-  Standard_Boolean bMainBoxFoundS = Standard_False;
-  Standard_Boolean bMainBoxFoundC = Standard_False;
+  bool bMainBoxFoundS = false;
+  bool bMainBoxFoundC = false;
   //
-  IntTools_ListOfCurveRangeSample   aListCurveRangeFound;
-  IntTools_ListOfSurfaceRangeSample aListSurfaceRangeFound;
+  NCollection_List<IntTools_CurveRangeSample>   aListCurveRangeFound;
+  NCollection_List<IntTools_SurfaceRangeSample> aListSurfaceRangeFound;
 
   IntTools_Range aRangeC =
     theCurveRange.GetRange(myFirstParameter, myLastParameter, theCurveData.GetNbSample());
-  Standard_Real localdiffC = (aRangeC.Last() - aRangeC.First()) / theCurveData.GetNbSample();
+  double localdiffC = (aRangeC.Last() - aRangeC.First()) / theCurveData.GetNbSample();
 
-  Standard_Real    aCurPar       = aRangeC.First();
-  Standard_Real    aPrevPar      = aRangeC.First();
-  Standard_Integer aCurIndexInit = theCurveRange.GetRangeIndexDeeper(theCurveData.GetNbSample());
+  double    aCurPar       = aRangeC.First();
+  double    aPrevPar      = aRangeC.First();
+  int aCurIndexInit = theCurveRange.GetRangeIndexDeeper(theCurveData.GetNbSample());
 
-  TColStd_ListOfInteger aListCToAvoid;
-  Standard_Boolean      bGlobalCheckDone = Standard_False;
+  NCollection_List<int> aListCToAvoid;
+  bool      bGlobalCheckDone = false;
   //
 
   //
 
-  Standard_Integer aCurIndexU = theSurfaceRange.GetRangeIndexUDeeper(theSurfaceData.GetNbSampleU());
+  int aCurIndexU = theSurfaceRange.GetRangeIndexUDeeper(theSurfaceData.GetNbSampleU());
 
-  Standard_Integer aCurIndexVInit =
+  int aCurIndexVInit =
     theSurfaceRange.GetRangeIndexVDeeper(theSurfaceData.GetNbSampleV());
   IntTools_Range aRangeV =
     theSurfaceRange.GetRangeV(myVMinParameter, myVMaxParameter, theSurfaceData.GetNbSampleV());
@@ -1464,16 +1468,16 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   //
   IntTools_Range aRangeU =
     theSurfaceRange.GetRangeU(myUMinParameter, myUMaxParameter, theSurfaceData.GetNbSampleU());
-  Standard_Real aCurParU    = aRangeU.First();
-  Standard_Real aLocalDiffU = (aRangeU.Last() - aRangeU.First()) / theSurfaceData.GetNbSampleU();
+  double aCurParU    = aRangeU.First();
+  double aLocalDiffU = (aRangeU.Last() - aRangeU.First()) / theSurfaceData.GetNbSampleU();
 
-  Standard_Real aPrevParU   = aCurParU;
-  Standard_Real aLocalDiffV = (aRangeV.Last() - aRangeV.First()) / theSurfaceData.GetNbSampleV();
+  double aPrevParU   = aCurParU;
+  double aLocalDiffV = (aRangeV.Last() - aRangeV.First()) / theSurfaceData.GetNbSampleV();
 
   // ranges check.begin
-  Standard_Boolean bAllowSamplingC = Standard_True;
-  Standard_Boolean bAllowSamplingU = Standard_True;
-  Standard_Boolean bAllowSamplingV = Standard_True;
+  bool bAllowSamplingC = true;
+  bool bAllowSamplingU = true;
+  bool bAllowSamplingV = true;
 
   // check
   CheckSampling(theCurveRange,
@@ -1492,7 +1496,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   {
     theListCurveRange.Append(theCurveRange);
     theListSurfaceRange.Append(theSurfaceRange);
-    return Standard_True;
+    return true;
   }
   // ranges check.end
 
@@ -1534,20 +1538,20 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   }
   // init template. end
 
-  Standard_Boolean       bHasOut = Standard_False;
-  const Standard_Integer nbU     = (bAllowSamplingU) ? theSurfaceData.GetNbSampleU() : 1;
-  const Standard_Integer nbV     = (bAllowSamplingV) ? theSurfaceData.GetNbSampleV() : 1;
-  const Standard_Integer nbC     = (bAllowSamplingC) ? theCurveData.GetNbSample() : 1;
+  bool       bHasOut = false;
+  const int nbU     = (bAllowSamplingU) ? theSurfaceData.GetNbSampleU() : 1;
+  const int nbV     = (bAllowSamplingV) ? theSurfaceData.GetNbSampleV() : 1;
+  const int nbC     = (bAllowSamplingC) ? theCurveData.GetNbSample() : 1;
 
   for (uIt = 1; uIt <= nbU; uIt++, aCurIndexU++, aPrevParU = aCurParU)
   {
     aCurParU += aLocalDiffU;
 
-    Standard_Real    aCurParV   = aRangeV.First();
-    Standard_Real    aPrevParV  = aCurParV;
-    Standard_Integer aCurIndexV = aCurIndexVInit;
+    double    aCurParV   = aRangeV.First();
+    double    aPrevParV  = aCurParV;
+    int aCurIndexV = aCurIndexVInit;
 
-    Standard_Boolean bHasOutV = Standard_False;
+    bool bHasOutV = false;
 
     // ///////
     for (vIt = 1; vIt <= nbV; vIt++, aCurIndexV++, aPrevParV = aCurParV)
@@ -1571,7 +1575,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
       if (theSurfaceData.IsRangeOut(aNewRangeS))
       {
-        bHasOutV = Standard_True;
+        bHasOutV = true;
         continue;
       }
 
@@ -1584,9 +1588,9 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
         if (mySurface.GetType() == GeomAbs_BSplineSurface)
         {
-          // 	if(Standard_False ) {
-          Handle(Geom_BSplineSurface) aSurfBspl =
-            Handle(Geom_BSplineSurface)::DownCast(myTrsfSurface);
+          // 	if(false ) {
+          occ::handle<Geom_BSplineSurface> aSurfBspl =
+            occ::down_cast<Geom_BSplineSurface>(myTrsfSurface);
           aBoxS = GetSurfaceBox(aSurfBspl,
                                 aPrevParU,
                                 aCurParU,
@@ -1609,13 +1613,13 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
         if (!bMainBoxFoundC && theCurveData.FindBox(aRootRangeC, aMainBoxC))
         {
-          bMainBoxFoundC = Standard_True;
+          bMainBoxFoundC = true;
         }
 
         if (aBoxS.IsOut(aMainBoxC))
         {
           theSurfaceData.AddOutRange(aNewRangeS);
-          bHasOutV = Standard_True;
+          bHasOutV = true;
           continue;
         }
         // 	}
@@ -1624,15 +1628,15 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
       if (aBoxS.IsOut(theBoxCurve))
       {
-        bHasOutV = Standard_True;
+        bHasOutV = true;
         continue;
       }
 
-      IntTools_ListOfBox    aListOfBox;
-      TColStd_ListOfInteger aListOfIndex;
+      NCollection_List<Bnd_Box>    aListOfBox;
+      NCollection_List<int> aListOfIndex;
 
-      Standard_Boolean bHasOutC  = Standard_False;
-      Standard_Integer aCurIndex = aCurIndexInit;
+      bool bHasOutC  = false;
+      int aCurIndex = aCurIndexInit;
 
       // ////////////////////////////
       aCurPar                              = aRangeC.First();
@@ -1645,14 +1649,14 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
         aCurPar += localdiffC;
 
         // ignore already computed. begin
-        Standard_Boolean                    bFound = Standard_False;
-        TColStd_ListIteratorOfListOfInteger anItToAvoid(aListCToAvoid);
+        bool                    bFound = false;
+        NCollection_List<int>::Iterator anItToAvoid(aListCToAvoid);
 
         for (; anItToAvoid.More(); anItToAvoid.Next())
         {
           if (tIt == anItToAvoid.Value())
           {
-            bFound = Standard_True;
+            bFound = true;
             break;
           }
         }
@@ -1668,7 +1672,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
         if (bFound)
         {
-          bHasOutC = Standard_True;
+          bHasOutC = true;
           continue;
         }
         // ignore already computed. end
@@ -1684,12 +1688,12 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
           if (!bMainBoxFoundS && theSurfaceData.FindBox(aRootRangeS, aMainBoxS))
           {
-            bMainBoxFoundS = Standard_True;
+            bMainBoxFoundS = true;
           }
           if (aBoxC.IsOut(aMainBoxS))
           {
             theCurveData.AddOutRange(aCurRangeC);
-            bHasOutC = Standard_True;
+            bHasOutC = true;
             continue;
           }
           //   }
@@ -1699,14 +1703,14 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
         if (!bGlobalCheckDone && aBoxC.IsOut(theBoxSurface))
         {
           aListCToAvoid.Append(tIt);
-          bHasOutC = Standard_True;
+          bHasOutC = true;
           continue;
         }
 
         if (aBoxC.IsOut(aBoxS))
         {
-          bHasOutV = Standard_True;
-          bHasOutC = Standard_True;
+          bHasOutV = true;
+          bHasOutC = true;
           continue;
         }
         //
@@ -1715,11 +1719,11 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
         aListOfBox.Append(aBoxC);
       } // end for(tIt...)
 
-      bGlobalCheckDone = Standard_True;
+      bGlobalCheckDone = true;
 
       if (bHasOutC)
       {
-        bHasOutV = Standard_True;
+        bHasOutV = true;
       }
 
       // //////////////
@@ -1728,17 +1732,17 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
       IntTools_CurveRangeSample aNewRangeC = aNewRangeCTemplate;
 
       aCurIndex = aCurIndexInit;
-      TColStd_ListIteratorOfListOfInteger anItI(aListOfIndex);
-      IntTools_ListIteratorOfListOfBox    anItBox(aListOfBox);
-      Standard_Boolean                    bUseOldC   = Standard_False;
-      Standard_Boolean                    bUseOldS   = Standard_False;
-      Standard_Boolean                    bCheckSize = !bHasOutC;
+      NCollection_List<int>::Iterator anItI(aListOfIndex);
+      NCollection_List<Bnd_Box>::Iterator    anItBox(aListOfBox);
+      bool                    bUseOldC   = false;
+      bool                    bUseOldS   = false;
+      bool                    bCheckSize = !bHasOutC;
 
       for (; anItI.More() && anItBox.More(); anItI.Next(), anItBox.Next())
       {
         aCurIndex = aCurIndexInit + anItI.Value() - 1;
 
-        bUseOldS = Standard_False;
+        bUseOldS = false;
 
         if (bAllowSamplingC)
         {
@@ -1751,8 +1755,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
           if ((theCurveRange.GetDepth() == 0) || (theSurfaceRange.GetDepthU() == 0)
               || (theSurfaceRange.GetDepthV() == 0))
           {
-            bHasOutC = Standard_True;
-            bHasOutV = Standard_True;
+            bHasOutC = true;
+            bHasOutV = true;
           }
           else if ((theCurveRange.GetDepth() < 4) && (theSurfaceRange.GetDepthU() < 4)
                    && (theSurfaceRange.GetDepthV() < 4))
@@ -1761,16 +1765,16 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
             if (!aBoxC.IsWhole() && !aBoxS.IsWhole())
             {
-              Standard_Real aDiagC = aBoxC.SquareExtent();
-              Standard_Real aDiagS = aBoxS.SquareExtent();
+              double aDiagC = aBoxC.SquareExtent();
+              double aDiagS = aBoxS.SquareExtent();
 
               if (aDiagC < aDiagS)
               {
                 if ((aDiagC * 10.) < aDiagS)
                 {
-                  bUseOldC = Standard_True;
-                  bHasOutC = Standard_True;
-                  bHasOutV = Standard_True;
+                  bUseOldC = true;
+                  bHasOutC = true;
+                  bHasOutV = true;
                   break;
                 }
               }
@@ -1778,9 +1782,9 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
               {
                 if ((aDiagS * 10.) < aDiagC)
                 {
-                  bUseOldS = Standard_True;
-                  bHasOutC = Standard_True;
-                  bHasOutV = Standard_True;
+                  bUseOldS = true;
+                  bHasOutC = true;
+                  bHasOutV = true;
                 }
               }
             }
@@ -1801,7 +1805,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
 
           if (bUseOldS && aNewRangeC.IsEqual(theCurveRange))
           {
-            return Standard_False;
+            return false;
           }
 
           if (!LocalizeSolutions(aNewRangeC,
@@ -1812,7 +1816,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
                                  theSurfaceData,
                                  theListCurveRange,
                                  theListSurfaceRange))
-            return Standard_False;
+            return false;
         }
       }
       // end (tIt...)
@@ -1833,14 +1837,14 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
                                  theSurfaceData,
                                  theListCurveRange,
                                  theListSurfaceRange))
-            return Standard_False;
+            return false;
         }
       }
     } // end for (vIt...)
 
     if (bHasOutV)
     {
-      bHasOut = Standard_True;
+      bHasOut = true;
     }
   }
 
@@ -1851,8 +1855,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
   }
   else
   {
-    IntTools_ListIteratorOfListOfCurveRangeSample   anIt1(aListCurveRangeFound);
-    IntTools_ListIteratorOfListOfSurfaceRangeSample anIt2(aListSurfaceRangeFound);
+    NCollection_List<IntTools_CurveRangeSample>::Iterator   anIt1(aListCurveRangeFound);
+    NCollection_List<IntTools_SurfaceRangeSample>::Iterator anIt2(aListSurfaceRangeFound);
 
     for (; anIt1.More() && anIt2.More(); anIt1.Next(), anIt2.Next())
     {
@@ -1860,29 +1864,29 @@ Standard_Boolean IntTools_BeanFaceIntersector::LocalizeSolutions(
       theListSurfaceRange.Append(anIt2.Value());
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
+bool IntTools_BeanFaceIntersector::ComputeLocalized()
 {
-  Standard_Real Tol = Precision::PConfusion();
+  double Tol = Precision::PConfusion();
 
   IntTools_SurfaceRangeSample        aSurfaceRange(0, 0, 0, 0);
-  Standard_Real                      dMinU = 10. * Precision::PConfusion();
-  Standard_Real                      dMinV = dMinU;
+  double                      dMinU = 10. * Precision::PConfusion();
+  double                      dMinV = dMinU;
   IntTools_SurfaceRangeLocalizeData  aSurfaceDataInit(3, 3, dMinU, dMinV);
   IntTools_SurfaceRangeLocalizeData& aSurfaceData = myContext->SurfaceData(mySurface.Face());
   aSurfaceData.RemoveRangeOutAll();
   aSurfaceData.ClearGrid();
 
   Bnd_Box          FBox;
-  Standard_Boolean bFBoxFound = aSurfaceData.FindBox(aSurfaceRange, FBox);
+  bool bFBoxFound = aSurfaceData.FindBox(aSurfaceRange, FBox);
 
   if (mySurface.GetType() == GeomAbs_BSplineSurface)
   {
-    Handle(Geom_BSplineSurface) aSurfBspl = Handle(Geom_BSplineSurface)::DownCast(myTrsfSurface);
+    occ::handle<Geom_BSplineSurface> aSurfBspl = occ::down_cast<Geom_BSplineSurface>(myTrsfSurface);
 
     ComputeGridPoints(aSurfBspl,
                       myUMinParameter,
@@ -1925,30 +1929,30 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
 
   if (EBox.IsOut(FBox))
   {
-    for (Standard_Integer i = 1; i <= myRangeManager.Length(); i++)
+    for (int i = 1; i <= myRangeManager.Length(); i++)
     {
       myRangeManager.SetFlag(i, 1);
     }
     aSurfaceData.ClearGrid();
 
-    return Standard_True;
+    return true;
   }
 
-  IntTools_ListOfCurveRangeSample   aListCurveRange;
-  IntTools_ListOfSurfaceRangeSample aListSurfaceRange;
+  NCollection_List<IntTools_CurveRangeSample>   aListCurveRange;
+  NCollection_List<IntTools_SurfaceRangeSample> aListSurfaceRange;
 
   IntTools_CurveRangeSample aCurveRange(0);
   aCurveRange.SetDepth(0);
-  Standard_Integer                nbSampleC = 3;
-  Standard_Integer                nbSampleU = aSurfaceData.GetNbSampleU();
-  Standard_Integer                nbSampleV = aSurfaceData.GetNbSampleV();
-  Standard_Real                   dMinC     = 10. * myCurveResolution;
-  IntTools_ListOfCurveRangeSample aListOut;
+  int                nbSampleC = 3;
+  int                nbSampleU = aSurfaceData.GetNbSampleU();
+  int                nbSampleV = aSurfaceData.GetNbSampleV();
+  double                   dMinC     = 10. * myCurveResolution;
+  NCollection_List<IntTools_CurveRangeSample> aListOut;
 
   // check
-  Standard_Boolean                  bAllowSamplingC = Standard_True;
-  Standard_Boolean                  bAllowSamplingU = Standard_True;
-  Standard_Boolean                  bAllowSamplingV = Standard_True;
+  bool                  bAllowSamplingC = true;
+  bool                  bAllowSamplingU = true;
+  bool                  bAllowSamplingV = true;
   IntTools_CurveRangeLocalizeData   aCurveDataTmp(nbSampleC, dMinC);
   IntTools_SurfaceRangeLocalizeData aSurfaceDataTmp(nbSampleU, nbSampleV, dMinU, dMinV);
 
@@ -1979,15 +1983,15 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
     {
       aSurfaceData.ClearGrid();
 
-      return Standard_False;
+      return false;
     }
-    IntTools_ListOfCurveRangeSample   aListCurveRangeSort;
-    IntTools_ListOfSurfaceRangeSample aListSurfaceRangeSort;
+    NCollection_List<IntTools_CurveRangeSample>   aListCurveRangeSort;
+    NCollection_List<IntTools_SurfaceRangeSample> aListSurfaceRangeSort;
 
     MergeSolutions(aListCurveRange, aListSurfaceRange, aListCurveRangeSort, aListSurfaceRangeSort);
 
-    IntTools_ListIteratorOfListOfCurveRangeSample   anItC(aListCurveRangeSort);
-    IntTools_ListIteratorOfListOfSurfaceRangeSample anItS(aListSurfaceRangeSort);
+    NCollection_List<IntTools_CurveRangeSample>::Iterator   anItC(aListCurveRangeSort);
+    NCollection_List<IntTools_SurfaceRangeSample>::Iterator anItS(aListSurfaceRangeSort);
     IntTools_SurfaceRangeSample                     aRangeSPrev;
 
     Extrema_GenExtCS anExtremaGen;
@@ -2010,18 +2014,18 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       if (bAllowSamplingV)
         aRangeV = anItS.Value().GetRangeV(myVMinParameter, myVMaxParameter, nbSampleV);
 
-      Standard_Real anarg1 = aRangeC.First(), anarg2 = aRangeC.Last();
+      double anarg1 = aRangeC.First(), anarg2 = aRangeC.Last();
 
-      Standard_Boolean bFound = Standard_False;
+      bool bFound = false;
 
-      Standard_Integer                 nMinIndex = myRangeManager.Length();
-      Standard_Integer                 nMaxIndex = -1;
-      const TColStd_SequenceOfInteger& anInds1   = myRangeManager.GetIndices(anarg1);
-      Standard_Integer                 indIt     = 1;
+      int                 nMinIndex = myRangeManager.Length();
+      int                 nMaxIndex = -1;
+      const NCollection_Sequence<int>& anInds1   = myRangeManager.GetIndices(anarg1);
+      int                 indIt     = 1;
 
       for (indIt = 1; indIt <= anInds1.Length(); indIt++)
       {
-        Standard_Integer nIndex = anInds1.Value(indIt);
+        int nIndex = anInds1.Value(indIt);
         nMinIndex               = (nMinIndex > nIndex) ? nIndex : nMinIndex;
         nMaxIndex               = (nMaxIndex < nIndex) ? nIndex : nMaxIndex;
       }
@@ -2030,7 +2034,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       {
         if (myRangeManager.Flag(indIt) == 2)
         {
-          bFound = Standard_True;
+          bFound = true;
           break;
         }
       }
@@ -2038,11 +2042,11 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       if (bFound)
         continue;
       nMinIndex                                = (nMaxIndex >= 0) ? nMaxIndex : nMinIndex;
-      const TColStd_SequenceOfInteger& anInds2 = myRangeManager.GetIndices(anarg2);
+      const NCollection_Sequence<int>& anInds2 = myRangeManager.GetIndices(anarg2);
 
       for (indIt = 1; indIt <= anInds2.Length(); indIt++)
       {
-        Standard_Integer nIndex = anInds2.Value(indIt);
+        int nIndex = anInds2.Value(indIt);
         nMinIndex               = (nMinIndex > nIndex) ? nIndex : nMinIndex;
         nMaxIndex               = (nMaxIndex < nIndex) ? nIndex : nMaxIndex;
       }
@@ -2051,7 +2055,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       {
         if (myRangeManager.Flag(indIt) == 2)
         {
-          bFound = Standard_True;
+          bFound = true;
           break;
         }
       }
@@ -2059,8 +2063,8 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       if (bFound)
         continue;
 
-      Standard_Real parUF = aRangeU.First(), parUL = aRangeU.Last();
-      Standard_Real parVF = aRangeV.First(), parVL = aRangeV.Last();
+      double parUF = aRangeU.First(), parUL = aRangeU.Last();
+      double parVF = aRangeV.First(), parVL = aRangeV.Last();
 
       if (aRangeSPrev.IsEqual(anItS.Value()))
       {
@@ -2075,7 +2079,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
       if (anExtremaGen.IsDone() && (anExtremaGen.NbExt() > 0))
       {
 
-        for (Standard_Integer j = 1; j <= anExtremaGen.NbExt(); j++)
+        for (int j = 1; j <= anExtremaGen.NbExt(); j++)
         {
 
           if (anExtremaGen.SquareDistance(j) < myCriteria * myCriteria)
@@ -2085,7 +2089,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
             Extrema_POnSurf p2;
             p1 = anExtremaGen.PointOnCurve(j);
             p2 = anExtremaGen.PointOnSurface(j);
-            Standard_Real U, V, T;
+            double U, V, T;
             T = p1.Parameter();
             p2.Parameter(U, V);
 
@@ -2107,9 +2111,9 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
             if (V > myVMaxParameter)
               V = myVMaxParameter;
 
-            Standard_Integer aNbRanges = myRangeManager.Length();
-            ComputeRangeFromStartPoint(Standard_False, T, U, V);
-            ComputeRangeFromStartPoint(Standard_True, T, U, V);
+            int aNbRanges = myRangeManager.Length();
+            ComputeRangeFromStartPoint(false, T, U, V);
+            ComputeRangeFromStartPoint(true, T, U, V);
 
             if (aNbRanges == myRangeManager.Length())
             {
@@ -2133,7 +2137,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
   //
   if (bAllowSamplingC)
   {
-    IntTools_ListIteratorOfListOfCurveRangeSample anItC(aListOut);
+    NCollection_List<IntTools_CurveRangeSample>::Iterator anItC(aListOut);
 
     for (; anItC.More(); anItC.Next())
     {
@@ -2145,53 +2149,53 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized()
 
   aSurfaceData.ClearGrid();
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_BeanFaceIntersector::TestComputeCoinside()
+bool IntTools_BeanFaceIntersector::TestComputeCoinside()
 {
-  Standard_Real          cfp = myFirstParameter, clp = myLastParameter;
-  const Standard_Integer nbSeg = 23;
-  Standard_Real          cdp   = (clp - cfp) / (Standard_Real)nbSeg;
+  double          cfp = myFirstParameter, clp = myLastParameter;
+  const int nbSeg = 23;
+  double          cdp   = (clp - cfp) / (double)nbSeg;
 
-  Standard_Integer i = 0;
+  int i = 0;
 
-  Standard_Real U, V;
+  double U, V;
 
   if (Distance(cfp, U, V) > myCriteria)
-    return Standard_False;
+    return false;
 
   //
-  ComputeRangeFromStartPoint(Standard_True, cfp, U, V);
+  ComputeRangeFromStartPoint(true, cfp, U, V);
   //
 
-  Standard_Integer aFoundIndex = myRangeManager.GetIndex(clp, Standard_False);
+  int aFoundIndex = myRangeManager.GetIndex(clp, false);
 
   if (aFoundIndex != 0)
   {
     if (myRangeManager.Flag(aFoundIndex) == 2)
-      return Standard_True;
+      return true;
   }
 
   if (Distance(clp, U, V) > myCriteria)
-    return Standard_False;
+    return false;
 
   //
-  ComputeRangeFromStartPoint(Standard_False, clp, U, V);
+  ComputeRangeFromStartPoint(false, clp, U, V);
   //
 
   for (i = 1; i < nbSeg; i++)
   {
-    Standard_Real aPar = (cfp + ((Standard_Real)i) * cdp);
+    double aPar = (cfp + ((double)i) * cdp);
 
     if (Distance(aPar, U, V) > myCriteria)
-      return Standard_False;
+      return false;
 
-    Standard_Integer aNbRanges = myRangeManager.Length();
-    ComputeRangeFromStartPoint(Standard_False, aPar, U, V);
-    ComputeRangeFromStartPoint(Standard_True, aPar, U, V);
+    int aNbRanges = myRangeManager.Length();
+    ComputeRangeFromStartPoint(false, aPar, U, V);
+    ComputeRangeFromStartPoint(true, aPar, U, V);
 
     if (aNbRanges == myRangeManager.Length())
     {
@@ -2199,7 +2203,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::TestComputeCoinside()
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //  Modified by skv - Wed Nov  2 15:21:11 2005 Optimization Begin
@@ -2207,12 +2211,12 @@ Standard_Boolean IntTools_BeanFaceIntersector::TestComputeCoinside()
 // static function: GetSurfaceBox
 // purpose:
 // ---------------------------------------------------------------------------------
-Bnd_Box GetSurfaceBox(const Handle(Geom_BSplineSurface)& theSurf,
-                      const Standard_Real                theFirstU,
-                      const Standard_Real                theLastU,
-                      const Standard_Real                theFirstV,
-                      const Standard_Real                theLastV,
-                      const Standard_Real                theTolerance,
+Bnd_Box GetSurfaceBox(const occ::handle<Geom_BSplineSurface>& theSurf,
+                      const double                theFirstU,
+                      const double                theLastU,
+                      const double                theFirstV,
+                      const double                theLastV,
+                      const double                theTolerance,
                       IntTools_SurfaceRangeLocalizeData& theSurfaceData)
 {
   Bnd_Box aTotalBox;
@@ -2227,40 +2231,40 @@ Bnd_Box GetSurfaceBox(const Handle(Geom_BSplineSurface)& theSurf,
 // static function: ComputeGridPoints
 // purpose:
 // ---------------------------------------------------------------------------------
-void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
-                       const Standard_Real                theFirstU,
-                       const Standard_Real                theLastU,
-                       const Standard_Real                theFirstV,
-                       const Standard_Real                theLastV,
-                       const Standard_Real                theTolerance,
+void ComputeGridPoints(const occ::handle<Geom_BSplineSurface>& theSurf,
+                       const double                theFirstU,
+                       const double                theLastU,
+                       const double                theFirstV,
+                       const double                theLastV,
+                       const double                theTolerance,
                        IntTools_SurfaceRangeLocalizeData& theSurfaceData)
 {
-  Standard_Integer     i;
-  Standard_Integer     j;
-  Standard_Integer     k;
-  Standard_Integer     aNbSamples[2] = {theSurf->UDegree(), theSurf->VDegree()};
-  Standard_Integer     aNbKnots[2]   = {theSurf->NbUKnots(), theSurf->NbVKnots()};
-  TColStd_Array1OfReal aKnotsU(1, aNbKnots[0]);
-  TColStd_Array1OfReal aKnotsV(1, aNbKnots[1]);
+  int     i;
+  int     j;
+  int     k;
+  int     aNbSamples[2] = {theSurf->UDegree(), theSurf->VDegree()};
+  int     aNbKnots[2]   = {theSurf->NbUKnots(), theSurf->NbVKnots()};
+  NCollection_Array1<double> aKnotsU(1, aNbKnots[0]);
+  NCollection_Array1<double> aKnotsV(1, aNbKnots[1]);
 
   theSurf->UKnots(aKnotsU);
   theSurf->VKnots(aKnotsV);
 
-  Standard_Integer iLmI;
-  Standard_Integer iMin[2] = {-1, -1};
-  Standard_Integer iMax[2] = {-1, -1};
-  Standard_Integer aNbGridPnts[2];
-  Standard_Real    aFPar[2]  = {theFirstU, theFirstV};
-  Standard_Real    aLPar[2]  = {theLastU, theLastV};
-  Standard_Real    aFpTol[2] = {aFPar[0] + theTolerance, aFPar[1] + theTolerance};
-  Standard_Real    aFmTol[2] = {aFPar[0] - theTolerance, aFPar[1] - theTolerance};
-  Standard_Real    aLpTol[2] = {aLPar[0] + theTolerance, aLPar[1] + theTolerance};
-  Standard_Real    aLmTol[2] = {aLPar[0] - theTolerance, aLPar[1] - theTolerance};
+  int iLmI;
+  int iMin[2] = {-1, -1};
+  int iMax[2] = {-1, -1};
+  int aNbGridPnts[2];
+  double    aFPar[2]  = {theFirstU, theFirstV};
+  double    aLPar[2]  = {theLastU, theLastV};
+  double    aFpTol[2] = {aFPar[0] + theTolerance, aFPar[1] + theTolerance};
+  double    aFmTol[2] = {aFPar[0] - theTolerance, aFPar[1] - theTolerance};
+  double    aLpTol[2] = {aLPar[0] + theTolerance, aLPar[1] + theTolerance};
+  double    aLmTol[2] = {aLPar[0] - theTolerance, aLPar[1] - theTolerance};
 
   // Compute number of U and V grid points.
   for (j = 0; j < 2; j++)
   {
-    const TColStd_Array1OfReal& aKnots = (j == 0) ? aKnotsU : aKnotsV;
+    const NCollection_Array1<double>& aKnots = (j == 0) ? aKnotsU : aKnotsV;
 
     for (i = 1; i <= aNbKnots[j] && (iMin[j] == -1 || iMax[j] == -1); i++)
     {
@@ -2310,9 +2314,9 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
       theSurfaceData.SetRangeVGrid(aNbGridPnts[j]);
 
     // Setting the first and last parameters.
-    Standard_Integer iAbs = 1;
-    Standard_Real    aMinPar;
-    Standard_Real    aMaxPar = (j == 0) ? theLastU : theLastV;
+    int iAbs = 1;
+    double    aMinPar;
+    double    aMaxPar = (j == 0) ? theLastU : theLastV;
 
     for (i = iMin[j]; i < iMax[j]; i++)
     {
@@ -2345,7 +2349,7 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
       }
 
       // Compute grid parameters.
-      Standard_Real aDelta = (aMaxPar - aMinPar) / aNbSamples[j];
+      double aDelta = (aMaxPar - aMinPar) / aNbSamples[j];
 
       for (k = 0; k < aNbSamples[j]; k++, aMinPar += aDelta)
       {
@@ -2365,11 +2369,11 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
 
   // Compute of grid points.
   gp_Pnt           aPnt;
-  Standard_Real    aParU;
-  Standard_Real    aParV;
+  double    aParU;
+  double    aParV;
   gp_Vec           aDU, aDV;
-  Standard_Real    du = 0, dv = 0;
-  Standard_Boolean isCalcDefl = aNbGridPnts[0] < 30 && aNbGridPnts[1] < 30;
+  double    du = 0, dv = 0;
+  bool isCalcDefl = aNbGridPnts[0] < 30 && aNbGridPnts[1] < 30;
 
   Bnd_Box aGridBox, anExtBox;
 
@@ -2412,14 +2416,14 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
   }
 
   // Compute deflection.
-  Standard_Real aDef = 0.;
+  double aDef = 0.;
   if (isCalcDefl)
   {
-    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-    Standard_Real xmin1, ymin1, zmin1, xmax1, ymax1, zmax1;
+    double xmin, ymin, zmin, xmax, ymax, zmax;
+    double xmin1, ymin1, zmin1, xmax1, ymax1, zmax1;
     aGridBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
     anExtBox.Get(xmin1, ymin1, zmin1, xmax1, ymax1, zmax1);
-    Standard_Integer anExtCount = 0;
+    int anExtCount = 0;
     if (xmin1 < xmin)
     {
       aDef = std::max(xmin - xmin1, aDef);
@@ -2466,19 +2470,19 @@ void ComputeGridPoints(const Handle(Geom_BSplineSurface)& theSurf,
 // static function: BuildBox
 // purpose:  Compute bounding box.
 // ---------------------------------------------------------------------------------
-void BuildBox(const Handle(Geom_BSplineSurface)& theSurf,
-              const Standard_Real                theFirstU,
-              const Standard_Real                theLastU,
-              const Standard_Real                theFirstV,
-              const Standard_Real                theLastV,
+void BuildBox(const occ::handle<Geom_BSplineSurface>& theSurf,
+              const double                theFirstU,
+              const double                theLastU,
+              const double                theFirstV,
+              const double                theLastV,
               IntTools_SurfaceRangeLocalizeData& theSurfaceData,
               Bnd_Box&                           theBox)
 {
-  Standard_Integer i;
-  Standard_Integer j;
-  Standard_Integer aNbUPnts;
-  Standard_Integer aNbVPnts;
-  Standard_Real    aParam;
+  int i;
+  int j;
+  int aNbUPnts;
+  int aNbVPnts;
+  double    aParam;
   gp_Pnt           aPnt;
 
   theSurfaceData.SetFrame(theFirstU, theLastU, theFirstV, theLastV);
@@ -2532,29 +2536,29 @@ void BuildBox(const Handle(Geom_BSplineSurface)& theSurf,
 // static function: MergeSolutions
 // purpose:
 // ---------------------------------------------------------------------------------
-static void MergeSolutions(const IntTools_ListOfCurveRangeSample&   theListCurveRange,
-                           const IntTools_ListOfSurfaceRangeSample& theListSurfaceRange,
-                           IntTools_ListOfCurveRangeSample&         theListCurveRangeSort,
-                           IntTools_ListOfSurfaceRangeSample&       theListSurfaceRangeSort)
+static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   theListCurveRange,
+                           const NCollection_List<IntTools_SurfaceRangeSample>& theListSurfaceRange,
+                           NCollection_List<IntTools_CurveRangeSample>&         theListCurveRangeSort,
+                           NCollection_List<IntTools_SurfaceRangeSample>&       theListSurfaceRangeSort)
 {
   NCollection_IndexedMap<IntTools_SurfaceRangeSample> aMapToAvoid;
 
-  NCollection_DataMap<Standard_Integer, TColStd_ListOfInteger> aCurveIdMap;
+  NCollection_DataMap<int, NCollection_List<int>> aCurveIdMap;
   std::vector<IntTools_CurveRangeSample>                       aCurveRangeVector;
   aCurveRangeVector.reserve(theListCurveRange.Size());
 
-  IntTools_ListIteratorOfListOfCurveRangeSample   anItC(theListCurveRange);
-  IntTools_ListIteratorOfListOfSurfaceRangeSample anItS(theListSurfaceRange);
+  NCollection_List<IntTools_CurveRangeSample>::Iterator   anItC(theListCurveRange);
+  NCollection_List<IntTools_SurfaceRangeSample>::Iterator anItS(theListSurfaceRange);
 
-  Standard_Integer aCurveRangeId  = 0;
-  Standard_Integer aSurfRangeSize = 0;
+  int aCurveRangeId  = 0;
+  int aSurfRangeSize = 0;
   for (; anItS.More() && anItC.More(); anItS.Next(), anItC.Next(), ++aCurveRangeId)
   {
     aCurveRangeVector.push_back(anItC.Value());
-    Standard_Integer aSurfIndex = aMapToAvoid.Add(anItS.Value());
+    int aSurfIndex = aMapToAvoid.Add(anItS.Value());
     if (aSurfIndex > aSurfRangeSize)
     {
-      aCurveIdMap.Bound(aSurfIndex, TColStd_ListOfInteger())->Append(aCurveRangeId);
+      aCurveIdMap.Bound(aSurfIndex, NCollection_List<int>())->Append(aCurveRangeId);
       ++aSurfRangeSize;
     }
     else
@@ -2563,11 +2567,11 @@ static void MergeSolutions(const IntTools_ListOfCurveRangeSample&   theListCurve
     }
   }
 
-  for (Standard_Integer i = 1; i <= aMapToAvoid.Size(); i++)
+  for (int i = 1; i <= aMapToAvoid.Size(); i++)
   {
     const IntTools_SurfaceRangeSample& aSurfRange      = aMapToAvoid(i);
-    const TColStd_ListOfInteger&       aCurveRangeList = aCurveIdMap(i);
-    for (TColStd_ListOfInteger::Iterator anIter(aCurveRangeList); anIter.More(); anIter.Next())
+    const NCollection_List<int>&       aCurveRangeList = aCurveIdMap(i);
+    for (NCollection_List<int>::Iterator anIter(aCurveRangeList); anIter.More(); anIter.Next())
     {
       const IntTools_CurveRangeSample& aCurveRange = aCurveRangeVector[anIter.Value()];
 
@@ -2585,46 +2589,46 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
                           const IntTools_SurfaceRangeSample&       theSurfaceRange,
                           const IntTools_CurveRangeLocalizeData&   theCurveData,
                           const IntTools_SurfaceRangeLocalizeData& theSurfaceData,
-                          const Standard_Real                      DiffC,
-                          const Standard_Real                      DiffU,
-                          const Standard_Real                      DiffV,
-                          Standard_Boolean&                        bAllowSamplingC,
-                          Standard_Boolean&                        bAllowSamplingU,
-                          Standard_Boolean&                        bAllowSamplingV)
+                          const double                      DiffC,
+                          const double                      DiffU,
+                          const double                      DiffV,
+                          bool&                        bAllowSamplingC,
+                          bool&                        bAllowSamplingU,
+                          bool&                        bAllowSamplingV)
 {
 
-  const Standard_Real dLimit = 1000;
-  bAllowSamplingC            = Standard_True;
-  bAllowSamplingU            = Standard_True;
-  bAllowSamplingV            = Standard_True;
+  const double dLimit = 1000;
+  bAllowSamplingC            = true;
+  bAllowSamplingU            = true;
+  bAllowSamplingV            = true;
 
-  Standard_Integer aSamplesNb = theCurveRange.GetDepth() == 0 ? 1 : theCurveData.GetNbSample();
+  int aSamplesNb = theCurveRange.GetDepth() == 0 ? 1 : theCurveData.GetNbSample();
 
   // check
-  if ((pow((Standard_Real)theCurveData.GetNbSample(), (Standard_Real)(theCurveRange.GetDepth() + 1))
+  if ((pow((double)theCurveData.GetNbSample(), (double)(theCurveRange.GetDepth() + 1))
        > dLimit)
-      || ((DiffC / (Standard_Real)aSamplesNb) < theCurveData.GetMinRange()))
+      || ((DiffC / (double)aSamplesNb) < theCurveData.GetMinRange()))
   {
-    bAllowSamplingC = Standard_False;
+    bAllowSamplingC = false;
   }
 
   aSamplesNb = theSurfaceRange.GetDepthU() == 0 ? 1 : theSurfaceData.GetNbSampleU();
 
-  if ((pow((Standard_Real)theSurfaceData.GetNbSampleU(),
-           (Standard_Real)(theSurfaceRange.GetDepthU() + 1))
+  if ((pow((double)theSurfaceData.GetNbSampleU(),
+           (double)(theSurfaceRange.GetDepthU() + 1))
        > dLimit)
-      || ((DiffU / (Standard_Real)aSamplesNb) < theSurfaceData.GetMinRangeU()))
+      || ((DiffU / (double)aSamplesNb) < theSurfaceData.GetMinRangeU()))
   {
-    bAllowSamplingU = Standard_False;
+    bAllowSamplingU = false;
   }
 
   aSamplesNb = theSurfaceRange.GetDepthV() == 0 ? 1 : theSurfaceData.GetNbSampleV();
 
-  if ((pow((Standard_Real)theSurfaceData.GetNbSampleV(),
-           (Standard_Real)(theSurfaceRange.GetDepthV() + 1))
+  if ((pow((double)theSurfaceData.GetNbSampleV(),
+           (double)(theSurfaceRange.GetDepthV() + 1))
        > dLimit)
-      || ((DiffV / (Standard_Real)aSamplesNb) < theSurfaceData.GetMinRangeV()))
+      || ((DiffV / (double)aSamplesNb) < theSurfaceData.GetMinRangeV()))
   {
-    bAllowSamplingV = Standard_False;
+    bAllowSamplingV = false;
   }
 }

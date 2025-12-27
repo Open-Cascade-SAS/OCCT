@@ -91,9 +91,9 @@ public:
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfPolygons(Standard_Integer     theMaxVertexs,
-                            Standard_Integer     theMaxBounds,
-                            Standard_Integer     theMaxEdges,
+  Graphic3d_ArrayOfPolygons(int     theMaxVertexs,
+                            int     theMaxBounds,
+                            int     theMaxEdges,
                             Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_POLYGONS,
                                     theMaxVertexs,
@@ -107,13 +107,13 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
-  Graphic3d_ArrayOfPolygons(const Standard_Integer theMaxVertexs,
-                            const Standard_Integer theMaxBounds   = 0,
-                            const Standard_Integer theMaxEdges    = 0,
-                            const Standard_Boolean theHasVNormals = Standard_False,
-                            const Standard_Boolean theHasVColors  = Standard_False,
-                            const Standard_Boolean theHasBColors  = Standard_False,
-                            const Standard_Boolean theHasVTexels  = Standard_False)
+  Graphic3d_ArrayOfPolygons(const int theMaxVertexs,
+                            const int theMaxBounds   = 0,
+                            const int theMaxEdges    = 0,
+                            const bool theHasVNormals = false,
+                            const bool theHasVColors  = false,
+                            const bool theHasBColors  = false,
+                            const bool theHasVTexels  = false)
       : Graphic3d_ArrayOfPrimitives(
           Graphic3d_TOPA_POLYGONS,
           theMaxVertexs,
@@ -126,7 +126,5 @@ public:
   {
   }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfPolygons, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfPolygons_HeaderFile

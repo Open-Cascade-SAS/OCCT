@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
@@ -20,7 +20,7 @@
 
 StepVisual_StyleContextSelect::StepVisual_StyleContextSelect() {}
 
-Standard_Integer StepVisual_StyleContextSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_StyleContextSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,17 +33,17 @@ Standard_Integer StepVisual_StyleContextSelect::CaseNum(const Handle(Standard_Tr
   return 0;
 }
 
-Handle(StepRepr_Representation) StepVisual_StyleContextSelect::Representation() const
+occ::handle<StepRepr_Representation> StepVisual_StyleContextSelect::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_RepresentationItem) StepVisual_StyleContextSelect::RepresentationItem() const
+occ::handle<StepRepr_RepresentationItem> StepVisual_StyleContextSelect::RepresentationItem() const
 {
   return GetCasted(StepRepr_RepresentationItem, Value());
 }
 
-Handle(StepVisual_PresentationSet) StepVisual_StyleContextSelect::PresentationSet() const
+occ::handle<StepVisual_PresentationSet> StepVisual_StyleContextSelect::PresentationSet() const
 {
   return GetCasted(StepVisual_PresentationSet, Value());
 }

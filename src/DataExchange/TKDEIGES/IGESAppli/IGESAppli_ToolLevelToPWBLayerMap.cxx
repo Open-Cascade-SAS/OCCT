@@ -37,17 +37,17 @@
 IGESAppli_ToolLevelToPWBLayerMap::IGESAppli_ToolLevelToPWBLayerMap() {}
 
 void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
-  const Handle(IGESAppli_LevelToPWBLayerMap)& ent,
-  const Handle(IGESData_IGESReaderData)& /* IR */,
+  const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                        num, i;
-  Standard_Integer                        tempNbPropertyValues;
-  Handle(TColStd_HArray1OfInteger)        tempExchangeFileLevelNumber;
-  Handle(Interface_HArray1OfHAsciiString) tempNativeLevel;
-  Handle(TColStd_HArray1OfInteger)        tempPhysicalLayerNumber;
-  Handle(Interface_HArray1OfHAsciiString) tempExchangeFileLevelIdent;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                        num, i;
+  int                        tempNbPropertyValues;
+  occ::handle<TColStd_HArray1OfInteger>        tempExchangeFileLevelNumber;
+  occ::handle<Interface_HArray1OfHAsciiString> tempNativeLevel;
+  occ::handle<TColStd_HArray1OfInteger>        tempPhysicalLayerNumber;
+  occ::handle<Interface_HArray1OfHAsciiString> tempExchangeFileLevelIdent;
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
   if (!PR.ReadInteger(PR.Current(), "Number of definitions", num))
@@ -66,17 +66,17 @@ void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
       && !tempPhysicalLayerNumber.IsNull() && !tempExchangeFileLevelIdent.IsNull())
     for (i = 1; i <= num; i++)
     {
-      Standard_Integer tempEFLN;
+      int tempEFLN;
       // szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Exchange File Level Number", tempEFLN))
         tempExchangeFileLevelNumber->SetValue(i, tempEFLN);
-      Handle(TCollection_HAsciiString) tempNL;
+      occ::handle<TCollection_HAsciiString> tempNL;
       if (PR.ReadText(PR.Current(), "Native Level Identification", tempNL))
         tempNativeLevel->SetValue(i, tempNL);
-      Standard_Integer tempPLN;
+      int tempPLN;
       if (PR.ReadInteger(PR.Current(), "Physical Layer Number", tempPLN))
         tempPhysicalLayerNumber->SetValue(i, tempPLN);
-      Handle(TCollection_HAsciiString) tempEFLI;
+      occ::handle<TCollection_HAsciiString> tempEFLI;
       if (PR.ReadText(PR.Current(), "Exchange File Level Identification", tempEFLI))
         tempExchangeFileLevelIdent->SetValue(i, tempEFLI);
     }
@@ -89,10 +89,10 @@ void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
 }
 
 void IGESAppli_ToolLevelToPWBLayerMap::WriteOwnParams(
-  const Handle(IGESAppli_LevelToPWBLayerMap)& ent,
+  const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
   IGESData_IGESWriter&                        IW) const
 {
-  Standard_Integer i, num;
+  int i, num;
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->NbLevelToLayerDefs());
   for (num = ent->NbLevelToLayerDefs(), i = 1; i <= num; i++)
@@ -105,25 +105,25 @@ void IGESAppli_ToolLevelToPWBLayerMap::WriteOwnParams(
 }
 
 void IGESAppli_ToolLevelToPWBLayerMap::OwnShared(
-  const Handle(IGESAppli_LevelToPWBLayerMap)& /* ent */,
+  const occ::handle<IGESAppli_LevelToPWBLayerMap>& /* ent */,
   Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESAppli_ToolLevelToPWBLayerMap::OwnCopy(const Handle(IGESAppli_LevelToPWBLayerMap)& another,
-                                               const Handle(IGESAppli_LevelToPWBLayerMap)& ent,
+void IGESAppli_ToolLevelToPWBLayerMap::OwnCopy(const occ::handle<IGESAppli_LevelToPWBLayerMap>& another,
+                                               const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
                                                Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 tempNbPropertyValues = another->NbPropertyValues();
-  Standard_Integer                 num                  = another->NbLevelToLayerDefs();
-  Handle(TColStd_HArray1OfInteger) tempExchangeFileLevelNumber =
+  int                 tempNbPropertyValues = another->NbPropertyValues();
+  int                 num                  = another->NbLevelToLayerDefs();
+  occ::handle<TColStd_HArray1OfInteger> tempExchangeFileLevelNumber =
     new TColStd_HArray1OfInteger(1, num);
-  Handle(Interface_HArray1OfHAsciiString) tempNativeLevel =
+  occ::handle<Interface_HArray1OfHAsciiString> tempNativeLevel =
     new Interface_HArray1OfHAsciiString(1, num);
-  Handle(TColStd_HArray1OfInteger) tempPhysicalLayerNumber = new TColStd_HArray1OfInteger(1, num);
-  Handle(Interface_HArray1OfHAsciiString) tempExchangeFileLevelIdent =
+  occ::handle<TColStd_HArray1OfInteger> tempPhysicalLayerNumber = new TColStd_HArray1OfInteger(1, num);
+  occ::handle<Interface_HArray1OfHAsciiString> tempExchangeFileLevelIdent =
     new Interface_HArray1OfHAsciiString(1, num);
-  for (Standard_Integer i = 1; i <= num; i++)
+  for (int i = 1; i <= num; i++)
   {
     tempExchangeFileLevelNumber->SetValue(i, another->ExchangeFileLevelNumber(i));
     tempNativeLevel->SetValue(i, new TCollection_HAsciiString(another->NativeLevel(i)));
@@ -140,7 +140,7 @@ void IGESAppli_ToolLevelToPWBLayerMap::OwnCopy(const Handle(IGESAppli_LevelToPWB
 }
 
 IGESData_DirChecker IGESAppli_ToolLevelToPWBLayerMap::DirChecker(
-  const Handle(IGESAppli_LevelToPWBLayerMap)& /* ent */) const
+  const occ::handle<IGESAppli_LevelToPWBLayerMap>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 24);
   DC.Structure(IGESData_DefVoid);
@@ -155,18 +155,18 @@ IGESData_DirChecker IGESAppli_ToolLevelToPWBLayerMap::DirChecker(
 }
 
 void IGESAppli_ToolLevelToPWBLayerMap::OwnCheck(
-  const Handle(IGESAppli_LevelToPWBLayerMap)& /* ent */,
+  const occ::handle<IGESAppli_LevelToPWBLayerMap>& /* ent */,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& /* ach */) const
+  occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESAppli_ToolLevelToPWBLayerMap::OwnDump(const Handle(IGESAppli_LevelToPWBLayerMap)& ent,
+void IGESAppli_ToolLevelToPWBLayerMap::OwnDump(const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
                                                const IGESData_IGESDumper& /* dumper */,
                                                Standard_OStream&      S,
-                                               const Standard_Integer level) const
+                                               const int level) const
 {
-  Standard_Integer i, num;
+  int i, num;
   S << "IGESAppli_LevelToPWBLayerMap\n";
   S << "Number of property values : " << ent->NbPropertyValues() << "\n";
   S << "Exchange File Level Number :\n";

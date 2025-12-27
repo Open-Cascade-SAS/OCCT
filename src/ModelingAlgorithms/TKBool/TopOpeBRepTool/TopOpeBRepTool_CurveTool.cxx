@@ -47,9 +47,10 @@
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -61,16 +62,16 @@
 #ifdef OCCT_DEBUG
   #include <TopOpeBRepTool_KRO.hxx>
 TOPKRO                  KRO_CURVETOOL_APPRO("approximation");
-extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
-extern Standard_Boolean TopOpeBRepTool_GettracePCURV();
-extern Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL();
+extern bool TopOpeBRepTool_GettraceKRO();
+extern bool TopOpeBRepTool_GettracePCURV();
+extern bool TopOpeBRepTool_GettraceCHKBSPL();
 #endif
 // #define DRAW
 // #define IFV
 #define CurveImprovement
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-static Standard_Integer NbCalls = 0;
+static int NbCalls = 0;
 #endif
 //=================================================================================================
 
@@ -114,9 +115,9 @@ void TopOpeBRepTool_CurveTool::SetGeomTool(const TopOpeBRepTool_GeomTool& GT)
 
 //=================================================================================================
 
-Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC)
+Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurve& PC)
 {
-  Handle(Geom2d_Curve) C2D;
+  occ::handle<Geom2d_Curve> C2D;
   switch (PC.GetType())
   {
     case GeomAbs_Line:
@@ -145,56 +146,56 @@ Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC
 }
 
 //------------------------------------------------------------------
-static Standard_Boolean CheckApproxResults(const BRepApprox_Approx& Approx)
+static bool CheckApproxResults(const BRepApprox_Approx& Approx)
 //------------------------------------------------------------------
 {
   const AppParCurves_MultiBSpCurve& amc = Approx.Value(1);
-  Standard_Integer                  np  = amc.NbPoles();
-  Standard_Integer                  nc  = amc.NbCurves();
+  int                  np  = amc.NbPoles();
+  int                  nc  = amc.NbCurves();
   if (np < 2 || nc < 1)
-    return Standard_False;
+    return false;
 
   // check the knots for coincidence
-  const TColStd_Array1OfReal& knots = amc.Knots();
-  for (Standard_Integer i = knots.Lower(); i < knots.Upper(); i++)
+  const NCollection_Array1<double>& knots = amc.Knots();
+  for (int i = knots.Lower(); i < knots.Upper(); i++)
   {
     if (knots(i + 1) - knots(i) <= Epsilon(knots(i)))
     {
-      return Standard_False;
+      return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //------------------------------------------------------------------
-static Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, const TopoDS_Face& aFace)
+static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face& aFace)
 //------------------------------------------------------------------
 // check if points of the pcurve are out of the face bounds
 {
-  const Standard_Integer NPoints = 23;
-  Standard_Real          umin, umax, vmin, vmax;
+  const int NPoints = 23;
+  double          umin, umax, vmin, vmax;
 
   BRepTools::UVBounds(aFace, umin, umax, vmin, vmax);
-  Standard_Real tolU = std::max((umax - umin) * 0.01, Precision::Confusion());
-  Standard_Real tolV = std::max((vmax - vmin) * 0.01, Precision::Confusion());
-  Standard_Real fp   = aPC->FirstParameter();
-  Standard_Real lp   = aPC->LastParameter();
-  Standard_Real step = (lp - fp) / (NPoints + 1);
+  double tolU = std::max((umax - umin) * 0.01, Precision::Confusion());
+  double tolV = std::max((vmax - vmin) * 0.01, Precision::Confusion());
+  double fp   = aPC->FirstParameter();
+  double lp   = aPC->LastParameter();
+  double step = (lp - fp) / (NPoints + 1);
 
   // adjust domain for periodic surfaces
   TopLoc_Location      aLoc;
-  Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace, aLoc);
+  occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc);
   if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    aSurf = (Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf))->BasisSurface();
+    aSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf))->BasisSurface();
 
   gp_Pnt2d      pnt = aPC->Value((fp + lp) / 2);
-  Standard_Real u, v;
+  double u, v;
   pnt.Coord(u, v);
 
   if (aSurf->IsUPeriodic())
   {
-    Standard_Real    aPer   = aSurf->UPeriod();
-    Standard_Integer nshift = (Standard_Integer)((u - umin) / aPer);
+    double    aPer   = aSurf->UPeriod();
+    int nshift = (int)((u - umin) / aPer);
     if (u < umin + aPer * nshift)
       nshift--;
     umin += aPer * nshift;
@@ -202,120 +203,120 @@ static Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, const TopoD
   }
   if (aSurf->IsVPeriodic())
   {
-    Standard_Real    aPer   = aSurf->VPeriod();
-    Standard_Integer nshift = (Standard_Integer)((v - vmin) / aPer);
+    double    aPer   = aSurf->VPeriod();
+    int nshift = (int)((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
       nshift--;
     vmin += aPer * nshift;
     vmax += aPer * nshift;
   }
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= NPoints; i++)
   {
-    Standard_Real p = fp + i * step;
+    double p = fp + i * step;
     pnt             = aPC->Value(p);
     pnt.Coord(u, v);
     if (umin - u > tolU || u - umax > tolU || vmin - v > tolV || v - vmax > tolV)
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //------------------------------------------------------------------
-static Handle(Geom_Curve) MakeCurve3DfromWLineApprox(const BRepApprox_Approx& Approx,
-                                                     const Standard_Integer)
+static occ::handle<Geom_Curve> MakeCurve3DfromWLineApprox(const BRepApprox_Approx& Approx,
+                                                     const int)
 //------------------------------------------------------------------
 {
   const AppParCurves_MultiBSpCurve& amc = Approx.Value(1);
-  Standard_Integer                  np  = amc.NbPoles();
-  // Standard_Integer nc = amc.NbCurves();
-  TColgp_Array1OfPnt poles3d(1, np);
-  Standard_Integer   ic = 1;
+  int                  np  = amc.NbPoles();
+  // int nc = amc.NbCurves();
+  NCollection_Array1<gp_Pnt> poles3d(1, np);
+  int   ic = 1;
   // for (ic=1; ic<=nc; ic++) {
   // if (ic == CI) {
   amc.Curve(ic, poles3d);
   //}
   //}
 
-  const TColStd_Array1OfReal&    knots  = amc.Knots();
-  const TColStd_Array1OfInteger& mults  = amc.Multiplicities();
-  Standard_Integer               degree = amc.Degree();
-  Handle(Geom_Curve)             C3D    = new Geom_BSplineCurve(poles3d, knots, mults, degree);
+  const NCollection_Array1<double>&    knots  = amc.Knots();
+  const NCollection_Array1<int>& mults  = amc.Multiplicities();
+  int               degree = amc.Degree();
+  occ::handle<Geom_Curve>             C3D    = new Geom_BSplineCurve(poles3d, knots, mults, degree);
   return C3D;
 }
 
 //------------------------------------------------------------------
-static Handle(Geom2d_Curve) MakeCurve2DfromWLineApproxAndPlane(const BRepApprox_Approx& Approx,
+static occ::handle<Geom2d_Curve> MakeCurve2DfromWLineApproxAndPlane(const BRepApprox_Approx& Approx,
                                                                const gp_Pln&            Pl)
 //------------------------------------------------------------------
 {
   const AppParCurves_MultiBSpCurve& amc = Approx.Value(1);
-  Standard_Integer                  np  = amc.NbPoles();
-  TColgp_Array1OfPnt2d              poles2d(1, np);
-  TColgp_Array1OfPnt                poles3d(1, np);
+  int                  np  = amc.NbPoles();
+  NCollection_Array1<gp_Pnt2d>              poles2d(1, np);
+  NCollection_Array1<gp_Pnt>                poles3d(1, np);
   amc.Curve(1, poles3d);
-  for (Standard_Integer i = 1; i <= np; i++)
+  for (int i = 1; i <= np; i++)
   {
-    Standard_Real U, V;
+    double U, V;
     ElSLib::Parameters(Pl, poles3d.Value(i), U, V);
     poles2d.SetValue(i, gp_Pnt2d(U, V));
   }
-  const TColStd_Array1OfReal&    knots  = amc.Knots();
-  const TColStd_Array1OfInteger& mults  = amc.Multiplicities();
-  Standard_Integer               degree = amc.Degree();
-  Handle(Geom2d_Curve)           C2D    = new Geom2d_BSplineCurve(poles2d, knots, mults, degree);
+  const NCollection_Array1<double>&    knots  = amc.Knots();
+  const NCollection_Array1<int>& mults  = amc.Multiplicities();
+  int               degree = amc.Degree();
+  occ::handle<Geom2d_Curve>           C2D    = new Geom2d_BSplineCurve(poles2d, knots, mults, degree);
   return C2D;
 }
 
 //------------------------------------------------------------------
-static Handle(Geom2d_Curve) MakeCurve2DfromWLineApprox(const BRepApprox_Approx& Approx,
-                                                       const Standard_Integer   CI)
+static occ::handle<Geom2d_Curve> MakeCurve2DfromWLineApprox(const BRepApprox_Approx& Approx,
+                                                       const int   CI)
 //------------------------------------------------------------------
 {
   const AppParCurves_MultiBSpCurve& amc = Approx.Value(1);
-  Standard_Integer                  np  = amc.NbPoles();
-  TColgp_Array1OfPnt2d              poles2d(1, np);
-  Standard_Integer                  nc = amc.NbCurves();
-  for (Standard_Integer ic = 1; ic <= nc; ic++)
+  int                  np  = amc.NbPoles();
+  NCollection_Array1<gp_Pnt2d>              poles2d(1, np);
+  int                  nc = amc.NbCurves();
+  for (int ic = 1; ic <= nc; ic++)
     if (ic == CI)
       amc.Curve(ic, poles2d);
-  const TColStd_Array1OfReal&    knots  = amc.Knots();
-  const TColStd_Array1OfInteger& mults  = amc.Multiplicities();
-  Standard_Integer               degree = amc.Degree();
-  Handle(Geom2d_Curve)           C2D    = new Geom2d_BSplineCurve(poles2d, knots, mults, degree);
+  const NCollection_Array1<double>&    knots  = amc.Knots();
+  const NCollection_Array1<int>& mults  = amc.Multiplicities();
+  int               degree = amc.Degree();
+  occ::handle<Geom2d_Curve>           C2D    = new Geom2d_BSplineCurve(poles2d, knots, mults, degree);
   return C2D;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real         parmin,
-                                                      const Standard_Real         parmax,
-                                                      const Handle(Geom_Curve)&   C3D,
-                                                      const Handle(Geom2d_Curve)& PC1,
-                                                      const Handle(Geom2d_Curve)& PC2,
+bool TopOpeBRepTool_CurveTool::MakeCurves(const double         parmin,
+                                                      const double         parmax,
+                                                      const occ::handle<Geom_Curve>&   C3D,
+                                                      const occ::handle<Geom2d_Curve>& PC1,
+                                                      const occ::handle<Geom2d_Curve>& PC2,
                                                       const TopoDS_Shape&         S1,
                                                       const TopoDS_Shape&         S2,
-                                                      Handle(Geom_Curve)&         C3Dnew,
-                                                      Handle(Geom2d_Curve)&       PC1new,
-                                                      Handle(Geom2d_Curve)&       PC2new,
-                                                      Standard_Real&              TolReached3d,
-                                                      Standard_Real& TolReached2d) const
+                                                      occ::handle<Geom_Curve>&         C3Dnew,
+                                                      occ::handle<Geom2d_Curve>&       PC1new,
+                                                      occ::handle<Geom2d_Curve>&       PC2new,
+                                                      double&              TolReached3d,
+                                                      double& TolReached2d) const
 {
-  const Standard_Real TOLCHECK    = 1.e-7;
-  const Standard_Real TOLANGCHECK = 1.e-6;
+  const double TOLCHECK    = 1.e-7;
+  const double TOLANGCHECK = 1.e-6;
 
-  Standard_Boolean CompC3D = myGeomTool.CompC3D();
+  bool CompC3D = myGeomTool.CompC3D();
 
   // std::cout << "MakeCurves begin" << std::endl;
   if (!CompC3D)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean CompPC1 = myGeomTool.CompPC1();
-  Standard_Boolean CompPC2 = myGeomTool.CompPC2();
-  Standard_Real    tol3d, tol2d;
+  bool CompPC1 = myGeomTool.CompPC1();
+  bool CompPC2 = myGeomTool.CompPC2();
+  double    tol3d, tol2d;
   myGeomTool.GetTolerances(tol3d, tol2d);
-  Standard_Integer NbPntMax = myGeomTool.NbPntMax();
+  int NbPntMax = myGeomTool.NbPntMax();
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO())
@@ -337,36 +338,36 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   //*/
   //---------------------------------------------
 
-  Standard_Integer iparmin = (Standard_Integer)parmin;
-  Standard_Integer iparmax = (Standard_Integer)parmax;
+  int iparmin = (int)parmin;
+  int iparmax = (int)parmax;
 
-  Handle(Geom_BSplineCurve)   HC3D(Handle(Geom_BSplineCurve)::DownCast(C3D));
-  Handle(Geom2d_BSplineCurve) HPC1(Handle(Geom2d_BSplineCurve)::DownCast(PC1));
-  Handle(Geom2d_BSplineCurve) HPC2(Handle(Geom2d_BSplineCurve)::DownCast(PC2));
+  occ::handle<Geom_BSplineCurve>   HC3D(occ::down_cast<Geom_BSplineCurve>(C3D));
+  occ::handle<Geom2d_BSplineCurve> HPC1(occ::down_cast<Geom2d_BSplineCurve>(PC1));
+  occ::handle<Geom2d_BSplineCurve> HPC2(occ::down_cast<Geom2d_BSplineCurve>(PC2));
 
 //--------------------- IFV - "improving" initial curves
 #ifdef CurveImprovement
-  Standard_Integer nbpol = HC3D->NbPoles();
+  int nbpol = HC3D->NbPoles();
   // std::cout <<"nbpol = " << nbpol << std::endl;
   if (nbpol > 100)
   {
-    TColgp_Array1OfPnt      PolC3D(1, nbpol);
-    TColgp_Array1OfPnt2d    PolPC1(1, nbpol);
-    TColgp_Array1OfPnt2d    PolPC2(1, nbpol);
-    TColStd_Array1OfBoolean IsValid(1, nbpol);
-    IsValid.Init(Standard_True);
-    Standard_Real tol   = std::max(1.e-10, 100. * tol3d * tol3d); // tol *= tol; - square distance
-    Standard_Real tl2d  = tol * (tol2d * tol2d) / (tol3d * tol3d);
-    Standard_Real def   = tol;
-    Standard_Real def2d = tol2d;
+    NCollection_Array1<gp_Pnt>      PolC3D(1, nbpol);
+    NCollection_Array1<gp_Pnt2d>    PolPC1(1, nbpol);
+    NCollection_Array1<gp_Pnt2d>    PolPC2(1, nbpol);
+    NCollection_Array1<bool> IsValid(1, nbpol);
+    IsValid.Init(true);
+    double tol   = std::max(1.e-10, 100. * tol3d * tol3d); // tol *= tol; - square distance
+    double tl2d  = tol * (tol2d * tol2d) / (tol3d * tol3d);
+    double def   = tol;
+    double def2d = tol2d;
     HC3D->Poles(PolC3D);
     if (CompPC1)
       HPC1->Poles(PolPC1);
     if (CompPC2)
       HPC2->Poles(PolPC2);
 
-    Standard_Integer ip = 1, NbPol = 1;
-    Standard_Real    d, d1, d2;
+    int ip = 1, NbPol = 1;
+    double    d, d1, d2;
     gp_Pnt           P = PolC3D(ip);
     gp_Pnt2d         P1, P2;
     if (CompPC1)
@@ -397,7 +398,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
         }
         if (d > tol || d1 > tl2d || d2 > tl2d)
         {
-          Standard_Real dd = 0.;
+          double dd = 0.;
           if (ip < nbpol)
             dd = P.Distance(PolC3D(ip + 1));
           if (ip < nbpol && dd < 10. * tol)
@@ -433,12 +434,12 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
               }
               else
               {
-                IsValid(ip) = Standard_False;
+                IsValid(ip) = false;
               }
             }
             else
             {
-              IsValid(ip + 1) = Standard_False;
+              IsValid(ip + 1) = false;
               NbPol++;
               P = PolC3D(ip);
               if (CompPC1)
@@ -459,14 +460,14 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
         }
         else
         {
-          IsValid(ip) = Standard_False;
+          IsValid(ip) = false;
         }
       }
     }
 
     if (NbPol < 2)
     {
-      IsValid(nbpol) = Standard_True;
+      IsValid(nbpol) = true;
       NbPol++;
     }
 
@@ -475,15 +476,15 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   #ifdef IFV
       std::cout << "NbPol < nbpol : " << NbPol << " " << nbpol << std::endl;
   #endif
-      TColgp_Array1OfPnt      Polc3d(1, NbPol);
-      TColgp_Array1OfPnt2d    Polpc1(1, NbPol);
-      TColgp_Array1OfPnt2d    Polpc2(1, NbPol);
-      TColStd_Array1OfReal    knots(1, NbPol);
-      TColStd_Array1OfInteger mults(1, NbPol);
+      NCollection_Array1<gp_Pnt>      Polc3d(1, NbPol);
+      NCollection_Array1<gp_Pnt2d>    Polpc1(1, NbPol);
+      NCollection_Array1<gp_Pnt2d>    Polpc2(1, NbPol);
+      NCollection_Array1<double>    knots(1, NbPol);
+      NCollection_Array1<int> mults(1, NbPol);
       mults.Init(1);
       mults(1)               = 2;
       mults(NbPol)           = 2;
-      Standard_Integer count = 0;
+      int count = 0;
       for (ip = 1; ip <= nbpol; ip++)
       {
         if (IsValid(ip))
@@ -504,11 +505,11 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       if (CompPC2)
         Polpc2(NbPol) = PolPC2(nbpol);
 
-      const_cast<Handle(Geom_Curve)&>(C3D) = new Geom_BSplineCurve(Polc3d, knots, mults, 1);
+      const_cast<occ::handle<Geom_Curve>&>(C3D) = new Geom_BSplineCurve(Polc3d, knots, mults, 1);
       if (CompPC1)
-        const_cast<Handle(Geom2d_Curve)&>(PC1) = new Geom2d_BSplineCurve(Polpc1, knots, mults, 1);
+        const_cast<occ::handle<Geom2d_Curve>&>(PC1) = new Geom2d_BSplineCurve(Polpc1, knots, mults, 1);
       if (CompPC2)
-        const_cast<Handle(Geom2d_Curve)&>(PC2) = new Geom2d_BSplineCurve(Polpc2, knots, mults, 1);
+        const_cast<occ::handle<Geom2d_Curve>&>(PC2) = new Geom2d_BSplineCurve(Polpc2, knots, mults, 1);
       iparmax = NbPol;
 
   #ifdef IFV
@@ -529,20 +530,20 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 
   BRepApprox_Approx Approx;
 
-  Standard_Integer           degmin          = 4;
-  Standard_Integer           degmax          = 8;
+  int           degmin          = 4;
+  int           degmax          = 8;
   Approx_ParametrizationType parametrization = Approx_ChordLength;
 
-  Standard_Integer     npol = HC3D->NbPoles();
-  TColgp_Array1OfPnt   Polc3d(1, npol);
-  TColStd_Array1OfReal par(1, npol);
+  int     npol = HC3D->NbPoles();
+  NCollection_Array1<gp_Pnt>   Polc3d(1, npol);
+  NCollection_Array1<double> par(1, npol);
   HC3D->Poles(Polc3d);
   gp_Pnt P = Polc3d(1);
 
-  Standard_Boolean IsBad = Standard_False;
-  Standard_Integer ip;
-  Standard_Real    ksi = 0., kc, kcprev = 0.;
-  Standard_Real    dist;
+  bool IsBad = false;
+  int ip;
+  double    ksi = 0., kc, kcprev = 0.;
+  double    dist;
   par(1) = 0.;
   for (ip = 2; ip <= npol; ip++)
   {
@@ -550,7 +551,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 
     if (dist < Precision::Confusion())
     {
-      IsBad = Standard_True;
+      IsBad = true;
       break;
     }
 
@@ -561,11 +562,11 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   if (!IsBad)
   {
 
-    TColStd_Array1OfReal Curvature(1, npol);
+    NCollection_Array1<double> Curvature(1, npol);
 
     if (npol > 3)
     {
-      Standard_Integer ic = 1;
+      int ic = 1;
       for (ip = 2; ip <= npol - 1; ip += npol - 3)
       {
         gp_Vec v1(Polc3d(ip - 1), Polc3d(ip));
@@ -604,11 +605,11 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     }
 
     ip               = 1;
-    Standard_Real dt = par(ip + 1) - par(ip);
-    Standard_Real dx = (Polc3d(ip + 1).X() - Polc3d(ip).X()) / dt,
+    double dt = par(ip + 1) - par(ip);
+    double dx = (Polc3d(ip + 1).X() - Polc3d(ip).X()) / dt,
                   dy = (Polc3d(ip + 1).Y() - Polc3d(ip).Y()) / dt,
                   dz = (Polc3d(ip + 1).Z() - Polc3d(ip).Z()) / dt;
-    Standard_Real dx1, dy1, dz1, d2x, d2y, d2z, d2t;
+    double dx1, dy1, dz1, d2x, d2y, d2z, d2t;
 
     for (ip = 2; ip <= npol - 1; ip++)
     {
@@ -626,7 +627,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       dz            = dz1;
     }
 
-    Standard_Real crit = 1000.; // empirical criterion !!!
+    double crit = 1000.; // empirical criterion !!!
 
     dt     = par(2) - par(1);
     kcprev = (Curvature(2) - Curvature(1)) / dt;
@@ -637,7 +638,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       ksi = ksi + std::abs(kc - kcprev);
       if (ksi > crit)
       {
-        IsBad = Standard_True;
+        IsBad = true;
         break;
       }
       kc = kcprev;
@@ -648,7 +649,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 
   if (IsBad)
   {
-    Standard_Real tt = std::min(10. * tol3d, Precision::Approximation());
+    double tt = std::min(10. * tol3d, Precision::Approximation());
     tol2d            = tt * tol2d / tol3d;
     tol3d            = tt;
     NbPntMax         = 40;
@@ -656,14 +657,14 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     parametrization  = Approx_Centripetal;
   }
 
-  Standard_Integer nitmax       = 0; // use projection only
-  Standard_Boolean withtangency = Standard_True;
+  int nitmax       = 0; // use projection only
+  bool withtangency = true;
 
-  Standard_Boolean    compminmaxUV = Standard_True;
+  bool    compminmaxUV = true;
   BRepAdaptor_Surface BAS1(TopoDS::Face(S1), compminmaxUV);
   BRepAdaptor_Surface BAS2(TopoDS::Face(S2), compminmaxUV);
 
-  Handle(BRepApprox_ApproxLine) AL;
+  occ::handle<BRepApprox_ApproxLine> AL;
   AL = new BRepApprox_ApproxLine(HC3D, HPC1, HPC2);
 
   Approx
@@ -672,13 +673,13 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   if (CompC3D && CompPC1 && BAS1.GetType() == GeomAbs_Plane)
   {
     //-- The curve X,Y,Z and U2,V2 is approximated
-    Approx.Perform(BAS1, BAS2, AL, CompC3D, Standard_False, CompPC2, iparmin, iparmax);
+    Approx.Perform(BAS1, BAS2, AL, CompC3D, false, CompPC2, iparmin, iparmax);
   }
 
   else if (CompC3D && CompPC2 && BAS2.GetType() == GeomAbs_Plane)
   {
     //-- The curve X,Y,Z and U1,V1 is approximated
-    Approx.Perform(BAS1, BAS2, AL, CompC3D, CompPC1, Standard_False, iparmin, iparmax);
+    Approx.Perform(BAS1, BAS2, AL, CompC3D, CompPC1, false, iparmin, iparmax);
   }
 
   else
@@ -689,7 +690,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   // MSV Nov 9, 2001: do not raise exception in the case of failure,
   //                  but return status
 
-  Standard_Boolean done = Approx.IsDone();
+  bool done = Approx.IsDone();
   done                  = done && CheckApproxResults(Approx);
 
   if (done)
@@ -716,7 +717,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
         PC1new = ::MakeCurve2DfromWLineApprox(Approx, 2);
       if (CompPC2)
       {
-        Standard_Integer i32 = (CompPC1) ? 3 : 2;
+        int i32 = (CompPC1) ? 3 : 2;
         PC2new               = ::MakeCurve2DfromWLineApprox(Approx, i32);
       }
     }
@@ -736,7 +737,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
       PC1new.Nullify();
     if (CompPC2)
       PC2new.Nullify();
-    return Standard_False;
+    return false;
   }
 
 #ifdef IFV
@@ -764,9 +765,9 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
   std::cout << NbCalls << " : Tol = " << TolReached3d << " " << TolReached2d << std::endl;
 #endif
 
-  Standard_Boolean bf, bl;
+  bool bf, bl;
 
-  Handle(Geom_BSplineCurve) Curve(Handle(Geom_BSplineCurve)::DownCast(C3Dnew));
+  occ::handle<Geom_BSplineCurve> Curve(occ::down_cast<Geom_BSplineCurve>(C3Dnew));
   if (!Curve.IsNull())
   {
     GeomLib_CheckBSplineCurve cbsc(Curve, TOLCHECK, TOLANGCHECK);
@@ -785,7 +786,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     cbsc.FixTangent(bf, bl);
   }
 
-  Handle(Geom2d_BSplineCurve) Curve2df(Handle(Geom2d_BSplineCurve)::DownCast(PC1new));
+  occ::handle<Geom2d_BSplineCurve> Curve2df(occ::down_cast<Geom2d_BSplineCurve>(PC1new));
   if (!Curve2df.IsNull())
   {
     GeomLib_Check2dBSplineCurve cbsc2df(Curve2df, TOLCHECK, TOLANGCHECK);
@@ -803,7 +804,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
     cbsc2df.FixTangent(bf, bl);
   }
 
-  Handle(Geom2d_BSplineCurve) Curve2ds(Handle(Geom2d_BSplineCurve)::DownCast(PC2new));
+  occ::handle<Geom2d_BSplineCurve> Curve2ds(occ::down_cast<Geom2d_BSplineCurve>(PC2new));
   if (!Curve2ds.IsNull())
   {
     GeomLib_Check2dBSplineCurve cbsc2ds(Curve2ds, TOLCHECK, TOLANGCHECK);
@@ -827,31 +828,31 @@ Standard_Boolean TopOpeBRepTool_CurveTool::MakeCurves(const Standard_Real       
 #endif
   //  std::cout << "MakeCurves end" << std::endl;
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(const TColgp_Array1OfPnt& Points)
+occ::handle<Geom_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(const NCollection_Array1<gp_Pnt>& Points)
 {
-  Standard_Integer Degree = 1;
+  int Degree = 1;
 
-  Standard_Integer i, nbpoints = Points.Length();
-  Standard_Integer nbknots = nbpoints - Degree + 1;
+  int i, nbpoints = Points.Length();
+  int nbknots = nbpoints - Degree + 1;
 
   //  First compute the parameters
-  //  Standard_Real length = 0.;
-  //  TColStd_Array1OfReal parameters(1,nbpoints);
+  //  double length = 0.;
+  //  NCollection_Array1<double> parameters(1,nbpoints);
   //  for (i = 1; i < nbpoints; i++) {
   //    parameters(i) = length;
-  //    Standard_Real dist = Points(i).Distance(Points(i+1));
+  //    double dist = Points(i).Distance(Points(i+1));
   //    length += dist;
   //  }
   //  parameters(nbpoints) = length;
 
   // knots and multiplicities
-  TColStd_Array1OfReal    knots(1, nbknots);
-  TColStd_Array1OfInteger mults(1, nbknots);
+  NCollection_Array1<double>    knots(1, nbknots);
+  NCollection_Array1<int> mults(1, nbknots);
   mults.Init(1);
   mults(1) = mults(nbknots) = Degree + 1;
 
@@ -861,34 +862,34 @@ Handle(Geom_Curve) TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(const TColgp_Ar
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
-    knots(i) = (Standard_Real)i;
-  Handle(Geom_Curve) C = new Geom_BSplineCurve(Points, knots, mults, Degree);
+    knots(i) = (double)i;
+  occ::handle<Geom_Curve> C = new Geom_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(
-  const TColgp_Array1OfPnt2d& Points)
+occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(
+  const NCollection_Array1<gp_Pnt2d>& Points)
 {
-  Standard_Integer Degree = 1;
+  int Degree = 1;
 
-  Standard_Integer i, nbpoints = Points.Length();
-  Standard_Integer nbknots = nbpoints - Degree + 1;
+  int i, nbpoints = Points.Length();
+  int nbknots = nbpoints - Degree + 1;
 
   //  First compute the parameters
-  //  Standard_Real length = 0;
-  //  TColStd_Array1OfReal parameters(1,nbpoints);
+  //  double length = 0;
+  //  NCollection_Array1<double> parameters(1,nbpoints);
   //  for (i = 1; i < nbpoints; i++) {
   //    parameters(i) = length;
-  //    Standard_Real dist = Points(i).Distance(Points(i+1));
+  //    double dist = Points(i).Distance(Points(i+1));
   //    length += dist;
   //  }
   //  parameters(nbpoints) = length;
 
   // knots and multiplicities
-  TColStd_Array1OfReal    knots(1, nbknots);
-  TColStd_Array1OfInteger mults(1, nbknots);
+  NCollection_Array1<double>    knots(1, nbknots);
+  NCollection_Array1<int> mults(1, nbknots);
   mults.Init(1);
   mults(1) = mults(nbknots) = Degree + 1;
 
@@ -898,18 +899,18 @@ Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
-    knots(i) = (Standard_Real)i;
-  Handle(Geom2d_Curve) C = new Geom2d_BSplineCurve(Points, knots, mults, Degree);
+    knots(i) = (double)i;
+  occ::handle<Geom2d_Curve> C = new Geom2d_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepTool_CurveTool::IsProjectable(const TopoDS_Shape&       S,
-                                                         const Handle(Geom_Curve)& C3D)
+bool TopOpeBRepTool_CurveTool::IsProjectable(const TopoDS_Shape&       S,
+                                                         const occ::handle<Geom_Curve>& C3D)
 {
   const TopoDS_Face&  F            = TopoDS::Face(S);
-  Standard_Boolean    compminmaxUV = Standard_False;
+  bool    compminmaxUV = false;
   BRepAdaptor_Surface BAS(F, compminmaxUV);
   GeomAbs_SurfaceType suty = BAS.GetType();
   GeomAdaptor_Curve   GAC(C3D);
@@ -923,33 +924,33 @@ Standard_Boolean TopOpeBRepTool_CurveTool::IsProjectable(const TopoDS_Shape&    
   // NYI : projection of quadric on cone (crossing cone domain)
   // --------
 
-  Standard_Boolean projectable = Standard_True;
+  bool projectable = true;
   if (suty == GeomAbs_Cone)
   {
     if ((cuty == GeomAbs_Ellipse) || (cuty == GeomAbs_Hyperbola) || (cuty == GeomAbs_Parabola))
     {
-      projectable = Standard_False;
+      projectable = false;
     }
   }
   else if (suty == GeomAbs_Cylinder)
   {
     if (cuty == GeomAbs_Ellipse)
     {
-      projectable = Standard_False;
+      projectable = false;
     }
   }
   else if (suty == GeomAbs_Sphere)
   {
     if (cuty == GeomAbs_Circle)
     {
-      projectable = Standard_False;
+      projectable = false;
     }
   }
   else if (suty == GeomAbs_Torus)
   {
     if (cuty == GeomAbs_Circle)
     {
-      projectable = Standard_False;
+      projectable = false;
     }
   }
 
@@ -969,52 +970,52 @@ Standard_Boolean TopOpeBRepTool_CurveTool::IsProjectable(const TopoDS_Shape&    
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakePCurveOnFace(const TopoDS_Shape&       S,
-                                                                const Handle(Geom_Curve)& C3D,
-                                                                Standard_Real&      TolReached2d,
-                                                                const Standard_Real first,
-                                                                const Standard_Real last)
+occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakePCurveOnFace(const TopoDS_Shape&       S,
+                                                                const occ::handle<Geom_Curve>& C3D,
+                                                                double&      TolReached2d,
+                                                                const double first,
+                                                                const double last)
 
 {
-  Standard_Boolean trim = Standard_False;
+  bool trim = false;
   if (first < last)
-    trim = Standard_True;
+    trim = true;
 
   const TopoDS_Face&  F            = TopoDS::Face(S);
-  Standard_Boolean    compminmaxUV = Standard_False;
+  bool    compminmaxUV = false;
   BRepAdaptor_Surface BAS(F, compminmaxUV);
   GeomAdaptor_Curve   GAC;
   if (trim)
     GAC.Load(C3D, first, last);
   else
     GAC.Load(C3D);
-  Handle(BRepAdaptor_Surface) BAHS = new BRepAdaptor_Surface(BAS);
-  Handle(GeomAdaptor_Curve)   BAHC = new GeomAdaptor_Curve(GAC);
+  occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
+  occ::handle<GeomAdaptor_Curve>   BAHC = new GeomAdaptor_Curve(GAC);
   ProjLib_ProjectedCurve      projcurv(BAHS, BAHC);
-  Handle(Geom2d_Curve)        C2D = ::MakePCurve(projcurv);
+  occ::handle<Geom2d_Curve>        C2D = ::MakePCurve(projcurv);
   TolReached2d                    = projcurv.GetTolerance();
 
-  Standard_Real UMin, UMax, VMin, VMax;
+  double UMin, UMax, VMin, VMax;
   BRepTools::UVBounds(F, UMin, UMax, VMin, VMax);
 
-  Standard_Real f = GAC.FirstParameter();
-  Standard_Real l = GAC.LastParameter();
-  Standard_Real t = (f + l) * .5;
+  double f = GAC.FirstParameter();
+  double l = GAC.LastParameter();
+  double t = (f + l) * .5;
   gp_Pnt2d      pC2D;
   C2D->D0(t, pC2D);
-  Standard_Real u2 = pC2D.X();
-  Standard_Real v2 = pC2D.Y();
+  double u2 = pC2D.X();
+  double v2 = pC2D.Y();
 
   if (BAS.GetType() == GeomAbs_Sphere)
   {
     // MSV: consider quasiperiodic shift of pcurve
-    Standard_Real    VFirst  = BAS.FirstVParameter();
-    Standard_Real    VLast   = BAS.LastVParameter();
-    Standard_Boolean mincond = v2 < VFirst;
-    Standard_Boolean maxcond = v2 > VLast;
+    double    VFirst  = BAS.FirstVParameter();
+    double    VLast   = BAS.LastVParameter();
+    bool mincond = v2 < VFirst;
+    bool maxcond = v2 > VLast;
     if (mincond || maxcond)
     {
-      Handle(Geom2d_Curve) PCT = Handle(Geom2d_Curve)::DownCast(C2D->Copy());
+      occ::handle<Geom2d_Curve> PCT = occ::down_cast<Geom2d_Curve>(C2D->Copy());
       // make mirror relative to the isoline of apex -PI/2 or PI/2
       gp_Trsf2d aTrsf;
       gp_Pnt2d  po(0, -M_PI / 2);
@@ -1024,7 +1025,7 @@ Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakePCurveOnFace(const TopoDS_Sha
       PCT->Transform(aTrsf);
       // add translation along U direction on PI
       gp_Vec2d      vec(M_PI, 0);
-      Standard_Real UFirst = BAS.FirstUParameter();
+      double UFirst = BAS.FirstUParameter();
       if (u2 - UFirst - M_PI > -1e-7)
         vec.Reverse();
       PCT->Translate(vec);
@@ -1036,34 +1037,34 @@ Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakePCurveOnFace(const TopoDS_Sha
     }
   }
 
-  Standard_Real du = 0.;
+  double du = 0.;
   if (BAHS->IsUPeriodic())
   {
     // modified by NIZHNY-MZV  Thu Mar 30 10:03:15 2000
-    Standard_Boolean mincond = (UMin - u2 > 1e-7) ? Standard_True : Standard_False;
-    Standard_Boolean maxcond = (u2 - UMax > 1e-7) ? Standard_True : Standard_False;
-    Standard_Boolean decalu  = mincond || maxcond;
+    bool mincond = (UMin - u2 > 1e-7) ? true : false;
+    bool maxcond = (u2 - UMax > 1e-7) ? true : false;
+    bool decalu  = mincond || maxcond;
     if (decalu)
       du = (mincond) ? BAHS->UPeriod() : -BAHS->UPeriod();
-    // Standard_Boolean decalu = ( u2 < UMin || u2 > UMax);
+    // bool decalu = ( u2 < UMin || u2 > UMax);
     // if (decalu) du = ( u2 < UMin ) ? BAHS->UPeriod() : -BAHS->UPeriod();
   }
-  Standard_Real dv = 0.;
+  double dv = 0.;
   if (BAHS->IsVPeriodic())
   {
     // modified by NIZHNY-MZV  Thu Mar 30 10:06:24 2000
-    Standard_Boolean mincond = (VMin - v2 > 1e-7) ? Standard_True : Standard_False;
-    Standard_Boolean maxcond = (v2 - VMax > 1e-7) ? Standard_True : Standard_False;
-    Standard_Boolean decalv  = mincond || maxcond;
+    bool mincond = (VMin - v2 > 1e-7) ? true : false;
+    bool maxcond = (v2 - VMax > 1e-7) ? true : false;
+    bool decalv  = mincond || maxcond;
     if (decalv)
       dv = (mincond) ? BAHS->VPeriod() : -BAHS->VPeriod();
-    // Standard_Boolean decalv = ( v2 < VMin || v2 > VMax);
+    // bool decalv = ( v2 < VMin || v2 > VMax);
     // if (decalv) dv = ( v2 < VMin ) ? BAHS->VPeriod() : -BAHS->VPeriod();
   }
 
   if (du != 0. || dv != 0.)
   {
-    Handle(Geom2d_Curve) PCT = Handle(Geom2d_Curve)::DownCast(C2D->Copy());
+    occ::handle<Geom2d_Curve> PCT = occ::down_cast<Geom2d_Curve>(C2D->Copy());
     PCT->Translate(gp_Vec2d(du, dv));
     C2D = PCT;
   }

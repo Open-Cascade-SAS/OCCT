@@ -15,7 +15,7 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Blend_FuncInv.hxx>
 
-Standard_Integer Blend_FuncInv::NbVariables() const
+int Blend_FuncInv::NbVariables() const
 {
   return 4;
 }

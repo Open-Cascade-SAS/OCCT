@@ -30,10 +30,10 @@ RWStepShape_RWSubface::RWStepShape_RWSubface() {}
 
 //=================================================================================================
 
-void RWStepShape_RWSubface::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                     const Standard_Integer                 num,
-                                     Handle(Interface_Check)&               ach,
-                                     const Handle(StepShape_Subface)&       ent) const
+void RWStepShape_RWSubface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                     const int                 num,
+                                     occ::handle<Interface_Check>&               ach,
+                                     const occ::handle<StepShape_Subface>&       ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "subface"))
@@ -41,21 +41,21 @@ void RWStepShape_RWSubface::ReadStep(const Handle(StepData_StepReaderData)& data
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Inherited fields of Face
 
-  Handle(StepShape_HArray1OfFaceBound) aFace_Bounds;
-  Standard_Integer                     sub2 = 0;
+  occ::handle<StepShape_HArray1OfFaceBound> aFace_Bounds;
+  int                     sub2 = 0;
   if (data->ReadSubList(num, 2, "face.bounds", ach, sub2))
   {
-    Standard_Integer num2 = sub2;
-    Standard_Integer nb0  = data->NbParams(num2);
+    int num2 = sub2;
+    int nb0  = data->NbParams(num2);
     aFace_Bounds          = new StepShape_HArray1OfFaceBound(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepShape_FaceBound) anIt0;
+      occ::handle<StepShape_FaceBound> anIt0;
       data->ReadEntity(num2, i0, "face.bounds", ach, STANDARD_TYPE(StepShape_FaceBound), anIt0);
       aFace_Bounds->SetValue(i0, anIt0);
     }
@@ -63,7 +63,7 @@ void RWStepShape_RWSubface::ReadStep(const Handle(StepData_StepReaderData)& data
 
   // Own fields of Subface
 
-  Handle(StepShape_Face) aParentFace;
+  occ::handle<StepShape_Face> aParentFace;
   data->ReadEntity(num, 3, "parent_face", ach, STANDARD_TYPE(StepShape_Face), aParentFace);
 
   // Initialize entity
@@ -73,7 +73,7 @@ void RWStepShape_RWSubface::ReadStep(const Handle(StepData_StepReaderData)& data
 //=================================================================================================
 
 void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepShape_Subface)& ent) const
+                                      const occ::handle<StepShape_Subface>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -83,9 +83,9 @@ void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
   // Inherited fields of Face
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->StepShape_Face::Bounds()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->StepShape_Face::Bounds()->Length(); i1++)
   {
-    Handle(StepShape_FaceBound) Var0 = ent->StepShape_Face::Bounds()->Value(i1);
+    occ::handle<StepShape_FaceBound> Var0 = ent->StepShape_Face::Bounds()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -97,7 +97,7 @@ void RWStepShape_RWSubface::WriteStep(StepData_StepWriter&             SW,
 
 //=================================================================================================
 
-void RWStepShape_RWSubface::Share(const Handle(StepShape_Subface)& ent,
+void RWStepShape_RWSubface::Share(const occ::handle<StepShape_Subface>& ent,
                                   Interface_EntityIterator&        iter) const
 {
 
@@ -105,9 +105,9 @@ void RWStepShape_RWSubface::Share(const Handle(StepShape_Subface)& ent,
 
   // Inherited fields of Face
 
-  for (Standard_Integer i1 = 1; i1 <= ent->StepShape_Face::Bounds()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->StepShape_Face::Bounds()->Length(); i1++)
   {
-    Handle(StepShape_FaceBound) Var0 = ent->StepShape_Face::Bounds()->Value(i1);
+    occ::handle<StepShape_FaceBound> Var0 = ent->StepShape_Face::Bounds()->Value(i1);
     iter.AddItem(Var0);
   }
 

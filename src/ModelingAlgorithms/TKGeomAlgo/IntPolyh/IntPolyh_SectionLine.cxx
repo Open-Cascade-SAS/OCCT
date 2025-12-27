@@ -29,14 +29,14 @@ IntPolyh_SectionLine::IntPolyh_SectionLine() /*: n(0),nbstartpoints(0),ptr(0)*/ 
 
 //=================================================================================================
 
-IntPolyh_SectionLine::IntPolyh_SectionLine(const Standard_Integer N) /* : nbstartpoints(0)*/
+IntPolyh_SectionLine::IntPolyh_SectionLine(const int N) /* : nbstartpoints(0)*/
 {
   Init(N);
 }
 
 //=================================================================================================
 
-void IntPolyh_SectionLine::Init(const Standard_Integer /*N*/)
+void IntPolyh_SectionLine::Init(const int /*N*/)
 {
   //   ptr = (void*) (new IntPolyh_StartPoint [N]);
   //   n=N;
@@ -46,7 +46,7 @@ void IntPolyh_SectionLine::Init(const Standard_Integer /*N*/)
 
 //=================================================================================================
 
-Standard_Integer IntPolyh_SectionLine::GetN() const
+int IntPolyh_SectionLine::GetN() const
 {
   // return(n);
   return mySeqOfSPoints.Length();
@@ -54,7 +54,7 @@ Standard_Integer IntPolyh_SectionLine::GetN() const
 
 //=================================================================================================
 
-Standard_Integer IntPolyh_SectionLine::NbStartPoints() const
+int IntPolyh_SectionLine::NbStartPoints() const
 {
   //  return(nbstartpoints);
   return mySeqOfSPoints.Length() - 1;
@@ -71,14 +71,14 @@ void IntPolyh_SectionLine::IncrementNbStartPoints()
 
 //=================================================================================================
 
-const IntPolyh_StartPoint& IntPolyh_SectionLine::Value(const Standard_Integer Index) const
+const IntPolyh_StartPoint& IntPolyh_SectionLine::Value(const int Index) const
 {
   return mySeqOfSPoints(Index + 1);
 }
 
 //=================================================================================================
 
-IntPolyh_StartPoint& IntPolyh_SectionLine::ChangeValue(const Standard_Integer Index)
+IntPolyh_StartPoint& IntPolyh_SectionLine::ChangeValue(const int Index)
 {
   return mySeqOfSPoints(Index + 1);
 }
@@ -105,7 +105,7 @@ IntPolyh_SectionLine& IntPolyh_SectionLine::Copy(const IntPolyh_SectionLine& Oth
   //   Destroy();
   //   n=Other.n;
   //   ptr = (void *) (new IntPolyh_StartPoint[n]);
-  //   for(Standard_Integer i=0;i<=n;i++) {
+  //   for(int i=0;i<=n;i++) {
   //     (*this)[i]=Other[i];
   //   }
   mySeqOfSPoints = Other.mySeqOfSPoints;
@@ -117,7 +117,7 @@ IntPolyh_SectionLine& IntPolyh_SectionLine::Copy(const IntPolyh_SectionLine& Oth
 void IntPolyh_SectionLine::Dump() const
 {
   printf("\n SectionLine 0-> %d", /*nbstartpoints*/ NbStartPoints() - 1);
-  for (Standard_Integer i = 0; i < NbStartPoints(); i++)
+  for (int i = 0; i < NbStartPoints(); i++)
   {
     //(*this)[i].Dump(i);
     Value(i).Dump(i);

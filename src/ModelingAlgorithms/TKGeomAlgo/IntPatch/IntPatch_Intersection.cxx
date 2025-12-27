@@ -36,7 +36,7 @@
 //======================================================================
 // function: SequenceOfLine
 //======================================================================
-const IntPatch_SequenceOfLine& IntPatch_Intersection::SequenceOfLine() const
+const NCollection_Sequence<occ::handle<IntPatch_Line>>& IntPatch_Intersection::SequenceOfLine() const
 {
   return (slin);
 }
@@ -45,15 +45,15 @@ const IntPatch_SequenceOfLine& IntPatch_Intersection::SequenceOfLine() const
 // function: IntPatch_Intersection
 //======================================================================
 IntPatch_Intersection::IntPatch_Intersection()
-    : done(Standard_False),
-      empt(Standard_True),
-      tgte(Standard_False),
-      oppo(Standard_False),
+    : done(false),
+      empt(true),
+      tgte(false),
+      oppo(false),
       myTolArc(0.0),
       myTolTang(0.0),
       myUVMaxStep(0.0),
       myFleche(0.0),
-      myIsStartPnt(Standard_False),
+      myIsStartPnt(false),
       myU1Start(0.0),
       myV1Start(0.0),
       myU2Start(0.0),
@@ -64,21 +64,21 @@ IntPatch_Intersection::IntPatch_Intersection()
 //======================================================================
 // function: IntPatch_Intersection
 //======================================================================
-IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_Surface)&   S1,
-                                             const Handle(Adaptor3d_TopolTool)& D1,
-                                             const Handle(Adaptor3d_Surface)&   S2,
-                                             const Handle(Adaptor3d_TopolTool)& D2,
-                                             const Standard_Real                TolArc,
-                                             const Standard_Real                TolTang)
-    : done(Standard_False),
-      empt(Standard_True),
-      tgte(Standard_False),
-      oppo(Standard_False),
+IntPatch_Intersection::IntPatch_Intersection(const occ::handle<Adaptor3d_Surface>&   S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& D1,
+                                             const occ::handle<Adaptor3d_Surface>&   S2,
+                                             const occ::handle<Adaptor3d_TopolTool>& D2,
+                                             const double                TolArc,
+                                             const double                TolTang)
+    : done(false),
+      empt(true),
+      tgte(false),
+      oppo(false),
       myTolArc(TolArc),
       myTolTang(TolTang),
       myUVMaxStep(0.0),
       myFleche(0.0),
-      myIsStartPnt(Standard_False),
+      myIsStartPnt(false),
       myU1Start(0.0),
       myV1Start(0.0),
       myU2Start(0.0),
@@ -98,19 +98,19 @@ IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_Surface)&   
 //======================================================================
 // function: IntPatch_Intersection
 //======================================================================
-IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_Surface)&   S1,
-                                             const Handle(Adaptor3d_TopolTool)& D1,
-                                             const Standard_Real                TolArc,
-                                             const Standard_Real                TolTang)
-    : done(Standard_False),
-      empt(Standard_True),
-      tgte(Standard_False),
-      oppo(Standard_False),
+IntPatch_Intersection::IntPatch_Intersection(const occ::handle<Adaptor3d_Surface>&   S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& D1,
+                                             const double                TolArc,
+                                             const double                TolTang)
+    : done(false),
+      empt(true),
+      tgte(false),
+      oppo(false),
       myTolArc(TolArc),
       myTolTang(TolTang),
       myUVMaxStep(0.0),
       myFleche(0.0),
-      myIsStartPnt(Standard_False),
+      myIsStartPnt(false),
       myU1Start(0.0),
       myV1Start(0.0),
       myU2Start(0.0),
@@ -122,10 +122,10 @@ IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_Surface)&   
 //======================================================================
 // function: SetTolerances
 //======================================================================
-void IntPatch_Intersection::SetTolerances(const Standard_Real TolArc,
-                                          const Standard_Real TolTang,
-                                          const Standard_Real UVMaxStep,
-                                          const Standard_Real Fleche)
+void IntPatch_Intersection::SetTolerances(const double TolArc,
+                                          const double TolTang,
+                                          const double UVMaxStep,
+                                          const double Fleche)
 {
   myTolArc    = TolArc;
   myTolTang   = TolTang;
@@ -151,10 +151,10 @@ void IntPatch_Intersection::SetTolerances(const Standard_Real TolArc,
 //======================================================================
 // function: Perform
 //======================================================================
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
-                                    const Handle(Adaptor3d_TopolTool)& D1,
-                                    const Standard_Real                TolArc,
-                                    const Standard_Real                TolTang)
+void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
+                                    const occ::handle<Adaptor3d_TopolTool>& D1,
+                                    const double                TolArc,
+                                    const double                TolTang)
 {
   myTolArc  = TolArc;
   myTolTang = TolTang;
@@ -163,13 +163,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
   if (myUVMaxStep == 0.0)
     myUVMaxStep = 0.01;
 
-  done = Standard_True;
+  done = true;
   spnt.Clear();
   slin.Clear();
 
-  empt = Standard_True;
-  tgte = Standard_False;
-  oppo = Standard_False;
+  empt = true;
+  tgte = false;
+  oppo = false;
 
   switch (S1->GetType())
   {
@@ -182,14 +182,14 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
     case GeomAbs_SurfaceOfExtrusion: {
       gp_Dir                  aDirection = S1->Direction();
       gp_Ax3                  anAxis(gp::Origin(), aDirection);
-      Handle(Adaptor3d_Curve) aBasisCurve = S1->BasisCurve();
+      occ::handle<Adaptor3d_Curve> aBasisCurve = S1->BasisCurve();
       ProjLib_ProjectOnPlane  Projector(anAxis);
       Projector.Load(aBasisCurve, Precision::Confusion());
-      Handle(GeomAdaptor_Curve)   aProjCurve = Projector.GetResult();
-      Handle(Geom_Plane)          aPlane     = new Geom_Plane(anAxis);
-      Handle(GeomAdaptor_Surface) aGAHsurf   = new GeomAdaptor_Surface(aPlane);
+      occ::handle<GeomAdaptor_Curve>   aProjCurve = Projector.GetResult();
+      occ::handle<Geom_Plane>          aPlane     = new Geom_Plane(anAxis);
+      occ::handle<GeomAdaptor_Surface> aGAHsurf   = new GeomAdaptor_Surface(aPlane);
       ProjLib_ProjectedCurve      aProjectedCurve(aGAHsurf, aProjCurve);
-      Handle(Geom2d_Curve)        aPCurve;
+      occ::handle<Geom2d_Curve>        aPCurve;
       ProjLib::MakePCurveOfType(aProjectedCurve, aPCurve);
       Geom2dAdaptor_Curve AC(aPCurve,
                              aProjectedCurve.FirstParameter(),
@@ -201,17 +201,17 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
         break;
       }
     }
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     default: {
       IntPatch_PrmPrmIntersection interpp;
       interpp.Perform(S1, D1, TolTang, TolArc, myFleche, myUVMaxStep);
       if (interpp.IsDone())
       {
-        done                        = Standard_True;
-        tgte                        = Standard_False;
+        done                        = true;
+        tgte                        = false;
         empt                        = interpp.IsEmpty();
-        const Standard_Integer nblm = interpp.NbLines();
-        for (Standard_Integer i = 1; i <= nblm; i++)
+        const int nblm = interpp.NbLines();
+        for (int i = 1; i <= nblm; i++)
           slin.Append(interpp.Line(i));
       }
     }
@@ -228,8 +228,10 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
 //  c.) OffsetSurface.                                                     //
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Geom2d_Curve.hxx>
@@ -244,19 +246,19 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
 //===============================================================
 // function: FUN_GetMinMaxXYZPnt
 //===============================================================
-static void FUN_GetMinMaxXYZPnt(const Handle(Adaptor3d_Surface)& S, gp_Pnt& pMin, gp_Pnt& pMax)
+static void FUN_GetMinMaxXYZPnt(const occ::handle<Adaptor3d_Surface>& S, gp_Pnt& pMin, gp_Pnt& pMax)
 {
-  const Standard_Real DU      = 0.25 * std::abs(S->LastUParameter() - S->FirstUParameter());
-  const Standard_Real DV      = 0.25 * std::abs(S->LastVParameter() - S->FirstVParameter());
-  Standard_Real       tMinXYZ = RealLast();
-  Standard_Real       tMaxXYZ = -tMinXYZ;
+  const double DU      = 0.25 * std::abs(S->LastUParameter() - S->FirstUParameter());
+  const double DV      = 0.25 * std::abs(S->LastVParameter() - S->FirstVParameter());
+  double       tMinXYZ = RealLast();
+  double       tMaxXYZ = -tMinXYZ;
   gp_Pnt              PUV, ptMax, ptMin;
-  for (Standard_Real U = S->FirstUParameter(); U <= S->LastUParameter(); U += DU)
+  for (double U = S->FirstUParameter(); U <= S->LastUParameter(); U += DU)
   {
-    for (Standard_Real V = S->FirstVParameter(); V <= S->LastVParameter(); V += DV)
+    for (double V = S->FirstVParameter(); V <= S->LastVParameter(); V += DV)
     {
       S->D0(U, V, PUV);
-      const Standard_Real cXYZ = PUV.XYZ().Modulus();
+      const double cXYZ = PUV.XYZ().Modulus();
       if (cXYZ > tMaxXYZ)
       {
         tMaxXYZ = cXYZ;
@@ -278,19 +280,19 @@ static void FUN_GetMinMaxXYZPnt(const Handle(Adaptor3d_Surface)& S, gp_Pnt& pMin
 //==========================================================================
 static void FUN_TrimInfSurf(const gp_Pnt&                    Pmin,
                             const gp_Pnt&                    Pmax,
-                            const Handle(Adaptor3d_Surface)& InfSurf,
-                            const Standard_Real&             AlternativeTrimPrm,
-                            Handle(Adaptor3d_Surface)&       TrimS)
+                            const occ::handle<Adaptor3d_Surface>& InfSurf,
+                            const double&             AlternativeTrimPrm,
+                            occ::handle<Adaptor3d_Surface>&       TrimS)
 {
-  Standard_Real TP = AlternativeTrimPrm;
+  double TP = AlternativeTrimPrm;
   Extrema_ExtPS ext1(Pmin, *InfSurf, 1.e-7, 1.e-7);
   Extrema_ExtPS ext2(Pmax, *InfSurf, 1.e-7, 1.e-7);
   if (ext1.IsDone() || ext2.IsDone())
   {
-    Standard_Real Umax = -1.e+100, Umin = 1.e+100, Vmax = -1.e+100, Vmin = 1.e+100, cU, cV;
+    double Umax = -1.e+100, Umin = 1.e+100, Vmax = -1.e+100, Vmin = 1.e+100, cU, cV;
     if (ext1.IsDone())
     {
-      for (Standard_Integer i = 1; i <= ext1.NbExt(); i++)
+      for (int i = 1; i <= ext1.NbExt(); i++)
       {
         const Extrema_POnSurf& pons = ext1.Point(i);
         pons.Parameter(cU, cV);
@@ -306,7 +308,7 @@ static void FUN_TrimInfSurf(const gp_Pnt&                    Pmin,
     }
     if (ext2.IsDone())
     {
-      for (Standard_Integer i = 1; i <= ext2.NbExt(); i++)
+      for (int i = 1; i <= ext2.NbExt(); i++)
       {
         const Extrema_POnSurf& pons = ext2.Point(i);
         pons.Parameter(cU, cV);
@@ -330,13 +332,13 @@ static void FUN_TrimInfSurf(const gp_Pnt&                    Pmin,
   }
   else
   {
-    const Standard_Boolean    Uinf = Precision::IsNegativeInfinite(InfSurf->FirstUParameter());
-    const Standard_Boolean    Usup = Precision::IsPositiveInfinite(InfSurf->LastUParameter());
-    const Standard_Boolean    Vinf = Precision::IsNegativeInfinite(InfSurf->FirstVParameter());
-    const Standard_Boolean    Vsup = Precision::IsPositiveInfinite(InfSurf->LastVParameter());
-    Handle(Adaptor3d_Surface) TmpSS;
-    Standard_Integer          IsTrimed = 0;
-    const Standard_Real       tp       = 1000.0 * TP;
+    const bool    Uinf = Precision::IsNegativeInfinite(InfSurf->FirstUParameter());
+    const bool    Usup = Precision::IsPositiveInfinite(InfSurf->LastUParameter());
+    const bool    Vinf = Precision::IsNegativeInfinite(InfSurf->FirstVParameter());
+    const bool    Vsup = Precision::IsPositiveInfinite(InfSurf->LastVParameter());
+    occ::handle<Adaptor3d_Surface> TmpSS;
+    int          IsTrimed = 0;
+    const double       tp       = 1000.0 * TP;
     if (Vinf && Vsup)
     {
       TrimS    = InfSurf->VTrim(-tp, tp, 1.0e-7);
@@ -377,50 +379,50 @@ static void FUN_TrimInfSurf(const gp_Pnt&                    Pmin,
 //================================================================================
 // function: FUN_GetUiso
 //================================================================================
-static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
+static void FUN_GetUiso(const occ::handle<Geom_Surface>& GS,
                         const GeomAbs_SurfaceType&  T,
-                        const Standard_Real&        FirstV,
-                        const Standard_Real&        LastV,
-                        const Standard_Boolean&     IsVC,
-                        const Standard_Boolean&     IsVP,
-                        const Standard_Real&        U,
-                        Handle(Geom_Curve)&         I)
+                        const double&        FirstV,
+                        const double&        LastV,
+                        const bool&     IsVC,
+                        const bool&     IsVP,
+                        const double&        U,
+                        occ::handle<Geom_Curve>&         I)
 {
   if (T != GeomAbs_OffsetSurface)
   {
-    Handle(Geom_Curve) gc = GS->UIso(U);
+    occ::handle<Geom_Curve> gc = GS->UIso(U);
     if (IsVP && (FirstV == 0.0 && LastV == (2. * M_PI)))
       I = gc;
     else
     {
-      Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
-      // szv:I = Handle(Geom_Curve)::DownCast(gtc);
+      occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
+      // szv:I = occ::down_cast<Geom_Curve>(gtc);
       I = gtc;
     }
   }
   else // OffsetSurface
   {
-    const Handle(Geom_OffsetSurface) gos  = Handle(Geom_OffsetSurface)::DownCast(GS);
-    const Handle(Geom_Surface)       bs   = gos->BasisSurface();
-    Handle(Geom_Curve)               gcbs = bs->UIso(U);
+    const occ::handle<Geom_OffsetSurface> gos  = occ::down_cast<Geom_OffsetSurface>(GS);
+    const occ::handle<Geom_Surface>       bs   = gos->BasisSurface();
+    occ::handle<Geom_Curve>               gcbs = bs->UIso(U);
     GeomAdaptor_Curve                gac(gcbs);
     const GeomAbs_CurveType          GACT = gac.GetType();
     if (IsVP || IsVC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve
         || std::abs(LastV - FirstV) < 1.e+5)
     {
-      Handle(Geom_Curve) gc = gos->UIso(U);
+      occ::handle<Geom_Curve> gc = gos->UIso(U);
       if (IsVP && (FirstV == 0.0 && LastV == (2 * M_PI)))
         I = gc;
       else
       {
-        Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
-        // szv:I = Handle(Geom_Curve)::DownCast(gtc);
+        occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstV, LastV);
+        // szv:I = occ::down_cast<Geom_Curve>(gtc);
         I = gtc;
       }
     }
     else // Offset Line, Parab, Hyperb
     {
-      Standard_Real VmTr, VMTr;
+      double VmTr, VMTr;
       if (GACT != GeomAbs_Hyperbola)
       {
         if (FirstV >= 0. && LastV >= 0.)
@@ -462,8 +464,8 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
         }
       }
       // Make trimmed surface
-      Handle(Geom_RectangularTrimmedSurface) rts =
-        new Geom_RectangularTrimmedSurface(gos, VmTr, VMTr, Standard_True);
+      occ::handle<Geom_RectangularTrimmedSurface> rts =
+        new Geom_RectangularTrimmedSurface(gos, VmTr, VMTr, true);
       I = rts->UIso(U);
     }
   }
@@ -472,50 +474,50 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
 //================================================================================
 // function: FUN_GetViso
 //================================================================================
-static void FUN_GetViso(const Handle(Geom_Surface)& GS,
+static void FUN_GetViso(const occ::handle<Geom_Surface>& GS,
                         const GeomAbs_SurfaceType&  T,
-                        const Standard_Real&        FirstU,
-                        const Standard_Real&        LastU,
-                        const Standard_Boolean&     IsUC,
-                        const Standard_Boolean&     IsUP,
-                        const Standard_Real&        V,
-                        Handle(Geom_Curve)&         I)
+                        const double&        FirstU,
+                        const double&        LastU,
+                        const bool&     IsUC,
+                        const bool&     IsUP,
+                        const double&        V,
+                        occ::handle<Geom_Curve>&         I)
 {
   if (T != GeomAbs_OffsetSurface)
   {
-    Handle(Geom_Curve) gc = GS->VIso(V);
+    occ::handle<Geom_Curve> gc = GS->VIso(V);
     if (IsUP && (FirstU == 0.0 && LastU == (2 * M_PI)))
       I = gc;
     else
     {
-      Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
-      // szv:I = Handle(Geom_Curve)::DownCast(gtc);
+      occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
+      // szv:I = occ::down_cast<Geom_Curve>(gtc);
       I = gtc;
     }
   }
   else // OffsetSurface
   {
-    const Handle(Geom_OffsetSurface) gos  = Handle(Geom_OffsetSurface)::DownCast(GS);
-    const Handle(Geom_Surface)       bs   = gos->BasisSurface();
-    Handle(Geom_Curve)               gcbs = bs->VIso(V);
+    const occ::handle<Geom_OffsetSurface> gos  = occ::down_cast<Geom_OffsetSurface>(GS);
+    const occ::handle<Geom_Surface>       bs   = gos->BasisSurface();
+    occ::handle<Geom_Curve>               gcbs = bs->VIso(V);
     GeomAdaptor_Curve                gac(gcbs);
     const GeomAbs_CurveType          GACT = gac.GetType();
     if (IsUP || IsUC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve
         || std::abs(LastU - FirstU) < 1.e+5)
     {
-      Handle(Geom_Curve) gc = gos->VIso(V);
+      occ::handle<Geom_Curve> gc = gos->VIso(V);
       if (IsUP && (FirstU == 0.0 && LastU == (2 * M_PI)))
         I = gc;
       else
       {
-        Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
-        // szv:I = Handle(Geom_Curve)::DownCast(gtc);
+        occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(gc, FirstU, LastU);
+        // szv:I = occ::down_cast<Geom_Curve>(gtc);
         I = gtc;
       }
     }
     else // Offset Line, Parab, Hyperb
     {
-      Standard_Real UmTr, UMTr;
+      double UmTr, UMTr;
       if (GACT != GeomAbs_Hyperbola)
       {
         if (FirstU >= 0. && LastU >= 0.)
@@ -557,8 +559,8 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
         }
       }
       // Make trimmed surface
-      Handle(Geom_RectangularTrimmedSurface) rts =
-        new Geom_RectangularTrimmedSurface(gos, UmTr, UMTr, Standard_True);
+      occ::handle<Geom_RectangularTrimmedSurface> rts =
+        new Geom_RectangularTrimmedSurface(gos, UmTr, UMTr, true);
       I = rts->VIso(V);
     }
   }
@@ -567,44 +569,44 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
 //================================================================================
 // function: FUN_PL_Intersection
 //================================================================================
-static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
+static void FUN_PL_Intersection(const occ::handle<Adaptor3d_Surface>& S1,
                                 const GeomAbs_SurfaceType&       T1,
-                                const Handle(Adaptor3d_Surface)& S2,
+                                const occ::handle<Adaptor3d_Surface>& S2,
                                 const GeomAbs_SurfaceType&       T2,
-                                Standard_Boolean&                IsOk,
-                                TColgp_SequenceOfPnt&            SP,
+                                bool&                IsOk,
+                                NCollection_Sequence<gp_Pnt>&            SP,
                                 gp_Vec&                          DV)
 {
-  IsOk = Standard_False;
+  IsOk = false;
   // 1. Check: both surfaces have U(V)isos - lines.
   DV                                        = gp_Vec(0., 0., 1.);
-  Standard_Boolean           isoS1isLine[2] = {0, 0};
-  Standard_Boolean           isoS2isLine[2] = {0, 0};
-  Handle(Geom_Curve)         C1, C2;
+  bool           isoS1isLine[2] = {0, 0};
+  bool           isoS2isLine[2] = {0, 0};
+  occ::handle<Geom_Curve>         C1, C2;
   const GeomAdaptor_Surface& gas1 = *(GeomAdaptor_Surface*)(S1.get());
   const GeomAdaptor_Surface& gas2 = *(GeomAdaptor_Surface*)(S2.get());
-  const Handle(Geom_Surface) gs1  = gas1.Surface();
-  const Handle(Geom_Surface) gs2  = gas2.Surface();
-  Standard_Real              MS1[2], MS2[2];
+  const occ::handle<Geom_Surface> gs1  = gas1.Surface();
+  const occ::handle<Geom_Surface> gs2  = gas2.Surface();
+  double              MS1[2], MS2[2];
   MS1[0] = 0.5 * (S1->LastUParameter() + S1->FirstUParameter());
   MS1[1] = 0.5 * (S1->LastVParameter() + S1->FirstVParameter());
   MS2[0] = 0.5 * (S2->LastUParameter() + S2->FirstUParameter());
   MS2[1] = 0.5 * (S2->LastVParameter() + S2->FirstVParameter());
   if (T1 == GeomAbs_SurfaceOfExtrusion)
-    isoS1isLine[0] = Standard_True;
+    isoS1isLine[0] = true;
   else if (!S1->IsVPeriodic() && !S1->IsVClosed())
   {
     if (T1 != GeomAbs_OffsetSurface)
       C1 = gs1->UIso(MS1[0]);
     else
     {
-      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs1);
-      const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+      const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs1);
+      const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
       C1                                   = bs->UIso(MS1[0]);
     }
     GeomAdaptor_Curve gac(C1);
     if (gac.GetType() == GeomAbs_Line)
-      isoS1isLine[0] = Standard_True;
+      isoS1isLine[0] = true;
   }
   if (!S1->IsUPeriodic() && !S1->IsUClosed())
   {
@@ -612,29 +614,29 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
       C1 = gs1->VIso(MS1[1]);
     else
     {
-      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs1);
-      const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+      const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs1);
+      const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
       C1                                   = bs->VIso(MS1[1]);
     }
     GeomAdaptor_Curve gac(C1);
     if (gac.GetType() == GeomAbs_Line)
-      isoS1isLine[1] = Standard_True;
+      isoS1isLine[1] = true;
   }
   if (T2 == GeomAbs_SurfaceOfExtrusion)
-    isoS2isLine[0] = Standard_True;
+    isoS2isLine[0] = true;
   else if (!S2->IsVPeriodic() && !S2->IsVClosed())
   {
     if (T2 != GeomAbs_OffsetSurface)
       C2 = gs2->UIso(MS2[0]);
     else
     {
-      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs2);
-      const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+      const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs2);
+      const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
       C2                                   = bs->UIso(MS2[0]);
     }
     GeomAdaptor_Curve gac(C2);
     if (gac.GetType() == GeomAbs_Line)
-      isoS2isLine[0] = Standard_True;
+      isoS2isLine[0] = true;
   }
   if (!S2->IsUPeriodic() && !S2->IsUClosed())
   {
@@ -642,15 +644,15 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
       C2 = gs2->VIso(MS2[1]);
     else
     {
-      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs2);
-      const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+      const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs2);
+      const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
       C2                                   = bs->VIso(MS2[1]);
     }
     GeomAdaptor_Curve gac(C2);
     if (gac.GetType() == GeomAbs_Line)
-      isoS2isLine[1] = Standard_True;
+      isoS2isLine[1] = true;
   }
-  Standard_Boolean IsBothLines =
+  bool IsBothLines =
     ((isoS1isLine[0] || isoS1isLine[1]) && (isoS2isLine[0] || isoS2isLine[1]));
   if (!IsBothLines)
   {
@@ -663,7 +665,7 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
   S2->D1(MS2[0], MS2[1], puvS2, derS2[0], derS2[1]);
   C1.Nullify();
   C2.Nullify();
-  Standard_Integer iso = 0;
+  int iso = 0;
   if (isoS1isLine[0] && isoS2isLine[0] && derS1[1].IsParallel(derS2[1], Precision::Angular()))
   {
     iso = 1;
@@ -746,25 +748,25 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
   }
   else
   {
-    IsOk = Standard_False;
+    IsOk = false;
     return;
   }
-  IsOk = Standard_True;
+  IsOk = true;
   // 3. Make intersections of V(U)isos
   if (C1.IsNull() || C2.IsNull())
     return;
   DV                       = derS1[iso];
-  Handle(Geom_Plane) GPln  = new Geom_Plane(gp_Pln(puvS1, gp_Dir(DV)));
-  Handle(Geom_Curve) C1Prj = GeomProjLib::ProjectOnPlane(C1, GPln, gp_Dir(DV), Standard_True);
-  Handle(Geom_Curve) C2Prj = GeomProjLib::ProjectOnPlane(C2, GPln, gp_Dir(DV), Standard_True);
+  occ::handle<Geom_Plane> GPln  = new Geom_Plane(gp_Pln(puvS1, gp_Dir(DV)));
+  occ::handle<Geom_Curve> C1Prj = GeomProjLib::ProjectOnPlane(C1, GPln, gp_Dir(DV), true);
+  occ::handle<Geom_Curve> C2Prj = GeomProjLib::ProjectOnPlane(C2, GPln, gp_Dir(DV), true);
   if (C1Prj.IsNull() || C2Prj.IsNull())
     return;
-  Handle(Geom2d_Curve)      C1Prj2d = GeomProjLib::Curve2d(C1Prj, GPln);
-  Handle(Geom2d_Curve)      C2Prj2d = GeomProjLib::Curve2d(C2Prj, GPln);
+  occ::handle<Geom2d_Curve>      C1Prj2d = GeomProjLib::Curve2d(C1Prj, GPln);
+  occ::handle<Geom2d_Curve>      C2Prj2d = GeomProjLib::Curve2d(C2Prj, GPln);
   Geom2dAPI_InterCurveCurve ICC(C1Prj2d, C2Prj2d, 1.0e-7);
   if (ICC.NbPoints() > 0)
   {
-    for (Standard_Integer ip = 1; ip <= ICC.NbPoints(); ip++)
+    for (int ip = 1; ip <= ICC.NbPoints(); ip++)
     {
       gp_Pnt2d P   = ICC.Point(ip);
       gp_Pnt   P3d = ElCLib::To3d(gp_Ax2(puvS1, gp_Dir(DV)), P);
@@ -777,16 +779,16 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_Surface)& S1,
 // function: FUN_NewFirstLast
 //================================================================================
 static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
-                             const Standard_Real&     Fst,
-                             const Standard_Real&     Lst,
-                             const Standard_Real&     TrVal,
-                             Standard_Real&           NewFst,
-                             Standard_Real&           NewLst,
-                             Standard_Boolean&        NeedTr)
+                             const double&     Fst,
+                             const double&     Lst,
+                             const double&     TrVal,
+                             double&           NewFst,
+                             double&           NewLst,
+                             bool&        NeedTr)
 {
   NewFst = Fst;
   NewLst = Lst;
-  NeedTr = Standard_False;
+  NeedTr = false;
   switch (ga_ct)
   {
     case GeomAbs_Line:
@@ -808,7 +810,7 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
           NewFst = (Fst < -TrVal) ? -TrVal : Fst;
           NewLst = (Lst > TrVal) ? TrVal : Lst;
         }
-        NeedTr = Standard_True;
+        NeedTr = true;
       }
       break;
     }
@@ -834,7 +836,7 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
           NewFst = (Fst < -4.) ? -4. : Fst;
           NewLst = (Lst > 4.) ? 4. : Lst;
         }
-        NeedTr = Standard_True;
+        NeedTr = true;
       }
       break;
     }
@@ -846,23 +848,23 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
 //================================================================================
 // function: FUN_TrimBothSurf
 //================================================================================
-static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
+static void FUN_TrimBothSurf(const occ::handle<Adaptor3d_Surface>& S1,
                              const GeomAbs_SurfaceType&       T1,
-                             const Handle(Adaptor3d_Surface)& S2,
+                             const occ::handle<Adaptor3d_Surface>& S2,
                              const GeomAbs_SurfaceType&       T2,
-                             const Standard_Real&             TV,
-                             Handle(Adaptor3d_Surface)&       NS1,
-                             Handle(Adaptor3d_Surface)&       NS2)
+                             const double&             TV,
+                             occ::handle<Adaptor3d_Surface>&       NS1,
+                             occ::handle<Adaptor3d_Surface>&       NS2)
 {
   const GeomAdaptor_Surface& gas1 = *(GeomAdaptor_Surface*)(S1.get());
   const GeomAdaptor_Surface& gas2 = *(GeomAdaptor_Surface*)(S2.get());
-  const Handle(Geom_Surface) gs1  = gas1.Surface();
-  const Handle(Geom_Surface) gs2  = gas2.Surface();
-  const Standard_Real        UM1  = 0.5 * (S1->LastUParameter() + S1->FirstUParameter());
-  const Standard_Real        UM2  = 0.5 * (S2->LastUParameter() + S2->FirstUParameter());
-  const Standard_Real        VM1  = 0.5 * (S1->LastVParameter() + S1->FirstVParameter());
-  const Standard_Real        VM2  = 0.5 * (S2->LastVParameter() + S2->FirstVParameter());
-  Handle(Geom_Curve)         visoS1, visoS2, uisoS1, uisoS2;
+  const occ::handle<Geom_Surface> gs1  = gas1.Surface();
+  const occ::handle<Geom_Surface> gs2  = gas2.Surface();
+  const double        UM1  = 0.5 * (S1->LastUParameter() + S1->FirstUParameter());
+  const double        UM2  = 0.5 * (S2->LastUParameter() + S2->FirstUParameter());
+  const double        VM1  = 0.5 * (S1->LastVParameter() + S1->FirstVParameter());
+  const double        VM2  = 0.5 * (S2->LastVParameter() + S2->FirstVParameter());
+  occ::handle<Geom_Curve>         visoS1, visoS2, uisoS1, uisoS2;
   if (T1 != GeomAbs_OffsetSurface)
   {
     visoS1 = gs1->VIso(VM1);
@@ -870,8 +872,8 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
   }
   else
   {
-    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs1);
-    const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+    const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs1);
+    const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
     visoS1                               = bs->VIso(VM1);
     uisoS1                               = bs->UIso(UM1);
   }
@@ -882,8 +884,8 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
   }
   else
   {
-    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast(gs2);
-    const Handle(Geom_Surface)       bs  = gos->BasisSurface();
+    const occ::handle<Geom_OffsetSurface> gos = occ::down_cast<Geom_OffsetSurface>(gs2);
+    const occ::handle<Geom_Surface>       bs  = gos->BasisSurface();
     visoS2                               = bs->VIso(VM2);
     uisoS2                               = bs->UIso(UM2);
   }
@@ -901,11 +903,11 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
   GeomAbs_CurveType GA_V1 = gav1.GetType();
   GeomAbs_CurveType GA_U2 = gau2.GetType();
   GeomAbs_CurveType GA_V2 = gav2.GetType();
-  Standard_Boolean  TrmU1 = Standard_False;
-  Standard_Boolean  TrmV1 = Standard_False;
-  Standard_Boolean  TrmU2 = Standard_False;
-  Standard_Boolean  TrmV2 = Standard_False;
-  Standard_Real     V1S1, V2S1, U1S1, U2S1, V1S2, V2S2, U1S2, U2S2;
+  bool  TrmU1 = false;
+  bool  TrmV1 = false;
+  bool  TrmU2 = false;
+  bool  TrmV2 = false;
+  double     V1S1, V2S1, U1S1, U2S1, V1S2, V2S2, U1S2, U2S2;
   FUN_NewFirstLast(GA_U1, S1->FirstVParameter(), S1->LastVParameter(), TV, V1S1, V2S1, TrmV1);
   FUN_NewFirstLast(GA_V1, S1->FirstUParameter(), S1->LastUParameter(), TV, U1S1, U2S1, TrmU1);
   FUN_NewFirstLast(GA_U2, S2->FirstVParameter(), S2->LastVParameter(), TV, V1S2, V2S2, TrmV2);
@@ -918,7 +920,7 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
   {
     if (TrmV1)
     {
-      Handle(Adaptor3d_Surface) TS = NS1;
+      occ::handle<Adaptor3d_Surface> TS = NS1;
       NS1                          = TS->UTrim(U1S1, U2S1, 1.0e-7);
     }
     else
@@ -928,7 +930,7 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
   {
     if (TrmV2)
     {
-      Handle(Adaptor3d_Surface) TS = NS2;
+      occ::handle<Adaptor3d_Surface> TS = NS2;
       NS2                          = TS->UTrim(U1S2, U2S2, 1.0e-7);
     }
     else
@@ -938,15 +940,15 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_Surface)& S1,
 
 //=================================================================================================
 
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
-                                    const Handle(Adaptor3d_TopolTool)& theD1,
-                                    const Handle(Adaptor3d_Surface)&   theS2,
-                                    const Handle(Adaptor3d_TopolTool)& theD2,
-                                    const Standard_Real                TolArc,
-                                    const Standard_Real                TolTang,
-                                    const Standard_Boolean             isGeomInt,
-                                    const Standard_Boolean             theIsReqToKeepRLine,
-                                    const Standard_Boolean             theIsReqToPostWLProc)
+void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                    const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                    const occ::handle<Adaptor3d_Surface>&   theS2,
+                                    const occ::handle<Adaptor3d_TopolTool>& theD2,
+                                    const double                TolArc,
+                                    const double                TolTang,
+                                    const bool             isGeomInt,
+                                    const bool             theIsReqToKeepRLine,
+                                    const bool             theIsReqToPostWLProc)
 {
   myTolArc  = TolArc;
   myTolTang = TolTang;
@@ -955,45 +957,45 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   if (myUVMaxStep <= Precision::PConfusion())
     myUVMaxStep = 0.01;
 
-  done = Standard_False;
+  done = false;
   spnt.Clear();
   slin.Clear();
-  empt = Standard_True;
-  tgte = Standard_False;
-  oppo = Standard_False;
+  empt = true;
+  tgte = false;
+  oppo = false;
 
   GeomAbs_SurfaceType typs1 = theS1->GetType();
   GeomAbs_SurfaceType typs2 = theS2->GetType();
 
   // treatment of the cases with cone or torus
-  Standard_Boolean TreatAsBiParametric = Standard_False;
-  Standard_Integer bGeomGeom           = 0;
+  bool TreatAsBiParametric = false;
+  int bGeomGeom           = 0;
   //
   if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone || typs1 == GeomAbs_Torus
       || typs2 == GeomAbs_Torus)
   {
     gp_Ax1              aCTAx, aGeomAx;
     GeomAbs_SurfaceType aCTType;
-    Standard_Boolean    bToCheck;
+    bool    bToCheck;
     //
-    const Handle(Adaptor3d_Surface)& aCTSurf =
+    const occ::handle<Adaptor3d_Surface>& aCTSurf =
       (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS1 : theS2;
-    const Handle(Adaptor3d_Surface)& aGeomSurf =
+    const occ::handle<Adaptor3d_Surface>& aGeomSurf =
       (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS2 : theS1;
     //
     aCTType  = aCTSurf->GetType();
-    bToCheck = Standard_False;
+    bToCheck = false;
     //
     if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone)
     {
       const gp_Cone aCon1 = (aCTType == GeomAbs_Cone) ? aCTSurf->Cone() : aGeomSurf->Cone();
-      Standard_Real a1    = std::abs(aCon1.SemiAngle());
+      double a1    = std::abs(aCon1.SemiAngle());
       bToCheck            = (a1 < 0.02) || (a1 > 1.55);
       //
       if (typs1 == typs2)
       {
         const gp_Cone aCon2 = aGeomSurf->Cone();
-        Standard_Real a2    = std::abs(aCon2.SemiAngle());
+        double a2    = std::abs(aCon2.SemiAngle());
         bToCheck            = bToCheck || (a2 < 0.02) || (a2 > 1.55);
         //
         if (a1 > 1.55 && a2 > 1.55)
@@ -1005,7 +1007,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
             const gp_Pln Plan1(Apex1, A1.Direction());
             if (Plan1.Distance(Apex2) <= Precision::Confusion())
             {
-              bToCheck = Standard_False;
+              bToCheck = false;
             }
           }
         }
@@ -1047,7 +1049,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
             bGeomGeom = 1;
             if (std::abs(aCTSurf->Cone().SemiAngle()) < 0.02)
             {
-              Standard_Real ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+              double ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
               if (ps < 0.015)
               {
                 bGeomGeom = 0;
@@ -1063,7 +1065,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
               bGeomGeom = 1;
             }
           }
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
         }
         case GeomAbs_Sphere: {
@@ -1071,7 +1073,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           {
             bGeomGeom = 1;
           }
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
         }
         case GeomAbs_Cylinder:
@@ -1084,7 +1086,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           aGeomAx = aGeomSurf->Torus().Axis();
           break;
         default:
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
       }
       //
@@ -1099,7 +1101,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
       //
       if (bGeomGeom == 1)
       {
-        TreatAsBiParametric = Standard_False;
+        TreatAsBiParametric = false;
       }
     }
   }
@@ -1107,7 +1109,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
 
   if (theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
   {
-    TreatAsBiParametric = Standard_False;
+    TreatAsBiParametric = false;
   }
 
   //  Modified by skv - Mon Sep 26 14:58:30 2005 Begin
@@ -1128,7 +1130,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   //  Modified by skv - Mon Sep 26 14:58:30 2005 End
 
   // Surface type definition
-  Standard_Integer ts1 = 0;
+  int ts1 = 0;
   switch (typs1)
   {
     case GeomAbs_Plane:
@@ -1144,7 +1146,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
       break;
   }
 
-  Standard_Integer ts2 = 0;
+  int ts2 = 0;
   switch (typs2)
   {
     case GeomAbs_Plane:
@@ -1169,7 +1171,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   // Geom - Geom
   if (ts1 == ts2 && ts1 == 1)
   {
-    IntSurf_ListOfPntOn2S ListOfPnts;
+    NCollection_List<IntSurf_PntOn2S> ListOfPnts;
     ListOfPnts.Clear();
     if (isGeomInt)
     {
@@ -1199,7 +1201,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   // Param - Param
   if (ts1 == ts2 && ts1 == 0)
   {
-    IntSurf_ListOfPntOn2S ListOfPnts;
+    NCollection_List<IntSurf_PntOn2S> ListOfPnts;
     ListOfPnts.Clear();
 
     ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, typs1, typs2);
@@ -1208,9 +1210,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   if (!theIsReqToPostWLProc)
     return;
 
-  for (Standard_Integer i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = slin.Lower(); i <= slin.Upper(); i++)
   {
-    Handle(IntPatch_WLine) aWL = Handle(IntPatch_WLine)::DownCast(slin.Value(i));
+    occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
       continue;
@@ -1218,7 +1220,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
     if (!aWL->IsPurgingAllowed())
       continue;
 
-    Handle(IntPatch_WLine) aRW =
+    occ::handle<IntPatch_WLine> aRW =
       IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
 
     if (aRW.IsNull())
@@ -1231,16 +1233,16 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
 
 //=================================================================================================
 
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
-                                    const Handle(Adaptor3d_TopolTool)& theD1,
-                                    const Handle(Adaptor3d_Surface)&   theS2,
-                                    const Handle(Adaptor3d_TopolTool)& theD2,
-                                    const Standard_Real                TolArc,
-                                    const Standard_Real                TolTang,
-                                    IntSurf_ListOfPntOn2S&             ListOfPnts,
-                                    const Standard_Boolean             isGeomInt,
-                                    const Standard_Boolean             theIsReqToKeepRLine,
-                                    const Standard_Boolean             theIsReqToPostWLProc)
+void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                    const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                    const occ::handle<Adaptor3d_Surface>&   theS2,
+                                    const occ::handle<Adaptor3d_TopolTool>& theD2,
+                                    const double                TolArc,
+                                    const double                TolTang,
+                                    NCollection_List<IntSurf_PntOn2S>&             ListOfPnts,
+                                    const bool             isGeomInt,
+                                    const bool             theIsReqToKeepRLine,
+                                    const bool             theIsReqToPostWLProc)
 {
   myTolArc  = TolArc;
   myTolTang = TolTang;
@@ -1248,45 +1250,45 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
     myFleche = 0.01;
   if (myUVMaxStep <= Precision::PConfusion())
     myUVMaxStep = 0.01;
-  done = Standard_False;
+  done = false;
   spnt.Clear();
   slin.Clear();
-  empt = Standard_True;
-  tgte = Standard_False;
-  oppo = Standard_False;
+  empt = true;
+  tgte = false;
+  oppo = false;
 
   GeomAbs_SurfaceType typs1 = theS1->GetType();
   GeomAbs_SurfaceType typs2 = theS2->GetType();
   //
   // treatment of the cases with cone or torus
-  Standard_Boolean TreatAsBiParametric = Standard_False;
-  Standard_Integer bGeomGeom           = 0;
+  bool TreatAsBiParametric = false;
+  int bGeomGeom           = 0;
   //
   if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone || typs1 == GeomAbs_Torus
       || typs2 == GeomAbs_Torus)
   {
     gp_Ax1              aCTAx, aGeomAx;
     GeomAbs_SurfaceType aCTType;
-    Standard_Boolean    bToCheck;
+    bool    bToCheck;
     //
-    const Handle(Adaptor3d_Surface)& aCTSurf =
+    const occ::handle<Adaptor3d_Surface>& aCTSurf =
       (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS1 : theS2;
-    const Handle(Adaptor3d_Surface)& aGeomSurf =
+    const occ::handle<Adaptor3d_Surface>& aGeomSurf =
       (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS2 : theS1;
     //
     aCTType  = aCTSurf->GetType();
-    bToCheck = Standard_False;
+    bToCheck = false;
     //
     if (typs1 == GeomAbs_Cone || typs2 == GeomAbs_Cone)
     {
       const gp_Cone aCon1 = (aCTType == GeomAbs_Cone) ? aCTSurf->Cone() : aGeomSurf->Cone();
-      Standard_Real a1    = std::abs(aCon1.SemiAngle());
+      double a1    = std::abs(aCon1.SemiAngle());
       bToCheck            = (a1 < 0.02) || (a1 > 1.55);
       //
       if (typs1 == typs2)
       {
         const gp_Cone aCon2 = aGeomSurf->Cone();
-        Standard_Real a2    = std::abs(aCon2.SemiAngle());
+        double a2    = std::abs(aCon2.SemiAngle());
         bToCheck            = bToCheck || (a2 < 0.02) || (a2 > 1.55);
         //
         if (a1 > 1.55 && a2 > 1.55)
@@ -1298,7 +1300,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
             const gp_Pln Plan1(Apex1, A1.Direction());
             if (Plan1.Distance(Apex2) <= Precision::Confusion())
             {
-              bToCheck = Standard_False;
+              bToCheck = false;
             }
           }
         }
@@ -1342,7 +1344,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
             bGeomGeom = 1;
             if (std::abs(aCTSurf->Cone().SemiAngle()) < 0.02)
             {
-              Standard_Real ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+              double ps = std::abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
               if (ps < 0.015)
               {
                 bGeomGeom = 0;
@@ -1358,7 +1360,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
               bGeomGeom = 1;
             }
           }
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
         }
         case GeomAbs_Sphere: {
@@ -1366,7 +1368,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           {
             bGeomGeom = 1;
           }
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
         }
         case GeomAbs_Cylinder:
@@ -1379,7 +1381,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
           aGeomAx = aGeomSurf->Torus().Axis();
           break;
         default:
-          bToCheck = Standard_False;
+          bToCheck = false;
           break;
       }
       //
@@ -1394,7 +1396,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
       //
       if (bGeomGeom == 1)
       {
-        TreatAsBiParametric = Standard_False;
+        TreatAsBiParametric = false;
       }
     }
   }
@@ -1402,7 +1404,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
 
   if (theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
   {
-    TreatAsBiParametric = Standard_False;
+    TreatAsBiParametric = false;
   }
 
   if (TreatAsBiParametric)
@@ -1413,7 +1415,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   }
 
   // Surface type definition
-  Standard_Integer ts1 = 0;
+  int ts1 = 0;
   switch (typs1)
   {
     case GeomAbs_Plane:
@@ -1429,7 +1431,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
       break;
   }
 
-  Standard_Integer ts2 = 0;
+  int ts2 = 0;
   switch (typs2)
   {
     case GeomAbs_Plane:
@@ -1478,9 +1480,9 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
   if (!theIsReqToPostWLProc)
     return;
 
-  for (Standard_Integer i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = slin.Lower(); i <= slin.Upper(); i++)
   {
-    Handle(IntPatch_WLine) aWL = Handle(IntPatch_WLine)::DownCast(slin.Value(i));
+    occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
       continue;
@@ -1488,7 +1490,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
     if (!aWL->IsPurgingAllowed())
       continue;
 
-    Handle(IntPatch_WLine) aRW =
+    occ::handle<IntPatch_WLine> aRW =
       IntPatch_WLineTool::ComputePurgedWLine(aWL, theS1, theS2, theD1, theD2);
 
     if (aRW.IsNull())
@@ -1501,13 +1503,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   theS1,
 
 //=================================================================================================
 
-void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   theS1,
-                                             const Handle(Adaptor3d_TopolTool)& theD1,
-                                             const Handle(Adaptor3d_Surface)&   theS2,
-                                             const Handle(Adaptor3d_TopolTool)& theD2,
-                                             const Standard_Real                TolArc,
-                                             const Standard_Real                TolTang,
-                                             IntSurf_ListOfPntOn2S&             ListOfPnts,
+void IntPatch_Intersection::ParamParamPerfom(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                             const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                             const occ::handle<Adaptor3d_Surface>&   theS2,
+                                             const occ::handle<Adaptor3d_TopolTool>& theD2,
+                                             const double                TolArc,
+                                             const double                TolTang,
+                                             NCollection_List<IntSurf_PntOn2S>&             ListOfPnts,
                                              const GeomAbs_SurfaceType          typs1,
                                              const GeomAbs_SurfaceType          typs2)
 {
@@ -1515,12 +1517,12 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
   //
   if (!theD1->DomainIsInfinite() && !theD2->DomainIsInfinite())
   {
-    Standard_Boolean ClearFlag = Standard_True;
+    bool ClearFlag = true;
     if (!ListOfPnts.IsEmpty())
     {
       interpp
         .Perform(theS1, theD1, theS2, theD2, TolTang, TolArc, myFleche, myUVMaxStep, ListOfPnts);
-      ClearFlag = Standard_False;
+      ClearFlag = false;
     }
     interpp.Perform(theS1, theD1, theS2, theD2, TolTang, TolArc, myFleche, myUVMaxStep, ClearFlag);
   }
@@ -1530,24 +1532,24 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
     if (theD1->DomainIsInfinite())
     {
       FUN_GetMinMaxXYZPnt(theS2, pMinXYZ, pMaxXYZ);
-      const Standard_Real MU =
+      const double MU =
         std::max(std::abs(theS2->FirstUParameter()), std::abs(theS2->LastUParameter()));
-      const Standard_Real MV =
+      const double MV =
         std::max(std::abs(theS2->FirstVParameter()), std::abs(theS2->LastVParameter()));
-      const Standard_Real       AP = std::max(MU, MV);
-      Handle(Adaptor3d_Surface) SS;
+      const double       AP = std::max(MU, MV);
+      occ::handle<Adaptor3d_Surface> SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS1, AP, SS);
       interpp.Perform(SS, theD1, theS2, theD2, TolTang, TolArc, myFleche, myUVMaxStep);
     }
     else
     {
       FUN_GetMinMaxXYZPnt(theS1, pMinXYZ, pMaxXYZ);
-      const Standard_Real MU =
+      const double MU =
         std::max(std::abs(theS1->FirstUParameter()), std::abs(theS1->LastUParameter()));
-      const Standard_Real MV =
+      const double MV =
         std::max(std::abs(theS1->FirstVParameter()), std::abs(theS1->LastVParameter()));
-      const Standard_Real       AP = std::max(MU, MV);
-      Handle(Adaptor3d_Surface) SS;
+      const double       AP = std::max(MU, MV);
+      occ::handle<Adaptor3d_Surface> SS;
       FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS2, AP, SS);
       interpp.Perform(theS1, theD1, SS, theD2, TolTang, TolArc, myFleche, myUVMaxStep);
     }
@@ -1556,12 +1558,12 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
   {
     if (typs1 == GeomAbs_OtherSurface || typs2 == GeomAbs_OtherSurface)
     {
-      done = Standard_False;
+      done = false;
       return;
     }
 
-    Standard_Boolean     IsPLInt = Standard_False;
-    TColgp_SequenceOfPnt sop;
+    bool     IsPLInt = false;
+    NCollection_Sequence<gp_Pnt> sop;
     gp_Vec               v;
     FUN_PL_Intersection(theS1, typs1, theS2, typs2, IsPLInt, sop, v);
 
@@ -1569,24 +1571,24 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
     {
       if (sop.Length() > 0)
       {
-        for (Standard_Integer ip = 1; ip <= sop.Length(); ip++)
+        for (int ip = 1; ip <= sop.Length(); ip++)
         {
           gp_Lin                lin(sop.Value(ip), gp_Dir(v));
-          Handle(IntPatch_Line) gl = new IntPatch_GLine(lin, Standard_False);
+          occ::handle<IntPatch_Line> gl = new IntPatch_GLine(lin, false);
           slin.Append(gl);
         }
 
-        done = Standard_True;
+        done = true;
       }
       else
-        done = Standard_False;
+        done = false;
 
       return;
     } // 'COLLINEAR LINES'
     else
     {
-      Handle(Adaptor3d_Surface) nS1 = theS1;
-      Handle(Adaptor3d_Surface) nS2 = theS2;
+      occ::handle<Adaptor3d_Surface> nS1 = theS1;
+      occ::handle<Adaptor3d_Surface> nS2 = theS2;
       FUN_TrimBothSurf(theS1, typs1, theS2, typs2, 1.e+8, nS1, nS2);
       interpp.Perform(nS1, theD1, nS2, theD2, TolTang, TolArc, myFleche, myUVMaxStep);
     } // 'NON - COLLINEAR LINES'
@@ -1594,17 +1596,17 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
 
   if (interpp.IsDone())
   {
-    done = Standard_True;
-    tgte = Standard_False;
+    done = true;
+    tgte = false;
     empt = interpp.IsEmpty();
 
-    for (Standard_Integer i = 1; i <= interpp.NbLines(); i++)
+    for (int i = 1; i <= interpp.NbLines(); i++)
     {
       if (interpp.Line(i)->ArcType() != IntPatch_Walking)
         slin.Append(interpp.Line(i));
     }
 
-    for (Standard_Integer i = 1; i <= interpp.NbLines(); i++)
+    for (int i = 1; i <= interpp.NbLines(); i++)
     {
       if (interpp.Line(i)->ArcType() == IntPatch_Walking)
         slin.Append(interpp.Line(i));
@@ -1616,23 +1618,23 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_Surface)&   
 ////function : GeomGeomPerfom
 // purpose  :
 //=======================================================================
-void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   theS1,
-                                           const Handle(Adaptor3d_TopolTool)& theD1,
-                                           const Handle(Adaptor3d_Surface)&   theS2,
-                                           const Handle(Adaptor3d_TopolTool)& theD2,
-                                           const Standard_Real                TolArc,
-                                           const Standard_Real                TolTang,
-                                           IntSurf_ListOfPntOn2S&             ListOfPnts,
+void IntPatch_Intersection::GeomGeomPerfom(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                           const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                           const occ::handle<Adaptor3d_Surface>&   theS2,
+                                           const occ::handle<Adaptor3d_TopolTool>& theD2,
+                                           const double                TolArc,
+                                           const double                TolTang,
+                                           NCollection_List<IntSurf_PntOn2S>&             ListOfPnts,
                                            const GeomAbs_SurfaceType          theTyps1,
                                            const GeomAbs_SurfaceType          theTyps2,
-                                           const Standard_Boolean             theIsReqToKeepRLine)
+                                           const bool             theIsReqToKeepRLine)
 {
   IntPatch_ImpImpIntersection
     interii(theS1, theD1, theS2, theD2, myTolArc, myTolTang, theIsReqToKeepRLine);
 
   if (!interii.IsDone())
   {
-    done = Standard_False;
+    done = false;
     ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, theTyps1, theTyps2);
     return;
   }
@@ -1645,28 +1647,28 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   th
     return;
   }
 
-  const Standard_Integer aNbPointsInALine = 200;
+  const int aNbPointsInALine = 200;
 
   tgte = interii.TangentFaces();
   if (tgte)
     oppo = interii.OppositeFaces();
 
-  Standard_Boolean      isWLExist = Standard_False;
+  bool      isWLExist = false;
   IntPatch_ALineToWLine AToW(theS1, theS2, aNbPointsInALine);
 
-  for (Standard_Integer i = 1; i <= interii.NbLines(); i++)
+  for (int i = 1; i <= interii.NbLines(); i++)
   {
-    const Handle(IntPatch_Line)& line = interii.Line(i);
+    const occ::handle<IntPatch_Line>& line = interii.Line(i);
     if (line->ArcType() == IntPatch_Analytic)
     {
-      isWLExist = Standard_True;
-      AToW.MakeWLine(Handle(IntPatch_ALine)::DownCast(line), slin);
+      isWLExist = true;
+      AToW.MakeWLine(occ::down_cast<IntPatch_ALine>(line), slin);
     }
     else
     {
       if (line->ArcType() == IntPatch_Walking)
       {
-        Handle(IntPatch_WLine)::DownCast(line)->EnablePurging(Standard_False);
+        occ::down_cast<IntPatch_WLine>(line)->EnablePurging(false);
       }
 
       if ((line->ArcType() != IntPatch_Restriction) || theIsReqToKeepRLine)
@@ -1674,7 +1676,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   th
     }
   }
 
-  for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
+  for (int i = 1; i <= interii.NbPnts(); i++)
   {
     spnt.Append(interii.Point(i));
   }
@@ -1687,7 +1689,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   th
   if (isWLExist)
   {
     Bnd_Box2d           aBx1, aBx2;
-    const Standard_Real aU1F = theS1->FirstUParameter(), aU1L = theS1->LastUParameter(),
+    const double aU1F = theS1->FirstUParameter(), aU1L = theS1->LastUParameter(),
                         aV1F = theS1->FirstVParameter(), aV1L = theS1->LastVParameter(),
                         aU2F = theS2->FirstUParameter(), aU2L = theS2->LastUParameter(),
                         aV2F = theS2->FirstVParameter(), aV2L = theS2->LastVParameter();
@@ -1703,7 +1705,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   th
     aBx1.Enlarge(Precision::PConfusion());
     aBx2.Enlarge(Precision::PConfusion());
 
-    const Standard_Real anArrOfPeriod[4] = {theS1->IsUPeriodic() ? theS1->UPeriod() : 0.0,
+    const double anArrOfPeriod[4] = {theS1->IsUPeriodic() ? theS1->UPeriod() : 0.0,
                                             theS1->IsVPeriodic() ? theS1->VPeriod() : 0.0,
                                             theS2->IsUPeriodic() ? theS2->UPeriod() : 0.0,
                                             theS2->IsVPeriodic() ? theS2->VPeriod() : 0.0};
@@ -1743,11 +1745,11 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_Surface)&   th
 
 //=================================================================================================
 
-void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_Surface)&   theS1,
-                                            const Handle(Adaptor3d_TopolTool)& theD1,
-                                            const Handle(Adaptor3d_Surface)&   theS2,
-                                            const Handle(Adaptor3d_TopolTool)& theD2,
-                                            const Standard_Boolean             isNotAnalitical,
+void IntPatch_Intersection::GeomParamPerfom(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                            const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                            const occ::handle<Adaptor3d_Surface>&   theS2,
+                                            const occ::handle<Adaptor3d_TopolTool>& theD2,
+                                            const bool             isNotAnalitical,
                                             const GeomAbs_SurfaceType          typs1,
                                             const GeomAbs_SurfaceType          typs2)
 {
@@ -1762,8 +1764,8 @@ void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_Surface)&   t
 
   if (theD1->DomainIsInfinite() && theD2->DomainIsInfinite())
   {
-    Standard_Boolean     IsPLInt = Standard_False;
-    TColgp_SequenceOfPnt sop;
+    bool     IsPLInt = false;
+    NCollection_Sequence<gp_Pnt> sop;
     gp_Vec               v;
     FUN_PL_Intersection(theS1, typs1, theS2, typs2, IsPLInt, sop, v);
 
@@ -1771,24 +1773,24 @@ void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_Surface)&   t
     {
       if (sop.Length() > 0)
       {
-        for (Standard_Integer ip = 1; ip <= sop.Length(); ip++)
+        for (int ip = 1; ip <= sop.Length(); ip++)
         {
           gp_Lin                lin(sop.Value(ip), gp_Dir(v));
-          Handle(IntPatch_Line) gl = new IntPatch_GLine(lin, Standard_False);
+          occ::handle<IntPatch_Line> gl = new IntPatch_GLine(lin, false);
           slin.Append(gl);
         }
 
-        done = Standard_True;
+        done = true;
       }
       else
-        done = Standard_False;
+        done = false;
 
       return;
     }
     else
     {
-      Handle(Adaptor3d_Surface) nS1 = theS1;
-      Handle(Adaptor3d_Surface) nS2 = theS2;
+      occ::handle<Adaptor3d_Surface> nS1 = theS1;
+      occ::handle<Adaptor3d_Surface> nS2 = theS2;
       FUN_TrimBothSurf(theS1, typs1, theS2, typs2, 1.e+5, nS1, nS2);
       interip.Perform(nS1, theD1, nS2, theD2, myTolArc, myTolTang, myFleche, myUVMaxStep);
     }
@@ -1798,40 +1800,40 @@ void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_Surface)&   t
 
   if (interip.IsDone())
   {
-    done = Standard_True;
+    done = true;
     empt = interip.IsEmpty();
 
     if (!empt)
     {
-      const Standard_Integer aNbLines = interip.NbLines();
-      for (Standard_Integer i = 1; i <= aNbLines; i++)
+      const int aNbLines = interip.NbLines();
+      for (int i = 1; i <= aNbLines; i++)
       {
         if (interip.Line(i)->ArcType() != IntPatch_Walking)
           slin.Append(interip.Line(i));
       }
 
-      for (Standard_Integer i = 1; i <= aNbLines; i++)
+      for (int i = 1; i <= aNbLines; i++)
       {
         if (interip.Line(i)->ArcType() == IntPatch_Walking)
           slin.Append(interip.Line(i));
       }
 
-      for (Standard_Integer i = 1; i <= interip.NbPnts(); i++)
+      for (int i = 1; i <= interip.NbPnts(); i++)
         spnt.Append(interip.Point(i));
     }
   }
 }
 
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
-                                    const Handle(Adaptor3d_TopolTool)& D1,
-                                    const Handle(Adaptor3d_Surface)&   S2,
-                                    const Handle(Adaptor3d_TopolTool)& D2,
-                                    const Standard_Real                U1,
-                                    const Standard_Real                V1,
-                                    const Standard_Real                U2,
-                                    const Standard_Real                V2,
-                                    const Standard_Real                TolArc,
-                                    const Standard_Real                TolTang)
+void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   S1,
+                                    const occ::handle<Adaptor3d_TopolTool>& D1,
+                                    const occ::handle<Adaptor3d_Surface>&   S2,
+                                    const occ::handle<Adaptor3d_TopolTool>& D2,
+                                    const double                U1,
+                                    const double                V1,
+                                    const double                U2,
+                                    const double                V2,
+                                    const double                TolArc,
+                                    const double                TolTang)
 {
   myTolArc  = TolArc;
   myTolTang = TolTang;
@@ -1852,13 +1854,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
     myUVMaxStep = 0.01;
   }
 
-  done = Standard_False;
+  done = false;
   spnt.Clear();
   slin.Clear();
 
-  empt = Standard_True;
-  tgte = Standard_False;
-  oppo = Standard_False;
+  empt = true;
+  tgte = false;
+  oppo = false;
 
   const GeomAbs_SurfaceType typs1 = S1->GetType();
   const GeomAbs_SurfaceType typs2 = S2->GetType();
@@ -1867,13 +1869,13 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
       || typs1 == GeomAbs_Cone || typs2 == GeomAbs_Plane || typs2 == GeomAbs_Cylinder
       || typs2 == GeomAbs_Sphere || typs2 == GeomAbs_Cone)
   {
-    myIsStartPnt = Standard_True;
+    myIsStartPnt = true;
     myU1Start    = U1;
     myV1Start    = V1;
     myU2Start    = U2;
     myV2Start    = V2;
     Perform(S1, D1, S2, D2, TolArc, TolTang);
-    myIsStartPnt = Standard_False;
+    myIsStartPnt = false;
   }
   else
   {
@@ -1881,19 +1883,19 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
     interpp.Perform(S1, D1, S2, D2, U1, V1, U2, V2, TolTang, TolArc, myFleche, myUVMaxStep);
     if (interpp.IsDone())
     {
-      done                        = Standard_True;
-      tgte                        = Standard_False;
+      done                        = true;
+      tgte                        = false;
       empt                        = interpp.IsEmpty();
-      const Standard_Integer nblm = interpp.NbLines();
-      Standard_Integer       i    = 1;
+      const int nblm = interpp.NbLines();
+      int       i    = 1;
       for (; i <= nblm; i++)
         slin.Append(interpp.Line(i));
     }
   }
 
-  for (Standard_Integer i = slin.Lower(); i <= slin.Upper(); i++)
+  for (int i = slin.Lower(); i <= slin.Upper(); i++)
   {
-    Handle(IntPatch_WLine) aWL = Handle(IntPatch_WLine)::DownCast(slin.Value(i));
+    occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
 
     if (aWL.IsNull())
       continue;
@@ -1901,7 +1903,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
     if (!aWL->IsPurgingAllowed())
       continue;
 
-    Handle(IntPatch_WLine) aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, S1, S2, D1, D2);
+    occ::handle<IntPatch_WLine> aRW = IntPatch_WLineTool::ComputePurgedWLine(aWL, S1, S2, D1, D2);
 
     if (aRW.IsNull())
       continue;
@@ -1913,21 +1915,21 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&   S1,
 
 #ifdef DUMPOFIntPatch_Intersection
 
-void IntPatch_Intersection__MAJ_R(Handle(Adaptor2d_Curve2d)* R1,
-                                  Handle(Adaptor2d_Curve2d)*,
+void IntPatch_Intersection__MAJ_R(occ::handle<Adaptor2d_Curve2d>* R1,
+                                  occ::handle<Adaptor2d_Curve2d>*,
                                   int* NR1,
                                   int*,
-                                  Standard_Integer nbR1,
-                                  Standard_Integer,
+                                  int nbR1,
+                                  int,
                                   const IntPatch_Point& VTX)
 {
 
   if (VTX.IsOnDomS1())
   {
 
-    //-- long unsigned ptr= *((long unsigned *)(((Handle(Standard_Transient)
+    //-- long unsigned ptr= *((long unsigned *)(((occ::handle<Standard_Transient>
     //*)(&(VTX.ArcOnS1())))));
-    for (Standard_Integer i = 0; i < nbR1; i++)
+    for (int i = 0; i < nbR1; i++)
     {
       if (VTX.ArcOnS1() == R1[i])
       {
@@ -1941,11 +1943,11 @@ void IntPatch_Intersection__MAJ_R(Handle(Adaptor2d_Curve2d)* R1,
 }
 #endif
 
-void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
-                                 const Handle(Adaptor3d_Surface)& /*S1*/,
-                                 const Handle(Adaptor3d_TopolTool)& /*D1*/,
-                                 const Handle(Adaptor3d_Surface)& /*S2*/,
-                                 const Handle(Adaptor3d_TopolTool)& /*D2*/) const
+void IntPatch_Intersection::Dump(const int /*Mode*/,
+                                 const occ::handle<Adaptor3d_Surface>& /*S1*/,
+                                 const occ::handle<Adaptor3d_TopolTool>& /*D1*/,
+                                 const occ::handle<Adaptor3d_Surface>& /*S2*/,
+                                 const occ::handle<Adaptor3d_TopolTool>& /*D2*/) const
 {
 #ifdef DUMPOFIntPatch_Intersection
   const int MAXR = 200;
@@ -1953,8 +1955,8 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
   //--  construction de la liste des restrictions & vertex
   //--
   int                       NR1[MAXR], NR2[MAXR];
-  Handle(Adaptor2d_Curve2d) R1[MAXR], R2[MAXR];
-  Standard_Integer          nbR1 = 0, nbR2 = 0;
+  occ::handle<Adaptor2d_Curve2d> R1[MAXR], R2[MAXR];
+  int          nbR1 = 0, nbR2 = 0;
   for (D1->Init(); D1->More() && nbR1 < MAXR; D1->Next())
   {
     R1[nbR1]  = D1->Value();
@@ -1972,19 +1974,19 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
          empt,
          tgte,
          empt);
-  Standard_Integer i, nbr1, nbr2, nbgl, nbgc, nbge, nbgp, nbgh, nbl, nbr, nbg, nbw, nba;
+  int i, nbr1, nbr2, nbgl, nbgc, nbge, nbgp, nbgh, nbl, nbr, nbg, nbw, nba;
   nbl = nbr = nbg = nbw = nba = nbgl = nbge = nbr1 = nbr2 = nbgc = nbgp = nbgh = 0;
   nbl                                                                          = NbLines();
   for (i = 1; i <= nbl; i++)
   {
-    const Handle(IntPatch_Line)& line  = Line(i);
+    const occ::handle<IntPatch_Line>& line  = Line(i);
     const IntPatch_IType         IType = line->ArcType();
     if (IType == IntPatch_Walking)
       nbw++;
     else if (IType == IntPatch_Restriction)
     {
       nbr++;
-      Handle(IntPatch_RLine) rlin(Handle(IntPatch_RLine)::DownCast(line));
+      occ::handle<IntPatch_RLine> rlin(occ::down_cast<IntPatch_RLine>(line));
       if (rlin->IsArcOnS1())
         nbr1++;
       if (rlin->IsArcOnS2())
@@ -2025,25 +2027,25 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
 
   IntPatch_LineConstructor LineConstructor(2);
 
-  Standard_Integer nbllc = 0;
+  int nbllc = 0;
   nbw = nbr = nbg = nba = 0;
-  Standard_Integer nbva, nbvw, nbvr, nbvg;
+  int nbva, nbvw, nbvr, nbvg;
   nbva = nbvr = nbvw = nbvg = 0;
   for (j = 1; j <= nbl; j++)
   {
-    Standard_Integer             v, nbvtx;
-    const Handle(IntPatch_Line)& intersLinej = Line(j);
-    Standard_Integer             NbLines;
+    int             v, nbvtx;
+    const occ::handle<IntPatch_Line>& intersLinej = Line(j);
+    int             NbLines;
     LineConstructor.Perform(SequenceOfLine(), intersLinej, S1, D1, S2, D2, 1e-7);
     NbLines = LineConstructor.NbLines();
 
-    for (Standard_Integer k = 1; k <= NbLines; k++)
+    for (int k = 1; k <= NbLines; k++)
     {
       nbllc++;
-      const Handle(IntPatch_Line)& LineK = LineConstructor.Line(k);
+      const occ::handle<IntPatch_Line>& LineK = LineConstructor.Line(k);
       if (LineK->ArcType() == IntPatch_Analytic)
       {
-        Handle(IntPatch_ALine) alin(Handle(IntPatch_ALine)::DownCast(LineK));
+        occ::handle<IntPatch_ALine> alin(occ::down_cast<IntPatch_ALine>(LineK));
         nbvtx = alin->NbVertex();
         nbva += nbvtx;
         nba++;
@@ -2054,7 +2056,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
       }
       else if (LineK->ArcType() == IntPatch_Restriction)
       {
-        Handle(IntPatch_RLine) rlin(Handle(IntPatch_RLine)::DownCast(LineK));
+        occ::handle<IntPatch_RLine> rlin(occ::down_cast<IntPatch_RLine>(LineK));
         nbvtx = rlin->NbVertex();
         nbvr += nbvtx;
         nbr++;
@@ -2065,7 +2067,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
       }
       else if (LineK->ArcType() == IntPatch_Walking)
       {
-        Handle(IntPatch_WLine) wlin(Handle(IntPatch_WLine)::DownCast(LineK));
+        occ::handle<IntPatch_WLine> wlin(occ::down_cast<IntPatch_WLine>(LineK));
         nbvtx = wlin->NbVertex();
         nbvw += nbvtx;
         nbw++;
@@ -2076,7 +2078,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
       }
       else
       {
-        Handle(IntPatch_GLine) glin(Handle(IntPatch_GLine)::DownCast(LineK));
+        occ::handle<IntPatch_GLine> glin(occ::down_cast<IntPatch_GLine>(LineK));
         nbvtx = glin->NbVertex();
         nbvg += nbvtx;
         nbg++;
@@ -2097,45 +2099,45 @@ void IntPatch_Intersection::Dump(const Standard_Integer /*Mode*/,
 
 //=================================================================================================
 
-Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
-  const Handle(Adaptor3d_Surface)&   theS1,
-  const Handle(Adaptor3d_TopolTool)& theD1,
-  const Handle(Adaptor3d_Surface)&   theS2,
-  Standard_Real&                     theDist)
+bool IntPatch_Intersection::CheckSingularPoints(
+  const occ::handle<Adaptor3d_Surface>&   theS1,
+  const occ::handle<Adaptor3d_TopolTool>& theD1,
+  const occ::handle<Adaptor3d_Surface>&   theS2,
+  double&                     theDist)
 {
   theDist                     = Precision::Infinite();
-  Standard_Boolean isSingular = Standard_False;
+  bool isSingular = false;
   if (theS1 == theS2)
   {
     return isSingular;
   }
   //
-  const Standard_Integer  aNbBndPnts = 5;
-  constexpr Standard_Real aTol       = Precision::Confusion();
-  Standard_Integer        i;
+  const int  aNbBndPnts = 5;
+  constexpr double aTol       = Precision::Confusion();
+  int        i;
   theD1->Init();
-  Standard_Boolean isU = Standard_True;
+  bool isU = true;
   for (; theD1->More(); theD1->Next())
   {
-    Handle(Adaptor2d_Curve2d) aBnd = theD1->Value();
-    Standard_Real             pinf = aBnd->FirstParameter(), psup = aBnd->LastParameter();
+    occ::handle<Adaptor2d_Curve2d> aBnd = theD1->Value();
+    double             pinf = aBnd->FirstParameter(), psup = aBnd->LastParameter();
     if (Precision::IsNegativeInfinite(pinf) || Precision::IsPositiveInfinite(psup))
     {
       continue;
     }
-    Standard_Real t, dt = (psup - pinf) / (aNbBndPnts - 1);
+    double t, dt = (psup - pinf) / (aNbBndPnts - 1);
     gp_Pnt2d      aP1;
     gp_Vec2d      aDir;
     aBnd->D1((pinf + psup) / 2., aP1, aDir);
     if (std::abs(aDir.X()) > std::abs(aDir.Y()))
-      isU = Standard_True;
+      isU = true;
     else
-      isU = Standard_False;
+      isU = false;
     gp_Pnt           aPP1;
     gp_Vec           aDU, aDV;
-    Standard_Real    aD1NormMax = 0.;
+    double    aD1NormMax = 0.;
     gp_XYZ           aPmid(0., 0., 0.);
-    Standard_Integer aNb = 0;
+    int aNb = 0;
     for (t = pinf; t <= psup; t += dt)
     {
       aP1 = aBnd->Value(t);
@@ -2157,12 +2159,12 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
       // Singular point aPP1;
       aPmid /= aNb;
       aPP1.SetXYZ(aPmid);
-      constexpr Standard_Real aTolU = Precision::PConfusion(), aTolV = Precision::PConfusion();
+      constexpr double aTolU = Precision::PConfusion(), aTolV = Precision::PConfusion();
       Extrema_ExtPS           aProj(aPP1, *theS2.get(), aTolU, aTolV, Extrema_ExtFlag_MIN);
 
       if (aProj.IsDone())
       {
-        Standard_Integer aNbExt = aProj.NbExt();
+        int aNbExt = aProj.NbExt();
         for (i = 1; i <= aNbExt; ++i)
         {
           theDist = std::min(theDist, aProj.SquareDistance(i));
@@ -2173,7 +2175,7 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
   if (!Precision::IsInfinite(theDist))
   {
     theDist    = std::sqrt(theDist);
-    isSingular = Standard_True;
+    isSingular = true;
   }
 
   return isSingular;
@@ -2181,18 +2183,18 @@ Standard_Boolean IntPatch_Intersection::CheckSingularPoints(
 
 //=================================================================================================
 
-Standard_Real IntPatch_Intersection::DefineUVMaxStep(const Handle(Adaptor3d_Surface)&   theS1,
-                                                     const Handle(Adaptor3d_TopolTool)& theD1,
-                                                     const Handle(Adaptor3d_Surface)&   theS2,
-                                                     const Handle(Adaptor3d_TopolTool)& theD2)
+double IntPatch_Intersection::DefineUVMaxStep(const occ::handle<Adaptor3d_Surface>&   theS1,
+                                                     const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                                     const occ::handle<Adaptor3d_Surface>&   theS2,
+                                                     const occ::handle<Adaptor3d_TopolTool>& theD2)
 {
-  Standard_Real           anUVMaxStep  = 0.001;
-  Standard_Real           aDistToSing1 = Precision::Infinite();
-  Standard_Real           aDistToSing2 = Precision::Infinite();
-  constexpr Standard_Real aTolMin = Precision::Confusion(), aTolMax = 1.e-5;
+  double           anUVMaxStep  = 0.001;
+  double           aDistToSing1 = Precision::Infinite();
+  double           aDistToSing2 = Precision::Infinite();
+  constexpr double aTolMin = Precision::Confusion(), aTolMax = 1.e-5;
   if (theS1 != theS2)
   {
-    Standard_Boolean isSing1 = CheckSingularPoints(theS1, theD1, theS2, aDistToSing1);
+    bool isSing1 = CheckSingularPoints(theS1, theD1, theS2, aDistToSing1);
     if (isSing1)
     {
       if (aDistToSing1 > aTolMin && aDistToSing1 < aTolMax)
@@ -2201,12 +2203,12 @@ Standard_Real IntPatch_Intersection::DefineUVMaxStep(const Handle(Adaptor3d_Surf
       }
       else
       {
-        isSing1 = Standard_False;
+        isSing1 = false;
       }
     }
     if (!isSing1)
     {
-      Standard_Boolean isSing2 = CheckSingularPoints(theS2, theD2, theS1, aDistToSing2);
+      bool isSing2 = CheckSingularPoints(theS2, theD2, theS1, aDistToSing2);
       if (isSing2)
       {
         if (aDistToSing2 > aTolMin && aDistToSing2 < aTolMax)
@@ -2223,10 +2225,10 @@ Standard_Real IntPatch_Intersection::DefineUVMaxStep(const Handle(Adaptor3d_Surf
 // function : splitCone
 // purpose  : Splits cone by the apex
 //=======================================================================
-static void splitCone(const Handle(Adaptor3d_Surface)&               theS,
-                      const Handle(Adaptor3d_TopolTool)&             theD,
-                      const Standard_Real                            theTol,
-                      NCollection_Vector<Handle(Adaptor3d_Surface)>& theVecHS)
+static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
+                      const occ::handle<Adaptor3d_TopolTool>&             theD,
+                      const double                            theTol,
+                      NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS)
 {
   if (theS->GetType() != GeomAbs_Cone)
   {
@@ -2235,16 +2237,16 @@ static void splitCone(const Handle(Adaptor3d_Surface)&               theS,
 
   gp_Cone aCone = theS->Cone();
 
-  Standard_Real aU0, aV0;
+  double aU0, aV0;
   Adaptor3d_TopolTool::GetConeApexParam(aCone, aU0, aV0);
 
   TopAbs_State aState = theD->Classify(gp_Pnt2d(aU0, aV0), theTol);
 
   if (aState == TopAbs_IN || aState == TopAbs_ON)
   {
-    const Handle(Adaptor3d_Surface) aHSDn =
+    const occ::handle<Adaptor3d_Surface> aHSDn =
       theS->VTrim(theS->FirstVParameter(), aV0, Precision::PConfusion());
-    const Handle(Adaptor3d_Surface) aHSUp =
+    const occ::handle<Adaptor3d_Surface> aHSUp =
       theS->VTrim(aV0, theS->LastVParameter(), Precision::PConfusion());
 
     theVecHS.Append(aHSDn);
@@ -2261,13 +2263,13 @@ static void splitCone(const Handle(Adaptor3d_Surface)&               theS,
 // purpose  : Prepares surfaces for intersection
 //=======================================================================
 void IntPatch_Intersection::PrepareSurfaces(
-  const Handle(Adaptor3d_Surface)&               theS1,
-  const Handle(Adaptor3d_TopolTool)&             theD1,
-  const Handle(Adaptor3d_Surface)&               theS2,
-  const Handle(Adaptor3d_TopolTool)&             theD2,
-  const Standard_Real                            theTol,
-  NCollection_Vector<Handle(Adaptor3d_Surface)>& theVecHS1,
-  NCollection_Vector<Handle(Adaptor3d_Surface)>& theVecHS2)
+  const occ::handle<Adaptor3d_Surface>&               theS1,
+  const occ::handle<Adaptor3d_TopolTool>&             theD1,
+  const occ::handle<Adaptor3d_Surface>&               theS2,
+  const occ::handle<Adaptor3d_TopolTool>&             theD2,
+  const double                            theTol,
+  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS1,
+  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS2)
 {
   if ((theS1->GetType() == GeomAbs_Cone)
       && (std::abs(M_PI / 2. - std::abs(theS1->Cone().SemiAngle())) < theTol))

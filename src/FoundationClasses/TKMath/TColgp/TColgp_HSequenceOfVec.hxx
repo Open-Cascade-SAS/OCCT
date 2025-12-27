@@ -18,9 +18,10 @@
 #define TColgp_HSequenceOfVec_HeaderFile
 
 #include <gp_Vec.hxx>
-#include <TColgp_SequenceOfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColgp_HSequenceOfVec, TColgp_SequenceOfVec)
+DEFINE_HSEQUENCE(TColgp_HSequenceOfVec, NCollection_Sequence<gp_Vec>)
 
 #endif

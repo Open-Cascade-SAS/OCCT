@@ -21,53 +21,53 @@
 #include <gp_Vec2d.hxx>
 #include <math_Vector.hxx>
 
-static Standard_Integer _NbVariables()
+static int _NbVariables()
 {
   return 2;
 }
 
 // 3d _Value
-static Standard_Boolean _Value(const Adaptor3d_Curve& C1,
+static bool _Value(const Adaptor3d_Curve& C1,
                                const Adaptor3d_Curve& C2,
                                const math_Vector&     X,
-                               Standard_Real&         F)
+                               double&         F)
 {
-  Standard_Real u = X(1);
-  Standard_Real v = X(2);
+  double u = X(1);
+  double v = X(2);
 
   if (u < C1.FirstParameter() || u > C1.LastParameter() || v < C2.FirstParameter()
       || v > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   F = C2.Value(v).Distance(C1.Value(u));
-  return Standard_True;
+  return true;
 }
 
 // 2d _Value
-static Standard_Boolean _Value(const Adaptor2d_Curve2d& C1,
+static bool _Value(const Adaptor2d_Curve2d& C1,
                                const Adaptor2d_Curve2d& C2,
                                const math_Vector&       X,
-                               Standard_Real&           F)
+                               double&           F)
 {
-  Standard_Real u = X(1);
-  Standard_Real v = X(2);
+  double u = X(1);
+  double v = X(2);
 
   if (u < C1.FirstParameter() || u > C1.LastParameter() || v < C2.FirstParameter()
       || v > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   F = C2.Value(v).Distance(C1.Value(u));
-  return Standard_True;
+  return true;
 }
 
 //! F = (x2(v) - x1(u))^2 + (y2(v) - y1(u))^2 + (z2(v) - z1(u))^2
 
 // 3d _Gradient
-static Standard_Boolean _Gradient(const Adaptor3d_Curve& C1,
+static bool _Gradient(const Adaptor3d_Curve& C1,
                                   const Adaptor3d_Curve& C2,
                                   const math_Vector&     X,
                                   math_Vector&           G)
@@ -78,7 +78,7 @@ static Standard_Boolean _Gradient(const Adaptor3d_Curve& C1,
   if (X(1) < C1.FirstParameter() || X(1) > C1.LastParameter() || X(2) < C2.FirstParameter()
       || X(2) > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   C1.D1(X(1), C1D0, C1D1);
@@ -89,11 +89,11 @@ static Standard_Boolean _Gradient(const Adaptor3d_Curve& C1,
   G(2) = (C2D0.X() - C1D0.X()) * C2D1.X() + (C2D0.Y() - C1D0.Y()) * C2D1.Y()
          + (C2D0.Z() - C1D0.Z()) * C2D1.Z();
   G *= 2.;
-  return Standard_True;
+  return true;
 }
 
 // 2d _Graient
-static Standard_Boolean _Gradient(const Adaptor2d_Curve2d& C1,
+static bool _Gradient(const Adaptor2d_Curve2d& C1,
                                   const Adaptor2d_Curve2d& C2,
                                   const math_Vector&       X,
                                   math_Vector&             G)
@@ -104,7 +104,7 @@ static Standard_Boolean _Gradient(const Adaptor2d_Curve2d& C1,
   if (X(1) < C1.FirstParameter() || X(1) > C1.LastParameter() || X(2) < C2.FirstParameter()
       || X(2) > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   C1.D1(X(1), C1D0, C1D1);
@@ -115,11 +115,11 @@ static Standard_Boolean _Gradient(const Adaptor2d_Curve2d& C1,
   G(2) = (C2D0.X() - C1D0.X()) * C2D1.X() + (C2D0.Y() - C1D0.Y()) * C2D1.Y();
   G *= 2.;
 
-  return Standard_True;
+  return true;
 }
 
 // 3d _Hessian
-static Standard_Boolean _Hessian(const Adaptor3d_Curve& C1,
+static bool _Hessian(const Adaptor3d_Curve& C1,
                                  const Adaptor3d_Curve& C2,
                                  const math_Vector&     X,
                                  math_Matrix&           H)
@@ -131,7 +131,7 @@ static Standard_Boolean _Hessian(const Adaptor3d_Curve& C1,
   if (X(1) < C1.FirstParameter() || X(1) > C1.LastParameter() || X(2) < C2.FirstParameter()
       || X(2) > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   C1.D2(X(1), C1D0, C1D1, C1D2);
@@ -149,11 +149,11 @@ static Standard_Boolean _Hessian(const Adaptor3d_Curve& C1,
             + (C2D0.X() - C1D0.X()) * C2D2.X() + (C2D0.Y() - C1D0.Y()) * C2D2.Y()
             + (C2D0.Z() - C1D0.Z()) * C2D2.Z();
   H *= 2.;
-  return Standard_True;
+  return true;
 }
 
 // 2d _Hessian
-static Standard_Boolean _Hessian(const Adaptor2d_Curve2d& C1,
+static bool _Hessian(const Adaptor2d_Curve2d& C1,
                                  const Adaptor2d_Curve2d& C2,
                                  const math_Vector&       X,
                                  math_Matrix&             H)
@@ -165,7 +165,7 @@ static Standard_Boolean _Hessian(const Adaptor2d_Curve2d& C1,
   if (X(1) < C1.FirstParameter() || X(1) > C1.LastParameter() || X(2) < C2.FirstParameter()
       || X(2) > C2.LastParameter())
   {
-    return Standard_False;
+    return false;
   }
 
   C1.D2(X(1), C1D0, C1D1, C1D2);
@@ -181,7 +181,7 @@ static Standard_Boolean _Hessian(const Adaptor2d_Curve2d& C1,
   H(2, 2) = C2D1.X() * C2D1.X() + C2D1.Y() * C2D1.Y() + (C2D0.X() - C1D0.X()) * C2D2.X()
             + (C2D0.Y() - C1D0.Y()) * C2D2.Y();
   H *= 2.;
-  return Standard_True;
+  return true;
 }
 
 // C0
@@ -212,14 +212,14 @@ Extrema_GlobOptFuncCCC0::Extrema_GlobOptFuncCCC0(const Adaptor2d_Curve2d& C1,
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncCCC0::NbVariables() const
+int Extrema_GlobOptFuncCCC0::NbVariables() const
 {
   return _NbVariables();
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC0::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncCCC0::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
     return _Value(*myC1_3d, *myC2_3d, X, F);
@@ -255,14 +255,14 @@ Extrema_GlobOptFuncCCC1::Extrema_GlobOptFuncCCC1(const Adaptor2d_Curve2d& C1,
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncCCC1::NbVariables() const
+int Extrema_GlobOptFuncCCC1::NbVariables() const
 {
   return _NbVariables();
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC1::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncCCC1::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
     return _Value(*myC1_3d, *myC2_3d, X, F);
@@ -272,7 +272,7 @@ Standard_Boolean Extrema_GlobOptFuncCCC1::Value(const math_Vector& X, Standard_R
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC1::Gradient(const math_Vector& X, math_Vector& G)
+bool Extrema_GlobOptFuncCCC1::Gradient(const math_Vector& X, math_Vector& G)
 {
   if (myType == 1)
     return _Gradient(*myC1_3d, *myC2_3d, X, G);
@@ -282,8 +282,8 @@ Standard_Boolean Extrema_GlobOptFuncCCC1::Gradient(const math_Vector& X, math_Ve
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC1::Values(const math_Vector& X,
-                                                 Standard_Real&     F,
+bool Extrema_GlobOptFuncCCC1::Values(const math_Vector& X,
+                                                 double&     F,
                                                  math_Vector&       G)
 {
   return (Value(X, F) && Gradient(X, G));
@@ -317,14 +317,14 @@ Extrema_GlobOptFuncCCC2::Extrema_GlobOptFuncCCC2(const Adaptor2d_Curve2d& C1,
 
 //=================================================================================================
 
-Standard_Integer Extrema_GlobOptFuncCCC2::NbVariables() const
+int Extrema_GlobOptFuncCCC2::NbVariables() const
 {
   return _NbVariables();
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC2::Value(const math_Vector& X, Standard_Real& F)
+bool Extrema_GlobOptFuncCCC2::Value(const math_Vector& X, double& F)
 {
   if (myType == 1)
     return _Value(*myC1_3d, *myC2_3d, X, F);
@@ -334,7 +334,7 @@ Standard_Boolean Extrema_GlobOptFuncCCC2::Value(const math_Vector& X, Standard_R
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC2::Gradient(const math_Vector& X, math_Vector& G)
+bool Extrema_GlobOptFuncCCC2::Gradient(const math_Vector& X, math_Vector& G)
 {
   if (myType == 1)
     return _Gradient(*myC1_3d, *myC2_3d, X, G);
@@ -344,8 +344,8 @@ Standard_Boolean Extrema_GlobOptFuncCCC2::Gradient(const math_Vector& X, math_Ve
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
-                                                 Standard_Real&     F,
+bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
+                                                 double&     F,
                                                  math_Vector&       G)
 {
   return (Value(X, F) && Gradient(X, G));
@@ -353,12 +353,12 @@ Standard_Boolean Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
 
 //=================================================================================================
 
-Standard_Boolean Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
-                                                 Standard_Real&     F,
+bool Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,
+                                                 double&     F,
                                                  math_Vector&       G,
                                                  math_Matrix&       H)
 {
-  Standard_Boolean isHessianComputed = Standard_False;
+  bool isHessianComputed = false;
   if (myType == 1)
     isHessianComputed = _Hessian(*myC1_3d, *myC2_3d, X, H);
   else

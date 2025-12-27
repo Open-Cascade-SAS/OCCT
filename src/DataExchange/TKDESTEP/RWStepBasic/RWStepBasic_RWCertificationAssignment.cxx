@@ -30,10 +30,10 @@ RWStepBasic_RWCertificationAssignment::RWStepBasic_RWCertificationAssignment() {
 //=================================================================================================
 
 void RWStepBasic_RWCertificationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepBasic_CertificationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepBasic_CertificationAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "certification_assignment"))
@@ -41,7 +41,7 @@ void RWStepBasic_RWCertificationAssignment::ReadStep(
 
   // Own fields of CertificationAssignment
 
-  Handle(StepBasic_Certification) aAssignedCertification;
+  occ::handle<StepBasic_Certification> aAssignedCertification;
   data->ReadEntity(num,
                    1,
                    "assigned_certification",
@@ -57,7 +57,7 @@ void RWStepBasic_RWCertificationAssignment::ReadStep(
 
 void RWStepBasic_RWCertificationAssignment::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepBasic_CertificationAssignment)& ent) const
+  const occ::handle<StepBasic_CertificationAssignment>& ent) const
 {
 
   // Own fields of CertificationAssignment
@@ -68,7 +68,7 @@ void RWStepBasic_RWCertificationAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWCertificationAssignment::Share(
-  const Handle(StepBasic_CertificationAssignment)& ent,
+  const occ::handle<StepBasic_CertificationAssignment>& ent,
   Interface_EntityIterator&                        iter) const
 {
 

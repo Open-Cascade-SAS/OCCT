@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_ApprovalItem.hxx>
 #include <StepBasic_Date.hxx>
@@ -36,7 +36,7 @@
 
 StepAP214_ApprovalItem::StepAP214_ApprovalItem() {}
 
-Standard_Integer StepAP214_ApprovalItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_ApprovalItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
 
   if (ent.IsNull())
@@ -86,112 +86,112 @@ Standard_Integer StepAP214_ApprovalItem::CaseNum(const Handle(Standard_Transient
   return 0;
 }
 
-Handle(StepRepr_AssemblyComponentUsageSubstitute) StepAP214_ApprovalItem::
+occ::handle<StepRepr_AssemblyComponentUsageSubstitute> StepAP214_ApprovalItem::
   AssemblyComponentUsageSubstitute() const
 {
   return GetCasted(StepRepr_AssemblyComponentUsageSubstitute, Value());
 }
 
-Handle(StepBasic_DocumentFile) StepAP214_ApprovalItem::DocumentFile() const
+occ::handle<StepBasic_DocumentFile> StepAP214_ApprovalItem::DocumentFile() const
 {
   return GetCasted(StepBasic_DocumentFile, Value());
 }
 
-Handle(StepRepr_MaterialDesignation) StepAP214_ApprovalItem::MaterialDesignation() const
+occ::handle<StepRepr_MaterialDesignation> StepAP214_ApprovalItem::MaterialDesignation() const
 {
   return GetCasted(StepRepr_MaterialDesignation, Value());
 }
 
-Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation) StepAP214_ApprovalItem::
+occ::handle<StepVisual_MechanicalDesignGeometricPresentationRepresentation> StepAP214_ApprovalItem::
   MechanicalDesignGeometricPresentationRepresentation() const
 {
   return GetCasted(StepVisual_MechanicalDesignGeometricPresentationRepresentation, Value());
 }
 
-Handle(StepVisual_PresentationArea) StepAP214_ApprovalItem::PresentationArea() const
+occ::handle<StepVisual_PresentationArea> StepAP214_ApprovalItem::PresentationArea() const
 {
   return GetCasted(StepVisual_PresentationArea, Value());
 }
 
-Handle(StepBasic_Product) StepAP214_ApprovalItem::Product() const
+occ::handle<StepBasic_Product> StepAP214_ApprovalItem::Product() const
 {
   return GetCasted(StepBasic_Product, Value());
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_ApprovalItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_ApprovalItem::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP214_ApprovalItem::ProductDefinitionFormation()
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_ApprovalItem::ProductDefinitionFormation()
   const
 {
   return GetCasted(StepBasic_ProductDefinitionFormation, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship) StepAP214_ApprovalItem::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_ApprovalItem::
   ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-Handle(StepRepr_PropertyDefinition) StepAP214_ApprovalItem::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepAP214_ApprovalItem::PropertyDefinition() const
 {
   return GetCasted(StepRepr_PropertyDefinition, Value());
 }
 
-Handle(StepShape_ShapeRepresentation) StepAP214_ApprovalItem::ShapeRepresentation() const
+occ::handle<StepShape_ShapeRepresentation> StepAP214_ApprovalItem::ShapeRepresentation() const
 {
   return GetCasted(StepShape_ShapeRepresentation, Value());
 }
 
-Handle(StepBasic_SecurityClassification) StepAP214_ApprovalItem::SecurityClassification() const
+occ::handle<StepBasic_SecurityClassification> StepAP214_ApprovalItem::SecurityClassification() const
 {
   return GetCasted(StepBasic_SecurityClassification, Value());
 }
 
-Handle(StepRepr_ConfigurationItem) StepAP214_ApprovalItem::ConfigurationItem() const
+occ::handle<StepRepr_ConfigurationItem> StepAP214_ApprovalItem::ConfigurationItem() const
 {
   return GetCasted(StepRepr_ConfigurationItem, Value());
 }
 
-Handle(StepBasic_Date) StepAP214_ApprovalItem::Date() const
+occ::handle<StepBasic_Date> StepAP214_ApprovalItem::Date() const
 {
   return GetCasted(StepBasic_Date, Value());
 }
 
-Handle(StepBasic_Document) StepAP214_ApprovalItem::Document() const
+occ::handle<StepBasic_Document> StepAP214_ApprovalItem::Document() const
 {
   return GetCasted(StepBasic_Document, Value());
 }
 
-Handle(StepBasic_Effectivity) StepAP214_ApprovalItem::Effectivity() const
+occ::handle<StepBasic_Effectivity> StepAP214_ApprovalItem::Effectivity() const
 {
   return GetCasted(StepBasic_Effectivity, Value());
 }
 
-Handle(StepBasic_Group) StepAP214_ApprovalItem::Group() const
+occ::handle<StepBasic_Group> StepAP214_ApprovalItem::Group() const
 {
   return GetCasted(StepBasic_Group, Value());
 }
 
-Handle(StepBasic_GroupRelationship) StepAP214_ApprovalItem::GroupRelationship() const
+occ::handle<StepBasic_GroupRelationship> StepAP214_ApprovalItem::GroupRelationship() const
 {
   return GetCasted(StepBasic_GroupRelationship, Value());
 }
 
-Handle(StepBasic_ProductDefinitionFormationRelationship) StepAP214_ApprovalItem::
+occ::handle<StepBasic_ProductDefinitionFormationRelationship> StepAP214_ApprovalItem::
   ProductDefinitionFormationRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionFormationRelationship, Value());
 }
 
-Handle(StepRepr_Representation) StepAP214_ApprovalItem::Representation() const
+occ::handle<StepRepr_Representation> StepAP214_ApprovalItem::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_ShapeAspectRelationship) StepAP214_ApprovalItem::ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_ApprovalItem::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

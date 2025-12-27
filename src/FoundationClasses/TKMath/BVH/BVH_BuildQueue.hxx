@@ -43,10 +43,10 @@ public:
 public:
   //! Returns current size of BVH build queue.
   //! Uses acquire semantics to synchronize with enqueue/dequeue operations.
-  Standard_Integer Size() const { return mySize.load(std::memory_order_acquire); }
+  int Size() const { return mySize.load(std::memory_order_acquire); }
 
   //! Enqueues new work-item onto BVH build queue.
-  void Enqueue(const Standard_Integer theWorkItem)
+  void Enqueue(const int theWorkItem)
   {
     std::lock_guard<std::mutex> aLock(myMutex);
     myQueue.Append(theWorkItem);
@@ -54,9 +54,9 @@ public:
   }
 
   //! Fetches first work-item from BVH build queue.
-  Standard_Integer Fetch(Standard_Boolean& wasBusy)
+  int Fetch(bool& wasBusy)
   {
-    Standard_Integer aQuery = -1;
+    int aQuery = -1;
 
     // Fetch item from queue under lock
     {
@@ -91,23 +91,23 @@ public:
   //! Uses acquire semantics to ensure visibility of thread counter updates.
   //! This is critical for termination detection: threads check this after
   //! finding an empty queue to determine if they should exit or wait.
-  Standard_Boolean HasBusyThreads() const
+  bool HasBusyThreads() const
   {
     return myNbThreads.load(std::memory_order_acquire) != 0;
   }
 
 private:
   //! Queue of BVH nodes to build.
-  NCollection_Sequence<Standard_Integer> myQueue;
+  NCollection_Sequence<int> myQueue;
 
   //! Manages access serialization for queue operations.
   std::mutex myMutex;
 
   //! Number of active build threads (atomic for lock-free reads).
-  std::atomic<Standard_Integer> myNbThreads;
+  std::atomic<int> myNbThreads;
 
   //! Current queue size (atomic for lock-free reads).
-  std::atomic<Standard_Integer> mySize;
+  std::atomic<int> mySize;
 };
 
 #endif // _BVH_BuildQueue_Header

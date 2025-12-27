@@ -14,9 +14,10 @@
 #ifndef StepFEA_HArray1OfCurveElementEndRelease_HeaderFile
 #define StepFEA_HArray1OfCurveElementEndRelease_HeaderFile
 
-#include <StepFEA_Array1OfCurveElementEndRelease.hxx>
+#include <StepFEA_CurveElementEndRelease.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepFEA_HArray1OfCurveElementEndRelease, StepFEA_Array1OfCurveElementEndRelease)
+DEFINE_HARRAY1(StepFEA_HArray1OfCurveElementEndRelease, NCollection_Array1<occ::handle<StepFEA_CurveElementEndRelease>>)
 
 #endif

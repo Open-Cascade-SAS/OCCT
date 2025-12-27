@@ -23,9 +23,6 @@
 class StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect;
 class TCollection_HAsciiString;
 
-DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingIntersection,
-                       StepGeom_GeometricRepresentationItem)
-
 class StepVisual_CameraModelD3MultiClippingIntersection
     : public StepGeom_GeometricRepresentationItem
 {
@@ -34,17 +31,17 @@ public:
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingIntersection();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& theName,
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)&
+    const occ::handle<TCollection_HAsciiString>& theName,
+    const occ::handle<StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect>&
       theShapeClipping);
 
   void SetShapeClipping(
-    const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect)& theShapeClipping)
+    const occ::handle<StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect>& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  const Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) ShapeClipping()
+  const occ::handle<StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect> ShapeClipping()
   {
     return myShapeClipping;
   }
@@ -52,6 +49,6 @@ public:
                           StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect) myShapeClipping;
+  occ::handle<StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect> myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingIntersection_HeaderFile

@@ -46,8 +46,8 @@ inline const char* ConvertToString(const StepGeom_TransitionCode theTransitionCo
 //! Convert string to StepGeom_TransitionCode
 //! @param theTransitionCodeStr The string to convert
 //! @param theResultEnum The corresponding StepGeom_TransitionCode value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString   theTransitionCodeStr,
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char*   theTransitionCodeStr,
                           StepGeom_TransitionCode& theResultEnum)
 {
   if (IsEqual(theTransitionCodeStr, tcDiscontinuous))
@@ -68,9 +68,9 @@ inline bool ConvertToEnum(const Standard_CString   theTransitionCodeStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepGeom_RWTransitionCode
 

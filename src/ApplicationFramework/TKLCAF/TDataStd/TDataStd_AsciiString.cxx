@@ -52,11 +52,11 @@ const Standard_GUID& TDataStd_AsciiString::ID() const
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_AsciiString) SetAttr(const TDF_Label&               label,
+static occ::handle<TDataStd_AsciiString> SetAttr(const TDF_Label&               label,
                                             const TCollection_AsciiString& theString,
                                             const Standard_GUID&           theGuid)
 {
-  Handle(TDataStd_AsciiString) A;
+  occ::handle<TDataStd_AsciiString> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_AsciiString();
@@ -69,7 +69,7 @@ static Handle(TDataStd_AsciiString) SetAttr(const TDF_Label&               label
 
 //=================================================================================================
 
-Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set(
+occ::handle<TDataStd_AsciiString> TDataStd_AsciiString::Set(
   const TDF_Label&               theLabel,
   const TCollection_AsciiString& theAsciiString)
 {
@@ -81,7 +81,7 @@ Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set(
 // purpose  : Set user defined attribute
 //=======================================================================
 
-Handle(TDataStd_AsciiString) TDataStd_AsciiString::Set(
+occ::handle<TDataStd_AsciiString> TDataStd_AsciiString::Set(
   const TDF_Label&               theLabel,
   const Standard_GUID&           theGuid,
   const TCollection_AsciiString& theAsciiString)
@@ -127,33 +127,33 @@ void TDataStd_AsciiString::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_AsciiString::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_AsciiString::NewEmpty() const
 {
   return new TDataStd_AsciiString();
 }
 
 //=================================================================================================
 
-void TDataStd_AsciiString::Restore(const Handle(TDF_Attribute)& theWith)
+void TDataStd_AsciiString::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
-  Handle(TDataStd_AsciiString) R = Handle(TDataStd_AsciiString)::DownCast(theWith);
+  occ::handle<TDataStd_AsciiString> R = occ::down_cast<TDataStd_AsciiString>(theWith);
   myString                       = R->Get();
   myID                           = R->ID();
 }
 
 //=================================================================================================
 
-void TDataStd_AsciiString::Paste(const Handle(TDF_Attribute)& theInto,
-                                 const Handle(TDF_RelocationTable)& /* RT */) const
+void TDataStd_AsciiString::Paste(const occ::handle<TDF_Attribute>& theInto,
+                                 const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(TDataStd_AsciiString) R = Handle(TDataStd_AsciiString)::DownCast(theInto);
+  occ::handle<TDataStd_AsciiString> R = occ::down_cast<TDataStd_AsciiString>(theInto);
   R->Set(myString);
   R->SetID(myID);
 }
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_AsciiString::IsEmpty() const
+bool TDataStd_AsciiString::IsEmpty() const
 {
   return myString.IsEmpty();
 }
@@ -165,7 +165,7 @@ Standard_OStream& TDataStd_AsciiString::Dump(Standard_OStream& theOS) const
   Standard_OStream& anOS = TDF_Attribute::Dump(theOS);
   anOS << myString;
   anOS << " Name=|" << myString << "|";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid << "|" << std::endl;
   return anOS;
@@ -173,7 +173,7 @@ Standard_OStream& TDataStd_AsciiString::Dump(Standard_OStream& theOS) const
 
 //=================================================================================================
 
-void TDataStd_AsciiString::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_AsciiString::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

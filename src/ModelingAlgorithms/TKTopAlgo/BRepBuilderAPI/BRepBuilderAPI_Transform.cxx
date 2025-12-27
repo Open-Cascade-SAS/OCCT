@@ -31,8 +31,8 @@ BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const gp_Trsf& T)
 
 BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const TopoDS_Shape&    theShape,
                                                    const gp_Trsf&         theTrsf,
-                                                   const Standard_Boolean theCopyGeom,
-                                                   const Standard_Boolean theCopyMesh)
+                                                   const bool theCopyGeom,
+                                                   const bool theCopyMesh)
     : myTrsf(theTrsf)
 {
   myModification = new BRepTools_TrsfModification(theTrsf);
@@ -42,15 +42,15 @@ BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const TopoDS_Shape&    theSha
 //=================================================================================================
 
 void BRepBuilderAPI_Transform::Perform(const TopoDS_Shape&    theShape,
-                                       const Standard_Boolean theCopyGeom,
-                                       const Standard_Boolean theCopyMesh)
+                                       const bool theCopyGeom,
+                                       const bool theCopyMesh)
 {
   myUseModif = theCopyGeom || myTrsf.IsNegative()
                || (std::abs(std::abs(myTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
   if (myUseModif)
   {
-    Handle(BRepTools_TrsfModification) theModif =
-      Handle(BRepTools_TrsfModification)::DownCast(myModification);
+    occ::handle<BRepTools_TrsfModification> theModif =
+      occ::down_cast<BRepTools_TrsfModification>(myModification);
     theModif->Trsf()       = myTrsf;
     theModif->IsCopyMesh() = theCopyMesh;
     DoModif(theShape, myModification);
@@ -76,7 +76,7 @@ TopoDS_Shape BRepBuilderAPI_Transform::ModifiedShape(const TopoDS_Shape& S) cons
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepBuilderAPI_Transform::Modified(const TopoDS_Shape& F)
+const NCollection_List<TopoDS_Shape>& BRepBuilderAPI_Transform::Modified(const TopoDS_Shape& F)
 {
   if (!myUseModif)
   {

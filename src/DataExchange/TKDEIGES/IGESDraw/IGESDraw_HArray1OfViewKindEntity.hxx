@@ -17,9 +17,10 @@
 #ifndef IGESDraw_HArray1OfViewKindEntity_HeaderFile
 #define IGESDraw_HArray1OfViewKindEntity_HeaderFile
 
-#include <IGESDraw_Array1OfViewKindEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESDraw_HArray1OfViewKindEntity, IGESDraw_Array1OfViewKindEntity)
+DEFINE_HARRAY1(IGESDraw_HArray1OfViewKindEntity, NCollection_Array1<occ::handle<IGESData_ViewKindEntity>>)
 
 #endif

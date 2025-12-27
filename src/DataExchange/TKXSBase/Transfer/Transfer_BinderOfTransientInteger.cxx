@@ -21,12 +21,12 @@ Transfer_BinderOfTransientInteger::Transfer_BinderOfTransientInteger()
 {
 }
 
-void Transfer_BinderOfTransientInteger::SetInteger(const Standard_Integer val)
+void Transfer_BinderOfTransientInteger::SetInteger(const int val)
 {
   theintval = val;
 }
 
-Standard_Integer Transfer_BinderOfTransientInteger::Integer() const
+int Transfer_BinderOfTransientInteger::Integer() const
 {
   return theintval;
 }

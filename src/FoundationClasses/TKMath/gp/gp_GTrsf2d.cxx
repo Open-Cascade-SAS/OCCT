@@ -21,12 +21,12 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 
-void gp_GTrsf2d::SetAffinity(const gp_Ax2d& A, const Standard_Real Ratio)
+void gp_GTrsf2d::SetAffinity(const gp_Ax2d& A, const double Ratio)
 {
   shape           = gp_Other;
   scale           = 0.0;
-  Standard_Real a = A.Direction().X();
-  Standard_Real b = A.Direction().Y();
+  double a = A.Direction().X();
+  double b = A.Direction().Y();
   matrix.SetValue(1, 1, (1.0 - Ratio) * a * a + Ratio);
   matrix.SetValue(2, 2, (1.0 - Ratio) * b * b + Ratio);
   matrix.SetValue(1, 2, (1.0 - Ratio) * a * b);
@@ -89,7 +89,7 @@ void gp_GTrsf2d::Multiply(const gp_GTrsf2d& T)
   }
 }
 
-void gp_GTrsf2d::Power(const Standard_Integer N)
+void gp_GTrsf2d::Power(const int N)
 {
   if (N == 0)
   {
@@ -113,9 +113,9 @@ void gp_GTrsf2d::Power(const Standard_Integer N)
     }
     if (shape == gp_Other)
     {
-      Standard_Integer Npower  = std::abs(N) - 1;
+      int Npower  = std::abs(N) - 1;
       gp_XY            Temploc = loc;
-      //      Standard_Real Tempscale = scale;
+      //      double Tempscale = scale;
       gp_Mat2d Tempmatrix(matrix);
       for (;;)
       {
@@ -166,13 +166,13 @@ void gp_GTrsf2d::PreMultiply(const gp_GTrsf2d& T)
 gp_Trsf2d gp_GTrsf2d::Trsf2d() const
 {
   // Test of orthogonality
-  const Standard_Real aTolerance  = Precision::Angular();
-  const Standard_Real aTolerance2 = 2.0 * aTolerance;
+  const double aTolerance  = Precision::Angular();
+  const double aTolerance2 = 2.0 * aTolerance;
 
   if (Form() == gp_Other)
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(0)");
 
-  Standard_Real value =
+  double value =
     (matrix.Value(1, 1) * matrix.Value(1, 1) + matrix.Value(2, 1) * matrix.Value(2, 1));
   if (std::abs(value - 1.) > aTolerance2)
     throw Standard_ConstructionError("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");

@@ -25,31 +25,31 @@ RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::
 }
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&                            theData,
-  const Standard_Integer                                            theNum,
-  Handle(Interface_Check)&                                          theAch,
-  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                            theData,
+  const int                                            theNum,
+  occ::handle<Interface_Check>&                                          theAch,
+  const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const
 {
   // Number of Parameter Control
   if (!theData->CheckNbParams(theNum, 4, theAch, "mechanical_design_and_draughting_relationship"))
     return;
 
   // Inherited field : name
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   theData->ReadString(theNum, 1, "name", theAch, aName);
 
   // Inherited field : description
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum, 2, "description", theAch, aDescription);
   }
   // Inherited field : rep_1
-  Handle(StepRepr_Representation) aRep1;
+  occ::handle<StepRepr_Representation> aRep1;
   theData->ReadEntity(theNum, 3, "rep_1", theAch, STANDARD_TYPE(StepRepr_Representation), aRep1);
 
   // Inherited field : rep_2
-  Handle(StepRepr_Representation) aRep2;
+  occ::handle<StepRepr_Representation> aRep2;
   theData->ReadEntity(theNum, 4, "rep_2", theAch, STANDARD_TYPE(StepRepr_Representation), aRep2);
 
   // Initialisation of the read entity
@@ -58,7 +58,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
   StepData_StepWriter&                                              theSW,
-  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt) const
+  const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const
 {
   // Inherited field : name
   theSW.Send(theEnt->Name());
@@ -74,7 +74,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
 }
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::Share(
-  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theEnt,
+  const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt,
   Interface_EntityIterator&                                         theIter) const
 {
   theIter.GetOneItem(theEnt->Rep1());

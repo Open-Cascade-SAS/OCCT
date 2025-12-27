@@ -50,21 +50,21 @@
 #include <stdio.h>
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-static Standard_Boolean Affich = Standard_False;
-static Standard_Integer NBPROJ = 1;
+static bool Affich = false;
+static int NBPROJ = 1;
 #endif
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Standard_Real         First,
-                                          const Standard_Real         Last,
-                                          const Handle(Geom_Surface)& S,
-                                          const Standard_Real         UDeb,
-                                          const Standard_Real         UFin,
-                                          const Standard_Real         VDeb,
-                                          const Standard_Real         VFin,
-                                          Standard_Real&              Tolerance)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const double         First,
+                                          const double         Last,
+                                          const occ::handle<Geom_Surface>& S,
+                                          const double         UDeb,
+                                          const double         UFin,
+                                          const double         VDeb,
+                                          const double         VFin,
+                                          double&              Tolerance)
 {
 #ifdef DRAW
   if (Affich)
@@ -83,12 +83,12 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
   GeomAdaptor_Curve   AC(C, First, Last);
   GeomAdaptor_Surface AS(S, UDeb, UFin, VDeb, VFin);
 
-  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(AS);
-  Handle(GeomAdaptor_Curve)   HC = new GeomAdaptor_Curve(AC);
+  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(AS);
+  occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectedCurve Proj(HS, HC, Tolerance);
 
-  Handle(Geom2d_Curve) G2dC;
+  occ::handle<Geom2d_Curve> G2dC;
 
   switch (Proj.GetType())
   {
@@ -133,9 +133,9 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
 
   if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) CTrim = Handle(Geom_TrimmedCurve)::DownCast(C);
-    Standard_Real             U1    = CTrim->FirstParameter();
-    Standard_Real             U2    = CTrim->LastParameter();
+    occ::handle<Geom_TrimmedCurve> CTrim = occ::down_cast<Geom_TrimmedCurve>(C);
+    double             U1    = CTrim->FirstParameter();
+    double             U2    = CTrim->LastParameter();
     if (!G2dC->IsPeriodic())
     {
       U1 = std::max(U1, G2dC->FirstParameter());
@@ -147,7 +147,7 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
 #ifdef DRAW
   if (Affich)
   {
-    static Standard_CString aprojcurv = "projcurv";
+    static const char* aprojcurv = "projcurv";
     DrawTrSurf::Set(aprojcurv, G2dC);
   }
 #endif
@@ -157,13 +157,13 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Standard_Real         First,
-                                          const Standard_Real         Last,
-                                          const Handle(Geom_Surface)& S,
-                                          Standard_Real&              Tolerance)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const double         First,
+                                          const double         Last,
+                                          const occ::handle<Geom_Surface>& S,
+                                          double&              Tolerance)
 {
-  Standard_Real UFirst, ULast, VFirst, VLast;
+  double UFirst, ULast, VFirst, VLast;
 
   S->Bounds(UFirst, ULast, VFirst, VLast);
   return Curve2d(C, First, Last, S, UFirst, ULast, VFirst, VLast, Tolerance);
@@ -173,16 +173,16 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
 //  Add not implemented method.
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Handle(Geom_Surface)& S,
-                                          const Standard_Real         UDeb,
-                                          const Standard_Real         UFin,
-                                          const Standard_Real         VDeb,
-                                          const Standard_Real         VFin)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const occ::handle<Geom_Surface>& S,
+                                          const double         UDeb,
+                                          const double         UFin,
+                                          const double         VDeb,
+                                          const double         VFin)
 {
-  Standard_Real First = C->FirstParameter();
-  Standard_Real Last  = C->LastParameter();
-  Standard_Real Tol   = Precision::PConfusion();
+  double First = C->FirstParameter();
+  double Last  = C->LastParameter();
+  double Tol   = Precision::PConfusion();
   return GeomProjLib::Curve2d(C, First, Last, S, UDeb, UFin, VDeb, VFin, Tol);
 }
 
@@ -190,54 +190,54 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Handle(Geom_Surface)& S,
-                                          const Standard_Real         UDeb,
-                                          const Standard_Real         UFin,
-                                          const Standard_Real         VDeb,
-                                          const Standard_Real         VFin,
-                                          Standard_Real&              Tolerance)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const occ::handle<Geom_Surface>& S,
+                                          const double         UDeb,
+                                          const double         UFin,
+                                          const double         VDeb,
+                                          const double         VFin,
+                                          double&              Tolerance)
 {
-  Standard_Real First = C->FirstParameter();
-  Standard_Real Last  = C->LastParameter();
+  double First = C->FirstParameter();
+  double Last  = C->LastParameter();
   return GeomProjLib::Curve2d(C, First, Last, S, UDeb, UFin, VDeb, VFin, Tolerance);
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Handle(Geom_Surface)& S)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const occ::handle<Geom_Surface>& S)
 {
-  Standard_Real First = C->FirstParameter();
-  Standard_Real Last  = C->LastParameter();
-  Standard_Real Tol   = Precision::PConfusion();
+  double First = C->FirstParameter();
+  double Last  = C->LastParameter();
+  double Tol   = Precision::PConfusion();
   return GeomProjLib::Curve2d(C, First, Last, S, Tol);
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)&   C,
-                                          const Standard_Real         First,
-                                          const Standard_Real         Last,
-                                          const Handle(Geom_Surface)& S)
+occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   C,
+                                          const double         First,
+                                          const double         Last,
+                                          const occ::handle<Geom_Surface>& S)
 {
-  Standard_Real Tol = Precision::PConfusion();
+  double Tol = Precision::PConfusion();
   return GeomProjLib::Curve2d(C, First, Last, S, Tol);
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomProjLib::Project(const Handle(Geom_Curve)& C, const Handle(Geom_Surface)& S)
+occ::handle<Geom_Curve> GeomProjLib::Project(const occ::handle<Geom_Curve>& C, const occ::handle<Geom_Surface>& S)
 {
   GeomAdaptor_Curve   AC(C);
   GeomAdaptor_Surface AS(S);
 
-  Handle(Geom_Curve) GC;
+  occ::handle<Geom_Curve> GC;
 
   if (AS.GetType() == GeomAbs_Plane)
   {
     ProjLib_ProjectOnPlane    Proj(AS.Plane().Position());
-    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(AC);
+    occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve(AC);
     Proj.Load(HC, Precision::PApproximation());
 
     switch (Proj.GetType())
@@ -276,29 +276,29 @@ Handle(Geom_Curve) GeomProjLib::Project(const Handle(Geom_Curve)& C, const Handl
 
     if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      Handle(Geom_TrimmedCurve) CTrim = Handle(Geom_TrimmedCurve)::DownCast(C);
-      Standard_Real             U1    = CTrim->FirstParameter();
-      Standard_Real             U2    = CTrim->LastParameter();
+      occ::handle<Geom_TrimmedCurve> CTrim = occ::down_cast<Geom_TrimmedCurve>(C);
+      double             U1    = CTrim->FirstParameter();
+      double             U2    = CTrim->LastParameter();
       GC                              = new Geom_TrimmedCurve(GC, U1, U2);
     }
   }
   else
   {
-    Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(AS);
-    Handle(GeomAdaptor_Curve)   HC = new GeomAdaptor_Curve(AC);
-    //    Standard_Real Tol  = Precision::Approximation();
-    //    Standard_Real TolU = Precision::PApproximation();
-    //    Standard_Real TolV = Precision::PApproximation();
-    Standard_Real              Tol  = 0.0001;
-    Standard_Real              TolU = std::pow(Tol, 2. / 3);
-    Standard_Real              TolV = std::pow(Tol, 2. / 3);
+    occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(AS);
+    occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(AC);
+    //    double Tol  = Precision::Approximation();
+    //    double TolU = Precision::PApproximation();
+    //    double TolV = Precision::PApproximation();
+    double              Tol  = 0.0001;
+    double              TolU = std::pow(Tol, 2. / 3);
+    double              TolV = std::pow(Tol, 2. / 3);
     ProjLib_CompProjectedCurve Proj(HS, HC, TolU, TolV, -1.);
 
-    Standard_Real f, l;
+    double f, l;
     Proj.Bounds(1, f, l);
-    Handle(Adaptor2d_Curve2d) HC2d = Proj.Trim(f, l, TolU);
+    occ::handle<Adaptor2d_Curve2d> HC2d = Proj.Trim(f, l, TolU);
     Approx_CurveOnSurface     Approx(HC2d, HS, f, l, Tol);
-    Approx.Perform(16, 14, GeomAbs_C2, Standard_True);
+    Approx.Perform(16, 14, GeomAbs_C2, true);
 
     // ici, on a toujours un type BSpline.
     if (Approx.IsDone() && Approx.HasResult())
@@ -310,18 +310,18 @@ Handle(Geom_Curve) GeomProjLib::Project(const Handle(Geom_Curve)& C, const Handl
 
 //=================================================================================================
 
-Handle(Geom_Curve) GeomProjLib::ProjectOnPlane(const Handle(Geom_Curve)& Curve,
-                                               const Handle(Geom_Plane)& Plane,
+occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve>& Curve,
+                                               const occ::handle<Geom_Plane>& Plane,
                                                const gp_Dir&             Dir,
-                                               const Standard_Boolean    KeepParametrization)
+                                               const bool    KeepParametrization)
 {
   GeomAdaptor_Curve         AC(Curve);
-  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(AC);
+  occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectOnPlane Proj(Plane->Position(), Dir);
   Proj.Load(HC, Precision::Approximation(), KeepParametrization);
 
-  Handle(Geom_Curve) GC;
+  occ::handle<Geom_Curve> GC;
 
   switch (Proj.GetType())
   {
@@ -358,7 +358,7 @@ Handle(Geom_Curve) GeomProjLib::ProjectOnPlane(const Handle(Geom_Curve)& Curve,
 
   if (Curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) CTrim = Handle(Geom_TrimmedCurve)::DownCast(Curve);
+    occ::handle<Geom_TrimmedCurve> CTrim = occ::down_cast<Geom_TrimmedCurve>(Curve);
     GC = new Geom_TrimmedCurve(GC, Proj.FirstParameter(), Proj.LastParameter());
   }
 

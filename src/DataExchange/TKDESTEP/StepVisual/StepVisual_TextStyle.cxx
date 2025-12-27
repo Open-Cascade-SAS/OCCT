@@ -20,31 +20,31 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyle, Standard_Transient)
 StepVisual_TextStyle::StepVisual_TextStyle() {}
 
 void StepVisual_TextStyle::Init(
-  const Handle(TCollection_HAsciiString)&           aName,
-  const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
+  const occ::handle<TCollection_HAsciiString>&           aName,
+  const occ::handle<StepVisual_TextStyleForDefinedFont>& aCharacterAppearance)
 {
   // --- classe own fields ---
   name                = aName;
   characterAppearance = aCharacterAppearance;
 }
 
-void StepVisual_TextStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_TextStyle::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_TextStyle::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_TextStyle::Name() const
 {
   return name;
 }
 
 void StepVisual_TextStyle::SetCharacterAppearance(
-  const Handle(StepVisual_TextStyleForDefinedFont)& aCharacterAppearance)
+  const occ::handle<StepVisual_TextStyleForDefinedFont>& aCharacterAppearance)
 {
   characterAppearance = aCharacterAppearance;
 }
 
-Handle(StepVisual_TextStyleForDefinedFont) StepVisual_TextStyle::CharacterAppearance() const
+occ::handle<StepVisual_TextStyleForDefinedFont> StepVisual_TextStyle::CharacterAppearance() const
 {
   return characterAppearance;
 }

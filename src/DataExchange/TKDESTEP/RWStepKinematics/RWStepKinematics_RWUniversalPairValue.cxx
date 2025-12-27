@@ -31,10 +31,10 @@ RWStepKinematics_RWUniversalPairValue::RWStepKinematics_RWUniversalPairValue() {
 //=================================================================================================
 
 void RWStepKinematics_RWUniversalPairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&           theData,
-  const Standard_Integer                           theNum,
-  Handle(Interface_Check)&                         theArch,
-  const Handle(StepKinematics_UniversalPairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&           theData,
+  const int                           theNum,
+  occ::handle<Interface_Check>&                         theArch,
+  const occ::handle<StepKinematics_UniversalPairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "universal_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWUniversalPairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,10 +57,10 @@ void RWStepKinematics_RWUniversalPairValue::ReadStep(
 
   // Own fields of UniversalPairValue
 
-  Standard_Real aFirstRotationAngle;
+  double aFirstRotationAngle;
   theData->ReadReal(theNum, 3, "first_rotation_angle", theArch, aFirstRotationAngle);
 
-  Standard_Real aSecondRotationAngle;
+  double aSecondRotationAngle;
   theData->ReadReal(theNum, 4, "second_rotation_angle", theArch, aSecondRotationAngle);
 
   // Initialize entity
@@ -74,7 +74,7 @@ void RWStepKinematics_RWUniversalPairValue::ReadStep(
 
 void RWStepKinematics_RWUniversalPairValue::WriteStep(
   StepData_StepWriter&                             theSW,
-  const Handle(StepKinematics_UniversalPairValue)& theEnt) const
+  const occ::handle<StepKinematics_UniversalPairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -95,7 +95,7 @@ void RWStepKinematics_RWUniversalPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWUniversalPairValue::Share(
-  const Handle(StepKinematics_UniversalPairValue)& theEnt,
+  const occ::handle<StepKinematics_UniversalPairValue>& theEnt,
   Interface_EntityIterator&                        iter) const
 {
 

@@ -22,13 +22,13 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Bnd_Box.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Geom_Surface;
 class Geom_Curve;
-
-DEFINE_STANDARD_HANDLE(ShapeAnalysis_Surface, Standard_Transient)
 
 //! Complements standard tool Geom_Surface by providing additional
 //! functionality for detection surface singularities, checking
@@ -60,28 +60,28 @@ class ShapeAnalysis_Surface : public Standard_Transient
 
 public:
   //! Creates an analyzer object on the basis of existing surface
-  Standard_EXPORT ShapeAnalysis_Surface(const Handle(Geom_Surface)& S);
+  Standard_EXPORT ShapeAnalysis_Surface(const occ::handle<Geom_Surface>& S);
 
   //! Loads existing surface
-  Standard_EXPORT void Init(const Handle(Geom_Surface)& S);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S);
 
   //! Reads all the data from another Surface, without recomputing
-  Standard_EXPORT void Init(const Handle(ShapeAnalysis_Surface)& other);
+  Standard_EXPORT void Init(const occ::handle<ShapeAnalysis_Surface>& other);
 
-  Standard_EXPORT void SetDomain(const Standard_Real U1,
-                                 const Standard_Real U2,
-                                 const Standard_Real V1,
-                                 const Standard_Real V2);
+  Standard_EXPORT void SetDomain(const double U1,
+                                 const double U2,
+                                 const double V1,
+                                 const double V2);
 
   //! Returns a surface being analyzed
-  const Handle(Geom_Surface)& Surface() const;
+  const occ::handle<Geom_Surface>& Surface() const;
 
   //! Returns the Adaptor.
   //! Creates it if not yet done.
-  Standard_EXPORT const Handle(GeomAdaptor_Surface)& Adaptor3d();
+  Standard_EXPORT const occ::handle<GeomAdaptor_Surface>& Adaptor3d();
 
   //! Returns the Adaptor (may be Null if method Adaptor() was not called)
-  const Handle(GeomAdaptor_Surface)& TrueAdaptor3d() const;
+  const occ::handle<GeomAdaptor_Surface>& TrueAdaptor3d() const;
 
   //! Returns 3D distance found by one of the following methods.
   //! IsDegenerated, DegeneratedValues, ProjectDegenerated
@@ -90,11 +90,11 @@ public:
   //! IsUClosed, IsVClosed (minimum value of precision to consider
   //! the surface to be closed),
   //! ValueOfUV (distance between 3D point and found solution).
-  Standard_Real Gap() const;
+  double Gap() const;
 
   //! Returns a 3D point specified by parameters in surface
   //! parametrical space
-  gp_Pnt Value(const Standard_Real u, const Standard_Real v);
+  gp_Pnt Value(const double u, const double v);
 
   //! Returns a 3d point specified by a point in surface
   //! parametrical space
@@ -103,12 +103,12 @@ public:
   //! Returns True if the surface has singularities for the given
   //! precision (i.e. if there are surface singularities with sizes
   //! not greater than precision).
-  Standard_EXPORT Standard_Boolean HasSingularities(const Standard_Real preci);
+  Standard_EXPORT bool HasSingularities(const double preci);
 
   //! Returns the number of singularities for the given precision
   //! (i.e. number of surface singularities with sizes not greater
   //! than precision).
-  Standard_EXPORT Standard_Integer NbSingularities(const Standard_Real preci);
+  Standard_EXPORT int NbSingularities(const double preci);
 
   //! Returns the characteristics of the singularity specified by
   //! its rank number <num>.
@@ -127,20 +127,20 @@ public:
   //! uisodeg: if the degenerated iso-line is U-iso (True) or
   //! V-iso (False).
   //! Returns False if <num> is out of range, else returns True.
-  Standard_EXPORT Standard_Boolean Singularity(const Standard_Integer num,
-                                               Standard_Real&         preci,
+  Standard_EXPORT bool Singularity(const int num,
+                                               double&         preci,
                                                gp_Pnt&                P3d,
                                                gp_Pnt2d&              firstP2d,
                                                gp_Pnt2d&              lastP2d,
-                                               Standard_Real&         firstpar,
-                                               Standard_Real&         lastpar,
-                                               Standard_Boolean&      uisodeg);
+                                               double&         firstpar,
+                                               double&         lastpar,
+                                               bool&      uisodeg);
 
   //! Returns True if there is at least one surface boundary which
   //! is considered as degenerated with <preci> and distance
   //! between P3d and corresponding singular point is less than
   //! <preci>
-  Standard_EXPORT Standard_Boolean IsDegenerated(const gp_Pnt& P3d, const Standard_Real preci);
+  Standard_EXPORT bool IsDegenerated(const gp_Pnt& P3d, const double preci);
 
   //! Returns True if there is at least one surface iso-line which
   //! is considered as degenerated with <preci> and distance
@@ -148,14 +148,14 @@ public:
   //! <preci> (like IsDegenerated).
   //! Returns characteristics of the first found boundary matching
   //! those criteria.
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     DegeneratedValues(const gp_Pnt&          P3d,
-                      const Standard_Real    preci,
+                      const double    preci,
                       gp_Pnt2d&              firstP2d,
                       gp_Pnt2d&              lastP2d,
-                      Standard_Real&         firstpar,
-                      Standard_Real&         lastpar,
-                      const Standard_Boolean forward = Standard_True);
+                      double&         firstpar,
+                      double&         lastpar,
+                      const bool forward = true);
 
   //! Projects a point <P3d> on a singularity by computing
   //! one of the coordinates of preliminary computed <result>.
@@ -169,8 +169,8 @@ public:
   //! resolution (computed from <preci> by Geom_Adaptor).
   //! Then sets not yet computed <result>'s coordinate taking it
   //! from <neighbour> and returns True.
-  Standard_EXPORT Standard_Boolean ProjectDegenerated(const gp_Pnt&       P3d,
-                                                      const Standard_Real preci,
+  Standard_EXPORT bool ProjectDegenerated(const gp_Pnt&       P3d,
+                                                      const double preci,
                                                       const gp_Pnt2d&     neighbour,
                                                       gp_Pnt2d&           result);
 
@@ -179,11 +179,11 @@ public:
   //! surface, and if yes, adjusts the indeterminate 2d coordinate
   //! of these points by nearest point which is not in singularity.
   //! Returns True if some points were adjusted.
-  Standard_EXPORT Standard_Boolean ProjectDegenerated(const Standard_Integer      nbrPnt,
-                                                      const TColgp_SequenceOfPnt& points,
-                                                      TColgp_SequenceOfPnt2d&     pnt2d,
-                                                      const Standard_Real         preci,
-                                                      const Standard_Boolean      direct);
+  Standard_EXPORT bool ProjectDegenerated(const int      nbrPnt,
+                                                      const NCollection_Sequence<gp_Pnt>& points,
+                                                      NCollection_Sequence<gp_Pnt2d>&     pnt2d,
+                                                      const double         preci,
+                                                      const bool      direct);
 
   //! Returns True if straight pcurve going from point p2d1 to p2d2
   //! is degenerate, i.e. lies in the singularity of the surface.
@@ -198,28 +198,28 @@ public:
   //! the Resolution computed from max distance in 3d
   //! (max3d < tol && max2d > ratio * Resolution(max3d))
   //! NOTE: <ratio> should be >1 (e.g. 10)
-  Standard_EXPORT Standard_Boolean IsDegenerated(const gp_Pnt2d&     p2d1,
+  Standard_EXPORT bool IsDegenerated(const gp_Pnt2d&     p2d1,
                                                  const gp_Pnt2d&     p2d2,
-                                                 const Standard_Real tol,
-                                                 const Standard_Real ratio);
+                                                 const double tol,
+                                                 const double ratio);
 
   //! Returns the bounds of the surface
   //! (from Bounds from Surface, but buffered)
-  void Bounds(Standard_Real& ufirst,
-              Standard_Real& ulast,
-              Standard_Real& vfirst,
-              Standard_Real& vlast) const;
+  void Bounds(double& ufirst,
+              double& ulast,
+              double& vfirst,
+              double& vlast) const;
 
   //! Computes bound isos (protected against exceptions)
   Standard_EXPORT void ComputeBoundIsos();
 
   //! Returns a U-Iso. Null if not possible or failed
   //! Remark : bound isos are buffered
-  Standard_EXPORT Handle(Geom_Curve) UIso(const Standard_Real U);
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U);
 
   //! Returns a V-Iso. Null if not possible or failed
   //! Remark : bound isos are buffered
-  Standard_EXPORT Handle(Geom_Curve) VIso(const Standard_Real V);
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V);
 
   //! Tells if the Surface is spatially closed in U with given
   //! precision. If <preci> < 0 then Precision::Confusion is used.
@@ -236,7 +236,7 @@ public:
   //! curve,
   //! - other (RectangularTrimmed and Offset) - maximum distance
   //! computed at 100 equi-distanted points.
-  Standard_EXPORT Standard_Boolean IsUClosed(const Standard_Real preci = -1);
+  Standard_EXPORT bool IsUClosed(const double preci = -1);
 
   //! Tells if the Surface is spatially closed in V with given
   //! precision. If <preci> < 0 then Precision::Confusion is used.
@@ -253,7 +253,7 @@ public:
   //! curve,
   //! - other (RectangularTrimmed and Offset) - maximum distance
   //! computed at 100 equi-distanted points.
-  Standard_EXPORT Standard_Boolean IsVClosed(const Standard_Real preci = -1);
+  Standard_EXPORT bool IsVClosed(const double preci = -1);
 
   //! Computes the parameters in the surface parametrical space of
   //! 3D point.
@@ -263,7 +263,7 @@ public:
   //! tool GeomAPI_ProjectPointOnSurface by treatment of cases when
   //! the projected point is near to the surface boundaries and
   //! when this standard tool fails.
-  Standard_EXPORT gp_Pnt2d ValueOfUV(const gp_Pnt& P3D, const Standard_Real preci);
+  Standard_EXPORT gp_Pnt2d ValueOfUV(const gp_Pnt& P3D, const double preci);
 
   //! Projects a point P3D on the surface.
   //! Does the same thing as ValueOfUV but tries to optimize
@@ -275,8 +275,8 @@ public:
   //! If not succeeded, calls ValueOfUV()
   Standard_EXPORT gp_Pnt2d NextValueOfUV(const gp_Pnt2d&     p2dPrev,
                                          const gp_Pnt&       P3D,
-                                         const Standard_Real preci,
-                                         const Standard_Real maxpreci = -1.0);
+                                         const double preci,
+                                         const double maxpreci = -1.0);
 
   //! Tries a refinement of an already computed couple (U,V) by
   //! using projecting 3D point on iso-lines:
@@ -287,16 +287,16 @@ public:
   //! direction)
   //! Returns the best resulting distance between P3D and Value(U,V)
   //! in the case of success. Else, returns a very great value
-  Standard_EXPORT Standard_Real UVFromIso(const gp_Pnt&       P3D,
-                                          const Standard_Real preci,
-                                          Standard_Real&      U,
-                                          Standard_Real&      V);
+  Standard_EXPORT double UVFromIso(const gp_Pnt&       P3D,
+                                          const double preci,
+                                          double&      U,
+                                          double&      V);
 
   //! Returns minimum value to consider the surface as U-closed
-  Standard_Real UCloseVal() const;
+  double UCloseVal() const;
 
   //! Returns minimum value to consider the surface as V-closed
-  Standard_Real VCloseVal() const;
+  double VCloseVal() const;
 
   Standard_EXPORT const Bnd_Box& GetBoxUF();
 
@@ -309,37 +309,37 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_Surface, Standard_Transient)
 
 protected:
-  Handle(Geom_Surface)        mySurf;
-  Handle(GeomAdaptor_Surface) myAdSur;
+  occ::handle<Geom_Surface>        mySurf;
+  occ::handle<GeomAdaptor_Surface> myAdSur;
   Extrema_ExtPS               myExtPS;
-  Standard_Boolean            myExtOK;
-  Standard_Integer            myNbDeg;
-  Standard_Real               myPreci[4];
+  bool            myExtOK;
+  int            myNbDeg;
+  double               myPreci[4];
   gp_Pnt                      myP3d[4];
   gp_Pnt2d                    myFirstP2d[4];
   gp_Pnt2d                    myLastP2d[4];
-  Standard_Real               myFirstPar[4];
-  Standard_Real               myLastPar[4];
-  Standard_Boolean            myUIsoDeg[4];
-  Standard_Boolean            myIsos;
-  Standard_Real               myUF;
-  Standard_Real               myUL;
-  Standard_Real               myVF;
-  Standard_Real               myVL;
-  Handle(Geom_Curve)          myIsoUF;
-  Handle(Geom_Curve)          myIsoUL;
-  Handle(Geom_Curve)          myIsoVF;
-  Handle(Geom_Curve)          myIsoVL;
-  Standard_Boolean            myIsoBoxes;
+  double               myFirstPar[4];
+  double               myLastPar[4];
+  bool            myUIsoDeg[4];
+  bool            myIsos;
+  double               myUF;
+  double               myUL;
+  double               myVF;
+  double               myVL;
+  occ::handle<Geom_Curve>          myIsoUF;
+  occ::handle<Geom_Curve>          myIsoUL;
+  occ::handle<Geom_Curve>          myIsoVF;
+  occ::handle<Geom_Curve>          myIsoVL;
+  bool            myIsoBoxes;
   Bnd_Box                     myBndUF;
   Bnd_Box                     myBndUL;
   Bnd_Box                     myBndVF;
   Bnd_Box                     myBndVL;
-  Standard_Real               myGap;
-  Standard_Real               myUDelt;
-  Standard_Real               myVDelt;
-  Standard_Real               myUCloseVal;
-  Standard_Real               myVCloseVal;
+  double               myGap;
+  double               myUDelt;
+  double               myVDelt;
+  double               myUCloseVal;
+  double               myVCloseVal;
 
 private:
   //! Computes singularities on the surface.
@@ -363,9 +363,9 @@ private:
   Standard_EXPORT void ComputeBoxes();
 
   //! @return 0, 1 or 2.
-  Standard_EXPORT Standard_Integer SurfaceNewton(const gp_Pnt2d&     p2dPrev,
+  Standard_EXPORT int SurfaceNewton(const gp_Pnt2d&     p2dPrev,
                                                  const gp_Pnt&       P3D,
-                                                 const Standard_Real preci,
+                                                 const double preci,
                                                  gp_Pnt2d&           sol);
 
   Standard_EXPORT void SortSingularities();

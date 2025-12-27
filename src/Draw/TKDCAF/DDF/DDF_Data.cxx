@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DDF_Data, Draw_Drawable3D)
 
 //=================================================================================================
 
-DDF_Data::DDF_Data(const Handle(TDF_Data)& aDF)
+DDF_Data::DDF_Data(const occ::handle<TDF_Data>& aDF)
     : myDF(aDF)
 {
 }
@@ -47,7 +47,7 @@ void DDF_Data::DrawOn(Draw_Display& /*dis*/) const
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDF_Data::Copy() const
+occ::handle<Draw_Drawable3D> DDF_Data::Copy() const
 {
   return new DDF_Data(myDF);
 }
@@ -62,14 +62,14 @@ void DDF_Data::Dump(Standard_OStream& S) const
 
 //=================================================================================================
 
-Handle(TDF_Data) DDF_Data::DataFramework() const
+occ::handle<TDF_Data> DDF_Data::DataFramework() const
 {
   return myDF;
 }
 
 //=================================================================================================
 
-void DDF_Data::DataFramework(const Handle(TDF_Data)& aDF)
+void DDF_Data::DataFramework(const occ::handle<TDF_Data>& aDF)
 
 {
   myDF = aDF;

@@ -25,9 +25,6 @@
 class TCollection_HAsciiString;
 class StepVisual_SurfaceStyleElementSelect;
 
-class StepVisual_SurfaceSideStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceSideStyle, Standard_Transient)
-
 class StepVisual_SurfaceSideStyle : public Standard_Transient
 {
 
@@ -35,29 +32,28 @@ public:
   //! Returns a SurfaceSideStyle
   Standard_EXPORT StepVisual_SurfaceSideStyle();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                      aName,
-                            const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                      aName,
+                            const occ::handle<StepVisual_HArray1OfSurfaceStyleElementSelect>& aStyles);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   Standard_EXPORT void SetStyles(
-    const Handle(StepVisual_HArray1OfSurfaceStyleElementSelect)& aStyles);
+    const occ::handle<StepVisual_HArray1OfSurfaceStyleElementSelect>& aStyles);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) Styles() const;
+  Standard_EXPORT occ::handle<StepVisual_HArray1OfSurfaceStyleElementSelect> Styles() const;
 
   Standard_EXPORT StepVisual_SurfaceStyleElementSelect
-    StylesValue(const Standard_Integer num) const;
+    StylesValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbStyles() const;
+  Standard_EXPORT int NbStyles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)                      name;
-  Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) styles;
+  occ::handle<TCollection_HAsciiString>                      name;
+  occ::handle<StepVisual_HArray1OfSurfaceStyleElementSelect> styles;
 };
 
 #endif // _StepVisual_SurfaceSideStyle_HeaderFile

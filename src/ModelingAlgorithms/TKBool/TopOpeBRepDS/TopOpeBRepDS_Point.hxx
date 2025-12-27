@@ -32,29 +32,28 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Point();
 
-  Standard_EXPORT TopOpeBRepDS_Point(const gp_Pnt& P, const Standard_Real T);
+  Standard_EXPORT TopOpeBRepDS_Point(const gp_Pnt& P, const double T);
 
   Standard_EXPORT TopOpeBRepDS_Point(const TopoDS_Shape& S);
 
-  Standard_EXPORT Standard_Boolean IsEqual(const TopOpeBRepDS_Point& other) const;
+  Standard_EXPORT bool IsEqual(const TopOpeBRepDS_Point& other) const;
 
   Standard_EXPORT const gp_Pnt& Point() const;
 
   Standard_EXPORT gp_Pnt& ChangePoint();
 
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
-  Standard_EXPORT void Tolerance(const Standard_Real Tol);
+  Standard_EXPORT void Tolerance(const double Tol);
 
-  Standard_EXPORT Standard_Boolean Keep() const;
+  Standard_EXPORT bool Keep() const;
 
-  Standard_EXPORT void ChangeKeep(const Standard_Boolean B);
+  Standard_EXPORT void ChangeKeep(const bool B);
 
-protected:
 private:
   gp_Pnt           myPoint;
-  Standard_Real    myTolerance;
-  Standard_Boolean myKeep;
+  double    myTolerance;
+  bool myKeep;
 };
 
 #endif // _TopOpeBRepDS_Point_HeaderFile

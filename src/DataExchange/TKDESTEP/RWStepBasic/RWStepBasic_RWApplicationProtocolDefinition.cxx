@@ -21,10 +21,10 @@
 RWStepBasic_RWApplicationProtocolDefinition::RWStepBasic_RWApplicationProtocolDefinition() {}
 
 void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepBasic_ApplicationProtocolDefinition)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,14 +34,14 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
 
   // --- own field : status ---
 
-  Handle(TCollection_HAsciiString) aStatus;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aStatus;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "status", ach, aStatus);
 
   // --- own field : applicationInterpretedModelSchemaName ---
 
-  Handle(TCollection_HAsciiString) aApplicationInterpretedModelSchemaName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aApplicationInterpretedModelSchemaName;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num,
                    2,
                    "application_interpreted_model_schema_name",
@@ -50,14 +50,14 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
 
   // --- own field : applicationProtocolYear ---
 
-  Standard_Integer aApplicationProtocolYear;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  int aApplicationProtocolYear;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadInteger(num, 3, "application_protocol_year", ach, aApplicationProtocolYear);
 
   // --- own field : application ---
 
-  Handle(StepBasic_ApplicationContext) aApplication;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  occ::handle<StepBasic_ApplicationContext> aApplication;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadEntity(num,
                    4,
                    "application",
@@ -75,7 +75,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
 
 void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepBasic_ApplicationProtocolDefinition)& ent) const
+  const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent) const
 {
 
   // --- own field : status ---
@@ -96,7 +96,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
 }
 
 void RWStepBasic_RWApplicationProtocolDefinition::Share(
-  const Handle(StepBasic_ApplicationProtocolDefinition)& ent,
+  const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent,
   Interface_EntityIterator&                              iter) const
 {
 

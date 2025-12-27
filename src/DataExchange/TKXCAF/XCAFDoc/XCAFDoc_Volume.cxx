@@ -45,9 +45,9 @@ const Standard_GUID& XCAFDoc_Volume::ID() const
 
 //=================================================================================================
 
-Handle(XCAFDoc_Volume) XCAFDoc_Volume::Set(const TDF_Label& L, const Standard_Real V)
+occ::handle<XCAFDoc_Volume> XCAFDoc_Volume::Set(const TDF_Label& L, const double V)
 {
-  Handle(XCAFDoc_Volume) A;
+  occ::handle<XCAFDoc_Volume> A;
   if (!L.FindAttribute(XCAFDoc_Volume::GetID(), A))
   {
     A = new XCAFDoc_Volume;
@@ -59,28 +59,28 @@ Handle(XCAFDoc_Volume) XCAFDoc_Volume::Set(const TDF_Label& L, const Standard_Re
 
 //=================================================================================================
 
-void XCAFDoc_Volume::Set(const Standard_Real V)
+void XCAFDoc_Volume::Set(const double V)
 {
   TDataStd_Real::Set(V);
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDoc_Volume::Get() const
+double XCAFDoc_Volume::Get() const
 {
   return TDataStd_Real::Get();
 }
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Volume::Get(const TDF_Label& label, Standard_Real& vol)
+bool XCAFDoc_Volume::Get(const TDF_Label& label, double& vol)
 {
-  Handle(XCAFDoc_Volume) aVolume;
+  occ::handle<XCAFDoc_Volume> aVolume;
   if (!label.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
-    return Standard_False;
+    return false;
 
   vol = aVolume->Get();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -94,7 +94,7 @@ Standard_OStream& XCAFDoc_Volume::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void XCAFDoc_Volume::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Volume::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

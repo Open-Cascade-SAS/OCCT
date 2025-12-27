@@ -25,17 +25,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeAspectRelationship, Standard_Transient)
 
 StepRepr_ShapeAspectRelationship::StepRepr_ShapeAspectRelationship()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
 void StepRepr_ShapeAspectRelationship::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Standard_Boolean                  hasDescription,
-  const Handle(TCollection_HAsciiString)& aDescription,
-  const Handle(StepRepr_ShapeAspect)&     aRelatingShapeAspect,
-  const Handle(StepRepr_ShapeAspect)&     aRelatedShapeAspect)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const bool                  hasDescription,
+  const occ::handle<TCollection_HAsciiString>& aDescription,
+  const occ::handle<StepRepr_ShapeAspect>&     aRelatingShapeAspect,
+  const occ::handle<StepRepr_ShapeAspect>&     aRelatedShapeAspect)
 {
 
   theName = aName;
@@ -55,21 +55,21 @@ void StepRepr_ShapeAspectRelationship::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_ShapeAspectRelationship::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_ShapeAspectRelationship::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_ShapeAspectRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_ShapeAspectRelationship::Description() const
 {
   return theDescription;
 }
@@ -77,21 +77,21 @@ Handle(TCollection_HAsciiString) StepRepr_ShapeAspectRelationship::Description()
 //=================================================================================================
 
 void StepRepr_ShapeAspectRelationship::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_ShapeAspectRelationship::HasDescription() const
+bool StepRepr_ShapeAspectRelationship::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatingShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepRepr_ShapeAspectRelationship::RelatingShapeAspect() const
 {
   return theRelatingShapeAspect;
 }
@@ -99,14 +99,14 @@ Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatingShapeAspe
 //=================================================================================================
 
 void StepRepr_ShapeAspectRelationship::SetRelatingShapeAspect(
-  const Handle(StepRepr_ShapeAspect)& aRelatingShapeAspect)
+  const occ::handle<StepRepr_ShapeAspect>& aRelatingShapeAspect)
 {
   theRelatingShapeAspect = aRelatingShapeAspect;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatedShapeAspect() const
+occ::handle<StepRepr_ShapeAspect> StepRepr_ShapeAspectRelationship::RelatedShapeAspect() const
 {
   return theRelatedShapeAspect;
 }
@@ -114,7 +114,7 @@ Handle(StepRepr_ShapeAspect) StepRepr_ShapeAspectRelationship::RelatedShapeAspec
 //=================================================================================================
 
 void StepRepr_ShapeAspectRelationship::SetRelatedShapeAspect(
-  const Handle(StepRepr_ShapeAspect)& aRelatedShapeAspect)
+  const occ::handle<StepRepr_ShapeAspect>& aRelatedShapeAspect)
 {
   theRelatedShapeAspect = aRelatedShapeAspect;
 }

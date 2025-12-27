@@ -21,20 +21,20 @@
 Sweep_NumShape::Sweep_NumShape()
     : myType(TopAbs_SHAPE),
       myIndex(0),
-      myClosed(Standard_False),
-      myBegInf(Standard_False),
-      myEndInf(Standard_False)
+      myClosed(false),
+      myBegInf(false),
+      myEndInf(false)
 
 {
 }
 
 //=================================================================================================
 
-Sweep_NumShape::Sweep_NumShape(const Standard_Integer Index,
+Sweep_NumShape::Sweep_NumShape(const int Index,
                                const TopAbs_ShapeEnum Type,
-                               const Standard_Boolean Closed,
-                               const Standard_Boolean BegInf,
-                               const Standard_Boolean EndInf)
+                               const bool Closed,
+                               const bool BegInf,
+                               const bool EndInf)
     : myType(Type),
       myIndex(Index),
       myClosed(Closed),
@@ -45,11 +45,11 @@ Sweep_NumShape::Sweep_NumShape(const Standard_Integer Index,
 
 //=================================================================================================
 
-void Sweep_NumShape::Init(const Standard_Integer Index,
+void Sweep_NumShape::Init(const int Index,
                           const TopAbs_ShapeEnum Type,
-                          const Standard_Boolean Closed,
-                          const Standard_Boolean BegInf,
-                          const Standard_Boolean EndInf)
+                          const bool Closed,
+                          const bool BegInf,
+                          const bool EndInf)
 {
   myIndex  = Index;
   myType   = Type;

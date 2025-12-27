@@ -37,7 +37,7 @@ enum ChildLab
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Note::IsMine(const TDF_Label& theLabel)
+bool XCAFDoc_Note::IsMine(const TDF_Label& theLabel)
 {
   return !Get(theLabel).IsNull();
 }
@@ -48,12 +48,12 @@ XCAFDoc_Note::XCAFDoc_Note() {}
 
 //=================================================================================================
 
-Handle(XCAFDoc_Note) XCAFDoc_Note::Get(const TDF_Label& theLabel)
+occ::handle<XCAFDoc_Note> XCAFDoc_Note::Get(const TDF_Label& theLabel)
 {
-  Handle(XCAFDoc_Note) aNote;
+  occ::handle<XCAFDoc_Note> aNote;
   for (TDF_AttributeIterator anIt(theLabel); anIt.More(); anIt.Next())
   {
-    aNote = Handle(XCAFDoc_Note)::DownCast(anIt.Value());
+    aNote = occ::down_cast<XCAFDoc_Note>(anIt.Value());
     if (!aNote.IsNull())
       break;
   }
@@ -73,19 +73,19 @@ void XCAFDoc_Note::Set(const TCollection_ExtendedString& theUserName,
 
 //=================================================================================================
 
-Standard_Boolean XCAFDoc_Note::IsOrphan() const
+bool XCAFDoc_Note::IsOrphan() const
 {
-  Handle(XCAFDoc_GraphNode) aFather;
+  occ::handle<XCAFDoc_GraphNode> aFather;
   return !Label().FindAttribute(XCAFDoc::NoteRefGUID(), aFather) || (aFather->NbChildren() == 0);
 }
 
 //=================================================================================================
 
-Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
+occ::handle<XCAFNoteObjects_NoteObject> XCAFDoc_Note::GetObject() const
 {
-  Handle(XCAFNoteObjects_NoteObject) anObj = new XCAFNoteObjects_NoteObject();
+  occ::handle<XCAFNoteObjects_NoteObject> anObj = new XCAFNoteObjects_NoteObject();
 
-  Handle(TDataXtd_Point) aPnt;
+  occ::handle<TDataXtd_Point> aPnt;
   if (Label().FindChild(ChildLab_Pnt).FindAttribute(TDataXtd_Point::GetID(), aPnt))
   {
     gp_Pnt aP;
@@ -95,7 +95,7 @@ Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
     }
   }
 
-  Handle(TDataXtd_Plane) aPln;
+  occ::handle<TDataXtd_Plane> aPln;
   if (Label().FindChild(ChildLab_Plane).FindAttribute(TDataXtd_Plane::GetID(), aPln))
   {
     gp_Pln aP;
@@ -105,7 +105,7 @@ Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
     }
   }
 
-  Handle(TDataXtd_Point) aPntText;
+  occ::handle<TDataXtd_Point> aPntText;
   if (Label().FindChild(ChildLab_PntText).FindAttribute(TDataXtd_Point::GetID(), aPntText))
   {
     gp_Pnt aP;
@@ -115,7 +115,7 @@ Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
     }
   }
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
@@ -131,7 +131,7 @@ Handle(XCAFNoteObjects_NoteObject) XCAFDoc_Note::GetObject() const
 
 //=================================================================================================
 
-void XCAFDoc_Note::SetObject(const Handle(XCAFNoteObjects_NoteObject)& theObject)
+void XCAFDoc_Note::SetObject(const occ::handle<XCAFNoteObjects_NoteObject>& theObject)
 {
   Backup();
 
@@ -171,18 +171,18 @@ void XCAFDoc_Note::SetObject(const Handle(XCAFNoteObjects_NoteObject)& theObject
 
 //=================================================================================================
 
-void XCAFDoc_Note::Restore(const Handle(TDF_Attribute)& theAttr)
+void XCAFDoc_Note::Restore(const occ::handle<TDF_Attribute>& theAttr)
 {
-  myUserName  = Handle(XCAFDoc_Note)::DownCast(theAttr)->myUserName;
-  myTimeStamp = Handle(XCAFDoc_Note)::DownCast(theAttr)->myTimeStamp;
+  myUserName  = occ::down_cast<XCAFDoc_Note>(theAttr)->myUserName;
+  myTimeStamp = occ::down_cast<XCAFDoc_Note>(theAttr)->myTimeStamp;
 }
 
 //=================================================================================================
 
-void XCAFDoc_Note::Paste(const Handle(TDF_Attribute)& theAttrInto,
-                         const Handle(TDF_RelocationTable)& /*theRT*/) const
+void XCAFDoc_Note::Paste(const occ::handle<TDF_Attribute>& theAttrInto,
+                         const occ::handle<TDF_RelocationTable>& /*theRT*/) const
 {
-  Handle(XCAFDoc_Note)::DownCast(theAttrInto)->Set(myUserName, myTimeStamp);
+  occ::down_cast<XCAFDoc_Note>(theAttrInto)->Set(myUserName, myTimeStamp);
 }
 
 //=================================================================================================
@@ -197,7 +197,7 @@ Standard_OStream& XCAFDoc_Note::Dump(Standard_OStream& theOS) const
 
 //=================================================================================================
 
-void XCAFDoc_Note::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Note::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

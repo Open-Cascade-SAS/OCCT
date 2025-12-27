@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement;
 
-class StepGeom_Parabola;
-DEFINE_STANDARD_HANDLE(StepGeom_Parabola, StepGeom_Conic)
-
 class StepGeom_Parabola : public StepGeom_Conic
 {
 
@@ -34,19 +31,18 @@ public:
   //! Returns a Parabola
   Standard_EXPORT StepGeom_Parabola();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const StepGeom_Axis2Placement&          aPosition,
-                            const Standard_Real                     aFocalDist);
+                            const double                     aFocalDist);
 
-  Standard_EXPORT void SetFocalDist(const Standard_Real aFocalDist);
+  Standard_EXPORT void SetFocalDist(const double aFocalDist);
 
-  Standard_EXPORT Standard_Real FocalDist() const;
+  Standard_EXPORT double FocalDist() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Parabola, StepGeom_Conic)
 
-protected:
 private:
-  Standard_Real focalDist;
+  double focalDist;
 };
 
 #endif // _StepGeom_Parabola_HeaderFile

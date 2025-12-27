@@ -45,6 +45,4 @@ public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderAttribute, Standard_Transient)
 };
 
-DEFINE_STANDARD_HANDLE(Graphic3d_ShaderAttribute, Standard_Transient)
-
 #endif // _Graphic3d_ShaderAttribute_HeaderFile

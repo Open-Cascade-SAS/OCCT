@@ -45,19 +45,19 @@ public:
   }
 
   //! Returns persistent type name
-  inline Standard_CString PName() const { return "PDataXtd_Constraint"; }
+  inline const char* PName() const { return "PDataXtd_Constraint"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDataXtd_Constraint)& theAttribute) const;
+  void Import(const occ::handle<TDataXtd_Constraint>& theAttribute) const;
 
 private:
-  Standard_Integer                           myType;
+  int                           myType;
   Handle(StdLPersistent_HArray1::Persistent) myGeometries;
-  Handle(StdObjMgt_Persistent)               myValue;
-  Standard_Boolean                           myIsReversed;
-  Standard_Boolean                           myIsInverted;
-  Standard_Boolean                           myIsVerified;
-  Handle(StdObjMgt_Persistent)               myPlane;
+  occ::handle<StdObjMgt_Persistent>               myValue;
+  bool                           myIsReversed;
+  bool                           myIsInverted;
+  bool                           myIsVerified;
+  occ::handle<StdObjMgt_Persistent>               myPlane;
 };
 
 #endif

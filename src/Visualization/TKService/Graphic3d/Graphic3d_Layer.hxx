@@ -26,10 +26,9 @@
 #include <array>
 
 //! Defines index map of structures.
-typedef NCollection_IndexedMap<const Graphic3d_CStructure*> Graphic3d_IndexedMapOfStructure;
 
 //! Defines array of indexed maps of structures.
-typedef std::array<Graphic3d_IndexedMapOfStructure, Graphic3d_DisplayPriority_NB>
+typedef std::array<NCollection_IndexedMap<const Graphic3d_CStructure*>, Graphic3d_DisplayPriority_NB>
   Graphic3d_ArrayOfIndexedMapOfStructure;
 
 class Graphic3d_CullingTool;
@@ -41,7 +40,7 @@ class Graphic3d_Layer : public Standard_Transient
 public:
   //! Initializes associated priority list and layer properties
   Standard_EXPORT Graphic3d_Layer(Graphic3d_ZLayerId           theId,
-                                  const Handle(BVH_Builder3d)& theBuilder);
+                                  const occ::handle<BVH_Builder3d>& theBuilder);
 
   //! Destructor.
   Standard_EXPORT virtual ~Graphic3d_Layer();
@@ -50,19 +49,19 @@ public:
   Graphic3d_ZLayerId LayerId() const { return myLayerId; }
 
   //! Returns BVH tree builder for frustum culling.
-  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const
+  const occ::handle<BVH_Builder3d>& FrustumCullingBVHBuilder() const
   {
     return myBVHPrimitivesTrsfPers.Builder();
   }
 
   //! Assigns BVH tree builder for frustum culling.
-  void SetFrustumCullingBVHBuilder(const Handle(BVH_Builder3d)& theBuilder)
+  void SetFrustumCullingBVHBuilder(const occ::handle<BVH_Builder3d>& theBuilder)
   {
     myBVHPrimitivesTrsfPers.SetBuilder(theBuilder);
   }
 
   //! Return true if layer was marked with immediate flag.
-  Standard_Boolean IsImmediate() const { return myLayerSettings.IsImmediate(); }
+  bool IsImmediate() const { return myLayerSettings.IsImmediate(); }
 
   //! Returns settings of the layer object.
   const Graphic3d_ZLayerSettings& LayerSettings() const { return myLayerSettings; };
@@ -72,32 +71,32 @@ public:
 
   Standard_EXPORT void Add(const Graphic3d_CStructure* theStruct,
                            Graphic3d_DisplayPriority   thePriority,
-                           Standard_Boolean            isForChangePriority = Standard_False);
+                           bool            isForChangePriority = false);
 
   //! Remove structure and returns its priority, if the structure is not found, method returns
   //! negative value
   Standard_EXPORT bool Remove(const Graphic3d_CStructure* theStruct,
                               Graphic3d_DisplayPriority&  thePriority,
-                              Standard_Boolean            isForChangePriority = Standard_False);
+                              bool            isForChangePriority = false);
 
   //! @return the number of structures
-  Standard_Integer NbStructures() const { return myNbStructures; }
+  int NbStructures() const { return myNbStructures; }
 
   //! Number of NOT culled structures in the layer.
-  Standard_Integer NbStructuresNotCulled() const { return myNbStructuresNotCulled; }
+  int NbStructuresNotCulled() const { return myNbStructuresNotCulled; }
 
   //! Returns the number of available priority levels
-  Standard_Integer NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
+  int NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
 
   //! Append layer of acceptable type (with similar number of priorities or less).
-  //! Returns Standard_False if the list can not be accepted.
-  Standard_EXPORT Standard_Boolean Append(const Graphic3d_Layer& theOther);
+  //! Returns false if the list can not be accepted.
+  Standard_EXPORT bool Append(const Graphic3d_Layer& theOther);
 
   //! Returns array of structures.
   const Graphic3d_ArrayOfIndexedMapOfStructure& ArrayOfStructures() const { return myArray; }
 
   //! Returns structures for specified priority.
-  const Graphic3d_IndexedMapOfStructure& Structures(Graphic3d_DisplayPriority thePriority) const
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures(Graphic3d_DisplayPriority thePriority) const
   {
     return myArray[thePriority];
   }
@@ -120,23 +119,23 @@ public:
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
   //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT Bnd_Box BoundingBox(Standard_Integer                theViewId,
-                                      const Handle(Graphic3d_Camera)& theCamera,
-                                      Standard_Integer                theWindowWidth,
-                                      Standard_Integer                theWindowHeight,
-                                      Standard_Boolean                theToIncludeAuxiliary) const;
+  Standard_EXPORT Bnd_Box BoundingBox(int                theViewId,
+                                      const occ::handle<Graphic3d_Camera>& theCamera,
+                                      int                theWindowWidth,
+                                      int                theWindowHeight,
+                                      bool                theToIncludeAuxiliary) const;
 
   //! Returns zoom-scale factor.
-  Standard_EXPORT Standard_Real
-    considerZoomPersistenceObjects(Standard_Integer                theViewId,
-                                   const Handle(Graphic3d_Camera)& theCamera,
-                                   Standard_Integer                theWindowWidth,
-                                   Standard_Integer                theWindowHeight) const;
+  Standard_EXPORT double
+    considerZoomPersistenceObjects(int                theViewId,
+                                   const occ::handle<Graphic3d_Camera>& theCamera,
+                                   int                theWindowWidth,
+                                   int                theWindowHeight) const;
 
   //! Update culling state - should be called before rendering.
   //! Traverses through BVH tree to determine which structures are in view volume.
   Standard_EXPORT void UpdateCulling(
-    Standard_Integer                                theViewId,
+    int                                theViewId,
     const Graphic3d_CullingTool&                    theSelector,
     const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState);
 
@@ -144,7 +143,7 @@ public:
   bool IsCulled() const { return myNbStructuresNotCulled == 0; }
 
   //! Returns number of transform persistence objects.
-  Standard_Integer NbOfTransformPersistenceObjects() const
+  int NbOfTransformPersistenceObjects() const
   {
     return myBVHPrimitivesTrsfPers.Size();
   }
@@ -166,7 +165,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Updates BVH trees if their state has been invalidated.
@@ -177,10 +176,10 @@ private:
   Graphic3d_ArrayOfIndexedMapOfStructure myArray;
 
   //! Overall number of structures rendered in the layer.
-  Standard_Integer myNbStructures;
+  int myNbStructures;
 
   //! Number of NOT culled structures in the layer.
-  Standard_Integer myNbStructuresNotCulled;
+  int myNbStructuresNotCulled;
 
   //! Layer setting flags.
   Graphic3d_ZLayerSettings myLayerSettings;
@@ -198,10 +197,10 @@ private:
   mutable NCollection_IndexedMap<const Graphic3d_CStructure*> myAlwaysRenderedMap;
 
   //! Is needed for implementation of stochastic order of BVH traverse.
-  Standard_Boolean myBVHIsLeftChildQueuedFirst;
+  bool myBVHIsLeftChildQueuedFirst;
 
   //! Defines if the primitive set for BVH is outdated.
-  mutable Standard_Boolean myIsBVHPrimitivesNeedsReset;
+  mutable bool myIsBVHPrimitivesNeedsReset;
 
   //! Defines if the cached bounding box is outdated.
   mutable bool myIsBoundingBoxNeedsReset[2];

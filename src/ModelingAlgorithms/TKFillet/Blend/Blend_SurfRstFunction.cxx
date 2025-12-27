@@ -29,7 +29,7 @@ const gp_Pnt& Blend_SurfRstFunction::Pnt2() const
   return PointOnRst();
 }
 
-Standard_Real Blend_SurfRstFunction::GetMinimalDistance() const
+double Blend_SurfRstFunction::GetMinimalDistance() const
 {
   throw Standard_NotImplemented("Blend_SurfRstFunction::GetMinimalDistance");
 }

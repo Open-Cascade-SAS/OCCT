@@ -26,14 +26,14 @@ class Graphic3d_CubeMap : public Graphic3d_TextureMap
 public:
   //! Constructor defining loading cubemap from file.
   Standard_EXPORT Graphic3d_CubeMap(const TCollection_AsciiString& theFileName,
-                                    Standard_Boolean theToGenerateMipmaps = Standard_False);
+                                    bool theToGenerateMipmaps = false);
 
   //! Constructor defining direct cubemap initialization from PixMap.
-  Standard_EXPORT Graphic3d_CubeMap(const Handle(Image_PixMap)& thePixmap = Handle(Image_PixMap)(),
-                                    Standard_Boolean theToGenerateMipmaps = Standard_False);
+  Standard_EXPORT Graphic3d_CubeMap(const occ::handle<Image_PixMap>& thePixmap = occ::handle<Image_PixMap>(),
+                                    bool theToGenerateMipmaps = false);
 
   //! Returns whether the iterator has reached the end (true if it hasn't).
-  Standard_Boolean More() const { return !myEndIsReached; }
+  bool More() const { return !myEndIsReached; }
 
   //! Returns current cubemap side (iterator state).
   Graphic3d_CubeMapSide CurrentSide() const { return myCurrentSide; }
@@ -53,16 +53,16 @@ public:
   }
 
   //! Sets Z axis inversion (vertical flipping).
-  void SetZInversion(Standard_Boolean theZIsInverted) { myZIsInverted = theZIsInverted; }
+  void SetZInversion(bool theZIsInverted) { myZIsInverted = theZIsInverted; }
 
   //! Returns whether Z axis is inverted.
-  Standard_Boolean ZIsInverted() const { return myZIsInverted; }
+  bool ZIsInverted() const { return myZIsInverted; }
 
   //! Returns whether mipmaps of cubemap will be generated or not.
-  Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
+  bool HasMipmaps() const { return myHasMipmaps; }
 
   //! Sets whether to generate mipmaps of cubemap or not.
-  void SetMipmapsGeneration(Standard_Boolean theToGenerateMipmaps)
+  void SetMipmapsGeneration(bool theToGenerateMipmaps)
   {
     myHasMipmaps = theToGenerateMipmaps;
   }
@@ -70,12 +70,12 @@ public:
   //! Returns current cubemap side as compressed PixMap.
   //! Returns null handle if current side is invalid or if image is not in supported compressed
   //! format.
-  virtual Handle(Image_CompressedPixMap) CompressedValue(
-    const Handle(Image_SupportedFormats)& theSupported) = 0;
+  virtual occ::handle<Image_CompressedPixMap> CompressedValue(
+    const occ::handle<Image_SupportedFormats>& theSupported) = 0;
 
   //! Returns PixMap containing current side of cubemap.
   //! Returns null handle if current side is invalid.
-  virtual Handle(Image_PixMap) Value(const Handle(Image_SupportedFormats)& theSupported) = 0;
+  virtual occ::handle<Image_PixMap> Value(const occ::handle<Image_SupportedFormats>& theSupported) = 0;
 
   //! Sets iterator state to +X cubemap side.
   Graphic3d_CubeMap& Reset()
@@ -91,11 +91,9 @@ public:
 protected:
   Graphic3d_CubeMapSide myCurrentSide; //!< Iterator state
   // clang-format off
-  Standard_Boolean      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
-  Standard_Boolean      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
+  bool      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
+  bool      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_CubeMap, Graphic3d_TextureMap)
 
 #endif // _Graphic3d_CubeMap_HeaderFile

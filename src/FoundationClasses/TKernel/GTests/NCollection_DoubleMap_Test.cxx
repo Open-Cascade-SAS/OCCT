@@ -17,8 +17,8 @@
 #include <gtest/gtest.h>
 
 // Basic test types for the DoubleMap
-typedef Standard_Integer Key1Type;
-typedef Standard_Real    Key2Type;
+typedef int Key1Type;
+typedef double    Key2Type;
 
 // Custom key types for testing
 class TestKey1
@@ -304,19 +304,19 @@ TEST(NCollection_DoubleMapTest, ReSize)
   NCollection_DoubleMap<Key1Type, Key2Type> aMap(3); // Start with small bucket count
 
   // Add many elements to trigger resize
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
-    aMap.Bind(i, static_cast<Standard_Real>(i) / 10.0);
+    aMap.Bind(i, static_cast<double>(i) / 10.0);
   }
 
   // Verify all elements are present
   EXPECT_EQ(aMap.Extent(), 100);
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     EXPECT_TRUE(aMap.IsBound1(i));
-    EXPECT_TRUE(aMap.IsBound2(static_cast<Standard_Real>(i) / 10.0));
-    EXPECT_DOUBLE_EQ(aMap.Find1(i), static_cast<Standard_Real>(i) / 10.0);
-    EXPECT_EQ(aMap.Find2(static_cast<Standard_Real>(i) / 10.0), i);
+    EXPECT_TRUE(aMap.IsBound2(static_cast<double>(i) / 10.0));
+    EXPECT_DOUBLE_EQ(aMap.Find1(i), static_cast<double>(i) / 10.0);
+    EXPECT_EQ(aMap.Find2(static_cast<double>(i) / 10.0), i);
   }
 }
 
@@ -363,10 +363,10 @@ TEST(NCollection_DoubleMapTest, Iterator)
   aMap.Bind(30, 3.0);
 
   // Use iterator to check all elements
-  Standard_Boolean found10 = Standard_False;
-  Standard_Boolean found20 = Standard_False;
-  Standard_Boolean found30 = Standard_False;
-  Standard_Size    count   = 0;
+  bool found10 = false;
+  bool found20 = false;
+  bool found30 = false;
+  size_t    count   = 0;
 
   for (NCollection_DoubleMap<Key1Type, Key2Type>::Iterator it(aMap); it.More(); it.Next(), ++count)
   {
@@ -374,11 +374,11 @@ TEST(NCollection_DoubleMapTest, Iterator)
     const Key2Type& key2 = it.Key2();
 
     if (key1 == 10 && key2 == 1.0)
-      found10 = Standard_True;
+      found10 = true;
     else if (key1 == 20 && key2 == 2.0)
-      found20 = Standard_True;
+      found20 = true;
     else if (key1 == 30 && key2 == 3.0)
-      found30 = Standard_True;
+      found30 = true;
   }
 
   EXPECT_EQ(count, 3);

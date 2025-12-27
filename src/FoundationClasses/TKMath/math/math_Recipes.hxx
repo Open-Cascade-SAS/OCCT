@@ -25,17 +25,17 @@ using math_IntegerVector = math_VectorBase<int>;
 using math_Vector        = math_VectorBase<double>;
 class math_Matrix;
 
-const Standard_Integer math_Status_UserAborted    = -1;
-const Standard_Integer math_Status_OK             = 0;
-const Standard_Integer math_Status_SingularMatrix = 1;
-const Standard_Integer math_Status_ArgumentError  = 2;
-const Standard_Integer math_Status_NoConvergence  = 3;
+const int math_Status_UserAborted    = -1;
+const int math_Status_OK             = 0;
+const int math_Status_SingularMatrix = 1;
+const int math_Status_ArgumentError  = 2;
+const int math_Status_NoConvergence  = 3;
 
-Standard_EXPORT Standard_Integer
+Standard_EXPORT int
   LU_Decompose(math_Matrix&                 a,
                math_IntegerVector&          indx,
-               Standard_Real&               d,
-               Standard_Real                TINY        = 1.0e-20,
+               double&               d,
+               double                TINY        = 1.0e-20,
                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 // Given a matrix a(1..n, 1..n), this routine computes its LU decomposition,
@@ -44,12 +44,12 @@ Standard_EXPORT Standard_Integer
 // pivoting; d is output as +1 or -1 depending on whether the number of row
 // interchanges was even or odd.
 
-Standard_EXPORT Standard_Integer
+Standard_EXPORT int
   LU_Decompose(math_Matrix&                 a,
                math_IntegerVector&          indx,
-               Standard_Real&               d,
+               double&               d,
                math_Vector&                 vv,
-               Standard_Real                TINY        = 1.0e-30,
+               double                TINY        = 1.0e-30,
                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 // Idem to the previous LU_Decompose function. But the input Vector vv(1..n) is
@@ -63,12 +63,12 @@ Standard_EXPORT void LU_Solve(const math_Matrix& a, const math_IntegerVector& in
 // replaced by the solution vector.Neither a and indx are destroyed, so
 // the routine may be called sequentially with different b's.
 
-Standard_EXPORT Standard_Integer LU_Invert(math_Matrix& a);
+Standard_EXPORT int LU_Invert(math_Matrix& a);
 
 // Given a matrix a(1..n, 1..n) this routine computes its inverse. The matrix
 // a is replaced by its inverse.
 
-Standard_EXPORT Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v);
+Standard_EXPORT int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v);
 
 // Given a matrix a(1..m, 1..n), this routine computes its singular value
 // decomposition, a = u * w * transposed(v). The matrix u replaces a on
@@ -77,7 +77,7 @@ Standard_EXPORT Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, m
 // equal to n; if it is smaller, then a should be filled up to square with
 // zero rows.
 
-Standard_EXPORT Standard_Integer SVD_Decompose(math_Matrix& a,
+Standard_EXPORT int SVD_Decompose(math_Matrix& a,
                                                math_Vector& w,
                                                math_Matrix& v,
                                                math_Vector& rv1);
@@ -98,9 +98,9 @@ Standard_EXPORT void SVD_Solve(const math_Matrix& u,
 // No input quantities are destroyed, so the routine may be called
 // sequentially with different b's.
 
-Standard_EXPORT Standard_Integer DACTCL_Decompose(math_Vector&              a,
+Standard_EXPORT int DACTCL_Decompose(math_Vector&              a,
                                                   const math_IntegerVector& indx,
-                                                  const Standard_Real       MinPivot = 1.e-20);
+                                                  const double       MinPivot = 1.e-20);
 
 // Given a SYMMETRIC matrix a, this routine computes its
 // LU decomposition.
@@ -111,19 +111,19 @@ Standard_EXPORT Standard_Integer DACTCL_Decompose(math_Vector&              a,
 // The range of the matrix is n = indx.Length(),
 // and a.Length() = indx(n).
 
-Standard_EXPORT Standard_Integer DACTCL_Solve(const math_Vector&        a,
+Standard_EXPORT int DACTCL_Solve(const math_Vector&        a,
                                               math_Vector&              b,
                                               const math_IntegerVector& indx,
-                                              const Standard_Real       MinPivot = 1.e-20);
+                                              const double       MinPivot = 1.e-20);
 
 // Solves a * x = b for a vector x and a matrix a coming from DACTCL_Decompose.
 // indx is the same vector as in DACTCL_Decompose.
 // the vector b is replaced by the vector solution x.
 
-Standard_EXPORT Standard_Integer Jacobi(math_Matrix&      a,
+Standard_EXPORT int Jacobi(math_Matrix&      a,
                                         math_Vector&      d,
                                         math_Matrix&      v,
-                                        Standard_Integer& nrot);
+                                        int& nrot);
 
 // Computes all eigenvalues and eigenvectors of a real symmetric matrix
 // a(1..n, 1..n). On output, elements of a above the diagonal are destroyed.

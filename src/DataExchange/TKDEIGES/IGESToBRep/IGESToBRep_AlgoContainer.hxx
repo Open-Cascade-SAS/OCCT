@@ -22,9 +22,6 @@
 #include <Standard_Transient.hxx>
 class IGESToBRep_ToolContainer;
 
-class IGESToBRep_AlgoContainer;
-DEFINE_STANDARD_HANDLE(IGESToBRep_AlgoContainer, Standard_Transient)
-
 class IGESToBRep_AlgoContainer : public Standard_Transient
 {
 
@@ -33,16 +30,15 @@ public:
   Standard_EXPORT IGESToBRep_AlgoContainer();
 
   //! Sets ToolContainer
-  void SetToolContainer(const Handle(IGESToBRep_ToolContainer)& TC);
+  void SetToolContainer(const occ::handle<IGESToBRep_ToolContainer>& TC);
 
   //! Returns ToolContainer
-  Handle(IGESToBRep_ToolContainer) ToolContainer() const;
+  occ::handle<IGESToBRep_ToolContainer> ToolContainer() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESToBRep_AlgoContainer, Standard_Transient)
 
-protected:
 private:
-  Handle(IGESToBRep_ToolContainer) myTC;
+  occ::handle<IGESToBRep_ToolContainer> myTC;
 };
 
 #include <IGESToBRep_AlgoContainer.lxx>

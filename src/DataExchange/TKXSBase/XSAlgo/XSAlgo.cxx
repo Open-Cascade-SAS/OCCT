@@ -20,16 +20,16 @@
 #include <ShapeProcess_OperLibrary.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
-static Handle(XSAlgo_AlgoContainer) theContainer;
+static occ::handle<XSAlgo_AlgoContainer> theContainer;
 
 //=================================================================================================
 
 void XSAlgo::Init()
 {
-  static Standard_Boolean init = Standard_False;
+  static bool init = false;
   if (init)
     return;
-  init = Standard_True;
+  init = true;
   ShapeAlgo::Init();
   theContainer = new XSAlgo_AlgoContainer;
 
@@ -65,14 +65,14 @@ void XSAlgo::Init()
 
 //=================================================================================================
 
-void XSAlgo::SetAlgoContainer(const Handle(XSAlgo_AlgoContainer)& aContainer)
+void XSAlgo::SetAlgoContainer(const occ::handle<XSAlgo_AlgoContainer>& aContainer)
 {
   theContainer = aContainer;
 }
 
 //=================================================================================================
 
-Handle(XSAlgo_AlgoContainer) XSAlgo::AlgoContainer()
+occ::handle<XSAlgo_AlgoContainer> XSAlgo::AlgoContainer()
 {
   return theContainer;
 }

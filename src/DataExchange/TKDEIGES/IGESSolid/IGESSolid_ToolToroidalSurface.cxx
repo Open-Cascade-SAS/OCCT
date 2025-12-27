@@ -28,20 +28,20 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESSolid_ToolToroidalSurface::IGESSolid_ToolToroidalSurface() {}
 
-void IGESSolid_ToolToroidalSurface::ReadOwnParams(const Handle(IGESSolid_ToroidalSurface)& ent,
-                                                  const Handle(IGESData_IGESReaderData)&   IR,
+void IGESSolid_ToolToroidalSurface::ReadOwnParams(const occ::handle<IGESSolid_ToroidalSurface>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>&   IR,
                                                   IGESData_ParamReader&                    PR) const
 {
-  Handle(IGESGeom_Point)      tempCenter;
-  Standard_Real               majRad, minRad;
-  Handle(IGESGeom_Direction)  tempAxis;   // default Unparametrised
-  Handle(IGESData_IGESEntity) tempRefdir; // default Unparametrised
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESGeom_Point>      tempCenter;
+  double               majRad, minRad;
+  occ::handle<IGESGeom_Direction>  tempAxis;   // default Unparametrised
+  occ::handle<IGESData_IGESEntity> tempRefdir; // default Unparametrised
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -65,10 +65,10 @@ void IGESSolid_ToolToroidalSurface::ReadOwnParams(const Handle(IGESSolid_Toroida
                                // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
-  ent->Init(tempCenter, tempAxis, majRad, minRad, Handle(IGESGeom_Direction)::DownCast(tempRefdir));
+  ent->Init(tempCenter, tempAxis, majRad, minRad, occ::down_cast<IGESGeom_Direction>(tempRefdir));
 }
 
-void IGESSolid_ToolToroidalSurface::WriteOwnParams(const Handle(IGESSolid_ToroidalSurface)& ent,
+void IGESSolid_ToolToroidalSurface::WriteOwnParams(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                                    IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Center());
@@ -79,7 +79,7 @@ void IGESSolid_ToolToroidalSurface::WriteOwnParams(const Handle(IGESSolid_Toroid
     IW.Send(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolToroidalSurface::OwnShared(const Handle(IGESSolid_ToroidalSurface)& ent,
+void IGESSolid_ToolToroidalSurface::OwnShared(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                               Interface_EntityIterator&                iter) const
 {
   iter.GetOneItem(ent->Center());
@@ -87,14 +87,14 @@ void IGESSolid_ToolToroidalSurface::OwnShared(const Handle(IGESSolid_ToroidalSur
   iter.GetOneItem(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolToroidalSurface::OwnCopy(const Handle(IGESSolid_ToroidalSurface)& another,
-                                            const Handle(IGESSolid_ToroidalSurface)& ent,
+void IGESSolid_ToolToroidalSurface::OwnCopy(const occ::handle<IGESSolid_ToroidalSurface>& another,
+                                            const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                             Interface_CopyTool&                      TC) const
 {
   DeclareAndCast(IGESGeom_Point, tempCenter, TC.Transferred(another->Center()));
   DeclareAndCast(IGESGeom_Direction, tempAxis, TC.Transferred(another->Axis()));
-  Standard_Real majRad = another->MajorRadius();
-  Standard_Real minRad = another->MinorRadius();
+  double majRad = another->MajorRadius();
+  double minRad = another->MinorRadius();
   if (another->IsParametrised())
   {
     DeclareAndCast(IGESGeom_Direction, tempRefdir, TC.Transferred(another->ReferenceDir()));
@@ -102,13 +102,13 @@ void IGESSolid_ToolToroidalSurface::OwnCopy(const Handle(IGESSolid_ToroidalSurfa
   }
   else
   {
-    Handle(IGESGeom_Direction) tempRefdir;
+    occ::handle<IGESGeom_Direction> tempRefdir;
     ent->Init(tempCenter, tempAxis, majRad, minRad, tempRefdir);
   }
 }
 
 IGESData_DirChecker IGESSolid_ToolToroidalSurface::DirChecker(
-  const Handle(IGESSolid_ToroidalSurface)& /*ent*/) const
+  const occ::handle<IGESSolid_ToroidalSurface>& /*ent*/) const
 {
   IGESData_DirChecker DC(198, 0, 1);
 
@@ -122,9 +122,9 @@ IGESData_DirChecker IGESSolid_ToolToroidalSurface::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolToroidalSurface::OwnCheck(const Handle(IGESSolid_ToroidalSurface)& ent,
+void IGESSolid_ToolToroidalSurface::OwnCheck(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                              const Interface_ShareTool&,
-                                             Handle(Interface_Check)& ach) const
+                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->MajorRadius() <= 0.0)
     ach->AddFail("Major Radius : Not Positive");
@@ -132,20 +132,20 @@ void IGESSolid_ToolToroidalSurface::OwnCheck(const Handle(IGESSolid_ToroidalSurf
     ach->AddFail("Minor Radius : Not Positive");
   if (ent->MinorRadius() >= ent->MajorRadius())
     ach->AddFail("Minor Radius : Value not < Major radius");
-  Standard_Integer fn = 0;
+  int fn = 0;
   if (ent->IsParametrised())
     fn = 1;
   if (fn != ent->FormNumber())
     ach->AddFail("Parametrised Status Mismatches with Form Number");
 }
 
-void IGESSolid_ToolToroidalSurface::OwnDump(const Handle(IGESSolid_ToroidalSurface)& ent,
+void IGESSolid_ToolToroidalSurface::OwnDump(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                             const IGESData_IGESDumper&               dumper,
                                             Standard_OStream&                        S,
-                                            const Standard_Integer                   level) const
+                                            const int                   level) const
 {
   S << "IGESSolid_ToroidalSurface\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "Center : ";
   dumper.Dump(ent->Center(), S, sublevel);

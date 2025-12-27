@@ -25,8 +25,8 @@
 
 //=================================================================================================
 
-static Standard_Integer ApplySequence(Draw_Interpretor& di,
-                                      Standard_Integer  argc,
+static int ApplySequence(Draw_Interpretor& di,
+                                      int  argc,
                                       const char**      argv)
 {
   if (argc < 4)
@@ -34,10 +34,10 @@ static Standard_Integer ApplySequence(Draw_Interpretor& di,
     di << "Specify result, shape, resource name and prefix (optional)\n";
     return 1 /* Error */;
   }
-  Standard_CString arg1 = argv[1];
-  Standard_CString arg2 = argv[2];
-  Standard_CString arg3 = argv[3];
-  Standard_CString arg4 = "";
+  const char* arg1 = argv[1];
+  const char* arg2 = argv[2];
+  const char* arg3 = argv[3];
+  const char* arg4 = "";
   if (argc > 4)
     arg4 = argv[4];
   TopoDS_Shape Shape = DBRep::Get(arg2);
@@ -47,7 +47,7 @@ static Standard_Integer ApplySequence(Draw_Interpretor& di,
     return 1 /* Error */;
   }
 
-  Handle(ShapeProcess_ShapeContext) context = new ShapeProcess_ShapeContext(Shape, arg3);
+  occ::handle<ShapeProcess_ShapeContext> context = new ShapeProcess_ShapeContext(Shape, arg3);
   ShapeProcess::Perform(context, arg4);
   context->PrintStatistics();
 
@@ -69,7 +69,7 @@ static Standard_Integer ApplySequence(Draw_Interpretor& di,
 
 void SWDRAW_ShapeProcess::InitCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean initactor = 0;
+  static bool initactor = 0;
   if (initactor)
   {
     return;
@@ -78,7 +78,7 @@ void SWDRAW_ShapeProcess::InitCommands(Draw_Interpretor& theCommands)
 
   ShapeProcess_OperLibrary::Init();
 
-  Standard_CString g = SWDRAW::GroupName(); // "Tests of DivideTool";
+  const char* g = SWDRAW::GroupName(); // "Tests of DivideTool";
 
   theCommands.Add("SPApply",
                   "SPApply result shape rscfilename [sequence]",

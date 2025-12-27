@@ -53,8 +53,8 @@ public:
 public:
   //! Creates a writer object with the
   //! default unit (millimeters) and write mode (Face).
-  //! IGESControl_Writer (const Standard_CString unit,
-  //! const Standard_Integer modecr = 0);
+  //! IGESControl_Writer (const char* unit,
+  //! const int modecr = 0);
   Standard_EXPORT IGESControl_Writer();
 
   //! Creates a writer with given
@@ -64,29 +64,29 @@ public:
   //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const Standard_CString theUnit,
-                                     const Standard_Integer theModecr = 0);
+  Standard_EXPORT IGESControl_Writer(const char* theUnit,
+                                     const int theModecr = 0);
 
   //! Creates a writer object with the
   //! prepared IGES model theModel in write mode.
   //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const Handle(IGESData_IGESModel)& theModel,
-                                     const Standard_Integer            theModecr = 0);
+  Standard_EXPORT IGESControl_Writer(const occ::handle<IGESData_IGESModel>& theModel,
+                                     const int            theModecr = 0);
 
   //! Returns the IGES model to be written in output.
-  const Handle(IGESData_IGESModel)& Model() const { return myModel; }
+  const occ::handle<IGESData_IGESModel>& Model() const { return myModel; }
 
-  const Handle(Transfer_FinderProcess)& TransferProcess() const { return myTP; }
+  const occ::handle<Transfer_FinderProcess>& TransferProcess() const { return myTP; }
 
   //! Returns/Sets the TransferProcess : it contains final results
   //! and if some, check messages
-  void SetTransferProcess(const Handle(Transfer_FinderProcess)& TP) { myTP = TP; }
+  void SetTransferProcess(const occ::handle<Transfer_FinderProcess>& TP) { myTP = TP; }
 
   //! Translates a Shape to IGES Entities and adds them to the model
   //! Returns True if done, False if Shape not suitable for IGES or null
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     AddShape(const TopoDS_Shape&          sh,
              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -94,10 +94,10 @@ public:
   //! adds them to the model
   //! Returns True if done, False if geom is neither a Surface or
   //! a Curve suitable for IGES or is null
-  Standard_EXPORT Standard_Boolean AddGeom(const Handle(Standard_Transient)& geom);
+  Standard_EXPORT bool AddGeom(const occ::handle<Standard_Transient>& geom);
 
   //! Adds an IGES entity (and the ones it references) to the model
-  Standard_EXPORT Standard_Boolean AddEntity(const Handle(IGESData_IGESEntity)& ent);
+  Standard_EXPORT bool AddEntity(const occ::handle<IGESData_IGESEntity>& ent);
 
   //! Computes the entities found in
   //! the model, which is ready to be written.
@@ -106,16 +106,16 @@ public:
 
   //! Computes then writes the model to an OStream
   //! Returns True when done, false in case of error
-  Standard_EXPORT Standard_Boolean Write(Standard_OStream&      S,
-                                         const Standard_Boolean fnes = Standard_False);
+  Standard_EXPORT bool Write(Standard_OStream&      S,
+                                         const bool fnes = false);
 
   //! Prepares and writes an IGES model
   //! either to an OStream, S or to a file name,CString.
   //! Returns True if the operation was performed correctly and
   //! False if an error occurred (for instance,
   //! if the processor could not create the file).
-  Standard_EXPORT Standard_Boolean Write(const Standard_CString file,
-                                         const Standard_Boolean fnes = Standard_False);
+  Standard_EXPORT bool Write(const char* file,
+                                         const bool fnes = false);
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -161,11 +161,11 @@ private:
   void InitializeMissingParameters();
 
 private:
-  Handle(Transfer_FinderProcess) myTP;
-  Handle(IGESData_IGESModel)     myModel;
+  occ::handle<Transfer_FinderProcess> myTP;
+  occ::handle<IGESData_IGESModel>     myModel;
   IGESData_BasicEditor           myEditor;
-  Standard_Integer               myWriteMode;
-  Standard_Boolean               myIsComputed;
+  int               myWriteMode;
+  bool               myIsComputed;
   // clang-format off
   XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams;   //!< Parameters for shape processing.
   XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.

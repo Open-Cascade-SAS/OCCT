@@ -26,10 +26,6 @@ class StepBasic_DimensionalExponents;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 
-class StepBasic_ConversionBasedUnitAndSolidAngleUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_ConversionBasedUnitAndSolidAngleUnit,
-                       StepBasic_ConversionBasedUnit)
-
 class StepBasic_ConversionBasedUnitAndSolidAngleUnit : public StepBasic_ConversionBasedUnit
 {
 
@@ -37,20 +33,19 @@ public:
   //! Returns a ConversionBasedUnitAndSolidAngleUnit
   Standard_EXPORT StepBasic_ConversionBasedUnitAndSolidAngleUnit();
 
-  Standard_EXPORT void Init(const Handle(StepBasic_DimensionalExponents)& aDimensions,
-                            const Handle(TCollection_HAsciiString)&       aName,
-                            const Handle(Standard_Transient)&             aConversionFactor);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+                            const occ::handle<TCollection_HAsciiString>&       aName,
+                            const occ::handle<Standard_Transient>&             aConversionFactor);
 
-  Standard_EXPORT void SetSolidAngleUnit(const Handle(StepBasic_SolidAngleUnit)& aSolidAngleUnit);
+  Standard_EXPORT void SetSolidAngleUnit(const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
 
-  Standard_EXPORT Handle(StepBasic_SolidAngleUnit) SolidAngleUnit() const;
+  Standard_EXPORT occ::handle<StepBasic_SolidAngleUnit> SolidAngleUnit() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndSolidAngleUnit,
                           StepBasic_ConversionBasedUnit)
 
-protected:
 private:
-  Handle(StepBasic_SolidAngleUnit) solidAngleUnit;
+  occ::handle<StepBasic_SolidAngleUnit> solidAngleUnit;
 };
 
 #endif // _StepBasic_ConversionBasedUnitAndSolidAngleUnit_HeaderFile

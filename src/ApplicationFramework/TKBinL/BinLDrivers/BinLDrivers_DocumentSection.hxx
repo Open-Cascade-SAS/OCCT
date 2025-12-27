@@ -38,7 +38,7 @@ public:
 
   //! Constructor
   Standard_EXPORT BinLDrivers_DocumentSection(const TCollection_AsciiString& theName,
-                                              const Standard_Boolean         isPostRead);
+                                              const bool         isPostRead);
 
   //! Query the name of the section.
   Standard_EXPORT const TCollection_AsciiString& Name() const;
@@ -46,7 +46,7 @@ public:
   //! Query the status: if the Section should be read after OCAF;
   //! False means that the Section is read before starting to
   //! read OCAF data.
-  Standard_EXPORT Standard_Boolean IsPostRead() const;
+  Standard_EXPORT bool IsPostRead() const;
 
   //! Query the offset of the section in the persistent file
   Standard_EXPORT uint64_t Offset() const;
@@ -72,15 +72,14 @@ public:
 
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC. Returns false in case of the stream reading problem.
-  Standard_EXPORT static Standard_Boolean ReadTOC(BinLDrivers_DocumentSection& theSection,
+  Standard_EXPORT static bool ReadTOC(BinLDrivers_DocumentSection& theSection,
                                                   Standard_IStream&            theIS,
                                                   const TDocStd_FormatVersion  theDocFormatVersion);
 
-protected:
 private:
   TCollection_AsciiString myName;
   uint64_t                myValue[2];
-  Standard_Boolean        myIsPostRead;
+  bool        myIsPostRead;
 };
 
 #endif // _BinLDrivers_DocumentSection_HeaderFile

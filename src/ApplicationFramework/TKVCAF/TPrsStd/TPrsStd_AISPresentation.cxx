@@ -26,7 +26,8 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TPrsStd_AISPresentation.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDataXtd_Presentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <TPrsStd_DriverTable.hxx>
@@ -41,18 +42,18 @@ TPrsStd_AISPresentation::TPrsStd_AISPresentation() {}
 
 //=================================================================================================
 
-Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set(const TDF_Label&     theLabel,
+occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(const TDF_Label&     theLabel,
                                                              const Standard_GUID& theDriver)
 {
-  Handle(TPrsStd_AISPresentation) aPresentation;
+  occ::handle<TPrsStd_AISPresentation> aPresentation;
   // create associated data (unless already there)
-  Handle(TDataXtd_Presentation) aData = TDataXtd_Presentation::Set(theLabel, theDriver);
+  occ::handle<TDataXtd_Presentation> aData = TDataXtd_Presentation::Set(theLabel, theDriver);
   if (aData.IsNull())
     throw Standard_NoMoreObject(NO_MORE_OBJECT);
   if (!theLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), aPresentation))
   {
     aPresentation = new TPrsStd_AISPresentation();
-    theLabel.AddAttribute(aPresentation, Standard_True);
+    theLabel.AddAttribute(aPresentation, true);
   }
 
   return aPresentation;
@@ -60,7 +61,7 @@ Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set(const TDF_Label&   
 
 //=================================================================================================
 
-Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set(const Handle(TDF_Attribute)& theMaster)
+occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(const occ::handle<TDF_Attribute>& theMaster)
 {
   return TPrsStd_AISPresentation::Set(theMaster->Label(), theMaster->ID());
 }
@@ -69,7 +70,7 @@ Handle(TPrsStd_AISPresentation) TPrsStd_AISPresentation::Set(const Handle(TDF_At
 
 void TPrsStd_AISPresentation::Unset(const TDF_Label& theLabel)
 {
-  Handle(TPrsStd_AISPresentation) aPresentation;
+  occ::handle<TPrsStd_AISPresentation> aPresentation;
   if (theLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), aPresentation))
     theLabel.ForgetAttribute(aPresentation);
 
@@ -79,9 +80,9 @@ void TPrsStd_AISPresentation::Unset(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-Handle(TDataXtd_Presentation) TPrsStd_AISPresentation::getData() const
+occ::handle<TDataXtd_Presentation> TPrsStd_AISPresentation::getData() const
 {
-  Handle(TDataXtd_Presentation) aData;
+  occ::handle<TDataXtd_Presentation> aData;
   if (!Label().FindAttribute(TDataXtd_Presentation::GetID(), aData))
     throw Standard_NoMoreObject(NO_MORE_OBJECT);
   return aData;
@@ -97,7 +98,7 @@ const Standard_GUID& TPrsStd_AISPresentation::GetID()
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::Display(const Standard_Boolean theIsUpdate)
+void TPrsStd_AISPresentation::Display(const bool theIsUpdate)
 {
   if (theIsUpdate || myAIS.IsNull())
     AISUpdate();
@@ -107,7 +108,7 @@ void TPrsStd_AISPresentation::Display(const Standard_Boolean theIsUpdate)
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::Erase(const Standard_Boolean theIsRemove)
+void TPrsStd_AISPresentation::Erase(const bool theIsRemove)
 {
   if (IsDisplayed() || theIsRemove)
   {
@@ -124,14 +125,14 @@ void TPrsStd_AISPresentation::Update()
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::IsDisplayed() const
+bool TPrsStd_AISPresentation::IsDisplayed() const
 {
   return getData()->IsDisplayed();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetDisplayed(const Standard_Boolean theIsDisplayed)
+void TPrsStd_AISPresentation::SetDisplayed(const bool theIsDisplayed)
 {
   // this method can be called by AISUpdate() in the process of removal,
   // while data attribute may be already removed
@@ -163,7 +164,7 @@ Graphic3d_NameOfMaterial TPrsStd_AISPresentation::Material() const
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnMaterial() const
+bool TPrsStd_AISPresentation::HasOwnMaterial() const
 {
   return getData()->HasOwnMaterial();
 }
@@ -182,10 +183,10 @@ void TPrsStd_AISPresentation::UnsetMaterial()
 
   if (!myAIS.IsNull() && myAIS->HasMaterial())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->UnsetMaterial(myAIS, Standard_False);
+      aContext->UnsetMaterial(myAIS, false);
     else
       myAIS->UnsetMaterial();
   }
@@ -210,10 +211,10 @@ void TPrsStd_AISPresentation::SetMaterial(const Graphic3d_NameOfMaterial theName
     if (myAIS->HasMaterial() && myAIS->Material() == theName)
       return; // AIS has already had that material
 
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->SetMaterial(myAIS, theName, Standard_False);
+      aContext->SetMaterial(myAIS, theName, false);
     else
       myAIS->SetMaterial(theName);
   }
@@ -221,14 +222,14 @@ void TPrsStd_AISPresentation::SetMaterial(const Graphic3d_NameOfMaterial theName
 
 //=================================================================================================
 
-Standard_Real TPrsStd_AISPresentation::Transparency() const
+double TPrsStd_AISPresentation::Transparency() const
 {
   return getData()->Transparency();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetTransparency(const Standard_Real theValue)
+void TPrsStd_AISPresentation::SetTransparency(const double theValue)
 {
   Backup();
   if (getData()->HasOwnTransparency() && getData()->Transparency() == theValue)
@@ -245,10 +246,10 @@ void TPrsStd_AISPresentation::SetTransparency(const Standard_Real theValue)
     if (myAIS->Transparency() == theValue)
       return; // AIS has already had that transparency
 
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->SetTransparency(myAIS, theValue, Standard_False);
+      aContext->SetTransparency(myAIS, theValue, false);
     else
       myAIS->SetTransparency(theValue);
   }
@@ -268,10 +269,10 @@ void TPrsStd_AISPresentation::UnsetTransparency()
 
   if (!myAIS.IsNull())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->UnsetTransparency(myAIS, Standard_False);
+      aContext->UnsetTransparency(myAIS, false);
     else
       myAIS->UnsetTransparency();
   }
@@ -279,7 +280,7 @@ void TPrsStd_AISPresentation::UnsetTransparency()
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnTransparency() const
+bool TPrsStd_AISPresentation::HasOwnTransparency() const
 {
   return getData()->HasOwnTransparency();
 }
@@ -293,7 +294,7 @@ Quantity_NameOfColor TPrsStd_AISPresentation::Color() const
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnColor() const
+bool TPrsStd_AISPresentation::HasOwnColor() const
 {
   return getData()->HasOwnColor();
 }
@@ -311,10 +312,10 @@ void TPrsStd_AISPresentation::UnsetColor()
 
   if (!myAIS.IsNull() && myAIS->HasColor())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->UnsetColor(myAIS, Standard_False);
+      aContext->UnsetColor(myAIS, false);
     else
       myAIS->UnsetColor();
   }
@@ -355,10 +356,10 @@ void TPrsStd_AISPresentation::SetColor(const Quantity_NameOfColor theColor)
       }
     }
 
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->SetColor(myAIS, theColor, Standard_False);
+      aContext->SetColor(myAIS, theColor, false);
     else
       myAIS->SetColor(theColor);
   }
@@ -366,21 +367,21 @@ void TPrsStd_AISPresentation::SetColor(const Quantity_NameOfColor theColor)
 
 //=================================================================================================
 
-Standard_Real TPrsStd_AISPresentation::Width() const
+double TPrsStd_AISPresentation::Width() const
 {
   return getData()->Width();
 }
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnWidth() const
+bool TPrsStd_AISPresentation::HasOwnWidth() const
 {
   return getData()->HasOwnWidth();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetWidth(const Standard_Real theWidth)
+void TPrsStd_AISPresentation::SetWidth(const double theWidth)
 {
   Backup();
   if (getData()->HasOwnWidth() && getData()->Width() == theWidth)
@@ -394,10 +395,10 @@ void TPrsStd_AISPresentation::SetWidth(const Standard_Real theWidth)
     if (myAIS->HasWidth() && myAIS->Width() == theWidth)
       return; // AIS has already had that width
 
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->SetWidth(myAIS, theWidth, Standard_False);
+      aContext->SetWidth(myAIS, theWidth, false);
     else
       myAIS->SetWidth(theWidth);
   }
@@ -418,10 +419,10 @@ void TPrsStd_AISPresentation::UnsetWidth()
 
   if (!myAIS.IsNull() && myAIS->HasWidth())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->UnsetWidth(myAIS, Standard_False);
+      aContext->UnsetWidth(myAIS, false);
     else
       myAIS->UnsetWidth();
   }
@@ -429,21 +430,21 @@ void TPrsStd_AISPresentation::UnsetWidth()
 
 //=================================================================================================
 
-Standard_Integer TPrsStd_AISPresentation::Mode() const
+int TPrsStd_AISPresentation::Mode() const
 {
   return getData()->Mode();
 }
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnMode() const
+bool TPrsStd_AISPresentation::HasOwnMode() const
 {
   return getData()->HasOwnMode();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetMode(const Standard_Integer theMode)
+void TPrsStd_AISPresentation::SetMode(const int theMode)
 {
   Backup();
   if (getData()->HasOwnMode() && getData()->Mode() == theMode)
@@ -460,10 +461,10 @@ void TPrsStd_AISPresentation::SetMode(const Standard_Integer theMode)
     if (myAIS->DisplayMode() == theMode)
       return; // AIS has already had that mode
 
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->SetDisplayMode(myAIS, theMode, Standard_False);
+      aContext->SetDisplayMode(myAIS, theMode, false);
     else
       myAIS->SetDisplayMode(theMode);
   }
@@ -484,10 +485,10 @@ void TPrsStd_AISPresentation::UnsetMode()
 
   if (!myAIS.IsNull() && myAIS->HasDisplayMode())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (!aContext.IsNull())
-      aContext->UnsetDisplayMode(myAIS, Standard_False);
+      aContext->UnsetDisplayMode(myAIS, false);
     else
       myAIS->UnsetDisplayMode();
   }
@@ -498,29 +499,29 @@ void TPrsStd_AISPresentation::UnsetMode()
 // purpose  : Returns selection mode(s) of the attribute.
 //         : It starts with 1 .. GetNbSelectionModes().
 //=======================================================================
-Standard_Integer TPrsStd_AISPresentation::GetNbSelectionModes() const
+int TPrsStd_AISPresentation::GetNbSelectionModes() const
 {
   return getData()->GetNbSelectionModes();
 }
 
 //=================================================================================================
 
-Standard_Integer TPrsStd_AISPresentation::SelectionMode(const Standard_Integer index) const
+int TPrsStd_AISPresentation::SelectionMode(const int index) const
 {
   return getData()->SelectionMode(index);
 }
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_AISPresentation::HasOwnSelectionMode() const
+bool TPrsStd_AISPresentation::HasOwnSelectionMode() const
 {
   return getData()->HasOwnSelectionMode();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetSelectionMode(const Standard_Integer theSelectionMode,
-                                               const Standard_Boolean theTransaction)
+void TPrsStd_AISPresentation::SetSelectionMode(const int theSelectionMode,
+                                               const bool theTransaction)
 {
   if (theTransaction)
     Backup();
@@ -534,8 +535,8 @@ void TPrsStd_AISPresentation::SetSelectionMode(const Standard_Integer theSelecti
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::AddSelectionMode(const Standard_Integer theSelectionMode,
-                                               const Standard_Boolean theTransaction)
+void TPrsStd_AISPresentation::AddSelectionMode(const int theSelectionMode,
+                                               const bool theTransaction)
 {
   if (theTransaction)
     Backup();
@@ -564,39 +565,39 @@ const Standard_GUID& TPrsStd_AISPresentation::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TPrsStd_AISPresentation::BackupCopy() const
+occ::handle<TDF_Attribute> TPrsStd_AISPresentation::BackupCopy() const
 {
   return new TPrsStd_AISPresentation;
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TPrsStd_AISPresentation::NewEmpty() const
+occ::handle<TDF_Attribute> TPrsStd_AISPresentation::NewEmpty() const
 {
   return new TPrsStd_AISPresentation();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::Restore(const Handle(TDF_Attribute)& /*theWith*/)
+void TPrsStd_AISPresentation::Restore(const occ::handle<TDF_Attribute>& /*theWith*/)
 {
   myAIS.Nullify();
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::Paste(const Handle(TDF_Attribute)& theInto,
-                                    const Handle(TDF_RelocationTable)&) const
+void TPrsStd_AISPresentation::Paste(const occ::handle<TDF_Attribute>& theInto,
+                                    const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TPrsStd_AISPresentation) anInto = Handle(TPrsStd_AISPresentation)::DownCast(theInto);
+  occ::handle<TPrsStd_AISPresentation> anInto = occ::down_cast<TPrsStd_AISPresentation>(theInto);
 
   anInto->Backup();
   if (!anInto->myAIS.IsNull())
   {
     // Save displayed flag.
-    Standard_Boolean displayed = anInto->IsDisplayed();
+    bool displayed = anInto->IsDisplayed();
     // Erase the interactive object.
-    anInto->AISErase(Standard_True);
+    anInto->AISErase(true);
     // Restore the displayed flag.
     if (displayed)
       anInto->SetDisplayed(displayed);
@@ -626,7 +627,7 @@ void TPrsStd_AISPresentation::BeforeForget()
 {
   if (!myAIS.IsNull())
   { // Remove AISObject from context.
-    AISErase(Standard_True);
+    AISErase(true);
     myAIS.Nullify();
   }
 }
@@ -648,10 +649,10 @@ void TPrsStd_AISPresentation::AfterResume()
 // function : BeforeUndo
 // purpose  : le NamedShape associe doit etre present
 //=======================================================================
-Standard_Boolean TPrsStd_AISPresentation::BeforeUndo(const Handle(TDF_AttributeDelta)& AD,
-                                                     const Standard_Boolean)
+bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                     const bool)
 {
-  Handle(TPrsStd_AISPresentation) P;
+  occ::handle<TPrsStd_AISPresentation> P;
   AD->Label().FindAttribute(TPrsStd_AISPresentation::GetID(), P);
 
   if (AD->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
@@ -668,17 +669,17 @@ Standard_Boolean TPrsStd_AISPresentation::BeforeUndo(const Handle(TDF_AttributeD
       P->BeforeForget();
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : AfterUndo
 // purpose  : le NamedShape associe doit etre present
 //=======================================================================
-Standard_Boolean TPrsStd_AISPresentation::AfterUndo(const Handle(TDF_AttributeDelta)& AD,
-                                                    const Standard_Boolean)
+bool TPrsStd_AISPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                    const bool)
 {
-  Handle(TPrsStd_AISPresentation) P;
+  occ::handle<TPrsStd_AISPresentation> P;
   AD->Label().FindAttribute(TPrsStd_AISPresentation::GetID(), P);
 
   if (AD->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
@@ -695,7 +696,7 @@ Standard_Boolean TPrsStd_AISPresentation::AfterUndo(const Handle(TDF_AttributeDe
       P->AfterResume();
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -704,18 +705,18 @@ void TPrsStd_AISPresentation::AISUpdate()
 {
   Backup();
   getData()->Backup();
-  Handle(AIS_InteractiveContext) aContext;
+  occ::handle<AIS_InteractiveContext> aContext;
   if (!Label().IsNull())
   {
     aContext = getAISContext();
 
-    Handle(TPrsStd_Driver) aDriver;
+    occ::handle<TPrsStd_Driver> aDriver;
     if (TPrsStd_DriverTable::Get()->FindDriver(GetDriverGUID(), aDriver))
     {
       // Build a new  AIS.
       if (myAIS.IsNull())
       {
-        Handle(AIS_InteractiveObject) aNewObj;
+        occ::handle<AIS_InteractiveObject> aNewObj;
         if (aDriver->Update(Label(), aNewObj))
         {
           myAIS = aNewObj;
@@ -724,12 +725,12 @@ void TPrsStd_AISPresentation::AISUpdate()
       }
       else
       {
-        Handle(AIS_InteractiveObject) anObj = myAIS;
+        occ::handle<AIS_InteractiveObject> anObj = myAIS;
         if (aDriver->Update(Label(), anObj))
           if (!(anObj == myAIS))
           {
             if (!aContext.IsNull())
-              aContext->Remove(myAIS, Standard_False);
+              aContext->Remove(myAIS, false);
 
             // Driver has built new AIS.
             myAIS = anObj;
@@ -752,7 +753,7 @@ void TPrsStd_AISPresentation::AISUpdate()
       if (!(myAIS->HasColor()) || (myAIS->HasColor() && aPrsColor.Name() != aColor))
       {
         if (!aContext.IsNull())
-          aContext->SetColor(myAIS, aColor, Standard_False);
+          aContext->SetColor(myAIS, aColor, false);
         else
           myAIS->SetColor(aColor);
       }
@@ -764,7 +765,7 @@ void TPrsStd_AISPresentation::AISUpdate()
       if (!(myAIS->HasMaterial()) || (myAIS->HasMaterial() && myAIS->Material() != aMaterial))
       {
         if (!aContext.IsNull())
-          aContext->SetMaterial(myAIS, aMaterial, Standard_False);
+          aContext->SetMaterial(myAIS, aMaterial, false);
         else
           myAIS->SetMaterial(aMaterial);
       }
@@ -772,11 +773,11 @@ void TPrsStd_AISPresentation::AISUpdate()
 
     if (HasOwnTransparency())
     {
-      const Standard_Real aTransparency = Transparency();
+      const double aTransparency = Transparency();
       if (myAIS->Transparency() != aTransparency)
       {
         if (!aContext.IsNull())
-          aContext->SetTransparency(myAIS, aTransparency, Standard_False);
+          aContext->SetTransparency(myAIS, aTransparency, false);
         else
           myAIS->SetTransparency(aTransparency);
       }
@@ -784,11 +785,11 @@ void TPrsStd_AISPresentation::AISUpdate()
 
     if (HasOwnWidth())
     {
-      const Standard_Real aWidth = Width();
+      const double aWidth = Width();
       if (!(myAIS->HasWidth()) || (myAIS->HasWidth() && myAIS->Width() != aWidth))
       {
         if (!aContext.IsNull())
-          aContext->SetWidth(myAIS, aWidth, Standard_False);
+          aContext->SetWidth(myAIS, aWidth, false);
         else
           myAIS->SetWidth(aWidth);
       }
@@ -796,7 +797,7 @@ void TPrsStd_AISPresentation::AISUpdate()
 
     if (HasOwnMode())
     {
-      const Standard_Integer aMode = Mode();
+      const int aMode = Mode();
       if (myAIS->DisplayMode() != aMode)
         myAIS->SetDisplayMode(aMode);
     }
@@ -805,7 +806,7 @@ void TPrsStd_AISPresentation::AISUpdate()
   }
 
   if (IsDisplayed() && !aContext.IsNull())
-    aContext->Redisplay(myAIS, Standard_False);
+    aContext->Redisplay(myAIS, false);
 }
 
 //=================================================================================================
@@ -814,7 +815,7 @@ void TPrsStd_AISPresentation::AISDisplay()
 {
   if (!Label().IsNull())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
 
     if (aContext.IsNull())
       return;
@@ -822,24 +823,24 @@ void TPrsStd_AISPresentation::AISDisplay()
     if (!myAIS.IsNull())
     {
       if (!(myAIS->GetContext()).IsNull() && (myAIS->GetContext()) != aContext)
-        myAIS->GetContext()->Remove(myAIS, Standard_False);
+        myAIS->GetContext()->Remove(myAIS, false);
 
       if (IsDisplayed() && aContext->IsDisplayed(myAIS))
         return;
 
-      aContext->Display(myAIS, Standard_False);
+      aContext->Display(myAIS, false);
 
       if (aContext->IsDisplayed(myAIS))
-        SetDisplayed(Standard_True);
+        SetDisplayed(true);
     }
   }
 }
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
+void TPrsStd_AISPresentation::AISErase(const bool theIsRemove)
 {
-  Handle(AIS_InteractiveContext) aContext, anOwnContext;
+  occ::handle<AIS_InteractiveContext> aContext, anOwnContext;
 
   if (!myAIS.IsNull())
   {
@@ -847,9 +848,9 @@ void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
     if (!Label().IsNull())
     {
       if (IsAttribute(TDataXtd_Presentation::GetID()))
-        SetDisplayed(Standard_False);
+        SetDisplayed(false);
 
-      Handle(TPrsStd_AISViewer) viewer;
+      occ::handle<TPrsStd_AISViewer> viewer;
       if (!TPrsStd_AISViewer::Find(Label(), viewer))
         return;
       anOwnContext = myAIS->GetContext();
@@ -858,18 +859,18 @@ void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
       if (theIsRemove)
       {
         if (!aContext.IsNull())
-          aContext->Remove(myAIS, Standard_False);
+          aContext->Remove(myAIS, false);
         if (!anOwnContext.IsNull() && anOwnContext != aContext)
-          anOwnContext->Remove(myAIS, Standard_False);
+          anOwnContext->Remove(myAIS, false);
 
         myAIS.Nullify();
       }
       else
       {
         if (!aContext.IsNull())
-          aContext->Erase(myAIS, Standard_False);
+          aContext->Erase(myAIS, false);
         if (!anOwnContext.IsNull() && anOwnContext != aContext)
-          anOwnContext->Erase(myAIS, Standard_False);
+          anOwnContext->Erase(myAIS, false);
       }
     }
     else
@@ -878,32 +879,32 @@ void TPrsStd_AISPresentation::AISErase(const Standard_Boolean theIsRemove)
       {
         if (!anOwnContext.IsNull())
         {
-          anOwnContext->Remove(myAIS, Standard_False);
+          anOwnContext->Remove(myAIS, false);
           myAIS.Nullify();
         }
       }
       else if (!anOwnContext.IsNull())
-        anOwnContext->Erase(myAIS, Standard_False);
+        anOwnContext->Erase(myAIS, false);
     }
   }
 }
 
 //=================================================================================================
 
-Handle(AIS_InteractiveObject) TPrsStd_AISPresentation::GetAIS() const
+occ::handle<AIS_InteractiveObject> TPrsStd_AISPresentation::GetAIS() const
 {
   return myAIS;
 }
 
 //=================================================================================================
 
-Handle(AIS_InteractiveContext) TPrsStd_AISPresentation::getAISContext() const
+occ::handle<AIS_InteractiveContext> TPrsStd_AISPresentation::getAISContext() const
 {
-  Handle(TPrsStd_AISViewer) aViewer;
+  occ::handle<TPrsStd_AISViewer> aViewer;
   if (TPrsStd_AISViewer::Find(Label(), aViewer))
     return aViewer->GetInteractiveContext();
 
-  return Handle(AIS_InteractiveContext)();
+  return occ::handle<AIS_InteractiveContext>();
 }
 
 //=======================================================================
@@ -915,46 +916,46 @@ void TPrsStd_AISPresentation::ActivateSelectionMode()
 {
   if (!myAIS.IsNull() && HasOwnSelectionMode())
   {
-    Handle(AIS_InteractiveContext) aContext = getAISContext();
+    occ::handle<AIS_InteractiveContext> aContext = getAISContext();
     if (!aContext.IsNull())
     {
-      TColStd_ListOfInteger anActivatedModes;
+      NCollection_List<int> anActivatedModes;
       aContext->ActivatedModes(myAIS, anActivatedModes);
-      Standard_Integer nbSelModes = GetNbSelectionModes();
+      int nbSelModes = GetNbSelectionModes();
       if (nbSelModes == 1)
       {
-        Standard_Boolean isActivated    = Standard_False;
-        Standard_Integer aSelectionMode = SelectionMode();
+        bool isActivated    = false;
+        int aSelectionMode = SelectionMode();
         if (aSelectionMode == -1)
         {
           aContext->Deactivate(myAIS);
         }
         else
         {
-          for (TColStd_ListIteratorOfListOfInteger aModeIter(anActivatedModes); aModeIter.More();
+          for (NCollection_List<int>::Iterator aModeIter(anActivatedModes); aModeIter.More();
                aModeIter.Next())
           {
             if (aModeIter.Value() == aSelectionMode)
             {
-              isActivated = Standard_True;
+              isActivated = true;
               break;
             }
           }
           if (!isActivated)
             aContext->SetSelectionModeActive(myAIS,
                                              aSelectionMode,
-                                             Standard_True,
+                                             true,
                                              AIS_SelectionModesConcurrency_Multiple);
         }
       }
       else
       {
-        for (Standard_Integer iSelMode = 1; iSelMode <= nbSelModes; iSelMode++)
+        for (int iSelMode = 1; iSelMode <= nbSelModes; iSelMode++)
         {
-          const Standard_Integer aSelectionMode = SelectionMode(iSelMode);
+          const int aSelectionMode = SelectionMode(iSelMode);
           aContext->SetSelectionModeActive(myAIS,
                                            aSelectionMode,
-                                           Standard_True /*activate*/,
+                                           true /*activate*/,
                                            iSelMode == 1 ? AIS_SelectionModesConcurrency_Single
                                                          : AIS_SelectionModesConcurrency_Multiple);
         }
@@ -966,7 +967,7 @@ void TPrsStd_AISPresentation::ActivateSelectionMode()
 //=================================================================================================
 
 void TPrsStd_AISPresentation::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

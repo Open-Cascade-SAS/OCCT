@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
-class Expr_ExprFailure;
-DEFINE_STANDARD_HANDLE(Expr_ExprFailure, Standard_Failure)
-
 #if !defined No_Exception && !defined No_Expr_ExprFailure
   #define Expr_ExprFailure_Raise_if(CONDITION, MESSAGE)                                            \
     if (CONDITION)                                                                                 \

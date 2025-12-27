@@ -25,9 +25,6 @@
 #include <StepGeom_Surface.hxx>
 class TCollection_HAsciiString;
 
-class StepGeom_OffsetSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_OffsetSurface, StepGeom_Surface)
-
 class StepGeom_OffsetSurface : public StepGeom_Surface
 {
 
@@ -35,18 +32,18 @@ public:
   //! Returns a OffsetSurface
   Standard_EXPORT StepGeom_OffsetSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_Surface)&         aBasisSurface,
-                            const Standard_Real                     aDistance,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_Surface>&         aBasisSurface,
+                            const double                     aDistance,
                             const StepData_Logical                  aSelfIntersect);
 
-  Standard_EXPORT void SetBasisSurface(const Handle(StepGeom_Surface)& aBasisSurface);
+  Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
-  Standard_EXPORT Handle(StepGeom_Surface) BasisSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_Surface> BasisSurface() const;
 
-  Standard_EXPORT void SetDistance(const Standard_Real aDistance);
+  Standard_EXPORT void SetDistance(const double aDistance);
 
-  Standard_EXPORT Standard_Real Distance() const;
+  Standard_EXPORT double Distance() const;
 
   Standard_EXPORT void SetSelfIntersect(const StepData_Logical aSelfIntersect);
 
@@ -54,10 +51,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_OffsetSurface, StepGeom_Surface)
 
-protected:
 private:
-  Handle(StepGeom_Surface) basisSurface;
-  Standard_Real            distance;
+  occ::handle<StepGeom_Surface> basisSurface;
+  double            distance;
   StepData_Logical         selfIntersect;
 };
 

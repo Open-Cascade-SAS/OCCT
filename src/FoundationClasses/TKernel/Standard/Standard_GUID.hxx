@@ -53,25 +53,25 @@ public:
   //! following format:
   //! Length : 36 char
   //! "00000000-0000-0000-0000-000000000000"
-  Standard_EXPORT Standard_GUID(const Standard_CString aGuid);
+  Standard_EXPORT Standard_GUID(const char* aGuid);
 
   //! build a GUID from an unicode string with the
   //! following format:
   //!
   //! "00000000-0000-0000-0000-000000000000"
-  Standard_EXPORT Standard_GUID(const Standard_ExtString aGuid);
+  Standard_EXPORT Standard_GUID(const char16_t* aGuid);
 
   //! Creates a GUID from the given components.
-  constexpr Standard_GUID(const Standard_Integer      a32b,
-                          const Standard_ExtCharacter a16b1,
-                          const Standard_ExtCharacter a16b2,
-                          const Standard_ExtCharacter a16b3,
-                          const Standard_Byte         a8b1,
-                          const Standard_Byte         a8b2,
-                          const Standard_Byte         a8b3,
-                          const Standard_Byte         a8b4,
-                          const Standard_Byte         a8b5,
-                          const Standard_Byte         a8b6) noexcept
+  constexpr Standard_GUID(const int      a32b,
+                          const char16_t a16b1,
+                          const char16_t a16b2,
+                          const char16_t a16b3,
+                          const uint8_t         a8b1,
+                          const uint8_t         a8b2,
+                          const uint8_t         a8b3,
+                          const uint8_t         a8b4,
+                          const uint8_t         a8b5,
+                          const uint8_t         a8b6) noexcept
       : my32b(a32b),
         my16b1(a16b1),
         my16b2(a16b2),
@@ -90,7 +90,7 @@ public:
       : my32b(theUUID.Data1),
         my16b1(theUUID.Data2),
         my16b2(theUUID.Data3),
-        my16b3(static_cast<Standard_ExtCharacter>((theUUID.Data4[0] << 8) | theUUID.Data4[1])),
+        my16b3(static_cast<char16_t>((theUUID.Data4[0] << 8) | theUUID.Data4[1])),
         my8b1(theUUID.Data4[2]),
         my8b2(theUUID.Data4[3]),
         my8b3(theUUID.Data4[4]),
@@ -134,25 +134,25 @@ public:
   }
 
   //! Returns true if this GUID is equal to uid.
-  constexpr Standard_Boolean IsSame(const Standard_GUID& uid) const noexcept
+  constexpr bool IsSame(const Standard_GUID& uid) const noexcept
   {
     return my32b == uid.my32b && my16b1 == uid.my16b1 && my16b2 == uid.my16b2
            && my16b3 == uid.my16b3 && my8b1 == uid.my8b1 && my8b2 == uid.my8b2 && my8b3 == uid.my8b3
            && my8b4 == uid.my8b4 && my8b5 == uid.my8b5 && my8b6 == uid.my8b6;
   }
 
-  constexpr Standard_Boolean operator==(const Standard_GUID& uid) const noexcept
+  constexpr bool operator==(const Standard_GUID& uid) const noexcept
   {
     return IsSame(uid);
   }
 
   //! Returns true if this GUID is not equal to uid.
-  constexpr Standard_Boolean IsNotSame(const Standard_GUID& uid) const noexcept
+  constexpr bool IsNotSame(const Standard_GUID& uid) const noexcept
   {
     return !IsSame(uid);
   }
 
-  constexpr Standard_Boolean operator!=(const Standard_GUID& uid) const noexcept
+  constexpr bool operator!=(const Standard_GUID& uid) const noexcept
   {
     return IsNotSame(uid);
   }
@@ -184,7 +184,7 @@ public:
     my32b  = uid.Data1;
     my16b1 = uid.Data2;
     my16b2 = uid.Data3;
-    my16b3 = static_cast<Standard_ExtCharacter>((uid.Data4[0] << 8) | uid.Data4[1]);
+    my16b3 = static_cast<char16_t>((uid.Data4[0] << 8) | uid.Data4[1]);
     my8b1  = uid.Data4[2];
     my8b2  = uid.Data4[3];
     my8b3  = uid.Data4[4];
@@ -206,22 +206,22 @@ public:
 
   //! Check the format of a GUID string.
   //! It checks the size, the position of the '-' and the correct size of fields.
-  Standard_EXPORT static Standard_Boolean CheckGUIDFormat(const Standard_CString aGuid);
+  Standard_EXPORT static bool CheckGUIDFormat(const char* aGuid);
 
   template <class T>
   friend struct std::hash;
 
 private:
-  Standard_Integer      my32b;
-  Standard_ExtCharacter my16b1;
-  Standard_ExtCharacter my16b2;
-  Standard_ExtCharacter my16b3;
-  Standard_Byte         my8b1;
-  Standard_Byte         my8b2;
-  Standard_Byte         my8b3;
-  Standard_Byte         my8b4;
-  Standard_Byte         my8b5;
-  Standard_Byte         my8b6;
+  int      my32b;
+  char16_t my16b1;
+  char16_t my16b2;
+  char16_t my16b3;
+  uint8_t         my8b1;
+  uint8_t         my8b2;
+  uint8_t         my8b3;
+  uint8_t         my8b4;
+  uint8_t         my8b5;
+  uint8_t         my8b6;
 };
 
 namespace std
@@ -233,16 +233,16 @@ struct hash<Standard_GUID>
   {
     struct GUID
     {
-      Standard_Integer      my32b;
-      Standard_ExtCharacter my16b1;
-      Standard_ExtCharacter my16b2;
-      Standard_ExtCharacter my16b3;
-      Standard_Byte         my8b1;
-      Standard_Byte         my8b2;
-      Standard_Byte         my8b3;
-      Standard_Byte         my8b4;
-      Standard_Byte         my8b5;
-      Standard_Byte         my8b6;
+      int      my32b;
+      char16_t my16b1;
+      char16_t my16b2;
+      char16_t my16b3;
+      uint8_t         my8b1;
+      uint8_t         my8b2;
+      uint8_t         my8b3;
+      uint8_t         my8b4;
+      uint8_t         my8b5;
+      uint8_t         my8b6;
     };
 
     GUID aGUID{theGUID.my32b,

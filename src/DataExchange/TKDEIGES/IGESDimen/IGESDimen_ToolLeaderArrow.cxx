@@ -35,20 +35,20 @@
 
 IGESDimen_ToolLeaderArrow::IGESDimen_ToolLeaderArrow() {}
 
-void IGESDimen_ToolLeaderArrow::ReadOwnParams(const Handle(IGESDimen_LeaderArrow)& ent,
-                                              const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_LeaderArrow>& ent,
+                                              const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                               IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
+  // bool st; //szv#4:S4163:12Mar99 moved down
 
-  Standard_Real              arrowHeadHeight;
-  Standard_Real              arrowHeadWidth;
-  Standard_Real              zDepth;
+  double              arrowHeadHeight;
+  double              arrowHeadWidth;
+  double              zDepth;
   gp_XY                      arrowHead;
-  Handle(TColgp_HArray1OfXY) segmentTails;
-  Standard_Integer           nbval;
+  occ::handle<TColgp_HArray1OfXY> segmentTails;
+  int           nbval;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Count of Segments", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Count of Segments", nbval);
   if (st && nbval > 0)
     segmentTails = new TColgp_HArray1OfXY(1, nbval);
   else
@@ -62,7 +62,7 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const Handle(IGESDimen_LeaderArrow
 
   if (!segmentTails.IsNull())
   {
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       gp_XY tempXY;
       // st = PR.ReadXY(PR.CurrentList(1, 2), "Segment Co-ords.", tempXY); //szv#4:S4163:12Mar99
@@ -75,41 +75,41 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const Handle(IGESDimen_LeaderArrow
   } // segmentTails.IsNull() crash in ent->Init( ...
 }
 
-void IGESDimen_ToolLeaderArrow::WriteOwnParams(const Handle(IGESDimen_LeaderArrow)& ent,
+void IGESDimen_ToolLeaderArrow::WriteOwnParams(const occ::handle<IGESDimen_LeaderArrow>& ent,
                                                IGESData_IGESWriter&                 IW) const
 {
-  Standard_Integer upper = ent->NbSegments();
+  int upper = ent->NbSegments();
   IW.Send(upper);
   IW.Send(ent->ArrowHeadHeight());
   IW.Send(ent->ArrowHeadWidth());
   IW.Send(ent->ZDepth());
   IW.Send(ent->ArrowHead().X());
   IW.Send(ent->ArrowHead().Y());
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
   {
     IW.Send((ent->SegmentTail(i)).X());
     IW.Send((ent->SegmentTail(i)).Y());
   }
 }
 
-void IGESDimen_ToolLeaderArrow::OwnShared(const Handle(IGESDimen_LeaderArrow)& /* ent */,
+void IGESDimen_ToolLeaderArrow::OwnShared(const occ::handle<IGESDimen_LeaderArrow>& /* ent */,
                                           Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDimen_ToolLeaderArrow::OwnCopy(const Handle(IGESDimen_LeaderArrow)& another,
-                                        const Handle(IGESDimen_LeaderArrow)& ent,
+void IGESDimen_ToolLeaderArrow::OwnCopy(const occ::handle<IGESDimen_LeaderArrow>& another,
+                                        const occ::handle<IGESDimen_LeaderArrow>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer nbval           = another->NbSegments();
-  Standard_Real    arrowHeadHeight = another->ArrowHeadHeight();
-  Standard_Real    arrowHeadWidth  = another->ArrowHeadWidth();
-  Standard_Real    zDepth          = another->ZDepth();
+  int nbval           = another->NbSegments();
+  double    arrowHeadHeight = another->ArrowHeadHeight();
+  double    arrowHeadWidth  = another->ArrowHeadWidth();
+  double    zDepth          = another->ZDepth();
   gp_XY            arrowHead       = another->ArrowHead().XY();
 
-  Handle(TColgp_HArray1OfXY) segmentTails = new TColgp_HArray1OfXY(1, nbval);
+  occ::handle<TColgp_HArray1OfXY> segmentTails = new TColgp_HArray1OfXY(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     segmentTails->SetValue(i, (another->SegmentTail(i)).XY());
   }
@@ -119,7 +119,7 @@ void IGESDimen_ToolLeaderArrow::OwnCopy(const Handle(IGESDimen_LeaderArrow)& ano
 }
 
 IGESData_DirChecker IGESDimen_ToolLeaderArrow::DirChecker(
-  const Handle(IGESDimen_LeaderArrow)& /* ent */) const
+  const occ::handle<IGESDimen_LeaderArrow>& /* ent */) const
 {
   IGESData_DirChecker DC(214, 1, 12);
   DC.Structure(IGESData_DefVoid);
@@ -131,16 +131,16 @@ IGESData_DirChecker IGESDimen_ToolLeaderArrow::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolLeaderArrow::OwnCheck(const Handle(IGESDimen_LeaderArrow)& /* ent */,
+void IGESDimen_ToolLeaderArrow::OwnCheck(const occ::handle<IGESDimen_LeaderArrow>& /* ent */,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& /* ach */) const
+                                         occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDimen_ToolLeaderArrow::OwnDump(const Handle(IGESDimen_LeaderArrow)& ent,
+void IGESDimen_ToolLeaderArrow::OwnDump(const occ::handle<IGESDimen_LeaderArrow>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
                                         Standard_OStream&      S,
-                                        const Standard_Integer level) const
+                                        const int level) const
 {
   S << "IGESDimen_LeaderArrow\n"
     << "Number of Segments : " << ent->NbSegments() << "\n"

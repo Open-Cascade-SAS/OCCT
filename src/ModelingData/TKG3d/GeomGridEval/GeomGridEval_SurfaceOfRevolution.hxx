@@ -26,7 +26,7 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Optimized batch evaluator for revolution surface grid points.
 //!
@@ -61,7 +61,7 @@ public:
   //! Constructor with geometry.
   //! @param theRevolution the revolution surface geometry to evaluate
   Standard_EXPORT GeomGridEval_SurfaceOfRevolution(
-    const Handle(Geom_SurfaceOfRevolution)& theRevolution);
+    const occ::handle<Geom_SurfaceOfRevolution>& theRevolution);
 
   //! Non-copyable and non-movable.
   GeomGridEval_SurfaceOfRevolution(const GeomGridEval_SurfaceOfRevolution&)            = delete;
@@ -70,7 +70,7 @@ public:
   GeomGridEval_SurfaceOfRevolution& operator=(GeomGridEval_SurfaceOfRevolution&&)      = delete;
 
   //! Returns the geometry handle.
-  const Handle(Geom_SurfaceOfRevolution)& Geometry() const { return myGeom; }
+  const occ::handle<Geom_SurfaceOfRevolution>& Geometry() const { return myGeom; }
 
   //! Evaluate all grid points.
   //! @param[in] theUParams array of U parameter values (rotation angle)
@@ -78,8 +78,8 @@ public:
   //! @return 2D array of evaluated points (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<gp_Pnt> EvaluateGrid(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with first partial derivatives.
   //! @param[in] theUParams array of U parameter values (rotation angle)
@@ -87,8 +87,8 @@ public:
   //! @return 2D array of SurfD1 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with first and second partial derivatives.
   //! @param[in] theUParams array of U parameter values (rotation angle)
@@ -96,8 +96,8 @@ public:
   //! @return 2D array of SurfD2 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate all grid points with derivatives up to third order.
   //! @param[in] theUParams array of U parameter values (rotation angle)
@@ -105,8 +105,8 @@ public:
   //! @return 2D array of SurfD3 (1-based indexing),
   //!         or empty array if geometry is null or no parameters set
   Standard_EXPORT NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
-    const TColStd_Array1OfReal& theUParams,
-    const TColStd_Array1OfReal& theVParams) const;
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams) const;
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
   //! @param[in] theUParams array of U parameter values (rotation angle)
@@ -114,8 +114,8 @@ public:
   //! @param[in] theNU derivative order in U direction
   //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
-                                                            const TColStd_Array1OfReal& theVParams,
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
+                                                            const NCollection_Array1<double>& theVParams,
                                                             int                         theNU,
                                                             int theNV) const;
 
@@ -158,8 +158,8 @@ public:
     int                                 theNV) const;
 
 private:
-  Handle(Geom_SurfaceOfRevolution) myGeom;
-  Handle(Geom_Curve)               myBasisCurve;
+  occ::handle<Geom_SurfaceOfRevolution> myGeom;
+  occ::handle<Geom_Curve>               myBasisCurve;
   gp_Ax1                           myAxis;
   gp_Pnt                           myAxisLocation;
   gp_Dir                           myAxisDirection;

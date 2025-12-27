@@ -36,10 +36,10 @@ constexpr double THE_PI        = 3.14159265358979323846;
 class ParabolaFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = (theX - 3.0) * (theX - 3.0) + 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -48,10 +48,10 @@ public:
 class ParabolaFunc2Old : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX - 4.0 * theX + 3.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -60,10 +60,10 @@ public:
 class CosFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -72,11 +72,11 @@ public:
 class QuarticFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     const double aX2 = theX * theX;
     theF             = aX2 * aX2 - 2.0 * aX2;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -85,10 +85,10 @@ public:
 class CoshLikeFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::exp(theX) + std::exp(-theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -97,10 +97,10 @@ public:
 class SquareFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX;
-    return Standard_True;
+    return true;
   }
 };
 

@@ -42,36 +42,36 @@ public:
   static Standard_EXPORT const Standard_GUID& GetID();
 
   //! Returns the ID of TObj_TModel attribute.
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
 public:
   //! Methods for setting and obtaining the Model object
 
   //! Sets the Model object
-  Standard_EXPORT void Set(const Handle(TObj_Model)& theModel);
+  Standard_EXPORT void Set(const occ::handle<TObj_Model>& theModel);
 
   //! Returns the Model object
-  Standard_EXPORT Handle(TObj_Model) Model() const;
+  Standard_EXPORT occ::handle<TObj_Model> Model() const;
 
 public:
   //! Redefined OCAF abstract methods
 
   //! Returns an new empty TObj_TModel attribute. It is used by the
   //! copy algorithm.
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Restores the backuped contents from <theWith> into this one. It is used
   //! when aborting a transaction.
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   //! This method is used when copying an attribute from a source structure
   //! into a target structure.
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       theInto,
-                             const Handle(TDF_RelocationTable)& theRT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
 
 private:
   //! Fields
-  Handle(TObj_Model) myModel; //!< The Model object stored by the attribute
+  occ::handle<TObj_Model> myModel; //!< The Model object stored by the attribute
 
 public:
   //! CASCADE RTTI
@@ -79,8 +79,6 @@ public:
 };
 
 //! Define handle class for TObj_TModel
-DEFINE_STANDARD_HANDLE(TObj_TModel, TDF_Attribute)
-
 #endif
 
 #ifdef _MSC_VER

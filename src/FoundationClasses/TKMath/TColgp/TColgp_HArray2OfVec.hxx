@@ -18,9 +18,10 @@
 #define TColgp_HArray2OfVec_HeaderFile
 
 #include <gp_Vec.hxx>
-#include <TColgp_Array2OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TColgp_HArray2OfVec, TColgp_Array2OfVec)
+DEFINE_HARRAY2(TColgp_HArray2OfVec, NCollection_Array2<gp_Vec>)
 
 #endif

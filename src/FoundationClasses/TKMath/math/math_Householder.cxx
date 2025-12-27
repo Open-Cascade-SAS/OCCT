@@ -37,10 +37,10 @@
 // donc cette solution de recopie initiale qui a ete retenue.
 math_Householder::math_Householder(const math_Matrix&  A,
                                    const math_Vector&  B,
-                                   const Standard_Real EPS)
+                                   const double EPS)
     : Sol(1, A.ColNumber(), 1, 1),
       Q(1, A.RowNumber(), 1, A.ColNumber()),
-      Done(Standard_False)
+      Done(false)
 {
 
   mylowerArow = A.LowerRow();
@@ -54,10 +54,10 @@ math_Householder::math_Householder(const math_Matrix&  A,
 
 math_Householder::math_Householder(const math_Matrix&  A,
                                    const math_Matrix&  B,
-                                   const Standard_Real EPS)
+                                   const double EPS)
     : Sol(1, A.ColNumber(), 1, B.ColNumber()),
       Q(1, A.RowNumber(), A.LowerCol(), A.UpperCol()),
-      Done(Standard_False)
+      Done(false)
 {
 
   mylowerArow = A.LowerRow();
@@ -69,14 +69,14 @@ math_Householder::math_Householder(const math_Matrix&  A,
 
 math_Householder::math_Householder(const math_Matrix&     A,
                                    const math_Matrix&     B,
-                                   const Standard_Integer lowerArow,
-                                   const Standard_Integer upperArow,
-                                   const Standard_Integer lowerAcol,
-                                   const Standard_Integer upperAcol,
-                                   const Standard_Real    EPS)
+                                   const int lowerArow,
+                                   const int upperArow,
+                                   const int lowerAcol,
+                                   const int upperAcol,
+                                   const double    EPS)
     : Sol(1, upperAcol - lowerAcol + 1, 1, B.ColNumber()),
       Q(1, upperArow - lowerArow + 1, 1, upperAcol - lowerAcol + 1),
-      Done(Standard_False)
+      Done(false)
 {
   mylowerArow = lowerArow;
   myupperArow = upperArow;
@@ -86,19 +86,19 @@ math_Householder::math_Householder(const math_Matrix&     A,
   Perform(A, B, EPS);
 }
 
-void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const Standard_Real EPS)
+void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const double EPS)
 {
 
-  Standard_Integer i, j, k, n, l, m;
-  Standard_Real    f, g, h = 0., alfaii;
-  Standard_Real    qki;
-  Standard_Real    cj;
+  int i, j, k, n, l, m;
+  double    f, g, h = 0., alfaii;
+  double    qki;
+  double    cj;
   n = Q.ColNumber();
   l = Q.RowNumber();
   m = B.ColNumber();
   math_Matrix B2(1, l, 1, m);
 
-  Standard_Integer lbrow = B.LowerRow();
+  int lbrow = B.LowerRow();
   for (i = 1; i <= l; i++)
   {
     for (j = 1; j <= n; j++)
@@ -126,14 +126,14 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const
     g = f < 1.e-15 ? std::sqrt(h) : -std::sqrt(h);
     if (fabs(g) <= EPS)
     {
-      Done = Standard_False;
+      Done = false;
       return;
     }
     h -= f * g;     // = (v*v)/2         = C1
     alfaii = g - f; // = v               = ALFAII
     for (j = i + 1; j <= n; j++)
     {
-      Standard_Real scale = 0.0;
+      double scale = 0.0;
       for (k = i; k <= l; k++)
       {
         scale += Q(k, i) * Q(k, j); //                   = SCAL
@@ -150,7 +150,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const
 
     for (j = 1; j <= m; j++)
     {
-      Standard_Real scale = Q(i, i) * B2(i, j);
+      double scale = Q(i, i) * B2(i, j);
       for (k = i + 1; k <= l; k++)
       {
         scale += Q(k, i) * B2(k, j);
@@ -171,7 +171,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const
     Sol(n, j) = B2(n, j) / Q(n, n);
     for (i = n - 1; i >= 1; i--)
     {
-      Standard_Real scale = 0.0;
+      double scale = 0.0;
       for (k = i + 1; k <= n; k++)
       {
         scale += Q(i, k) * Sol(k, j);
@@ -179,7 +179,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const
       Sol(i, j) = (B2(i, j) - scale) / Q(i, i);
     }
   }
-  Done = Standard_True;
+  Done = true;
 }
 
 void math_Householder::Dump(Standard_OStream& o) const

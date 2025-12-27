@@ -75,8 +75,7 @@ set(OCCT_gp_FILES
   gp_Vec.hxx
   gp_Vec2d.cxx
   gp_Vec2d.hxx
-  gp_Vec2f.hxx
-  gp_Vec3f.hxx
+
   gp_VectorWithNullMagnitude.hxx
   gp_XY.hxx
   gp_XYZ.cxx

@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <StepBasic_Date.hxx>
 
-class StepBasic_CalendarDate;
-DEFINE_STANDARD_HANDLE(StepBasic_CalendarDate, StepBasic_Date)
-
 class StepBasic_CalendarDate : public StepBasic_Date
 {
 
@@ -33,24 +30,23 @@ public:
   //! Returns a CalendarDate
   Standard_EXPORT StepBasic_CalendarDate();
 
-  Standard_EXPORT void Init(const Standard_Integer aYearComponent,
-                            const Standard_Integer aDayComponent,
-                            const Standard_Integer aMonthComponent);
+  Standard_EXPORT void Init(const int aYearComponent,
+                            const int aDayComponent,
+                            const int aMonthComponent);
 
-  Standard_EXPORT void SetDayComponent(const Standard_Integer aDayComponent);
+  Standard_EXPORT void SetDayComponent(const int aDayComponent);
 
-  Standard_EXPORT Standard_Integer DayComponent() const;
+  Standard_EXPORT int DayComponent() const;
 
-  Standard_EXPORT void SetMonthComponent(const Standard_Integer aMonthComponent);
+  Standard_EXPORT void SetMonthComponent(const int aMonthComponent);
 
-  Standard_EXPORT Standard_Integer MonthComponent() const;
+  Standard_EXPORT int MonthComponent() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_CalendarDate, StepBasic_Date)
 
-protected:
 private:
-  Standard_Integer dayComponent;
-  Standard_Integer monthComponent;
+  int dayComponent;
+  int monthComponent;
 };
 
 #endif // _StepBasic_CalendarDate_HeaderFile

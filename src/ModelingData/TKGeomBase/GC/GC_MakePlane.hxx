@@ -56,10 +56,10 @@ public:
   //! Ax + By + Cz + D = 0.0
   //! Status is "BadEquation" if std::sqrt(A*A + B*B + C*C)
   //! <= Resolution from gp
-  Standard_EXPORT GC_MakePlane(const Standard_Real A,
-                               const Standard_Real B,
-                               const Standard_Real C,
-                               const Standard_Real D);
+  Standard_EXPORT GC_MakePlane(const double A,
+                               const double B,
+                               const double C,
+                               const double D);
 
   //! Make a Plane from Geom <ThePlane> parallel to another
   //! Pln <Pln> and passing through a Pnt <Point>.
@@ -72,7 +72,7 @@ public:
   //! <Dist> to the plane <Pln> in the direction of the
   //! normal to <Pln>.
   //! Otherwise it is in the opposite direction.
-  Standard_EXPORT GC_MakePlane(const gp_Pln& Pln, const Standard_Real Dist);
+  Standard_EXPORT GC_MakePlane(const gp_Pln& Pln, const double Dist);
 
   //! Make a Plane from Geom <ThePlane> passing through 3
   //! Pnt <P1>,<P2>,<P3>.
@@ -85,12 +85,12 @@ public:
 
   //! Returns the constructed plane.
   //! Exceptions StdFail_NotDone if no plane is constructed.
-  Standard_EXPORT const Handle(Geom_Plane)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_Plane>& Value() const;
 
-  operator const Handle(Geom_Plane)&() const { return Value(); }
+  operator const occ::handle<Geom_Plane>&() const { return Value(); }
 
 private:
-  Handle(Geom_Plane) ThePlane;
+  occ::handle<Geom_Plane> ThePlane;
 };
 
 #endif // _GC_MakePlane_HeaderFile

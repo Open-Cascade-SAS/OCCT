@@ -22,9 +22,6 @@
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
-class StepGeom_Surface;
-DEFINE_STANDARD_HANDLE(StepGeom_Surface, StepGeom_GeometricRepresentationItem)
-
 class StepGeom_Surface : public StepGeom_GeometricRepresentationItem
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Surface, StepGeom_GeometricRepresentationItem)
 
-protected:
-private:
 };
 
 #endif // _StepGeom_Surface_HeaderFile

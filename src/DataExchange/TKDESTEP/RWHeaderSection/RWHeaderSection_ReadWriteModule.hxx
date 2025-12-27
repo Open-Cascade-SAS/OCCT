@@ -22,7 +22,8 @@
 
 #include <StepData_ReadWriteModule.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <string_view>
 
@@ -31,9 +32,6 @@ class StepData_StepReaderData;
 class Interface_Check;
 class Standard_Transient;
 class StepData_StepWriter;
-
-class RWHeaderSection_ReadWriteModule;
-DEFINE_STANDARD_HANDLE(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 
 //! General module to read and write HeaderSection entities
 class RWHeaderSection_ReadWriteModule : public StepData_ReadWriteModule
@@ -44,37 +42,35 @@ public:
 
   //! associates a positive Case Number to each type of HeaderSection entity,
   //! given as a String defined in the EXPRESS form
-  Standard_EXPORT Standard_Integer
-    CaseStep(const TCollection_AsciiString& atype) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseStep(const TCollection_AsciiString& atype) const override;
 
   //! associates a positive Case Number to each type of HeaderSection Complex entity,
   //! given as a String defined in the EXPRESS form
-  Standard_EXPORT virtual Standard_Integer CaseStep(
-    const TColStd_SequenceOfAsciiString& types) const Standard_OVERRIDE;
+  Standard_EXPORT virtual int CaseStep(
+    const NCollection_Sequence<TCollection_AsciiString>& types) const override;
 
   //! returns True if the Case Number corresponds to a Complex Type
-  Standard_EXPORT virtual Standard_Boolean IsComplex(const Standard_Integer CN) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsComplex(const int CN) const
+    override;
 
   //! returns a StepType (defined in EXPRESS form which belongs to a
   //! Type of Entity, identified by its CaseNumber determined by Protocol
-  Standard_EXPORT const std::string_view& StepType(const Standard_Integer CN) const
-    Standard_OVERRIDE;
+  Standard_EXPORT const std::string_view& StepType(const int CN) const
+    override;
 
-  Standard_EXPORT void ReadStep(const Standard_Integer                 CN,
-                                const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(Standard_Transient)&      ent) const Standard_OVERRIDE;
+  Standard_EXPORT void ReadStep(const int                 CN,
+                                const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<Standard_Transient>&      ent) const override;
 
-  Standard_EXPORT void WriteStep(const Standard_Integer            CN,
+  Standard_EXPORT void WriteStep(const int            CN,
                                  StepData_StepWriter&              SW,
-                                 const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+                                 const occ::handle<Standard_Transient>& ent) const override;
 
   DEFINE_STANDARD_RTTIEXT(RWHeaderSection_ReadWriteModule, StepData_ReadWriteModule)
 
-protected:
-private:
 };
 
 #endif // _RWHeaderSection_ReadWriteModule_HeaderFile

@@ -24,13 +24,10 @@
 #include <NCollection_Sequence.hxx>
 
 //! List of shader objects.
-typedef NCollection_Sequence<Handle(Graphic3d_ShaderObject)> Graphic3d_ShaderObjectList;
 
 //! List of custom uniform shader variables.
-typedef NCollection_Sequence<Handle(Graphic3d_ShaderVariable)> Graphic3d_ShaderVariableList;
 
 //! List of custom vertex shader attributes
-typedef NCollection_Sequence<Handle(Graphic3d_ShaderAttribute)> Graphic3d_ShaderAttributeList;
 
 //! This class is responsible for managing shader programs.
 class Graphic3d_ShaderProgram : public Standard_Transient
@@ -38,13 +35,13 @@ class Graphic3d_ShaderProgram : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_ShaderProgram, Standard_Transient)
 public:
   //! Default value of THE_MAX_LIGHTS macros within GLSL program (see Declarations.glsl).
-  static const Standard_Integer THE_MAX_LIGHTS_DEFAULT = 8;
+  static const int THE_MAX_LIGHTS_DEFAULT = 8;
 
   //! Default value of THE_MAX_CLIP_PLANES macros within GLSL program (see Declarations.glsl).
-  static const Standard_Integer THE_MAX_CLIP_PLANES_DEFAULT = 8;
+  static const int THE_MAX_CLIP_PLANES_DEFAULT = 8;
 
   //! Default value of THE_NB_FRAG_OUTPUTS macros within GLSL program (see Declarations.glsl).
-  static const Standard_Integer THE_NB_FRAG_OUTPUTS = 1;
+  static const int THE_NB_FRAG_OUTPUTS = 1;
 
 public:
   //! Creates new empty program object.
@@ -54,7 +51,7 @@ public:
   Standard_EXPORT virtual ~Graphic3d_ShaderProgram();
 
   //! Checks if the program object is valid or not.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const;
+  Standard_EXPORT virtual bool IsDone() const;
 
   //! Returns unique ID used to manage resource in graphic driver.
   const TCollection_AsciiString& GetId() const { return myID; }
@@ -90,67 +87,67 @@ public:
   //! Return the length of array of light sources (THE_MAX_LIGHTS),
   //! to be used for initialization occLightSources.
   //! Default value is THE_MAX_LIGHTS_DEFAULT.
-  Standard_Integer NbLightsMax() const { return myNbLightsMax; }
+  int NbLightsMax() const { return myNbLightsMax; }
 
   //! Specify the length of array of light sources (THE_MAX_LIGHTS).
-  void SetNbLightsMax(Standard_Integer theNbLights) { myNbLightsMax = theNbLights; }
+  void SetNbLightsMax(int theNbLights) { myNbLightsMax = theNbLights; }
 
   //! Return the length of array of shadow maps (THE_NB_SHADOWMAPS); 0 by default.
-  Standard_Integer NbShadowMaps() const { return myNbShadowMaps; }
+  int NbShadowMaps() const { return myNbShadowMaps; }
 
   //! Specify the length of array of shadow maps (THE_NB_SHADOWMAPS).
-  void SetNbShadowMaps(Standard_Integer theNbMaps) { myNbShadowMaps = theNbMaps; }
+  void SetNbShadowMaps(int theNbMaps) { myNbShadowMaps = theNbMaps; }
 
   //! Return the length of array of clipping planes (THE_MAX_CLIP_PLANES),
   //! to be used for initialization occClipPlaneEquations.
   //! Default value is THE_MAX_CLIP_PLANES_DEFAULT.
-  Standard_Integer NbClipPlanesMax() const { return myNbClipPlanesMax; }
+  int NbClipPlanesMax() const { return myNbClipPlanesMax; }
 
   //! Specify the length of array of clipping planes (THE_MAX_CLIP_PLANES).
-  void SetNbClipPlanesMax(Standard_Integer theNbPlanes) { myNbClipPlanesMax = theNbPlanes; }
+  void SetNbClipPlanesMax(int theNbPlanes) { myNbClipPlanesMax = theNbPlanes; }
 
   //! Attaches shader object to the program object.
-  Standard_EXPORT Standard_Boolean AttachShader(const Handle(Graphic3d_ShaderObject)& theShader);
+  Standard_EXPORT bool AttachShader(const occ::handle<Graphic3d_ShaderObject>& theShader);
 
   //! Detaches shader object from the program object.
-  Standard_EXPORT Standard_Boolean DetachShader(const Handle(Graphic3d_ShaderObject)& theShader);
+  Standard_EXPORT bool DetachShader(const occ::handle<Graphic3d_ShaderObject>& theShader);
 
   //! Returns list of attached shader objects.
-  const Graphic3d_ShaderObjectList& ShaderObjects() const { return myShaderObjects; }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& ShaderObjects() const { return myShaderObjects; }
 
   //! The list of currently pushed but not applied custom uniform variables.
   //! This list is automatically cleared after applying to GLSL program.
-  const Graphic3d_ShaderVariableList& Variables() const { return myVariables; }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>& Variables() const { return myVariables; }
 
   //! Return the list of custom vertex attributes.
-  const Graphic3d_ShaderAttributeList& VertexAttributes() const { return myAttributes; }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& VertexAttributes() const { return myAttributes; }
 
   //! Assign the list of custom vertex attributes.
   //! Should be done before GLSL program initialization.
-  Standard_EXPORT void SetVertexAttributes(const Graphic3d_ShaderAttributeList& theAttributes);
+  Standard_EXPORT void SetVertexAttributes(const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes);
 
   //! Returns the number (1+) of Fragment Shader outputs to be written to
   //! (more than 1 can be in case of multiple draw buffers); 1 by default.
-  Standard_Integer NbFragmentOutputs() const { return myNbFragOutputs; }
+  int NbFragmentOutputs() const { return myNbFragOutputs; }
 
   //! Sets the number of Fragment Shader outputs to be written to.
   //! Should be done before GLSL program initialization.
-  void SetNbFragmentOutputs(const Standard_Integer theNbOutputs) { myNbFragOutputs = theNbOutputs; }
+  void SetNbFragmentOutputs(const int theNbOutputs) { myNbFragOutputs = theNbOutputs; }
 
   //! Return true if Fragment Shader should perform alpha test; FALSE by default.
-  Standard_Boolean HasAlphaTest() const { return myHasAlphaTest; }
+  bool HasAlphaTest() const { return myHasAlphaTest; }
 
   //! Set if Fragment Shader should perform alpha test.
   //! Note that this flag is designed for usage with - custom shader program may discard fragment
   //! regardless this flag.
-  void SetAlphaTest(Standard_Boolean theAlphaTest) { myHasAlphaTest = theAlphaTest; }
+  void SetAlphaTest(bool theAlphaTest) { myHasAlphaTest = theAlphaTest; }
 
   //! Return TRUE if standard program header should define default texture sampler occSampler0; TRUE
   //! by default for compatibility.
-  Standard_Boolean HasDefaultSampler() const { return myHasDefSampler; }
+  bool HasDefaultSampler() const { return myHasDefSampler; }
 
   //! Set if standard program header should define default texture sampler occSampler0.
-  void SetDefaultSampler(Standard_Boolean theHasDefSampler) { myHasDefSampler = theHasDefSampler; }
+  void SetDefaultSampler(bool theHasDefSampler) { myHasDefSampler = theHasDefSampler; }
 
   //! Return if Fragment Shader color should output to OIT buffers; OFF by default.
   Graphic3d_RenderTransparentMethod OitOutput() const { return myOitOutput; }
@@ -162,77 +159,77 @@ public:
 
   //! Return TRUE if standard program header should define functions and variables used in PBR
   //! pipeline. FALSE by default.
-  Standard_Boolean IsPBR() const { return myIsPBR; }
+  bool IsPBR() const { return myIsPBR; }
 
   //! Sets whether standard program header should define functions and variables used in PBR
   //! pipeline.
-  void SetPBR(Standard_Boolean theIsPBR) { myIsPBR = theIsPBR; }
+  void SetPBR(bool theIsPBR) { myIsPBR = theIsPBR; }
 
   //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
-  Standard_Integer TextureSetBits() const { return myTextureSetBits; }
+  int TextureSetBits() const { return myTextureSetBits; }
 
   //! Set texture units declared within the program.
-  void SetTextureSetBits(Standard_Integer theBits) { myTextureSetBits = theBits; }
+  void SetTextureSetBits(int theBits) { myTextureSetBits = theBits; }
 
   //! Pushes custom uniform variable to the program.
   //! The list of pushed variables is automatically cleared after applying to GLSL program.
   //! Thus after program recreation even unchanged uniforms should be pushed anew.
   template <class T>
-  Standard_Boolean PushVariable(const TCollection_AsciiString& theName, const T& theValue);
+  bool PushVariable(const TCollection_AsciiString& theName, const T& theValue);
 
   //! Removes all custom uniform variables from the program.
   Standard_EXPORT void ClearVariables();
 
   //! Pushes float uniform.
-  Standard_Boolean PushVariableFloat(const TCollection_AsciiString& theName, const float theValue)
+  bool PushVariableFloat(const TCollection_AsciiString& theName, const float theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec2 uniform.
-  Standard_Boolean PushVariableVec2(const TCollection_AsciiString& theName,
-                                    const Graphic3d_Vec2&          theValue)
+  bool PushVariableVec2(const TCollection_AsciiString& theName,
+                                    const NCollection_Vec2<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec3 uniform.
-  Standard_Boolean PushVariableVec3(const TCollection_AsciiString& theName,
-                                    const Graphic3d_Vec3&          theValue)
+  bool PushVariableVec3(const TCollection_AsciiString& theName,
+                                    const NCollection_Vec3<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec4 uniform.
-  Standard_Boolean PushVariableVec4(const TCollection_AsciiString& theName,
-                                    const Graphic3d_Vec4&          theValue)
+  bool PushVariableVec4(const TCollection_AsciiString& theName,
+                                    const NCollection_Vec4<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes int uniform.
-  Standard_Boolean PushVariableInt(const TCollection_AsciiString& theName, const int theValue)
+  bool PushVariableInt(const TCollection_AsciiString& theName, const int theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec2i uniform.
-  Standard_Boolean PushVariableVec2i(const TCollection_AsciiString& theName,
-                                     const Graphic3d_Vec2i&         theValue)
+  bool PushVariableVec2i(const TCollection_AsciiString& theName,
+                                     const NCollection_Vec2<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec3i uniform.
-  Standard_Boolean PushVariableVec3i(const TCollection_AsciiString& theName,
-                                     const Graphic3d_Vec3i&         theValue)
+  bool PushVariableVec3i(const TCollection_AsciiString& theName,
+                                     const NCollection_Vec3<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec4i uniform.
-  Standard_Boolean PushVariableVec4i(const TCollection_AsciiString& theName,
-                                     const Graphic3d_Vec4i&         theValue)
+  bool PushVariableVec4i(const TCollection_AsciiString& theName,
+                                     const NCollection_Vec4<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
@@ -245,42 +242,40 @@ public:
 
 private:
   TCollection_AsciiString       myID;            //!< the unique identifier of program object
-  Graphic3d_ShaderObjectList    myShaderObjects; //!< the list of attached shader objects
-  Graphic3d_ShaderVariableList  myVariables;     //!< the list of custom uniform variables
-  Graphic3d_ShaderAttributeList myAttributes;    //!< the list of custom vertex attributes
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>    myShaderObjects; //!< the list of attached shader objects
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>  myVariables;     //!< the list of custom uniform variables
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>> myAttributes;    //!< the list of custom vertex attributes
   // clang-format off
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
-  Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
-  Standard_Integer              myNbShadowMaps;  //!< length of array of shadow maps (THE_NB_SHADOWMAPS)
-  Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
-  Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
-  Standard_Integer              myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
+  int              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
+  int              myNbShadowMaps;  //!< length of array of shadow maps (THE_NB_SHADOWMAPS)
+  int              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
+  int              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  int              myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
   Graphic3d_RenderTransparentMethod myOitOutput; //!< flag indicating that Fragment Shader includes OIT outputs
-  Standard_Boolean              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
-  Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
-  Standard_Boolean              myIsPBR;         //!< flag indicating that program defines functions and variables used in PBR pipeline
+  bool              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
+  bool              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
+  bool              myIsPBR;         //!< flag indicating that program defines functions and variables used in PBR pipeline
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_ShaderProgram, Standard_Transient)
 
 // =======================================================================
 // function : PushVariable
 // purpose  : Pushes custom uniform variable to the program
 // =======================================================================
 template <class T>
-inline Standard_Boolean Graphic3d_ShaderProgram::PushVariable(
+inline bool Graphic3d_ShaderProgram::PushVariable(
   const TCollection_AsciiString& theName,
   const T&                       theValue)
 {
-  Handle(Graphic3d_ShaderVariable) aVariable = Graphic3d_ShaderVariable::Create(theName, theValue);
+  occ::handle<Graphic3d_ShaderVariable> aVariable = Graphic3d_ShaderVariable::Create(theName, theValue);
   if (aVariable.IsNull() || !aVariable->IsDone())
   {
-    return Standard_False;
+    return false;
   }
 
   myVariables.Append(aVariable);
-  return Standard_True;
+  return true;
 }
 
 #endif

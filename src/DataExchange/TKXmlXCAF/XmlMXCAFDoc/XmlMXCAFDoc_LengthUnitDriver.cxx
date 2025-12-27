@@ -25,14 +25,14 @@ IMPLEMENT_DOMSTRING(UnitScaleValue, "value")
 //=================================================================================================
 
 XmlMXCAFDoc_LengthUnitDriver::XmlMXCAFDoc_LengthUnitDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "LengthUnit")
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_LengthUnitDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_LengthUnitDriver::NewEmpty() const
 {
   return (new XCAFDoc_LengthUnit());
 }
@@ -41,8 +41,8 @@ Handle(TDF_Attribute) XmlMXCAFDoc_LengthUnitDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                     const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
                                                      XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
@@ -52,7 +52,7 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve LengthUnit attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   const XmlObjMgt_Element& anElement       = theSource;
   XmlObjMgt_DOMString      aUnitScaleValue = anElement.getAttribute(::UnitScaleValue());
@@ -60,7 +60,7 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
   {
     TCollection_ExtendedString aMessageString("Cannot retrieve LengthUnit scale factor");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   TCollection_AsciiString aScaleFactor(aUnitScaleValue.GetString());
   TCollection_AsciiString anUnitName(aNameStr.GetString());
@@ -68,23 +68,23 @@ Standard_Boolean XmlMXCAFDoc_LengthUnitDriver::Paste(const XmlObjMgt_Persistent&
   {
     TCollection_ExtendedString aMessageString("Cannot retrieve LengthUnit scale factor");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(XCAFDoc_LengthUnit) anInt = Handle(XCAFDoc_LengthUnit)::DownCast(theTarget);
+  occ::handle<XCAFDoc_LengthUnit> anInt = occ::down_cast<XCAFDoc_LengthUnit>(theTarget);
   anInt->Set(anUnitName, aScaleFactor.RealValue());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_LengthUnitDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_LengthUnitDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          XmlObjMgt_Persistent&        theTarget,
                                          XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_LengthUnit) anAtt     = Handle(XCAFDoc_LengthUnit)::DownCast(theSource);
+  occ::handle<XCAFDoc_LengthUnit> anAtt     = occ::down_cast<XCAFDoc_LengthUnit>(theSource);
   XmlObjMgt_DOMString        aNameUnit = anAtt->GetUnitName().ToCString();
   XmlObjMgt_DOMString aValueUnit       = TCollection_AsciiString(anAtt->GetUnitValue()).ToCString();
   XmlObjMgt::SetStringValue(theTarget, aNameUnit);

@@ -6,12 +6,7 @@ set(OCCT_XCAFPrs_FILES
   XCAFPrs.hxx
   XCAFPrs_AISObject.cxx
   XCAFPrs_AISObject.hxx
-  XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle.hxx
-  XCAFPrs_DataMapIteratorOfDataMapOfStyleShape.hxx
-  XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient.hxx
-  XCAFPrs_IndexedDataMapOfShapeStyle.hxx
-  XCAFPrs_DataMapOfStyleShape.hxx
-  XCAFPrs_DataMapOfStyleTransient.hxx
+
   XCAFPrs_DocumentExplorer.cxx
   XCAFPrs_DocumentExplorer.hxx
   XCAFPrs_DocumentIdIterator.hxx

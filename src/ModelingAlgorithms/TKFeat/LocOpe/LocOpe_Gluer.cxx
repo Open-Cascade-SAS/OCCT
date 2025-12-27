@@ -39,12 +39,16 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 static TopAbs_Orientation GetOrientation(const TopoDS_Face&, const TopoDS_Face&);
 
-static Standard_Boolean Contains(const TopTools_ListOfShape&, const TopoDS_Shape&);
+static bool Contains(const NCollection_List<TopoDS_Shape>&, const TopoDS_Shape&);
 
 //=================================================================================================
 
@@ -55,7 +59,7 @@ void LocOpe_Gluer::Init(const TopoDS_Shape& Sbase, const TopoDS_Shape& Snew)
   myMapEF.Clear();
   myMapEE.Clear();
   myDescF.Clear();
-  myDone = Standard_False;
+  myDone = false;
   myOri  = TopAbs_INTERNAL;
   myOpe  = LocOpe_INVALID;
 }
@@ -153,7 +157,7 @@ void LocOpe_Gluer::Bind(const TopoDS_Edge& Enew, const TopoDS_Edge& Ebase)
 
 void LocOpe_Gluer::Perform()
 {
-  Standard_Integer ind;
+  int ind;
   if (myDone)
   {
     return;
@@ -163,10 +167,10 @@ void LocOpe_Gluer::Perform()
     throw Standard_ConstructionError();
   }
 
-  Handle(LocOpe_WiresOnShape) theWOnS = new LocOpe_WiresOnShape(mySb);
-  Handle(LocOpe_GluedShape)   theGS   = new LocOpe_GluedShape(mySn);
+  occ::handle<LocOpe_WiresOnShape> theWOnS = new LocOpe_WiresOnShape(mySb);
+  occ::handle<LocOpe_GluedShape>   theGS   = new LocOpe_GluedShape(mySn);
 
-  Standard_Integer lmap = myMapEF.Extent();
+  int lmap = myMapEF.Extent();
 
   for (ind = 1; ind <= lmap; ind++)
   {
@@ -185,7 +189,7 @@ void LocOpe_Gluer::Perform()
     }
   }
 
-  TopTools_DataMapIteratorOfDataMapOfShapeShape itm(myMapEE);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(myMapEE);
   for (; itm.More(); itm.Next())
   {
     theWOnS->Bind(TopoDS::Edge(itm.Key()), TopoDS::Edge(itm.Value()));
@@ -214,7 +218,7 @@ void LocOpe_Gluer::Perform()
 
   for (exp.Init(mySn, TopAbs_FACE); exp.More(); exp.Next())
   {
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     myDescF.Bind(exp.Current(), thelist);
     if (Contains(theGS->OrientedFaces(), exp.Current()))
     {
@@ -233,14 +237,14 @@ void LocOpe_Gluer::Perform()
     AddEdges();
 
     // Mise a jour des descendants
-    TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itd;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itd;
     for (itd.Initialize(myDescF); itd.More(); itd.Next())
     {
-      TopTools_ListOfShape               newDesc;
-      TopTools_ListIteratorOfListOfShape itl;
+      NCollection_List<TopoDS_Shape>               newDesc;
+      NCollection_List<TopoDS_Shape>::Iterator itl;
       for (itl.Initialize(itd.Value()); itl.More(); itl.Next())
       {
-        TopTools_ListIteratorOfListOfShape itl2(theGen.DescendantFace(TopoDS::Face(itl.Value())));
+        NCollection_List<TopoDS_Shape>::Iterator itl2(theGen.DescendantFace(TopoDS::Face(itl.Value())));
         for (; itl2.More(); itl2.Next())
         {
           const TopoDS_Face& descface = TopoDS::Face(itl2.Value());
@@ -255,14 +259,14 @@ void LocOpe_Gluer::Perform()
   }
 
   // recodage des regularites
-  TopTools_IndexedDataMapOfShapeListOfShape theMapEF1, theMapEF2;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF1, theMapEF2;
   TopExp::MapShapesAndAncestors(mySn, TopAbs_EDGE, TopAbs_FACE, theMapEF1);
   TopExp::MapShapesAndAncestors(myRes, TopAbs_EDGE, TopAbs_FACE, theMapEF2);
 
   for (ind = 1; ind <= theMapEF1.Extent(); ind++)
   {
     const TopoDS_Edge&          edg = TopoDS::Edge(theMapEF1.FindKey(ind));
-    const TopTools_ListOfShape& LL  = theMapEF1(ind);
+    const NCollection_List<TopoDS_Shape>& LL  = theMapEF1(ind);
     if (LL.Extent() == 2)
     {
       const TopoDS_Face& fac1    = TopoDS::Face(LL.First());
@@ -271,10 +275,10 @@ void LocOpe_Gluer::Perform()
       if (thecont >= GeomAbs_G1)
       {
         // on essaie de recoder
-        Standard_Integer ind2 = theMapEF2.FindIndex(edg);
+        int ind2 = theMapEF2.FindIndex(edg);
         if (ind2 != 0)
         {
-          const TopTools_ListOfShape& LL2 = theMapEF2(ind2);
+          const NCollection_List<TopoDS_Shape>& LL2 = theMapEF2(ind2);
           if (LL2.Extent() == 2)
           {
             const TopoDS_Face& ff1 = TopoDS::Face(LL2.First());
@@ -304,7 +308,7 @@ void LocOpe_Gluer::Perform()
       {
         myEdges.Append(edg);
         // recodage eventuel des regularites sur cet edge
-        const TopTools_ListOfShape& L = theMapEF2(ind);
+        const NCollection_List<TopoDS_Shape>& L = theMapEF2(ind);
         if (L.Extent() == 2)
         {
           const TopoDS_Face& fac1 = TopoDS::Face(L.First());
@@ -330,7 +334,7 @@ void LocOpe_Gluer::Perform()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_Gluer::DescendantFaces(const TopoDS_Face& F) const
+const NCollection_List<TopoDS_Shape>& LocOpe_Gluer::DescendantFaces(const TopoDS_Face& F) const
 {
   if (!myDone)
   {
@@ -338,7 +342,7 @@ const TopTools_ListOfShape& LocOpe_Gluer::DescendantFaces(const TopoDS_Face& F) 
   }
   if (myDescF.IsBound(F))
     return myDescF(F);
-  static TopTools_ListOfShape nullList;
+  static NCollection_List<TopoDS_Shape> nullList;
   return nullList;
 }
 
@@ -347,13 +351,13 @@ const TopTools_ListOfShape& LocOpe_Gluer::DescendantFaces(const TopoDS_Face& F) 
 static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Face& Fb)
 {
 
-  Handle(Geom_Surface) Sn, Sb;
+  occ::handle<Geom_Surface> Sn, Sb;
   Sn = BRep_Tool::Surface(Fn);
   Sb = BRep_Tool::Surface(Fb);
 
   // Find a point on Sb
   TopExp_Explorer exp;
-  Standard_Real   f, l;
+  double   f, l;
   gp_Pnt2d        ptvtx;
   gp_Pnt          pvt;
   gp_Vec          d1u, d1v, n1, n2;
@@ -361,7 +365,7 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
   for (exp.Init(Fn, TopAbs_EDGE); exp.More(); exp.Next())
   {
     const TopoDS_Edge&   edg = TopoDS::Edge(exp.Current());
-    Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg, Fn, f, l);
+    occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(edg, Fn, f, l);
     if (Precision::IsNegativeInfinite(f) && Precision::IsPositiveInfinite(l))
     {
       f = -100.;
@@ -375,8 +379,8 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
     {
       l = f + 200.;
     }
-    Standard_Real deltau = (l - f) / 20.;
-    for (Standard_Integer i = 1; i <= 21; i++)
+    double deltau = (l - f) / 20.;
+    for (int i = 1; i <= 21; i++)
     {
       C2d->D0(f + (i - 1) * deltau, ptvtx);
       Sn->D1(ptvtx.X(), ptvtx.Y(), pvt, d1u, d1v);
@@ -391,14 +395,14 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
 
         // Projection sur Sb
         GeomAdaptor_Surface GAS(Sb);
-        Standard_Real       TolU = GAS.UResolution(Precision::Confusion());
-        Standard_Real       TolV = GAS.VResolution(Precision::Confusion());
+        double       TolU = GAS.UResolution(Precision::Confusion());
+        double       TolV = GAS.VResolution(Precision::Confusion());
         Extrema_ExtPS       dist(pvt, GAS, TolU, TolV);
         if (dist.IsDone())
         {
-          Standard_Real    dist2min = RealLast();
-          Standard_Integer jmin     = 0;
-          for (Standard_Integer j = 1; j <= dist.NbExt(); j++)
+          double    dist2min = RealLast();
+          int jmin     = 0;
+          for (int j = 1; j <= dist.NbExt(); j++)
           {
             if (dist.SquareDistance(j) < dist2min)
             {
@@ -408,7 +412,7 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
           }
           if (jmin != 0)
           {
-            Standard_Real uu, vv;
+            double uu, vv;
             dist.Point(jmin).Parameter(uu, vv);
             Sb->D1(uu, vv, pvt, d1u, d1v);
             n2 = d1u.Crossed(d1v);
@@ -435,17 +439,17 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
 
 //=================================================================================================
 
-static Standard_Boolean Contains(const TopTools_ListOfShape& L, const TopoDS_Shape& S)
+static bool Contains(const NCollection_List<TopoDS_Shape>& L, const TopoDS_Shape& S)
 {
-  TopTools_ListIteratorOfListOfShape it;
+  NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(L); it.More(); it.Next())
   {
     if (it.Value().IsSame(S))
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -456,10 +460,10 @@ void LocOpe_Gluer::AddEdges()
   exp.Init(mySn, TopAbs_EDGE);
 
   TopLoc_Location Loc;
-  //  Standard_Real l, f;
-  TopTools_IndexedMapOfShape MapV, MapFPrism, MapE;
+  //  double l, f;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapV, MapFPrism, MapE;
   TopExp_Explorer            vexp;
-  Standard_Integer           flag, i;
+  int           flag, i;
 
   TopExp::MapShapes(mySn, TopAbs_FACE, MapFPrism);
 
@@ -505,7 +509,7 @@ void LocOpe_Gluer::AddEdges()
               }
               else
               {
-                Standard_Real dist2min = ext.SquareDistance(1);
+                double dist2min = ext.SquareDistance(1);
                 for (i = 2; i <= ext.NbExt(); i++)
                 {
                   dist2min = std::min(dist2min, ext.SquareDistance(i));

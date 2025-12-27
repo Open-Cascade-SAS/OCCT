@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Expr_MapOfNamedUnknown.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
 class Expr_GeneralRelation;
 class Expr_NamedUnknown;
@@ -34,21 +35,20 @@ public:
 
   //! Creates an iterator on every NamedUnknown contained in
   //! <rel>.
-  Standard_EXPORT Expr_RUIterator(const Handle(Expr_GeneralRelation)& rel);
+  Standard_EXPORT Expr_RUIterator(const occ::handle<Expr_GeneralRelation>& rel);
 
   //! Returns False if on other unknown remains.
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
   //! Returns current NamedUnknown.
   //! Raises exception if no more unknowns remain.
-  Standard_EXPORT Handle(Expr_NamedUnknown) Value() const;
+  Standard_EXPORT occ::handle<Expr_NamedUnknown> Value() const;
 
-protected:
 private:
-  Expr_MapOfNamedUnknown myMap;
-  Standard_Integer       myCurrent;
+  NCollection_IndexedMap<occ::handle<Expr_NamedUnknown>> myMap;
+  int       myCurrent;
 };
 
 #endif // _Expr_RUIterator_HeaderFile

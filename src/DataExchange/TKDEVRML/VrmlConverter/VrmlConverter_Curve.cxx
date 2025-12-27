@@ -26,19 +26,19 @@
 //=================================================================================================
 
 static void FindLimits(const Adaptor3d_Curve& aCurve,
-                       const Standard_Real    aLimit,
-                       Standard_Real&         First,
-                       Standard_Real&         Last)
+                       const double    aLimit,
+                       double&         First,
+                       double&         Last)
 {
   First                     = aCurve.FirstParameter();
   Last                      = aCurve.LastParameter();
-  Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
-  Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
+  bool firstInf = Precision::IsNegativeInfinite(First);
+  bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
     gp_Pnt        P1, P2;
-    Standard_Real delta = 1;
+    double delta = 1;
     if (firstInf && lastInf)
     {
       do
@@ -76,15 +76,15 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 //=================================================================================================
 
 static void DrawCurve(const Adaptor3d_Curve&              aCurve,
-                      const Standard_Integer              NbP,
-                      const Standard_Real                 U1,
-                      const Standard_Real                 U2,
-                      const Handle(VrmlConverter_Drawer)& aDrawer, // for passing of LineAspect
+                      const int              NbP,
+                      const double                 U1,
+                      const double                 U2,
+                      const occ::handle<VrmlConverter_Drawer>& aDrawer, // for passing of LineAspect
                       Standard_OStream&                   anOStream)
 {
-  Standard_Integer                 nbintervals = 1, i;
-  Handle(TColgp_HArray1OfVec)      HAV1;
-  Handle(TColStd_HArray1OfInteger) HAI1;
+  int                 nbintervals = 1, i;
+  occ::handle<TColgp_HArray1OfVec>      HAV1;
+  occ::handle<TColStd_HArray1OfInteger> HAI1;
 
   if (aCurve.GetType() == GeomAbs_BSplineCurve)
   {
@@ -120,8 +120,8 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
     break;
     default: {
 
-      Standard_Real    U;
-      Standard_Integer N = std::max(2, NbP * nbintervals);
+      double    U;
+      int N = std::max(2, NbP * nbintervals);
 
       //     std::cout << "nbintervals " << nbintervals << std::endl;
       //     std::cout <<  "N " << N << std::endl;
@@ -130,7 +130,7 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
       HAV1 = new TColgp_HArray1OfVec(1, N);
       //      HAI1 = new TColStd_HArray1OfInteger(1,(N/2*3+N%2));
       HAI1             = new TColStd_HArray1OfInteger(1, N + 1);
-      Standard_Real DU = (U2 - U1) / (N - 1);
+      double DU = (U2 - U1) / (N - 1);
       gp_Pnt        p;
 
       for (i = 1; i <= N; i++)
@@ -144,7 +144,7 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
         HAV1->SetValue(i, V);
       }
 
-      //      Standard_Integer j=1,k;
+      //      int j=1,k;
 
       //     for (i=HAI1->Lower(); i <= HAI1->Upper(); i++)
       // 	{
@@ -175,7 +175,7 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
   //       }
 
   // creation of Vrml objects
-  Handle(VrmlConverter_LineAspect) LA = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> LA = new VrmlConverter_LineAspect;
   LA                                  = aDrawer->LineAspect();
 
   //     std::cout << "LA->HasMaterial() = " << LA->HasMaterial()  << std::endl;
@@ -188,13 +188,13 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
   if (LA->HasMaterial())
   {
 
-    Handle(Vrml_Material) M;
+    occ::handle<Vrml_Material> M;
     M = LA->Material();
 
     M->Print(anOStream);
   }
   // Coordinate3
-  Handle(Vrml_Coordinate3) C3 = new Vrml_Coordinate3(HAV1);
+  occ::handle<Vrml_Coordinate3> C3 = new Vrml_Coordinate3(HAV1);
   C3->Print(anOStream);
   // IndexedLineSet
   Vrml_IndexedLineSet ILS;
@@ -207,13 +207,13 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
 //=================================================================================================
 
 void VrmlConverter_Curve::Add(const Adaptor3d_Curve&              aCurve,
-                              const Handle(VrmlConverter_Drawer)& aDrawer,
+                              const occ::handle<VrmlConverter_Drawer>& aDrawer,
                               Standard_OStream&                   anOStream)
 {
 
-  Standard_Integer NbPoints = aDrawer->Discretisation();
-  Standard_Real    V1, V2;
-  Standard_Real    aLimit = aDrawer->MaximalParameterValue();
+  int NbPoints = aDrawer->Discretisation();
+  double    V1, V2;
+  double    aLimit = aDrawer->MaximalParameterValue();
   FindLimits(aCurve, aLimit, V1, V2);
 
   //     std::cout << "V1 = "<< V1 << std::endl;
@@ -227,15 +227,15 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&              aCurve,
 //=================================================================================================
 
 void VrmlConverter_Curve::Add(const Adaptor3d_Curve&              aCurve,
-                              const Standard_Real                 U1,
-                              const Standard_Real                 U2,
-                              const Handle(VrmlConverter_Drawer)& aDrawer,
+                              const double                 U1,
+                              const double                 U2,
+                              const occ::handle<VrmlConverter_Drawer>& aDrawer,
                               Standard_OStream&                   anOStream)
 {
 
-  Standard_Integer NbPoints = aDrawer->Discretisation();
-  Standard_Real    V1       = U1;
-  Standard_Real    V2       = U2;
+  int NbPoints = aDrawer->Discretisation();
+  double    V1       = U1;
+  double    V2       = U2;
 
   if (Precision::IsNegativeInfinite(V1))
     V1 = -aDrawer->MaximalParameterValue();
@@ -252,17 +252,17 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&              aCurve,
 //=================================================================================================
 
 void VrmlConverter_Curve::Add(const Adaptor3d_Curve& aCurve,
-                              const Standard_Real    U1,
-                              const Standard_Real    U2,
+                              const double    U1,
+                              const double    U2,
                               Standard_OStream&      anOStream,
-                              const Standard_Integer aNbPoints)
+                              const int aNbPoints)
 {
-  Handle(VrmlConverter_Drawer)     aDrawer = new VrmlConverter_Drawer;
-  Handle(VrmlConverter_LineAspect) la      = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_Drawer>     aDrawer = new VrmlConverter_Drawer;
+  occ::handle<VrmlConverter_LineAspect> la      = new VrmlConverter_LineAspect;
   aDrawer->SetLineAspect(la);
 
-  Standard_Real V1 = U1;
-  Standard_Real V2 = U2;
+  double V1 = U1;
+  double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
     V1 = -aDrawer->MaximalParameterValue();

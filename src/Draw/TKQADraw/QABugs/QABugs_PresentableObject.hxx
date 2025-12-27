@@ -18,8 +18,6 @@
 
 #include <AIS_InteractiveObject.hxx>
 
-DEFINE_STANDARD_HANDLE(QABugs_PresentableObject, AIS_InteractiveObject)
-
 class QABugs_PresentableObject : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(QABugs_PresentableObject, AIS_InteractiveObject)
@@ -28,12 +26,12 @@ public:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
 protected:
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 };
 
 #endif // _QABugs_PresentableObject_HeaderFile

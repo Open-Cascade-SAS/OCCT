@@ -34,7 +34,7 @@ Expr_NamedUnknown::Expr_NamedUnknown(const TCollection_AsciiString& name)
   myExpression.Nullify();
 }
 
-const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::AssignedExpression() const
+const occ::handle<Expr_GeneralExpression>& Expr_NamedUnknown::AssignedExpression() const
 {
   if (!IsAssigned())
   {
@@ -43,9 +43,9 @@ const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::AssignedExpression() co
   return myExpression;
 }
 
-void Expr_NamedUnknown::Assign(const Handle(Expr_GeneralExpression)& exp)
+void Expr_NamedUnknown::Assign(const occ::handle<Expr_GeneralExpression>& exp)
 {
-  Handle(Expr_NamedUnknown) me = this;
+  occ::handle<Expr_NamedUnknown> me = this;
   if (exp->Contains(me))
   {
     throw Expr_InvalidAssignment();
@@ -53,8 +53,8 @@ void Expr_NamedUnknown::Assign(const Handle(Expr_GeneralExpression)& exp)
   myExpression = exp;
 }
 
-const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::SubExpression(
-  const Standard_Integer I) const
+const occ::handle<Expr_GeneralExpression>& Expr_NamedUnknown::SubExpression(
+  const int I) const
 {
   if (!IsAssigned())
   {
@@ -67,11 +67,11 @@ const Handle(Expr_GeneralExpression)& Expr_NamedUnknown::SubExpression(
   return AssignedExpression();
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedUnknown::Simplified() const
+occ::handle<Expr_GeneralExpression> Expr_NamedUnknown::Simplified() const
 {
   if (!IsAssigned())
   {
-    Handle(Expr_NamedUnknown) me = this;
+    occ::handle<Expr_NamedUnknown> me = this;
     return me;
   }
   else
@@ -80,9 +80,9 @@ Handle(Expr_GeneralExpression) Expr_NamedUnknown::Simplified() const
   }
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedUnknown::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_NamedUnknown::Copy() const
 {
-  Handle(Expr_NamedUnknown) cop = new Expr_NamedUnknown(GetName());
+  occ::handle<Expr_NamedUnknown> cop = new Expr_NamedUnknown(GetName());
   if (IsAssigned())
   {
     cop->Assign(Expr::CopyShare(myExpression));
@@ -90,40 +90,40 @@ Handle(Expr_GeneralExpression) Expr_NamedUnknown::Copy() const
   return cop;
 }
 
-Standard_Boolean Expr_NamedUnknown::ContainsUnknowns() const
+bool Expr_NamedUnknown::ContainsUnknowns() const
 {
   if (IsAssigned())
   {
     if (myExpression->IsKind(STANDARD_TYPE(Expr_NamedUnknown)))
     {
-      return Standard_True;
+      return true;
     }
     return myExpression->ContainsUnknowns();
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 }
 
-Standard_Boolean Expr_NamedUnknown::Contains(const Handle(Expr_GeneralExpression)& exp) const
+bool Expr_NamedUnknown::Contains(const occ::handle<Expr_GeneralExpression>& exp) const
 {
   if (!IsAssigned())
   {
-    const Handle(Expr_NamedUnknown) expNamed = Handle(Expr_NamedUnknown)::DownCast(exp);
+    const occ::handle<Expr_NamedUnknown> expNamed = occ::down_cast<Expr_NamedUnknown>(exp);
     if (expNamed.IsNull() || expNamed->IsAssigned())
-      return Standard_False;
+      return false;
     // AGV 22.03.12: Comparison based on name coincidence
     return IsIdentical(expNamed);
   }
   if (myExpression == exp)
   {
-    return Standard_True;
+    return true;
   }
   return myExpression->Contains(exp);
 }
 
-Standard_Boolean Expr_NamedUnknown::IsLinear() const
+bool Expr_NamedUnknown::IsLinear() const
 {
   if (IsAssigned())
   {
@@ -131,14 +131,14 @@ Standard_Boolean Expr_NamedUnknown::IsLinear() const
   }
   else
   {
-    return Standard_True;
+    return true;
   }
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedUnknown::Derivative(
-  const Handle(Expr_NamedUnknown)& X) const
+occ::handle<Expr_GeneralExpression> Expr_NamedUnknown::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
-  Handle(Expr_NamedUnknown) me = this;
+  occ::handle<Expr_NamedUnknown> me = this;
   if (!me->IsIdentical(X))
   {
     if (IsAssigned())
@@ -156,14 +156,14 @@ Handle(Expr_GeneralExpression) Expr_NamedUnknown::Derivative(
   }
 }
 
-void Expr_NamedUnknown::Replace(const Handle(Expr_NamedUnknown)&      var,
-                                const Handle(Expr_GeneralExpression)& with)
+void Expr_NamedUnknown::Replace(const occ::handle<Expr_NamedUnknown>&      var,
+                                const occ::handle<Expr_GeneralExpression>& with)
 {
   if (IsAssigned())
   {
     if (myExpression == var)
     {
-      Handle(Expr_NamedUnknown) me = this;
+      occ::handle<Expr_NamedUnknown> me = this;
       if (with->Contains(me))
       {
         throw Expr_InvalidOperand();
@@ -180,23 +180,23 @@ void Expr_NamedUnknown::Replace(const Handle(Expr_NamedUnknown)&      var,
   }
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedUnknown::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_NamedUnknown::ShallowSimplified() const
 {
   if (IsAssigned())
   {
     return myExpression;
   }
-  Handle(Expr_NamedUnknown) me = this;
+  occ::handle<Expr_NamedUnknown> me = this;
   return me;
 }
 
-Standard_Real Expr_NamedUnknown::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                          const TColStd_Array1OfReal&      vals) const
+double Expr_NamedUnknown::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                          const NCollection_Array1<double>&      vals) const
 {
   if (!IsAssigned())
   {
-    Handle(Expr_NamedUnknown) me = this;
-    for (Standard_Integer i = vars.Lower(); i <= vars.Upper(); i++)
+    occ::handle<Expr_NamedUnknown> me = this;
+    for (int i = vars.Lower(); i <= vars.Upper(); i++)
     {
       if (me->GetName() == vars(i)->GetName())
       {
@@ -208,7 +208,7 @@ Standard_Real Expr_NamedUnknown::Evaluate(const Expr_Array1OfNamedUnknown& vars,
   return myExpression->Evaluate(vars, vals);
 }
 
-Standard_Integer Expr_NamedUnknown::NbSubExpressions() const
+int Expr_NamedUnknown::NbSubExpressions() const
 {
   if (IsAssigned())
   {

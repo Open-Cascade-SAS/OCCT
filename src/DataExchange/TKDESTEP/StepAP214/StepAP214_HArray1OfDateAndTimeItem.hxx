@@ -17,9 +17,10 @@
 #ifndef StepAP214_HArray1OfDateAndTimeItem_HeaderFile
 #define StepAP214_HArray1OfDateAndTimeItem_HeaderFile
 
-#include <StepAP214_Array1OfDateAndTimeItem.hxx>
+#include <StepAP214_DateAndTimeItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP214_HArray1OfDateAndTimeItem, StepAP214_Array1OfDateAndTimeItem)
+DEFINE_HARRAY1(StepAP214_HArray1OfDateAndTimeItem, NCollection_Array1<StepAP214_DateAndTimeItem>)
 
 #endif

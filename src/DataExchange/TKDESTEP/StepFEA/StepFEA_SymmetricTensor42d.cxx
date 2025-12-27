@@ -27,7 +27,7 @@ StepFEA_SymmetricTensor42d::StepFEA_SymmetricTensor42d() {}
 
 //=================================================================================================
 
-Standard_Integer StepFEA_SymmetricTensor42d::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepFEA_SymmetricTensor42d::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,10 +38,10 @@ Standard_Integer StepFEA_SymmetricTensor42d::CaseNum(const Handle(Standard_Trans
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d() const
+occ::handle<TColStd_HArray1OfReal> StepFEA_SymmetricTensor42d::AnisotropicSymmetricTensor42d() const
 {
-  // return Handle(TColStd_HArray1OfReal)::DownCast(Value());
-  Handle(StepData_SelectArrReal) SSR = Handle(StepData_SelectArrReal)::DownCast(Value());
+  // return occ::down_cast<TColStd_HArray1OfReal>(Value());
+  occ::handle<StepData_SelectArrReal> SSR = occ::down_cast<StepData_SelectArrReal>(Value());
   if (SSR.IsNull())
     return new TColStd_HArray1OfReal(1, 6);
   return SSR->ArrReal();

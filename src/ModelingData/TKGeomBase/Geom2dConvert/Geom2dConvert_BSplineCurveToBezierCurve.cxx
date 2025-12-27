@@ -19,22 +19,23 @@
 #include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve(
-  const Handle(Geom2d_BSplineCurve)& BasisCurve)
+  const occ::handle<Geom2d_BSplineCurve>& BasisCurve)
 {
-  myCurve = Handle(Geom2d_BSplineCurve)::DownCast(BasisCurve->Copy());
+  myCurve = occ::down_cast<Geom2d_BSplineCurve>(BasisCurve->Copy());
   // periodic curve can't be converted correctly by two main reasons:
   // last pole (equal to first one) is missing;
   // poles recomputation using default boor scheme is fails.
   if (myCurve->IsPeriodic())
     myCurve->SetNotPeriodic();
-  Standard_Real Uf = myCurve->FirstParameter();
-  Standard_Real Ul = myCurve->LastParameter();
+  double Uf = myCurve->FirstParameter();
+  double Ul = myCurve->LastParameter();
   myCurve->Segment(Uf, Ul);
   myCurve->IncreaseMultiplicity(myCurve->FirstUKnotIndex(),
                                 myCurve->LastUKnotIndex(),
@@ -44,19 +45,19 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
 //=================================================================================================
 
 Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve(
-  const Handle(Geom2d_BSplineCurve)& BasisCurve,
-  const Standard_Real                U1,
-  const Standard_Real                U2,
-  const Standard_Real                ParametricTolerance)
+  const occ::handle<Geom2d_BSplineCurve>& BasisCurve,
+  const double                U1,
+  const double                U2,
+  const double                ParametricTolerance)
 {
   if (U2 - U1 < ParametricTolerance)
     throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
 
-  Standard_Real Uf = U1, Ul = U2;
-  Standard_Real PTol = ParametricTolerance / 2;
+  double Uf = U1, Ul = U2;
+  double PTol = ParametricTolerance / 2;
 
-  Standard_Integer I1, I2;
-  myCurve = Handle(Geom2d_BSplineCurve)::DownCast(BasisCurve->Copy());
+  int I1, I2;
+  myCurve = occ::down_cast<Geom2d_BSplineCurve>(BasisCurve->Copy());
   if (myCurve->IsPeriodic())
     myCurve->SetNotPeriodic();
 
@@ -82,22 +83,22 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
 
 //=================================================================================================
 
-Handle(Geom2d_BezierCurve) Geom2dConvert_BSplineCurveToBezierCurve::Arc(
-  const Standard_Integer Index)
+occ::handle<Geom2d_BezierCurve> Geom2dConvert_BSplineCurveToBezierCurve::Arc(
+  const int Index)
 {
   if (Index < 1 || Index > myCurve->NbKnots() - 1)
   {
     throw Standard_OutOfRange("Geom2dConvert_BSplineCurveToBezierCurve");
   }
-  Standard_Integer Deg = myCurve->Degree();
+  int Deg = myCurve->Degree();
 
-  TColgp_Array1OfPnt2d Poles(1, Deg + 1);
+  NCollection_Array1<gp_Pnt2d> Poles(1, Deg + 1);
 
-  Handle(Geom2d_BezierCurve) C;
+  occ::handle<Geom2d_BezierCurve> C;
   if (myCurve->IsRational())
   {
-    TColStd_Array1OfReal Weights(1, Deg + 1);
-    for (Standard_Integer i = 1; i <= Deg + 1; i++)
+    NCollection_Array1<double> Weights(1, Deg + 1);
+    for (int i = 1; i <= Deg + 1; i++)
     {
       Poles(i)   = myCurve->Pole(i + Deg * (Index - 1));
       Weights(i) = myCurve->Weight(i + Deg * (Index - 1));
@@ -106,7 +107,7 @@ Handle(Geom2d_BezierCurve) Geom2dConvert_BSplineCurveToBezierCurve::Arc(
   }
   else
   {
-    for (Standard_Integer i = 1; i <= Deg + 1; i++)
+    for (int i = 1; i <= Deg + 1; i++)
     {
       Poles(i) = myCurve->Pole(i + Deg * (Index - 1));
     }
@@ -117,10 +118,10 @@ Handle(Geom2d_BezierCurve) Geom2dConvert_BSplineCurveToBezierCurve::Arc(
 
 //=================================================================================================
 
-void Geom2dConvert_BSplineCurveToBezierCurve::Arcs(TColGeom2d_Array1OfBezierCurve& Curves)
+void Geom2dConvert_BSplineCurveToBezierCurve::Arcs(NCollection_Array1<occ::handle<Geom2d_BezierCurve>>& Curves)
 {
-  Standard_Integer n = NbArcs();
-  for (Standard_Integer i = 1; i <= n; i++)
+  int n = NbArcs();
+  for (int i = 1; i <= n; i++)
   {
     Curves(i) = Arc(i);
   }
@@ -128,16 +129,16 @@ void Geom2dConvert_BSplineCurveToBezierCurve::Arcs(TColGeom2d_Array1OfBezierCurv
 
 //=================================================================================================
 
-void Geom2dConvert_BSplineCurveToBezierCurve::Knots(TColStd_Array1OfReal& TKnots) const
+void Geom2dConvert_BSplineCurveToBezierCurve::Knots(NCollection_Array1<double>& TKnots) const
 {
-  Standard_Integer ii, kk;
+  int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= myCurve->NbKnots(); ii++, kk++)
     TKnots(kk) = myCurve->Knot(ii);
 }
 
 //=================================================================================================
 
-Standard_Integer Geom2dConvert_BSplineCurveToBezierCurve::NbArcs() const
+int Geom2dConvert_BSplineCurveToBezierCurve::NbArcs() const
 {
   return (myCurve->NbKnots() - 1);
 }

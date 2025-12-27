@@ -21,7 +21,8 @@
 #include <Extrema_Curve2dTool.hxx>
 #include <Extrema_GFuncExtCC.hxx>
 #include <Extrema_POnCurv2d.hxx>
-#include <Extrema_SequenceOfPOnCurv2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
@@ -33,6 +34,6 @@ using Extrema_CCLocFOfLocECC2d = Extrema_GFuncExtCC<Adaptor2d_Curve2d,
                                                     Extrema_POnCurv2d,
                                                     gp_Pnt2d,
                                                     gp_Vec2d,
-                                                    Extrema_SequenceOfPOnCurv2d>;
+                                                    NCollection_Sequence<Extrema_POnCurv2d>>;
 
 #endif // _Extrema_CCLocFOfLocECC2d_HeaderFile

@@ -145,7 +145,7 @@ set(OCCT_OpenGl_FILES
   OpenGl_TileSampler.cxx
   OpenGl_TextureBuffer.cxx
   OpenGl_TextureBuffer.hxx
-  OpenGl_TextureBufferArb.hxx
+
   OpenGl_UniformBuffer.cxx
   OpenGl_UniformBuffer.hxx
   OpenGl_Vec.hxx

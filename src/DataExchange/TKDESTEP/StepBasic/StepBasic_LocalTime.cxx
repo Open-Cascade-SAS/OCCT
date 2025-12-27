@@ -19,12 +19,12 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LocalTime, Standard_Transient)
 
 StepBasic_LocalTime::StepBasic_LocalTime() {}
 
-void StepBasic_LocalTime::Init(const Standard_Integer aHourComponent,
-                               const Standard_Boolean hasAminuteComponent,
-                               const Standard_Integer aMinuteComponent,
-                               const Standard_Boolean hasAsecondComponent,
-                               const Standard_Real    aSecondComponent,
-                               const Handle(StepBasic_CoordinatedUniversalTimeOffset)& aZone)
+void StepBasic_LocalTime::Init(const int aHourComponent,
+                               const bool hasAminuteComponent,
+                               const int aMinuteComponent,
+                               const bool hasAsecondComponent,
+                               const double    aSecondComponent,
+                               const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone)
 {
   // --- classe own fields ---
   hourComponent      = aHourComponent;
@@ -35,64 +35,64 @@ void StepBasic_LocalTime::Init(const Standard_Integer aHourComponent,
   zone               = aZone;
 }
 
-void StepBasic_LocalTime::SetHourComponent(const Standard_Integer aHourComponent)
+void StepBasic_LocalTime::SetHourComponent(const int aHourComponent)
 {
   hourComponent = aHourComponent;
 }
 
-Standard_Integer StepBasic_LocalTime::HourComponent() const
+int StepBasic_LocalTime::HourComponent() const
 {
   return hourComponent;
 }
 
-void StepBasic_LocalTime::SetMinuteComponent(const Standard_Integer aMinuteComponent)
+void StepBasic_LocalTime::SetMinuteComponent(const int aMinuteComponent)
 {
   minuteComponent    = aMinuteComponent;
-  hasMinuteComponent = Standard_True;
+  hasMinuteComponent = true;
 }
 
 void StepBasic_LocalTime::UnSetMinuteComponent()
 {
-  hasMinuteComponent = Standard_False;
+  hasMinuteComponent = false;
 }
 
-Standard_Integer StepBasic_LocalTime::MinuteComponent() const
+int StepBasic_LocalTime::MinuteComponent() const
 {
   return minuteComponent;
 }
 
-Standard_Boolean StepBasic_LocalTime::HasMinuteComponent() const
+bool StepBasic_LocalTime::HasMinuteComponent() const
 {
   return hasMinuteComponent;
 }
 
-void StepBasic_LocalTime::SetSecondComponent(const Standard_Real aSecondComponent)
+void StepBasic_LocalTime::SetSecondComponent(const double aSecondComponent)
 {
   secondComponent    = aSecondComponent;
-  hasSecondComponent = Standard_True;
+  hasSecondComponent = true;
 }
 
 void StepBasic_LocalTime::UnSetSecondComponent()
 {
-  hasSecondComponent = Standard_False;
+  hasSecondComponent = false;
 }
 
-Standard_Real StepBasic_LocalTime::SecondComponent() const
+double StepBasic_LocalTime::SecondComponent() const
 {
   return secondComponent;
 }
 
-Standard_Boolean StepBasic_LocalTime::HasSecondComponent() const
+bool StepBasic_LocalTime::HasSecondComponent() const
 {
   return hasSecondComponent;
 }
 
-void StepBasic_LocalTime::SetZone(const Handle(StepBasic_CoordinatedUniversalTimeOffset)& aZone)
+void StepBasic_LocalTime::SetZone(const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone)
 {
   zone = aZone;
 }
 
-Handle(StepBasic_CoordinatedUniversalTimeOffset) StepBasic_LocalTime::Zone() const
+occ::handle<StepBasic_CoordinatedUniversalTimeOffset> StepBasic_LocalTime::Zone() const
 {
   return zone;
 }

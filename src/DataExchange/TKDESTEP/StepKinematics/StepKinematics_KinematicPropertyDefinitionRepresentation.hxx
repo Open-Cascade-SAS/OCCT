@@ -23,9 +23,6 @@
 #include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_Representation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicPropertyDefinitionRepresentation,
-                       StepRepr_PropertyDefinitionRepresentation)
-
 //! Representation of STEP entity KinematicPropertyDefinitionRepresentation
 class StepKinematics_KinematicPropertyDefinitionRepresentation
     : public StepRepr_PropertyDefinitionRepresentation

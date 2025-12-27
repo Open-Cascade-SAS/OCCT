@@ -45,40 +45,38 @@ public:
 
   //! Reads own parameters from file. <PR> gives access to them,
   //! <IR> detains parameter types and values
-  Standard_EXPORT void ReadOwnParams(const Handle(IGESGeom_SplineCurve)&    ent,
-                                     const Handle(IGESData_IGESReaderData)& IR,
+  Standard_EXPORT void ReadOwnParams(const occ::handle<IGESGeom_SplineCurve>&    ent,
+                                     const occ::handle<IGESData_IGESReaderData>& IR,
                                      IGESData_ParamReader&                  PR) const;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const Handle(IGESGeom_SplineCurve)& ent,
+  Standard_EXPORT void WriteOwnParams(const occ::handle<IGESGeom_SplineCurve>& ent,
                                       IGESData_IGESWriter&                IW) const;
 
   //! Lists the Entities shared by a SplineCurve <ent>, from
   //! its specific (own) parameters
-  Standard_EXPORT void OwnShared(const Handle(IGESGeom_SplineCurve)& ent,
+  Standard_EXPORT void OwnShared(const occ::handle<IGESGeom_SplineCurve>& ent,
                                  Interface_EntityIterator&           iter) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const Handle(IGESGeom_SplineCurve)& ent) const;
+  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESGeom_SplineCurve>& ent) const;
 
   //! Performs Specific Semantic Check
-  Standard_EXPORT void OwnCheck(const Handle(IGESGeom_SplineCurve)& ent,
+  Standard_EXPORT void OwnCheck(const occ::handle<IGESGeom_SplineCurve>& ent,
                                 const Interface_ShareTool&          shares,
-                                Handle(Interface_Check)&            ach) const;
+                                occ::handle<Interface_Check>&            ach) const;
 
   //! Copies Specific Parameters
-  Standard_EXPORT void OwnCopy(const Handle(IGESGeom_SplineCurve)& entfrom,
-                               const Handle(IGESGeom_SplineCurve)& entto,
+  Standard_EXPORT void OwnCopy(const occ::handle<IGESGeom_SplineCurve>& entfrom,
+                               const occ::handle<IGESGeom_SplineCurve>& entto,
                                Interface_CopyTool&                 TC) const;
 
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump(const Handle(IGESGeom_SplineCurve)& ent,
+  Standard_EXPORT void OwnDump(const occ::handle<IGESGeom_SplineCurve>& ent,
                                const IGESData_IGESDumper&          dumper,
                                Standard_OStream&                   S,
-                               const Standard_Integer              own) const;
+                               const int              own) const;
 
-protected:
-private:
 };
 
 #endif // _IGESGeom_ToolSplineCurve_HeaderFile

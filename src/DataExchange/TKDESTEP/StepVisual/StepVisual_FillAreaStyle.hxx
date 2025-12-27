@@ -25,9 +25,6 @@
 class TCollection_HAsciiString;
 class StepVisual_FillStyleSelect;
 
-class StepVisual_FillAreaStyle;
-DEFINE_STANDARD_HANDLE(StepVisual_FillAreaStyle, Standard_Transient)
-
 class StepVisual_FillAreaStyle : public Standard_Transient
 {
 
@@ -35,28 +32,27 @@ public:
   //! Returns a FillAreaStyle
   Standard_EXPORT StepVisual_FillAreaStyle();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&            aName,
-                            const Handle(StepVisual_HArray1OfFillStyleSelect)& aFillStyles);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
+                            const occ::handle<StepVisual_HArray1OfFillStyleSelect>& aFillStyles);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   Standard_EXPORT void SetFillStyles(
-    const Handle(StepVisual_HArray1OfFillStyleSelect)& aFillStyles);
+    const occ::handle<StepVisual_HArray1OfFillStyleSelect>& aFillStyles);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfFillStyleSelect) FillStyles() const;
+  Standard_EXPORT occ::handle<StepVisual_HArray1OfFillStyleSelect> FillStyles() const;
 
-  Standard_EXPORT StepVisual_FillStyleSelect FillStylesValue(const Standard_Integer num) const;
+  Standard_EXPORT StepVisual_FillStyleSelect FillStylesValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbFillStyles() const;
+  Standard_EXPORT int NbFillStyles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_FillAreaStyle, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)            name;
-  Handle(StepVisual_HArray1OfFillStyleSelect) fillStyles;
+  occ::handle<TCollection_HAsciiString>            name;
+  occ::handle<StepVisual_HArray1OfFillStyleSelect> fillStyles;
 };
 
 #endif // _StepVisual_FillAreaStyle_HeaderFile

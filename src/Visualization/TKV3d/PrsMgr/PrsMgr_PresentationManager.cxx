@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_PresentationManager, Standard_Transient)
 //=================================================================================================
 
 PrsMgr_PresentationManager::PrsMgr_PresentationManager(
-  const Handle(Graphic3d_StructureManager)& theStructureManager)
+  const occ::handle<Graphic3d_StructureManager>& theStructureManager)
     : myStructureManager(theStructureManager),
       myImmediateModeOn(0)
 {
@@ -36,12 +36,12 @@ PrsMgr_PresentationManager::PrsMgr_PresentationManager(
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Display(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                         const Standard_Integer                  theMode)
+void PrsMgr_PresentationManager::Display(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                         const int                  theMode)
 {
   if (thePrsObj->HasOwnPresentations())
   {
-    Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode, Standard_True);
+    occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode, true);
     if (aPrs->MustBeUpdated())
     {
       Update(thePrsObj, theMode);
@@ -58,15 +58,15 @@ void PrsMgr_PresentationManager::Display(const Handle(PrsMgr_PresentableObject)&
   }
   else
   {
-    thePrsObj->Compute(this, Handle(Prs3d_Presentation)(), theMode);
+    thePrsObj->Compute(this, occ::handle<Prs3d_Presentation>(), theMode);
   }
 
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
-      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      const occ::handle<PrsMgr_PresentableObject>& aChild = anIter.Value();
       if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
       {
         Display(anIter.Value(), theMode);
@@ -77,29 +77,29 @@ void PrsMgr_PresentationManager::Display(const Handle(PrsMgr_PresentableObject)&
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Erase(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                       const Standard_Integer                  theMode)
+void PrsMgr_PresentationManager::Erase(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                       const int                  theMode)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       Erase(anIter.Value(), theMode);
     }
   }
 
-  PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator aPrsIter(aPrsList); aPrsIter.More();)
+  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = thePrsObj->Presentations();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More();)
   {
-    const Handle(PrsMgr_Presentation)& aPrs = aPrsIter.Value();
+    const occ::handle<PrsMgr_Presentation>& aPrs = aPrsIter.Value();
     if (aPrs.IsNull())
     {
       aPrsIter.Next();
       continue;
     }
 
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    const occ::handle<PrsMgr_PresentationManager>& aPrsMgr = aPrs->PresentationManager();
     if ((theMode == aPrs->Mode() || theMode == -1) && (this == aPrsMgr))
     {
       aPrs->Erase();
@@ -120,19 +120,19 @@ void PrsMgr_PresentationManager::Erase(const Handle(PrsMgr_PresentableObject)& t
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                       const Standard_Integer                  theMode)
+void PrsMgr_PresentationManager::Clear(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                       const int                  theMode)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       Clear(anIter.Value(), theMode);
     }
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  const occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   if (!aPrs.IsNull())
   {
     aPrs->Clear();
@@ -141,16 +141,16 @@ void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& t
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::SetVisibility(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                               const Standard_Integer                  theMode,
-                                               const Standard_Boolean                  theValue)
+void PrsMgr_PresentationManager::SetVisibility(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                               const int                  theMode,
+                                               const bool                  theValue)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
-      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      const occ::handle<PrsMgr_PresentableObject>& aChild = anIter.Value();
       if (!theValue || aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
       {
         SetVisibility(anIter.Value(), theMode, theValue);
@@ -162,7 +162,7 @@ void PrsMgr_PresentationManager::SetVisibility(const Handle(PrsMgr_PresentableOb
     return;
   }
 
-  Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   if (!aPrs.IsNull())
   {
     aPrs->SetVisible(theValue);
@@ -171,22 +171,22 @@ void PrsMgr_PresentationManager::SetVisibility(const Handle(PrsMgr_PresentableOb
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Unhighlight(const Handle(PrsMgr_PresentableObject)& thePrsObj)
+void PrsMgr_PresentationManager::Unhighlight(const occ::handle<PrsMgr_PresentableObject>& thePrsObj)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       Unhighlight(anIter.Value());
     }
   }
 
-  const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
+  const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = thePrsObj->Presentations();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)&        aPrs    = aPrsIter.Value();
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    const occ::handle<PrsMgr_Presentation>&        aPrs    = aPrsIter.Value();
+    const occ::handle<PrsMgr_PresentationManager>& aPrsMgr = aPrs->PresentationManager();
     if (this == aPrsMgr && aPrs->IsHighlighted())
     {
       aPrs->Unhighlight();
@@ -197,20 +197,20 @@ void PrsMgr_PresentationManager::Unhighlight(const Handle(PrsMgr_PresentableObje
 //=================================================================================================
 
 void PrsMgr_PresentationManager::SetDisplayPriority(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode,
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode,
   const Graphic3d_DisplayPriority         theNewPrior) const
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       SetDisplayPriority(anIter.Value(), theMode, theNewPrior);
     }
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  const occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   if (!aPrs.IsNull())
   {
     aPrs->SetDisplayPriority(theNewPrior);
@@ -220,12 +220,12 @@ void PrsMgr_PresentationManager::SetDisplayPriority(
 //=================================================================================================
 
 Graphic3d_DisplayPriority PrsMgr_PresentationManager::DisplayPriority(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode) const
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode) const
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       Graphic3d_DisplayPriority aPriority = DisplayPriority(anIter.Value(), theMode);
@@ -236,71 +236,71 @@ Graphic3d_DisplayPriority PrsMgr_PresentationManager::DisplayPriority(
     }
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  const occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   return !aPrs.IsNull() ? aPrs->DisplayPriority() : Graphic3d_DisplayPriority_INVALID;
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsMgr_PresentationManager::IsDisplayed(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode) const
+bool PrsMgr_PresentationManager::IsDisplayed(
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode) const
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       if (IsDisplayed(anIter.Value(), theMode))
       {
-        return Standard_True;
+        return true;
       }
     }
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  const occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   return !aPrs.IsNull() && aPrs->IsDisplayed();
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsMgr_PresentationManager::IsHighlighted(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode) const
+bool PrsMgr_PresentationManager::IsHighlighted(
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode) const
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       if (IsHighlighted(anIter.Value(), theMode))
       {
-        return Standard_True;
+        return true;
       }
     }
   }
 
-  const Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  const occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   return !aPrs.IsNull() && aPrs->IsHighlighted();
 }
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Update(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                        const Standard_Integer                  theMode) const
+void PrsMgr_PresentationManager::Update(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                        const int                  theMode) const
 {
-  for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
        anIter.Next())
   {
     Update(anIter.Value(), theMode);
   }
 
-  Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode);
+  occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode);
   if (!aPrs.IsNull())
   {
     aPrs->Clear();
     thePrsObj->Fill(this, aPrs, theMode);
-    aPrs->SetUpdateStatus(Standard_False);
+    aPrs->SetUpdateStatus(false);
   }
 }
 
@@ -320,12 +320,12 @@ void PrsMgr_PresentationManager::BeginImmediateDraw()
 
 void PrsMgr_PresentationManager::ClearImmediateDraw()
 {
-  for (PrsMgr_ListOfPresentations::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
   {
     anIter.Value()->Erase();
   }
 
-  for (PrsMgr_ListOfPresentations::Iterator anIter(myViewDependentImmediateList); anIter.More();
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myViewDependentImmediateList); anIter.More();
        anIter.Next())
   {
     anIter.Value()->Erase();
@@ -340,22 +340,22 @@ void PrsMgr_PresentationManager::ClearImmediateDraw()
 // purpose  : Handles the structures from myImmediateList and its visibility
 //            in all views of the viewer given by setting proper affinity
 // =======================================================================
-void PrsMgr_PresentationManager::displayImmediate(const Handle(V3d_Viewer)& theViewer)
+void PrsMgr_PresentationManager::displayImmediate(const occ::handle<V3d_Viewer>& theViewer)
 {
-  for (V3d_ListOfViewIterator anActiveViewIter(theViewer->ActiveViewIterator());
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(theViewer->ActiveViewIterator());
        anActiveViewIter.More();
        anActiveViewIter.Next())
   {
-    const Handle(Graphic3d_CView)& aView = anActiveViewIter.Value()->View();
-    for (PrsMgr_ListOfPresentations::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
+    const occ::handle<Graphic3d_CView>& aView = anActiveViewIter.Value()->View();
+    for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
     {
-      const Handle(Prs3d_Presentation)& aPrs = anIter.Value();
+      const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
       if (aPrs.IsNull())
         continue;
 
-      Handle(Graphic3d_Structure)      aViewDepPrs;
-      Handle(Prs3d_PresentationShadow) aShadowPrs =
-        Handle(Prs3d_PresentationShadow)::DownCast(aPrs);
+      occ::handle<Graphic3d_Structure>      aViewDepPrs;
+      occ::handle<Prs3d_PresentationShadow> aShadowPrs =
+        occ::down_cast<Prs3d_PresentationShadow>(aPrs);
       if (!aShadowPrs.IsNull() && aView->IsComputed(aShadowPrs->ParentId(), aViewDepPrs))
       {
         const Graphic3d_ZLayerId aZLayer = aShadowPrs->GetZLayer();
@@ -380,13 +380,13 @@ void PrsMgr_PresentationManager::displayImmediate(const Handle(V3d_Viewer)& theV
       if (!aShadowPrs->IsDisplayed())
       {
         aShadowPrs->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
-        aShadowPrs->CStructure()->ViewAffinity->SetVisible(Standard_False);
+        aShadowPrs->CStructure()->ViewAffinity->SetVisible(false);
         aShadowPrs->Display();
       }
 
-      Standard_Integer aViewId         = aView->Identification();
+      int aViewId         = aView->Identification();
       bool             isParentVisible = aShadowPrs->ParentAffinity().IsNull()
-                                           ? Standard_True
+                                           ? true
                                            : aShadowPrs->ParentAffinity()->IsVisible(aViewId);
       aShadowPrs->CStructure()->ViewAffinity->SetVisible(aViewId, isParentVisible);
     }
@@ -395,7 +395,7 @@ void PrsMgr_PresentationManager::displayImmediate(const Handle(V3d_Viewer)& theV
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::EndImmediateDraw(const Handle(V3d_Viewer)& theViewer)
+void PrsMgr_PresentationManager::EndImmediateDraw(const occ::handle<V3d_Viewer>& theViewer)
 {
   if (--myImmediateModeOn > 0)
   {
@@ -410,17 +410,17 @@ void PrsMgr_PresentationManager::EndImmediateDraw(const Handle(V3d_Viewer)& theV
 // purpose  : Clears all immediate structures and redisplays with proper
 //            affinity
 //=======================================================================
-void PrsMgr_PresentationManager::RedrawImmediate(const Handle(V3d_Viewer)& theViewer)
+void PrsMgr_PresentationManager::RedrawImmediate(const occ::handle<V3d_Viewer>& theViewer)
 {
   if (myImmediateList.IsEmpty())
     return;
 
   // Clear previously displayed structures
-  for (PrsMgr_ListOfPresentations::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
   {
     anIter.Value()->Erase();
   }
-  for (PrsMgr_ListOfPresentations::Iterator anIter(myViewDependentImmediateList); anIter.More();
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myViewDependentImmediateList); anIter.More();
        anIter.Next())
   {
     anIter.Value()->Erase();
@@ -432,14 +432,14 @@ void PrsMgr_PresentationManager::RedrawImmediate(const Handle(V3d_Viewer)& theVi
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::AddToImmediateList(const Handle(Prs3d_Presentation)& thePrs)
+void PrsMgr_PresentationManager::AddToImmediateList(const occ::handle<Prs3d_Presentation>& thePrs)
 {
   if (myImmediateModeOn < 1)
   {
     return;
   }
 
-  for (PrsMgr_ListOfPresentations::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(myImmediateList); anIter.More(); anIter.Next())
   {
     if (anIter.Value() == thePrs)
     {
@@ -452,39 +452,39 @@ void PrsMgr_PresentationManager::AddToImmediateList(const Handle(Prs3d_Presentat
 
 //=================================================================================================
 
-Standard_Boolean PrsMgr_PresentationManager::HasPresentation(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode) const
+bool PrsMgr_PresentationManager::HasPresentation(
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode) const
 {
   if (!thePrsObj->HasOwnPresentations())
-    return Standard_False;
+    return false;
 
-  const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
+  const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = thePrsObj->Presentations();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)&        aPrs    = aPrsIter.Value();
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    const occ::handle<PrsMgr_Presentation>&        aPrs    = aPrsIter.Value();
+    const occ::handle<PrsMgr_PresentationManager>& aPrsMgr = aPrs->PresentationManager();
     if (theMode == aPrs->Mode() && this == aPrsMgr)
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode,
-  const Standard_Boolean                  theToCreate,
-  const Handle(PrsMgr_PresentableObject)& theSelObj) const
+occ::handle<PrsMgr_Presentation> PrsMgr_PresentationManager::Presentation(
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode,
+  const bool                  theToCreate,
+  const occ::handle<PrsMgr_PresentableObject>& theSelObj) const
 {
-  const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
+  const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = thePrsObj->Presentations();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)&        aPrs    = aPrsIter.Value();
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    const occ::handle<PrsMgr_Presentation>&        aPrs    = aPrsIter.Value();
+    const occ::handle<PrsMgr_PresentationManager>& aPrsMgr = aPrs->PresentationManager();
     if (theMode == aPrs->Mode() && this == aPrsMgr)
     {
       return aPrs;
@@ -493,10 +493,10 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
 
   if (!theToCreate)
   {
-    return Handle(PrsMgr_Presentation)();
+    return occ::handle<PrsMgr_Presentation>();
   }
 
-  Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation(this, thePrsObj, theMode);
+  occ::handle<PrsMgr_Presentation> aPrs = new PrsMgr_Presentation(this, thePrsObj, theMode);
   aPrs->SetZLayer(thePrsObj->ZLayer());
   aPrs->CStructure()->ViewAffinity =
     !theSelObj.IsNull() ? theSelObj->ViewAffinity() : thePrsObj->ViewAffinity();
@@ -504,38 +504,38 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
   thePrsObj->Fill(this, aPrs, theMode);
 
   // set layer index accordingly to object's presentations
-  aPrs->SetUpdateStatus(Standard_False);
+  aPrs->SetUpdateStatus(false);
   return aPrs;
 }
 
 //=================================================================================================
 
-Standard_Boolean PrsMgr_PresentationManager::RemovePresentation(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj,
-  const Standard_Integer                  theMode)
+bool PrsMgr_PresentationManager::RemovePresentation(
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+  const int                  theMode)
 {
-  PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
-  for (PrsMgr_Presentations::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
+  NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = thePrsObj->Presentations();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
   {
-    const Handle(PrsMgr_Presentation)&        aPrs    = aPrsIter.Value();
-    const Handle(PrsMgr_PresentationManager)& aPrsMgr = aPrs->PresentationManager();
+    const occ::handle<PrsMgr_Presentation>&        aPrs    = aPrsIter.Value();
+    const occ::handle<PrsMgr_PresentationManager>& aPrsMgr = aPrs->PresentationManager();
     if (theMode == aPrs->Mode() && this == aPrsMgr)
     {
       aPrsList.Remove(aPrsIter);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::SetZLayer(const Handle(PrsMgr_PresentableObject)& thePrsObj,
+void PrsMgr_PresentationManager::SetZLayer(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
                                            const Graphic3d_ZLayerId                theLayerId)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
       SetZLayer(anIter.Value(), theLayerId);
@@ -553,46 +553,46 @@ void PrsMgr_PresentationManager::SetZLayer(const Handle(PrsMgr_PresentableObject
 //=================================================================================================
 
 Graphic3d_ZLayerId PrsMgr_PresentationManager::GetZLayer(
-  const Handle(PrsMgr_PresentableObject)& thePrsObj) const
+  const occ::handle<PrsMgr_PresentableObject>& thePrsObj) const
 {
   return thePrsObj->ZLayer();
 }
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Connect(const Handle(PrsMgr_PresentableObject)& thePrsObject,
-                                         const Handle(PrsMgr_PresentableObject)& theOtherObject,
-                                         const Standard_Integer                  theMode,
-                                         const Standard_Integer                  theOtherMode)
+void PrsMgr_PresentationManager::Connect(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
+                                         const occ::handle<PrsMgr_PresentableObject>& theOtherObject,
+                                         const int                  theMode,
+                                         const int                  theOtherMode)
 {
-  Handle(PrsMgr_Presentation) aPrs      = Presentation(thePrsObject, theMode, Standard_True);
-  Handle(PrsMgr_Presentation) aPrsOther = Presentation(theOtherObject, theOtherMode, Standard_True);
+  occ::handle<PrsMgr_Presentation> aPrs      = Presentation(thePrsObject, theMode, true);
+  occ::handle<PrsMgr_Presentation> aPrsOther = Presentation(theOtherObject, theOtherMode, true);
   aPrs->Connect(aPrsOther.get(), Graphic3d_TOC_DESCENDANT);
 }
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Transform(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                           const Handle(TopLoc_Datum3D)& theTransformation,
-                                           const Standard_Integer        theMode)
+void PrsMgr_PresentationManager::Transform(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                           const occ::handle<TopLoc_Datum3D>& theTransformation,
+                                           const int        theMode)
 {
   Presentation(thePrsObj, theMode)->SetTransformation(theTransformation);
 }
 
 //=================================================================================================
 
-void PrsMgr_PresentationManager::Color(const Handle(PrsMgr_PresentableObject)& thePrsObj,
-                                       const Handle(Prs3d_Drawer)&             theStyle,
-                                       const Standard_Integer                  theMode,
-                                       const Handle(PrsMgr_PresentableObject)& theSelObj,
-                                       const Standard_Integer theImmediateStructLayerId)
+void PrsMgr_PresentationManager::Color(const occ::handle<PrsMgr_PresentableObject>& thePrsObj,
+                                       const occ::handle<Prs3d_Drawer>&             theStyle,
+                                       const int                  theMode,
+                                       const occ::handle<PrsMgr_PresentableObject>& theSelObj,
+                                       const int theImmediateStructLayerId)
 {
   if (thePrsObj->ToPropagateVisualState())
   {
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(thePrsObj->Children()); anIter.More();
          anIter.Next())
     {
-      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      const occ::handle<PrsMgr_PresentableObject>& aChild = anIter.Value();
       if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
       {
         Color(aChild, theStyle, theMode, NULL, theImmediateStructLayerId);
@@ -604,7 +604,7 @@ void PrsMgr_PresentationManager::Color(const Handle(PrsMgr_PresentableObject)& t
     return;
   }
 
-  Handle(PrsMgr_Presentation) aPrs = Presentation(thePrsObj, theMode, Standard_True, theSelObj);
+  occ::handle<PrsMgr_Presentation> aPrs = Presentation(thePrsObj, theMode, true, theSelObj);
   if (aPrs->MustBeUpdated())
   {
     Update(thePrsObj, theMode);
@@ -612,7 +612,7 @@ void PrsMgr_PresentationManager::Color(const Handle(PrsMgr_PresentableObject)& t
 
   if (myImmediateModeOn > 0)
   {
-    Handle(Prs3d_PresentationShadow) aShadow =
+    occ::handle<Prs3d_PresentationShadow> aShadow =
       new Prs3d_PresentationShadow(myStructureManager, aPrs);
     aShadow->SetZLayer(theImmediateStructLayerId);
     aShadow->SetClipPlanes(aPrs->ClipPlanes());
@@ -631,17 +631,17 @@ namespace
 //! Internal function that scans thePrsList for shadow presentations
 //! and applies transformation theTrsf to them in case if parent ID
 //! of shadow presentation is equal to theRefId
-static void updatePrsTransformation(const PrsMgr_ListOfPresentations& thePrsList,
-                                    const Standard_Integer            theRefId,
-                                    const Handle(TopLoc_Datum3D)&     theTrsf)
+static void updatePrsTransformation(const NCollection_List<occ::handle<Prs3d_Presentation>>& thePrsList,
+                                    const int            theRefId,
+                                    const occ::handle<TopLoc_Datum3D>&     theTrsf)
 {
-  for (PrsMgr_ListOfPresentations::Iterator anIter(thePrsList); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Prs3d_Presentation>>::Iterator anIter(thePrsList); anIter.More(); anIter.Next())
   {
-    const Handle(Prs3d_Presentation)& aPrs = anIter.Value();
+    const occ::handle<Prs3d_Presentation>& aPrs = anIter.Value();
     if (aPrs.IsNull())
       continue;
 
-    Handle(Prs3d_PresentationShadow) aShadowPrs = Handle(Prs3d_PresentationShadow)::DownCast(aPrs);
+    occ::handle<Prs3d_PresentationShadow> aShadowPrs = occ::down_cast<Prs3d_PresentationShadow>(aPrs);
     if (aShadowPrs.IsNull() || aShadowPrs->ParentId() != theRefId)
       continue;
 
@@ -653,33 +653,33 @@ static void updatePrsTransformation(const PrsMgr_ListOfPresentations& thePrsList
 //=================================================================================================
 
 void PrsMgr_PresentationManager::UpdateHighlightTrsf(
-  const Handle(V3d_Viewer)&               theViewer,
-  const Handle(PrsMgr_PresentableObject)& theObj,
-  const Standard_Integer                  theMode,
-  const Handle(PrsMgr_PresentableObject)& theSelObj)
+  const occ::handle<V3d_Viewer>&               theViewer,
+  const occ::handle<PrsMgr_PresentableObject>& theObj,
+  const int                  theMode,
+  const occ::handle<PrsMgr_PresentableObject>& theSelObj)
 {
   if (theObj.IsNull())
     return;
 
-  Handle(PrsMgr_Presentation) aPrs =
-    Presentation(!theSelObj.IsNull() ? theSelObj : theObj, theMode, Standard_False);
+  occ::handle<PrsMgr_Presentation> aPrs =
+    Presentation(!theSelObj.IsNull() ? theSelObj : theObj, theMode, false);
   if (aPrs.IsNull())
   {
     return;
   }
 
-  Handle(TopLoc_Datum3D) aTrsf     = theObj->LocalTransformationGeom();
-  const Standard_Integer aParentId = aPrs->CStructure()->Identification();
+  occ::handle<TopLoc_Datum3D> aTrsf     = theObj->LocalTransformationGeom();
+  const int aParentId = aPrs->CStructure()->Identification();
   updatePrsTransformation(myImmediateList, aParentId, aTrsf);
 
   if (!myViewDependentImmediateList.IsEmpty())
   {
-    for (V3d_ListOfViewIterator anActiveViewIter(theViewer->ActiveViewIterator());
+    for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(theViewer->ActiveViewIterator());
          anActiveViewIter.More();
          anActiveViewIter.Next())
     {
-      const Handle(Graphic3d_CView)& aView = anActiveViewIter.Value()->View();
-      Handle(Graphic3d_Structure)    aViewDepParentPrs;
+      const occ::handle<Graphic3d_CView>& aView = anActiveViewIter.Value()->View();
+      occ::handle<Graphic3d_Structure>    aViewDepParentPrs;
       if (aView->IsComputed(aParentId, aViewDepParentPrs))
       {
         updatePrsTransformation(myViewDependentImmediateList,

@@ -57,7 +57,7 @@ BRepMesh_MeshAlgoFactory::~BRepMesh_MeshAlgoFactory() {}
 
 //=================================================================================================
 
-Handle(IMeshTools_MeshAlgo) BRepMesh_MeshAlgoFactory::GetAlgo(
+occ::handle<IMeshTools_MeshAlgo> BRepMesh_MeshAlgoFactory::GetAlgo(
   const GeomAbs_SurfaceType    theSurfaceType,
   const IMeshTools_Parameters& theParameters) const
 {

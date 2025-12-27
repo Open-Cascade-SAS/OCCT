@@ -19,13 +19,13 @@
 //=================================================================================================
 
 inline TopOpeBRep_LineInter::TopOpeBRep_LineInter()
-    : myOK(Standard_True),
+    : myOK(true),
       myIndex(0),
       myNbVPoint(0),
-      myIsVClosed(Standard_False),
-      myHasVPonR(Standard_False),
-      myINL(Standard_False),
-      myVPBDefined(Standard_False),
+      myIsVClosed(false),
+      myHasVPonR(false),
+      myINL(false),
+      myVPBDefined(false),
       myVPF(0),
       myVPL(0),
       myVPN(0),
@@ -53,28 +53,28 @@ inline TopOpeBRep_TypeLineCurve TopOpeBRep_LineInter::TypeLineCurve() const
 
 //=================================================================================================
 
-inline Standard_Integer TopOpeBRep_LineInter::NbVPoint() const
+inline int TopOpeBRep_LineInter::NbVPoint() const
 {
   return myNbVPoint;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_LineInter::INL() const
+inline bool TopOpeBRep_LineInter::INL() const
 {
   return myINL;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_LineInter::IsVClosed() const
+inline bool TopOpeBRep_LineInter::IsVClosed() const
 {
   return myIsVClosed;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_LineInter::HasVPonR() const
+inline bool TopOpeBRep_LineInter::HasVPonR() const
 {
   return myHasVPonR;
 }
@@ -109,42 +109,42 @@ inline IntSurf_Situation TopOpeBRep_LineInter::SituationS2() const
 
 //=================================================================================================
 
-inline const Handle(IntPatch_WLine)& TopOpeBRep_LineInter::LineW() const
+inline const occ::handle<IntPatch_WLine>& TopOpeBRep_LineInter::LineW() const
 {
   return myILW;
 }
 
 //=================================================================================================
 
-inline const Handle(IntPatch_GLine)& TopOpeBRep_LineInter::LineG() const
+inline const occ::handle<IntPatch_GLine>& TopOpeBRep_LineInter::LineG() const
 {
   return myILG;
 }
 
 //=================================================================================================
 
-inline const Handle(IntPatch_RLine)& TopOpeBRep_LineInter::LineR() const
+inline const occ::handle<IntPatch_RLine>& TopOpeBRep_LineInter::LineR() const
 {
   return myILR;
 }
 
 //=================================================================================================
 
-inline void TopOpeBRep_LineInter::Index(const Standard_Integer I)
+inline void TopOpeBRep_LineInter::Index(const int I)
 {
   myIndex = I;
 }
 
 //=================================================================================================
 
-inline Standard_Integer TopOpeBRep_LineInter::Index() const
+inline int TopOpeBRep_LineInter::Index() const
 {
   return myIndex;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TopOpeBRep_LineInter::OK() const
+inline bool TopOpeBRep_LineInter::OK() const
 {
   return myOK;
 }

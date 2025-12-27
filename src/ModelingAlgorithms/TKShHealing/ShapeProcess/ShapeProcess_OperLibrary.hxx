@@ -20,7 +20,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class TopoDS_Shape;
 class ShapeProcess_ShapeContext;
 class BRepTools_Modification;
@@ -58,14 +60,12 @@ public:
   //! can be modified during the modification process.
   Standard_EXPORT static TopoDS_Shape ApplyModifier(
     const TopoDS_Shape&                       S,
-    const Handle(ShapeProcess_ShapeContext)&  context,
-    const Handle(BRepTools_Modification)&     M,
-    TopTools_DataMapOfShapeShape&             map,
-    const Handle(ShapeExtend_MsgRegistrator)& msg             = 0,
-    Standard_Boolean                          theMutableInput = Standard_False);
+    const occ::handle<ShapeProcess_ShapeContext>&  context,
+    const occ::handle<BRepTools_Modification>&     M,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
+    const occ::handle<ShapeExtend_MsgRegistrator>& msg             = 0,
+    bool                          theMutableInput = false);
 
-protected:
-private:
 };
 
 #endif // _ShapeProcess_OperLibrary_HeaderFile

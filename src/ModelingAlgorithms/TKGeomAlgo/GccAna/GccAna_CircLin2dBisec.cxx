@@ -47,7 +47,7 @@ GccAna_CircLin2dBisec::GccAna_CircLin2dBisec(const gp_Circ2d& Circle, const gp_L
   //=========================================================================
 
   NbrSol   = 2;
-  WellDone = Standard_True;
+  WellDone = true;
 }
 
 //=========================================================================
@@ -62,7 +62,7 @@ GccAna_CircLin2dBisec::GccAna_CircLin2dBisec(const gp_Circ2d& Circle, const gp_L
 //  two parabolas (biscirlin1, biscirlin1).                               +
 //=========================================================================
 
-Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer Index) const
+occ::handle<GccInt_Bisec> GccAna_CircLin2dBisec::ThisSolution(const int Index) const
 {
 
   if (!WellDone)
@@ -71,15 +71,15 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer 
   if ((Index <= 0) || (Index > NbrSol))
     throw Standard_OutOfRange();
 
-  Handle(GccInt_Bisec) bissol;
-  Standard_Real        xdir    = line.Direction().X();
-  Standard_Real        ydir    = line.Direction().Y();
-  Standard_Real        xloc    = line.Location().X();
-  Standard_Real        yloc    = line.Location().Y();
-  Standard_Real        xcencir = circle.Location().X();
-  Standard_Real        ycencir = circle.Location().Y();
-  Standard_Real        R1      = circle.Radius();
-  Standard_Real        dist    = line.Distance(circle.Location());
+  occ::handle<GccInt_Bisec> bissol;
+  double        xdir    = line.Direction().X();
+  double        ydir    = line.Direction().Y();
+  double        xloc    = line.Location().X();
+  double        yloc    = line.Location().Y();
+  double        xcencir = circle.Location().X();
+  double        ycencir = circle.Location().Y();
+  double        R1      = circle.Radius();
+  double        dist    = line.Distance(circle.Location());
   if ((std::abs(line.Distance(circle.Location()) - circle.Radius()) <= gp::Resolution())
       && (Index == 1))
   {
@@ -89,7 +89,7 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer 
   }
   else
   {
-    Standard_Integer signe;
+    int signe;
     if ((-ydir * (xcencir - xloc) + xdir * (ycencir - yloc)) > 0.0)
     {
       signe = 1;
@@ -145,12 +145,12 @@ Handle(GccInt_Bisec) GccAna_CircLin2dBisec::ThisSolution(const Standard_Integer 
 
 //=========================================================================
 
-Standard_Boolean GccAna_CircLin2dBisec::IsDone() const
+bool GccAna_CircLin2dBisec::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_CircLin2dBisec::NbSolutions() const
+int GccAna_CircLin2dBisec::NbSolutions() const
 {
   return NbrSol;
 }

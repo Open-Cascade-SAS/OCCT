@@ -39,44 +39,44 @@ public:
 
   Standard_EXPORT Contap_SurfFunction();
 
-  Standard_EXPORT void Set(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Set(const occ::handle<Adaptor3d_Surface>& S);
 
   void Set(const gp_Pnt& Eye);
 
   void Set(const gp_Dir& Dir);
 
-  void Set(const gp_Dir& Dir, const Standard_Real Angle);
+  void Set(const gp_Dir& Dir, const double Angle);
 
-  void Set(const gp_Pnt& Eye, const Standard_Real Angle);
+  void Set(const gp_Pnt& Eye, const double Angle);
 
-  void Set(const Standard_Real Tolerance);
+  void Set(const double Tolerance);
 
   //! This method has to return 2.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! This method has to return 1.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! The dimension of F is 1.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! The dimension of D is (1,2).
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   //! Root is the value of the function at the solution.
   //! It is a vector of dimension 1, i-e a real.
-  Standard_Real Root() const;
+  double Root() const;
 
   //! Returns the value Tol so that if std::abs(Func.Root())<Tol
   //! the function is considered null.
-  Standard_Real Tolerance() const;
+  double Tolerance() const;
 
   //! Returns the value of the solution point on the surface.
   const gp_Pnt& Point() const;
 
-  Standard_EXPORT Standard_Boolean IsTangent();
+  Standard_EXPORT bool IsTangent();
 
   const gp_Vec& Direction3d();
 
@@ -88,34 +88,33 @@ public:
 
   const gp_Dir& Direction() const;
 
-  Standard_Real Angle() const;
+  double Angle() const;
 
-  const Handle(Adaptor3d_Surface)& Surface() const;
+  const occ::handle<Adaptor3d_Surface>& Surface() const;
 
   //! Method is entered for compatibility with IntPatch_TheSurfFunction.
-  const Handle(Adaptor3d_Surface)& PSurface() const { return Surface(); }
+  const occ::handle<Adaptor3d_Surface>& PSurface() const { return Surface(); }
 
-protected:
 private:
-  Handle(Adaptor3d_Surface) mySurf;
-  Standard_Real             myMean;
+  occ::handle<Adaptor3d_Surface> mySurf;
+  double             myMean;
   Contap_TFunction          myType;
   gp_Dir                    myDir;
   gp_Pnt                    myEye;
-  Standard_Real             myAng;
-  Standard_Real             myCosAng;
-  Standard_Real             tol;
+  double             myAng;
+  double             myCosAng;
+  double             tol;
   gp_Pnt                    solpt;
-  Standard_Real             valf;
-  Standard_Real             Usol;
-  Standard_Real             Vsol;
-  Standard_Real             Fpu;
-  Standard_Real             Fpv;
+  double             valf;
+  double             Usol;
+  double             Vsol;
+  double             Fpu;
+  double             Fpv;
   gp_Dir2d                  d2d;
   gp_Vec                    d3d;
-  Standard_Boolean          tangent;
-  Standard_Boolean          computed;
-  Standard_Boolean          derived;
+  bool          tangent;
+  bool          computed;
+  bool          derived;
 };
 
 #include <Contap_SurfFunction.lxx>

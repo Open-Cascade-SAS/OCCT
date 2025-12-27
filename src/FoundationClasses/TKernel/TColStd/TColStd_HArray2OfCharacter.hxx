@@ -16,9 +16,9 @@
 #define TColStd_HArray2OfCharacter_HeaderFile
 
 #include <Standard_Character.hxx>
-#include <TColStd_Array2OfCharacter.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TColStd_HArray2OfCharacter, TColStd_Array2OfCharacter)
+DEFINE_HARRAY2(TColStd_HArray2OfCharacter, NCollection_Array2<char>)
 
 #endif

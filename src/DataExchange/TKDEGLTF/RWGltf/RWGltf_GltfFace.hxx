@@ -32,7 +32,7 @@ public:
   TopoDS_Shape        Shape;    //!< original Face or face list
   XCAFPrs_Style       Style;    //!< face style
                                 // clang-format off
-  Standard_Integer    NbIndexedNodes; //!< transient variable for merging several faces into one while writing Indices
+  int    NbIndexedNodes; //!< transient variable for merging several faces into one while writing Indices
                                 // clang-format on
 
   RWGltf_GltfFace()
@@ -40,7 +40,5 @@ public:
   {
   }
 };
-
-typedef NCollection_Shared<NCollection_List<Handle(RWGltf_GltfFace)>> RWGltf_GltfFaceList;
 
 #endif // _RWGltf_GltfFace_HeaderFile

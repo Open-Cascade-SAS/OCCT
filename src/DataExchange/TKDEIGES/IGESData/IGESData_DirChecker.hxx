@@ -48,23 +48,23 @@ public:
   Standard_EXPORT IGESData_DirChecker();
 
   //! Returns a DirChecker, with no criterium except Required Type
-  Standard_EXPORT IGESData_DirChecker(const Standard_Integer atype);
+  Standard_EXPORT IGESData_DirChecker(const int atype);
 
   //! Returns a DirChecker, with no criterium except Required values
   //! for Type and Form numbers
-  Standard_EXPORT IGESData_DirChecker(const Standard_Integer atype, const Standard_Integer aform);
+  Standard_EXPORT IGESData_DirChecker(const int atype, const int aform);
 
   //! Returns a DirChecker, with no criterium except Required values
   //! for Type number (atype), and Required Range for Form number
   //! (which must be between aform1 and aform2 included)
-  Standard_EXPORT IGESData_DirChecker(const Standard_Integer atype,
-                                      const Standard_Integer aform1,
-                                      const Standard_Integer aform2);
+  Standard_EXPORT IGESData_DirChecker(const int atype,
+                                      const int aform1,
+                                      const int aform2);
 
   //! Returns True if at least one criterium has already been set
   //! Allows user to store a DirChecker (static variable) then ask
   //! if it has been set before setting it
-  Standard_EXPORT Standard_Boolean IsSet() const;
+  Standard_EXPORT bool IsSet() const;
 
   //! Sets a DirChecker with most current criteria, that is :
   //! Structure Ignored ( worths call Structure(crit = DefVoid) )
@@ -101,21 +101,21 @@ public:
   //! (that is, they should not be defined)
   //! If hierarchy is given, Graphics are Ignored if the Hierarchy
   //! status has the value given in argument "hierarchy"
-  Standard_EXPORT void GraphicsIgnored(const Standard_Integer hierarchy = -1);
+  Standard_EXPORT void GraphicsIgnored(const int hierarchy = -1);
 
   //! Sets Blank Status to be ignored
   //! (should not be defined, or its value should be 0)
   Standard_EXPORT void BlankStatusIgnored();
 
   //! Sets Blank Status to be required at a given value
-  Standard_EXPORT void BlankStatusRequired(const Standard_Integer val);
+  Standard_EXPORT void BlankStatusRequired(const int val);
 
   //! Sets Subordinate Status to be ignored
   //! (should not be defined, or its value should be 0)
   Standard_EXPORT void SubordinateStatusIgnored();
 
   //! Sets Subordinate Status to be required at a given value
-  Standard_EXPORT void SubordinateStatusRequired(const Standard_Integer val);
+  Standard_EXPORT void SubordinateStatusRequired(const int val);
 
   //! Sets Blank Status to be ignored
   //! (should not be defined, or its value should be 0)
@@ -123,27 +123,27 @@ public:
 
   //! Sets Blank Status to be required at a given value
   //! Give -1 to demand UseFlag not zero (but no precise value req.)
-  Standard_EXPORT void UseFlagRequired(const Standard_Integer val);
+  Standard_EXPORT void UseFlagRequired(const int val);
 
   //! Sets Hierarchy Status to be ignored
   //! (should not be defined, or its value should be 0)
   Standard_EXPORT void HierarchyStatusIgnored();
 
   //! Sets Hierarchy Status to be required at a given value
-  Standard_EXPORT void HierarchyStatusRequired(const Standard_Integer val);
+  Standard_EXPORT void HierarchyStatusRequired(const int val);
 
   //! Performs the Checks on an IGESEntity, according to the
   //! recorded criteria
   //! In addition, does minimal Checks, such as admitted range for
   //! Status, or presence of Error status in some data (Color, ...)
-  Standard_EXPORT void Check(Handle(Interface_Check)&           ach,
-                             const Handle(IGESData_IGESEntity)& ent) const;
+  Standard_EXPORT void Check(occ::handle<Interface_Check>&           ach,
+                             const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! Performs a Check only on Values of Type Number and Form Number
   //! This allows to do a check on an Entity not yet completely
   //! filled but of which Type and Form Number have been already set
-  Standard_EXPORT void CheckTypeAndForm(Handle(Interface_Check)&           ach,
-                                        const Handle(IGESData_IGESEntity)& ent) const;
+  Standard_EXPORT void CheckTypeAndForm(occ::handle<Interface_Check>&           ach,
+                                        const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! Corrects the Directory Entry of an IGES Entity as far as it is
   //! possible according recorded criteria without any ambiguity :
@@ -154,23 +154,22 @@ public:
   //! - Type Number is enforced
   //! - finally Form Number is enforced only if one and only Value
   //! is admitted (no range, see Constructors of DirChecker)
-  Standard_EXPORT Standard_Boolean Correct(const Handle(IGESData_IGESEntity)& ent) const;
+  Standard_EXPORT bool Correct(const occ::handle<IGESData_IGESEntity>& ent) const;
 
-protected:
 private:
-  Standard_Boolean isitset;
-  Standard_Integer thetype;
-  Standard_Integer theform1;
-  Standard_Integer theform2;
+  bool isitset;
+  int thetype;
+  int theform1;
+  int theform2;
   IGESData_DefType thestructure;
   IGESData_DefType thelinefont;
   IGESData_DefType thelineweig;
   IGESData_DefType thecolor;
-  Standard_Integer thegraphier;
-  Standard_Integer theblankst;
-  Standard_Integer thesubordst;
-  Standard_Integer theuseflag;
-  Standard_Integer thehierst;
+  int thegraphier;
+  int theblankst;
+  int thesubordst;
+  int theuseflag;
+  int thehierst;
 };
 
 #endif // _IGESData_DirChecker_HeaderFile

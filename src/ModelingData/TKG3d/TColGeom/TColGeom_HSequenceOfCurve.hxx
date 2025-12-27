@@ -17,9 +17,10 @@
 #ifndef TColGeom_HSequenceOfCurve_HeaderFile
 #define TColGeom_HSequenceOfCurve_HeaderFile
 
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColGeom_HSequenceOfCurve, TColGeom_SequenceOfCurve)
+DEFINE_HSEQUENCE(TColGeom_HSequenceOfCurve, NCollection_Sequence<occ::handle<Geom_Curve>>)
 
 #endif

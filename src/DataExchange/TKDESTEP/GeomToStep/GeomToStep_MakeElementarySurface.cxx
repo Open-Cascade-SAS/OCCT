@@ -40,49 +40,49 @@
 // ElementarySurface de Geom
 //=============================================================================
 GeomToStep_MakeElementarySurface::GeomToStep_MakeElementarySurface(
-  const Handle(Geom_ElementarySurface)& S,
+  const occ::handle<Geom_ElementarySurface>& S,
   const StepData_Factors&               theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
   {
-    Handle(Geom_CylindricalSurface)   Sur = Handle(Geom_CylindricalSurface)::DownCast(S);
+    occ::handle<Geom_CylindricalSurface>   Sur = occ::down_cast<Geom_CylindricalSurface>(S);
     GeomToStep_MakeCylindricalSurface MkCylindrical(Sur, theLocalFactors);
     theElementarySurface = MkCylindrical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
-    Handle(Geom_ConicalSurface)   Sur = Handle(Geom_ConicalSurface)::DownCast(S);
+    occ::handle<Geom_ConicalSurface>   Sur = occ::down_cast<Geom_ConicalSurface>(S);
     GeomToStep_MakeConicalSurface MkConical(Sur, theLocalFactors);
     theElementarySurface = MkConical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
-    Handle(Geom_SphericalSurface)   Sur = Handle(Geom_SphericalSurface)::DownCast(S);
+    occ::handle<Geom_SphericalSurface>   Sur = occ::down_cast<Geom_SphericalSurface>(S);
     GeomToStep_MakeSphericalSurface MkSpherical(Sur, theLocalFactors);
     theElementarySurface = MkSpherical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
   {
-    Handle(Geom_ToroidalSurface)   Sur = Handle(Geom_ToroidalSurface)::DownCast(S);
+    occ::handle<Geom_ToroidalSurface>   Sur = occ::down_cast<Geom_ToroidalSurface>(S);
     GeomToStep_MakeToroidalSurface MkToroidal(Sur, theLocalFactors);
     theElementarySurface = MkToroidal.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
-    Handle(Geom_Plane)   Sur = Handle(Geom_Plane)::DownCast(S);
+    occ::handle<Geom_Plane>   Sur = occ::down_cast<Geom_Plane>(S);
     GeomToStep_MakePlane MkPlane(Sur, theLocalFactors);
     theElementarySurface = MkPlane.Value();
   }
   else
-    done = Standard_False;
+    done = false;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_ElementarySurface)& GeomToStep_MakeElementarySurface::Value() const
+const occ::handle<StepGeom_ElementarySurface>& GeomToStep_MakeElementarySurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeElementarySurface::Value() - no result");
   return theElementarySurface;

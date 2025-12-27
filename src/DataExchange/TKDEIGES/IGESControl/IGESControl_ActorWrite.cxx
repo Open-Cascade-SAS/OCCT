@@ -18,7 +18,7 @@
 #include <IGESControl_ActorWrite.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Standard_Type.hxx>
 #include <Transfer_Binder.hxx>
@@ -41,27 +41,27 @@ IGESControl_ActorWrite::IGESControl_ActorWrite()
 
 //=============================================================================
 
-Standard_Boolean IGESControl_ActorWrite::Recognize(const Handle(Transfer_Finder)& start)
+bool IGESControl_ActorWrite::Recognize(const occ::handle<Transfer_Finder>& start)
 {
   DeclareAndCast(TransferBRep_ShapeMapper, shmap, start);
   if (!shmap.IsNull())
-    return Standard_True;
+    return true;
   DeclareAndCast(Transfer_TransientMapper, gemap, start);
   if (!gemap.IsNull())
   {
-    Handle(Standard_Transient) geom = gemap->Value();
+    occ::handle<Standard_Transient> geom = gemap->Value();
     DeclareAndCast(Geom_Curve, Curve, geom);
     DeclareAndCast(Geom_Surface, Surf, geom);
     if (!Curve.IsNull() || !Surf.IsNull())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=============================================================================
 
-Handle(Transfer_Binder) IGESControl_ActorWrite::Transfer(const Handle(Transfer_Finder)& start,
-                                                         const Handle(Transfer_FinderProcess)& FP,
+occ::handle<Transfer_Binder> IGESControl_ActorWrite::Transfer(const occ::handle<Transfer_Finder>& start,
+                                                         const occ::handle<Transfer_FinderProcess>& FP,
                                                          const Message_ProgressRange& theProgress)
 {
   XSAlgo_ShapeProcessor::PrepareForTransfer();
@@ -71,7 +71,7 @@ Handle(Transfer_Binder) IGESControl_ActorWrite::Transfer(const Handle(Transfer_F
     return NullResult();
   if (themodetrans < 0 || themodetrans > 1)
     return NullResult();
-  Handle(Standard_Transient) ent;
+  occ::handle<Standard_Transient> ent;
 
   DeclareAndCast(TransferBRep_ShapeMapper, shmap, start);
   if (!shmap.IsNull())
@@ -103,7 +103,7 @@ Handle(Transfer_Binder) IGESControl_ActorWrite::Transfer(const Handle(Transfer_F
   DeclareAndCast(Transfer_TransientMapper, gemap, start);
   if (!gemap.IsNull())
   {
-    Handle(Standard_Transient) geom = gemap->Value();
+    occ::handle<Standard_Transient> geom = gemap->Value();
     DeclareAndCast(Geom_Curve, Curve, geom);
     DeclareAndCast(Geom_Surface, Surf, geom);
 
@@ -119,7 +119,7 @@ Handle(Transfer_Binder) IGESControl_ActorWrite::Transfer(const Handle(Transfer_F
       ent = GC.TransferCurve(Curve, Curve->FirstParameter(), Curve->LastParameter());
     else if (!Surf.IsNull())
     {
-      Standard_Real U1, U2, V1, V2;
+      double U1, U2, V1, V2;
       Surf->Bounds(U1, U2, V1, V2);
       ent = GS.TransferSurface(Surf, U1, U2, V1, V2);
     }

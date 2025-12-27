@@ -23,7 +23,8 @@
 
 #include <BRepLib_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepBuilderAPI_WireError.hxx>
 class TopoDS_Edge;
 class TopoDS_Wire;
@@ -143,13 +144,13 @@ public:
   //! DisconnectedWire but the "Maker" is Done() and you
   //! can get the partial result.
   //! (i.e. connected to the first edgeof the list <L>)
-  Standard_EXPORT void Add(const TopTools_ListOfShape& L);
+  Standard_EXPORT void Add(const NCollection_List<TopoDS_Shape>& L);
 
   //! Returns true if this algorithm contains a valid wire.
   //! IsDone returns false if:
   //! -   there are no edges in the wire, or
   //! -   the last edge which you tried to add was not connectable.
-  Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDone() const override;
 
   //! Returns the construction status
   //! -   BRepBuilderAPI_WireDone if the wire is built, or
@@ -180,7 +181,6 @@ public:
   //! add was not connectableR
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
-protected:
 private:
   BRepLib_MakeWire myMakeWire;
 };

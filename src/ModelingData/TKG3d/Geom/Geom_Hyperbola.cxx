@@ -41,10 +41,10 @@ typedef gp_XYZ         XYZ;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Hyperbola::Copy() const
+occ::handle<Geom_Geometry> Geom_Hyperbola::Copy() const
 {
 
-  Handle(Geom_Hyperbola) H;
+  occ::handle<Geom_Hyperbola> H;
   H = new Hyperbola(pos, majorRadius, minorRadius);
   return H;
 }
@@ -62,8 +62,8 @@ Geom_Hyperbola::Geom_Hyperbola(const gp_Hypr& H)
 //=================================================================================================
 
 Geom_Hyperbola::Geom_Hyperbola(const Ax2&          A,
-                               const Standard_Real MajorRadius,
-                               const Standard_Real MinorRadius)
+                               const double MajorRadius,
+                               const double MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {
@@ -77,42 +77,42 @@ Geom_Hyperbola::Geom_Hyperbola(const Ax2&          A,
 
 //=================================================================================================
 
-Standard_Boolean Geom_Hyperbola::IsClosed() const
+bool Geom_Hyperbola::IsClosed() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Hyperbola::IsPeriodic() const
+bool Geom_Hyperbola::IsPeriodic() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::FirstParameter() const
+double Geom_Hyperbola::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::LastParameter() const
+double Geom_Hyperbola::LastParameter() const
 {
   return Precision::Infinite();
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::MajorRadius() const
+double Geom_Hyperbola::MajorRadius() const
 {
   return majorRadius;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::MinorRadius() const
+double Geom_Hyperbola::MinorRadius() const
 {
   return minorRadius;
 }
@@ -129,7 +129,7 @@ void Geom_Hyperbola::SetHypr(const gp_Hypr& H)
 
 //=================================================================================================
 
-void Geom_Hyperbola::SetMajorRadius(const Standard_Real MajorRadius)
+void Geom_Hyperbola::SetMajorRadius(const double MajorRadius)
 {
 
   if (MajorRadius < 0.0)
@@ -140,7 +140,7 @@ void Geom_Hyperbola::SetMajorRadius(const Standard_Real MajorRadius)
 
 //=================================================================================================
 
-void Geom_Hyperbola::SetMinorRadius(const Standard_Real MinorRadius)
+void Geom_Hyperbola::SetMinorRadius(const double MinorRadius)
 {
 
   if (MinorRadius < 0.0)
@@ -158,7 +158,7 @@ gp_Hypr Geom_Hyperbola::Hypr() const
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::ReversedParameter(const Standard_Real U) const
+double Geom_Hyperbola::ReversedParameter(const double U) const
 {
   return (-U);
 }
@@ -219,7 +219,7 @@ Ax1 Geom_Hyperbola::Directrix2() const
 
 //=================================================================================================
 
-void Geom_Hyperbola::D0(const Standard_Real U, Pnt& P) const
+void Geom_Hyperbola::D0(const double U, Pnt& P) const
 {
 
   P = ElCLib::HyperbolaValue(U, pos, majorRadius, minorRadius);
@@ -227,7 +227,7 @@ void Geom_Hyperbola::D0(const Standard_Real U, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_Hyperbola::D1(const Standard_Real U, Pnt& P, Vec& V1) const
+void Geom_Hyperbola::D1(const double U, Pnt& P, Vec& V1) const
 {
 
   ElCLib::HyperbolaD1(U, pos, majorRadius, minorRadius, P, V1);
@@ -235,7 +235,7 @@ void Geom_Hyperbola::D1(const Standard_Real U, Pnt& P, Vec& V1) const
 
 //=================================================================================================
 
-void Geom_Hyperbola::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
+void Geom_Hyperbola::D2(const double U, Pnt& P, Vec& V1, Vec& V2) const
 {
 
   ElCLib::HyperbolaD2(U, pos, majorRadius, minorRadius, P, V1, V2);
@@ -243,7 +243,7 @@ void Geom_Hyperbola::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
 
 //=================================================================================================
 
-void Geom_Hyperbola::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+void Geom_Hyperbola::D3(const double U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
 {
 
   ElCLib::HyperbolaD3(U, pos, majorRadius, minorRadius, P, V1, V2, V3);
@@ -251,7 +251,7 @@ void Geom_Hyperbola::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3
 
 //=================================================================================================
 
-Vec Geom_Hyperbola::DN(const Standard_Real U, const Standard_Integer N) const
+Vec Geom_Hyperbola::DN(const double U, const int N) const
 {
 
   Standard_RangeError_Raise_if(N < 1, " ");
@@ -260,7 +260,7 @@ Vec Geom_Hyperbola::DN(const Standard_Real U, const Standard_Integer N) const
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::Eccentricity() const
+double Geom_Hyperbola::Eccentricity() const
 {
 
   Standard_ConstructionError_Raise_if(majorRadius == 0.0, " ") return (
@@ -270,7 +270,7 @@ Standard_Real Geom_Hyperbola::Eccentricity() const
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::Focal() const
+double Geom_Hyperbola::Focal() const
 {
 
   return 2.0 * std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
@@ -281,8 +281,8 @@ Standard_Real Geom_Hyperbola::Focal() const
 Pnt Geom_Hyperbola::Focus1() const
 {
 
-  Standard_Real C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
-  Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
+  double C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  double Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
   return Pnt(Xp + C * Xd, Yp + C * Yd, Zp + C * Zd);
@@ -293,8 +293,8 @@ Pnt Geom_Hyperbola::Focus1() const
 Pnt Geom_Hyperbola::Focus2() const
 {
 
-  Standard_Real C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
-  Standard_Real Xp, Yp, Zp, Xd, Yd, Zd;
+  double C = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  double Xp, Yp, Zp, Xd, Yd, Zd;
   pos.Location().Coord(Xp, Yp, Zp);
   pos.XDirection().Coord(Xd, Yd, Zd);
   return Pnt(Xp - C * Xd, Yp - C * Yd, Zp - C * Zd);
@@ -311,7 +311,7 @@ gp_Hypr Geom_Hyperbola::OtherBranch() const
 
 //=================================================================================================
 
-Standard_Real Geom_Hyperbola::Parameter() const
+double Geom_Hyperbola::Parameter() const
 {
 
   Standard_ConstructionError_Raise_if(majorRadius == 0.0, " ");
@@ -330,7 +330,7 @@ void Geom_Hyperbola::Transform(const Trsf& T)
 
 //=================================================================================================
 
-void Geom_Hyperbola::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Hyperbola::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

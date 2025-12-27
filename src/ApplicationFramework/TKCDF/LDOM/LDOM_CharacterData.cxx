@@ -19,7 +19,7 @@
 //=================================================================================================
 
 LDOM_CharacterData::LDOM_CharacterData(const LDOM_BasicText&          aText,
-                                       const Handle(LDOM_MemManager)& aDoc)
+                                       const occ::handle<LDOM_MemManager>& aDoc)
     : LDOM_Node(aText, aDoc),
       myLength(-1)
 {
@@ -60,9 +60,9 @@ void LDOM_CharacterData::setData(const LDOMString& theValue)
 
 //=================================================================================================
 
-Standard_Integer LDOM_CharacterData::getLength() const
+int LDOM_CharacterData::getLength() const
 {
   if (myLength < 0)
-    (Standard_Integer&)myLength = (Standard_Integer)strlen(getNodeValue().GetString());
+    (int&)myLength = (int)strlen(getNodeValue().GetString());
   return myLength;
 }

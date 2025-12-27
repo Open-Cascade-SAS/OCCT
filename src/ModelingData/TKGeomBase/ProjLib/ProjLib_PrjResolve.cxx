@@ -25,8 +25,8 @@
 
 ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
                                        const Adaptor3d_Surface& S,
-                                       const Standard_Integer   Fix)
-    : myDone(Standard_False),
+                                       const int   Fix)
+    : myDone(false),
       myFix(Fix)
 {
   if (myFix > 3 || myFix < 1)
@@ -36,23 +36,23 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
   mySurface  = &S;
 }
 
-// void ProjLib_PrjResolve::Perform(const Standard_Real t, const Standard_Real U, const
-// Standard_Real  V, const gp_Pnt2d& Tol2d, const gp_Pnt2d& Inf, const gp_Pnt2d& Sup, const
-// Standard_Real FuncTol, const Standard_Boolean StrictInside)
-void ProjLib_PrjResolve::Perform(const Standard_Real t,
-                                 const Standard_Real U,
-                                 const Standard_Real V,
+// void ProjLib_PrjResolve::Perform(const double t, const double U, const
+// double  V, const gp_Pnt2d& Tol2d, const gp_Pnt2d& Inf, const gp_Pnt2d& Sup, const
+// double FuncTol, const bool StrictInside)
+void ProjLib_PrjResolve::Perform(const double t,
+                                 const double U,
+                                 const double V,
                                  const gp_Pnt2d&     Tol2d,
                                  const gp_Pnt2d&     Inf,
                                  const gp_Pnt2d&     Sup,
-                                 const Standard_Real FuncTol,
-                                 const Standard_Boolean)
+                                 const double FuncTol,
+                                 const bool)
 {
 
-  myDone               = Standard_False;
-  Standard_Real FixVal = 0.;
+  myDone               = false;
+  double FixVal = 0.;
   gp_Pnt2d      ExtInf(0., 0.), ExtSup(0., 0.);
-  Standard_Real ExtU = 10 * Tol2d.X(), ExtV = 10 * Tol2d.Y();
+  double ExtU = 10 * Tol2d.X(), ExtV = 10 * Tol2d.Y();
   math_Vector   Tol(1, 2), Start(1, 2), BInf(1, 2), BSup(1, 2);
 
   ExtInf.SetCoord(Inf.X() - ExtU, Inf.Y() - ExtV);
@@ -84,7 +84,7 @@ void ProjLib_PrjResolve::Perform(const Standard_Real t,
 
   ProjLib_PrjFunc F(myCurve, FixVal, mySurface, myFix);
 
-  //  Standard_Integer option = 1;//2;
+  //  int option = 1;//2;
   //  if (option == 1) {
   //    math_FunctionSetRoot S1 (F, Start,Tol, BInf, BSup);
   //    if (!S1.IsDone()) { return; }
@@ -105,9 +105,9 @@ void ProjLib_PrjResolve::Perform(const Standard_Real t,
   mySolution.SetXY(F.Solution().XY());
 
   // computation of myDone
-  myDone = Standard_True;
+  myDone = true;
 
-  Standard_Real ExtraU, ExtraV;
+  double ExtraU, ExtraV;
   //  if(!StrictInside) {
   ExtraU = 2. * Tol2d.X();
   ExtraV = 2. * Tol2d.Y();
@@ -122,7 +122,7 @@ void ProjLib_PrjResolve::Perform(const Standard_Real t,
     mySolution.SetY(Sup.Y());
   if (mySolution.X() < Inf.X() - ExtraU || mySolution.X() > Sup.X() + ExtraU
       || mySolution.Y() < Inf.Y() - ExtraV || mySolution.Y() > Sup.Y() + ExtraV)
-    myDone = Standard_False;
+    myDone = false;
   else if (FuncTol > 0)
   {
     math_Vector X(1, 2, 0.), FVal(1, 2, 0.);
@@ -134,12 +134,12 @@ void ProjLib_PrjResolve::Perform(const Standard_Real t,
     if (!SR.IsDone())
     {
       if ((FVal(1) * FVal(1) + FVal(2) * FVal(2)) > FuncTol)
-        myDone = Standard_False;
+        myDone = false;
     }
   }
 }
 
-Standard_Boolean ProjLib_PrjResolve::IsDone() const
+bool ProjLib_PrjResolve::IsDone() const
 {
   return myDone;
 }

@@ -22,29 +22,29 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_GearPairWithRange, StepKinematics_Gear
 
 StepKinematics_GearPairWithRange::StepKinematics_GearPairWithRange()
 {
-  defLowerLimitActualRotation1 = Standard_False;
-  defUpperLimitActualRotation1 = Standard_False;
+  defLowerLimitActualRotation1 = false;
+  defUpperLimitActualRotation1 = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_GearPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          theGearPair_RadiusFirstLink,
-  const Standard_Real                          theGearPair_RadiusSecondLink,
-  const Standard_Real                          theGearPair_Bevel,
-  const Standard_Real                          theGearPair_HelicalAngle,
-  const Standard_Real                          theGearPair_GearRatio,
-  const Standard_Boolean                       hasLowerLimitActualRotation1,
-  const Standard_Real                          theLowerLimitActualRotation1,
-  const Standard_Boolean                       hasUpperLimitActualRotation1,
-  const Standard_Real                          theUpperLimitActualRotation1)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                          theGearPair_RadiusFirstLink,
+  const double                          theGearPair_RadiusSecondLink,
+  const double                          theGearPair_Bevel,
+  const double                          theGearPair_HelicalAngle,
+  const double                          theGearPair_GearRatio,
+  const bool                       hasLowerLimitActualRotation1,
+  const double                          theLowerLimitActualRotation1,
+  const bool                       hasUpperLimitActualRotation1,
+  const double                          theUpperLimitActualRotation1)
 {
   StepKinematics_GearPair::Init(theRepresentationItem_Name,
                                 theItemDefinedTransformation_Name,
@@ -78,7 +78,7 @@ void StepKinematics_GearPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPairWithRange::LowerLimitActualRotation1() const
+double StepKinematics_GearPairWithRange::LowerLimitActualRotation1() const
 {
   return myLowerLimitActualRotation1;
 }
@@ -86,21 +86,21 @@ Standard_Real StepKinematics_GearPairWithRange::LowerLimitActualRotation1() cons
 //=================================================================================================
 
 void StepKinematics_GearPairWithRange::SetLowerLimitActualRotation1(
-  const Standard_Real theLowerLimitActualRotation1)
+  const double theLowerLimitActualRotation1)
 {
   myLowerLimitActualRotation1 = theLowerLimitActualRotation1;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_GearPairWithRange::HasLowerLimitActualRotation1() const
+bool StepKinematics_GearPairWithRange::HasLowerLimitActualRotation1() const
 {
   return defLowerLimitActualRotation1;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPairWithRange::UpperLimitActualRotation1() const
+double StepKinematics_GearPairWithRange::UpperLimitActualRotation1() const
 {
   return myUpperLimitActualRotation1;
 }
@@ -108,14 +108,14 @@ Standard_Real StepKinematics_GearPairWithRange::UpperLimitActualRotation1() cons
 //=================================================================================================
 
 void StepKinematics_GearPairWithRange::SetUpperLimitActualRotation1(
-  const Standard_Real theUpperLimitActualRotation1)
+  const double theUpperLimitActualRotation1)
 {
   myUpperLimitActualRotation1 = theUpperLimitActualRotation1;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_GearPairWithRange::HasUpperLimitActualRotation1() const
+bool StepKinematics_GearPairWithRange::HasUpperLimitActualRotation1() const
 {
   return defUpperLimitActualRotation1;
 }

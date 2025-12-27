@@ -43,19 +43,19 @@ public:
   //! 3 -> Representation
   //! 4 -> TopologicalRepresentationItem
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a GeometricRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationItem) GeometricRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationItem> GeometricRepresentationItem() const;
 
   //! returns Value as a MappedItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_MappedItem) MappedItem() const;
+  Standard_EXPORT occ::handle<StepRepr_MappedItem> MappedItem() const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a TopologicalRepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepShape_TopologicalRepresentationItem) TopologicalRepresentationItem()
+  Standard_EXPORT occ::handle<StepShape_TopologicalRepresentationItem> TopologicalRepresentationItem()
     const;
 };
 #endif // _StepVisual_StyledItemTarget_HeaderFile

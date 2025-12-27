@@ -15,7 +15,7 @@
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSelect_SelectLevelNumber.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -25,48 +25,48 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectLevelNumber, IFSelect_SelectExtract)
 
 IGESSelect_SelectLevelNumber::IGESSelect_SelectLevelNumber() {}
 
-void IGESSelect_SelectLevelNumber::SetLevelNumber(const Handle(IFSelect_IntParam)& levnum)
+void IGESSelect_SelectLevelNumber::SetLevelNumber(const occ::handle<IFSelect_IntParam>& levnum)
 {
   thelevnum = levnum;
 }
 
-Handle(IFSelect_IntParam) IGESSelect_SelectLevelNumber::LevelNumber() const
+occ::handle<IFSelect_IntParam> IGESSelect_SelectLevelNumber::LevelNumber() const
 {
   return thelevnum;
 }
 
-Standard_Boolean IGESSelect_SelectLevelNumber::Sort(
-  const Standard_Integer /*rank*/,
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IGESSelect_SelectLevelNumber::Sort(
+  const int /*rank*/,
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
-    return Standard_False;
-  Standard_Integer numlev = 0;
+    return false;
+  int numlev = 0;
   if (!thelevnum.IsNull())
     numlev = thelevnum->Value();
   DeclareAndCast(IGESGraph_DefinitionLevel, levelist, igesent->LevelList());
-  Standard_Integer level = igesent->Level();
+  int level = igesent->Level();
   if (levelist.IsNull())
     return (level == numlev);
   //  Cas d une liste
   if (numlev == 0)
-    return Standard_False;
-  Standard_Integer nb = levelist->NbPropertyValues();
-  for (Standard_Integer i = 1; i <= nb; i++)
+    return false;
+  int nb = levelist->NbPropertyValues();
+  for (int i = 1; i <= nb; i++)
   {
     level = levelist->LevelNumber(i);
     if (level == numlev)
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 TCollection_AsciiString IGESSelect_SelectLevelNumber::ExtractLabel() const
 {
   char             labl[50];
-  Standard_Integer numlev = 0;
+  int numlev = 0;
   if (!thelevnum.IsNull())
     numlev = thelevnum->Value();
   if (numlev == 0)

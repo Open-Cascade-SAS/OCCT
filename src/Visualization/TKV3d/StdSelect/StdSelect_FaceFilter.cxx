@@ -48,20 +48,20 @@ StdSelect_TypeOfFace StdSelect_FaceFilter::Type() const
   return mytype;
 }
 
-Standard_Boolean StdSelect_FaceFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+bool StdSelect_FaceFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
-  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
+  occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
-    return Standard_False;
+    return false;
 
   const TopoDS_Shape& anobj = aBO->Shape();
   if (anobj.ShapeType() != TopAbs_FACE)
-    return Standard_False;
+    return false;
 
   switch (mytype)
   {
     case StdSelect_AnyFace:
-      return Standard_True;
+      return true;
     case StdSelect_Plane: {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
       return (surf.GetType() == GeomAbs_Plane);
@@ -90,10 +90,10 @@ Standard_Boolean StdSelect_FaceFilter::IsOk(const Handle(SelectMgr_EntityOwner)&
       return (surf.GetType() == GeomAbs_Cone);
     }
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean StdSelect_FaceFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+bool StdSelect_FaceFilter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const
 {
   return aStandardMode == TopAbs_FACE;
 }

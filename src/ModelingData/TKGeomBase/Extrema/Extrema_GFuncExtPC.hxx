@@ -24,8 +24,9 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <Precision.hxx>
 #include <Standard_TypeMismatch.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <cmath>
 
@@ -467,8 +468,8 @@ private:
   double                    myU;
   ThePoint                  myPc;
   double                    myD1f;
-  TColStd_SequenceOfReal    mySqDist;
-  TColStd_SequenceOfInteger myIsMin;
+  NCollection_Sequence<double>    mySqDist;
+  NCollection_Sequence<int> myIsMin;
   TheSeqPOnC                myPoint;
   bool                      myPinit;
   bool                      myCinit;

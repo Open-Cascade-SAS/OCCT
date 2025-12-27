@@ -17,9 +17,10 @@
 #ifndef HLRAlgo_HArray1OfPHDat_HeaderFile
 #define HLRAlgo_HArray1OfPHDat_HeaderFile
 
-#include <HLRAlgo_Array1OfPHDat.hxx>
+#include <HLRAlgo_PolyHidingData.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(HLRAlgo_HArray1OfPHDat, HLRAlgo_Array1OfPHDat)
+DEFINE_HARRAY1(HLRAlgo_HArray1OfPHDat, NCollection_Array1<HLRAlgo_PolyHidingData>)
 
 #endif

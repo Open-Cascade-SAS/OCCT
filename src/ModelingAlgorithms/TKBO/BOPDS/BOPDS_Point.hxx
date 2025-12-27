@@ -61,19 +61,18 @@ public:
 
   //! Modifier
   //! Sets the index of the vertex <theIndex>
-  void SetIndex(const Standard_Integer theIndex);
+  void SetIndex(const int theIndex);
 
   //! Selector
   //! Returns index of the vertex
-  Standard_Integer Index() const;
+  int Index() const;
 
 protected:
   gp_Pnt           myPnt;
   gp_Pnt2d         myPnt2D1;
   gp_Pnt2d         myPnt2D2;
-  Standard_Integer myIndex;
+  int myIndex;
 
-private:
 };
 
 #include <BOPDS_Point.lxx>

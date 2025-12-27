@@ -31,7 +31,7 @@ public:
   virtual ~IMeshTools_ModelAlgo() {}
 
   //! Exceptions protected processing of the given model.
-  Standard_Boolean Perform(const Handle(IMeshData_Model)& theModel,
+  bool Perform(const occ::handle<IMeshData_Model>& theModel,
                            const IMeshTools_Parameters&   theParameters,
                            const Message_ProgressRange&   theRange)
   {
@@ -43,7 +43,7 @@ public:
     }
     catch (Standard_Failure const&)
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -54,8 +54,8 @@ protected:
   IMeshTools_ModelAlgo() {}
 
   //! Performs processing of the given model.
-  Standard_EXPORT virtual Standard_Boolean performInternal(
-    const Handle(IMeshData_Model)& theModel,
+  Standard_EXPORT virtual bool performInternal(
+    const occ::handle<IMeshData_Model>& theModel,
     const IMeshTools_Parameters&   theParameters,
     const Message_ProgressRange&   theRange) = 0;
 };

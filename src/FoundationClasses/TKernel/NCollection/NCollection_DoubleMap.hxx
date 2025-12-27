@@ -70,7 +70,7 @@ public:
 
     //! Static deleter to be passed to BaseList
     static void delNode(NCollection_ListNode*              theNode,
-                        Handle(NCollection_BaseAllocator)& theAl) noexcept
+                        occ::handle<NCollection_BaseAllocator>& theAl) noexcept
     {
       ((DoubleMapNode*)theNode)->~DoubleMapNode();
       theAl->Free(theNode);
@@ -96,7 +96,7 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    Standard_Boolean More(void) const noexcept { return PMore(); }
+    bool More(void) const noexcept { return PMore(); }
 
     //! Make a step along the collection
     void Next(void) noexcept { PNext(); }
@@ -128,20 +128,20 @@ public:
 
   //! Empty constructor.
   NCollection_DoubleMap()
-      : NCollection_BaseMap(1, Standard_False, Handle(NCollection_BaseAllocator)())
+      : NCollection_BaseMap(1, false, occ::handle<NCollection_BaseAllocator>())
   {
   }
 
   //! Constructor
-  explicit NCollection_DoubleMap(const Standard_Integer                   theNbBuckets,
-                                 const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-      : NCollection_BaseMap(theNbBuckets, Standard_False, theAllocator)
+  explicit NCollection_DoubleMap(const int                   theNbBuckets,
+                                 const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+      : NCollection_BaseMap(theNbBuckets, false, theAllocator)
   {
   }
 
   //! Copy constructor
   NCollection_DoubleMap(const NCollection_DoubleMap& theOther)
-      : NCollection_BaseMap(theOther.NbBuckets(), Standard_False, theOther.myAllocator)
+      : NCollection_BaseMap(theOther.NbBuckets(), false, theOther.myAllocator)
   {
     *this = theOther;
   }
@@ -158,7 +158,7 @@ public:
       return *this;
 
     Clear();
-    Standard_Integer anExt = theOther.Extent();
+    int anExt = theOther.Extent();
     if (anExt)
     {
       ReSize(anExt - 1);
@@ -186,11 +186,11 @@ public:
   }
 
   //! ReSize
-  void ReSize(const Standard_Integer N)
+  void ReSize(const int N)
   {
     NCollection_ListNode** ppNewData1 = NULL;
     NCollection_ListNode** ppNewData2 = NULL;
-    Standard_Integer       newBuck;
+    int       newBuck;
     if (BeginResize(N, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
@@ -248,10 +248,10 @@ public:
   }
 
   //!* AreBound
-  Standard_Boolean AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const
+  bool AreBound(const TheKey1Type& theKey1, const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
-      return Standard_False;
+      return false;
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode *pNode1, *pNode2;
@@ -263,7 +263,7 @@ public:
       pNode1 = (DoubleMapNode*)pNode1->Next();
     }
     if (pNode1 == NULL)
-      return Standard_False;
+      return false;
     pNode2 = (DoubleMapNode*)myData2[iK2];
     while (pNode2)
     {
@@ -272,50 +272,50 @@ public:
       pNode2 = (DoubleMapNode*)pNode2->Next();
     }
     if (pNode2 == NULL)
-      return Standard_False;
+      return false;
 
     return (pNode1 == pNode2);
   }
 
   //! IsBound1
-  Standard_Boolean IsBound1(const TheKey1Type& theKey1) const
+  bool IsBound1(const TheKey1Type& theKey1) const
   {
     if (IsEmpty())
-      return Standard_False;
+      return false;
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     DoubleMapNode* pNode1;
     pNode1 = (DoubleMapNode*)myData1[iK1];
     while (pNode1)
     {
       if (IsEqual1(pNode1->Key1(), theKey1))
-        return Standard_True;
+        return true;
       pNode1 = (DoubleMapNode*)pNode1->Next();
     }
-    return Standard_False;
+    return false;
   }
 
   //! IsBound2
-  Standard_Boolean IsBound2(const TheKey2Type& theKey2) const
+  bool IsBound2(const TheKey2Type& theKey2) const
   {
     if (IsEmpty())
-      return Standard_False;
+      return false;
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode* pNode2;
     pNode2 = (DoubleMapNode*)myData2[iK2];
     while (pNode2)
     {
       if (IsEqual2(pNode2->Key2(), theKey2))
-        return Standard_True;
+        return true;
       pNode2 = (DoubleMapNode*)pNode2->Next2();
     }
-    return Standard_False;
+    return false;
   }
 
   //! UnBind1
-  Standard_Boolean UnBind1(const TheKey1Type& theKey1)
+  bool UnBind1(const TheKey1Type& theKey1)
   {
     if (IsEmpty())
-      return Standard_False;
+      return false;
     const size_t   iK1 = HashCode1(theKey1, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
     q1 = q2 = NULL;
@@ -348,19 +348,19 @@ public:
         p1->~DoubleMapNode();
         this->myAllocator->Free(p1);
         Decrement();
-        return Standard_True;
+        return true;
       }
       q1 = p1;
       p1 = (DoubleMapNode*)p1->Next();
     }
-    return Standard_False;
+    return false;
   }
 
   //! UnBind2
-  Standard_Boolean UnBind2(const TheKey2Type& theKey2)
+  bool UnBind2(const TheKey2Type& theKey2)
   {
     if (IsEmpty())
-      return Standard_False;
+      return false;
     const size_t   iK2 = HashCode2(theKey2, NbBuckets());
     DoubleMapNode *p1, *p2, *q1, *q2;
     q1 = q2 = NULL;
@@ -395,12 +395,12 @@ public:
         p2->~DoubleMapNode();
         this->myAllocator->Free(p2);
         Decrement();
-        return Standard_True;
+        return true;
       }
       q2 = p2;
       p2 = (DoubleMapNode*)p2->Next2();
     }
-    return Standard_False;
+    return false;
   }
 
   //! Find the Key1 and return Key2 value.
@@ -418,7 +418,7 @@ public:
   //! @param[in]   theKey1 Key1 to find
   //! @param[out]  theKey2 Key2 to return
   //! @return TRUE if Key1 has been found
-  Standard_Boolean Find1(const TheKey1Type& theKey1, TheKey2Type& theKey2) const
+  bool Find1(const TheKey1Type& theKey1, TheKey2Type& theKey2) const
   {
     if (const TheKey2Type* aKey2 = Seek1(theKey1))
     {
@@ -461,14 +461,14 @@ public:
   //! @param[in]   theKey2 Key2 to find
   //! @param[out]  theKey1 Key1 to return
   //! @return TRUE if Key2 has been found
-  Standard_Boolean Find2(const TheKey2Type& theKey2, TheKey1Type& theKey1) const
+  bool Find2(const TheKey2Type& theKey2, TheKey1Type& theKey1) const
   {
     if (const TheKey1Type* aVal1 = Seek2(theKey2))
     {
       theKey1 = *aVal1;
-      return Standard_True;
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
   //! Find the Key2 and return pointer to Key1 or NULL if not bound.
@@ -491,13 +491,13 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
+  void Clear(const bool doReleaseMemory = false)
   {
     Destroy(DoubleMapNode::delNode, doReleaseMemory);
   }
 
   //! Clear data and reset allocator
-  void Clear(const Handle(NCollection_BaseAllocator)& theAllocator)
+  void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)
   {
     Clear(true);
     this->myAllocator =
@@ -508,7 +508,7 @@ public:
   ~NCollection_DoubleMap(void) { Clear(true); }
 
   //! Size
-  Standard_Integer Size(void) const noexcept { return Extent(); }
+  int Size(void) const noexcept { return Extent(); }
 
 protected:
   bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const

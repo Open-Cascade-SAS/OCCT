@@ -21,11 +21,10 @@
 
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-
-class ShapeUpgrade_RemoveLocations;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_RemoveLocations, Standard_Transient)
 
 //! Removes all locations sub-shapes of specified shape
 class ShapeUpgrade_RemoveLocations : public Standard_Transient
@@ -36,7 +35,7 @@ public:
   Standard_EXPORT ShapeUpgrade_RemoveLocations();
 
   //! Removes all location correspondingly to RemoveLevel.
-  Standard_EXPORT Standard_Boolean Remove(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool Remove(const TopoDS_Shape& theShape);
 
   //! Returns shape with removed locations.
   TopoDS_Shape GetResult() const;
@@ -55,20 +54,19 @@ public:
   TopoDS_Shape ModifiedShape(const TopoDS_Shape& theInitShape) const;
 
   //! Returns map of modified shapes.
-  const TopTools_DataMapOfShapeShape& GetModifiedShapesMap() const { return myMapNewShapes; }
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& GetModifiedShapesMap() const { return myMapNewShapes; }
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations, Standard_Transient)
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean MakeNewShape(const TopoDS_Shape&    theShape,
+  Standard_EXPORT bool MakeNewShape(const TopoDS_Shape&    theShape,
                                                 const TopoDS_Shape&    theAncShape,
                                                 TopoDS_Shape&          theNewShape,
-                                                const Standard_Boolean theRemoveLoc);
+                                                const bool theRemoveLoc);
 
   TopAbs_ShapeEnum             myLevelRemoving;
   TopoDS_Shape                 myShape;
-  TopTools_DataMapOfShapeShape myMapNewShapes;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapNewShapes;
 };
 
 #include <ShapeUpgrade_RemoveLocations.lxx>

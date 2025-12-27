@@ -23,12 +23,15 @@
 
 #include <Convert_ParameterisationType.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColgp_Array1OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_Surface;
 class Geom_Curve;
 class gp_Vec;
@@ -41,8 +44,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Builds a ruled surface between the two curves, Curve1 and Curve2.
-  Standard_EXPORT static Handle(Geom_Surface) Surface(const Handle(Geom_Curve)& Curve1,
-                                                      const Handle(Geom_Curve)& Curve2);
+  Standard_EXPORT static occ::handle<Geom_Surface> Surface(const occ::handle<Geom_Curve>& Curve1,
+                                                      const occ::handle<Geom_Curve>& Curve2);
 
   Standard_EXPORT static void GetCircle(const Convert_ParameterisationType TConv,
                                         const gp_Vec&                      ns1,
@@ -50,12 +53,12 @@ public:
                                         const gp_Vec&                      nplan,
                                         const gp_Pnt&                      pt1,
                                         const gp_Pnt&                      pt2,
-                                        const Standard_Real                Rayon,
+                                        const double                Rayon,
                                         const gp_Pnt&                      Center,
-                                        TColgp_Array1OfPnt&                Poles,
-                                        TColStd_Array1OfReal&              Weigths);
+                                        NCollection_Array1<gp_Pnt>&                Poles,
+                                        NCollection_Array1<double>&              Weigths);
 
-  Standard_EXPORT static Standard_Boolean GetCircle(const Convert_ParameterisationType TConv,
+  Standard_EXPORT static bool GetCircle(const Convert_ParameterisationType TConv,
                                                     const gp_Vec&                      ns1,
                                                     const gp_Vec&                      ns2,
                                                     const gp_Vec&                      dn1w,
@@ -66,16 +69,16 @@ public:
                                                     const gp_Pnt&                      pts2,
                                                     const gp_Vec&                      tang1,
                                                     const gp_Vec&                      tang2,
-                                                    const Standard_Real                Rayon,
-                                                    const Standard_Real                DRayon,
+                                                    const double                Rayon,
+                                                    const double                DRayon,
                                                     const gp_Pnt&                      Center,
                                                     const gp_Vec&                      DCenter,
-                                                    TColgp_Array1OfPnt&                Poles,
-                                                    TColgp_Array1OfVec&                DPoles,
-                                                    TColStd_Array1OfReal&              Weigths,
-                                                    TColStd_Array1OfReal&              DWeigths);
+                                                    NCollection_Array1<gp_Pnt>&                Poles,
+                                                    NCollection_Array1<gp_Vec>&                DPoles,
+                                                    NCollection_Array1<double>&              Weigths,
+                                                    NCollection_Array1<double>&              DWeigths);
 
-  Standard_EXPORT static Standard_Boolean GetCircle(const Convert_ParameterisationType TConv,
+  Standard_EXPORT static bool GetCircle(const Convert_ParameterisationType TConv,
                                                     const gp_Vec&                      ns1,
                                                     const gp_Vec&                      ns2,
                                                     const gp_Vec&                      dn1w,
@@ -91,43 +94,43 @@ public:
                                                     const gp_Vec&                      tang2,
                                                     const gp_Vec&                      Dtang1,
                                                     const gp_Vec&                      Dtang2,
-                                                    const Standard_Real                Rayon,
-                                                    const Standard_Real                DRayon,
-                                                    const Standard_Real                D2Rayon,
+                                                    const double                Rayon,
+                                                    const double                DRayon,
+                                                    const double                D2Rayon,
                                                     const gp_Pnt&                      Center,
                                                     const gp_Vec&                      DCenter,
                                                     const gp_Vec&                      D2Center,
-                                                    TColgp_Array1OfPnt&                Poles,
-                                                    TColgp_Array1OfVec&                DPoles,
-                                                    TColgp_Array1OfVec&                D2Poles,
-                                                    TColStd_Array1OfReal&              Weigths,
-                                                    TColStd_Array1OfReal&              DWeigths,
-                                                    TColStd_Array1OfReal&              D2Weigths);
+                                                    NCollection_Array1<gp_Pnt>&                Poles,
+                                                    NCollection_Array1<gp_Vec>&                DPoles,
+                                                    NCollection_Array1<gp_Vec>&                D2Poles,
+                                                    NCollection_Array1<double>&              Weigths,
+                                                    NCollection_Array1<double>&              DWeigths,
+                                                    NCollection_Array1<double>&              D2Weigths);
 
-  Standard_EXPORT static void GetShape(const Standard_Real           MaxAng,
-                                       Standard_Integer&             NbPoles,
-                                       Standard_Integer&             NbKnots,
-                                       Standard_Integer&             Degree,
+  Standard_EXPORT static void GetShape(const double           MaxAng,
+                                       int&             NbPoles,
+                                       int&             NbKnots,
+                                       int&             Degree,
                                        Convert_ParameterisationType& TypeConv);
 
   Standard_EXPORT static void Knots(const Convert_ParameterisationType TypeConv,
-                                    TColStd_Array1OfReal&              TKnots);
+                                    NCollection_Array1<double>&              TKnots);
 
   Standard_EXPORT static void Mults(const Convert_ParameterisationType TypeConv,
-                                    TColStd_Array1OfInteger&           TMults);
+                                    NCollection_Array1<int>&           TMults);
 
   Standard_EXPORT static void GetMinimalWeights(const Convert_ParameterisationType TConv,
-                                                const Standard_Real                AngleMin,
-                                                const Standard_Real                AngleMax,
-                                                TColStd_Array1OfReal&              Weigths);
+                                                const double                AngleMin,
+                                                const double                AngleMax,
+                                                NCollection_Array1<double>&              Weigths);
 
   //! Used by the generical classes to determine
   //! Tolerance for approximation
-  Standard_EXPORT static Standard_Real GetTolerance(const Convert_ParameterisationType TConv,
-                                                    const Standard_Real                AngleMin,
-                                                    const Standard_Real                Radius,
-                                                    const Standard_Real                AngularTol,
-                                                    const Standard_Real                SpatialTol);
+  Standard_EXPORT static double GetTolerance(const Convert_ParameterisationType TConv,
+                                                    const double                AngleMin,
+                                                    const double                Radius,
+                                                    const double                AngularTol,
+                                                    const double                SpatialTol);
 };
 
 #endif // _GeomFill_HeaderFile

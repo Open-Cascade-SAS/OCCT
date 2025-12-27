@@ -20,10 +20,10 @@
 
 RWStepShape_RWFacetedBrep::RWStepShape_RWFacetedBrep() {}
 
-void RWStepShape_RWFacetedBrep::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepShape_FacetedBrep)&   ent) const
+void RWStepShape_RWFacetedBrep::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepShape_FacetedBrep>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,14 +33,14 @@ void RWStepShape_RWFacetedBrep::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : outer ---
 
-  Handle(StepShape_ClosedShell) aOuter;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_ClosedShell> aOuter;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "outer", ach, STANDARD_TYPE(StepShape_ClosedShell), aOuter);
 
   //--- Initialisation of the read entity ---
@@ -49,7 +49,7 @@ void RWStepShape_RWFacetedBrep::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepShape_RWFacetedBrep::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepShape_FacetedBrep)& ent) const
+                                          const occ::handle<StepShape_FacetedBrep>& ent) const
 {
 
   // --- inherited field name ---
@@ -61,7 +61,7 @@ void RWStepShape_RWFacetedBrep::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->Outer());
 }
 
-void RWStepShape_RWFacetedBrep::Share(const Handle(StepShape_FacetedBrep)& ent,
+void RWStepShape_RWFacetedBrep::Share(const occ::handle<StepShape_FacetedBrep>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 

@@ -18,35 +18,35 @@
 
 //=================================================================================================
 
-inline Standard_Boolean StepToTopoDS_Root::IsDone() const
+inline bool StepToTopoDS_Root::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
 
-inline Standard_Real StepToTopoDS_Root::Precision() const
+inline double StepToTopoDS_Root::Precision() const
 {
   return myPrecision;
 }
 
 //=================================================================================================
 
-inline void StepToTopoDS_Root::SetPrecision(const Standard_Real preci)
+inline void StepToTopoDS_Root::SetPrecision(const double preci)
 {
   myPrecision = preci;
 }
 
 //=================================================================================================
 
-inline Standard_Real StepToTopoDS_Root::MaxTol() const
+inline double StepToTopoDS_Root::MaxTol() const
 {
   return myMaxTol;
 }
 
 //=================================================================================================
 
-inline void StepToTopoDS_Root::SetMaxTol(const Standard_Real maxpreci)
+inline void StepToTopoDS_Root::SetMaxTol(const double maxpreci)
 {
   myMaxTol = maxpreci;
 }

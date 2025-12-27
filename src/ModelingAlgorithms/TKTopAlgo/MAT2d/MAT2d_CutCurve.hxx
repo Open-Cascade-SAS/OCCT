@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColGeom2d_SequenceOfCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <MAT_Side.hxx>
 #include <Standard_Integer.hxx>
 class Geom2d_Curve;
@@ -37,35 +38,34 @@ public:
 
   Standard_EXPORT MAT2d_CutCurve();
 
-  Standard_EXPORT MAT2d_CutCurve(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT MAT2d_CutCurve(const occ::handle<Geom2d_Curve>& C);
 
   //! Cuts a curve at the extremas of curvature
   //! and at the inflections.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& C);
 
   //! Cuts a curve at the inflections, and at the extremas
   //! of curvature where the concavity is on <aSide>.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& C, const MAT_Side aSide);
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& C, const MAT_Side aSide);
 
   //! Cuts a curve at the inflections.
-  Standard_EXPORT void PerformInf(const Handle(Geom2d_Curve)& C);
+  Standard_EXPORT void PerformInf(const occ::handle<Geom2d_Curve>& C);
 
   //! Returns True if the curve is not cut.
-  Standard_EXPORT Standard_Boolean UnModified() const;
+  Standard_EXPORT bool UnModified() const;
 
   //! Returns the number of curves.
   //! it's always greatest than 2.
   //!
   //! raises if the Curve is UnModified;
-  Standard_EXPORT Standard_Integer NbCurves() const;
+  Standard_EXPORT int NbCurves() const;
 
   //! Returns the Indexth curve.
   //! raises if Index not in the range [1,NbCurves()]
-  Standard_EXPORT Handle(Geom2d_TrimmedCurve) Value(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<Geom2d_TrimmedCurve> Value(const int Index) const;
 
-protected:
 private:
-  TColGeom2d_SequenceOfCurve theCurves;
+  NCollection_Sequence<occ::handle<Geom2d_Curve>> theCurves;
 };
 
 #endif // _MAT2d_CutCurve_HeaderFile

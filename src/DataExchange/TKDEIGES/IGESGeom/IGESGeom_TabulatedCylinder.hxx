@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
-class IGESGeom_TabulatedCylinder;
-DEFINE_STANDARD_HANDLE(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
-
 //! defines IGESTabulatedCylinder, Type <122> Form <0>
 //! in package IGESGeom
 //! A tabulated cylinder is a surface formed by moving a line
@@ -47,10 +44,10 @@ public:
   //! generatrix
   //! The start point of the directrix is identical to the start
   //! point of the generatrix
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aDirectrix, const gp_XYZ& anEnd);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aDirectrix, const gp_XYZ& anEnd);
 
   //! returns the directrix curve of the tabulated cylinder
-  Standard_EXPORT Handle(IGESData_IGESEntity) Directrix() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Directrix() const;
 
   //! returns end point of generatrix of the tabulated cylinder
   Standard_EXPORT gp_Pnt EndPoint() const;
@@ -61,9 +58,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_TabulatedCylinder, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity) theDirectrix;
+  occ::handle<IGESData_IGESEntity> theDirectrix;
   gp_XYZ                      theEnd;
 };
 

@@ -18,16 +18,16 @@
 #include <AppParCurves.hxx>
 #include <BSplCLib.hxx>
 #include <math_Matrix.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
-void AppParCurves::BernsteinMatrix(const Standard_Integer NbPoles,
+void AppParCurves::BernsteinMatrix(const int NbPoles,
                                    const math_Vector&     U,
                                    math_Matrix&           A)
 {
 
-  Standard_Integer i, j, id;
-  Standard_Real    u0, u1, y0, y1, xs;
-  Standard_Integer first = U.Lower(), last = U.Upper();
+  int i, j, id;
+  double    u0, u1, y0, y1, xs;
+  int first = U.Lower(), last = U.Upper();
   math_Vector      B(1, NbPoles - 1);
 
   for (i = first; i <= last; i++)
@@ -59,15 +59,15 @@ void AppParCurves::BernsteinMatrix(const Standard_Integer NbPoles,
   }
 }
 
-void AppParCurves::Bernstein(const Standard_Integer NbPoles,
+void AppParCurves::Bernstein(const int NbPoles,
                              const math_Vector&     U,
                              math_Matrix&           A,
                              math_Matrix&           DA)
 {
 
-  Standard_Integer i, j, id, Ndeg = NbPoles - 1;
-  Standard_Real    u0, u1, y0, y1, xs, bj, bj1;
-  Standard_Integer first = U.Lower(), last = U.Upper();
+  int i, j, id, Ndeg = NbPoles - 1;
+  double    u0, u1, y0, y1, xs, bj, bj1;
+  int first = U.Lower(), last = U.Upper();
   math_Vector      B(1, NbPoles - 1);
 
   for (i = first; i <= last; i++)
@@ -104,12 +104,12 @@ void AppParCurves::Bernstein(const Standard_Integer NbPoles,
   }
 }
 
-void AppParCurves::SecondDerivativeBernstein(const Standard_Real U, math_Vector& DDA)
+void AppParCurves::SecondDerivativeBernstein(const double U, math_Vector& DDA)
 {
-  //  Standard_Real U1 = 1-U, Y0, Y1, Xs;
-  Standard_Real    Y0, Y1, Xs;
-  Standard_Integer NbPoles = DDA.Length();
-  Standard_Integer id, j, N4, deg = NbPoles - 1;
+  //  double U1 = 1-U, Y0, Y1, Xs;
+  double    Y0, Y1, Xs;
+  int NbPoles = DDA.Length();
+  int id, j, N4, deg = NbPoles - 1;
   N4 = deg * (deg - 1);
   math_Vector B(1, deg - 1);
   B(1) = 1.;
@@ -156,27 +156,27 @@ void AppParCurves::SecondDerivativeBernstein(const Standard_Real U, math_Vector&
   }
 }
 
-void AppParCurves::SplineFunction(const Standard_Integer nbpoles,
-                                  const Standard_Integer deg,
+void AppParCurves::SplineFunction(const int nbpoles,
+                                  const int deg,
                                   const math_Vector&     Parameters,
                                   const math_Vector&     flatknots,
                                   math_Matrix&           A,
                                   math_Matrix&           DA,
                                   math_IntegerVector&    index)
 {
-  //  Standard_Real U, NewU, co, diff, t1, t2;
-  Standard_Real U, NewU;
+  //  double U, NewU, co, diff, t1, t2;
+  double U, NewU;
   //  gp_Pnt2d Pt, P0;
   //  gp_Vec2d V1;
-  //  Standard_Integer i, j, k, iter, in, ik, deg1 = deg+1;
-  Standard_Integer i, j, deg1 = deg + 1;
-  //  Standard_Integer oldkindex, kindex, theindex, ttindex;
-  Standard_Integer oldkindex, kindex, theindex;
+  //  int i, j, k, iter, in, ik, deg1 = deg+1;
+  int i, j, deg1 = deg + 1;
+  //  int oldkindex, kindex, theindex, ttindex;
+  int oldkindex, kindex, theindex;
   math_Vector      locpoles(1, deg1);
   math_Vector      locdpoles(1, deg1);
-  Standard_Integer firstp = Parameters.Lower(), lastp = Parameters.Upper();
+  int firstp = Parameters.Lower(), lastp = Parameters.Upper();
 
-  TColStd_Array1OfReal Aflatknots(flatknots.Lower(), flatknots.Upper());
+  NCollection_Array1<double> Aflatknots(flatknots.Lower(), flatknots.Upper());
   for (i = flatknots.Lower(); i <= flatknots.Upper(); i++)
   {
     Aflatknots(i) = flatknots(i);
@@ -184,15 +184,15 @@ void AppParCurves::SplineFunction(const Standard_Integer nbpoles,
 
   oldkindex = 1;
 
-  Standard_Integer pp, qq;
-  Standard_Real    Saved, Inverse, LocalInverse, locqq, locdqq, val;
+  int pp, qq;
+  double    Saved, Inverse, LocalInverse, locqq, locdqq, val;
 
   for (i = firstp; i <= lastp; i++)
   {
     U      = Parameters(i);
     NewU   = U;
     kindex = oldkindex;
-    BSplCLib::LocateParameter(deg, Aflatknots, U, Standard_False, deg1, nbpoles + 1, kindex, NewU);
+    BSplCLib::LocateParameter(deg, Aflatknots, U, false, deg1, nbpoles + 1, kindex, NewU);
 
     oldkindex = kindex;
 
@@ -229,7 +229,7 @@ void AppParCurves::SplineFunction(const Standard_Integer nbpoles,
       locpoles(pp) *= (flatknots(kindex + pp) - U) * Inverse;
       locpoles(pp) += locqq;
       locqq        = Saved;
-      LocalInverse = (Standard_Real)(deg)*Inverse;
+      LocalInverse = (double)(deg)*Inverse;
       Saved        = LocalInverse * locdpoles(pp);
       locdpoles(pp) *= -LocalInverse;
       locdpoles(pp) += locdqq;

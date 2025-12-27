@@ -27,15 +27,15 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static Handle(StepGeom_Axis2Placement3d) MakeAxis2Placement3d(const gp_Pnt&          O,
+static occ::handle<StepGeom_Axis2Placement3d> MakeAxis2Placement3d(const gp_Pnt&          O,
                                                               const gp_Dir&          D,
                                                               const gp_Dir&          X,
-                                                              const Standard_CString nom,
-                                                              Standard_Real          aFactor)
+                                                              const char* nom,
+                                                              double          aFactor)
 {
-  Handle(StepGeom_Axis2Placement3d) Axe;
-  Handle(StepGeom_CartesianPoint)   P;
-  Handle(StepGeom_Direction)        D1, D2;
+  occ::handle<StepGeom_Axis2Placement3d> Axe;
+  occ::handle<StepGeom_CartesianPoint>   P;
+  occ::handle<StepGeom_Direction>        D1, D2;
 
   GeomToStep_MakeCartesianPoint MkPoint(O, aFactor);
   GeomToStep_MakeDirection      MkDir1(D);
@@ -49,7 +49,7 @@ static Handle(StepGeom_Axis2Placement3d) MakeAxis2Placement3d(const gp_Pnt&     
   Axe->SetLocation(P);
   Axe->SetAxis(D1);
   Axe->SetRefDirection(D2);
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString(nom);
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString(nom);
   Axe->SetName(name);
   return Axe;
 }
@@ -64,13 +64,13 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   gp_Ax2 A(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   //   le reste inchange
 
-  Handle(StepGeom_Axis2Placement3d) Axe = MakeAxis2Placement3d(A.Location(),
+  occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
                                                                A.Direction(),
                                                                A.XDirection(),
                                                                "",
                                                                theLocalFactors.LengthFactor());
   theAxis2Placement3d                   = Axe;
-  done                                  = Standard_True;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -81,13 +81,13 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   const gp_Ax2&           A,
   const StepData_Factors& theLocalFactors)
 {
-  Handle(StepGeom_Axis2Placement3d) Axe = MakeAxis2Placement3d(A.Location(),
+  occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
                                                                A.Direction(),
                                                                A.XDirection(),
                                                                "",
                                                                theLocalFactors.LengthFactor());
   theAxis2Placement3d                   = Axe;
-  done                                  = Standard_True;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -98,13 +98,13 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   const gp_Ax3&           A,
   const StepData_Factors& theLocalFactors)
 {
-  Handle(StepGeom_Axis2Placement3d) Axe = MakeAxis2Placement3d(A.Location(),
+  occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
                                                                A.Direction(),
                                                                A.XDirection(),
                                                                "",
                                                                theLocalFactors.LengthFactor());
   theAxis2Placement3d                   = Axe;
-  done                                  = Standard_True;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -119,13 +119,13 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   A.Transform(T);
   //   le reste inchange
 
-  Handle(StepGeom_Axis2Placement3d) Axe = MakeAxis2Placement3d(A.Location(),
+  occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
                                                                A.Direction(),
                                                                A.XDirection(),
                                                                "",
                                                                theLocalFactors.LengthFactor());
   theAxis2Placement3d                   = Axe;
-  done                                  = Standard_True;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -134,26 +134,26 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
 //=============================================================================
 
 GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
-  const Handle(Geom_Axis2Placement)& Axis2,
+  const occ::handle<Geom_Axis2Placement>& Axis2,
   const StepData_Factors&            theLocalFactors)
 {
   gp_Ax2 A;
   A = Axis2->Ax2();
 
-  Handle(StepGeom_Axis2Placement3d) Axe = MakeAxis2Placement3d(A.Location(),
+  occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
                                                                A.Direction(),
                                                                A.XDirection(),
                                                                "",
                                                                theLocalFactors.LengthFactor());
   theAxis2Placement3d                   = Axe;
-  done                                  = Standard_True;
+  done                                  = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Axis2Placement3d)& GeomToStep_MakeAxis2Placement3d::Value() const
+const occ::handle<StepGeom_Axis2Placement3d>& GeomToStep_MakeAxis2Placement3d::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeAxis2Placement3d::Value() - no result");
   return theAxis2Placement3d;

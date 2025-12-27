@@ -47,13 +47,13 @@ public:
   Standard_EXPORT LDOM_Document getDocument();
   // Get the LDOM_Document
 
-  Standard_EXPORT Standard_Boolean parse(const char* const aFileName);
+  Standard_EXPORT bool parse(const char* const aFileName);
   // Parse a file
   // Returns True if error occurred, then GetError() can be called
 
-  Standard_EXPORT Standard_Boolean parse(std::istream&          anInput,
-                                         const Standard_Boolean theTagPerStep  = Standard_False,
-                                         const Standard_Boolean theWithoutRoot = Standard_False);
+  Standard_EXPORT bool parse(std::istream&          anInput,
+                                         const bool theTagPerStep  = false,
+                                         const bool theWithoutRoot = false);
   // Parse a C++ stream
   // theTagPerStep - if true - extract characters from anInput until '>'
   //                           extracted character and parse only these characters.
@@ -72,10 +72,10 @@ public:
 protected:
   // ---------- PROTECTED METHODS ----------
 
-  Standard_EXPORT virtual Standard_Boolean startElement();
+  Standard_EXPORT virtual bool startElement();
   // virtual hook on 'StartElement' event for descendant classes
 
-  Standard_EXPORT virtual Standard_Boolean endElement();
+  Standard_EXPORT virtual bool endElement();
   // virtual hook on 'EndElement' event for descendant classes
 
   Standard_EXPORT LDOM_Element getCurrentElement() const;
@@ -83,10 +83,10 @@ protected:
 
 private:
   // ---------- PRIVATE METHODS ----------
-  Standard_Boolean ParseDocument(Standard_IStream&      theIStream,
-                                 const Standard_Boolean theWithoutRoot = Standard_False);
+  bool ParseDocument(Standard_IStream&      theIStream,
+                                 const bool theWithoutRoot = false);
 
-  Standard_Boolean ParseElement(Standard_IStream& theIStream, Standard_Boolean& theDocStart);
+  bool ParseElement(Standard_IStream& theIStream, bool& theDocStart);
 
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
 
@@ -100,7 +100,7 @@ private:
   // ---------- PRIVATE FIELDS ----------
 
   LDOM_XmlReader*         myReader;
-  Handle(LDOM_MemManager) myDocument;
+  occ::handle<LDOM_MemManager> myDocument;
   LDOM_OSStream           myCurrentData;
   TCollection_AsciiString myError;
 };

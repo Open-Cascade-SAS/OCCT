@@ -18,13 +18,15 @@
 
 #include <BinTools_ShapeSetBase.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <BinTools_LocationSet.hxx>
 #include <BRep_Builder.hxx>
 #include <BinTools_SurfaceSet.hxx>
 #include <BinTools_CurveSet.hxx>
 #include <BinTools_Curve2dSet.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 
@@ -45,20 +47,20 @@ public:
 
   //! Stores <S> and its sub-shape. Returns the index of <S>.
   //! The method AddGeometry is called on each sub-shape.
-  Standard_EXPORT Standard_Integer Add(const TopoDS_Shape& S);
+  Standard_EXPORT int Add(const TopoDS_Shape& S);
 
   //! Returns the sub-shape of index <I>.
-  Standard_EXPORT const TopoDS_Shape& Shape(const Standard_Integer I);
+  Standard_EXPORT const TopoDS_Shape& Shape(const int I);
 
   //! Returns the index of <S>.
-  Standard_EXPORT Standard_Integer Index(const TopoDS_Shape& S) const;
+  Standard_EXPORT int Index(const TopoDS_Shape& S) const;
 
   Standard_EXPORT const BinTools_LocationSet& Locations() const;
 
   Standard_EXPORT BinTools_LocationSet& ChangeLocations();
 
   //! Returns number of shapes read from file.
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
   //! Writes the content of me on the stream <OS> in binary
   //! format that can be read back by Read.
@@ -112,13 +114,13 @@ public:
   Standard_EXPORT virtual void ReadFlagsAndSubs(TopoDS_Shape&          S,
                                                 const TopAbs_ShapeEnum T,
                                                 Standard_IStream&      IS,
-                                                const Standard_Integer NbShapes);
+                                                const int NbShapes);
 
   //! Reads from <IS> a shape and returns it in S.
   //! <NbShapes> is the number of tshapes in the set.
   Standard_EXPORT virtual void ReadSubs(TopoDS_Shape&          S,
                                         Standard_IStream&      IS,
-                                        const Standard_Integer NbShapes);
+                                        const int NbShapes);
 
   //! An empty virtual method for redefinition in shape-reader.
   Standard_EXPORT virtual void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) {};
@@ -178,20 +180,20 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
 private:
-  TopTools_IndexedMapOfShape                     myShapes; ///< index and its shape (started from 1)
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                     myShapes; ///< index and its shape (started from 1)
   BinTools_LocationSet                           myLocations;
   BRep_Builder                                   myBuilder;
   BinTools_SurfaceSet                            mySurfaces;
   BinTools_CurveSet                              myCurves;
   BinTools_Curve2dSet                            myCurves2d;
-  NCollection_IndexedMap<Handle(Poly_Polygon2D)> myPolygons2D;
-  NCollection_IndexedMap<Handle(Poly_Polygon3D)> myPolygons3D;
-  NCollection_IndexedDataMap<Handle(Poly_Triangulation),
+  NCollection_IndexedMap<occ::handle<Poly_Polygon2D>> myPolygons2D;
+  NCollection_IndexedMap<occ::handle<Poly_Polygon3D>> myPolygons3D;
+  NCollection_IndexedDataMap<occ::handle<Poly_Triangulation>,
                              // clang-format off
-                             Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
+                             bool> myTriangulations; //!< Contains a boolean flag with information
                                                                  //!  to save normals for triangulation
   // clang-format on
-  NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation)> myNodes;
+  NCollection_IndexedMap<occ::handle<Poly_PolygonOnTriangulation>> myNodes;
 };
 
 #endif // _BinTools_ShapeSet_HeaderFile

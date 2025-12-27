@@ -23,17 +23,17 @@ IFSelect_SelectType::IFSelect_SelectType()
   thetype = STANDARD_TYPE(Standard_Transient);
 }
 
-IFSelect_SelectType::IFSelect_SelectType(const Handle(Standard_Type)& atype)
+IFSelect_SelectType::IFSelect_SelectType(const occ::handle<Standard_Type>& atype)
 {
   thetype = atype;
 }
 
-void IFSelect_SelectType::SetType(const Handle(Standard_Type)& atype)
+void IFSelect_SelectType::SetType(const occ::handle<Standard_Type>& atype)
 {
   thetype = atype;
 }
 
-Handle(Standard_Type) IFSelect_SelectType::TypeForMatch() const
+occ::handle<Standard_Type> IFSelect_SelectType::TypeForMatch() const
 {
   return thetype;
 }

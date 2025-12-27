@@ -23,8 +23,10 @@
 
 #include <LocOpe_Spliter.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 class LocOpe_WiresOnShape;
 class TopoDS_Shape;
@@ -60,14 +62,14 @@ public:
   //! Add splitting edges or wires for whole initial shape
   //! without additional specification edge->face, edge->edge
   //! This method puts edge on the corresponding faces from initial shape
-  Standard_Boolean Add(const TopTools_SequenceOfShape& theEdges);
+  bool Add(const NCollection_Sequence<TopoDS_Shape>& theEdges);
 
   //! Initializes the process on the shape <S>.
   void Init(const TopoDS_Shape& S);
 
   //! Set the flag of check internal intersections
   //! default value is True (to check)
-  void SetCheckInterior(const Standard_Boolean ToCheckInterior);
+  void SetCheckInterior(const bool ToCheckInterior);
 
   //! Adds the wire <W> on the face <F>.
   //! Raises NoSuchObject if <F> does not belong to the original shape.
@@ -90,33 +92,32 @@ public:
 
   //! Returns the faces which are the left of the
   //! projected wires.
-  Standard_EXPORT const TopTools_ListOfShape& DirectLeft() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DirectLeft() const;
 
   //! Returns the faces of the "left" part on the shape.
   //! (It is build from DirectLeft, with the faces
   //! connected to this set, and so on...).
-  //! Raises NotDone if IsDone returns <Standard_False>.
-  Standard_EXPORT const TopTools_ListOfShape& Left() const;
+  //! Raises NotDone if IsDone returns <false>.
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Left() const;
 
   //! Returns the faces of the "right" part on the shape.
-  Standard_EXPORT const TopTools_ListOfShape& Right() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Right() const;
 
   //! Builds the cut and the resulting faces and edges as well.
   Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange())
-    Standard_OVERRIDE;
+    override;
 
   //! Returns true if the shape has been deleted.
-  Standard_EXPORT virtual Standard_Boolean IsDeleted(const TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
 
   //! Returns the list of generated Faces.
-  Standard_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& F) Standard_OVERRIDE;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
-protected:
 private:
   LocOpe_Spliter              mySShape;
-  Handle(LocOpe_WiresOnShape) myWOnShape;
+  occ::handle<LocOpe_WiresOnShape> myWOnShape;
 
-  mutable TopTools_ListOfShape myRight;
+  mutable NCollection_List<TopoDS_Shape> myRight;
 };
 
 #include <BRepFeat_SplitShape.lxx>

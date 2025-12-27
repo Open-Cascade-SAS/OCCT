@@ -17,9 +17,10 @@
 #ifndef StepShape_HArray1OfConnectedEdgeSet_HeaderFile
 #define StepShape_HArray1OfConnectedEdgeSet_HeaderFile
 
-#include <StepShape_Array1OfConnectedEdgeSet.hxx>
+#include <StepShape_ConnectedEdgeSet.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepShape_HArray1OfConnectedEdgeSet, StepShape_Array1OfConnectedEdgeSet)
+DEFINE_HARRAY1(StepShape_HArray1OfConnectedEdgeSet, NCollection_Array1<occ::handle<StepShape_ConnectedEdgeSet>>)
 
 #endif

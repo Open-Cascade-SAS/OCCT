@@ -22,8 +22,10 @@
 #include <NCollection_Vector.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Shared.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 
 class Message_Messenger;
@@ -35,48 +37,48 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Performs conversion of the given list of triangles to Poly_Triangulation.
-  Standard_EXPORT static Handle(Poly_Triangulation) ToPolyTriangulation(
-    const TColgp_Array1OfPnt&              theNodes,
+  Standard_EXPORT static occ::handle<Poly_Triangulation> ToPolyTriangulation(
+    const NCollection_Array1<gp_Pnt>&              theNodes,
     const NCollection_List<Poly_Triangle>& thePolyTriangles);
 
 public:
   //! Constructor. Initialized tool by the given parameters.
   Standard_EXPORT BRepMesh_Triangulator(const NCollection_Vector<gp_XYZ>&                  theXYZs,
-                                        const NCollection_List<TColStd_SequenceOfInteger>& theWires,
+                                        const NCollection_List<NCollection_Sequence<int>>& theWires,
                                         const gp_Dir&                                      theNorm);
 
   //! Performs triangulation of source wires and stores triangles the output list.
-  Standard_EXPORT Standard_Boolean Perform(NCollection_List<Poly_Triangle>& thePolyTriangles);
+  Standard_EXPORT bool Perform(NCollection_List<Poly_Triangle>& thePolyTriangles);
 
   //! Set messenger for output information
   //! without this Message::DefaultMessenger() will be used
-  void SetMessenger(const Handle(Message_Messenger)& theMess) { myMess = theMess; }
+  void SetMessenger(const occ::handle<Message_Messenger>& theMess) { myMess = theMess; }
 
   BRepMesh_Triangulator& operator=(const BRepMesh_Triangulator& theOther);
 
 private:
   // auxiliary for makeTrianglesUsingBRepMesh
-  void addTriange34(const TColStd_SequenceOfInteger& theW,
+  void addTriange34(const NCollection_Sequence<int>& theW,
                     NCollection_List<Poly_Triangle>& thePolyTriangles);
 
   // auxiliary for addTriange34
-  Standard_Boolean checkCondition(const int (&theNodes)[4],
-                                  const TColStd_SequenceOfInteger& theWire);
+  bool checkCondition(const int (&theNodes)[4],
+                                  const NCollection_Sequence<int>& theWire);
 
   // performs initialization of mesh data structure.
-  Standard_Boolean prepareMeshStructure();
+  bool prepareMeshStructure();
 
   // auxiliary for triangulation
-  Standard_Boolean triangulate(NCollection_List<Poly_Triangle>& thePolyTriangles);
+  bool triangulate(NCollection_List<Poly_Triangle>& thePolyTriangles);
 
 private:
   const NCollection_Vector<gp_XYZ>&                  myXYZs;
-  const NCollection_List<TColStd_SequenceOfInteger>& myWires;
+  const NCollection_List<NCollection_Sequence<int>>& myWires;
   gp_Pln                                             myPlane;
-  Handle(Message_Messenger)                          myMess;
+  occ::handle<Message_Messenger>                          myMess;
 
-  Handle(BRepMesh_DataStructureOfDelaun) myMeshStructure;
-  TColStd_DataMapOfIntegerInteger        myTmpMap;
+  occ::handle<BRepMesh_DataStructureOfDelaun> myMeshStructure;
+  NCollection_DataMap<int, int>        myTmpMap;
   Handle(IMeshData::VectorOfInteger)     myIndices;
 };
 

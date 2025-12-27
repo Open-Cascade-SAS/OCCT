@@ -25,9 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_LevelToPWBLayerMap;
-DEFINE_STANDARD_HANDLE(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
-
 //! defines LevelToPWBLayerMap, Type <406> Form <24>
 //! in package IGESAppli
 //! Used to correlate an exchange file level number with
@@ -49,42 +46,41 @@ public:
   //! - allExchIdents   : Exchange File Level Identifications
   //! raises exception if allExchLevels, allNativeLevels, allPhysLevels
   //! and all ExchIdents are not of same dimensions
-  Standard_EXPORT void Init(const Standard_Integer                         nbPropVal,
-                            const Handle(TColStd_HArray1OfInteger)&        allExchLevels,
-                            const Handle(Interface_HArray1OfHAsciiString)& allNativeLevels,
-                            const Handle(TColStd_HArray1OfInteger)&        allPhysLevels,
-                            const Handle(Interface_HArray1OfHAsciiString)& allExchIdents);
+  Standard_EXPORT void Init(const int                         nbPropVal,
+                            const occ::handle<TColStd_HArray1OfInteger>&        allExchLevels,
+                            const occ::handle<Interface_HArray1OfHAsciiString>& allNativeLevels,
+                            const occ::handle<TColStd_HArray1OfInteger>&        allPhysLevels,
+                            const occ::handle<Interface_HArray1OfHAsciiString>& allExchIdents);
 
   //! returns number of property values
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns number of level to layer definitions
-  Standard_EXPORT Standard_Integer NbLevelToLayerDefs() const;
+  Standard_EXPORT int NbLevelToLayerDefs() const;
 
   //! returns Exchange File Level Number
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Standard_Integer ExchangeFileLevelNumber(const Standard_Integer Index) const;
+  Standard_EXPORT int ExchangeFileLevelNumber(const int Index) const;
 
   //! returns Native Level Identification
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Handle(TCollection_HAsciiString) NativeLevel(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> NativeLevel(const int Index) const;
 
   //! returns Physical Layer Number
   //! raises exception if Index <= 0 or Index > NbLevelToLayerDefs
-  Standard_EXPORT Standard_Integer PhysicalLayerNumber(const Standard_Integer Index) const;
+  Standard_EXPORT int PhysicalLayerNumber(const int Index) const;
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) ExchangeFileLevelIdent(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ExchangeFileLevelIdent(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                        theNbPropertyValues;
-  Handle(TColStd_HArray1OfInteger)        theExchangeFileLevelNumber;
-  Handle(Interface_HArray1OfHAsciiString) theNativeLevel;
-  Handle(TColStd_HArray1OfInteger)        thePhysicalLayerNumber;
-  Handle(Interface_HArray1OfHAsciiString) theExchangeFileLevelIdent;
+  int                        theNbPropertyValues;
+  occ::handle<TColStd_HArray1OfInteger>        theExchangeFileLevelNumber;
+  occ::handle<Interface_HArray1OfHAsciiString> theNativeLevel;
+  occ::handle<TColStd_HArray1OfInteger>        thePhysicalLayerNumber;
+  occ::handle<Interface_HArray1OfHAsciiString> theExchangeFileLevelIdent;
 };
 
 #endif // _IGESAppli_LevelToPWBLayerMap_HeaderFile

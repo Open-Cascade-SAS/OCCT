@@ -16,6 +16,6 @@
 
 #include <BVH_PrimitiveSet.hxx>
 
-typedef BVH_PrimitiveSet<Standard_Real, 3> BVH_PrimitiveSet3d;
+typedef BVH_PrimitiveSet<double, 3> BVH_PrimitiveSet3d;
 
 #endif // _BVH_PrimitiveSet3d_Header

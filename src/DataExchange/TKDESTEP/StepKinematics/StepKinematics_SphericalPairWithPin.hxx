@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_SphericalPairWithPin, StepKinematics_LowOrderKinematicPair)
-
 //! Representation of STEP entity SphericalPairWithPin
 class StepKinematics_SphericalPairWithPin : public StepKinematics_LowOrderKinematicPair
 {

@@ -17,7 +17,7 @@
 #include <IGESSelect_ViewSorter.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -25,22 +25,22 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectDrawingFrom, IFSelect_SelectDeduct)
 
 IGESSelect_SelectDrawingFrom::IGESSelect_SelectDrawingFrom() {}
 
-Standard_Boolean IGESSelect_SelectDrawingFrom::HasUniqueResult() const
+bool IGESSelect_SelectDrawingFrom::HasUniqueResult() const
 {
-  return Standard_True;
+  return true;
 }
 
 Interface_EntityIterator IGESSelect_SelectDrawingFrom::RootResult(const Interface_Graph& G) const
 {
-  Handle(IGESSelect_ViewSorter) sorter = new IGESSelect_ViewSorter;
+  occ::handle<IGESSelect_ViewSorter> sorter = new IGESSelect_ViewSorter;
   sorter->SetModel(GetCasted(IGESData_IGESModel, G.Model()));
   sorter->Clear();
   sorter->AddList(InputResult(G).Content());
   sorter->SortDrawings(G);
   Interface_EntityIterator list;
-  Standard_Integer         nb = sorter->NbSets(Standard_True);
-  for (Standard_Integer i = 1; i <= nb; i++)
-    list.GetOneItem(sorter->SetItem(i, Standard_True));
+  int         nb = sorter->NbSets(true);
+  for (int i = 1; i <= nb; i++)
+    list.GetOneItem(sorter->SetItem(i, true));
   return list;
 }
 

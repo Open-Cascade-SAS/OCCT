@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TNaming_DeltaOnRemoval, TDF_DeltaOnRemoval)
 
 //=================================================================================================
 
-TNaming_DeltaOnRemoval::TNaming_DeltaOnRemoval(const Handle(TNaming_NamedShape)& NS)
+TNaming_DeltaOnRemoval::TNaming_DeltaOnRemoval(const occ::handle<TNaming_NamedShape>& NS)
     : TDF_DeltaOnRemoval(NS)
 {
   myDelta = new TNaming_DeltaOnModification(NS);

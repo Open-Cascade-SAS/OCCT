@@ -19,7 +19,7 @@
 #include <NCollection_Sequence.hxx>
 
 class XCAFDimTolObjects_GeomToleranceObject;
-typedef NCollection_Sequence<Handle(XCAFDimTolObjects_GeomToleranceObject)>
+typedef NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>
   XCAFDimTolObjects_GeomToleranceObjectSequence;
 
 #endif

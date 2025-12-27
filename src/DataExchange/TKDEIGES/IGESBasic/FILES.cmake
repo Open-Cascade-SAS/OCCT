@@ -4,8 +4,7 @@ set(OCCT_IGESBasic_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESBasic_FILES
   IGESBasic.cxx
   IGESBasic.hxx
-  IGESBasic_Array1OfLineFontEntity.hxx
-  IGESBasic_Array2OfHArray1OfReal.hxx
+
   IGESBasic_AssocGroupType.cxx
   IGESBasic_AssocGroupType.hxx
   IGESBasic_ExternalReferenceFile.cxx

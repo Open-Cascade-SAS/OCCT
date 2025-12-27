@@ -50,13 +50,12 @@ public:
   Standard_EXPORT GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc);
 
   //! Returns the constructed transformation.
-  Standard_EXPORT const Handle(Geom2d_Transformation)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
-  operator const Handle(Geom2d_Transformation)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
-protected:
 private:
-  Handle(Geom2d_Transformation) TheMirror;
+  occ::handle<Geom2d_Transformation> TheMirror;
 };
 
 #endif // _GCE2d_MakeMirror_HeaderFile

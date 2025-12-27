@@ -23,9 +23,6 @@
 #include <StepShape_TopologicalRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepShape_ConnectedEdgeSet;
-DEFINE_STANDARD_HANDLE(StepShape_ConnectedEdgeSet, StepShape_TopologicalRepresentationItem)
-
 //! Representation of STEP entity ConnectedEdgeSet
 class StepShape_ConnectedEdgeSet : public StepShape_TopologicalRepresentationItem
 {
@@ -35,20 +32,19 @@ public:
   Standard_EXPORT StepShape_ConnectedEdgeSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                            const Handle(StepShape_HArray1OfEdge)&  aCesEdges);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const occ::handle<StepShape_HArray1OfEdge>&  aCesEdges);
 
   //! Returns field CesEdges
-  Standard_EXPORT Handle(StepShape_HArray1OfEdge) CesEdges() const;
+  Standard_EXPORT occ::handle<StepShape_HArray1OfEdge> CesEdges() const;
 
   //! Set field CesEdges
-  Standard_EXPORT void SetCesEdges(const Handle(StepShape_HArray1OfEdge)& CesEdges);
+  Standard_EXPORT void SetCesEdges(const occ::handle<StepShape_HArray1OfEdge>& CesEdges);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedEdgeSet, StepShape_TopologicalRepresentationItem)
 
-protected:
 private:
-  Handle(StepShape_HArray1OfEdge) theCesEdges;
+  occ::handle<StepShape_HArray1OfEdge> theCesEdges;
 };
 
 #endif // _StepShape_ConnectedEdgeSet_HeaderFile

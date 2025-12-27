@@ -34,32 +34,32 @@ class StdLPersistent_HString
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
     //! Get/create a label defined by referenced string.
-    Standard_EXPORT virtual TDF_Label Label(const Handle(TDF_Data)& theDF) const;
+    Standard_EXPORT virtual TDF_Label Label(const occ::handle<TDF_Data>& theDF) const;
 
     //! Get the value.
-    const Handle(StringClass)& Value() const { return myValue; }
+    const occ::handle<StringClass>& Value() const { return myValue; }
 
   protected:
-    Handle(StringClass) myValue;
+    occ::handle<StringClass> myValue;
   };
 
 public:
-  class Ascii : public instance<TCollection_HAsciiString, Standard_Character>
+  class Ascii : public instance<TCollection_HAsciiString, char>
   {
   public:
     //! Get referenced ASCII string.
-    Standard_EXPORT virtual Handle(TCollection_HAsciiString) AsciiString() const;
+    Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> AsciiString() const;
 
-    inline Standard_CString PName() const { return "PCollection_HAsciiString"; }
+    inline const char* PName() const { return "PCollection_HAsciiString"; }
   };
 
-  class Extended : public instance<TCollection_HExtendedString, Standard_ExtCharacter>
+  class Extended : public instance<TCollection_HExtendedString, char16_t>
   {
   public:
     //! Get referenced extended string.
-    Standard_EXPORT virtual Handle(TCollection_HExtendedString) ExtString() const;
+    Standard_EXPORT virtual occ::handle<TCollection_HExtendedString> ExtString() const;
 
-    inline Standard_CString PName() const { return "PCollection_HExtendedString"; }
+    inline const char* PName() const { return "PCollection_HExtendedString"; }
   };
 };
 

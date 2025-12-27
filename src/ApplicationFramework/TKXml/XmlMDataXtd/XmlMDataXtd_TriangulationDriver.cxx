@@ -30,14 +30,14 @@ IMPLEMENT_DOMSTRING(ExistString, "exists")
 //=================================================================================================
 
 XmlMDataXtd_TriangulationDriver::XmlMDataXtd_TriangulationDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataXtd_TriangulationDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataXtd_TriangulationDriver::NewEmpty() const
 {
   return new TDataXtd_Triangulation();
 }
@@ -46,12 +46,12 @@ Handle(TDF_Attribute) XmlMDataXtd_TriangulationDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                        const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                        const occ::handle<TDF_Attribute>& theTarget,
                                                         XmlObjMgt_RRelocationTable&) const
 {
   const XmlObjMgt_Element&       element   = theSource;
-  Handle(TDataXtd_Triangulation) attribute = Handle(TDataXtd_Triangulation)::DownCast(theTarget);
+  occ::handle<TDataXtd_Triangulation> attribute = occ::down_cast<TDataXtd_Triangulation>(theTarget);
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString triangStatus = element.getAttribute(::TriangString());
@@ -59,22 +59,22 @@ Standard_Boolean XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persiste
       || strcmp(triangStatus.GetString(), ::ExistString().GetString()))
   {
     // No triangulation.
-    return Standard_True;
+    return true;
   }
 
   // Get mesh as a string.
   const XmlObjMgt_DOMString& data = XmlObjMgt::GetStringValue(element);
   std::stringstream          stream(std::string(data.GetString()));
 
-  Standard_Integer i, n1, n2, n3;
-  Standard_Integer nbNodes, nbTriangles, hasUV;
-  Standard_Real    deflection, x, y, z;
+  int i, n1, n2, n3;
+  int nbNodes, nbTriangles, hasUV;
+  double    deflection, x, y, z;
 
   stream >> nbNodes >> nbTriangles >> hasUV;
   GetReal(stream, deflection);
 
-  TColgp_Array1OfPnt   Nodes(1, nbNodes);
-  TColgp_Array1OfPnt2d UVNodes(1, nbNodes);
+  NCollection_Array1<gp_Pnt>   Nodes(1, nbNodes);
+  NCollection_Array1<gp_Pnt2d> UVNodes(1, nbNodes);
 
   for (i = 1; i <= nbNodes; i++)
   {
@@ -95,14 +95,14 @@ Standard_Boolean XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persiste
   }
 
   // read the triangles
-  Poly_Array1OfTriangle Triangles(1, nbTriangles);
+  NCollection_Array1<Poly_Triangle> Triangles(1, nbTriangles);
   for (i = 1; i <= nbTriangles; i++)
   {
     stream >> n1 >> n2 >> n3;
     Triangles(i).Set(n1, n2, n3);
   }
 
-  Handle(Poly_Triangulation) PT;
+  occ::handle<Poly_Triangulation> PT;
   if (hasUV)
     PT = new Poly_Triangulation(Nodes, UVNodes, Triangles);
   else
@@ -111,33 +111,33 @@ Standard_Boolean XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persiste
 
   attribute->Set(PT);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                             XmlObjMgt_Persistent&        theTarget,
                                             XmlObjMgt_SRelocationTable&) const
 {
-  const Handle(TDataXtd_Triangulation) attribute =
-    Handle(TDataXtd_Triangulation)::DownCast(theSource);
+  const occ::handle<TDataXtd_Triangulation> attribute =
+    occ::down_cast<TDataXtd_Triangulation>(theSource);
   if (attribute->Get().IsNull())
     theTarget.Element().setAttribute(::TriangString(), ::NullString());
   else
   {
     theTarget.Element().setAttribute(::TriangString(), ::ExistString());
 
-    Standard_Integer i, n1, n2, n3;
+    int i, n1, n2, n3;
 
     // Analyse the size of the triangulation
     // (to allocate properly the string array).
-    const Handle(Poly_Triangulation)& PT          = attribute->Get();
-    Standard_Integer                  nbNodes     = PT->NbNodes();
-    Standard_Integer                  nbTriangles = PT->NbTriangles();
-    Standard_Integer                  size        = PT->NbNodes();
+    const occ::handle<Poly_Triangulation>& PT          = attribute->Get();
+    int                  nbNodes     = PT->NbNodes();
+    int                  nbTriangles = PT->NbTriangles();
+    int                  size        = PT->NbNodes();
     // clang-format off
     size *= 3 * 25; // 3 coordinates for a node * 25 characters are used to represent a coordinate (double) in XML
     if (PT->HasUVNodes()) 
@@ -182,16 +182,16 @@ void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     stream << std::ends;
 
     // clang-format off
-    Standard_Character* dump = (Standard_Character*)stream.str(); // copying! Don't forget to delete it.
+    char* dump = (char*)stream.str(); // copying! Don't forget to delete it.
     // clang-format on
-    XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);
+    XmlObjMgt::SetStringValue(theTarget, dump, true);
     delete[] dump;
   }
 }
 
 //=================================================================================================
 
-void XmlMDataXtd_TriangulationDriver::GetReal(Standard_IStream& IS, Standard_Real& theValue) const
+void XmlMDataXtd_TriangulationDriver::GetReal(Standard_IStream& IS, double& theValue) const
 {
   theValue = 0.;
   if (IS.eof())

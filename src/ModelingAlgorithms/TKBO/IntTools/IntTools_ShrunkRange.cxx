@@ -28,8 +28,8 @@ IntTools_ShrunkRange::IntTools_ShrunkRange()
   myT2           = myT1;
   myTS1          = myT1;
   myTS2          = myT1;
-  myIsDone       = Standard_False;
-  myIsSplittable = Standard_False;
+  myIsDone       = false;
+  myIsSplittable = false;
   myLength       = 0.0;
 }
 
@@ -40,8 +40,8 @@ IntTools_ShrunkRange::~IntTools_ShrunkRange() {}
 //=================================================================================================
 
 void IntTools_ShrunkRange::SetData(const TopoDS_Edge&   aE,
-                                   const Standard_Real  aT1,
-                                   const Standard_Real  aT2,
+                                   const double  aT1,
+                                   const double  aT2,
                                    const TopoDS_Vertex& aV1,
                                    const TopoDS_Vertex& aV2)
 {
@@ -50,21 +50,21 @@ void IntTools_ShrunkRange::SetData(const TopoDS_Edge&   aE,
   myV2           = aV2;
   myT1           = aT1;
   myT2           = aT2;
-  myIsDone       = Standard_False;
-  myIsSplittable = Standard_False;
+  myIsDone       = false;
+  myIsSplittable = false;
   myLength       = 0.0;
 }
 
 //=================================================================================================
 
-void IntTools_ShrunkRange::SetContext(const Handle(IntTools_Context)& aCtx)
+void IntTools_ShrunkRange::SetContext(const occ::handle<IntTools_Context>& aCtx)
 {
   myCtx = aCtx;
 }
 
 //=================================================================================================
 
-const Handle(IntTools_Context)& IntTools_ShrunkRange::Context() const
+const occ::handle<IntTools_Context>& IntTools_ShrunkRange::Context() const
 {
   return myCtx;
 }
@@ -78,7 +78,7 @@ const TopoDS_Edge& IntTools_ShrunkRange::Edge() const
 
 //=================================================================================================
 
-void IntTools_ShrunkRange::ShrunkRange(Standard_Real& aT1, Standard_Real& aT2) const
+void IntTools_ShrunkRange::ShrunkRange(double& aT1, double& aT2) const
 {
   aT1 = myTS1;
   aT2 = myTS2;
@@ -93,7 +93,7 @@ const Bnd_Box& IntTools_ShrunkRange::BndBox() const
 
 //=================================================================================================
 
-void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1, const Standard_Real aT2)
+void IntTools_ShrunkRange::SetShrunkRange(const double aT1, const double aT2)
 {
   myTS1 = aT1;
   myTS2 = aT2;
@@ -106,13 +106,13 @@ void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1, const Standar
 
 void IntTools_ShrunkRange::Perform()
 {
-  myIsDone       = Standard_False;
-  myIsSplittable = Standard_False;
+  myIsDone       = false;
+  myIsSplittable = false;
   //
   // default tolerance - Precision::Confusion()
-  Standard_Real aDTol = Precision::Confusion();
+  double aDTol = Precision::Confusion();
   // default parametric tolerance - Precision::PConfusion()
-  Standard_Real aPDTol = Precision::PConfusion();
+  double aPDTol = Precision::PConfusion();
   //
   if (myT2 - myT1 < aPDTol)
   {
@@ -121,7 +121,7 @@ void IntTools_ShrunkRange::Perform()
   //
   gp_Pnt        aP1 = BRep_Tool::Pnt(myV1);
   gp_Pnt        aP2 = BRep_Tool::Pnt(myV2);
-  Standard_Real aTolE, aTolV1, aTolV2;
+  double aTolE, aTolV1, aTolV2;
   aTolE  = BRep_Tool::Tolerance(myEdge);
   aTolV1 = BRep_Tool::Tolerance(myV1);
   aTolV2 = BRep_Tool::Tolerance(myV2);
@@ -159,10 +159,10 @@ void IntTools_ShrunkRange::Perform()
   //
   // parametric tolerance for the edge
   // to be used in AbscissaPoint computations
-  Standard_Real aPTolE = aBAC.Resolution(aTolE);
+  double aPTolE = aBAC.Resolution(aTolE);
   // for the edges with big tolerance use
   // min parametric tolerance - 1% of its range
-  Standard_Real aPTolEMin = (myT2 - myT1) / 100.;
+  double aPTolEMin = (myT2 - myT1) / 100.;
   if (aPTolE > aPTolEMin)
   {
     aPTolE = aPTolEMin;
@@ -174,7 +174,7 @@ void IntTools_ShrunkRange::Perform()
     return;
   }
   //
-  myIsDone = Standard_True;
+  myIsDone = true;
   //
   // check the shrunk range to have the length not less than
   // 2*aTolE+2*Precision::Confusion()
@@ -183,7 +183,7 @@ void IntTools_ShrunkRange::Perform()
   // 2*Precision::Confusion() - minimal length of the new edges
   if (myLength > (2 * aTolE + 2 * aDTol))
   {
-    myIsSplittable = Standard_True;
+    myIsSplittable = true;
   }
   //
   // build bounding box for the edge on the shrunk range

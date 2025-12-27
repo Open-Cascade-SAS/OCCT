@@ -26,7 +26,7 @@ StepBasic_EulerAngles::StepBasic_EulerAngles() {}
 
 //=================================================================================================
 
-void StepBasic_EulerAngles::Init(const Handle(TColStd_HArray1OfReal)& aAngles)
+void StepBasic_EulerAngles::Init(const occ::handle<TColStd_HArray1OfReal>& aAngles)
 {
 
   theAngles = aAngles;
@@ -34,14 +34,14 @@ void StepBasic_EulerAngles::Init(const Handle(TColStd_HArray1OfReal)& aAngles)
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfReal) StepBasic_EulerAngles::Angles() const
+occ::handle<TColStd_HArray1OfReal> StepBasic_EulerAngles::Angles() const
 {
   return theAngles;
 }
 
 //=================================================================================================
 
-void StepBasic_EulerAngles::SetAngles(const Handle(TColStd_HArray1OfReal)& aAngles)
+void StepBasic_EulerAngles::SetAngles(const occ::handle<TColStd_HArray1OfReal>& aAngles)
 {
   theAngles = aAngles;
 }

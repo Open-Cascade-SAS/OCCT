@@ -44,51 +44,50 @@ public:
 
   //! <Tol> is the tolerance with which the approximation is performed.
   //! Other parameters for approximation have default values.
-  Standard_EXPORT ProjLib_ComputeApprox(const Handle(Adaptor3d_Curve)&   C,
-                                        const Handle(Adaptor3d_Surface)& S,
-                                        const Standard_Real              Tol);
+  Standard_EXPORT ProjLib_ComputeApprox(const occ::handle<Adaptor3d_Curve>&   C,
+                                        const occ::handle<Adaptor3d_Surface>& S,
+                                        const double              Tol);
 
   //! Performs projecting.
   //! In case of approximation current values of parameters are used:
   //! default values or set by corresponding methods Set...
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&   C,
-                               const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&   C,
+                               const occ::handle<Adaptor3d_Surface>& S);
 
   //! Set tolerance of approximation.
   //! Default value is Precision::Confusion().
-  Standard_EXPORT void SetTolerance(const Standard_Real theTolerance);
+  Standard_EXPORT void SetTolerance(const double theTolerance);
 
   //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
   //! If theDegMin/Max < 0, algorithm uses values that are chosen depending of types curve 3d
   //! and surface.
-  Standard_EXPORT void SetDegree(const Standard_Integer theDegMin,
-                                 const Standard_Integer theDegMax);
+  Standard_EXPORT void SetDegree(const int theDegMin,
+                                 const int theDegMax);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default
   //! value = 1000.
-  Standard_EXPORT void SetMaxSegments(const Standard_Integer theMaxSegments);
+  Standard_EXPORT void SetMaxSegments(const int theMaxSegments);
 
   //! Set the parameter, which defines type of boundary condition between segments during
   //! approximation. It can be AppParCurves_PassPoint or AppParCurves_TangencyPoint. Default value
   //! is AppParCurves_TangencyPoint;
   Standard_EXPORT void SetBndPnt(const AppParCurves_Constraint theBndPnt);
 
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const;
 
-  Standard_EXPORT Handle(Geom2d_BezierCurve) Bezier() const;
+  Standard_EXPORT occ::handle<Geom2d_BezierCurve> Bezier() const;
 
   //! returns the reached Tolerance.
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
-protected:
 private:
-  Standard_Real               myTolerance;
-  Handle(Geom2d_BSplineCurve) myBSpline;
-  Handle(Geom2d_BezierCurve)  myBezier;
-  Standard_Integer            myDegMin;
-  Standard_Integer            myDegMax;
-  Standard_Integer            myMaxSegments;
+  double               myTolerance;
+  occ::handle<Geom2d_BSplineCurve> myBSpline;
+  occ::handle<Geom2d_BezierCurve>  myBezier;
+  int            myDegMin;
+  int            myDegMax;
+  int            myMaxSegments;
   AppParCurves_Constraint     myBndPnt;
 };
 

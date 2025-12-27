@@ -41,8 +41,8 @@ public:
   //! are attempted to be canonized in simple types
   Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape&    S,
                                   const gp_Vec&          V,
-                                  const Standard_Boolean Copy     = Standard_False,
-                                  const Standard_Boolean Canonize = Standard_True);
+                                  const bool Copy     = false,
+                                  const bool Canonize = true);
 
   //! Builds a semi-infinite or an infinite prism of base S.
   //! If Copy is true S is copied. If Inf is true the prism
@@ -51,9 +51,9 @@ public:
   //! are attempted to be canonized in simple types
   Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape&    S,
                                   const gp_Dir&          D,
-                                  const Standard_Boolean Inf      = Standard_True,
-                                  const Standard_Boolean Copy     = Standard_False,
-                                  const Standard_Boolean Canonize = Standard_True);
+                                  const bool Inf      = true,
+                                  const bool Copy     = false,
+                                  const bool Canonize = true);
 
   //! Returns the TopoDS Shape attached to the prism.
   Standard_EXPORT TopoDS_Shape Shape();
@@ -84,19 +84,18 @@ public:
 
   //! Returns true if the
   //! aGenS is used in resulting shape
-  Standard_EXPORT Standard_Boolean IsUsed(const TopoDS_Shape& aGenS) const;
+  Standard_EXPORT bool IsUsed(const TopoDS_Shape& aGenS) const;
 
   //! Returns true if the shape, generated from theS
   //! is used in result shape
-  Standard_EXPORT Standard_Boolean GenIsUsed(const TopoDS_Shape& theS) const;
+  Standard_EXPORT bool GenIsUsed(const TopoDS_Shape& theS) const;
 
-protected:
 private:
   //! used to build the NumShape of a limited prism.
   Standard_EXPORT Sweep_NumShape NumShape() const;
 
   //! used to build the NumShape of an infinite prism.
-  Standard_EXPORT Sweep_NumShape NumShape(const Standard_Boolean Inf) const;
+  Standard_EXPORT Sweep_NumShape NumShape(const bool Inf) const;
 
   //! used to build the Location.
   Standard_EXPORT TopLoc_Location Location(const gp_Vec& V) const;

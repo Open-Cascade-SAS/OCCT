@@ -17,9 +17,10 @@
 #ifndef IGESDimen_HArray1OfGeneralNote_HeaderFile
 #define IGESDimen_HArray1OfGeneralNote_HeaderFile
 
-#include <IGESDimen_Array1OfGeneralNote.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESDimen_HArray1OfGeneralNote, IGESDimen_Array1OfGeneralNote)
+DEFINE_HARRAY1(IGESDimen_HArray1OfGeneralNote, NCollection_Array1<occ::handle<IGESDimen_GeneralNote>>)
 
 #endif

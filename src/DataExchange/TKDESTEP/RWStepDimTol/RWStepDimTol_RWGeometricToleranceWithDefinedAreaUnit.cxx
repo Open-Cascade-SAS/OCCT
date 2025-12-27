@@ -32,10 +32,10 @@ RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                          data,
-  const Standard_Integer                                          num,
-  Handle(Interface_Check)&                                        ach,
-  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                          data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                                        ach,
+  const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "geometric_tolerance_with_defined_area_unit"))
@@ -43,13 +43,13 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 
   // inherited fields from GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aDescription);
 
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -66,7 +66,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 
   // inherited fields from GeometricToleranceWithDefinedUnit
 
-  Handle(StepBasic_LengthMeasureWithUnit) anUnitSize;
+  occ::handle<StepBasic_LengthMeasureWithUnit> anUnitSize;
   data->ReadEntity(num,
                    5,
                    "geometric_tolerance_with_defined_unit.unit_size",
@@ -78,7 +78,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
   StepDimTol_AreaUnitType aType = StepDimTol_Circular;
   if (data->ParamType(num, 6) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 6);
+    const char* text = data->ParamCValue(num, 6);
     if (strcmp(text, ".CIRCULAR.") == 0)
       aType = StepDimTol_Circular;
     else if (strcmp(text, ".RECTANGULAR.") == 0)
@@ -91,8 +91,8 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
   else
     ach->AddFail("Parameter #6 (area_type) is not enumerations");
 
-  Handle(StepBasic_LengthMeasureWithUnit) aSecondUnitSize;
-  Standard_Boolean                        hasSecondUnitSize = data->IsParamDefined(num, 7);
+  occ::handle<StepBasic_LengthMeasureWithUnit> aSecondUnitSize;
+  bool                        hasSecondUnitSize = data->IsParamDefined(num, 7);
   if (hasSecondUnitSize)
     data->ReadEntity(num,
                      7,
@@ -116,7 +116,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
   StepData_StepWriter&                                            SW,
-  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent) const
+  const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent) const
 {
 
   // inherited fields from GeometricTolerance
@@ -157,7 +157,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::Share(
-  const Handle(StepDimTol_GeometricToleranceWithDefinedAreaUnit)& ent,
+  const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent,
   Interface_EntityIterator&                                       iter) const
 {
 

@@ -11,8 +11,7 @@ set(OCCT_DNaming_FILES
   DNaming_BoxDriver.hxx
   DNaming_CylinderDriver.cxx
   DNaming_CylinderDriver.hxx
-  DNaming_DataMapIteratorOfDataMapOfShapeOfName.hxx
-  DNaming_DataMapOfShapeOfName.hxx
+
   DNaming_FilletDriver.cxx
   DNaming_FilletDriver.hxx
   DNaming_Line3DDriver.cxx

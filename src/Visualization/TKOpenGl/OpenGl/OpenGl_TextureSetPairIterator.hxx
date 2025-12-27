@@ -22,8 +22,8 @@ class OpenGl_TextureSetPairIterator
 {
 public:
   //! Constructor.
-  OpenGl_TextureSetPairIterator(const Handle(OpenGl_TextureSet)& theSet1,
-                                const Handle(OpenGl_TextureSet)& theSet2)
+  OpenGl_TextureSetPairIterator(const occ::handle<OpenGl_TextureSet>& theSet1,
+                                const occ::handle<OpenGl_TextureSet>& theSet2)
       : myIter1(theSet1),
         myIter2(theSet2),
         myTexture1(NULL),
@@ -89,9 +89,9 @@ private:
   OpenGl_TextureSet::Iterator myIter2;
   OpenGl_Texture*             myTexture1;
   OpenGl_Texture*             myTexture2;
-  Standard_Integer            myUnitLower;
-  Standard_Integer            myUnitUpper;
-  Standard_Integer            myUnitCurrent;
+  int            myUnitLower;
+  int            myUnitUpper;
+  int            myUnitCurrent;
 };
 
 #endif //_OpenGl_TextureSetPairIterator_Header

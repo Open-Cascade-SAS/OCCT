@@ -48,7 +48,7 @@
 //! (equivalent to None.) If you want to give a particular type and signature to your interactive
 //! object, you must redefine the two virtual methods: Type and Signature. In the C++ inheritance
 //! structure of the package, each class representing a specific Interactive Object inherits
-//! AIS_InteractiveObject. Among these inheriting classes, AIS_Relation functions as the abstract
+//! AIS_InteractiveObject. Among these inheriting classes, PrsDim_Relation functions as the abstract
 //! mother class for tinheriting classes defining display of specific relational constraints and
 //! types of dimension. Some of these include:
 //! -   display of constraints based on relations of symmetry, tangency, parallelism and

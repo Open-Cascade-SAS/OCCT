@@ -33,17 +33,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_DriverTable, Standard_Transient)
 
-static Handle(TPrsStd_DriverTable) drivertable;
+static occ::handle<TPrsStd_DriverTable> drivertable;
 
 //=================================================================================================
 
-Handle(TPrsStd_DriverTable) TPrsStd_DriverTable::Get()
+occ::handle<TPrsStd_DriverTable> TPrsStd_DriverTable::Get()
 {
   if (drivertable.IsNull())
   {
     drivertable = new TPrsStd_DriverTable;
     // it must be never destroyed, even this library is unloaded
-    new Handle(TPrsStd_DriverTable)(drivertable);
+    new occ::handle<TPrsStd_DriverTable>(drivertable);
 #ifdef OCCT_DEBUG
     std::cout << "The new TPrsStd_DriverTable was created" << std::endl;
 #endif
@@ -68,12 +68,12 @@ void TPrsStd_DriverTable::InitStandardDrivers()
   if (myDrivers.Extent() > 0)
     return;
 
-  Handle(TPrsStd_AxisDriver)       axisdrv   = new TPrsStd_AxisDriver;
-  Handle(TPrsStd_ConstraintDriver) cnstrdrv  = new TPrsStd_ConstraintDriver;
-  Handle(TPrsStd_GeometryDriver)   geomdrv   = new TPrsStd_GeometryDriver;
-  Handle(TPrsStd_NamedShapeDriver) nshapedrv = new TPrsStd_NamedShapeDriver;
-  Handle(TPrsStd_PlaneDriver)      planedrv  = new TPrsStd_PlaneDriver;
-  Handle(TPrsStd_PointDriver)      pointdrv  = new TPrsStd_PointDriver;
+  occ::handle<TPrsStd_AxisDriver>       axisdrv   = new TPrsStd_AxisDriver;
+  occ::handle<TPrsStd_ConstraintDriver> cnstrdrv  = new TPrsStd_ConstraintDriver;
+  occ::handle<TPrsStd_GeometryDriver>   geomdrv   = new TPrsStd_GeometryDriver;
+  occ::handle<TPrsStd_NamedShapeDriver> nshapedrv = new TPrsStd_NamedShapeDriver;
+  occ::handle<TPrsStd_PlaneDriver>      planedrv  = new TPrsStd_PlaneDriver;
+  occ::handle<TPrsStd_PointDriver>      pointdrv  = new TPrsStd_PointDriver;
 
   myDrivers.Bind(TDataXtd_Axis::GetID(), axisdrv);
   myDrivers.Bind(TDataXtd_Constraint::GetID(), cnstrdrv);
@@ -88,8 +88,8 @@ void TPrsStd_DriverTable::InitStandardDrivers()
 // purpose  : Adds a driver to the DriverTable
 //=======================================================================
 
-Standard_Boolean TPrsStd_DriverTable::AddDriver(const Standard_GUID&          guid,
-                                                const Handle(TPrsStd_Driver)& driver)
+bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&          guid,
+                                                const occ::handle<TPrsStd_Driver>& driver)
 {
   return myDrivers.Bind(guid, driver);
 }
@@ -99,15 +99,15 @@ Standard_Boolean TPrsStd_DriverTable::AddDriver(const Standard_GUID&          gu
 // purpose  : Returns the driver if find
 //=======================================================================
 
-Standard_Boolean TPrsStd_DriverTable::FindDriver(const Standard_GUID&    guid,
-                                                 Handle(TPrsStd_Driver)& driver) const
+bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&    guid,
+                                                 occ::handle<TPrsStd_Driver>& driver) const
 {
   if (myDrivers.IsBound(guid))
   {
     driver = myDrivers.Find(guid);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -115,7 +115,7 @@ Standard_Boolean TPrsStd_DriverTable::FindDriver(const Standard_GUID&    guid,
 // purpose  : Removes a driver from the DriverTable
 //=======================================================================
 
-Standard_Boolean TPrsStd_DriverTable::RemoveDriver(const Standard_GUID& guid)
+bool TPrsStd_DriverTable::RemoveDriver(const Standard_GUID& guid)
 {
   return myDrivers.UnBind(guid);
 }

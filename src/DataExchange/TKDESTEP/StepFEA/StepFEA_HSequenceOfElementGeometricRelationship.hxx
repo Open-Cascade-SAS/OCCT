@@ -14,10 +14,11 @@
 #ifndef StepFEA_HSequenceOfElementGeometricRelationship_HeaderFile
 #define StepFEA_HSequenceOfElementGeometricRelationship_HeaderFile
 
-#include <StepFEA_SequenceOfElementGeometricRelationship.hxx>
+#include <StepFEA_ElementGeometricRelationship.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepFEA_HSequenceOfElementGeometricRelationship,
-                 StepFEA_SequenceOfElementGeometricRelationship)
+                 NCollection_Sequence<occ::handle<StepFEA_ElementGeometricRelationship>>)
 
 #endif

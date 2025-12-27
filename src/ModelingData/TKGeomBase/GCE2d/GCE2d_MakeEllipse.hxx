@@ -57,9 +57,9 @@ public:
   //! The status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.
   Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax2d&         MajorAxis,
-                                    const Standard_Real    MajorRadius,
-                                    const Standard_Real    MinorRadius,
-                                    const Standard_Boolean Sense = Standard_True);
+                                    const double    MajorRadius,
+                                    const double    MinorRadius,
+                                    const bool Sense = true);
 
   //! Axis is the local coordinate system of the ellipse.
   //! It is not forbidden to create an ellipse with MajorRadius =
@@ -67,8 +67,8 @@ public:
   //! The status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.
   Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax22d&     Axis,
-                                    const Standard_Real MajorRadius,
-                                    const Standard_Real MinorRadius);
+                                    const double MajorRadius,
+                                    const double MinorRadius);
 
   //! Make an Ellipse centered on the point Center, where
   //! -   the major axis of the ellipse is defined by Center and S1,
@@ -83,12 +83,12 @@ public:
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
-  Standard_EXPORT const Handle(Geom2d_Ellipse)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Ellipse>& Value() const;
 
-  operator const Handle(Geom2d_Ellipse)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Ellipse>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_Ellipse) TheEllipse;
+  occ::handle<Geom2d_Ellipse> TheEllipse;
 };
 
 #endif // _GCE2d_MakeEllipse_HeaderFile

@@ -25,10 +25,10 @@ StepKinematics_UniversalPairValue::StepKinematics_UniversalPairValue() {}
 //=================================================================================================
 
 void StepKinematics_UniversalPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theFirstRotationAngle,
-  const Standard_Real                         theSecondRotationAngle)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                         theFirstRotationAngle,
+  const double                         theSecondRotationAngle)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,7 +39,7 @@ void StepKinematics_UniversalPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairValue::FirstRotationAngle() const
+double StepKinematics_UniversalPairValue::FirstRotationAngle() const
 {
   return myFirstRotationAngle;
 }
@@ -47,14 +47,14 @@ Standard_Real StepKinematics_UniversalPairValue::FirstRotationAngle() const
 //=================================================================================================
 
 void StepKinematics_UniversalPairValue::SetFirstRotationAngle(
-  const Standard_Real theFirstRotationAngle)
+  const double theFirstRotationAngle)
 {
   myFirstRotationAngle = theFirstRotationAngle;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_UniversalPairValue::SecondRotationAngle() const
+double StepKinematics_UniversalPairValue::SecondRotationAngle() const
 {
   return mySecondRotationAngle;
 }
@@ -62,7 +62,7 @@ Standard_Real StepKinematics_UniversalPairValue::SecondRotationAngle() const
 //=================================================================================================
 
 void StepKinematics_UniversalPairValue::SetSecondRotationAngle(
-  const Standard_Real theSecondRotationAngle)
+  const double theSecondRotationAngle)
 {
   mySecondRotationAngle = theSecondRotationAngle;
 }

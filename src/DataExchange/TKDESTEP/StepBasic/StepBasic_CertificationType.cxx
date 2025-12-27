@@ -27,7 +27,7 @@ StepBasic_CertificationType::StepBasic_CertificationType() {}
 
 //=================================================================================================
 
-void StepBasic_CertificationType::Init(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_CertificationType::Init(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theDescription = aDescription;
@@ -35,7 +35,7 @@ void StepBasic_CertificationType::Init(const Handle(TCollection_HAsciiString)& a
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_CertificationType::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_CertificationType::Description() const
 {
   return theDescription;
 }
@@ -43,7 +43,7 @@ Handle(TCollection_HAsciiString) StepBasic_CertificationType::Description() cons
 //=================================================================================================
 
 void StepBasic_CertificationType::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

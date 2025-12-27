@@ -23,9 +23,15 @@
 #include <TopoDS_Shape.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 class Adaptor3d_Curve;
 
@@ -52,11 +58,11 @@ public:
   //! used for approximation.
   //! MaxDeg and MaxSeg are the maximum degree and the maximum
   //! number of segment for BSpline resulting of an approximation.
-  Standard_EXPORT void SetParams(const Standard_Real    Tol3D,
-                                 const Standard_Real    Tol2D,
+  Standard_EXPORT void SetParams(const double    Tol3D,
+                                 const double    Tol2D,
                                  const GeomAbs_Shape    InternalContinuity,
-                                 const Standard_Integer MaxDegree,
-                                 const Standard_Integer MaxSeg);
+                                 const int MaxDegree,
+                                 const int MaxSeg);
 
   //! Set the parameters used for computation
   //! in their default values
@@ -66,19 +72,19 @@ public:
   //! shape to project. If this condition is not satisfied then
   //! corresponding part of solution is discarded.
   //! if MaxDist < 0 then this method does not affect the algorithm
-  Standard_EXPORT void SetMaxDistance(const Standard_Real MaxDist);
+  Standard_EXPORT void SetMaxDistance(const double MaxDist);
 
-  //! if With3d = Standard_False the 3dcurve is not computed
+  //! if With3d = false the 3dcurve is not computed
   //! the initial 3dcurve is kept to build the resulting edges.
-  Standard_EXPORT void Compute3d(const Standard_Boolean With3d = Standard_True);
+  Standard_EXPORT void Compute3d(const bool With3d = true);
 
   //! Manage limitation of projected edges.
-  Standard_EXPORT void SetLimit(const Standard_Boolean FaceBoundaries = Standard_True);
+  Standard_EXPORT void SetLimit(const bool FaceBoundaries = true);
 
   //! Builds the result as a compound.
   Standard_EXPORT void Build();
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns the result
   Standard_EXPORT const TopoDS_Shape& Projection() const;
@@ -91,30 +97,29 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& S);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S);
 
-  Standard_EXPORT Standard_Boolean IsElementary(const Adaptor3d_Curve& C) const;
+  Standard_EXPORT bool IsElementary(const Adaptor3d_Curve& C) const;
 
   //! build the result as a list of wire if possible in --
   //! a first returns a wire only if there is only a wire.
-  Standard_EXPORT Standard_Boolean BuildWire(TopTools_ListOfShape& Liste) const;
+  Standard_EXPORT bool BuildWire(NCollection_List<TopoDS_Shape>& Liste) const;
 
-protected:
 private:
   TopoDS_Shape                       myShape;
-  Standard_Boolean                   myIsDone;
-  Standard_Real                      myTol3d;
-  Standard_Real                      myTol2d;
-  Standard_Real                      myMaxDist;
-  Standard_Boolean                   myWith3d;
+  bool                   myIsDone;
+  double                      myTol3d;
+  double                      myTol2d;
+  double                      myMaxDist;
+  bool                   myWith3d;
   GeomAbs_Shape                      myContinuity;
-  Standard_Integer                   myMaxDegree;
-  Standard_Integer                   myMaxSeg;
-  Standard_Boolean                   myFaceBounds;
+  int                   myMaxDegree;
+  int                   myMaxSeg;
+  bool                   myFaceBounds;
   TopoDS_Shape                       myToProj;
-  TopTools_DataMapOfShapeShape       myAncestorMap;
-  TopTools_DataMapOfShapeShape       myCorresp;
-  TopTools_DataMapOfShapeListOfShape myDescendants;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myAncestorMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myCorresp;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myDescendants;
   TopoDS_Shape                       myRes;
 };
 

@@ -19,7 +19,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include "../RWStepAP203/RWStepAP203_RWCcDesignApproval.pxx"
 #include "../RWStepAP203/RWStepAP203_RWCcDesignCertification.pxx"
@@ -1403,7 +1403,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 #include "../RWStepVisual/RWStepVisual_RWCubicBezierTriangulatedFace.pxx"
 #include "../RWStepVisual/RWStepVisual_RWTriangulatedSurfaceSet.pxx"
 
-static Standard_Integer catsh, catdr, catstr, catdsc, cataux;
+static int catsh, catdr, catstr, catdsc, cataux;
 
 //=================================================================================================
 
@@ -1420,9 +1420,9 @@ RWStepAP214_GeneralModule::RWStepAP214_GeneralModule()
 //=================================================================================================
 
 /*
-void RWStepAP214_GeneralModule::FillShared (const Handle(Interface_InterfaceModel)& model,
-                                            const Standard_Integer CN,
-                                            const Handle(Standard_Transient)& ent,
+void RWStepAP214_GeneralModule::FillShared (const occ::handle<Interface_InterfaceModel>& model,
+                                            const int CN,
+                                            const occ::handle<Standard_Transient>& ent,
                                             Interface_EntityIterator& iter) const
 {
   switch (CN) {
@@ -1446,8 +1446,8 @@ void RWStepAP214_GeneralModule::FillShared (const Handle(Interface_InterfaceMode
 
 //=================================================================================================
 
-void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer            CN,
-                                               const Handle(Standard_Transient)& ent,
+void RWStepAP214_GeneralModule::FillSharedCase(const int            CN,
+                                               const occ::handle<Standard_Transient>& ent,
                                                Interface_EntityIterator&         iter) const
 {
   switch (CN)
@@ -5307,10 +5307,10 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer           
 
 //=================================================================================================
 
-void RWStepAP214_GeneralModule::CheckCase(const Standard_Integer            CN,
-                                          const Handle(Standard_Transient)& ent,
+void RWStepAP214_GeneralModule::CheckCase(const int            CN,
+                                          const occ::handle<Standard_Transient>& ent,
                                           const Interface_ShareTool&        shares,
-                                          Handle(Interface_Check)&          ach) const
+                                          occ::handle<Interface_Check>&          ach) const
 {
   switch (CN)
   {
@@ -5406,9 +5406,9 @@ void RWStepAP214_GeneralModule::CheckCase(const Standard_Integer            CN,
 
 //=================================================================================================
 
-void RWStepAP214_GeneralModule::CopyCase(const Standard_Integer /*CN*/,
-                                         const Handle(Standard_Transient)& /*entfrom*/,
-                                         const Handle(Standard_Transient)& /*entto*/,
+void RWStepAP214_GeneralModule::CopyCase(const int /*CN*/,
+                                         const occ::handle<Standard_Transient>& /*entfrom*/,
+                                         const occ::handle<Standard_Transient>& /*entto*/,
                                          Interface_CopyTool& /*TC*/) const
 {
 }
@@ -5417,11 +5417,11 @@ void RWStepAP214_GeneralModule::CopyCase(const Standard_Integer /*CN*/,
 
 //=================================================================================================
 
-Standard_Boolean RWStepAP214_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                    Handle(Standard_Transient)& ent) const
+bool RWStepAP214_GeneralModule::NewVoid(const int      CN,
+                                                    occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
-    return Standard_False;
+    return false;
   switch (CN)
   {
     case 1:
@@ -7611,16 +7611,16 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid(const Standard_Integer      
       ent = new StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular;
       break;
     default:
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer RWStepAP214_GeneralModule::CategoryNumber(
-  const Standard_Integer CN,
-  const Handle(Standard_Transient)& /*ent*/,
+int RWStepAP214_GeneralModule::CategoryNumber(
+  const int CN,
+  const occ::handle<Standard_Transient>& /*ent*/,
   const Interface_ShareTool& /*shares*/) const
 {
   switch (CN)
@@ -8551,13 +8551,13 @@ Standard_Integer RWStepAP214_GeneralModule::CategoryNumber(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) RWStepAP214_GeneralModule::Name(
-  const Standard_Integer /*CN*/,
-  const Handle(Standard_Transient)& /*ent*/,
+occ::handle<TCollection_HAsciiString> RWStepAP214_GeneralModule::Name(
+  const int /*CN*/,
+  const occ::handle<Standard_Transient>& /*ent*/,
   const Interface_ShareTool&) const
 {
   //   On joue par down-cast et non par CN, car Name est en general heritee
   //   (on pourrait filtrer par CN pour decider quel down-cast faire ...)
-  Handle(TCollection_HAsciiString) nom;
+  occ::handle<TCollection_HAsciiString> nom;
   return nom;
 }

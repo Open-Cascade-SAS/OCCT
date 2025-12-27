@@ -69,7 +69,7 @@ public:
   //! It is not forbidden to create a cylindrical surface with
   //! Radius = 0.0
   //! Status is "NegativeRadius" if Radius < 0.0
-  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax2& A2, const Standard_Real Radius);
+  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax2& A2, const double Radius);
 
   //! Creates a CylindricalSurface from a non persistent Cylinder
   //! from package gp.
@@ -87,7 +87,7 @@ public:
   //! which can be greater or lower than zero.
   //! The radius of the result is the absolute value of the
   //! radius of <Cyl> plus <Dist>
-  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const Standard_Real Dist);
+  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const double Dist);
 
   //! Make a CylindricalSurface from Geom <TheCylinder>
   //! passing through 3 Pnt <P1>,<P2>,<P3>.
@@ -97,19 +97,19 @@ public:
 
   //! Make a CylindricalSurface by its axis <Axis> and radius
   //! <Radius>.
-  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax1& Axis, const Standard_Real Radius);
+  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Ax1& Axis, const double Radius);
 
   //! Make a CylindricalSurface by its circular base.
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Circ& Circ);
 
   //! Returns the constructed cylinder.
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
-  Standard_EXPORT const Handle(Geom_CylindricalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_CylindricalSurface>& Value() const;
 
-  operator const Handle(Geom_CylindricalSurface)&() const { return Value(); }
+  operator const occ::handle<Geom_CylindricalSurface>&() const { return Value(); }
 
 private:
-  Handle(Geom_CylindricalSurface) TheCylinder;
+  occ::handle<Geom_CylindricalSurface> TheCylinder;
 };
 
 #endif // _GC_MakeCylindricalSurface_HeaderFile

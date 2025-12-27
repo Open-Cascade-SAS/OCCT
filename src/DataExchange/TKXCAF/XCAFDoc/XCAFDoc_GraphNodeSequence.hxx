@@ -19,6 +19,6 @@
 #include <NCollection_Sequence.hxx>
 
 class XCAFDoc_GraphNode;
-typedef NCollection_Sequence<Handle(XCAFDoc_GraphNode)> XCAFDoc_GraphNodeSequence;
+typedef NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>> XCAFDoc_GraphNodeSequence;
 
 #endif

@@ -38,24 +38,26 @@
 #include <HelixGeom_HelixCurve.hxx>
 #include <HelixGeom_Tools.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepTest.hxx>
 
 Standard_IMPORT Draw_Viewer dout;
 static gp_Ax3 theHelixAxis(gp_Pnt(0., 0., 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
 
-static Standard_Integer comphelix(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer helix(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer spiral(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer setaxis(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer comphelix2(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer helix2(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer spiral2(Draw_Interpretor&, Standard_Integer, const char**);
+static int comphelix(Draw_Interpretor&, int, const char**);
+static int helix(Draw_Interpretor&, int, const char**);
+static int spiral(Draw_Interpretor&, int, const char**);
+static int setaxis(Draw_Interpretor&, int, const char**);
+static int comphelix2(Draw_Interpretor&, int, const char**);
+static int helix2(Draw_Interpretor&, int, const char**);
+static int spiral2(Draw_Interpretor&, int, const char**);
 
 // Helper function to display helix results
 static void DisplayHelixResult(Draw_Interpretor&             theDI,
@@ -64,7 +66,7 @@ static void DisplayHelixResult(Draw_Interpretor&             theDI,
 {
   if (theBuilder.ErrorStatus() == 0)
   {
-    Standard_Real aMaxError = theBuilder.ToleranceReached();
+    double aMaxError = theBuilder.ToleranceReached();
     theDI << "WarningStatus = " << theBuilder.WarningStatus() << "\n";
     theDI << "ToleranceReached = " << aMaxError << "\n";
     const TopoDS_Shape& aW = theBuilder.Shape();
@@ -80,10 +82,10 @@ static void DisplayHelixResult(Draw_Interpretor&             theDI,
 
 void BRepTest::HelixCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapters name
   const char* g = "Helix commands";
   // Commands
@@ -114,7 +116,7 @@ void BRepTest::HelixCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer setaxis(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int setaxis(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 10)
   {
@@ -124,8 +126,8 @@ Standard_Integer setaxis(Draw_Interpretor& di, Standard_Integer n, const char** 
     di << "        " << "Xx Xy Xz - X direction" << "\n";
     return 1;
   }
-  Standard_Real    xx[9];
-  Standard_Integer i;
+  double    xx[9];
+  int i;
   for (i = 0; i < 9; ++i)
   {
     xx[i] = Draw::Atof(a[i + 1]);
@@ -141,7 +143,7 @@ Standard_Integer setaxis(Draw_Interpretor& di, Standard_Integer n, const char** 
 //
 //=================================================================================================
 
-Standard_Integer comphelix(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int comphelix(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 8)
   {
@@ -158,7 +160,7 @@ Standard_Integer comphelix(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -177,10 +179,10 @@ Standard_Integer comphelix(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
 
-  TColStd_Array1OfReal    aDiams(1, aNb + 1);
-  TColStd_Array1OfReal    aHeights(1, aNb);
-  TColStd_Array1OfReal    aPitches(1, aNb);
-  TColStd_Array1OfBoolean bIsPitches(1, aNb);
+  NCollection_Array1<double>    aDiams(1, aNb + 1);
+  NCollection_Array1<double>    aHeights(1, aNb);
+  NCollection_Array1<double>    aPitches(1, aNb);
+  NCollection_Array1<bool> bIsPitches(1, aNb);
 
   ic = 3;
   for (i = 1; i <= aNb + 1; ++i)
@@ -217,7 +219,7 @@ Standard_Integer comphelix(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer helix(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int helix(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 7)
   {
@@ -234,7 +236,7 @@ Standard_Integer helix(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -253,10 +255,10 @@ Standard_Integer helix(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
 
-  TColStd_Array1OfReal    aDiams(1, 1);
-  TColStd_Array1OfReal    aHeights(1, aNb);
-  TColStd_Array1OfReal    aPitches(1, aNb);
-  TColStd_Array1OfBoolean bIsPitches(1, aNb);
+  NCollection_Array1<double>    aDiams(1, 1);
+  NCollection_Array1<double>    aHeights(1, aNb);
+  NCollection_Array1<double>    aPitches(1, aNb);
+  NCollection_Array1<bool> bIsPitches(1, aNb);
 
   ic        = 3;
   aDiams(1) = Draw::Atof(a[ic]);
@@ -290,7 +292,7 @@ Standard_Integer helix(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer spiral(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int spiral(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 8)
   {
@@ -307,7 +309,7 @@ Standard_Integer spiral(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -326,10 +328,10 @@ Standard_Integer spiral(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 1;
   }
 
-  TColStd_Array1OfReal    aDiams(1, 2);
-  TColStd_Array1OfReal    aHeights(1, aNb);
-  TColStd_Array1OfReal    aPitches(1, aNb);
-  TColStd_Array1OfBoolean bIsPitches(1, aNb);
+  NCollection_Array1<double>    aDiams(1, 2);
+  NCollection_Array1<double>    aHeights(1, aNb);
+  NCollection_Array1<double>    aPitches(1, aNb);
+  NCollection_Array1<bool> bIsPitches(1, aNb);
 
   ic = 3;
   for (i = 1; i <= 2; ++i)
@@ -366,7 +368,7 @@ Standard_Integer spiral(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer comphelix2(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int comphelix2(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 7)
   {
@@ -379,7 +381,7 @@ Standard_Integer comphelix2(Draw_Interpretor& di, Standard_Integer n, const char
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -394,9 +396,9 @@ Standard_Integer comphelix2(Draw_Interpretor& di, Standard_Integer n, const char
     return 1;
   }
 
-  TColStd_Array1OfReal aDiams(1, aNb + 1);
-  TColStd_Array1OfReal aPitches(1, aNb);
-  TColStd_Array1OfReal aNbTurns(1, aNb);
+  NCollection_Array1<double> aDiams(1, aNb + 1);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<double> aNbTurns(1, aNb);
 
   ic = 3;
   for (i = 1; i <= aNb + 1; ++i)
@@ -429,7 +431,7 @@ Standard_Integer comphelix2(Draw_Interpretor& di, Standard_Integer n, const char
 
 //=================================================================================================
 
-Standard_Integer helix2(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int helix2(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
   {
@@ -442,7 +444,7 @@ Standard_Integer helix2(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -457,9 +459,9 @@ Standard_Integer helix2(Draw_Interpretor& di, Standard_Integer n, const char** a
     return 1;
   }
 
-  TColStd_Array1OfReal aDiams(1, 1);
-  TColStd_Array1OfReal aPitches(1, aNb);
-  TColStd_Array1OfReal aNbTurns(1, aNb);
+  NCollection_Array1<double> aDiams(1, 1);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<double> aNbTurns(1, aNb);
 
   ic        = 3;
   aDiams(1) = Draw::Atof(a[ic]);
@@ -487,7 +489,7 @@ Standard_Integer helix2(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer spiral2(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int spiral2(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 7)
   {
@@ -500,7 +502,7 @@ Standard_Integer spiral2(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
   //
-  Standard_Integer       i, aNb, ic;
+  int       i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -515,9 +517,9 @@ Standard_Integer spiral2(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
 
-  TColStd_Array1OfReal aDiams(1, 2);
-  TColStd_Array1OfReal aPitches(1, aNb);
-  TColStd_Array1OfReal aNbTurns(1, aNb);
+  NCollection_Array1<double> aDiams(1, 2);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<double> aNbTurns(1, aNb);
 
   ic = 3;
   for (i = 1; i <= 2; ++i)

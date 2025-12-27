@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_LowOrderKinematicPair, StepKinematics_KinematicPair)
-
 //! Representation of STEP entity LowOrderKinematicPair
 class StepKinematics_LowOrderKinematicPair : public StepKinematics_KinematicPair
 {
@@ -35,58 +33,58 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Boolean                       theTX,
-    const Standard_Boolean                       theTY,
-    const Standard_Boolean                       theTZ,
-    const Standard_Boolean                       theRX,
-    const Standard_Boolean                       theRY,
-    const Standard_Boolean                       theRZ);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const bool                       theTX,
+    const bool                       theTY,
+    const bool                       theTZ,
+    const bool                       theRX,
+    const bool                       theRY,
+    const bool                       theRZ);
 
   //! Returns field TX
-  Standard_EXPORT Standard_Boolean TX() const;
+  Standard_EXPORT bool TX() const;
   //! Sets field TX
-  Standard_EXPORT void SetTX(const Standard_Boolean theTX);
+  Standard_EXPORT void SetTX(const bool theTX);
 
   //! Returns field TY
-  Standard_EXPORT Standard_Boolean TY() const;
+  Standard_EXPORT bool TY() const;
   //! Sets field TY
-  Standard_EXPORT void SetTY(const Standard_Boolean theTY);
+  Standard_EXPORT void SetTY(const bool theTY);
 
   //! Returns field TZ
-  Standard_EXPORT Standard_Boolean TZ() const;
+  Standard_EXPORT bool TZ() const;
   //! Sets field TZ
-  Standard_EXPORT void SetTZ(const Standard_Boolean theTZ);
+  Standard_EXPORT void SetTZ(const bool theTZ);
 
   //! Returns field RX
-  Standard_EXPORT Standard_Boolean RX() const;
+  Standard_EXPORT bool RX() const;
   //! Sets field RX
-  Standard_EXPORT void SetRX(const Standard_Boolean theRX);
+  Standard_EXPORT void SetRX(const bool theRX);
 
   //! Returns field RY
-  Standard_EXPORT Standard_Boolean RY() const;
+  Standard_EXPORT bool RY() const;
   //! Sets field RY
-  Standard_EXPORT void SetRY(const Standard_Boolean theRY);
+  Standard_EXPORT void SetRY(const bool theRY);
 
   //! Returns field RZ
-  Standard_EXPORT Standard_Boolean RZ() const;
+  Standard_EXPORT bool RZ() const;
   //! Sets field RZ
-  Standard_EXPORT void SetRZ(const Standard_Boolean theRZ);
+  Standard_EXPORT void SetRZ(const bool theRZ);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPair, StepKinematics_KinematicPair)
 
 private:
-  Standard_Boolean myTX;
-  Standard_Boolean myTY;
-  Standard_Boolean myTZ;
-  Standard_Boolean myRX;
-  Standard_Boolean myRY;
-  Standard_Boolean myRZ;
+  bool myTX;
+  bool myTY;
+  bool myTZ;
+  bool myRX;
+  bool myRY;
+  bool myRZ;
 };
 #endif // _StepKinematics_LowOrderKinematicPair_HeaderFile_

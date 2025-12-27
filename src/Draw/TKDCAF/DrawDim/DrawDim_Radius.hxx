@@ -24,9 +24,6 @@
 #include <DrawDim_Dimension.hxx>
 class Draw_Display;
 
-class DrawDim_Radius;
-DEFINE_STANDARD_HANDLE(DrawDim_Radius, DrawDim_Dimension)
-
 class DrawDim_Radius : public DrawDim_Dimension
 {
 
@@ -37,11 +34,10 @@ public:
 
   Standard_EXPORT void Cylinder(const TopoDS_Face& face);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_Radius, DrawDim_Dimension)
 
-protected:
 private:
   TopoDS_Face myCylinder;
 };

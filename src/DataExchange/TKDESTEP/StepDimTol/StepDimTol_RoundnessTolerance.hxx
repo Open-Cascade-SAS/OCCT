@@ -20,9 +20,6 @@
 
 #include <StepDimTol_GeometricTolerance.hxx>
 
-class StepDimTol_RoundnessTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_RoundnessTolerance, StepDimTol_GeometricTolerance)
-
 //! Representation of STEP entity RoundnessTolerance
 class StepDimTol_RoundnessTolerance : public StepDimTol_GeometricTolerance
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_RoundnessTolerance, StepDimTol_GeometricTolerance)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_RoundnessTolerance_HeaderFile

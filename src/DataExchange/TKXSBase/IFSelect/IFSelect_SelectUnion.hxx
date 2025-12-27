@@ -25,9 +25,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-class IFSelect_SelectUnion;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectUnion, IFSelect_SelectCombine)
-
 //! A SelectUnion cumulates the Entities issued from several other
 //! Selections (union of results : "OR" operator)
 class IFSelect_SelectUnion : public IFSelect_SelectCombine
@@ -40,15 +37,13 @@ public:
   //! Returns the list of selected Entities, which is the addition
   //! result from all input selections. Uniqueness is guaranteed.
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Union (OR)"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectUnion, IFSelect_SelectCombine)
 
-protected:
-private:
 };
 
 #endif // _IFSelect_SelectUnion_HeaderFile

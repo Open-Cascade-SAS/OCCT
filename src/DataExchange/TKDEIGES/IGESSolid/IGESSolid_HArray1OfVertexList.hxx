@@ -17,9 +17,10 @@
 #ifndef IGESSolid_HArray1OfVertexList_HeaderFile
 #define IGESSolid_HArray1OfVertexList_HeaderFile
 
-#include <IGESSolid_Array1OfVertexList.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESSolid_HArray1OfVertexList, IGESSolid_Array1OfVertexList)
+DEFINE_HARRAY1(IGESSolid_HArray1OfVertexList, NCollection_Array1<occ::handle<IGESSolid_VertexList>>)
 
 #endif

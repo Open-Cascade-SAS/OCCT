@@ -27,52 +27,48 @@ class Draw_Display;
 class HLRBRep_Data;
 class HLRBRep_EdgeData;
 
-class HLRTest_DrawableEdgeTool;
-DEFINE_STANDARD_HANDLE(HLRTest_DrawableEdgeTool, Draw_Drawable3D)
-
 //! Used to display the results.
 class HLRTest_DrawableEdgeTool : public Draw_Drawable3D
 {
 
 public:
-  Standard_EXPORT HLRTest_DrawableEdgeTool(const Handle(HLRBRep_Algo)& Alg,
-                                           const Standard_Boolean      Visible,
-                                           const Standard_Boolean      IsoLine,
-                                           const Standard_Boolean      Rg1Line,
-                                           const Standard_Boolean      RgNLine,
-                                           const Standard_Integer      ViewId);
+  Standard_EXPORT HLRTest_DrawableEdgeTool(const occ::handle<HLRBRep_Algo>& Alg,
+                                           const bool      Visible,
+                                           const bool      IsoLine,
+                                           const bool      Rg1Line,
+                                           const bool      RgNLine,
+                                           const int      ViewId);
 
-  Standard_EXPORT void DrawOn(Draw_Display& D) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& D) const override;
 
   DEFINE_STANDARD_RTTIEXT(HLRTest_DrawableEdgeTool, Draw_Drawable3D)
 
-protected:
 private:
-  Standard_EXPORT void InternalDraw(Draw_Display& D, const Standard_Integer typ) const;
+  Standard_EXPORT void InternalDraw(Draw_Display& D, const int typ) const;
 
   Standard_EXPORT void DrawFace(Draw_Display&          D,
-                                const Standard_Integer typ,
-                                const Standard_Integer nCB,
-                                const Standard_Integer iface,
-                                Standard_Integer&      e2,
-                                Standard_Integer&      iCB,
-                                Handle(HLRBRep_Data)&  DS) const;
+                                const int typ,
+                                const int nCB,
+                                const int iface,
+                                int&      e2,
+                                int&      iCB,
+                                occ::handle<HLRBRep_Data>&  DS) const;
 
   Standard_EXPORT void DrawEdge(Draw_Display&          D,
-                                const Standard_Boolean inFace,
-                                const Standard_Integer typ,
-                                const Standard_Integer nCB,
-                                const Standard_Integer ie,
-                                Standard_Integer&      e2,
-                                Standard_Integer&      iCB,
+                                const bool inFace,
+                                const int typ,
+                                const int nCB,
+                                const int ie,
+                                int&      e2,
+                                int&      iCB,
                                 HLRBRep_EdgeData&      ed) const;
 
-  Handle(HLRBRep_Algo) myAlgo;
-  Standard_Boolean     myVisible;
-  Standard_Boolean     myIsoLine;
-  Standard_Boolean     myRg1Line;
-  Standard_Boolean     myRgNLine;
-  Standard_Integer     myViewId;
+  occ::handle<HLRBRep_Algo> myAlgo;
+  bool     myVisible;
+  bool     myIsoLine;
+  bool     myRg1Line;
+  bool     myRgNLine;
+  int     myViewId;
 };
 
 #endif // _HLRTest_DrawableEdgeTool_HeaderFile

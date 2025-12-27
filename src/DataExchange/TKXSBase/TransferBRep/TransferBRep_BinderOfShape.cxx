@@ -24,14 +24,14 @@ TransferBRep_BinderOfShape::TransferBRep_BinderOfShape(const TopoDS_Shape& res)
   SetResultPresent();
 }
 
-//    Standard_Boolean  TransferBRep_BinderOfShape::IsMultiple() const
-//      {  return Standard_False;  }
+//    bool  TransferBRep_BinderOfShape::IsMultiple() const
+//      {  return false;  }
 
-Handle(Standard_Type) TransferBRep_BinderOfShape::ResultType() const
+occ::handle<Standard_Type> TransferBRep_BinderOfShape::ResultType() const
 // clang-format off
 {  return  TransferBRep_ShapeInfo::Type (theres);  }  // correspond a "STANDARD_TYPE(TopoDS_Shape)"
 
-Standard_CString  TransferBRep_BinderOfShape::ResultTypeName () const
+const char*  TransferBRep_BinderOfShape::ResultTypeName () const
 {  return  TransferBRep_ShapeInfo::TypeName (theres);  }  // correspond a "STANDARD_TYPE(TopoDS_Shape)"
 
 // clang-format on

@@ -34,8 +34,8 @@ BRepFill_Section::BRepFill_Section()
 
 BRepFill_Section::BRepFill_Section(const TopoDS_Shape&    Profile,
                                    const TopoDS_Vertex&   V,
-                                   const Standard_Boolean WithContact,
-                                   const Standard_Boolean WithCorrection)
+                                   const bool WithContact,
+                                   const bool WithCorrection)
     : vertex(V),
       islaw(0),
       ispunctual(0),
@@ -53,7 +53,7 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape&    Profile,
     wire = TopoDS::Wire(aProfile);
   else if (aProfile.ShapeType() == TopAbs_VERTEX)
   {
-    ispunctual            = Standard_True;
+    ispunctual            = true;
     TopoDS_Vertex aVertex = TopoDS::Vertex(aProfile);
     BRep_Builder  BB;
 
@@ -61,17 +61,17 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape&    Profile,
     BB.MakeEdge(DegEdge);
     BB.Add(DegEdge, aVertex.Oriented(TopAbs_FORWARD));
     BB.Add(DegEdge, aVertex.Oriented(TopAbs_REVERSED));
-    BB.Degenerated(DegEdge, Standard_True);
+    BB.Degenerated(DegEdge, true);
 
     BB.MakeWire(wire);
     BB.Add(wire, DegEdge);
-    wire.Closed(Standard_True);
+    wire.Closed(true);
   }
   else
     throw Standard_Failure("BRepFill_Section: bad shape type of section");
 }
 
-void BRepFill_Section::Set(const Standard_Boolean IsLaw)
+void BRepFill_Section::Set(const bool IsLaw)
 {
   islaw = IsLaw;
 }

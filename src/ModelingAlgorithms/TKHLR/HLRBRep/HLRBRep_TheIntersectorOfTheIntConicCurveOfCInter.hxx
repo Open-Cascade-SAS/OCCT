@@ -22,10 +22,11 @@
 
 #include <IntRes2d_Intersection.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class Standard_ConstructionError;
 class IntCurve_IConicTool;
 class HLRBRep_CurveTool;
+class HLRBRep_Curve;
 class HLRBRep_TheProjPCurOfCInter;
 class HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter;
 class IntRes2d_Domain;
@@ -46,10 +47,10 @@ public:
   //! and HasLastPoint return True.
   Standard_EXPORT HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter(const IntCurve_IConicTool& ITool,
                                                                    const IntRes2d_Domain&     Dom1,
-                                                                   const Standard_Address& PCurve,
+                                                                   const HLRBRep_Curve*& PCurve,
                                                                    const IntRes2d_Domain&  Dom2,
-                                                                   const Standard_Real     TolConf,
-                                                                   const Standard_Real     Tol);
+                                                                   const double     TolConf,
+                                                                   const double     Tol);
 
   //! Intersection between an implicit curve and
   //! a parametrised curve.
@@ -58,38 +59,36 @@ public:
   //! and HasLastPoint return True.
   Standard_EXPORT void Perform(const IntCurve_IConicTool& ITool,
                                const IntRes2d_Domain&     Dom1,
-                               const Standard_Address&    PCurve,
+                               const HLRBRep_Curve*&    PCurve,
                                const IntRes2d_Domain&     Dom2,
-                               const Standard_Real        TolConf,
-                               const Standard_Real        Tol);
+                               const double        TolConf,
+                               const double        Tol);
 
-  Standard_EXPORT Standard_Real FindU(const Standard_Real        parameter,
+  Standard_EXPORT double FindU(const double        parameter,
                                       gp_Pnt2d&                  point,
-                                      const Standard_Address&    TheParCurev,
+                                      const HLRBRep_Curve*&    TheParCurev,
                                       const IntCurve_IConicTool& TheImpTool) const;
 
-  Standard_EXPORT Standard_Real FindV(const Standard_Real        parameter,
+  Standard_EXPORT double FindV(const double        parameter,
                                       gp_Pnt2d&                  point,
                                       const IntCurve_IConicTool& TheImpTool,
-                                      const Standard_Address&    ParCurve,
+                                      const HLRBRep_Curve*&    ParCurve,
                                       const IntRes2d_Domain&     TheParCurveDomain,
-                                      const Standard_Real        V0,
-                                      const Standard_Real        V1,
-                                      const Standard_Real        Tolerance) const;
+                                      const double        V0,
+                                      const double        V1,
+                                      const double        Tolerance) const;
 
   Standard_EXPORT void And_Domaine_Objet1_Intersections(const IntCurve_IConicTool& TheImpTool,
-                                                        const Standard_Address&    TheParCurve,
+                                                        const HLRBRep_Curve*&    TheParCurve,
                                                         const IntRes2d_Domain& TheImpCurveDomain,
                                                         const IntRes2d_Domain& TheParCurveDomain,
-                                                        Standard_Integer&      NbResultats,
-                                                        TColStd_Array1OfReal&  Inter2_And_Domain2,
-                                                        TColStd_Array1OfReal&  Inter1,
-                                                        TColStd_Array1OfReal&  Resultat1,
-                                                        TColStd_Array1OfReal&  Resultat2,
-                                                        const Standard_Real    EpsNul) const;
+                                                        int&      NbResultats,
+                                                        NCollection_Array1<double>&  Inter2_And_Domain2,
+                                                        NCollection_Array1<double>&  Inter1,
+                                                        NCollection_Array1<double>&  Resultat1,
+                                                        NCollection_Array1<double>&  Resultat2,
+                                                        const double    EpsNul) const;
 
-protected:
-private:
 };
 
 #endif // _HLRBRep_TheIntersectorOfTheIntConicCurveOfCInter_HeaderFile

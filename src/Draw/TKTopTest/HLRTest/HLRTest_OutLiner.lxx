@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Handle(HLRTopoBRep_OutLiner) HLRTest_OutLiner::OutLiner() const
+inline occ::handle<HLRTopoBRep_OutLiner> HLRTest_OutLiner::OutLiner() const
 {
   return myOutLiner;
 }

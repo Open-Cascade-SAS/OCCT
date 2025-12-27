@@ -16,30 +16,28 @@
 
 #include <BinMDF_ADriver.hxx>
 
-DEFINE_STANDARD_HANDLE(BinMXCAFDoc_VisMaterialToolDriver, BinMDF_ADriver)
-
 //! Binary persistence driver for XCAFDoc_VisMaterialTool attribute.
 class BinMXCAFDoc_VisMaterialToolDriver : public BinMDF_ADriver
 {
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialToolDriver, BinMDF_ADriver)
 public:
   //! Main constructor.
-  Standard_EXPORT BinMXCAFDoc_VisMaterialToolDriver(const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_VisMaterialToolDriver(const occ::handle<Message_Messenger>& theMsgDriver);
 
   //! Create new instance of XCAFDoc_VisMaterialTool.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Paste attribute from persistence into document.
-  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
                                                  BinObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   //! Paste attribute from document into persistence.
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                                      BinObjMgt_Persistent&        theTarget,
-                                     BinObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+    override;
 };
 
 #endif // _BinMXCAFDoc_VisMaterialToolDriver_HeaderFile

@@ -31,13 +31,13 @@ public:
   void SetRawHandle(uint64_t theHande) { myRawHandle = theHande; }
 
   //! Add action.
-  void AddAction(const Handle(Aspect_XRAction)& theAction)
+  void AddAction(const occ::handle<Aspect_XRAction>& theAction)
   {
     myActions.Add(theAction->Id(), theAction);
   }
 
   //! Return map of actions.
-  const Aspect_XRActionMap& Actions() const { return myActions; }
+  const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>& Actions() const { return myActions; }
 
   //! Main constructor.
   Aspect_XRActionSet(const TCollection_AsciiString& theId)
@@ -49,10 +49,7 @@ public:
 protected:
   TCollection_AsciiString myId;        //!< action set id
   uint64_t                myRawHandle; //!< action set handle
-  Aspect_XRActionMap      myActions;   //!< map of actions
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>      myActions;   //!< map of actions
 };
-
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRActionSet)>
-  Aspect_XRActionSetMap;
 
 #endif // _Aspect_XRActionSet_HeaderFile

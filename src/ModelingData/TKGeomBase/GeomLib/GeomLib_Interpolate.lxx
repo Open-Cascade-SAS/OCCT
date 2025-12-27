@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean GeomLib_Interpolate::IsDone() const
+inline bool GeomLib_Interpolate::IsDone() const
 {
   return myIsDone;
 }

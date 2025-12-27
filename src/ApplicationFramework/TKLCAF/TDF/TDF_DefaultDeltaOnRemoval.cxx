@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnRemoval, TDF_DeltaOnRemoval)
 
 //=================================================================================================
 
-TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval(const Handle(TDF_Attribute)& anAttribute)
+TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval(const occ::handle<TDF_Attribute>& anAttribute)
     : TDF_DeltaOnRemoval(anAttribute)
 {
 }
@@ -34,5 +34,5 @@ TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval(const Handle(TDF_Attribute)
 
 void TDF_DefaultDeltaOnRemoval::Apply()
 {
-  Label().AddAttribute(Attribute(), Standard_True);
+  Label().AddAttribute(Attribute(), true);
 }

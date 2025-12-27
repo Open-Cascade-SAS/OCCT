@@ -39,7 +39,7 @@ class LDOM_SBuffer : public std::streambuf
 
     DEFINE_NCOLLECTION_ALLOC
 
-    LDOM_StringElem(const int, const Handle(NCollection_BaseAllocator)&);
+    LDOM_StringElem(const int, const occ::handle<NCollection_BaseAllocator>&);
     ~LDOM_StringElem();
 
   private:
@@ -50,29 +50,29 @@ class LDOM_SBuffer : public std::streambuf
 public:
   //! Constructor. Sets a default value for the
   //!              length of each sequence element.
-  Standard_EXPORT LDOM_SBuffer(const Standard_Integer theMaxBuf);
+  Standard_EXPORT LDOM_SBuffer(const int theMaxBuf);
 
   //! Concatenates strings of all sequence elements
   //! into one string. Space for output string is allocated
   //! with operator new.
   //! Caller of this function is responsible
   //! for memory release after the string usage.
-  Standard_EXPORT Standard_CString str() const;
+  Standard_EXPORT const char* str() const;
 
   //! Returns full length of data contained
-  Standard_Integer Length() const { return myLength; }
+  int Length() const { return myLength; }
 
   //! Clears first element of sequence and removes all others
   Standard_EXPORT void Clear();
 
   // Methods of std::streambuf
 
-  Standard_EXPORT virtual int overflow(int c = EOF) Standard_OVERRIDE;
-  Standard_EXPORT virtual int underflow() Standard_OVERRIDE;
+  Standard_EXPORT virtual int overflow(int c = EOF) override;
+  Standard_EXPORT virtual int underflow() override;
   // virtual int uflow();
 
   Standard_EXPORT virtual std::streamsize xsputn(const char*     s,
-                                                 std::streamsize n) Standard_OVERRIDE;
+                                                 std::streamsize n) override;
   // virtual int xsgetn(char* s, int n);
   // virtual int sync();
 
@@ -80,11 +80,11 @@ public:
   // Destructor
 
 private:
-  Standard_Integer                  myMaxBuf;      // default length of one element
-  Standard_Integer                  myLength;      // full length of contained data
+  int                  myMaxBuf;      // default length of one element
+  int                  myLength;      // full length of contained data
   LDOM_StringElem*                  myFirstString; // the head of the sequence
   LDOM_StringElem*                  myCurString;   // current element of the sequence
-  Handle(NCollection_BaseAllocator) myAlloc;       // allocator for chunks
+  occ::handle<NCollection_BaseAllocator> myAlloc;       // allocator for chunks
 };
 
 //! Subclass if std::ostream allowing to increase performance
@@ -98,13 +98,13 @@ class LDOM_OSStream : public Standard_OStream
 {
 public:
   //! Constructor
-  Standard_EXPORT LDOM_OSStream(const Standard_Integer theMaxBuf);
+  Standard_EXPORT LDOM_OSStream(const int theMaxBuf);
 
   Standard_EXPORT virtual ~LDOM_OSStream();
 
-  Standard_CString str() const { return myBuffer.str(); }
+  const char* str() const { return myBuffer.str(); }
 
-  Standard_Integer Length() const { return myBuffer.Length(); }
+  int Length() const { return myBuffer.Length(); }
 
   void Clear() { myBuffer.Clear(); }
 

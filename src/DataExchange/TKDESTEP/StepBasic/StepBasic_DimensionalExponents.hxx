@@ -22,9 +22,6 @@
 
 #include <Standard_Transient.hxx>
 
-class StepBasic_DimensionalExponents;
-DEFINE_STANDARD_HANDLE(StepBasic_DimensionalExponents, Standard_Transient)
-
 class StepBasic_DimensionalExponents : public Standard_Transient
 {
 
@@ -32,54 +29,53 @@ public:
   //! Returns a DimensionalExponents
   Standard_EXPORT StepBasic_DimensionalExponents();
 
-  Standard_EXPORT void Init(const Standard_Real aLengthExponent,
-                            const Standard_Real aMassExponent,
-                            const Standard_Real aTimeExponent,
-                            const Standard_Real aElectricCurrentExponent,
-                            const Standard_Real aThermodynamicTemperatureExponent,
-                            const Standard_Real aAmountOfSubstanceExponent,
-                            const Standard_Real aLuminousIntensityExponent);
+  Standard_EXPORT void Init(const double aLengthExponent,
+                            const double aMassExponent,
+                            const double aTimeExponent,
+                            const double aElectricCurrentExponent,
+                            const double aThermodynamicTemperatureExponent,
+                            const double aAmountOfSubstanceExponent,
+                            const double aLuminousIntensityExponent);
 
-  Standard_EXPORT void SetLengthExponent(const Standard_Real aLengthExponent);
+  Standard_EXPORT void SetLengthExponent(const double aLengthExponent);
 
-  Standard_EXPORT Standard_Real LengthExponent() const;
+  Standard_EXPORT double LengthExponent() const;
 
-  Standard_EXPORT void SetMassExponent(const Standard_Real aMassExponent);
+  Standard_EXPORT void SetMassExponent(const double aMassExponent);
 
-  Standard_EXPORT Standard_Real MassExponent() const;
+  Standard_EXPORT double MassExponent() const;
 
-  Standard_EXPORT void SetTimeExponent(const Standard_Real aTimeExponent);
+  Standard_EXPORT void SetTimeExponent(const double aTimeExponent);
 
-  Standard_EXPORT Standard_Real TimeExponent() const;
+  Standard_EXPORT double TimeExponent() const;
 
-  Standard_EXPORT void SetElectricCurrentExponent(const Standard_Real aElectricCurrentExponent);
+  Standard_EXPORT void SetElectricCurrentExponent(const double aElectricCurrentExponent);
 
-  Standard_EXPORT Standard_Real ElectricCurrentExponent() const;
+  Standard_EXPORT double ElectricCurrentExponent() const;
 
   Standard_EXPORT void SetThermodynamicTemperatureExponent(
-    const Standard_Real aThermodynamicTemperatureExponent);
+    const double aThermodynamicTemperatureExponent);
 
-  Standard_EXPORT Standard_Real ThermodynamicTemperatureExponent() const;
+  Standard_EXPORT double ThermodynamicTemperatureExponent() const;
 
-  Standard_EXPORT void SetAmountOfSubstanceExponent(const Standard_Real aAmountOfSubstanceExponent);
+  Standard_EXPORT void SetAmountOfSubstanceExponent(const double aAmountOfSubstanceExponent);
 
-  Standard_EXPORT Standard_Real AmountOfSubstanceExponent() const;
+  Standard_EXPORT double AmountOfSubstanceExponent() const;
 
-  Standard_EXPORT void SetLuminousIntensityExponent(const Standard_Real aLuminousIntensityExponent);
+  Standard_EXPORT void SetLuminousIntensityExponent(const double aLuminousIntensityExponent);
 
-  Standard_EXPORT Standard_Real LuminousIntensityExponent() const;
+  Standard_EXPORT double LuminousIntensityExponent() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DimensionalExponents, Standard_Transient)
 
-protected:
 private:
-  Standard_Real lengthExponent;
-  Standard_Real massExponent;
-  Standard_Real timeExponent;
-  Standard_Real electricCurrentExponent;
-  Standard_Real thermodynamicTemperatureExponent;
-  Standard_Real amountOfSubstanceExponent;
-  Standard_Real luminousIntensityExponent;
+  double lengthExponent;
+  double massExponent;
+  double timeExponent;
+  double electricCurrentExponent;
+  double thermodynamicTemperatureExponent;
+  double amountOfSubstanceExponent;
+  double luminousIntensityExponent;
 };
 
 #endif // _StepBasic_DimensionalExponents_HeaderFile

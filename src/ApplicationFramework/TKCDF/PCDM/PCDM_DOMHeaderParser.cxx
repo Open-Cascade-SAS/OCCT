@@ -37,20 +37,20 @@ void PCDM_DOMHeaderParser::SetEndElementName(const TCollection_AsciiString& anEn
 
 //=================================================================================================
 
-Standard_Boolean PCDM_DOMHeaderParser::startElement()
+bool PCDM_DOMHeaderParser::startElement()
 {
   if (myStartElementName == NULL)
-    return Standard_False;
+    return false;
   myElement = getCurrentElement();
   return (myElement.getTagName().equals(myStartElementName));
 }
 
 //=================================================================================================
 
-Standard_Boolean PCDM_DOMHeaderParser::endElement()
+bool PCDM_DOMHeaderParser::endElement()
 {
   if (myEndElementName == NULL)
-    return Standard_False;
+    return false;
   myElement = getCurrentElement();
   return (myElement.getTagName().equals(myEndElementName));
 }

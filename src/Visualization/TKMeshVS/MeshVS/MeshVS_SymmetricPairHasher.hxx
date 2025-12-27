@@ -17,7 +17,7 @@
 #include <Standard_Type.hxx>
 #include <Standard_HashUtils.hxx>
 
-typedef std::pair<Standard_Integer, Standard_Integer> MeshVS_NodePair;
+typedef std::pair<int, int> MeshVS_NodePair;
 
 //! Provides symmetric hash methods pair of integers.
 struct MeshVS_SymmetricPairHasher

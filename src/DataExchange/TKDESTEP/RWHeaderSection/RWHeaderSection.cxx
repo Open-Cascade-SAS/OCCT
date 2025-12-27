@@ -20,13 +20,13 @@
 #include <StepData.hxx>
 
 /// #include <EuclidStandard.hxx>
-static Handle(RWHeaderSection_ReadWriteModule) rwm;
-static Handle(RWHeaderSection_GeneralModule)   rwg;
+static occ::handle<RWHeaderSection_ReadWriteModule> rwm;
+static occ::handle<RWHeaderSection_GeneralModule>   rwg;
 
 void RWHeaderSection::Init()
 {
   ///   EuclidStandard::Init();
-  Handle(HeaderSection_Protocol) proto = HeaderSection::Protocol();
+  occ::handle<HeaderSection_Protocol> proto = HeaderSection::Protocol();
   StepData::AddHeaderProtocol(proto);
   if (rwm.IsNull())
     rwm = new RWHeaderSection_ReadWriteModule;

@@ -21,29 +21,29 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectFlag, IFSelect_SelectExtract)
 
-IFSelect_SelectFlag::IFSelect_SelectFlag(const Standard_CString flagname)
+IFSelect_SelectFlag::IFSelect_SelectFlag(const char* flagname)
     : thename(flagname)
 {
 }
 
-Standard_CString IFSelect_SelectFlag::FlagName() const
+const char* IFSelect_SelectFlag::FlagName() const
 {
   return thename.ToCString();
 }
 
 Interface_EntityIterator IFSelect_SelectFlag::RootResult(const Interface_Graph& G) const
 {
-  Standard_Boolean         direct = IsDirect();
+  bool         direct = IsDirect();
   Interface_EntityIterator res;
   const Interface_BitMap&  bm   = G.BitMap();
-  Standard_Integer         flag = bm.FlagNumber(thename.ToCString());
+  int         flag = bm.FlagNumber(thename.ToCString());
   if (flag == 0)
     return res;
   Interface_EntityIterator inp = InputResult(G);
 
   for (inp.Start(); inp.More(); inp.Next())
   {
-    Standard_Integer num = G.EntityNumber(inp.Value());
+    int num = G.EntityNumber(inp.Value());
     if (num == 0)
       continue;
     if (direct == bm.Value(num, flag))
@@ -52,11 +52,11 @@ Interface_EntityIterator IFSelect_SelectFlag::RootResult(const Interface_Graph& 
   return res;
 }
 
-Standard_Boolean IFSelect_SelectFlag::Sort(const Standard_Integer,
-                                           const Handle(Standard_Transient)&,
-                                           const Handle(Interface_InterfaceModel)&) const
+bool IFSelect_SelectFlag::Sort(const int,
+                                           const occ::handle<Standard_Transient>&,
+                                           const occ::handle<Interface_InterfaceModel>&) const
 {
-  return Standard_False;
+  return false;
 }
 
 TCollection_AsciiString IFSelect_SelectFlag::ExtractLabel() const

@@ -27,9 +27,6 @@
 class TCollection_HAsciiString;
 class StepBasic_Product;
 
-class StepBasic_ProductRelatedProductCategory;
-DEFINE_STANDARD_HANDLE(StepBasic_ProductRelatedProductCategory, StepBasic_ProductCategory)
-
 class StepBasic_ProductRelatedProductCategory : public StepBasic_ProductCategory
 {
 
@@ -37,24 +34,23 @@ public:
   //! Returns a ProductRelatedProductCategory
   Standard_EXPORT StepBasic_ProductRelatedProductCategory();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   aName,
-                            const Standard_Boolean                    hasAdescription,
-                            const Handle(TCollection_HAsciiString)&   aDescription,
-                            const Handle(StepBasic_HArray1OfProduct)& aProducts);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   aName,
+                            const bool                    hasAdescription,
+                            const occ::handle<TCollection_HAsciiString>&   aDescription,
+                            const occ::handle<StepBasic_HArray1OfProduct>& aProducts);
 
-  Standard_EXPORT void SetProducts(const Handle(StepBasic_HArray1OfProduct)& aProducts);
+  Standard_EXPORT void SetProducts(const occ::handle<StepBasic_HArray1OfProduct>& aProducts);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfProduct) Products() const;
+  Standard_EXPORT occ::handle<StepBasic_HArray1OfProduct> Products() const;
 
-  Standard_EXPORT Handle(StepBasic_Product) ProductsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_Product> ProductsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbProducts() const;
+  Standard_EXPORT int NbProducts() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory, StepBasic_ProductCategory)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfProduct) products;
+  occ::handle<StepBasic_HArray1OfProduct> products;
 };
 
 #endif // _StepBasic_ProductRelatedProductCategory_HeaderFile

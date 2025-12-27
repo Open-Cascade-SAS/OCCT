@@ -29,47 +29,47 @@
 #include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
-Standard_Boolean gp_Vec::IsEqual(const gp_Vec&       theOther,
-                                 const Standard_Real theLinearTolerance,
-                                 const Standard_Real theAngularTolerance) const
+bool gp_Vec::IsEqual(const gp_Vec&       theOther,
+                                 const double theLinearTolerance,
+                                 const double theAngularTolerance) const
 {
-  const Standard_Real aMagnitude       = Magnitude();
-  const Standard_Real anOtherMagnitude = theOther.Magnitude();
+  const double aMagnitude       = Magnitude();
+  const double anOtherMagnitude = theOther.Magnitude();
 
   if (aMagnitude <= theLinearTolerance || anOtherMagnitude <= theLinearTolerance)
   {
-    const Standard_Real aVal = std::abs(aMagnitude - anOtherMagnitude);
+    const double aVal = std::abs(aMagnitude - anOtherMagnitude);
     return aVal <= theLinearTolerance;
   }
   else
   {
-    const Standard_Real aVal = std::abs(aMagnitude - anOtherMagnitude);
+    const double aVal = std::abs(aMagnitude - anOtherMagnitude);
     return aVal <= theLinearTolerance && Angle(theOther) <= theAngularTolerance;
   }
 }
 
 void gp_Vec::Mirror(const gp_Vec& theVec) noexcept
 {
-  const Standard_Real aMagnitude = theVec.coord.Modulus();
+  const double aMagnitude = theVec.coord.Modulus();
   if (aMagnitude > gp::Resolution())
   {
     const gp_XYZ&       aMirrorVecXYZ = theVec.coord;
-    const Standard_Real aOrigX        = coord.X();
-    const Standard_Real aOrigY        = coord.Y();
-    const Standard_Real aOrigZ        = coord.Z();
+    const double aOrigX        = coord.X();
+    const double aOrigY        = coord.Y();
+    const double aOrigZ        = coord.Z();
 
     // Normalize the mirror vector components
-    const Standard_Real aNormDirX = aMirrorVecXYZ.X() / aMagnitude;
-    const Standard_Real aNormDirY = aMirrorVecXYZ.Y() / aMagnitude;
-    const Standard_Real aNormDirZ = aMirrorVecXYZ.Z() / aMagnitude;
+    const double aNormDirX = aMirrorVecXYZ.X() / aMagnitude;
+    const double aNormDirY = aMirrorVecXYZ.Y() / aMagnitude;
+    const double aNormDirZ = aMirrorVecXYZ.Z() / aMagnitude;
 
     // Precompute common terms for 3D reflection matrix
-    const Standard_Real aCrossTermXY = 2.0 * aNormDirX * aNormDirY;
-    const Standard_Real aCrossTermXZ = 2.0 * aNormDirX * aNormDirZ;
-    const Standard_Real aCrossTermYZ = 2.0 * aNormDirY * aNormDirZ;
-    const Standard_Real aXXTerm      = 2.0 * aNormDirX * aNormDirX - 1.0;
-    const Standard_Real aYYTerm      = 2.0 * aNormDirY * aNormDirY - 1.0;
-    const Standard_Real aZZTerm      = 2.0 * aNormDirZ * aNormDirZ - 1.0;
+    const double aCrossTermXY = 2.0 * aNormDirX * aNormDirY;
+    const double aCrossTermXZ = 2.0 * aNormDirX * aNormDirZ;
+    const double aCrossTermYZ = 2.0 * aNormDirY * aNormDirZ;
+    const double aXXTerm      = 2.0 * aNormDirX * aNormDirX - 1.0;
+    const double aYYTerm      = 2.0 * aNormDirY * aNormDirY - 1.0;
+    const double aZZTerm      = 2.0 * aNormDirZ * aNormDirZ - 1.0;
 
     coord.SetX(aXXTerm * aOrigX + aCrossTermXY * aOrigY + aCrossTermXZ * aOrigZ);
     coord.SetY(aCrossTermXY * aOrigX + aYYTerm * aOrigY + aCrossTermYZ * aOrigZ);
@@ -80,20 +80,20 @@ void gp_Vec::Mirror(const gp_Vec& theVec) noexcept
 void gp_Vec::Mirror(const gp_Ax1& theAxis) noexcept
 {
   const gp_XYZ&       aDirectionXYZ = theAxis.Direction().XYZ();
-  const Standard_Real aOrigX        = coord.X();
-  const Standard_Real aOrigY        = coord.Y();
-  const Standard_Real aOrigZ        = coord.Z();
-  const Standard_Real aDirX         = aDirectionXYZ.X();
-  const Standard_Real aDirY         = aDirectionXYZ.Y();
-  const Standard_Real aDirZ         = aDirectionXYZ.Z();
+  const double aOrigX        = coord.X();
+  const double aOrigY        = coord.Y();
+  const double aOrigZ        = coord.Z();
+  const double aDirX         = aDirectionXYZ.X();
+  const double aDirY         = aDirectionXYZ.Y();
+  const double aDirZ         = aDirectionXYZ.Z();
 
   // Precompute common terms for 3D reflection matrix
-  const Standard_Real aCrossTermXY = 2.0 * aDirX * aDirY;
-  const Standard_Real aCrossTermXZ = 2.0 * aDirX * aDirZ;
-  const Standard_Real aCrossTermYZ = 2.0 * aDirY * aDirZ;
-  const Standard_Real aXXTerm      = 2.0 * aDirX * aDirX - 1.0;
-  const Standard_Real aYYTerm      = 2.0 * aDirY * aDirY - 1.0;
-  const Standard_Real aZZTerm      = 2.0 * aDirZ * aDirZ - 1.0;
+  const double aCrossTermXY = 2.0 * aDirX * aDirY;
+  const double aCrossTermXZ = 2.0 * aDirX * aDirZ;
+  const double aCrossTermYZ = 2.0 * aDirY * aDirZ;
+  const double aXXTerm      = 2.0 * aDirX * aDirX - 1.0;
+  const double aYYTerm      = 2.0 * aDirY * aDirY - 1.0;
+  const double aZZTerm      = 2.0 * aDirZ * aDirZ - 1.0;
 
   coord.SetX(aXXTerm * aOrigX + aCrossTermXY * aOrigY + aCrossTermXZ * aOrigZ);
   coord.SetY(aCrossTermXY * aOrigX + aYYTerm * aOrigY + aCrossTermYZ * aOrigZ);
@@ -159,7 +159,7 @@ gp_Vec gp_Vec::Mirrored(const gp_Ax2& theAxis) const noexcept
 
 //=================================================================================================
 
-void gp_Vec::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void gp_Vec::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_VECTOR_CLASS(theOStream, "gp_Vec", 3, coord.X(), coord.Y(), coord.Z())
 }

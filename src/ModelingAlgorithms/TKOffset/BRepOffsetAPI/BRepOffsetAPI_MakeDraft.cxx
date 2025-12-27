@@ -20,15 +20,15 @@
 
 BRepOffsetAPI_MakeDraft::BRepOffsetAPI_MakeDraft(const TopoDS_Shape& Shape,
                                                  const gp_Dir&       Dir,
-                                                 const Standard_Real Angle)
+                                                 const double Angle)
     : myDraft(Shape, Dir, Angle)
 {
   NotDone();
 }
 
 void BRepOffsetAPI_MakeDraft::SetOptions(const BRepBuilderAPI_TransitionMode Style,
-                                         const Standard_Real                 AngleMin,
-                                         const Standard_Real                 AngleMax)
+                                         const double                 AngleMin,
+                                         const double                 AngleMax)
 {
   BRepFill_TransitionStyle style = BRepFill_Right;
   if (Style == BRepBuilderAPI_RoundCorner)
@@ -36,12 +36,12 @@ void BRepOffsetAPI_MakeDraft::SetOptions(const BRepBuilderAPI_TransitionMode Sty
   myDraft.SetOptions(style, AngleMin, AngleMax);
 }
 
-void BRepOffsetAPI_MakeDraft::SetDraft(const Standard_Boolean IsInternal)
+void BRepOffsetAPI_MakeDraft::SetDraft(const bool IsInternal)
 {
   myDraft.SetDraft(IsInternal);
 }
 
-void BRepOffsetAPI_MakeDraft::Perform(const Standard_Real LengthMax)
+void BRepOffsetAPI_MakeDraft::Perform(const double LengthMax)
 {
   myDraft.Perform(LengthMax);
   if (myDraft.IsDone())
@@ -51,8 +51,8 @@ void BRepOffsetAPI_MakeDraft::Perform(const Standard_Real LengthMax)
   }
 }
 
-void BRepOffsetAPI_MakeDraft::Perform(const Handle(Geom_Surface)& Surface,
-                                      const Standard_Boolean      KeepInsideSurface)
+void BRepOffsetAPI_MakeDraft::Perform(const occ::handle<Geom_Surface>& Surface,
+                                      const bool      KeepInsideSurface)
 {
   myDraft.Perform(Surface, KeepInsideSurface);
   if (myDraft.IsDone())
@@ -63,7 +63,7 @@ void BRepOffsetAPI_MakeDraft::Perform(const Handle(Geom_Surface)& Surface,
 }
 
 void BRepOffsetAPI_MakeDraft::Perform(const TopoDS_Shape&    StopShape,
-                                      const Standard_Boolean KeepOutSide)
+                                      const bool KeepOutSide)
 {
   myDraft.Perform(StopShape, KeepOutSide);
   if (myDraft.IsDone())
@@ -78,7 +78,7 @@ TopoDS_Shell BRepOffsetAPI_MakeDraft::Shell() const
   return myDraft.Shell();
 }
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakeDraft::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeDraft::Generated(const TopoDS_Shape& S)
 {
   return myDraft.Generated(S);
 }

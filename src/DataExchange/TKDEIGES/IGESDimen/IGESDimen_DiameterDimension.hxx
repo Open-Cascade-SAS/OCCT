@@ -26,9 +26,6 @@ class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 class gp_Pnt2d;
 
-class IGESDimen_DiameterDimension;
-DEFINE_STANDARD_HANDLE(IGESDimen_DiameterDimension, IGESData_IGESEntity)
-
 //! defines DiameterDimension, Type <206> Form <0>
 //! in package IGESDimen
 //! Used for dimensioning diameters
@@ -44,22 +41,22 @@ public:
   //! - aLeader       : First Leader Entity
   //! - anotherLeader : Second Leader Entity or a Null Handle.
   //! - aCenter       : Arc center coordinates
-  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                            const Handle(IGESDimen_LeaderArrow)& aLeader,
-                            const Handle(IGESDimen_LeaderArrow)& anotherLeader,
+  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                            const occ::handle<IGESDimen_LeaderArrow>& aLeader,
+                            const occ::handle<IGESDimen_LeaderArrow>& anotherLeader,
                             const gp_XY&                         aCenter);
 
   //! returns the General Note Entity
-  Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
+  Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
 
   //! returns the First Leader Entity
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) FirstLeader() const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> FirstLeader() const;
 
   //! returns False if theSecondleader is a Null Handle.
-  Standard_EXPORT Standard_Boolean HasSecondLeader() const;
+  Standard_EXPORT bool HasSecondLeader() const;
 
   //! returns the Second Leader Entity
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> SecondLeader() const;
 
   //! returns the Arc Center coordinates as Pnt2d from package gp
   Standard_EXPORT gp_Pnt2d Center() const;
@@ -70,11 +67,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DiameterDimension, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESDimen_GeneralNote) theNote;
-  Handle(IGESDimen_LeaderArrow) theFirstLeader;
-  Handle(IGESDimen_LeaderArrow) theSecondLeader;
+  occ::handle<IGESDimen_GeneralNote> theNote;
+  occ::handle<IGESDimen_LeaderArrow> theFirstLeader;
+  occ::handle<IGESDimen_LeaderArrow> theSecondLeader;
   gp_XY                         theCenter;
 };
 

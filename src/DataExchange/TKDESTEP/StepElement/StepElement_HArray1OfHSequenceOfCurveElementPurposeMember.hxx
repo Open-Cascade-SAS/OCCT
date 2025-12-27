@@ -15,10 +15,11 @@
 #define StepElement_HArray1OfHSequenceOfCurveElementPurposeMember_HeaderFile
 
 #include <StepElement_HSequenceOfCurveElementPurposeMember.hxx>
-#include <StepElement_Array1OfHSequenceOfCurveElementPurposeMember.hxx>
+#include <StepElement_HSequenceOfCurveElementPurposeMember.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember,
-               StepElement_Array1OfHSequenceOfCurveElementPurposeMember)
+               NCollection_Array1<occ::handle<StepElement_HSequenceOfCurveElementPurposeMember>>)
 
 #endif

@@ -25,10 +25,10 @@
 RWStepGeom_RWCompositeCurveSegment::RWStepGeom_RWCompositeCurveSegment() {}
 
 void RWStepGeom_RWCompositeCurveSegment::ReadStep(
-  const Handle(StepData_StepReaderData)&        data,
-  const Standard_Integer                        num,
-  Handle(Interface_Check)&                      ach,
-  const Handle(StepGeom_CompositeCurveSegment)& ent) const
+  const occ::handle<StepData_StepReaderData>&        data,
+  const int                        num,
+  occ::handle<Interface_Check>&                      ach,
+  const occ::handle<StepGeom_CompositeCurveSegment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -41,7 +41,7 @@ void RWStepGeom_RWCompositeCurveSegment::ReadStep(
   StepGeom_TransitionCode aTransition = StepGeom_tcDiscontinuous;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (!RWStepGeom_RWTransitionCode::ConvertToEnum(text, aTransition))
     {
       ach->AddFail("Enumeration transition_code has not an allowed value");
@@ -52,14 +52,14 @@ void RWStepGeom_RWCompositeCurveSegment::ReadStep(
 
   // --- own field : sameSense ---
 
-  Standard_Boolean aSameSense;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  bool aSameSense;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadBoolean(num, 2, "same_sense", ach, aSameSense);
 
   // --- own field : parentCurve ---
 
-  Handle(StepGeom_Curve) aParentCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepGeom_Curve> aParentCurve;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "parent_curve", ach, STANDARD_TYPE(StepGeom_Curve), aParentCurve);
 
   //--- Initialisation of the read entity ---
@@ -69,7 +69,7 @@ void RWStepGeom_RWCompositeCurveSegment::ReadStep(
 
 void RWStepGeom_RWCompositeCurveSegment::WriteStep(
   StepData_StepWriter&                          SW,
-  const Handle(StepGeom_CompositeCurveSegment)& ent) const
+  const occ::handle<StepGeom_CompositeCurveSegment>& ent) const
 {
 
   // --- own field : transition ---
@@ -85,7 +85,7 @@ void RWStepGeom_RWCompositeCurveSegment::WriteStep(
   SW.Send(ent->ParentCurve());
 }
 
-void RWStepGeom_RWCompositeCurveSegment::Share(const Handle(StepGeom_CompositeCurveSegment)& ent,
+void RWStepGeom_RWCompositeCurveSegment::Share(const occ::handle<StepGeom_CompositeCurveSegment>& ent,
                                                Interface_EntityIterator& iter) const
 {
 

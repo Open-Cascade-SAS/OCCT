@@ -18,7 +18,7 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 
@@ -61,17 +61,17 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionD0)
 {
   PLib_HermitJacobi aHerm(6, GeomAbs_C0);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisValue(0, aHerm.WorkDegree());
 
   // Test at various parameter values
-  std::vector<Standard_Real> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
+  std::vector<double> aTestParams = {-1.0, -0.5, 0.0, 0.5, 1.0};
 
-  for (Standard_Real aU : aTestParams)
+  for (double aU : aTestParams)
   {
     EXPECT_NO_THROW({ aHerm.D0(aU, aBasisValue); }) << "D0 evaluation failed at U=" << aU;
 
     // Basic sanity checks
-    for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+    for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
     {
       EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i)))
         << "Basis value should be finite at index " << i << ", U=" << aU;
@@ -84,12 +84,12 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
 {
   PLib_HermitJacobi aHerm(8, GeomAbs_C1);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD1(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD2(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD3(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisValue(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD1(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD2(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD3(0, aHerm.WorkDegree());
 
-  Standard_Real aU = 0.5; // Test at middle point
+  double aU = 0.5; // Test at middle point
 
   // Test D1
   EXPECT_NO_THROW({ aHerm.D1(aU, aBasisValue, aBasisD1); }) << "D1 evaluation failed";
@@ -102,7 +102,7 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
     << "D3 evaluation failed";
 
   // Verify all values are finite
-  for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+  for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
   {
     EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i))) << "Basis value should be finite at " << i;
     EXPECT_FALSE(Precision::IsInfinite(aBasisD1(i)))
@@ -117,32 +117,32 @@ TEST_F(PLibHermitJacobiTest, BasisFunctionDerivatives)
 // Test coefficient conversion
 TEST_F(PLibHermitJacobiTest, CoefficientConversion)
 {
-  const Standard_Integer aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
+  const int aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
   PLib_HermitJacobi      aHerm(aWorkDegree, GeomAbs_C0);
 
-  const Standard_Integer aDimension = 1;
-  const Standard_Integer aDegree =
+  const int aDimension = 1;
+  const int aDegree =
     aHerm.WorkDegree() - 2 * (aHerm.NivConstr() + 1); // Use computational degree
 
   // Create test HermitJacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
-  Standard_Integer aHermJacSize = (aDegree + 1) * aDimension;
-  Standard_Integer aCoeffSize   = (aDegree + 1) * aDimension;
+  int aHermJacSize = (aDegree + 1) * aDimension;
+  int aCoeffSize   = (aDegree + 1) * aDimension;
 
   // Use 0-based arrays to match the ToCoefficients indexing expectations
-  TColStd_Array1OfReal aHermJacCoeff(0, aHermJacSize - 1);
-  for (Standard_Integer i = aHermJacCoeff.Lower(); i <= aHermJacCoeff.Upper(); i++)
+  NCollection_Array1<double> aHermJacCoeff(0, aHermJacSize - 1);
+  for (int i = aHermJacCoeff.Lower(); i <= aHermJacCoeff.Upper(); i++)
   {
     aHermJacCoeff(i) = std::sin(i * 0.3); // Some test values
   }
 
-  TColStd_Array1OfReal aCoefficients(0, aCoeffSize - 1);
+  NCollection_Array1<double> aCoefficients(0, aCoeffSize - 1);
 
   EXPECT_NO_THROW({ aHerm.ToCoefficients(aDimension, aDegree, aHermJacCoeff, aCoefficients); })
     << "Coefficient conversion failed";
 
   // Verify output is finite
-  for (Standard_Integer i = aCoefficients.Lower(); i <= aCoefficients.Upper(); i++)
+  for (int i = aCoefficients.Lower(); i <= aCoefficients.Upper(); i++)
   {
     EXPECT_FALSE(Precision::IsInfinite(aCoefficients(i)))
       << "Converted coefficient should be finite at index " << i;
@@ -154,20 +154,20 @@ TEST_F(PLibHermitJacobiTest, DegreeReduction)
 {
   PLib_HermitJacobi aHerm(10, GeomAbs_C0);
 
-  const Standard_Integer aDimension = 1;
-  const Standard_Integer aMaxDegree = 8;
-  const Standard_Real    aTol       = 1e-6;
+  const int aDimension = 1;
+  const int aMaxDegree = 8;
+  const double    aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const Standard_Integer aWorkDegree = aHerm.WorkDegree();
-  TColStd_Array1OfReal   aCoeff(1, (aWorkDegree + 1) * aDimension);
-  for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
+  const int aWorkDegree = aHerm.WorkDegree();
+  NCollection_Array1<double>   aCoeff(1, (aWorkDegree + 1) * aDimension);
+  for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1); // Decreasing coefficients to allow reduction
   }
 
-  Standard_Integer aNewDegree = -1;
-  Standard_Real    aMaxError  = -1.0;
+  int aNewDegree = -1;
+  double    aMaxError  = -1.0;
 
   EXPECT_NO_THROW({
     aHerm.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
@@ -185,19 +185,19 @@ TEST_F(PLibHermitJacobiTest, ErrorEstimation)
 {
   PLib_HermitJacobi aHerm(8, GeomAbs_C1);
 
-  const Standard_Integer aDimension = 1;
+  const int aDimension = 1;
 
   // Create test coefficients
-  TColStd_Array1OfReal aCoeff(1, 10 * aDimension);
-  for (Standard_Integer i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
+  NCollection_Array1<double> aCoeff(1, 10 * aDimension);
+  for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1);
   }
 
-  Standard_Integer aNewDegree = 6; // Reduced from original
+  int aNewDegree = 6; // Reduced from original
 
   // Test MaxError
-  Standard_Real aMaxErr = -1.0;
+  double aMaxErr = -1.0;
   EXPECT_NO_THROW({ aMaxErr = aHerm.MaxError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
     << "MaxError calculation failed";
 
@@ -205,7 +205,7 @@ TEST_F(PLibHermitJacobiTest, ErrorEstimation)
   EXPECT_FALSE(Precision::IsInfinite(aMaxErr)) << "Max error should be finite";
 
   // Test AverageError
-  Standard_Real aAvgErr = -1.0;
+  double aAvgErr = -1.0;
   EXPECT_NO_THROW({ aAvgErr = aHerm.AverageError(aDimension, aCoeff.ChangeValue(1), aNewDegree); })
     << "AverageError calculation failed";
 
@@ -222,18 +222,18 @@ TEST_F(PLibHermitJacobiTest, ExtremeParameterValues)
 {
   PLib_HermitJacobi aHerm(10, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisValue(0, aHerm.WorkDegree());
 
   // Test with boundary values
-  std::vector<Standard_Real> aExtremeParams = {-0.99999, -1e-12, 1e-12, 0.99999};
+  std::vector<double> aExtremeParams = {-0.99999, -1e-12, 1e-12, 0.99999};
 
-  for (Standard_Real aU : aExtremeParams)
+  for (double aU : aExtremeParams)
   {
     EXPECT_NO_THROW({ aHerm.D0(aU, aBasisValue); })
       << "Extreme parameter U=" << aU << " should not crash";
 
     // Check that results are finite
-    for (Standard_Integer i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
+    for (int i = aBasisValue.Lower(); i <= aBasisValue.Upper(); i++)
     {
       EXPECT_FALSE(Precision::IsInfinite(aBasisValue(i)))
         << "Basis value should be finite at extreme parameter U=" << aU;
@@ -246,21 +246,21 @@ TEST_F(PLibHermitJacobiTest, DerivativeConsistency)
 {
   PLib_HermitJacobi aHerm(6, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue1(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD1_1(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisValue1(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD1_1(0, aHerm.WorkDegree());
 
-  TColStd_Array1OfReal aBasisValue2(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD1_2(0, aHerm.WorkDegree());
-  TColStd_Array1OfReal aBasisD2_2(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisValue2(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD1_2(0, aHerm.WorkDegree());
+  NCollection_Array1<double> aBasisD2_2(0, aHerm.WorkDegree());
 
-  Standard_Real aU = 0.3;
+  double aU = 0.3;
 
   // Get values from D1 and D2 calls
   aHerm.D1(aU, aBasisValue1, aBasisD1_1);
   aHerm.D2(aU, aBasisValue2, aBasisD1_2, aBasisD2_2);
 
   // Values and first derivatives should be consistent
-  for (Standard_Integer i = aBasisValue1.Lower(); i <= aBasisValue1.Upper(); i++)
+  for (int i = aBasisValue1.Lower(); i <= aBasisValue1.Upper(); i++)
   {
     EXPECT_NEAR(aBasisValue1(i), aBasisValue2(i), Precision::Confusion())
       << "Function values should be consistent between D1 and D2 calls at index " << i;
@@ -274,15 +274,15 @@ TEST_F(PLibHermitJacobiTest, PerformanceTest)
 {
   PLib_HermitJacobi aHermMax(30, GeomAbs_C2);
 
-  TColStd_Array1OfReal aBasisValue(0, aHermMax.WorkDegree());
-  TColStd_Array1OfReal aBasisD1(0, aHermMax.WorkDegree());
-  TColStd_Array1OfReal aBasisD2(0, aHermMax.WorkDegree());
-  TColStd_Array1OfReal aBasisD3(0, aHermMax.WorkDegree());
+  NCollection_Array1<double> aBasisValue(0, aHermMax.WorkDegree());
+  NCollection_Array1<double> aBasisD1(0, aHermMax.WorkDegree());
+  NCollection_Array1<double> aBasisD2(0, aHermMax.WorkDegree());
+  NCollection_Array1<double> aBasisD3(0, aHermMax.WorkDegree());
 
   // Test that operations complete in reasonable time
-  std::vector<Standard_Real> aTestParams = {-0.8, -0.5, 0.0, 0.5, 0.8};
+  std::vector<double> aTestParams = {-0.8, -0.5, 0.0, 0.5, 0.8};
 
-  for (Standard_Real aU : aTestParams)
+  for (double aU : aTestParams)
   {
     EXPECT_NO_THROW({
       aHermMax.D0(aU, aBasisValue);

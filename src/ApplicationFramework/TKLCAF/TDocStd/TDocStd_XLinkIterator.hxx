@@ -36,14 +36,14 @@ public:
   Standard_EXPORT TDocStd_XLinkIterator();
 
   //! Creates an iterator on Reference of <D>.
-  Standard_EXPORT TDocStd_XLinkIterator(const Handle(TDocStd_Document)& D);
+  Standard_EXPORT TDocStd_XLinkIterator(const occ::handle<TDocStd_Document>& D);
 
   //! Restarts an iteration with <D>.
-  Standard_EXPORT void Initialize(const Handle(TDocStd_Document)& D);
+  Standard_EXPORT void Initialize(const occ::handle<TDocStd_Document>& D);
 
   //! Returns True if there is a current Item in the
   //! iteration.
-  Standard_Boolean More() const;
+  bool More() const;
 
   //! Move to the next item; raises if there is no more item.
   Standard_EXPORT void Next();
@@ -51,9 +51,8 @@ public:
   //! Returns the current item; a null handle if there is none.
   TDocStd_XLinkPtr Value() const;
 
-protected:
 private:
-  Standard_EXPORT void Init(const Handle(TDocStd_Document)& D);
+  Standard_EXPORT void Init(const occ::handle<TDocStd_Document>& D);
 
   TDocStd_XLinkPtr myValue;
 };

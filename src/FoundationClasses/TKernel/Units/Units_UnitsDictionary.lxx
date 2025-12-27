@@ -20,16 +20,16 @@
 
 //=================================================================================================
 
-inline Handle(Units_QuantitiesSequence) Units_UnitsDictionary::Sequence() const
+inline occ::handle<Units_QuantitiesSequence> Units_UnitsDictionary::Sequence() const
 {
   return thequantitiessequence;
 }
 
 //=================================================================================================
 
-inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
+inline void Units_UnitsDictionary::Dump(const int alevel) const
 {
-  Standard_Integer index;
+  int index;
   switch (alevel)
   {
     case 2:
@@ -55,9 +55,9 @@ inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
 
 //=================================================================================================
 
-inline void Units_UnitsDictionary::Dump(const Handle(Units_Dimensions)& adimensions) const
+inline void Units_UnitsDictionary::Dump(const occ::handle<Units_Dimensions>& adimensions) const
 {
-  Standard_Integer index;
+  int index;
   for (index = 1; index <= thequantitiessequence->Length(); index++)
   {
     if (thequantitiessequence->Value(index)->Dimensions()->IsEqual(adimensions))

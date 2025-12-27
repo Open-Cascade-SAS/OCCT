@@ -37,13 +37,11 @@ public:
   //! Recognizes a kind of SymmetricTensor22d select type
   //! 1 -> HArray1OfReal from TColStd
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as AnisotropicSymmetricTensor22d (or Null if another type)
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) AnisotropicSymmetricTensor22d() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfReal> AnisotropicSymmetricTensor22d() const;
 
-protected:
-private:
 };
 
 #endif // _StepFEA_SymmetricTensor22d_HeaderFile

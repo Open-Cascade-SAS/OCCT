@@ -36,13 +36,11 @@ public:
   //! whole True  : all the contents of the Model
   //! whole False : sub-parts which will be given later
   Standard_EXPORT IFGraph_StrongComponants(const Interface_Graph& agraph,
-                                           const Standard_Boolean whole);
+                                           const bool whole);
 
   //! does the computation
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
-protected:
-private:
 };
 
 #endif // _IFGraph_StrongComponants_HeaderFile

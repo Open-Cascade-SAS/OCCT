@@ -50,7 +50,7 @@ public:
   //! Creates a direction with its 3 cartesian coordinates.
   //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv )
   //! <= Resolution
-  Standard_EXPORT gce_MakeDir2d(const Standard_Real Xv, const Standard_Real Yv);
+  Standard_EXPORT gce_MakeDir2d(const double Xv, const double Yv);
 
   //! Make a Dir2d from gp <TheDir> passing through 2
   //! Pnt <P1>,<P2>.
@@ -73,7 +73,6 @@ public:
   Standard_EXPORT const gp_Dir2d& Operator() const;
   Standard_EXPORT                 operator gp_Dir2d() const;
 
-protected:
 private:
   gp_Dir2d TheDir2d;
 };

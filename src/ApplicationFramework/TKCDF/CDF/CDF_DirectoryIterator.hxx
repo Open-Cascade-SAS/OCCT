@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <CDM_ListIteratorOfListOfDocument.hxx>
+#include <CDM_Document.hxx>
+
+#include <NCollection_List.hxx>
 class CDF_Directory;
 class CDM_Document;
 
@@ -34,21 +36,20 @@ public:
   //! of the current CDF.
   Standard_EXPORT CDF_DirectoryIterator();
 
-  Standard_EXPORT CDF_DirectoryIterator(const Handle(CDF_Directory)& aDirectory);
+  Standard_EXPORT CDF_DirectoryIterator(const occ::handle<CDF_Directory>& aDirectory);
 
   //! Returns True if there are more entries to return
-  Standard_EXPORT Standard_Boolean MoreDocument();
+  Standard_EXPORT bool MoreDocument();
 
   //! Go to the next entry
   //! (if there is not, Value will raise an exception)
   Standard_EXPORT void NextDocument();
 
   //! Returns item value of current entry
-  Standard_EXPORT Handle(CDM_Document) Document();
+  Standard_EXPORT occ::handle<CDM_Document> Document();
 
-protected:
 private:
-  CDM_ListIteratorOfListOfDocument myIterator;
+  NCollection_List<occ::handle<CDM_Document>>::Iterator myIterator;
 };
 
 #endif // _CDF_DirectoryIterator_HeaderFile

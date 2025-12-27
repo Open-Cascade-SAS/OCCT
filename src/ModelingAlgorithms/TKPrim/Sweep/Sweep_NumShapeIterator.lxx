@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Boolean Sweep_NumShapeIterator::More() const
+inline bool Sweep_NumShapeIterator::More() const
 {
   return myMore;
 }

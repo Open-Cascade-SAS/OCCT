@@ -84,7 +84,7 @@ TEST(MathJacobiTest, DiagonalMatrix)
   const math_Vector& aValues = aJacobi.Values();
 
   // Eigenvalues might be in different order, so collect them
-  Standard_Real aEigenvals[3];
+  double aEigenvals[3];
   aEigenvals[0] = aValues(1);
   aEigenvals[1] = aValues(2);
   aEigenvals[2] = aValues(3);
@@ -112,7 +112,7 @@ TEST(MathJacobiTest, SimpleSymmetricMatrix)
   const math_Vector& aValues = aJacobi.Values();
 
   // For this matrix, eigenvalues are 2 and 4
-  Standard_Real aEigenvals[2];
+  double aEigenvals[2];
   aEigenvals[0] = aValues(1);
   aEigenvals[1] = aValues(2);
   std::sort(aEigenvals, aEigenvals + 2);
@@ -135,12 +135,12 @@ TEST(MathJacobiTest, EigenvectorVerification)
   EXPECT_TRUE(aJacobi.IsDone()) << "Jacobi should succeed";
 
   // Verify A * v = lambda * v for each eigenpair
-  for (Standard_Integer i = 1; i <= 2; i++)
+  for (int i = 1; i <= 2; i++)
   {
     math_Vector aV(1, 2);
     aJacobi.Vector(i, aV);
 
-    Standard_Real aLambda = aJacobi.Value(i);
+    double aLambda = aJacobi.Value(i);
 
     // Compute A * v
     math_Vector aAv(1, 2);
@@ -188,14 +188,14 @@ TEST(MathJacobiTest, LargerSymmetricMatrix)
   EXPECT_EQ(aValues.Length(), 4) << "Should have 4 eigenvalues";
 
   // All eigenvalues should be real and positive (positive definite matrix)
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
     EXPECT_GT(aJacobi.Value(i), 0.0) << "Eigenvalue " << i << " should be positive";
   }
 
   // Verify trace preservation (sum of eigenvalues = sum of diagonal elements)
-  Standard_Real aTraceOriginal    = aMatrix(1, 1) + aMatrix(2, 2) + aMatrix(3, 3) + aMatrix(4, 4);
-  Standard_Real aTraceEigenvalues = aValues(1) + aValues(2) + aValues(3) + aValues(4);
+  double aTraceOriginal    = aMatrix(1, 1) + aMatrix(2, 2) + aMatrix(3, 3) + aMatrix(4, 4);
+  double aTraceEigenvalues = aValues(1) + aValues(2) + aValues(3) + aValues(4);
 
   EXPECT_NEAR(aTraceEigenvalues, aTraceOriginal, 1.0e-10)
     << "Sum of eigenvalues should equal trace";
@@ -296,9 +296,9 @@ TEST(MathJacobiTest, OrthogonalityOfEigenvectors)
   aJacobi.Vector(3, aV3);
 
   // Check orthogonality (dot products should be zero for different eigenvalues)
-  Standard_Real aDot12 = aV1(1) * aV2(1) + aV1(2) * aV2(2) + aV1(3) * aV2(3);
-  Standard_Real aDot13 = aV1(1) * aV3(1) + aV1(2) * aV3(2) + aV1(3) * aV3(3);
-  Standard_Real aDot23 = aV2(1) * aV3(1) + aV2(2) * aV3(2) + aV2(3) * aV3(3);
+  double aDot12 = aV1(1) * aV2(1) + aV1(2) * aV2(2) + aV1(3) * aV2(3);
+  double aDot13 = aV1(1) * aV3(1) + aV1(2) * aV3(2) + aV1(3) * aV3(3);
+  double aDot23 = aV2(1) * aV3(1) + aV2(2) * aV3(2) + aV2(3) * aV3(3);
 
   const math_Vector& aValues = aJacobi.Values();
 
@@ -336,12 +336,12 @@ TEST(MathJacobiTest, NormalizationOfEigenvectors)
   EXPECT_TRUE(aJacobi.IsDone()) << "Jacobi should succeed";
 
   // Check that each eigenvector has unit norm
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
     math_Vector aV(1, 3);
     aJacobi.Vector(i, aV);
 
-    Standard_Real aNorm = sqrt(aV(1) * aV(1) + aV(2) * aV(2) + aV(3) * aV(3));
+    double aNorm = sqrt(aV(1) * aV(1) + aV(2) * aV(2) + aV(3) * aV(3));
     EXPECT_NEAR(aNorm, 1.0, 1.0e-10) << "Eigenvector " << i << " should be normalized";
   }
 }

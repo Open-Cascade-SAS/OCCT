@@ -28,9 +28,6 @@ class TCollection_HAsciiString;
 class StepBasic_LengthMeasureWithUnit;
 class StepRepr_ShapeAspect;
 
-DEFINE_STANDARD_HANDLE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol,
-                       StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)
-
 class StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol
     : public StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod
 {
@@ -38,35 +35,35 @@ class StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol
 public:
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Handle(TCollection_HAsciiString)& theDescription,
-                            const Handle(Standard_Transient)&       theMagnitude,
-                            const Handle(StepRepr_ShapeAspect)&     theTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
-                            const Handle(StepDimTol_GeometricToleranceWithModifiers)&      theGTWM,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theMaxTol,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<TCollection_HAsciiString>& theDescription,
+                            const occ::handle<Standard_Transient>&       theMagnitude,
+                            const occ::handle<StepRepr_ShapeAspect>&     theTolerancedShapeAspect,
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
+                            const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol,
                             const StepDimTol_GeometricToleranceType        theType);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
-                            const Handle(TCollection_HAsciiString)&    aDescription,
-                            const Handle(Standard_Transient)&          aMagnitude,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
+                            const occ::handle<TCollection_HAsciiString>&    aDescription,
+                            const occ::handle<Standard_Transient>&          aMagnitude,
                             const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
-                            const Handle(StepDimTol_GeometricToleranceWithModifiers)&      aGTWM,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theMaxTol,
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
+                            const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      aGTWM,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol,
                             const StepDimTol_GeometricToleranceType        theType);
 
-  inline void SetMaxTolerance(Handle(StepBasic_LengthMeasureWithUnit)& theMaxTol)
+  inline void SetMaxTolerance(occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol)
   {
     myMaxTol = theMaxTol;
   }
 
-  inline Handle(StepBasic_LengthMeasureWithUnit) GetMaxTolerance() { return myMaxTol; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> GetMaxTolerance() { return myMaxTol; }
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol,
                           StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)
 
 private:
-  Handle(StepBasic_LengthMeasureWithUnit) myMaxTol;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myMaxTol;
 };
 #endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod_HeaderFile

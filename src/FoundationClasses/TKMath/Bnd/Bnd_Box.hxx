@@ -140,21 +140,21 @@ public:
   //! -   interval [ aXmin,aXmax ] in the "X Direction",
   //! -   interval [ aYmin,aYmax ] in the "Y Direction",
   //! -   interval [ aZmin,aZmax ] in the "Z Direction";
-  Standard_EXPORT void Update(const Standard_Real aXmin,
-                              const Standard_Real aYmin,
-                              const Standard_Real aZmin,
-                              const Standard_Real aXmax,
-                              const Standard_Real aYmax,
-                              const Standard_Real aZmax);
+  Standard_EXPORT void Update(const double aXmin,
+                              const double aYmin,
+                              const double aZmin,
+                              const double aXmax,
+                              const double aYmax,
+                              const double aZmax);
 
   //! Adds a point of coordinates (X,Y,Z) to this bounding box.
-  Standard_EXPORT void Update(const Standard_Real X, const Standard_Real Y, const Standard_Real Z);
+  Standard_EXPORT void Update(const double X, const double Y, const double Z);
 
   //! Returns the gap of this bounding box.
-  [[nodiscard]] constexpr Standard_Real GetGap() const noexcept { return Gap; }
+  [[nodiscard]] constexpr double GetGap() const noexcept { return Gap; }
 
   //! Set the gap of this bounding box to abs(Tol).
-  void SetGap(const Standard_Real Tol) noexcept { Gap = std::abs(Tol); }
+  void SetGap(const double Tol) noexcept { Gap = std::abs(Tol); }
 
   //! Enlarges the box with a tolerance value.
   //! (minvalues-std::abs(<tol>) and maxvalues+std::abs(<tol>))
@@ -162,19 +162,19 @@ public:
   //! intervals of definition, when they are finite, are reduced by
   //! the absolute value of Tol, while the maximum values are
   //! increased by the same amount.
-  void Enlarge(const Standard_Real Tol) noexcept { Gap = (std::max)(Gap, std::abs(Tol)); }
+  void Enlarge(const double Tol) noexcept { Gap = (std::max)(Gap, std::abs(Tol)); }
 
   //! Returns the bounds of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values
   //! may be equal to +/- Precision::Infinite().
   //! Standard_ConstructionError exception will be thrown if the box is void.
   //! if IsVoid()
-  Standard_EXPORT void Get(Standard_Real& theXmin,
-                           Standard_Real& theYmin,
-                           Standard_Real& theZmin,
-                           Standard_Real& theXmax,
-                           Standard_Real& theYmax,
-                           Standard_Real& theZmax) const;
+  Standard_EXPORT void Get(double& theXmin,
+                           double& theYmin,
+                           double& theZmin,
+                           double& theXmax,
+                           double& theYmax,
+                           double& theZmax) const;
 
   //! Returns the bounds of this bounding box as a Limits structure.
   //! The gap is included. If this bounding box is infinite (i.e. "open"),
@@ -187,22 +187,22 @@ public:
   [[nodiscard]] Standard_EXPORT Limits Get() const;
 
   //! Returns the Xmin value (IsOpenXmin() ? -Precision::Infinite() : Xmin - GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetXMin() const;
+  [[nodiscard]] Standard_EXPORT double GetXMin() const;
 
   //! Returns the Xmax value (IsOpenXmax() ? Precision::Infinite() : Xmax + GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetXMax() const;
+  [[nodiscard]] Standard_EXPORT double GetXMax() const;
 
   //! Returns the Ymin value (IsOpenYmin() ? -Precision::Infinite() : Ymin - GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetYMin() const;
+  [[nodiscard]] Standard_EXPORT double GetYMin() const;
 
   //! Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetYMax() const;
+  [[nodiscard]] Standard_EXPORT double GetYMax() const;
 
   //! Returns the Zmin value (IsOpenZmin() ? -Precision::Infinite() : Zmin - GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetZMin() const;
+  [[nodiscard]] Standard_EXPORT double GetZMin() const;
 
   //! Returns the Zmax value (IsOpenZmax() ? Precision::Infinite() : Zmax + GetGap()).
-  [[nodiscard]] Standard_EXPORT Standard_Real GetZMax() const;
+  [[nodiscard]] Standard_EXPORT double GetZMax() const;
 
   //! Returns the lower corner of this bounding box. The gap is included.
   //! If this bounding box is infinite (i.e. "open"), returned values
@@ -243,47 +243,47 @@ public:
   void OpenZmax() noexcept { Flags |= ZmaxMask; }
 
   //! Returns true if this bounding box has at least one open direction.
-  [[nodiscard]] Standard_Boolean IsOpen() const noexcept { return (Flags & WholeMask) != 0; }
+  [[nodiscard]] bool IsOpen() const noexcept { return (Flags & WholeMask) != 0; }
 
   //! Returns true if this bounding box is open in the Xmin direction.
-  [[nodiscard]] Standard_Boolean IsOpenXmin() const noexcept { return (Flags & XminMask) != 0; }
+  [[nodiscard]] bool IsOpenXmin() const noexcept { return (Flags & XminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Xmax direction.
-  [[nodiscard]] Standard_Boolean IsOpenXmax() const noexcept { return (Flags & XmaxMask) != 0; }
+  [[nodiscard]] bool IsOpenXmax() const noexcept { return (Flags & XmaxMask) != 0; }
 
   //! Returns true if this bounding box is open in the Ymix direction.
-  [[nodiscard]] Standard_Boolean IsOpenYmin() const noexcept { return (Flags & YminMask) != 0; }
+  [[nodiscard]] bool IsOpenYmin() const noexcept { return (Flags & YminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Ymax direction.
-  [[nodiscard]] Standard_Boolean IsOpenYmax() const noexcept { return (Flags & YmaxMask) != 0; }
+  [[nodiscard]] bool IsOpenYmax() const noexcept { return (Flags & YmaxMask) != 0; }
 
   //! Returns true if this bounding box is open in the Zmin direction.
-  [[nodiscard]] Standard_Boolean IsOpenZmin() const noexcept { return (Flags & ZminMask) != 0; }
+  [[nodiscard]] bool IsOpenZmin() const noexcept { return (Flags & ZminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Zmax direction.
-  [[nodiscard]] Standard_Boolean IsOpenZmax() const noexcept { return (Flags & ZmaxMask) != 0; }
+  [[nodiscard]] bool IsOpenZmax() const noexcept { return (Flags & ZmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).
-  [[nodiscard]] Standard_Boolean IsWhole() const noexcept
+  [[nodiscard]] bool IsWhole() const noexcept
   {
     return (Flags & WholeMask) == WholeMask;
   }
 
   //! Returns true if this bounding box is empty (Void flag).
-  [[nodiscard]] Standard_Boolean IsVoid() const noexcept { return (Flags & VoidMask) != 0; }
+  [[nodiscard]] bool IsVoid() const noexcept { return (Flags & VoidMask) != 0; }
 
   //! true if xmax-xmin < tol.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsXThin(const Standard_Real tol) const;
+  [[nodiscard]] Standard_EXPORT bool IsXThin(const double tol) const;
 
   //! true if ymax-ymin < tol.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsYThin(const Standard_Real tol) const;
+  [[nodiscard]] Standard_EXPORT bool IsYThin(const double tol) const;
 
   //! true if zmax-zmin < tol.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsZThin(const Standard_Real tol) const;
+  [[nodiscard]] Standard_EXPORT bool IsZThin(const double tol) const;
 
   //! Returns true if IsXThin, IsYThin and IsZThin are all true,
   //! i.e. if the box is thin in all three dimensions.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsThin(const Standard_Real tol) const;
+  [[nodiscard]] Standard_EXPORT bool IsThin(const double tol) const;
 
   //! Returns a bounding box which is the result of applying the
   //! transformation T to this bounding box.
@@ -308,51 +308,51 @@ public:
   Standard_EXPORT void Add(const gp_Dir& D);
 
   //! Returns True if the Pnt is out the box.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt& P) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt& P) const;
 
   //! Returns False if the line intersects the box.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Lin& L) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Lin& L) const;
 
   //! Returns False if the plane intersects the box.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Pln& P) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pln& P) const;
 
   //! Returns False if the <Box> intersects or is inside <me>.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box& Other) const;
 
   //! Returns False if the transformed <Box> intersects
   //! or is inside <me>.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const Bnd_Box& Other,
+  [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box& Other,
                                                        const gp_Trsf& T) const;
 
   //! Returns False if the transformed <Box> intersects
   //! or is inside the transformed box <me>.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Trsf& T1,
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Trsf& T1,
                                                        const Bnd_Box& Other,
                                                        const gp_Trsf& T2) const;
 
   //! Returns False if the flat band lying between two parallel
   //! lines represented by their reference points <P1>, <P2> and
   //! direction <D> intersects the box.
-  [[nodiscard]] Standard_EXPORT Standard_Boolean IsOut(const gp_Pnt& P1,
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt& P1,
                                                        const gp_Pnt& P2,
                                                        const gp_Dir& D) const;
 
   //! Computes the minimum distance between two boxes.
-  [[nodiscard]] Standard_EXPORT Standard_Real Distance(const Bnd_Box& Other) const;
+  [[nodiscard]] Standard_EXPORT double Distance(const Bnd_Box& Other) const;
 
   Standard_EXPORT void Dump() const;
 
   //! Computes the squared diagonal of me.
-  [[nodiscard]] Standard_Real SquareExtent() const noexcept
+  [[nodiscard]] double SquareExtent() const noexcept
   {
     if (IsVoid())
     {
       return 0.0;
     }
 
-    const Standard_Real aDx = Xmax - Xmin + Gap + Gap;
-    const Standard_Real aDy = Ymax - Ymin + Gap + Gap;
-    const Standard_Real aDz = Zmax - Zmin + Gap + Gap;
+    const double aDx = Xmax - Xmin + Gap + Gap;
+    const double aDy = Ymax - Ymin + Gap + Gap;
+    const double aDz = Zmax - Zmin + Gap + Gap;
     return aDx * aDx + aDy * aDy + aDz * aDz;
   }
 
@@ -374,17 +374,17 @@ public:
   }
 
   //! Returns TRUE if this box has finite part.
-  [[nodiscard]] Standard_Boolean HasFinitePart() const noexcept
+  [[nodiscard]] bool HasFinitePart() const noexcept
   {
     return !IsVoid() && Xmax >= Xmin;
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
-                                                Standard_Integer&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 protected:
   //! Bit flags.
@@ -401,14 +401,14 @@ protected:
   };
 
 private:
-  Standard_Real    Xmin;
-  Standard_Real    Xmax;
-  Standard_Real    Ymin;
-  Standard_Real    Ymax;
-  Standard_Real    Zmin;
-  Standard_Real    Zmax;
-  Standard_Real    Gap;
-  Standard_Integer Flags;
+  double    Xmin;
+  double    Xmax;
+  double    Ymin;
+  double    Ymax;
+  double    Zmin;
+  double    Zmax;
+  double    Gap;
+  int Flags;
 };
 
 #endif // _Bnd_Box_HeaderFile

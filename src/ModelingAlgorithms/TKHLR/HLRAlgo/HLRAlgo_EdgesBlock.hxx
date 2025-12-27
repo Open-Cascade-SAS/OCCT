@@ -20,14 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_Orientation.hxx>
-
-class HLRAlgo_EdgesBlock;
-DEFINE_STANDARD_HANDLE(HLRAlgo_EdgesBlock, Standard_Transient)
 
 //! An EdgesBlock is a set of Edges. It is used by the
 //! DataStructure to structure the Edges.
@@ -48,11 +46,11 @@ class HLRAlgo_EdgesBlock : public Standard_Transient
 public:
   struct MinMaxIndices
   {
-    Standard_Integer Min[8], Max[8];
+    int Min[8], Max[8];
 
     MinMaxIndices& Minimize(const MinMaxIndices& theMinMaxIndices)
     {
-      for (Standard_Integer aI = 0; aI < 8; ++aI)
+      for (int aI = 0; aI < 8; ++aI)
       {
         if (Min[aI] > theMinMaxIndices.Min[aI])
         {
@@ -68,7 +66,7 @@ public:
 
     MinMaxIndices& Maximize(const MinMaxIndices& theMinMaxIndices)
     {
-      for (Standard_Integer aI = 0; aI < 8; ++aI)
+      for (int aI = 0; aI < 8; ++aI)
       {
         if (Min[aI] < theMinMaxIndices.Min[aI])
         {
@@ -84,31 +82,31 @@ public:
   };
 
   //! Create a Block of Edges for a wire.
-  Standard_EXPORT HLRAlgo_EdgesBlock(const Standard_Integer NbEdges);
+  Standard_EXPORT HLRAlgo_EdgesBlock(const int NbEdges);
 
-  Standard_Integer NbEdges() const { return myEdges.Upper(); }
+  int NbEdges() const { return myEdges.Upper(); }
 
-  void Edge(const Standard_Integer I, const Standard_Integer EI) { myEdges(I) = EI; }
+  void Edge(const int I, const int EI) { myEdges(I) = EI; }
 
-  Standard_Integer Edge(const Standard_Integer I) const { return myEdges(I); }
+  int Edge(const int I) const { return myEdges(I); }
 
-  void Orientation(const Standard_Integer I, const TopAbs_Orientation Or)
+  void Orientation(const int I, const TopAbs_Orientation Or)
   {
     myFlags(I) &= ~EMaskOrient;
-    myFlags(I) |= ((Standard_Integer)Or & (Standard_Integer)EMaskOrient);
+    myFlags(I) |= ((int)Or & (int)EMaskOrient);
   }
 
-  TopAbs_Orientation Orientation(const Standard_Integer I) const
+  TopAbs_Orientation Orientation(const int I) const
   {
     return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
   }
 
-  Standard_Boolean OutLine(const Standard_Integer I) const
+  bool OutLine(const int I) const
   {
     return (myFlags(I) & EMaskOutLine) != 0;
   }
 
-  void OutLine(const Standard_Integer I, const Standard_Boolean B)
+  void OutLine(const int I, const bool B)
   {
     if (B)
       myFlags(I) |= EMaskOutLine;
@@ -116,12 +114,12 @@ public:
       myFlags(I) &= ~EMaskOutLine;
   }
 
-  Standard_Boolean Internal(const Standard_Integer I) const
+  bool Internal(const int I) const
   {
     return (myFlags(I) & EMaskInternal) != 0;
   }
 
-  void Internal(const Standard_Integer I, const Standard_Boolean B)
+  void Internal(const int I, const bool B)
   {
     if (B)
       myFlags(I) |= EMaskInternal;
@@ -129,12 +127,12 @@ public:
       myFlags(I) &= ~EMaskInternal;
   }
 
-  Standard_Boolean Double(const Standard_Integer I) const
+  bool Double(const int I) const
   {
     return (myFlags(I) & EMaskDouble) != 0;
   }
 
-  void Double(const Standard_Integer I, const Standard_Boolean B)
+  void Double(const int I, const bool B)
   {
     if (B)
       myFlags(I) |= EMaskDouble;
@@ -142,12 +140,12 @@ public:
       myFlags(I) &= ~EMaskDouble;
   }
 
-  Standard_Boolean IsoLine(const Standard_Integer I) const
+  bool IsoLine(const int I) const
   {
     return (myFlags(I) & EMaskIsoLine) != 0;
   }
 
-  void IsoLine(const Standard_Integer I, const Standard_Boolean B)
+  void IsoLine(const int I, const bool B)
   {
     if (B)
       myFlags(I) |= EMaskIsoLine;
@@ -172,8 +170,8 @@ protected:
   };
 
 private:
-  TColStd_Array1OfInteger myEdges;
-  TColStd_Array1OfInteger myFlags;
+  NCollection_Array1<int> myEdges;
+  NCollection_Array1<int> myFlags;
   MinMaxIndices           myMinMax;
 };
 

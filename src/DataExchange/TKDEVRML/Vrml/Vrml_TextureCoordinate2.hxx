@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
-class Vrml_TextureCoordinate2;
-DEFINE_STANDARD_HANDLE(Vrml_TextureCoordinate2, Standard_Transient)
-
 //! defines a TextureCoordinate2 node of VRML specifying properties of geometry
 //! and its appearance.
 //! This node defines a set of 2D coordinates to be used to map textures
@@ -44,19 +41,18 @@ class Vrml_TextureCoordinate2 : public Standard_Transient
 public:
   Standard_EXPORT Vrml_TextureCoordinate2();
 
-  Standard_EXPORT Vrml_TextureCoordinate2(const Handle(TColgp_HArray1OfVec2d)& aPoint);
+  Standard_EXPORT Vrml_TextureCoordinate2(const occ::handle<TColgp_HArray1OfVec2d>& aPoint);
 
-  Standard_EXPORT void SetPoint(const Handle(TColgp_HArray1OfVec2d)& aPoint);
+  Standard_EXPORT void SetPoint(const occ::handle<TColgp_HArray1OfVec2d>& aPoint);
 
-  Standard_EXPORT Handle(TColgp_HArray1OfVec2d) Point() const;
+  Standard_EXPORT occ::handle<TColgp_HArray1OfVec2d> Point() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_TextureCoordinate2, Standard_Transient)
 
-protected:
 private:
-  Handle(TColgp_HArray1OfVec2d) myPoint;
+  occ::handle<TColgp_HArray1OfVec2d> myPoint;
 };
 
 #endif // _Vrml_TextureCoordinate2_HeaderFile

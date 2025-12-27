@@ -30,69 +30,68 @@ class GeomFill_FunctionDraft : public math_FunctionSetWithDerivatives
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomFill_FunctionDraft(const Handle(Adaptor3d_Surface)& S,
-                                         const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT GeomFill_FunctionDraft(const occ::handle<Adaptor3d_Surface>& S,
+                                         const occ::handle<Adaptor3d_Curve>&   C);
 
   //! returns the number of variables of the function.
-  Standard_EXPORT virtual Standard_Integer NbVariables() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbVariables() const override;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT virtual Standard_Integer NbEquations() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbEquations() const override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X,
-                                                 math_Vector&       F) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const math_Vector& X,
+                                                 math_Vector&       F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Derivatives(const math_Vector& X,
-                                                       math_Matrix&       D) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Derivatives(const math_Vector& X,
+                                                       math_Matrix&       D) override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual Standard_Boolean Values(const math_Vector& X,
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
                                                   math_Vector&       F,
-                                                  math_Matrix&       D) Standard_OVERRIDE;
+                                                  math_Matrix&       D) override;
 
   //! returns the values <F> of the T derivatives for
   //! the parameter Param.
-  Standard_EXPORT Standard_Boolean DerivT(const Handle(Adaptor3d_Curve)& C,
-                                          const Standard_Real            Param,
-                                          const Standard_Real            W,
+  Standard_EXPORT bool DerivT(const occ::handle<Adaptor3d_Curve>& C,
+                                          const double            Param,
+                                          const double            W,
                                           const gp_Vec&                  dN,
-                                          const Standard_Real            teta,
+                                          const double            teta,
                                           math_Vector&                   F);
 
   //! returns the values <F> of the T2 derivatives for
   //! the parameter Param.
-  Standard_EXPORT Standard_Boolean Deriv2T(const Handle(Adaptor3d_Curve)& C,
-                                           const Standard_Real            Param,
-                                           const Standard_Real            W,
+  Standard_EXPORT bool Deriv2T(const occ::handle<Adaptor3d_Curve>& C,
+                                           const double            Param,
+                                           const double            W,
                                            const gp_Vec&                  d2N,
-                                           const Standard_Real            teta,
+                                           const double            teta,
                                            math_Vector&                   F);
 
   //! returns the values <D> of the TX derivatives for
   //! the parameter Param.
-  Standard_EXPORT Standard_Boolean DerivTX(const gp_Vec&       dN,
-                                           const Standard_Real teta,
+  Standard_EXPORT bool DerivTX(const gp_Vec&       dN,
+                                           const double teta,
                                            math_Matrix&        D);
 
   //! returns the values <T> of the X2 derivatives for
   //! the parameter Param.
-  Standard_EXPORT Standard_Boolean Deriv2X(const math_Vector& X, GeomFill_Tensor& T);
+  Standard_EXPORT bool Deriv2X(const math_Vector& X, GeomFill_Tensor& T);
 
-protected:
 private:
-  Handle(Adaptor3d_Curve)   TheCurve;
-  Handle(Adaptor3d_Surface) TheSurface;
+  occ::handle<Adaptor3d_Curve>   TheCurve;
+  occ::handle<Adaptor3d_Surface> TheSurface;
 };
 
 #endif // _GeomFill_FunctionDraft_HeaderFile

@@ -17,11 +17,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Graphic3d_NMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_Shared.hxx>
 #include <SelectMgr_CompositionFilter.hxx>
 #include <SelectMgr_FilterType.hxx>
-
-DEFINE_STANDARD_HANDLE(SelectMgr_AndOrFilter, SelectMgr_CompositionFilter)
 
 //! A framework to define an OR or AND selection filter.
 //! To use an AND selection filter call SetUseOrFilter with False parameter.
@@ -34,11 +34,11 @@ public:
   Standard_EXPORT SelectMgr_AndOrFilter(const SelectMgr_FilterType theFilterType);
 
   //! Indicates that the selected Interactive Object passes the filter.
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& theObj) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& theObj) const
+    override;
 
   //! Disable selection of specified objects.
-  Standard_EXPORT void SetDisabledObjects(const Handle(Graphic3d_NMapOfTransient)& theObjects);
+  Standard_EXPORT void SetDisabledObjects(const occ::handle<NCollection_Shared<NCollection_Map<const Standard_Transient*>>>& theObjects);
 
   //! @return a selection filter type (@sa SelectMgr_FilterType).
   SelectMgr_FilterType FilterType() const { return myFilterType; }
@@ -51,7 +51,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(SelectMgr_AndOrFilter, SelectMgr_CompositionFilter)
 
 private:
-  Handle(Graphic3d_NMapOfTransient)
+  occ::handle<NCollection_Shared<NCollection_Map<const Standard_Transient*>>>
     myDisabledObjects; //!< disabled objects.
                        //!  Selection isn't applied to these objects.
   // clang-format off

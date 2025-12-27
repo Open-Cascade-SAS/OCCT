@@ -21,8 +21,8 @@ template <class T, int N>
 BVH_Box<T, N> ComputeSetBox(BVH_Set<T, N>* theSet)
 {
   BVH_Box<T, N>          aBox;
-  const Standard_Integer aSize = theSet->Size();
-  for (Standard_Integer i = 0; i < aSize; ++i)
+  const int aSize = theSet->Size();
+  for (int i = 0; i < aSize; ++i)
   {
     aBox.Combine(theSet->Box(i));
   }
@@ -35,7 +35,7 @@ BVH_Box<T, N> ComputeSetBox(BVH_Set<T, N>* theSet)
 
 TEST(BVH_SpatialMedianBuilderTest, DefaultConstructor)
 {
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
   EXPECT_EQ(aBuilder.LeafNodeSize(), 5);
   EXPECT_EQ(aBuilder.MaxTreeDepth(), 32);
@@ -43,7 +43,7 @@ TEST(BVH_SpatialMedianBuilderTest, DefaultConstructor)
 
 TEST(BVH_SpatialMedianBuilderTest, CustomParameters)
 {
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder(10, 20, Standard_True);
+  BVH_SpatialMedianBuilder<double, 3> aBuilder(10, 20, true);
 
   EXPECT_EQ(aBuilder.LeafNodeSize(), 10);
   EXPECT_EQ(aBuilder.MaxTreeDepth(), 20);
@@ -51,11 +51,11 @@ TEST(BVH_SpatialMedianBuilderTest, CustomParameters)
 
 TEST(BVH_SpatialMedianBuilderTest, BuildEmptySet)
 {
-  BVH_Triangulation<Standard_Real, 3>        aTriangulation;
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Triangulation<double, 3>        aTriangulation;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_EQ(aTree.Length(), 0);
@@ -63,17 +63,17 @@ TEST(BVH_SpatialMedianBuilderTest, BuildEmptySet)
 
 TEST(BVH_SpatialMedianBuilderTest, BuildSingleTriangle)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_EQ(aTree.Length(), 1);
@@ -83,24 +83,24 @@ TEST(BVH_SpatialMedianBuilderTest, BuildSingleTriangle)
 
 TEST(BVH_SpatialMedianBuilderTest, BuildMultipleTriangles)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_GT(aTree.Length(), 0);
@@ -109,29 +109,29 @@ TEST(BVH_SpatialMedianBuilderTest, BuildMultipleTriangles)
 
 TEST(BVH_SpatialMedianBuilderTest, LeafNodeSizeRespected)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 20;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  const Standard_Integer                     aLeafSize = 3;
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder(aLeafSize, 32);
+  const int                     aLeafSize = 3;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder(aLeafSize, 32);
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   // Check all leaf nodes respect the leaf size
-  for (Standard_Integer i = 0; i < aTree.Length(); ++i)
+  for (int i = 0; i < aTree.Length(); ++i)
   {
     if (aTree.IsOuter(i))
     {
@@ -142,25 +142,25 @@ TEST(BVH_SpatialMedianBuilderTest, LeafNodeSizeRespected)
 
 TEST(BVH_SpatialMedianBuilderTest, MaxDepthRespected)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 100;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  const Standard_Integer                     aMaxDepth = 5;
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder(1, aMaxDepth);
+  const int                     aMaxDepth = 5;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder(1, aMaxDepth);
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_LE(aTree.Depth(), aMaxDepth);
@@ -168,37 +168,37 @@ TEST(BVH_SpatialMedianBuilderTest, MaxDepthRespected)
 
 TEST(BVH_SpatialMedianBuilderTest, SplitsAtSpatialMedian)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 8;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder(2, 32);
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder(2, 32);
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   // For uniformly distributed data, spatial median should create balanced splits
   // Root node should have roughly equal children
   if (aTree.Length() > 0 && !aTree.IsOuter(0))
   {
-    Standard_Integer aLeftChild  = aTree.Child<0>(0);
-    Standard_Integer aRightChild = aTree.Child<1>(0);
+    int aLeftChild  = aTree.Child<0>(0);
+    int aRightChild = aTree.Child<1>(0);
 
     if (aLeftChild != -1 && aRightChild != -1)
     {
-      Standard_Integer aLeftPrims  = aTree.NbPrimitives(aLeftChild);
-      Standard_Integer aRightPrims = aTree.NbPrimitives(aRightChild);
+      int aLeftPrims  = aTree.NbPrimitives(aLeftChild);
+      int aRightPrims = aTree.NbPrimitives(aRightChild);
 
       // For 8 triangles, expect roughly 4-4 split (allowing some tolerance)
       EXPECT_GE(aLeftPrims, 2);
@@ -211,24 +211,24 @@ TEST(BVH_SpatialMedianBuilderTest, SplitsAtSpatialMedian)
 
 TEST(BVH_SpatialMedianBuilderTest, Build2D)
 {
-  BVH_Triangulation<Standard_Real, 2> aTriangulation;
+  BVH_Triangulation<double, 2> aTriangulation;
   const int                           aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x, 0.0));
-    BVH::Array<Standard_Real, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 0.5, 1.0));
-    BVH::Array<Standard_Real, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 1.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x, 0.0));
+    BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 0.5, 1.0));
+    BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 1.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 2>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 2> aBuilder;
+  BVH_Tree<double, 2>                 aTree;
+  BVH_SpatialMedianBuilder<double, 2> aBuilder;
 
-  BVH_Box<Standard_Real, 2> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 2> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_GT(aTree.Length(), 0);
@@ -237,25 +237,25 @@ TEST(BVH_SpatialMedianBuilderTest, Build2D)
 
 TEST(BVH_SpatialMedianBuilderTest, UseMainAxisFlag)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 20;
 
   // Create elongated distribution along X axis
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i * 10);
+    double x = static_cast<double>(i * 10);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTreeMainAxis;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilderMainAxis(5, 32, Standard_True);
+  BVH_Tree<double, 3>                 aTreeMainAxis;
+  BVH_SpatialMedianBuilder<double, 3> aBuilderMainAxis(5, 32, true);
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilderMainAxis.Build(&aTriangulation, &aTreeMainAxis, aBox);
 
   EXPECT_GT(aTreeMainAxis.Length(), 0);
@@ -263,30 +263,30 @@ TEST(BVH_SpatialMedianBuilderTest, UseMainAxisFlag)
 
 TEST(BVH_SpatialMedianBuilderTest, CompareWithBinnedBuilder)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 50;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
+    double x = static_cast<double>(i);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
 
   // Build with SpatialMedianBuilder (uses 2 bins)
-  BVH_Tree<Standard_Real, 3>                 aTreeMedian;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilderMedian;
+  BVH_Tree<double, 3>                 aTreeMedian;
+  BVH_SpatialMedianBuilder<double, 3> aBuilderMedian;
   aBuilderMedian.Build(&aTriangulation, &aTreeMedian, aBox);
 
   // Build with BinnedBuilder with 2 bins (should be identical)
-  BVH_Tree<Standard_Real, 3>             aTreeBinned;
-  BVH_BinnedBuilder<Standard_Real, 3, 2> aBuilderBinned;
+  BVH_Tree<double, 3>             aTreeBinned;
+  BVH_BinnedBuilder<double, 3, 2> aBuilderBinned;
   aBuilderBinned.Build(&aTriangulation, &aTreeBinned, aBox);
 
   // Both should produce trees (exact structure may vary but both should be valid)
@@ -296,26 +296,26 @@ TEST(BVH_SpatialMedianBuilderTest, CompareWithBinnedBuilder)
 
 TEST(BVH_SpatialMedianBuilderTest, ClusteredData)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 30;
 
   // Create two clusters: 15 triangles at x=0, 15 at x=100
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = (i < 15) ? 0.0 : 100.0;
-    Standard_Real y = static_cast<Standard_Real>(i % 15);
+    double x = (i < 15) ? 0.0 : 100.0;
+    double y = static_cast<double>(i % 15);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   // Spatial median should split the two clusters
@@ -325,29 +325,29 @@ TEST(BVH_SpatialMedianBuilderTest, ClusteredData)
 
 TEST(BVH_SpatialMedianBuilderTest, FloatPrecision)
 {
-  BVH_Triangulation<Standard_ShortReal, 3> aTriangulation;
+  BVH_Triangulation<float, 3> aTriangulation;
   const int                                aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_ShortReal x = static_cast<Standard_ShortReal>(i);
+    float x = static_cast<float>(i);
 
-    BVH::Array<Standard_ShortReal, 3>::Append(aTriangulation.Vertices,
-                                              NCollection_Vec3<Standard_ShortReal>(x, 0.0f, 0.0f));
-    BVH::Array<Standard_ShortReal, 3>::Append(
+    BVH::Array<float, 3>::Append(aTriangulation.Vertices,
+                                              NCollection_Vec3<float>(x, 0.0f, 0.0f));
+    BVH::Array<float, 3>::Append(
       aTriangulation.Vertices,
-      NCollection_Vec3<Standard_ShortReal>(x + 0.5f, 1.0f, 0.0f));
-    BVH::Array<Standard_ShortReal, 3>::Append(
+      NCollection_Vec3<float>(x + 0.5f, 1.0f, 0.0f));
+    BVH::Array<float, 3>::Append(
       aTriangulation.Vertices,
-      NCollection_Vec3<Standard_ShortReal>(x + 1.0f, 0.0f, 0.0f));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+      NCollection_Vec3<float>(x + 1.0f, 0.0f, 0.0f));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_ShortReal, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_ShortReal, 3> aBuilder;
+  BVH_Tree<float, 3>                 aTree;
+  BVH_SpatialMedianBuilder<float, 3> aBuilder;
 
-  BVH_Box<Standard_ShortReal, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<float, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_GT(aTree.Length(), 0);
@@ -355,23 +355,23 @@ TEST(BVH_SpatialMedianBuilderTest, FloatPrecision)
 
 TEST(BVH_SpatialMedianBuilderTest, IdenticalBoxes)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 10;
 
   // All triangles at the same position
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   // Should create a single leaf containing all triangles
@@ -380,33 +380,33 @@ TEST(BVH_SpatialMedianBuilderTest, IdenticalBoxes)
 
 TEST(BVH_SpatialMedianBuilderTest, LargeDataSet)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
   const int                           aNumTriangles = 500;
 
   // Random-ish distribution
   for (int i = 0; i < aNumTriangles; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>((i * 7) % 100);
-    Standard_Real y = static_cast<Standard_Real>((i * 11) % 100);
-    Standard_Real z = static_cast<Standard_Real>((i * 13) % 100);
+    double x = static_cast<double>((i * 7) % 100);
+    double y = static_cast<double>((i * 11) % 100);
+    double z = static_cast<double>((i * 13) % 100);
 
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, z));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, z));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, z + 1.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, z));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, z));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, z + 1.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_Tree<Standard_Real, 3>                 aTree;
-  BVH_SpatialMedianBuilder<Standard_Real, 3> aBuilder;
+  BVH_Tree<double, 3>                 aTree;
+  BVH_SpatialMedianBuilder<double, 3> aBuilder;
 
-  BVH_Box<Standard_Real, 3> aBox = ComputeSetBox(&aTriangulation);
+  BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
   aBuilder.Build(&aTriangulation, &aTree, aBox);
 
   EXPECT_GT(aTree.Length(), 0);
   EXPECT_GT(aTree.Depth(), 5); // Large dataset should produce deeper tree
 
   // Estimate SAH quality
-  Standard_Real aSAH = aTree.EstimateSAH();
+  double aSAH = aTree.EstimateSAH();
   EXPECT_GT(aSAH, 0.0);
 }

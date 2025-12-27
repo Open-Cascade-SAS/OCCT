@@ -2,7 +2,7 @@
 set(OCCT_AppDef_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_AppDef_FILES
-  AppDef_Array1OfMultiPointConstraint.hxx
+
   AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx
   AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute_0.cxx
   AppDef_BSplineCompute.hxx

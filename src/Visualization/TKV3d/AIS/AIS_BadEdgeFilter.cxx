@@ -20,7 +20,8 @@
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_BadEdgeFilter, SelectMgr_Filter)
 
@@ -33,39 +34,39 @@ AIS_BadEdgeFilter::AIS_BadEdgeFilter()
 
 //=================================================================================================
 
-Standard_Boolean AIS_BadEdgeFilter::ActsOn(const TopAbs_ShapeEnum aType) const
+bool AIS_BadEdgeFilter::ActsOn(const TopAbs_ShapeEnum aType) const
 {
   return (aType == TopAbs_EDGE);
 }
 
 //=================================================================================================
 
-Standard_Boolean AIS_BadEdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
+bool AIS_BadEdgeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
   if (myContour == 0)
-    return Standard_True;
+    return true;
 
-  Handle(StdSelect_BRepOwner) aBO(Handle(StdSelect_BRepOwner)::DownCast(EO));
+  occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
-    return Standard_True;
+    return true;
 
   const TopoDS_Shape& aShape = aBO->Shape();
 
   if (myBadEdges.IsBound(myContour))
   {
-    TopTools_ListIteratorOfListOfShape it(myBadEdges.Find(myContour));
+    NCollection_List<TopoDS_Shape>::Iterator it(myBadEdges.Find(myContour));
     for (; it.More(); it.Next())
     {
       if (it.Value().IsSame(aShape))
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void AIS_BadEdgeFilter::AddEdge(const TopoDS_Edge& anEdge, const Standard_Integer Index)
+void AIS_BadEdgeFilter::AddEdge(const TopoDS_Edge& anEdge, const int Index)
 {
   if (myBadEdges.IsBound(Index))
   {
@@ -73,7 +74,7 @@ void AIS_BadEdgeFilter::AddEdge(const TopoDS_Edge& anEdge, const Standard_Intege
   }
   else
   {
-    TopTools_ListOfShape LS;
+    NCollection_List<TopoDS_Shape> LS;
     LS.Append(anEdge);
     myBadEdges.Bind(Index, LS);
   }
@@ -81,14 +82,14 @@ void AIS_BadEdgeFilter::AddEdge(const TopoDS_Edge& anEdge, const Standard_Intege
 
 //=================================================================================================
 
-void AIS_BadEdgeFilter::RemoveEdges(const Standard_Integer Index)
+void AIS_BadEdgeFilter::RemoveEdges(const int Index)
 {
   myBadEdges.UnBind(Index);
 }
 
 //=================================================================================================
 
-void AIS_BadEdgeFilter::SetContour(const Standard_Integer Index)
+void AIS_BadEdgeFilter::SetContour(const int Index)
 {
   myContour = Index;
 }

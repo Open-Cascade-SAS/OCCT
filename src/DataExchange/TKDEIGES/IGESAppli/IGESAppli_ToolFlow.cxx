@@ -34,27 +34,27 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFlow::IGESAppli_ToolFlow() {}
 
-void IGESAppli_ToolFlow::ReadOwnParams(const Handle(IGESAppli_Flow)&          ent,
-                                       const Handle(IGESData_IGESReaderData)& IR,
+void IGESAppli_ToolFlow::ReadOwnParams(const occ::handle<IGESAppli_Flow>&          ent,
+                                       const occ::handle<IGESData_IGESReaderData>& IR,
                                        IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Integer                               tempNbContextFlags;
-  Standard_Integer                               tempTypeOfFlow;
-  Standard_Integer                               tempFunctionFlag;
-  Standard_Integer                               i, nf, nc, nj, nn, nt, np;
-  Handle(IGESData_HArray1OfIGESEntity)           tempFlowAssocs;
-  Handle(IGESDraw_HArray1OfConnectPoint)         tempConnectPoints;
-  Handle(IGESData_HArray1OfIGESEntity)           tempJoins;
-  Handle(Interface_HArray1OfHAsciiString)        tempFlowNames;
-  Handle(IGESGraph_HArray1OfTextDisplayTemplate) tempTextDisplayTemplates;
-  Handle(IGESData_HArray1OfIGESEntity)           tempContFlowAssocs;
+  // bool st; //szv#4:S4163:12Mar99 not needed
+  int                               tempNbContextFlags;
+  int                               tempTypeOfFlow;
+  int                               tempFunctionFlag;
+  int                               i, nf, nc, nj, nn, nt, np;
+  occ::handle<IGESData_HArray1OfIGESEntity>           tempFlowAssocs;
+  occ::handle<IGESDraw_HArray1OfConnectPoint>         tempConnectPoints;
+  occ::handle<IGESData_HArray1OfIGESEntity>           tempJoins;
+  occ::handle<Interface_HArray1OfHAsciiString>        tempFlowNames;
+  occ::handle<IGESGraph_HArray1OfTextDisplayTemplate> tempTextDisplayTemplates;
+  occ::handle<IGESData_HArray1OfIGESEntity>           tempContFlowAssocs;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
@@ -117,14 +117,14 @@ void IGESAppli_ToolFlow::ReadOwnParams(const Handle(IGESAppli_Flow)&          en
 
   for (i = 1; i <= nf; i++)
   {
-    Handle(IGESData_IGESEntity) tempEntity;
+    occ::handle<IGESData_IGESEntity> tempEntity;
     if (PR.ReadEntity(IR, PR.Current(), "Flow Associativity", tempEntity))
       tempFlowAssocs->SetValue(i, tempEntity);
   }
 
   for (i = 1; i <= nc; i++)
   {
-    Handle(IGESDraw_ConnectPoint) tempEntity;
+    occ::handle<IGESDraw_ConnectPoint> tempEntity;
     if (PR.ReadEntity(IR,
                       PR.Current(),
                       "Connect Point",
@@ -135,21 +135,21 @@ void IGESAppli_ToolFlow::ReadOwnParams(const Handle(IGESAppli_Flow)&          en
 
   for (i = 1; i <= nj; i++)
   {
-    Handle(IGESData_IGESEntity) tempEntity;
+    occ::handle<IGESData_IGESEntity> tempEntity;
     if (PR.ReadEntity(IR, PR.Current(), "Join", tempEntity))
       tempJoins->SetValue(i, tempEntity);
   }
 
   for (i = 1; i <= nn; i++)
   {
-    Handle(TCollection_HAsciiString) tempString;
+    occ::handle<TCollection_HAsciiString> tempString;
     if (PR.ReadText(PR.Current(), "Flow Name", tempString))
       tempFlowNames->SetValue(i, tempString);
   }
 
   for (i = 1; i <= nt; i++)
   {
-    Handle(IGESGraph_TextDisplayTemplate) tempEntity;
+    occ::handle<IGESGraph_TextDisplayTemplate> tempEntity;
     if (PR.ReadEntity(IR,
                       PR.Current(),
                       "Text Display Template",
@@ -160,7 +160,7 @@ void IGESAppli_ToolFlow::ReadOwnParams(const Handle(IGESAppli_Flow)&          en
 
   for (i = 1; i <= np; i++)
   {
-    Handle(IGESData_IGESEntity) tempEntity;
+    occ::handle<IGESData_IGESEntity> tempEntity;
     if (PR.ReadEntity(IR, PR.Current(), "Continuation Flow Associativities", tempEntity))
       tempContFlowAssocs->SetValue(i, tempEntity);
   }
@@ -177,10 +177,10 @@ void IGESAppli_ToolFlow::ReadOwnParams(const Handle(IGESAppli_Flow)&          en
             tempContFlowAssocs);
 }
 
-void IGESAppli_ToolFlow::WriteOwnParams(const Handle(IGESAppli_Flow)& ent,
+void IGESAppli_ToolFlow::WriteOwnParams(const occ::handle<IGESAppli_Flow>& ent,
                                         IGESData_IGESWriter&          IW) const
 {
-  Standard_Integer i, num;
+  int i, num;
   IW.Send(ent->NbContextFlags());
   IW.Send(ent->NbFlowAssociativities());
   IW.Send(ent->NbConnectPoints());
@@ -204,10 +204,10 @@ void IGESAppli_ToolFlow::WriteOwnParams(const Handle(IGESAppli_Flow)& ent,
     IW.Send(ent->ContFlowAssociativity(i));
 }
 
-void IGESAppli_ToolFlow::OwnShared(const Handle(IGESAppli_Flow)& ent,
+void IGESAppli_ToolFlow::OwnShared(const occ::handle<IGESAppli_Flow>& ent,
                                    Interface_EntityIterator&     iter) const
 {
-  Standard_Integer i, num;
+  int i, num;
   for (num = ent->NbFlowAssociativities(), i = 1; i <= num; i++)
     iter.GetOneItem(ent->FlowAssociativity(i));
   for (num = ent->NbConnectPoints(), i = 1; i <= num; i++)
@@ -220,17 +220,17 @@ void IGESAppli_ToolFlow::OwnShared(const Handle(IGESAppli_Flow)& ent,
     iter.GetOneItem(ent->ContFlowAssociativity(i));
 }
 
-void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
-                                 const Handle(IGESAppli_Flow)& ent,
+void IGESAppli_ToolFlow::OwnCopy(const occ::handle<IGESAppli_Flow>& another,
+                                 const occ::handle<IGESAppli_Flow>& ent,
                                  Interface_CopyTool&           TC) const
 {
-  Standard_Integer tempNbContextFlags = another->NbContextFlags();
-  Standard_Integer tempTypeOfFlow     = another->TypeOfFlow();
-  Standard_Integer tempFunctionFlag   = another->FunctionFlag();
-  Standard_Integer i, num;
+  int tempNbContextFlags = another->NbContextFlags();
+  int tempTypeOfFlow     = another->TypeOfFlow();
+  int tempFunctionFlag   = another->FunctionFlag();
+  int i, num;
 
   num = another->NbFlowAssociativities();
-  Handle(IGESData_HArray1OfIGESEntity) tempFlowAssocs;
+  occ::handle<IGESData_HArray1OfIGESEntity> tempFlowAssocs;
   if (num > 0)
     tempFlowAssocs = new IGESData_HArray1OfIGESEntity(1, num);
   for (i = 1; i <= num; i++)
@@ -240,7 +240,7 @@ void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
   }
 
   num = another->NbConnectPoints();
-  Handle(IGESDraw_HArray1OfConnectPoint) tempConnectPoints;
+  occ::handle<IGESDraw_HArray1OfConnectPoint> tempConnectPoints;
   if (num > 0)
     tempConnectPoints = new IGESDraw_HArray1OfConnectPoint(1, num);
   for (i = 1; i <= num; i++)
@@ -250,7 +250,7 @@ void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
   }
 
   num = another->NbJoins();
-  Handle(IGESData_HArray1OfIGESEntity) tempJoins;
+  occ::handle<IGESData_HArray1OfIGESEntity> tempJoins;
   if (num > 0)
     tempJoins = new IGESData_HArray1OfIGESEntity(1, num);
   for (i = 1; i <= num; i++)
@@ -260,14 +260,14 @@ void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
   }
 
   num = another->NbFlowNames();
-  Handle(Interface_HArray1OfHAsciiString) tempFlowNames;
+  occ::handle<Interface_HArray1OfHAsciiString> tempFlowNames;
   if (num > 0)
     tempFlowNames = new Interface_HArray1OfHAsciiString(1, num);
   for (i = 1; i <= num; i++)
     tempFlowNames->SetValue(i, new TCollection_HAsciiString(another->FlowName(i)));
 
   num = another->NbTextDisplayTemplates();
-  Handle(IGESGraph_HArray1OfTextDisplayTemplate) tempTextDisplayTemplates;
+  occ::handle<IGESGraph_HArray1OfTextDisplayTemplate> tempTextDisplayTemplates;
   if (num > 0)
     tempTextDisplayTemplates = new IGESGraph_HArray1OfTextDisplayTemplate(1, num);
   for (i = 1; i <= num; i++)
@@ -279,7 +279,7 @@ void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
   }
 
   num = another->NbContFlowAssociativities();
-  Handle(IGESData_HArray1OfIGESEntity) tempContFlowAssocs;
+  occ::handle<IGESData_HArray1OfIGESEntity> tempContFlowAssocs;
   if (num > 0)
     tempContFlowAssocs = new IGESData_HArray1OfIGESEntity(1, num);
   for (i = 1; i <= num; i++)
@@ -301,12 +301,12 @@ void IGESAppli_ToolFlow::OwnCopy(const Handle(IGESAppli_Flow)& another,
             tempContFlowAssocs);
 }
 
-Standard_Boolean IGESAppli_ToolFlow::OwnCorrect(const Handle(IGESAppli_Flow)& ent) const
+bool IGESAppli_ToolFlow::OwnCorrect(const occ::handle<IGESAppli_Flow>& ent) const
 {
   return ent->OwnCorrect(); // nbcontextflags = 2
 }
 
-IGESData_DirChecker IGESAppli_ToolFlow::DirChecker(const Handle(IGESAppli_Flow)& /* ent */) const
+IGESData_DirChecker IGESAppli_ToolFlow::DirChecker(const occ::handle<IGESAppli_Flow>& /* ent */) const
 {
   IGESData_DirChecker DC(402, 18);
   DC.Structure(IGESData_DefVoid);
@@ -320,9 +320,9 @@ IGESData_DirChecker IGESAppli_ToolFlow::DirChecker(const Handle(IGESAppli_Flow)&
   return DC;
 }
 
-void IGESAppli_ToolFlow::OwnCheck(const Handle(IGESAppli_Flow)& ent,
+void IGESAppli_ToolFlow::OwnCheck(const occ::handle<IGESAppli_Flow>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbContextFlags() != 2)
     ach->AddFail("Number of Context Flags != 2");
@@ -332,14 +332,14 @@ void IGESAppli_ToolFlow::OwnCheck(const Handle(IGESAppli_Flow)& ent,
     ach->AddFail("Function Flag != 0,1,2");
 }
 
-void IGESAppli_ToolFlow::OwnDump(const Handle(IGESAppli_Flow)& ent,
+void IGESAppli_ToolFlow::OwnDump(const occ::handle<IGESAppli_Flow>& ent,
                                  const IGESData_IGESDumper&    dumper,
                                  Standard_OStream&             S,
-                                 const Standard_Integer        level) const
+                                 const int        level) const
 {
   S << "IGESAppli_Flow\n";
   S << "Number of Context Flags : " << ent->NbContextFlags() << "\n";
-  Standard_Integer tf = ent->TypeOfFlow();
+  int tf = ent->TypeOfFlow();
   S << "Type of Flow : " << tf;
   if (tf == 1)
     S << " (logical)\n";

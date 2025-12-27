@@ -17,9 +17,10 @@
 #ifndef IGESGraph_HArray1OfColor_HeaderFile
 #define IGESGraph_HArray1OfColor_HeaderFile
 
-#include <IGESGraph_Array1OfColor.hxx>
+#include <IGESGraph_Color.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESGraph_HArray1OfColor, IGESGraph_Array1OfColor)
+DEFINE_HARRAY1(IGESGraph_HArray1OfColor, NCollection_Array1<occ::handle<IGESGraph_Color>>)
 
 #endif

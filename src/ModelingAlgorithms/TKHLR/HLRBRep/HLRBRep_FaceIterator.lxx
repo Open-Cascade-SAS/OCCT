@@ -19,21 +19,21 @@
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::MoreEdge() const
+inline bool HLRBRep_FaceIterator::MoreEdge() const
 {
   return iWire <= nbWires;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::BeginningOfWire() const
+inline bool HLRBRep_FaceIterator::BeginningOfWire() const
 {
   return iEdge == 1;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::EndOfWire() const
+inline bool HLRBRep_FaceIterator::EndOfWire() const
 {
   return iEdge == nbEdges;
 }
@@ -48,14 +48,14 @@ inline void HLRBRep_FaceIterator::SkipWire()
 
 //=================================================================================================
 
-inline Handle(HLRAlgo_EdgesBlock) HLRBRep_FaceIterator::Wire() const
+inline occ::handle<HLRAlgo_EdgesBlock> HLRBRep_FaceIterator::Wire() const
 {
   return myWires->Wire(iWire);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_FaceIterator::Edge() const
+inline int HLRBRep_FaceIterator::Edge() const
 {
   return myEdges->Edge(iEdge);
 }
@@ -69,28 +69,28 @@ inline TopAbs_Orientation HLRBRep_FaceIterator::Orientation() const
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::OutLine() const
+inline bool HLRBRep_FaceIterator::OutLine() const
 {
   return myEdges->OutLine(iEdge);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::Internal() const
+inline bool HLRBRep_FaceIterator::Internal() const
 {
   return myEdges->Internal(iEdge);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::Double() const
+inline bool HLRBRep_FaceIterator::Double() const
 {
   return myEdges->Double(iEdge);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_FaceIterator::IsoLine() const
+inline bool HLRBRep_FaceIterator::IsoLine() const
 {
   return myEdges->IsoLine(iEdge);
 }

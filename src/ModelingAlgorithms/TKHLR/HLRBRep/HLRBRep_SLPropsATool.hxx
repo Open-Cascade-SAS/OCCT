@@ -32,16 +32,16 @@ public:
 
   //! Computes the point <P> of parameter <U> and <V>
   //! on the Surface <A>.
-  static void Value(const Standard_Address A,
-                    const Standard_Real    U,
-                    const Standard_Real    V,
+  static void Value(const HLRBRep_Surface* A,
+                    const double    U,
+                    const double    V,
                     gp_Pnt&                P);
 
   //! Computes the point <P> and first derivative <D1*>
   //! of parameter <U> and <V> on the Surface <A>.
-  static void D1(const Standard_Address A,
-                 const Standard_Real    U,
-                 const Standard_Real    V,
+  static void D1(const HLRBRep_Surface* A,
+                 const double    U,
+                 const double    V,
                  gp_Pnt&                P,
                  gp_Vec&                D1U,
                  gp_Vec&                D1V);
@@ -49,9 +49,9 @@ public:
   //! Computes the point <P>, the first derivative <D1*>
   //! and second derivative <D2*> of parameter <U> and
   //! <V> on the Surface <A>.
-  static void D2(const Standard_Address A,
-                 const Standard_Real    U,
-                 const Standard_Real    V,
+  static void D2(const HLRBRep_Surface* A,
+                 const double    U,
+                 const double    V,
                  gp_Pnt&                P,
                  gp_Vec&                D1U,
                  gp_Vec&                D1V,
@@ -59,27 +59,25 @@ public:
                  gp_Vec&                D2V,
                  gp_Vec&                DUV);
 
-  static gp_Vec DN(const Standard_Address A,
-                   const Standard_Real    U,
-                   const Standard_Real    V,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv);
+  static gp_Vec DN(const HLRBRep_Surface* A,
+                   const double    U,
+                   const double    V,
+                   const int Nu,
+                   const int Nv);
 
   //! returns the order of continuity of the Surface <A>.
   //! returns 1 : first derivative only is computable
   //! returns 2 : first and second derivative only are
   //! computable.
-  static Standard_Integer Continuity(const Standard_Address A);
+  static int Continuity(const HLRBRep_Surface* A);
 
   //! returns the bounds of the Surface.
-  static void Bounds(const Standard_Address A,
-                     Standard_Real&         U1,
-                     Standard_Real&         V1,
-                     Standard_Real&         U2,
-                     Standard_Real&         V2);
+  static void Bounds(const HLRBRep_Surface* A,
+                     double&         U1,
+                     double&         V1,
+                     double&         U2,
+                     double&         V2);
 
-protected:
-private:
 };
 
 #include <HLRBRep_SLPropsATool.lxx>

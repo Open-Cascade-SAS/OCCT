@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-inline Standard_Real TopClass_Classifier2d::Parameter() const
+inline double TopClass_Classifier2d::Parameter() const
 {
   return myParam;
 }
@@ -32,7 +32,7 @@ inline TheIntersector& TopClass_Classifier2d::Intersector()
 
 //=================================================================================================
 
-inline Standard_Integer TopClass_Classifier2d::ClosestIntersection() const
+inline int TopClass_Classifier2d::ClosestIntersection() const
 {
   return myClosest;
 }
@@ -48,7 +48,7 @@ inline TopAbs_State TopClass_Classifier2d::State() const
 
 //=================================================================================================
 
-inline Standard_Boolean TopClass_Classifier2d::IsHeadOrEnd() const
+inline bool TopClass_Classifier2d::IsHeadOrEnd() const
 {
   return myIsHeadOrEnd;
 }

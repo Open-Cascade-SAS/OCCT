@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_Block;
-DEFINE_STANDARD_HANDLE(IGESSolid_Block, IGESData_IGESEntity)
-
 //! defines Block, Type <150> Form Number <0>
 //! in package IGESSolid
 //! The Block is a rectangular parallelopiped, defined with
@@ -55,13 +52,13 @@ public:
   Standard_EXPORT gp_XYZ Size() const;
 
   //! returns the length of the Block along the local X-direction
-  Standard_EXPORT Standard_Real XLength() const;
+  Standard_EXPORT double XLength() const;
 
   //! returns the length of the Block along the local Y-direction
-  Standard_EXPORT Standard_Real YLength() const;
+  Standard_EXPORT double YLength() const;
 
   //! returns the length of the Block along the local Z-direction
-  Standard_EXPORT Standard_Real ZLength() const;
+  Standard_EXPORT double ZLength() const;
 
   //! returns the corner point coordinates of the Block
   Standard_EXPORT gp_Pnt Corner() const;
@@ -94,7 +91,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Block, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XYZ theSize;
   gp_XYZ theCorner;

@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_ShortReal* BinObjMgt_PShortReal;
+typedef float* BinObjMgt_PShortReal;
 
 #endif

@@ -27,8 +27,8 @@ public:
   //! theBaseDriver
   //! @param theDerivative an instance of the attribute, just created, detached from any label
   //! @param theBaseDriver a driver of the base attribute, called by Paste methods
-  XmlMDF_DerivedDriver(const Handle(TDF_Attribute)&  theDerivative,
-                       const Handle(XmlMDF_ADriver)& theBaseDriver)
+  XmlMDF_DerivedDriver(const occ::handle<TDF_Attribute>&  theDerivative,
+                       const occ::handle<XmlMDF_ADriver>& theBaseDriver)
       : XmlMDF_ADriver(theBaseDriver->MessageDriver(), theBaseDriver->Namespace().ToCString()),
         myDerivative(theDerivative),
         myBaseDirver(theBaseDriver)
@@ -36,7 +36,7 @@ public:
   }
 
   //! Creates a new instance of the derivative attribute
-  virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE
+  virtual occ::handle<TDF_Attribute> NewEmpty() const override
   {
     return myDerivative->NewEmpty();
   }
@@ -54,11 +54,11 @@ public:
   }
 
   //! Reuses the base driver to read the base fields
-  virtual Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
-                                 const Handle(TDF_Attribute)& theTarget,
-                                 XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE
+  virtual bool Paste(const XmlObjMgt_Persistent&  theSource,
+                                 const occ::handle<TDF_Attribute>& theTarget,
+                                 XmlObjMgt_RRelocationTable&  theRelocTable) const override
   {
-    Standard_Boolean aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
+    bool aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
     // clang-format off
     theTarget->AfterRetrieval(); // to allow synchronization of the derived attribute with the base content
     // clang-format on
@@ -66,16 +66,16 @@ public:
   }
 
   //! Reuses the base driver to store the base fields
-  virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                      XmlObjMgt_Persistent&        theTarget,
-                     XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE
+                     XmlObjMgt_SRelocationTable&  theRelocTable) const override
   {
     myBaseDirver->Paste(theSource, theTarget, theRelocTable);
   }
 
 protected:
-  Handle(TDF_Attribute)  myDerivative; //!< the derivative attribute that inherits the base
-  Handle(XmlMDF_ADriver) myBaseDirver; //!< the base attribute driver to be reused here
+  occ::handle<TDF_Attribute>  myDerivative; //!< the derivative attribute that inherits the base
+  occ::handle<XmlMDF_ADriver> myBaseDirver; //!< the base attribute driver to be reused here
 };
 
 #endif

@@ -19,8 +19,9 @@
 #include <VrmlData_UnknownNode.hxx>
 #include <BRep_Builder.hxx>
 #include <Poly_Polygon3D.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <VrmlData_Color.hxx>
@@ -35,8 +36,8 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedLineSet, VrmlData_Geometry)
 
 //=================================================================================================
 
-Quantity_Color VrmlData_IndexedLineSet::GetColor(const Standard_Integer /*iFace*/,
-                                                 const Standard_Integer /*iVertex*/)
+Quantity_Color VrmlData_IndexedLineSet::GetColor(const int /*iFace*/,
+                                                 const int /*iVertex*/)
 {
   // TODO
   return Quantity_NOC_BLACK;
@@ -48,13 +49,13 @@ Quantity_Color VrmlData_IndexedLineSet::GetColor(const Standard_Integer /*iFace*
 //           if True it should rebuild the shape presentation.
 //=======================================================================
 
-const Handle(TopoDS_TShape)& VrmlData_IndexedLineSet::TShape()
+const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
 {
   if (myNbPolygons == 0)
     myTShape.Nullify();
   else if (myIsModified)
   {
-    Standard_Integer i;
+    int i;
     BRep_Builder     aBuilder;
     const gp_XYZ*    arrNodes = myCoords->Values();
 
@@ -63,16 +64,16 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedLineSet::TShape()
     aBuilder.MakeWire(aWire);
     for (i = 0; i < (int)myNbPolygons; i++)
     {
-      const Standard_Integer* arrIndice;
-      const Standard_Integer  nNodes = Polygon(i, arrIndice);
-      TColgp_Array1OfPnt      arrPoint(1, nNodes);
-      TColStd_Array1OfReal    arrParam(1, nNodes);
-      for (Standard_Integer j = 0; j < nNodes; j++)
+      const int* arrIndice;
+      const int  nNodes = Polygon(i, arrIndice);
+      NCollection_Array1<gp_Pnt>      arrPoint(1, nNodes);
+      NCollection_Array1<double>    arrParam(1, nNodes);
+      for (int j = 0; j < nNodes; j++)
       {
         arrPoint(j + 1).SetXYZ(arrNodes[arrIndice[j]]);
         arrParam(j + 1) = j;
       }
-      const Handle(Poly_Polygon3D) aPolyPolygon = new Poly_Polygon3D(arrPoint, arrParam);
+      const occ::handle<Poly_Polygon3D> aPolyPolygon = new Poly_Polygon3D(arrPoint, arrParam);
       TopoDS_Edge                  anEdge;
       aBuilder.MakeEdge(anEdge, aPolyPolygon);
       aBuilder.Add(aWire, anEdge);
@@ -87,10 +88,10 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedLineSet::TShape()
 // purpose  : Create a copy of this node
 //=======================================================================
 
-Handle(VrmlData_Node) VrmlData_IndexedLineSet::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_IndexedLineSet) aResult =
-    Handle(VrmlData_IndexedLineSet)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_IndexedLineSet> aResult =
+    occ::down_cast<VrmlData_IndexedLineSet>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_IndexedLineSet(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
 
@@ -104,11 +105,11 @@ Handle(VrmlData_Node) VrmlData_IndexedLineSet::Clone(const Handle(VrmlData_Node)
   else
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
-    const Handle(VrmlData_UnknownNode) aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    if (myCoords.IsNull() == Standard_False)
-      aResult->SetCoordinates(Handle(VrmlData_Coordinate)::DownCast(myCoords->Clone(aDummyNode)));
-    if (myColors.IsNull() == Standard_False)
-      aResult->SetColors(Handle(VrmlData_Color)::DownCast(myColors->Clone(aDummyNode)));
+    const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
+    if (myCoords.IsNull() == false)
+      aResult->SetCoordinates(occ::down_cast<VrmlData_Coordinate>(myCoords->Clone(aDummyNode)));
+    if (myColors.IsNull() == false)
+      aResult->SetColors(occ::down_cast<VrmlData_Color>(myColors->Clone(aDummyNode)));
     // TODO: Replace the following lines with the relevant copying
     aResult->SetPolygons(myNbPolygons, myArrPolygons);
     aResult->SetColorInd(myNbColors, myArrColorInd);
@@ -138,15 +139,15 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Read(VrmlData_InBuffer& theBuffer)
     // with the other tokens (e.g., coordIndex)
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "color"))
     {
-      Handle(VrmlData_Node) aNode;
+      occ::handle<VrmlData_Node> aNode;
       aStatus  = ReadNode(theBuffer, aNode, STANDARD_TYPE(VrmlData_Color));
-      myColors = Handle(VrmlData_Color)::DownCast(aNode);
+      myColors = occ::down_cast<VrmlData_Color>(aNode);
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "coord"))
     {
-      Handle(VrmlData_Node) aNode;
+      occ::handle<VrmlData_Node> aNode;
       aStatus  = ReadNode(theBuffer, aNode, STANDARD_TYPE(VrmlData_Coordinate));
-      myCoords = Handle(VrmlData_Coordinate)::DownCast(aNode);
+      myCoords = occ::down_cast<VrmlData_Coordinate>(aNode);
     }
     else
       break;
@@ -176,14 +177,14 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Write(const char* thePrefix) const
   if (OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
 
-    if (OK(aStatus) && myCoords.IsNull() == Standard_False)
+    if (OK(aStatus) && myCoords.IsNull() == false)
       aStatus = aScene.WriteNode("coord", myCoords);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("coordIndex", myArrPolygons, myNbPolygons);
 
-    if (OK(aStatus) && myColorPerVertex == Standard_False)
+    if (OK(aStatus) && myColorPerVertex == false)
       aStatus = aScene.WriteLine("colorPerVertex  FALSE");
-    if (OK(aStatus) && myColors.IsNull() == Standard_False)
+    if (OK(aStatus) && myColors.IsNull() == false)
       aStatus = aScene.WriteNode("color", myColors);
     if (OK(aStatus))
       aStatus = aScene.WriteArrIndex("colorIndex", myArrColorInd, myNbColors);
@@ -199,12 +200,12 @@ VrmlData_ErrorStatus VrmlData_IndexedLineSet::Write(const char* thePrefix) const
 //           so that it should not be written.
 //=======================================================================
 
-Standard_Boolean VrmlData_IndexedLineSet::IsDefault() const
+bool VrmlData_IndexedLineSet::IsDefault() const
 {
-  Standard_Boolean aResult(Standard_True);
+  bool aResult(true);
   if (myNbPolygons)
-    aResult = Standard_False;
-  else if (myCoords.IsNull() == Standard_False)
+    aResult = false;
+  else if (myCoords.IsNull() == false)
     aResult = myCoords->IsDefault();
   return aResult;
 }

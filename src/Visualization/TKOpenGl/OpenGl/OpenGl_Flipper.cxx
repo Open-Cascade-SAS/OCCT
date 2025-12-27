@@ -25,23 +25,23 @@
 
 OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
     : OpenGl_Element(),
-      myReferenceOrigin((Standard_ShortReal)theReferenceSystem.Location().X(),
-                        (Standard_ShortReal)theReferenceSystem.Location().Y(),
-                        (Standard_ShortReal)theReferenceSystem.Location().Z(),
+      myReferenceOrigin((float)theReferenceSystem.Location().X(),
+                        (float)theReferenceSystem.Location().Y(),
+                        (float)theReferenceSystem.Location().Z(),
                         1.0f),
-      myReferenceX((Standard_ShortReal)theReferenceSystem.XDirection().X(),
-                   (Standard_ShortReal)theReferenceSystem.XDirection().Y(),
-                   (Standard_ShortReal)theReferenceSystem.XDirection().Z(),
+      myReferenceX((float)theReferenceSystem.XDirection().X(),
+                   (float)theReferenceSystem.XDirection().Y(),
+                   (float)theReferenceSystem.XDirection().Z(),
                    1.0f),
-      myReferenceY((Standard_ShortReal)theReferenceSystem.YDirection().X(),
-                   (Standard_ShortReal)theReferenceSystem.YDirection().Y(),
-                   (Standard_ShortReal)theReferenceSystem.YDirection().Z(),
+      myReferenceY((float)theReferenceSystem.YDirection().X(),
+                   (float)theReferenceSystem.YDirection().Y(),
+                   (float)theReferenceSystem.YDirection().Z(),
                    1.0f),
-      myReferenceZ((Standard_ShortReal)theReferenceSystem.Axis().Direction().X(),
-                   (Standard_ShortReal)theReferenceSystem.Axis().Direction().Y(),
-                   (Standard_ShortReal)theReferenceSystem.Axis().Direction().Z(),
+      myReferenceZ((float)theReferenceSystem.Axis().Direction().X(),
+                   (float)theReferenceSystem.Axis().Direction().Y(),
+                   (float)theReferenceSystem.Axis().Direction().Z(),
                    1.0f),
-      myIsEnabled(Standard_True)
+      myIsEnabled(true)
 {
   //
 }
@@ -55,10 +55,10 @@ void OpenGl_Flipper::Release(OpenGl_Context*)
 
 //=================================================================================================
 
-void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_Flipper::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   // Check if rendering is to be in immediate mode
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
   if (!myIsEnabled)
   {
     // restore matrix state
@@ -71,29 +71,29 @@ void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
   aContext->ModelWorldState.Push();
 
-  OpenGl_Mat4 aModelWorldMatrix;
+  NCollection_Mat4<float> aModelWorldMatrix;
   aModelWorldMatrix.Convert(aContext->ModelWorldState.Current());
 
-  OpenGl_Mat4 aMatrixMV = aContext->WorldViewState.Current() * aModelWorldMatrix;
+  NCollection_Mat4<float> aMatrixMV = aContext->WorldViewState.Current() * aModelWorldMatrix;
 
-  const OpenGl_Vec4 aMVReferenceOrigin = aMatrixMV * myReferenceOrigin;
-  const OpenGl_Vec4 aMVReferenceX =
-    aMatrixMV * OpenGl_Vec4(myReferenceX.xyz() + myReferenceOrigin.xyz(), 1.0f);
-  const OpenGl_Vec4 aMVReferenceY =
-    aMatrixMV * OpenGl_Vec4(myReferenceY.xyz() + myReferenceOrigin.xyz(), 1.0f);
-  const OpenGl_Vec4 aMVReferenceZ =
-    aMatrixMV * OpenGl_Vec4(myReferenceZ.xyz() + myReferenceOrigin.xyz(), 1.0f);
+  const NCollection_Vec4<float> aMVReferenceOrigin = aMatrixMV * myReferenceOrigin;
+  const NCollection_Vec4<float> aMVReferenceX =
+    aMatrixMV * NCollection_Vec4<float>(myReferenceX.xyz() + myReferenceOrigin.xyz(), 1.0f);
+  const NCollection_Vec4<float> aMVReferenceY =
+    aMatrixMV * NCollection_Vec4<float>(myReferenceY.xyz() + myReferenceOrigin.xyz(), 1.0f);
+  const NCollection_Vec4<float> aMVReferenceZ =
+    aMatrixMV * NCollection_Vec4<float>(myReferenceZ.xyz() + myReferenceOrigin.xyz(), 1.0f);
 
-  const OpenGl_Vec4 aDirX = aMVReferenceX - aMVReferenceOrigin;
-  const OpenGl_Vec4 aDirY = aMVReferenceY - aMVReferenceOrigin;
-  const OpenGl_Vec4 aDirZ = aMVReferenceZ - aMVReferenceOrigin;
+  const NCollection_Vec4<float> aDirX = aMVReferenceX - aMVReferenceOrigin;
+  const NCollection_Vec4<float> aDirY = aMVReferenceY - aMVReferenceOrigin;
+  const NCollection_Vec4<float> aDirZ = aMVReferenceZ - aMVReferenceOrigin;
 
-  Standard_Boolean isReversedX = aDirX.xyz().Dot(OpenGl_Vec3::DX()) < 0.0f;
-  Standard_Boolean isReversedY = aDirY.xyz().Dot(OpenGl_Vec3::DY()) < 0.0f;
-  Standard_Boolean isReversedZ = aDirZ.xyz().Dot(OpenGl_Vec3::DZ()) < 0.0f;
+  bool isReversedX = aDirX.xyz().Dot(NCollection_Vec3<float>::DX()) < 0.0f;
+  bool isReversedY = aDirY.xyz().Dot(NCollection_Vec3<float>::DY()) < 0.0f;
+  bool isReversedZ = aDirZ.xyz().Dot(NCollection_Vec3<float>::DZ()) < 0.0f;
 
   // compute flipping (rotational transform)
-  OpenGl_Mat4 aTransform;
+  NCollection_Mat4<float> aTransform;
   if ((isReversedX || isReversedY) && !isReversedZ)
   {
     // invert by Z axis: left, up vectors mirrored
@@ -118,8 +118,8 @@ void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   }
 
   // do rotation in origin around reference system "forward" direction
-  OpenGl_Mat4 aRefAxes;
-  OpenGl_Mat4 aRefInv;
+  NCollection_Mat4<float> aRefAxes;
+  NCollection_Mat4<float> aRefInv;
   aRefAxes.SetColumn(0, myReferenceX.xyz());
   aRefAxes.SetColumn(1, myReferenceY.xyz());
   aRefAxes.SetColumn(2, myReferenceZ.xyz());
@@ -138,7 +138,7 @@ void OpenGl_Flipper::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
 //=================================================================================================
 
-void OpenGl_Flipper::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_Flipper::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_Flipper)
 

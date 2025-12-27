@@ -27,7 +27,7 @@ ShapeProcess_UOperator::ShapeProcess_UOperator(const ShapeProcess_OperFunc func)
 
 //=================================================================================================
 
-Standard_Boolean ShapeProcess_UOperator::Perform(const Handle(ShapeProcess_Context)& context,
+bool ShapeProcess_UOperator::Perform(const occ::handle<ShapeProcess_Context>& context,
                                                  const Message_ProgressRange&        theProgress)
 {
   return myFunc(context, theProgress);

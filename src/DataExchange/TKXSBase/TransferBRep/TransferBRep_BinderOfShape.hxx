@@ -24,9 +24,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 
-class TransferBRep_BinderOfShape;
-DEFINE_STANDARD_HANDLE(TransferBRep_BinderOfShape, Transfer_Binder)
-
 //! Allows direct binding between a starting Object and the Result
 //! of its transfer when it is Unique.
 //! The Result itself is defined as a formal parameter <Shape from TopoDS>
@@ -52,10 +49,10 @@ public:
 
   //! Returns the Type permitted for the Result, i.e. the Type
   //! of the Parameter Class <Shape from TopoDS> (statically defined)
-  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 
   //! Returns the Type Name computed for the Result (dynamic)
-  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT const char* ResultTypeName() const override;
 
   //! Defines the Result
   Standard_EXPORT void SetResult(const TopoDS_Shape& res);
@@ -71,7 +68,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TransferBRep_BinderOfShape, Transfer_Binder)
 
-protected:
 private:
   TopoDS_Shape theres;
 };

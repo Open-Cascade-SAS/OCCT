@@ -24,7 +24,7 @@ StepVisual_SurfaceStyleTransparent::StepVisual_SurfaceStyleTransparent() {}
 
 //=================================================================================================
 
-void StepVisual_SurfaceStyleTransparent::Init(const Standard_Real theTransparency)
+void StepVisual_SurfaceStyleTransparent::Init(const double theTransparency)
 {
 
   myTransparency = theTransparency;
@@ -32,14 +32,14 @@ void StepVisual_SurfaceStyleTransparent::Init(const Standard_Real theTransparenc
 
 //=================================================================================================
 
-Standard_Real StepVisual_SurfaceStyleTransparent::Transparency() const
+double StepVisual_SurfaceStyleTransparent::Transparency() const
 {
   return myTransparency;
 }
 
 //=================================================================================================
 
-void StepVisual_SurfaceStyleTransparent::SetTransparency(const Standard_Real theTransparency)
+void StepVisual_SurfaceStyleTransparent::SetTransparency(const double theTransparency)
 {
   myTransparency = theTransparency;
 }

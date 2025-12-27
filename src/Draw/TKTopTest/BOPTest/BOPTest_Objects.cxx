@@ -22,7 +22,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
 
-static Handle(NCollection_BaseAllocator)& Allocator1();
+static occ::handle<NCollection_BaseAllocator>& Allocator1();
 
 //=================================================================================================
 
@@ -39,7 +39,7 @@ public:
   // Init
   void Init()
   {
-    Handle(NCollection_BaseAllocator) pA1, pA2;
+    occ::handle<NCollection_BaseAllocator> pA1, pA2;
     //
     pA1 = NCollection_BaseAllocator::CommonBaseAllocator();
     pA2 = NCollection_BaseAllocator::CommonBaseAllocator();
@@ -70,7 +70,7 @@ public:
 
   //
   // IsValid
-  Standard_Boolean IsValid() const { return (myPaveFiller != NULL); }
+  bool IsValid() const { return (myPaveFiller != NULL); }
 
   // PaveFiller
   BOPAlgo_PaveFiller& PaveFiller() { return *myPaveFiller; };
@@ -88,43 +88,43 @@ public:
   void SetBuilderDefault() { myBuilder = myBuilderDefault; };
 
   //
-  TopTools_ListOfShape& Shapes() { return myShapes; }
+  NCollection_List<TopoDS_Shape>& Shapes() { return myShapes; }
 
   //
-  TopTools_ListOfShape& Tools() { return myTools; }
+  NCollection_List<TopoDS_Shape>& Tools() { return myTools; }
 
   // Resets all options to default values
   void SetDefaultOptions()
   {
-    myRunParallel    = Standard_False;
-    myNonDestructive = Standard_False;
+    myRunParallel    = false;
+    myNonDestructive = false;
     myFuzzyValue     = Precision::Confusion();
     myGlue           = BOPAlgo_GlueOff;
-    myDrawWarnShapes = Standard_False;
-    myCheckInverted  = Standard_True;
-    myUseOBB         = Standard_False;
-    myUnifyEdges     = Standard_False;
-    myUnifyFaces     = Standard_False;
+    myDrawWarnShapes = false;
+    myCheckInverted  = true;
+    myUseOBB         = false;
+    myUnifyEdges     = false;
+    myUnifyFaces     = false;
     myAngTol         = Precision::Angular();
   }
 
   //
-  void SetRunParallel(const Standard_Boolean bFlag) { myRunParallel = bFlag; };
+  void SetRunParallel(const bool bFlag) { myRunParallel = bFlag; };
 
   //
-  Standard_Boolean RunParallel() const { return myRunParallel; };
+  bool RunParallel() const { return myRunParallel; };
 
   //
-  void SetFuzzyValue(const Standard_Real aValue) { myFuzzyValue = aValue; };
+  void SetFuzzyValue(const double aValue) { myFuzzyValue = aValue; };
 
   //
-  Standard_Real FuzzyValue() const { return myFuzzyValue; };
+  double FuzzyValue() const { return myFuzzyValue; };
 
   //
-  void SetNonDestructive(const Standard_Boolean theFlag) { myNonDestructive = theFlag; };
+  void SetNonDestructive(const bool theFlag) { myNonDestructive = theFlag; };
 
   //
-  Standard_Boolean NonDestructive() const { return myNonDestructive; };
+  bool NonDestructive() const { return myNonDestructive; };
 
   //
   void SetGlue(const BOPAlgo_GlueEnum theGlue) { myGlue = theGlue; };
@@ -133,40 +133,40 @@ public:
   BOPAlgo_GlueEnum Glue() const { return myGlue; };
 
   //
-  void SetDrawWarnShapes(const Standard_Boolean bDraw) { myDrawWarnShapes = bDraw; };
+  void SetDrawWarnShapes(const bool bDraw) { myDrawWarnShapes = bDraw; };
 
   //
-  Standard_Boolean DrawWarnShapes() const { return myDrawWarnShapes; };
+  bool DrawWarnShapes() const { return myDrawWarnShapes; };
 
   //
-  void SetCheckInverted(const Standard_Boolean bCheck) { myCheckInverted = bCheck; };
+  void SetCheckInverted(const bool bCheck) { myCheckInverted = bCheck; };
 
   //
-  Standard_Boolean CheckInverted() const { return myCheckInverted; };
+  bool CheckInverted() const { return myCheckInverted; };
 
   //
-  void SetUseOBB(const Standard_Boolean bUse) { myUseOBB = bUse; };
+  void SetUseOBB(const bool bUse) { myUseOBB = bUse; };
 
   //
-  Standard_Boolean UseOBB() const { return myUseOBB; };
+  bool UseOBB() const { return myUseOBB; };
 
   // Controls the Unification of Edges after BOP
-  void SetUnifyEdges(const Standard_Boolean bUE) { myUnifyEdges = bUE; }
+  void SetUnifyEdges(const bool bUE) { myUnifyEdges = bUE; }
 
   // Returns flag of Edges unification
-  Standard_Boolean UnifyEdges() const { return myUnifyEdges; }
+  bool UnifyEdges() const { return myUnifyEdges; }
 
   // Controls the Unification of Faces after BOP
-  void SetUnifyFaces(const Standard_Boolean bUF) { myUnifyFaces = bUF; }
+  void SetUnifyFaces(const bool bUF) { myUnifyFaces = bUF; }
 
   // Returns flag of Faces unification
-  Standard_Boolean UnifyFaces() const { return myUnifyFaces; }
+  bool UnifyFaces() const { return myUnifyFaces; }
 
   // Sets angular tolerance for Edges and Faces unification
-  void SetAngular(const Standard_Real theAngTol) { myAngTol = theAngTol; }
+  void SetAngular(const double theAngTol) { myAngTol = theAngTol; }
 
   // Returns angular tolerance
-  Standard_Real Angular() const { return myAngTol; }
+  double Angular() const { return myAngTol; }
 
 protected:
   //
@@ -179,18 +179,18 @@ protected:
   BOPAlgo_Builder*    myBuilder;
   BOPAlgo_Builder*    myBuilderDefault;
   //
-  TopTools_ListOfShape myShapes;
-  TopTools_ListOfShape myTools;
-  Standard_Boolean     myRunParallel;
-  Standard_Boolean     myNonDestructive;
-  Standard_Real        myFuzzyValue;
+  NCollection_List<TopoDS_Shape> myShapes;
+  NCollection_List<TopoDS_Shape> myTools;
+  bool     myRunParallel;
+  bool     myNonDestructive;
+  double        myFuzzyValue;
   BOPAlgo_GlueEnum     myGlue;
-  Standard_Boolean     myDrawWarnShapes;
-  Standard_Boolean     myCheckInverted;
-  Standard_Boolean     myUseOBB;
-  Standard_Boolean     myUnifyEdges;
-  Standard_Boolean     myUnifyFaces;
-  Standard_Real        myAngTol;
+  bool     myDrawWarnShapes;
+  bool     myCheckInverted;
+  bool     myUseOBB;
+  bool     myUnifyEdges;
+  bool     myUnifyFaces;
+  double        myAngTol;
 };
 
 //
@@ -296,14 +296,14 @@ BOPAlgo_Splitter& BOPTest_Objects::Splitter()
 
 //=================================================================================================
 
-TopTools_ListOfShape& BOPTest_Objects::Shapes()
+NCollection_List<TopoDS_Shape>& BOPTest_Objects::Shapes()
 {
   return GetSession().Shapes();
 }
 
 //=================================================================================================
 
-TopTools_ListOfShape& BOPTest_Objects::Tools()
+NCollection_List<TopoDS_Shape>& BOPTest_Objects::Tools()
 {
   return GetSession().Tools();
 }
@@ -317,42 +317,42 @@ void BOPTest_Objects::SetDefaultOptions()
 
 //=================================================================================================
 
-void BOPTest_Objects::SetRunParallel(const Standard_Boolean bFlag)
+void BOPTest_Objects::SetRunParallel(const bool bFlag)
 {
   GetSession().SetRunParallel(bFlag);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::RunParallel()
+bool BOPTest_Objects::RunParallel()
 {
   return GetSession().RunParallel();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetFuzzyValue(const Standard_Real aValue)
+void BOPTest_Objects::SetFuzzyValue(const double aValue)
 {
   GetSession().SetFuzzyValue(aValue);
 }
 
 //=================================================================================================
 
-Standard_Real BOPTest_Objects::FuzzyValue()
+double BOPTest_Objects::FuzzyValue()
 {
   return GetSession().FuzzyValue();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetNonDestructive(const Standard_Boolean theFlag)
+void BOPTest_Objects::SetNonDestructive(const bool theFlag)
 {
   GetSession().SetNonDestructive(theFlag);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::NonDestructive()
+bool BOPTest_Objects::NonDestructive()
 {
   return GetSession().NonDestructive();
 }
@@ -373,92 +373,92 @@ BOPAlgo_GlueEnum BOPTest_Objects::Glue()
 
 //=================================================================================================
 
-void BOPTest_Objects::SetDrawWarnShapes(const Standard_Boolean bDraw)
+void BOPTest_Objects::SetDrawWarnShapes(const bool bDraw)
 {
   GetSession().SetDrawWarnShapes(bDraw);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::DrawWarnShapes()
+bool BOPTest_Objects::DrawWarnShapes()
 {
   return GetSession().DrawWarnShapes();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetCheckInverted(const Standard_Boolean bCheck)
+void BOPTest_Objects::SetCheckInverted(const bool bCheck)
 {
   GetSession().SetCheckInverted(bCheck);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::CheckInverted()
+bool BOPTest_Objects::CheckInverted()
 {
   return GetSession().CheckInverted();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetUseOBB(const Standard_Boolean bUseOBB)
+void BOPTest_Objects::SetUseOBB(const bool bUseOBB)
 {
   GetSession().SetUseOBB(bUseOBB);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::UseOBB()
+bool BOPTest_Objects::UseOBB()
 {
   return GetSession().UseOBB();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetUnifyEdges(const Standard_Boolean bUE)
+void BOPTest_Objects::SetUnifyEdges(const bool bUE)
 {
   GetSession().SetUnifyEdges(bUE);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::UnifyEdges()
+bool BOPTest_Objects::UnifyEdges()
 {
   return GetSession().UnifyEdges();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetUnifyFaces(const Standard_Boolean bUF)
+void BOPTest_Objects::SetUnifyFaces(const bool bUF)
 {
   GetSession().SetUnifyFaces(bUF);
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPTest_Objects::UnifyFaces()
+bool BOPTest_Objects::UnifyFaces()
 {
   return GetSession().UnifyFaces();
 }
 
 //=================================================================================================
 
-void BOPTest_Objects::SetAngular(const Standard_Real theAngTol)
+void BOPTest_Objects::SetAngular(const double theAngTol)
 {
   GetSession().SetAngular(theAngTol);
 }
 
 //=================================================================================================
 
-Standard_Real BOPTest_Objects::Angular()
+double BOPTest_Objects::Angular()
 {
   return GetSession().Angular();
 }
 
 //=================================================================================================
 
-Handle(NCollection_BaseAllocator)& Allocator1()
+occ::handle<NCollection_BaseAllocator>& Allocator1()
 {
-  static Handle(NCollection_BaseAllocator) sAL1 = NCollection_BaseAllocator::CommonBaseAllocator();
+  static occ::handle<NCollection_BaseAllocator> sAL1 = NCollection_BaseAllocator::CommonBaseAllocator();
   return sAL1;
 }

@@ -24,6 +24,6 @@ TEST(UnitsAPI_Test, BUC60727_AnyToLS_Conversion)
 
   // Test conversion: 3 mm in the MDTV system should remain 3
   // (since the base unit for length in MDTV is millimeter)
-  Standard_Real aResult = UnitsAPI::AnyToLS(3.0, "mm");
+  double aResult = UnitsAPI::AnyToLS(3.0, "mm");
   EXPECT_DOUBLE_EQ(3.0, aResult);
 }

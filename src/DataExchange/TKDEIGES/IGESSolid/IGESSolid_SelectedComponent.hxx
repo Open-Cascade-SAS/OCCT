@@ -25,9 +25,6 @@
 class IGESSolid_BooleanTree;
 class gp_Pnt;
 
-class IGESSolid_SelectedComponent;
-DEFINE_STANDARD_HANDLE(IGESSolid_SelectedComponent, IGESData_IGESEntity)
-
 //! defines SelectedComponent, Type <182> Form Number <0>
 //! in package IGESSolid
 //! The Selected Component entity provides a means of
@@ -42,10 +39,10 @@ public:
   //! SelectedComponent
   //! - anEntity  : the Boolean tree entity
   //! - selectPnt : Point in or on the desired component
-  Standard_EXPORT void Init(const Handle(IGESSolid_BooleanTree)& anEntity, const gp_XYZ& selectPnt);
+  Standard_EXPORT void Init(const occ::handle<IGESSolid_BooleanTree>& anEntity, const gp_XYZ& selectPnt);
 
   //! returns the Boolean tree entity
-  Standard_EXPORT Handle(IGESSolid_BooleanTree) Component() const;
+  Standard_EXPORT occ::handle<IGESSolid_BooleanTree> Component() const;
 
   //! returns the point on/in the selected component
   Standard_EXPORT gp_Pnt SelectPoint() const;
@@ -56,9 +53,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_SelectedComponent, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESSolid_BooleanTree) theEntity;
+  occ::handle<IGESSolid_BooleanTree> theEntity;
   gp_XYZ                        theSelectPoint;
 };
 

@@ -44,35 +44,35 @@ DNaming_PointDriver::DNaming_PointDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_PointDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_PointDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_PointDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_PointDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Execute
 // purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_PointDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
   // perform calculations
 
-  Standard_Real aDX = DNaming::GetReal(aFunction, PNT_DX)->Get();
-  Standard_Real aDY = DNaming::GetReal(aFunction, PNT_DY)->Get();
-  Standard_Real aDZ = DNaming::GetReal(aFunction, PNT_DZ)->Get();
+  double aDX = DNaming::GetReal(aFunction, PNT_DX)->Get();
+  double aDY = DNaming::GetReal(aFunction, PNT_DY)->Get();
+  double aDZ = DNaming::GetReal(aFunction, PNT_DZ)->Get();
 
-  Handle(TNaming_NamedShape) aPrevPnt = DNaming::GetFunctionResult(aFunction);
+  occ::handle<TNaming_NamedShape> aPrevPnt = DNaming::GetFunctionResult(aFunction);
   // Save location
   TopLoc_Location aLocation;
   if (!aPrevPnt.IsNull() && !aPrevPnt->IsEmpty())
@@ -82,8 +82,8 @@ Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog)
   gp_Pnt aPoint;
   if (aFunction->GetDriverGUID() == PNTRLT_GUID)
   {
-    Handle(TDataStd_UAttribute) aRefPnt   = DNaming::GetObjectArg(aFunction, PNTRLT_REF);
-    Handle(TNaming_NamedShape)  aRefPntNS = DNaming::GetObjectValue(aRefPnt);
+    occ::handle<TDataStd_UAttribute> aRefPnt   = DNaming::GetObjectArg(aFunction, PNTRLT_REF);
+    occ::handle<TNaming_NamedShape>  aRefPntNS = DNaming::GetObjectValue(aRefPnt);
     if (aRefPntNS.IsNull() || aRefPntNS->IsEmpty())
     {
 #ifdef OCCT_DEBUG
@@ -117,9 +117,9 @@ Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog)
 
   // restore location
   if (!aLocation.IsIdentity())
-    TNaming::Displace(aResultLabel, aLocation, Standard_True);
+    TNaming::Displace(aResultLabel, aLocation, true);
 
-  theLog->SetValid(aResultLabel, Standard_True);
+  theLog->SetValid(aResultLabel, true);
 
   aFunction->SetFailure(DONE);
   return 0;

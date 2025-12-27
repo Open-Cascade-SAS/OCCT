@@ -18,9 +18,10 @@
 #define Approx_HArray1OfAdHSurface_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <Approx_Array1OfAdHSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Approx_HArray1OfAdHSurface, Approx_Array1OfAdHSurface)
+DEFINE_HARRAY1(Approx_HArray1OfAdHSurface, NCollection_Array1<occ::handle<Adaptor3d_Surface>>)
 
 #endif

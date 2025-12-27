@@ -6,12 +6,7 @@ set(OCCT_BRepOffset_FILES
   BRepOffset.hxx
   BRepOffset_Analyse.cxx
   BRepOffset_Analyse.hxx
-  BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval.hxx
-  BRepOffset_DataMapIteratorOfDataMapOfShapeMapOfShape.hxx
-  BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx
-  BRepOffset_DataMapOfShapeListOfInterval.hxx
-  BRepOffset_DataMapOfShapeMapOfShape.hxx
-  BRepOffset_DataMapOfShapeOffset.hxx
+
   BRepOffset_Error.hxx
   BRepOffset_Inter2d.cxx
   BRepOffset_Inter2d.hxx
@@ -20,8 +15,7 @@ set(OCCT_BRepOffset_FILES
   BRepOffset_Interval.cxx
   BRepOffset_Interval.hxx
   BRepOffset_Interval.lxx
-  BRepOffset_ListIteratorOfListOfInterval.hxx
-  BRepOffset_ListOfInterval.hxx
+
   BRepOffset_MakeLoops.cxx
   BRepOffset_MakeLoops.hxx
   BRepOffset_MakeOffset.cxx

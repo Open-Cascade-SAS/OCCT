@@ -39,16 +39,14 @@ public:
   //! 1 -> OpenShell
   //! 2 -> ClosedShell
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a OpenShell (Null if another type)
-  Standard_EXPORT Handle(StepShape_OpenShell) OpenShell() const;
+  Standard_EXPORT occ::handle<StepShape_OpenShell> OpenShell() const;
 
   //! returns Value as a ClosedShell (Null if another type)
-  Standard_EXPORT Handle(StepShape_ClosedShell) ClosedShell() const;
+  Standard_EXPORT occ::handle<StepShape_ClosedShell> ClosedShell() const;
 
-protected:
-private:
 };
 
 #endif // _StepShape_Shell_HeaderFile

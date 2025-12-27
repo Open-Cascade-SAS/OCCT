@@ -44,11 +44,10 @@ public:
     const gp_Ax22d&         A,
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Axis2Placement2d)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Axis2Placement2d>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Axis2Placement2d) theAxis2Placement2d;
+  occ::handle<StepGeom_Axis2Placement2d> theAxis2Placement2d;
 };
 
 #endif // _GeomToStep_MakeAxis2Placement2d_HeaderFile

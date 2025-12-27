@@ -24,7 +24,7 @@
 struct GeomHash_RectangularTrimmedSurfaceHasher
 {
   // Hashes the trimmed surface by its trim bounds and basis surface.
-  std::size_t operator()(const Handle(Geom_RectangularTrimmedSurface)& theSurface) const noexcept
+  std::size_t operator()(const occ::handle<Geom_RectangularTrimmedSurface>& theSurface) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -44,8 +44,8 @@ struct GeomHash_RectangularTrimmedSurfaceHasher
   }
 
   // Compares two trimmed surfaces by their trim bounds and basis surfaces.
-  bool operator()(const Handle(Geom_RectangularTrimmedSurface)& theSurface1,
-                  const Handle(Geom_RectangularTrimmedSurface)& theSurface2) const noexcept
+  bool operator()(const occ::handle<Geom_RectangularTrimmedSurface>& theSurface1,
+                  const occ::handle<Geom_RectangularTrimmedSurface>& theSurface2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

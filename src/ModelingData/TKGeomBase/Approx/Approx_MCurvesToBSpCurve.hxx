@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <AppParCurves_SequenceOfMultiCurve.hxx>
+#include <AppParCurves_MultiCurve.hxx>
+#include <NCollection_Sequence.hxx>
 class AppParCurves_MultiCurve;
 
 class Approx_MCurvesToBSpCurve
@@ -37,7 +38,7 @@ public:
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT void Perform(const AppParCurves_SequenceOfMultiCurve& TheSeq);
+  Standard_EXPORT void Perform(const NCollection_Sequence<AppParCurves_MultiCurve>& TheSeq);
 
   //! return the composite MultiCurves as a MultiBSpCurve.
   Standard_EXPORT const AppParCurves_MultiBSpCurve& Value() const;
@@ -45,11 +46,10 @@ public:
   //! return the composite MultiCurves as a MultiBSpCurve.
   Standard_EXPORT const AppParCurves_MultiBSpCurve& ChangeValue();
 
-protected:
 private:
   AppParCurves_MultiBSpCurve        mySpline;
-  Standard_Boolean                  myDone;
-  AppParCurves_SequenceOfMultiCurve myCurves;
+  bool                  myDone;
+  NCollection_Sequence<AppParCurves_MultiCurve> myCurves;
 };
 
 #endif // _Approx_MCurvesToBSpCurve_HeaderFile

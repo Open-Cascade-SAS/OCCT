@@ -34,10 +34,10 @@ RWStepAP203_RWCcDesignDateAndTimeAssignment::RWStepAP203_RWCcDesignDateAndTimeAs
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepAP203_CcDesignDateAndTimeAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_date_and_time_assignment"))
@@ -45,7 +45,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
 
   // Inherited fields of DateAndTimeAssignment
 
-  Handle(StepBasic_DateAndTime) aDateAndTimeAssignment_AssignedDateAndTime;
+  occ::handle<StepBasic_DateAndTime> aDateAndTimeAssignment_AssignedDateAndTime;
   data->ReadEntity(num,
                    1,
                    "date_and_time_assignment.assigned_date_and_time",
@@ -53,7 +53,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
                    STANDARD_TYPE(StepBasic_DateAndTime),
                    aDateAndTimeAssignment_AssignedDateAndTime);
 
-  Handle(StepBasic_DateTimeRole) aDateAndTimeAssignment_Role;
+  occ::handle<StepBasic_DateTimeRole> aDateAndTimeAssignment_Role;
   data->ReadEntity(num,
                    2,
                    "date_and_time_assignment.role",
@@ -63,14 +63,14 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
 
   // Own fields of CcDesignDateAndTimeAssignment
 
-  Handle(StepAP203_HArray1OfDateTimeItem) aItems;
-  Standard_Integer                        sub3 = 0;
+  occ::handle<StepAP203_HArray1OfDateTimeItem> aItems;
+  int                        sub3 = 0;
   if (data->ReadSubList(num, 3, "items", ach, sub3))
   {
-    Standard_Integer num2 = sub3;
-    Standard_Integer nb0  = data->NbParams(num2);
+    int num2 = sub3;
+    int nb0  = data->NbParams(num2);
     aItems                = new StepAP203_HArray1OfDateTimeItem(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_DateTimeItem anIt0;
       data->ReadEntity(num2, i0, "items", ach, anIt0);
@@ -86,7 +86,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::ReadStep(
 
 void RWStepAP203_RWCcDesignDateAndTimeAssignment::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent) const
+  const occ::handle<StepAP203_CcDesignDateAndTimeAssignment>& ent) const
 {
 
   // Inherited fields of DateAndTimeAssignment
@@ -98,7 +98,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::WriteStep(
   // Own fields of CcDesignDateAndTimeAssignment
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Items()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Items()->Length(); i2++)
   {
     StepAP203_DateTimeItem Var0 = ent->Items()->Value(i2);
     SW.Send(Var0.Value());
@@ -109,7 +109,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignDateAndTimeAssignment::Share(
-  const Handle(StepAP203_CcDesignDateAndTimeAssignment)& ent,
+  const occ::handle<StepAP203_CcDesignDateAndTimeAssignment>& ent,
   Interface_EntityIterator&                              iter) const
 {
 
@@ -121,7 +121,7 @@ void RWStepAP203_RWCcDesignDateAndTimeAssignment::Share(
 
   // Own fields of CcDesignDateAndTimeAssignment
 
-  for (Standard_Integer i3 = 1; i3 <= ent->Items()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->Items()->Length(); i3++)
   {
     StepAP203_DateTimeItem Var0 = ent->Items()->Value(i3);
     iter.AddItem(Var0.Value());

@@ -20,10 +20,10 @@
 
 RWStepShape_RWSolidReplica::RWStepShape_RWSolidReplica() {}
 
-void RWStepShape_RWSolidReplica::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepShape_SolidReplica)&  ent) const
+void RWStepShape_RWSolidReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepShape_SolidReplica>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,20 +33,20 @@ void RWStepShape_RWSolidReplica::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : parentSolid ---
 
-  Handle(StepShape_SolidModel) aParentSolid;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepShape_SolidModel> aParentSolid;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "parent_solid", ach, STANDARD_TYPE(StepShape_SolidModel), aParentSolid);
 
   // --- own field : transformation ---
 
-  Handle(StepGeom_CartesianTransformationOperator3d) aTransformation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepGeom_CartesianTransformationOperator3d> aTransformation;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    3,
                    "transformation",
@@ -60,7 +60,7 @@ void RWStepShape_RWSolidReplica::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepShape_RWSolidReplica::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepShape_SolidReplica)& ent) const
+                                           const occ::handle<StepShape_SolidReplica>& ent) const
 {
 
   // --- inherited field name ---
@@ -76,7 +76,7 @@ void RWStepShape_RWSolidReplica::WriteStep(StepData_StepWriter&                 
   SW.Send(ent->Transformation());
 }
 
-void RWStepShape_RWSolidReplica::Share(const Handle(StepShape_SolidReplica)& ent,
+void RWStepShape_RWSolidReplica::Share(const occ::handle<StepShape_SolidReplica>& ent,
                                        Interface_EntityIterator&             iter) const
 {
 

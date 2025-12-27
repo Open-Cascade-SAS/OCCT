@@ -22,7 +22,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_FloatFormat, IGESSelect_FileModifier)
 
 IGESSelect_FloatFormat::IGESSelect_FloatFormat()
-    : thezerosup(Standard_True),
+    : thezerosup(true),
       themainform("%E"),
       theformrange("%f"),
       therangemin(0.1),
@@ -30,7 +30,7 @@ IGESSelect_FloatFormat::IGESSelect_FloatFormat()
 {
 }
 
-void IGESSelect_FloatFormat::SetDefault(const Standard_Integer digits)
+void IGESSelect_FloatFormat::SetDefault(const int digits)
 {
   themainform.Clear();
   theformrange.Clear();
@@ -51,23 +51,23 @@ void IGESSelect_FloatFormat::SetDefault(const Standard_Integer digits)
   }
   therangemin = 0.1;
   therangemax = 1000.;
-  thezerosup  = Standard_True;
+  thezerosup  = true;
 }
 
-void IGESSelect_FloatFormat::SetZeroSuppress(const Standard_Boolean mode)
+void IGESSelect_FloatFormat::SetZeroSuppress(const bool mode)
 {
   thezerosup = mode;
 }
 
-void IGESSelect_FloatFormat::SetFormat(const Standard_CString format)
+void IGESSelect_FloatFormat::SetFormat(const char* format)
 {
   themainform.Clear();
   themainform.AssignCat(format);
 }
 
-void IGESSelect_FloatFormat::SetFormatForRange(const Standard_CString form,
-                                               const Standard_Real    R1,
-                                               const Standard_Real    R2)
+void IGESSelect_FloatFormat::SetFormatForRange(const char* form,
+                                               const double    R1,
+                                               const double    R2)
 {
   theformrange.Clear();
   theformrange.AssignCat(form);
@@ -75,12 +75,12 @@ void IGESSelect_FloatFormat::SetFormatForRange(const Standard_CString form,
   therangemax = R2;
 }
 
-void IGESSelect_FloatFormat::Format(Standard_Boolean&        zerosup,
+void IGESSelect_FloatFormat::Format(bool&        zerosup,
                                     TCollection_AsciiString& mainform,
-                                    Standard_Boolean&        hasrange,
+                                    bool&        hasrange,
                                     TCollection_AsciiString& formrange,
-                                    Standard_Real&           rangemin,
-                                    Standard_Real&           rangemax) const
+                                    double&           rangemin,
+                                    double&           rangemax) const
 {
   zerosup   = thezerosup;
   mainform  = themainform;
@@ -113,9 +113,9 @@ TCollection_AsciiString IGESSelect_FloatFormat::Label() const
     //    lab.AssignCat(mess);
     //    ... FloatFormat a droit aussi a un beau format pour son propre compte ...
     lab.AssignCat(", in range ");
-    Standard_Integer convlen = Interface_FloatWriter::Convert(therangemin,
+    int convlen = Interface_FloatWriter::Convert(therangemin,
                                                               mess,
-                                                              Standard_True,
+                                                              true,
                                                               therangemin / 2.,
                                                               therangemax * 2.,
                                                               "%f",
@@ -125,7 +125,7 @@ TCollection_AsciiString IGESSelect_FloatFormat::Label() const
     lab.AssignCat(mess);
     convlen           = Interface_FloatWriter::Convert(therangemax,
                                              mess,
-                                             Standard_True,
+                                             true,
                                              therangemin / 2.,
                                              therangemax * 2.,
                                              "%f",

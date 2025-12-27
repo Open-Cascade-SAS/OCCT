@@ -53,7 +53,7 @@ public:
   //! -   the services provided by a 2D curve from the package Geom2d,
   //! -   and those required on the curve by a computation algorithm.
   //! The adapted curve is created in the following way:
-  //! Handle(Geom2d_Curve) mycurve = ... ;
+  //! occ::handle<Geom2d_Curve> mycurve = ... ;
   //! Geom2dAdaptor_Curve Curve ( mycurve ) ;
   //! The qualified curve is then constructed with this object:
   //! GccEnt_Position myQualif = GccEnt_outside ;
@@ -72,7 +72,7 @@ public:
   //! based can be obtained in the following way:
   //! myQualifiedCurve = ... ;
   //! Geom2dAdaptor_Curve myAdaptedCurve = myQualifiedCurve.Qualified();
-  //! Handle(Geom2d_Curve) = myAdaptedCurve.Curve();
+  //! occ::handle<Geom2d_Curve> = myAdaptedCurve.Curve();
   Standard_EXPORT Geom2dAdaptor_Curve Qualified() const;
 
   //! Returns
@@ -82,21 +82,20 @@ public:
   Standard_EXPORT GccEnt_Position Qualifier() const;
 
   //! Returns true if the solution is unqualified and false in the other cases.
-  Standard_EXPORT Standard_Boolean IsUnqualified() const;
+  Standard_EXPORT bool IsUnqualified() const;
 
   //! It returns true if the solution is Enclosing the Curv and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsEnclosing() const;
+  Standard_EXPORT bool IsEnclosing() const;
 
   //! It returns true if the solution is Enclosed in the Curv and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsEnclosed() const;
+  Standard_EXPORT bool IsEnclosed() const;
 
   //! It returns true if the solution is Outside the Curv and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsOutside() const;
+  Standard_EXPORT bool IsOutside() const;
 
-protected:
 private:
   GccEnt_Position     TheQualifier;
   Geom2dAdaptor_Curve TheQualified;

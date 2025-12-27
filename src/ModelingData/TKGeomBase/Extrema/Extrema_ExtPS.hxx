@@ -23,9 +23,10 @@
 
 #include <Extrema_ExtPElS.hxx>
 #include <Extrema_GenExtPS.hxx>
-#include <Extrema_SequenceOfPOnSurf.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
@@ -55,8 +56,8 @@ public:
   //! (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
   Standard_EXPORT Extrema_ExtPS(const gp_Pnt&            P,
                                 const Adaptor3d_Surface& S,
-                                const Standard_Real      TolU,
-                                const Standard_Real      TolV,
+                                const double      TolU,
+                                const double      TolV,
                                 const Extrema_ExtFlag    F = Extrema_ExtFlag_MINMAX,
                                 const Extrema_ExtAlgo    A = Extrema_ExtAlgo_Grad);
 
@@ -70,23 +71,23 @@ public:
   //! (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
   Standard_EXPORT Extrema_ExtPS(const gp_Pnt&            P,
                                 const Adaptor3d_Surface& S,
-                                const Standard_Real      Uinf,
-                                const Standard_Real      Usup,
-                                const Standard_Real      Vinf,
-                                const Standard_Real      Vsup,
-                                const Standard_Real      TolU,
-                                const Standard_Real      TolV,
+                                const double      Uinf,
+                                const double      Usup,
+                                const double      Vinf,
+                                const double      Vsup,
+                                const double      TolU,
+                                const double      TolV,
                                 const Extrema_ExtFlag    F = Extrema_ExtFlag_MINMAX,
                                 const Extrema_ExtAlgo    A = Extrema_ExtAlgo_Grad);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S,
-                                  const Standard_Real      Uinf,
-                                  const Standard_Real      Usup,
-                                  const Standard_Real      Vinf,
-                                  const Standard_Real      Vsup,
-                                  const Standard_Real      TolU,
-                                  const Standard_Real      TolV);
+                                  const double      Uinf,
+                                  const double      Usup,
+                                  const double      Vinf,
+                                  const double      Vsup,
+                                  const double      TolU,
+                                  const double      TolV);
 
   //! Computes the distances.
   //! An exception is raised if the fields have not been
@@ -94,16 +95,16 @@ public:
   Standard_EXPORT void Perform(const gp_Pnt& P);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth resulting square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the point of the Nth resulting distance.
-  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const int N) const;
 
   //! if the surface is a trimmed surface,
   //! dUfVf is a square distance between <P> and the point
@@ -114,10 +115,10 @@ public:
   //! of parameter LastUParameter and FirstVParameter <PUlVf>.
   //! dUlVl is a square distance between <P> and the point
   //! of parameter LastUParameter and LastVParameter <PUlVl>.
-  Standard_EXPORT void TrimmedSquareDistances(Standard_Real& dUfVf,
-                                              Standard_Real& dUfVl,
-                                              Standard_Real& dUlVf,
-                                              Standard_Real& dUlVl,
+  Standard_EXPORT void TrimmedSquareDistances(double& dUfVf,
+                                              double& dUfVl,
+                                              double& dUlVf,
+                                              double& dUlVl,
                                               gp_Pnt&        PUfVf,
                                               gp_Pnt&        PUfVl,
                                               gp_Pnt&        PUlVf,
@@ -128,32 +129,32 @@ public:
   Standard_EXPORT void SetAlgo(const Extrema_ExtAlgo A);
 
 private:
-  Standard_EXPORT void TreatSolution(const Extrema_POnSurf& PS, const Standard_Real Val);
+  Standard_EXPORT void TreatSolution(const Extrema_POnSurf& PS, const double Val);
 
 private:
   const Adaptor3d_Surface*  myS;
-  Standard_Boolean          myDone;
+  bool          myDone;
   Extrema_ExtPElS           myExtPElS;
   Extrema_GenExtPS          myExtPS;
-  Extrema_SequenceOfPOnSurf myPoints;
-  Standard_Real             myuinf;
-  Standard_Real             myusup;
-  Standard_Real             myvinf;
-  Standard_Real             myvsup;
-  Standard_Real             mytolu;
-  Standard_Real             mytolv;
-  Standard_Real             d11;
-  Standard_Real             d12;
-  Standard_Real             d21;
-  Standard_Real             d22;
+  NCollection_Sequence<Extrema_POnSurf> myPoints;
+  double             myuinf;
+  double             myusup;
+  double             myvinf;
+  double             myvsup;
+  double             mytolu;
+  double             mytolv;
+  double             d11;
+  double             d12;
+  double             d21;
+  double             d22;
   gp_Pnt                    P11;
   gp_Pnt                    P12;
   gp_Pnt                    P21;
   gp_Pnt                    P22;
-  TColStd_SequenceOfReal    mySqDist;
+  NCollection_Sequence<double>    mySqDist;
   GeomAbs_SurfaceType       mytype;
-  Handle(Extrema_ExtPExtS)  myExtPExtS;
-  Handle(Extrema_ExtPRevS)  myExtPRevS;
+  occ::handle<Extrema_ExtPExtS>  myExtPExtS;
+  occ::handle<Extrema_ExtPRevS>  myExtPRevS;
 };
 
 #endif // _Extrema_ExtPS_HeaderFile

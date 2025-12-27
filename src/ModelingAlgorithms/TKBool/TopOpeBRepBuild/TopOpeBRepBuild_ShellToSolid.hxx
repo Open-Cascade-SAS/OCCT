@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shell;
 class TopoDS_Solid;
 
@@ -36,11 +37,10 @@ public:
 
   Standard_EXPORT void AddShell(const TopoDS_Shell& Sh);
 
-  Standard_EXPORT void MakeSolids(const TopoDS_Solid& So, TopTools_ListOfShape& LSo);
+  Standard_EXPORT void MakeSolids(const TopoDS_Solid& So, NCollection_List<TopoDS_Shape>& LSo);
 
-protected:
 private:
-  TopTools_ListOfShape myLSh;
+  NCollection_List<TopoDS_Shape> myLSh;
 };
 
 #endif // _TopOpeBRepBuild_ShellToSolid_HeaderFile

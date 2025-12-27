@@ -22,10 +22,6 @@
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 class TCollection_HAsciiString;
 
-class StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion,
-                       StepFEA_FeaMaterialPropertyRepresentationItem)
-
 //! Representation of STEP entity FeaTangentialCoefficientOfLinearThermalExpansion
 class StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion
     : public StepFEA_FeaMaterialPropertyRepresentationItem
@@ -36,7 +32,7 @@ public:
   Standard_EXPORT StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
                             const StepFEA_SymmetricTensor23d&       aFeaConstants);
 
   //! Returns field FeaConstants
@@ -48,7 +44,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion,
                           StepFEA_FeaMaterialPropertyRepresentationItem)
 
-protected:
 private:
   StepFEA_SymmetricTensor23d theFeaConstants;
 };

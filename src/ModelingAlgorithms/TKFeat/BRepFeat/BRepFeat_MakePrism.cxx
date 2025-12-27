@@ -39,36 +39,39 @@
 #include <LocOpe_Prism.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean BRepFeat_GettraceFEAT();
+extern bool BRepFeat_GettraceFEAT();
 #endif
 
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_Prism&,
-                   TopTools_DataMapOfShapeListOfShape&, // myMap
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
                    TopoDS_Shape&,                       // myFShape
                    TopoDS_Shape&);                      // myLShape
 
-static Standard_Boolean ToFuse(const TopoDS_Face&, const TopoDS_Face&);
+static bool ToFuse(const TopoDS_Face&, const TopoDS_Face&);
 
-static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
+static double HeightMax(const TopoDS_Shape& theSbase,
                                const TopoDS_Face&  theSkface,
                                const TopoDS_Shape& theSFrom,
                                const TopoDS_Shape& theSUntil);
 
-static Standard_Integer SensOfPrism(const Handle(Geom_Curve)& C, const TopoDS_Shape& Until);
+static int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until);
 
-static Handle(Geom_Curve) TestCurve(const TopoDS_Shape&, const gp_Vec&);
+static occ::handle<Geom_Curve> TestCurve(const TopoDS_Shape&, const gp_Vec&);
 
 //=================================================================================================
 
@@ -76,11 +79,11 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape&    Sbase,
                               const TopoDS_Shape&    Pbase,
                               const TopoDS_Face&     Skface,
                               const gp_Dir&          Direc,
-                              const Standard_Integer Mode,
-                              const Standard_Boolean Modify)
+                              const int Mode,
+                              const bool Modify)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::Init" << std::endl;
 #endif
@@ -93,24 +96,24 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape&    Sbase,
   myDir = Direc;
   if (Mode == 0)
   {
-    myFuse     = Standard_False;
-    myJustFeat = Standard_False;
+    myFuse     = false;
+    myJustFeat = false;
   }
   else if (Mode == 1)
   {
-    myFuse     = Standard_True;
-    myJustFeat = Standard_False;
+    myFuse     = true;
+    myJustFeat = false;
   }
   else if (Mode == 2)
   {
-    myFuse     = Standard_True;
-    myJustFeat = Standard_True;
+    myFuse     = true;
+    myJustFeat = true;
   }
   else
   {
   }
   myModify    = Modify;
-  myJustGluer = Standard_False;
+  myJustGluer = false;
 
   //-------------- ifv
   // mySkface.Nullify();
@@ -125,7 +128,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape&    Sbase,
   TopExp_Explorer exp;
   for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
   {
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
@@ -152,7 +155,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape&    Sbase,
 void BRepFeat_MakePrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::Add(Edge,face)" << std::endl;
 #endif
@@ -183,10 +186,10 @@ void BRepFeat_MakePrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
   if (!mySlface.IsBound(F))
   {
-    TopTools_ListOfShape thelist1;
+    NCollection_List<TopoDS_Shape> thelist1;
     mySlface.Bind(F, thelist1);
   }
-  TopTools_ListIteratorOfListOfShape itl(mySlface(F));
+  NCollection_List<TopoDS_Shape>::Iterator itl(mySlface(F));
   for (; itl.More(); itl.Next())
   {
     if (itl.Value().IsSame(E))
@@ -206,10 +209,10 @@ void BRepFeat_MakePrism::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 //           call of reconstruction topo
 //=======================================================================
 
-void BRepFeat_MakePrism::Perform(const Standard_Real Length)
+void BRepFeat_MakePrism::Perform(const double Length)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::Perform(Length)" << std::endl;
 #endif
@@ -235,7 +238,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 
   TopoDS_Face FFace;
 
-  Standard_Boolean found = Standard_False;
+  bool found = false;
 
   // try to detect the faces of gluing
   // in case if the top of the prism is tangent to the initial shape
@@ -253,7 +256,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
           if (ex2.Current().IsSame(myLShape))
           {
             FFace = TopoDS::Face(ex1.Current());
-            found = Standard_True;
+            found = true;
             break;
           }
         }
@@ -268,7 +271,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
       const TopoDS_Face& ff = TopoDS::Face(exp.Current());
       if (ToFuse(ff, FFace))
       {
-        TopTools_DataMapOfShapeListOfShape sl;
+        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> sl;
         if (!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace))
           break;
       }
@@ -281,7 +284,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 
   if (!myGluedF.IsEmpty())
   { // case gluing
-    myJustGluer = Standard_True;
+    myJustGluer = true;
     thePrism.Curves(myCurves);
     myBCurve = thePrism.BarycCurve();
     GlobalPerform(); // topological reconstruction
@@ -294,14 +297,14 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
     {
       BRepAlgoAPI_Fuse f(mySbase, myGShape);
       myShape = f.Shape();
-      UpdateDescendants(f, myShape, Standard_False);
+      UpdateDescendants(f, myShape, false);
       Done();
     }
     else if (myFuse == 0)
     {
       BRepAlgoAPI_Cut c(mySbase, myGShape);
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
     else
@@ -321,7 +324,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::Perform(Until)" << std::endl;
 #endif
@@ -340,11 +343,11 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
   mySFrom.Nullify();
   ShapeFromValid();
   mySUntil             = Until;
-  Standard_Boolean Trf = TransformShapeFU(1);
+  bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
-  Handle(Geom_Curve) C      = TestCurve(myPbase, myDir);
-  Standard_Integer   sens   = SensOfPrism(C, mySUntil);
-  Standard_Real      Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  occ::handle<Geom_Curve> C      = TestCurve(myPbase, myDir);
+  int   sens   = SensOfPrism(C, mySUntil);
+  double      Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   gp_Vec             V(2 * sens * Height * myDir);
 
   // construction of long prism
@@ -365,7 +368,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
   else
   { // until support -> passage to topological operations
     MajMap(myPbase, thePrism, myMap, myFShape, myLShape);
-    TColGeom_SequenceOfCurve scur;
+    NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
     scur.Append(C);
 
@@ -394,7 +397,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
       if (!S.IsNull())
         B.Add(Comp, S);
       BRepAlgoAPI_Cut trP(VraiPrism, Comp);
-      UpdateDescendants(trP, trP.Shape(), Standard_False);
+      UpdateDescendants(trP, trP.Shape(), false);
       //
       TopExp_Explorer     ex(trP.Shape(), TopAbs_SOLID);
       const TopoDS_Shape& Cutsh = ex.Current();
@@ -402,14 +405,14 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
       {
         BRepAlgoAPI_Fuse f(mySbase, Cutsh);
         myShape = f.Shape();
-        UpdateDescendants(f, myShape, Standard_False);
+        UpdateDescendants(f, myShape, false);
         Done();
       }
       else if (myFuse == 0)
       {
         BRepAlgoAPI_Cut c(mySbase, Cutsh);
         myShape = c.Shape();
-        UpdateDescendants(c, myShape, Standard_False);
+        UpdateDescendants(c, myShape, false);
         Done();
       }
       else
@@ -430,7 +433,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
 void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::Perform(From,Until)" << std::endl;
 #endif
@@ -443,14 +446,14 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
   {
     if (From.IsSame(mySkface))
     {
-      myJustGluer = Standard_True;
+      myJustGluer = true;
       Perform(Until);
       if (myJustGluer)
         return;
     }
     else if (Until.IsSame(mySkface))
     {
-      myJustGluer = Standard_True;
+      myJustGluer = true;
       Perform(From);
       if (myJustGluer)
         return;
@@ -472,10 +475,10 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     throw Standard_ConstructionError();
   }
   mySFrom               = From;
-  Standard_Boolean Trff = TransformShapeFU(0);
+  bool Trff = TransformShapeFU(0);
   ShapeFromValid();
   mySUntil              = Until;
-  Standard_Boolean Trfu = TransformShapeFU(1);
+  bool Trfu = TransformShapeFU(1);
   ShapeUntilValid();
   if (Trfu != Trff)
   {
@@ -486,10 +489,10 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
 
   // length depending on bounding boxes
 
-  Standard_Real      Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
-  Handle(Geom_Curve) C      = TestCurve(myPbase, myDir);
-  Standard_Integer   sens; // direction of prism
-  Standard_Integer   tran; // transfer of prism
+  double      Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  occ::handle<Geom_Curve> C      = TestCurve(myPbase, myDir);
+  int   sens; // direction of prism
+  int   tran; // transfer of prism
   if (From.IsSame(Until))
   {
     sens = 1;
@@ -526,7 +529,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
   else
   { // case until support -> topological operation
     MajMap(myPbase, thePrism, myMap, myFShape, myLShape);
-    TColGeom_SequenceOfCurve scur;
+    NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
     scur.Append(C);
     LocOpe_CSIntersector ASI1(mySUntil);
@@ -535,7 +538,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     ASI2.Perform(scur);
     TopAbs_Orientation OrU, OrF;
     TopoDS_Face        FFrom, FUntil;
-    Standard_Real      ParF, ParU;
+    double      ParF, ParU;
     if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
     {
       if (myFuse == 1)
@@ -579,7 +582,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       OrF = Or;
     }
     //
-    TopTools_ListOfShape aLTools;
+    NCollection_List<TopoDS_Shape> aLTools;
     TopoDS_Solid         S = BRepFeat::Tool(mySUntil, FUntil, OrU);
     if (!S.IsNull())
     {
@@ -603,26 +606,26 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       return;
     }
     //
-    TopTools_ListOfShape aLObj;
+    NCollection_List<TopoDS_Shape> aLObj;
     aLObj.Append(VraiPrism);
     //
     BRepAlgoAPI_Cut trP;
     trP.SetArguments(aLObj);
     trP.SetTools(aLTools);
     trP.Build();
-    UpdateDescendants(trP, trP.Shape(), Standard_False);
+    UpdateDescendants(trP, trP.Shape(), false);
     if (myFuse == 1 && !myJustFeat)
     {
       BRepAlgoAPI_Fuse f(mySbase, trP.Shape());
       myShape = f.Shape();
-      UpdateDescendants(f, myShape, Standard_False);
+      UpdateDescendants(f, myShape, false);
       Done();
     }
     else if (myFuse == 0)
     {
       BRepAlgoAPI_Cut c(mySbase, trP.Shape());
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
     else
@@ -641,7 +644,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
 void BRepFeat_MakePrism::PerformUntilEnd()
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::PerformUntilEnd()" << std::endl;
 #endif
@@ -652,7 +655,7 @@ void BRepFeat_MakePrism::PerformUntilEnd()
   ShapeUntilValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  Standard_Real Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  double Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   gp_Vec        V(2 * Height * myDir);
 
   LocOpe_Prism        thePrism(myPbase, V);
@@ -670,7 +673,7 @@ void BRepFeat_MakePrism::PerformUntilEnd()
     if (c.IsDone())
     {
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
   }
@@ -687,7 +690,7 @@ void BRepFeat_MakePrism::PerformUntilEnd()
 void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::PerformFromEnd(From,Until)" << std::endl;
 #endif
@@ -712,11 +715,11 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
   mySFrom.Nullify();
   ShapeFromValid();
   mySUntil             = Until;
-  Standard_Boolean Trf = TransformShapeFU(1);
+  bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
-  Handle(Geom_Curve)  C      = TestCurve(myPbase, myDir);
-  Standard_Integer    sens   = SensOfPrism(C, mySUntil);
-  Standard_Real       Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  occ::handle<Geom_Curve>  C      = TestCurve(myPbase, myDir);
+  int    sens   = SensOfPrism(C, mySUntil);
+  double       Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   gp_Vec              Vtra(-3 * Height * sens / 2. * myDir);
   gp_Vec              Vect(3 * sens * Height * myDir);
   LocOpe_Prism        thePrism(myPbase, Vect, Vtra);
@@ -736,7 +739,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
   else
   { // case support
     MajMap(myPbase, thePrism, myMap, myFShape, myLShape);
-    TColGeom_SequenceOfCurve scur;
+    NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
     scur.Append(C);
     LocOpe_CSIntersector ASI1(mySUntil);
@@ -759,10 +762,10 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
       OrF = ASI2.Point(1, 1).Orientation();
       //      if(sens==1) OrF = TopAbs::Reverse(OrF);
       FFrom                  = ASI2.Point(1, 1).Face();
-      Handle(Geom_Surface) S = BRep_Tool::Surface(FFrom);
+      occ::handle<Geom_Surface> S = BRep_Tool::Surface(FFrom);
       if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
-        S = Handle(Geom_RectangularTrimmedSurface)::DownCast(S)->BasisSurface();
+        S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
       }
       BRepLib_MakeFace fac(S, Precision::Confusion());
       mySFrom = fac.Face();
@@ -770,7 +773,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
       FFrom   = TopoDS::Face(mySFrom);
     }
 
-    TopTools_ListOfShape aLTools;
+    NCollection_List<TopoDS_Shape> aLTools;
     TopoDS_Solid         Sol = BRepFeat::Tool(mySUntil, FUntil, OrU);
     if (!Sol.IsNull())
     {
@@ -795,7 +798,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
       return;
     }
     //
-    TopTools_ListOfShape aLObj;
+    NCollection_List<TopoDS_Shape> aLObj;
     aLObj.Append(VraiPrism);
     //
     BRepAlgoAPI_Cut trP;
@@ -803,19 +806,19 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
     trP.SetTools(aLTools);
     trP.Build();
     //
-    UpdateDescendants(trP, trP.Shape(), Standard_False);
+    UpdateDescendants(trP, trP.Shape(), false);
     if (myFuse == 1 && !myJustFeat)
     {
       BRepAlgoAPI_Fuse f(mySbase, trP.Shape());
       myShape = f.Shape();
-      UpdateDescendants(f, myShape, Standard_False);
+      UpdateDescendants(f, myShape, false);
       Done();
     }
     else if (myFuse == 0)
     {
       BRepAlgoAPI_Cut c(mySbase, trP.Shape());
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
     else
@@ -831,7 +834,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 void BRepFeat_MakePrism::PerformThruAll()
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::PerformThruAll()" << std::endl;
 #endif
@@ -851,7 +854,7 @@ void BRepFeat_MakePrism::PerformThruAll()
   myGluedF.Clear();
   GluedFacesValid();
 
-  Standard_Real       Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  double       Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   gp_Vec              V(3 * Height * myDir);
   gp_Vec              Vtra(-3 * Height / 2. * myDir);
   LocOpe_Prism        thePrism(myPbase, V, Vtra);
@@ -867,7 +870,7 @@ void BRepFeat_MakePrism::PerformThruAll()
     if (c.IsDone())
     {
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
   }
@@ -881,10 +884,10 @@ void BRepFeat_MakePrism::PerformThruAll()
 
 //=================================================================================================
 
-void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const Standard_Real Length)
+void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const double Length)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePrism::PerformUntilHeight(Until,Length)" << std::endl;
 #endif
@@ -907,10 +910,10 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const Sta
   mySFrom.Nullify();
   ShapeFromValid();
   mySUntil             = Until;
-  Standard_Boolean Trf = TransformShapeFU(1);
+  bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
-  Handle(Geom_Curve)  C    = TestCurve(myPbase, myDir);
-  Standard_Integer    sens = SensOfPrism(C, mySUntil);
+  occ::handle<Geom_Curve>  C    = TestCurve(myPbase, myDir);
+  int    sens = SensOfPrism(C, mySUntil);
   gp_Vec              V(sens * Length * myDir);
   LocOpe_Prism        thePrism(myPbase, V);
   const TopoDS_Shape& VraiPrism = thePrism.Shape();
@@ -929,7 +932,7 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const Sta
   else
   {
     MajMap(myPbase, thePrism, myMap, myFShape, myLShape);
-    TColGeom_SequenceOfCurve scur;
+    NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
     scur.Append(C);
     LocOpe_CSIntersector ASI(mySUntil);
@@ -956,19 +959,19 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const Sta
         B.Add(Comp, S);
 
       BRepAlgoAPI_Cut trP(VraiPrism, Comp);
-      UpdateDescendants(trP, trP.Shape(), Standard_False);
+      UpdateDescendants(trP, trP.Shape(), false);
       if (myFuse == 1 && !myJustFeat)
       {
         BRepAlgoAPI_Fuse f(mySbase, trP.Shape());
         myShape = f.Shape();
-        UpdateDescendants(f, myShape, Standard_False);
+        UpdateDescendants(f, myShape, false);
         Done();
       }
       else if (myFuse == 0)
       {
         BRepAlgoAPI_Cut c(mySbase, trP.Shape());
         myShape = c.Shape();
-        UpdateDescendants(c, myShape, Standard_False);
+        UpdateDescendants(c, myShape, false);
         Done();
       }
       else
@@ -985,7 +988,7 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const Sta
 // purpose  : sequence of curves parallel to the axis of prism
 //=======================================================================
 
-void BRepFeat_MakePrism::Curves(TColGeom_SequenceOfCurve& scur)
+void BRepFeat_MakePrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& scur)
 {
   scur = myCurves;
 }
@@ -996,7 +999,7 @@ void BRepFeat_MakePrism::Curves(TColGeom_SequenceOfCurve& scur)
 //           of masses
 //=======================================================================
 
-Handle(Geom_Curve) BRepFeat_MakePrism::BarycCurve()
+occ::handle<Geom_Curve> BRepFeat_MakePrism::BarycCurve()
 {
   return myBCurve;
 }
@@ -1007,7 +1010,7 @@ Handle(Geom_Curve) BRepFeat_MakePrism::BarycCurve()
 //           bounding box
 //=======================================================================
 
-static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
+static double HeightMax(const TopoDS_Shape& theSbase,
                                const TopoDS_Face&  theSkface,
                                const TopoDS_Shape& theSFrom,
                                const TopoDS_Shape& theSUntil)
@@ -1017,7 +1020,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
   BRepBndLib::Add(theSkface, Box);
   if (!theSFrom.IsNull())
   {
-    Standard_Boolean FacRevolInfini = Standard_False;
+    bool FacRevolInfini = false;
     TopExp_Explorer  exp;
     exp.Init(theSFrom, TopAbs_EDGE);
     for (; exp.More(); exp.Next())
@@ -1026,7 +1029,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
       exp1.Init(exp.Current(), TopAbs_VERTEX);
       if (!exp1.More())
       {
-        FacRevolInfini = Standard_True;
+        FacRevolInfini = true;
         break;
       }
     }
@@ -1035,7 +1038,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
   }
   if (!theSUntil.IsNull())
   {
-    Standard_Boolean FacRevolInfini = Standard_False;
+    bool FacRevolInfini = false;
     TopExp_Explorer  exp;
     exp.Init(theSUntil, TopAbs_EDGE);
     for (; exp.More(); exp.Next())
@@ -1044,7 +1047,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
       exp1.Init(exp.Current(), TopAbs_VERTEX);
       if (!exp1.More())
       {
-        FacRevolInfini = Standard_True;
+        FacRevolInfini = true;
         break;
       }
     }
@@ -1052,11 +1055,11 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
       BRepBndLib::Add(theSUntil, Box);
   }
 
-  Standard_Real c[6];
+  double c[6];
 
   Box.Get(c[0], c[2], c[4], c[1], c[3], c[5]);
-  Standard_Real parmin = c[0], parmax = c[0];
-  for (Standard_Integer i = 0; i < 6; i++)
+  double parmin = c[0], parmax = c[0];
+  for (int i = 0; i < 6; i++)
   {
     if (c[i] > parmax)
       parmax = c[i];
@@ -1064,9 +1067,9 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
       parmin = c[i];
   }
   // #ifndef OCCT_DEBUG
-  Standard_Real Height = fabs(2. * (parmax - parmin));
+  double Height = fabs(2. * (parmax - parmin));
   // #else
-  //   Standard_Real Height = abs(2.*(parmax - parmin));
+  //   double Height = abs(2.*(parmax - parmin));
   // #endif
   return (Height);
 }
@@ -1075,13 +1078,13 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
 // function : SensOfPrism
 // purpose  : Direction of the prism depending on the shape Until
 //=======================================================================
-Standard_Integer SensOfPrism(const Handle(Geom_Curve)& C, const TopoDS_Shape& Until)
+int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until)
 {
   LocOpe_CSIntersector     ASI1(Until);
-  TColGeom_SequenceOfCurve scur;
+  NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   scur.Append(C);
   ASI1.Perform(scur);
-  Standard_Integer sens = 1;
+  int sens = 1;
   if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
   {
     if (ASI1.Point(1, 1).Parameter() + Precision::Confusion() < 0.
@@ -1107,7 +1110,7 @@ Standard_Integer SensOfPrism(const Handle(Geom_Curve)& C, const TopoDS_Shape& Un
 
 static void MajMap(const TopoDS_Shape&                 theB,
                    const LocOpe_Prism&                 theP,
-                   TopTools_DataMapOfShapeListOfShape& theMap,    // myMap
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
                    TopoDS_Shape&                       theFShape, // myFShape
                    TopoDS_Shape&                       theLShape)                       // myLShape
 {
@@ -1115,7 +1118,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   if (exp.More())
   {
     theFShape = exp.Current();
-    TopTools_ListOfShape thelist2;
+    NCollection_List<TopoDS_Shape> thelist2;
     theMap.Bind(theFShape, thelist2);
     for (exp.Init(theP.FirstShape(), TopAbs_FACE); exp.More(); exp.Next())
     {
@@ -1127,7 +1130,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   if (exp.More())
   {
     theLShape = exp.Current();
-    TopTools_ListOfShape thelist3;
+    NCollection_List<TopoDS_Shape> thelist3;
     theMap.Bind(theLShape, thelist3);
     for (exp.Init(theP.LastShape(), TopAbs_FACE); exp.More(); exp.Next())
     {
@@ -1139,7 +1142,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   {
     if (!theMap.IsBound(exp.Current()))
     {
-      TopTools_ListOfShape thelist4;
+      NCollection_List<TopoDS_Shape> thelist4;
       theMap.Bind(exp.Current(), thelist4);
       theMap(exp.Current()) = theP.Shapes(exp.Current());
     }
@@ -1151,19 +1154,19 @@ static void MajMap(const TopoDS_Shape&                 theB,
 // purpose  : management of descendants
 //=======================================================================
 
-static Handle(Geom_Curve) TestCurve(const TopoDS_Shape& Base, const gp_Vec& V)
+static occ::handle<Geom_Curve> TestCurve(const TopoDS_Shape& Base, const gp_Vec& V)
 {
   gp_Pnt               bar(0., 0., 0.);
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(Base, spt);
-  for (Standard_Integer jj = 1; jj <= spt.Length(); jj++)
+  for (int jj = 1; jj <= spt.Length(); jj++)
   {
     const gp_Pnt& pvt = spt(jj);
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
   gp_Ax1            newAx(bar, V);
-  Handle(Geom_Line) theLin = new Geom_Line(newAx);
+  occ::handle<Geom_Line> theLin = new Geom_Line(newAx);
   return theLin;
 }
 
@@ -1172,18 +1175,18 @@ static Handle(Geom_Curve) TestCurve(const TopoDS_Shape& Base, const gp_Vec& V)
 // purpose  : face SameDomaine or not
 //=======================================================================
 
-static Standard_Boolean ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
+static bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 {
   if (F1.IsNull() || F2.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(Geom_Surface)    S1, S2;
+  occ::handle<Geom_Surface>    S1, S2;
   TopLoc_Location         loc1, loc2;
-  Handle(Standard_Type)   typS1, typS2;
-  constexpr Standard_Real tollin = Precision::Confusion();
-  constexpr Standard_Real tolang = Precision::Angular();
+  occ::handle<Standard_Type>   typS1, typS2;
+  constexpr double tollin = Precision::Confusion();
+  constexpr double tolang = Precision::Angular();
 
   S1 = BRep_Tool::Surface(F1, loc1);
   S2 = BRep_Tool::Surface(F2, loc2);
@@ -1193,26 +1196,26 @@ static Standard_Boolean ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 
   if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S1    = Handle(Geom_RectangularTrimmedSurface)::DownCast(S1)->BasisSurface();
+    S1    = occ::down_cast<Geom_RectangularTrimmedSurface>(S1)->BasisSurface();
     typS1 = S1->DynamicType();
   }
 
   if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    S2    = Handle(Geom_RectangularTrimmedSurface)::DownCast(S2)->BasisSurface();
+    S2    = occ::down_cast<Geom_RectangularTrimmedSurface>(S2)->BasisSurface();
     typS2 = S2->DynamicType();
   }
 
   if (typS1 != typS2)
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean ValRet = Standard_False;
+  bool ValRet = false;
   if (typS1 == STANDARD_TYPE(Geom_Plane))
   {
-    gp_Pln pl1(Handle(Geom_Plane)::DownCast(S1)->Pln());
-    gp_Pln pl2(Handle(Geom_Plane)::DownCast(S2)->Pln());
+    gp_Pln pl1(occ::down_cast<Geom_Plane>(S1)->Pln());
+    gp_Pln pl2(occ::down_cast<Geom_Plane>(S2)->Pln());
 
     // apply locations
     if (!loc1.IsIdentity())
@@ -1222,7 +1225,7 @@ static Standard_Boolean ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
 
     if (pl1.Position().IsCoplanar(pl2.Position(), tollin, tolang))
     {
-      ValRet = Standard_True;
+      ValRet = true;
     }
   }
 

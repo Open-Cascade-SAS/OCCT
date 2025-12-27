@@ -33,28 +33,28 @@ inline const BRepAdaptor_Surface& HLRBRep_Surface::Surface() const
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::FirstUParameter() const
+inline double HLRBRep_Surface::FirstUParameter() const
 {
   return HLRBRep_BSurfaceTool::FirstUParameter(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::LastUParameter() const
+inline double HLRBRep_Surface::LastUParameter() const
 {
   return HLRBRep_BSurfaceTool::LastUParameter(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::FirstVParameter() const
+inline double HLRBRep_Surface::FirstVParameter() const
 {
   return HLRBRep_BSurfaceTool::FirstVParameter(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::LastVParameter() const
+inline double HLRBRep_Surface::LastVParameter() const
 {
   return HLRBRep_BSurfaceTool::LastVParameter(mySurf);
 }
@@ -75,71 +75,71 @@ inline GeomAbs_Shape HLRBRep_Surface::VContinuity() const
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S) const
+inline int HLRBRep_Surface::NbUIntervals(const GeomAbs_Shape S) const
 {
   return HLRBRep_BSurfaceTool::NbUIntervals(mySurf, S);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S) const
+inline int HLRBRep_Surface::NbVIntervals(const GeomAbs_Shape S) const
 {
   return HLRBRep_BSurfaceTool::NbVIntervals(mySurf, S);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Surface::IsUClosed() const
+inline bool HLRBRep_Surface::IsUClosed() const
 {
   return HLRBRep_BSurfaceTool::IsUClosed(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Surface::IsVClosed() const
+inline bool HLRBRep_Surface::IsVClosed() const
 {
   return HLRBRep_BSurfaceTool::IsVClosed(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Surface::IsUPeriodic() const
+inline bool HLRBRep_Surface::IsUPeriodic() const
 {
   return HLRBRep_BSurfaceTool::IsUPeriodic(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::UPeriod() const
+inline double HLRBRep_Surface::UPeriod() const
 {
   return HLRBRep_BSurfaceTool::UPeriod(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Surface::IsVPeriodic() const
+inline bool HLRBRep_Surface::IsVPeriodic() const
 {
   return HLRBRep_BSurfaceTool::IsVPeriodic(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_Surface::VPeriod() const
+inline double HLRBRep_Surface::VPeriod() const
 {
   return HLRBRep_BSurfaceTool::VPeriod(mySurf);
 }
 
 //=================================================================================================
 
-inline void HLRBRep_Surface::D0(const Standard_Real U, const Standard_Real V, gp_Pnt& P) const
+inline void HLRBRep_Surface::D0(const double U, const double V, gp_Pnt& P) const
 {
   HLRBRep_BSurfaceTool::D0(mySurf, U, V, P);
 }
 
 //=================================================================================================
 
-inline void HLRBRep_Surface::D1(const Standard_Real U,
-                                const Standard_Real V,
+inline void HLRBRep_Surface::D1(const double U,
+                                const double V,
                                 gp_Pnt&             P,
                                 gp_Vec&             D1U,
                                 gp_Vec&             D1V) const
@@ -149,8 +149,8 @@ inline void HLRBRep_Surface::D1(const Standard_Real U,
 
 //=================================================================================================
 
-inline void HLRBRep_Surface::D2(const Standard_Real U,
-                                const Standard_Real V,
+inline void HLRBRep_Surface::D2(const double U,
+                                const double V,
                                 gp_Pnt&             P,
                                 gp_Vec&             D1U,
                                 gp_Vec&             D1V,
@@ -163,8 +163,8 @@ inline void HLRBRep_Surface::D2(const Standard_Real U,
 
 //=================================================================================================
 
-inline void HLRBRep_Surface::D3(const Standard_Real U,
-                                const Standard_Real V,
+inline void HLRBRep_Surface::D3(const double U,
+                                const double V,
                                 gp_Pnt&             P,
                                 gp_Vec&             D1U,
                                 gp_Vec&             D1V,
@@ -181,10 +181,10 @@ inline void HLRBRep_Surface::D3(const Standard_Real U,
 
 //=================================================================================================
 
-inline gp_Vec HLRBRep_Surface::DN(const Standard_Real    U,
-                                  const Standard_Real    V,
-                                  const Standard_Integer Nu,
-                                  const Standard_Integer Nv) const
+inline gp_Vec HLRBRep_Surface::DN(const double    U,
+                                  const double    V,
+                                  const int Nu,
+                                  const int Nv) const
 {
   return HLRBRep_BSurfaceTool::DN(mySurf, U, V, Nu, Nv);
 }
@@ -226,42 +226,42 @@ inline gp_Torus HLRBRep_Surface::Torus() const
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::UDegree() const
+inline int HLRBRep_Surface::UDegree() const
 {
   return HLRBRep_BSurfaceTool::UDegree(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbUPoles() const
+inline int HLRBRep_Surface::NbUPoles() const
 {
   return HLRBRep_BSurfaceTool::NbUPoles(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::VDegree() const
+inline int HLRBRep_Surface::VDegree() const
 {
   return HLRBRep_BSurfaceTool::VDegree(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbVPoles() const
+inline int HLRBRep_Surface::NbVPoles() const
 {
   return HLRBRep_BSurfaceTool::NbVPoles(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbUKnots() const
+inline int HLRBRep_Surface::NbUKnots() const
 {
   return HLRBRep_BSurfaceTool::NbUKnots(mySurf);
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Surface::NbVKnots() const
+inline int HLRBRep_Surface::NbVKnots() const
 {
   return HLRBRep_BSurfaceTool::NbVKnots(mySurf);
 }

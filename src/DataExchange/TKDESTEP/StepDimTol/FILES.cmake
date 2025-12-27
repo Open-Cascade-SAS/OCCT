@@ -5,13 +5,7 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_AngularityTolerance.cxx
   StepDimTol_AngularityTolerance.hxx
   StepDimTol_AreaUnitType.hxx
-  StepDimTol_Array1OfDatumReference.hxx
-  StepDimTol_Array1OfDatumReferenceCompartment.hxx
-  StepDimTol_Array1OfDatumReferenceElement.hxx
-  StepDimTol_Array1OfDatumReferenceModifier.hxx
-  StepDimTol_Array1OfDatumSystemOrReference.hxx
-  StepDimTol_Array1OfGeometricToleranceModifier.hxx
-  StepDimTol_Array1OfToleranceZoneTarget.hxx
+
   StepDimTol_CircularRunoutTolerance.cxx
   StepDimTol_CircularRunoutTolerance.hxx
   StepDimTol_CoaxialityTolerance.cxx

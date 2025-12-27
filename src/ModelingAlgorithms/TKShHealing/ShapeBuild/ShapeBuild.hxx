@@ -34,7 +34,7 @@ public:
   //! Returns a Geom_Surface which is the Plane XOY (Z positive)
   //! This allows to consider an UV space homologous to a 3D space,
   //! with this support surface
-  Standard_EXPORT static Handle(Geom_Plane) PlaneXOY();
+  Standard_EXPORT static occ::handle<Geom_Plane> PlaneXOY();
 };
 
 #endif // _ShapeBuild_HeaderFile

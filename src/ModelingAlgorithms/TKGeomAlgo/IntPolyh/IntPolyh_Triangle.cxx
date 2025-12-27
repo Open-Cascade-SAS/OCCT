@@ -21,28 +21,28 @@
 #define MyConfusionPrecision 10.0e-12
 #define SquareMyConfusionPrecision 10.0e-24
 
-static void GetInfoTA(const Standard_Integer           numP1,
-                      const Standard_Integer           numP2,
-                      const Standard_Integer           numTA,
+static void GetInfoTA(const int           numP1,
+                      const int           numP2,
+                      const int           numTA,
                       const IntPolyh_ArrayOfTriangles& TTriangles,
-                      Standard_Integer&                numP3b,
-                      Standard_Integer&                P3bIndex,
-                      Standard_Integer&                Edge2b,
-                      Standard_Integer&                Edge3b);
-static void NewTriangle(const Standard_Integer           P1,
-                        const Standard_Integer           P2,
-                        const Standard_Integer           P3,
+                      int&                numP3b,
+                      int&                P3bIndex,
+                      int&                Edge2b,
+                      int&                Edge3b);
+static void NewTriangle(const int           P1,
+                        const int           P2,
+                        const int           P3,
                         IntPolyh_ArrayOfTriangles&       TTriangles,
-                        const Handle(Adaptor3d_Surface)& MySurface,
+                        const occ::handle<Adaptor3d_Surface>& MySurface,
                         IntPolyh_ArrayOfPoints&          TPoints);
-static void NewEdge(const Standard_Integer P1,
-                    const Standard_Integer P2,
-                    const Standard_Integer T1,
-                    const Standard_Integer T2,
+static void NewEdge(const int P1,
+                    const int P2,
+                    const int T1,
+                    const int T2,
                     IntPolyh_ArrayOfEdges& TEdges);
-static void OldEdge(const Standard_Integer EdgeN,
-                    const Standard_Integer NumTri,
-                    const Standard_Integer NewTriNum,
+static void OldEdge(const int EdgeN,
+                    const int NumTri,
+                    const int NewTriNum,
                     IntPolyh_ArrayOfEdges& TEdges);
 
 //=======================================================================
@@ -51,7 +51,7 @@ static void OldEdge(const Standard_Integer EdgeN,
 //           It is computed as a distance between triangles plane and
 //           barycenter of the triangle in UV space.
 //=======================================================================
-Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurface,
+double IntPolyh_Triangle::ComputeDeflection(const occ::handle<Adaptor3d_Surface>& theSurface,
                                                    const IntPolyh_ArrayOfPoints&    TPoints)
 {
   myDeflection = 0.;
@@ -63,11 +63,11 @@ Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surfac
   {
     // check if the triangle is not degenerated - no more than one point
     // has a degenerated flag
-    Standard_Integer iDeg =
+    int iDeg =
       (P1.Degenerated() ? 1 : 0) + (P2.Degenerated() ? 1 : 0) + (P3.Degenerated() ? 1 : 0);
     if (iDeg > 1)
     {
-      myIsDegenerated = Standard_True;
+      myIsDegenerated = true;
       return myDeflection;
     }
   }
@@ -75,17 +75,17 @@ Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surfac
   // Plane of the triangle
   IntPolyh_Point NormaleTri;
   NormaleTri.Cross(P2 - P1, P3 - P1);
-  Standard_Real SqNorm = NormaleTri.SquareModulus();
+  double SqNorm = NormaleTri.SquareModulus();
   if (SqNorm < SquareMyConfusionPrecision)
   {
     // The triangle is degenerated
-    myIsDegenerated = Standard_True;
+    myIsDegenerated = true;
     return myDeflection;
   }
   //
   // Compute point on the surface
-  Standard_Real Gu    = (P1.U() + P2.U() + P3.U()) / 3.0;
-  Standard_Real Gv    = (P1.V() + P2.V() + P3.V()) / 3.0;
+  double Gu    = (P1.U() + P2.U() + P3.U()) / 3.0;
+  double Gv    = (P1.V() + P2.V() + P3.V()) / 3.0;
   gp_Pnt        PtXYZ = theSurface->Value(Gu, Gv);
   // Point on the surface
   IntPolyh_Point BarycentreReel(PtXYZ.X(), PtXYZ.Y(), PtXYZ.Z(), Gu, Gv);
@@ -97,11 +97,11 @@ Standard_Real IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surfac
 
 //=================================================================================================
 
-Standard_Integer IntPolyh_Triangle::GetNextTriangle(const Standard_Integer       theTriangle,
-                                                    const Standard_Integer       theEdgeNum,
+int IntPolyh_Triangle::GetNextTriangle(const int       theTriangle,
+                                                    const int       theEdgeNum,
                                                     const IntPolyh_ArrayOfEdges& TEdges) const
 {
-  Standard_Integer aNextTriangle = -1;
+  int aNextTriangle = -1;
   if (theEdgeNum < 1 || theEdgeNum > 3)
   {
     return aNextTriangle;
@@ -116,9 +116,9 @@ Standard_Integer IntPolyh_Triangle::GetNextTriangle(const Standard_Integer      
 //=================================================================================================
 
 void IntPolyh_Triangle::LinkEdges2Triangle(const IntPolyh_ArrayOfEdges& TEdges,
-                                           const Standard_Integer       theEdge1,
-                                           const Standard_Integer       theEdge2,
-                                           const Standard_Integer       theEdge3)
+                                           const int       theEdge1,
+                                           const int       theEdge2,
+                                           const int       theEdge3)
 {
   if (theEdge1 < 0 || theEdge2 < 0 || theEdge3 < 0)
   {
@@ -136,21 +136,21 @@ void IntPolyh_Triangle::LinkEdges2Triangle(const IntPolyh_ArrayOfEdges& TEdges,
 
 //=================================================================================================
 
-void GetInfoTA(const Standard_Integer           numP1,
-               const Standard_Integer           numP2,
-               const Standard_Integer           numTA,
+void GetInfoTA(const int           numP1,
+               const int           numP2,
+               const int           numTA,
                const IntPolyh_ArrayOfTriangles& TTriangles,
-               Standard_Integer&                numP3b,
-               Standard_Integer&                P3bIndex,
-               Standard_Integer&                Edge2b,
-               Standard_Integer&                Edge3b)
+               int&                numP3b,
+               int&                P3bIndex,
+               int&                Edge2b,
+               int&                Edge3b)
 {
   /// On veut savoir quel est le troisieme point du triangle
   /// adjacent (TriAdj) et quel sont les edges partant de ce point
   const IntPolyh_Triangle& TriAdj = TTriangles[numTA];
-  Standard_Integer         P1b    = TriAdj.FirstPoint();
-  Standard_Integer         P2b    = TriAdj.SecondPoint();
-  Standard_Integer         P3b    = TriAdj.ThirdPoint();
+  int         P1b    = TriAdj.FirstPoint();
+  int         P2b    = TriAdj.SecondPoint();
+  int         P3b    = TriAdj.ThirdPoint();
 
   if ((P1b != numP1) && (P1b != numP2))
   {
@@ -207,14 +207,14 @@ void GetInfoTA(const Standard_Integer           numP1,
 
 //=================================================================================================
 
-void NewTriangle(const Standard_Integer           P1,
-                 const Standard_Integer           P2,
-                 const Standard_Integer           P3,
+void NewTriangle(const int           P1,
+                 const int           P2,
+                 const int           P3,
                  IntPolyh_ArrayOfTriangles&       TTriangles,
-                 const Handle(Adaptor3d_Surface)& MySurface,
+                 const occ::handle<Adaptor3d_Surface>& MySurface,
                  IntPolyh_ArrayOfPoints&          TPoints)
 {
-  const Standard_Integer FinTT = TTriangles.NbItems();
+  const int FinTT = TTriangles.NbItems();
   TTriangles[FinTT].SetFirstPoint(P1);
   TTriangles[FinTT].SetSecondPoint(P2);
   TTriangles[FinTT].SetThirdPoint(P3);
@@ -224,14 +224,14 @@ void NewTriangle(const Standard_Integer           P1,
 
 //=================================================================================================
 
-void NewEdge(const Standard_Integer P1,
-             const Standard_Integer P2,
-             const Standard_Integer T1,
-             const Standard_Integer T2,
+void NewEdge(const int P1,
+             const int P2,
+             const int T1,
+             const int T2,
              IntPolyh_ArrayOfEdges& TEdges)
 {
 
-  const Standard_Integer FinTE = TEdges.NbItems();
+  const int FinTE = TEdges.NbItems();
 
   TEdges[FinTE].SetFirstPoint(P1);
   TEdges[FinTE].SetSecondPoint(P2);
@@ -242,9 +242,9 @@ void NewEdge(const Standard_Integer P1,
 
 //=================================================================================================
 
-void OldEdge(const Standard_Integer EdgeN,
-             const Standard_Integer NumTri,
-             const Standard_Integer NewTriNum,
+void OldEdge(const int EdgeN,
+             const int NumTri,
+             const int NewTriNum,
              IntPolyh_ArrayOfEdges& TEdges)
 {
   if (TEdges[EdgeN].FirstTriangle() == NumTri)
@@ -259,37 +259,37 @@ void OldEdge(const Standard_Integer EdgeN,
 
 //=================================================================================================
 
-void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri,
-                                         const Handle(Adaptor3d_Surface)& MySurface,
+void IntPolyh_Triangle::MiddleRefinement(const int           NumTri,
+                                         const occ::handle<Adaptor3d_Surface>& MySurface,
                                          IntPolyh_ArrayOfPoints&          TPoints,
                                          IntPolyh_ArrayOfTriangles&       TTriangles,
                                          IntPolyh_ArrayOfEdges&           TEdges)
 {
 
-  Standard_Integer FinTE = TEdges.NbItems();
-  Standard_Integer FinTT = TTriangles.NbItems();
+  int FinTE = TEdges.NbItems();
+  int FinTT = TTriangles.NbItems();
 
   // Refinement of the mesh by the middle of the largest dimensions
-  Standard_Integer numP1 = FirstPoint();
-  Standard_Integer numP2 = SecondPoint();
-  Standard_Integer numP3 = ThirdPoint();
+  int numP1 = FirstPoint();
+  int numP2 = SecondPoint();
+  int numP3 = ThirdPoint();
 
   const IntPolyh_Point& P1 = TPoints[numP1];
   const IntPolyh_Point& P2 = TPoints[numP2];
   const IntPolyh_Point& P3 = TPoints[numP3];
 
   // compute the largest dimension
-  Standard_Real L12 = P1.SquareDistance(P2);
-  Standard_Real L23 = P2.SquareDistance(P3);
-  Standard_Real L31 = P3.SquareDistance(P1);
+  double L12 = P1.SquareDistance(P2);
+  double L23 = P2.SquareDistance(P3);
+  double L31 = P3.SquareDistance(P1);
 
   if ((L12 > L23) && (L12 > L31))
   {
-    const Standard_Integer FinTP = TPoints.NbItems();
+    const int FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle(MySurface, P1, P2);
 
     /// les nouveaux triangles
-    Standard_Integer T1, T2, T3, T4;
+    int T1, T2, T3, T4;
 
     T1 = FinTT;
     NewTriangle(numP2, numP3, FinTP, TTriangles, MySurface, TPoints);
@@ -300,15 +300,15 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
     ///***AFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri, 1, TEdges);
+    int numTA = GetNextTriangle(NumTri, 1, TEdges);
 
     if (numTA >= 0)
     {
-      Standard_Integer numP3b   = -1;
-      Standard_Integer P3bIndex = -1;
+      int numP3b   = -1;
+      int P3bIndex = -1;
 
-      Standard_Integer Edge2b = -1;
-      Standard_Integer Edge3b = -1;
+      int Edge2b = -1;
+      int Edge3b = -1;
 
       GetInfoTA(numP1, numP2, numTA, TTriangles, numP3b, P3bIndex, Edge2b, Edge3b);
 
@@ -319,7 +319,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
       NewTriangle(numP3b, numP1, FinTP, TTriangles, MySurface, TPoints);
 
       /// On cree les nouveaux edges
-      Standard_Integer E1, E2, E3, E4;
+      int E1, E2, E3, E4;
 
       E1 = FinTE;
       NewEdge(numP1, FinTP, T2, T4, TEdges);
@@ -347,12 +347,12 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
       /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
-      TTriangles[numTA].SetIntersectionPossible(Standard_False);
+      TTriangles[numTA].SetIntersectionPossible(false);
     }
     else
     { /// seulement deux nouveaux triangles
       // on cree les nouveaux edges avec T1 et T2
-      Standard_Integer E1, E2, E3;
+      int E1, E2, E3;
 
       E1 = FinTE;
       NewEdge(numP1, FinTP, T2, -1, TEdges);
@@ -375,11 +375,11 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
   else if ((L23 > L31) && (L23 > L12))
   {
-    const Standard_Integer FinTP = TPoints.NbItems();
+    const int FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle(MySurface, P2, P3);
 
     /// les nouveaux triangles
-    Standard_Integer T1, T2, T3, T4;
+    int T1, T2, T3, T4;
 
     T1 = FinTT;
     NewTriangle(numP1, numP2, FinTP, TTriangles, MySurface, TPoints);
@@ -390,15 +390,15 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
     ///*RAFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri, 2, TEdges);
+    int numTA = GetNextTriangle(NumTri, 2, TEdges);
 
     if (numTA >= 0)
     {
-      Standard_Integer numP1b   = -1;
-      Standard_Integer P1bIndex = -1;
+      int numP1b   = -1;
+      int P1bIndex = -1;
 
-      Standard_Integer Edge1b = -1;
-      Standard_Integer Edge3b = -1;
+      int Edge1b = -1;
+      int Edge3b = -1;
 
       GetInfoTA(numP2, numP3, numTA, TTriangles, numP1b, P1bIndex, Edge3b, Edge1b);
 
@@ -409,7 +409,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
       NewTriangle(numP1b, numP3, FinTP, TTriangles, MySurface, TPoints);
 
       /// Nouveaux Edges
-      Standard_Integer E1, E2, E3, E4;
+      int E1, E2, E3, E4;
 
       E1 = FinTE;
       NewEdge(numP2, FinTP, T1, T3, TEdges);
@@ -437,12 +437,12 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
       /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
-      TTriangles[numTA].SetIntersectionPossible(Standard_False);
+      TTriangles[numTA].SetIntersectionPossible(false);
     }
     else
     { /// seulement deux nouveaux triangles
       /// Nouveaux Edges
-      Standard_Integer E1, E2, E3;
+      int E1, E2, E3;
 
       E1 = FinTE;
       NewEdge(numP2, FinTP, T1, -1, TEdges);
@@ -464,10 +464,10 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
   }
   else
   {
-    const Standard_Integer FinTP = TPoints.NbItems();
+    const int FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle(MySurface, P3, P1);
 
-    Standard_Integer T1, T2, T3, T4;
+    int T1, T2, T3, T4;
 
     T1 = FinTT;
     NewTriangle(numP1, numP2, FinTP, TTriangles, MySurface, TPoints);
@@ -478,16 +478,16 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
     ///*RAFFINAGE DU TRIANGLE ADJACENT***
 
-    Standard_Integer numTA = GetNextTriangle(NumTri, 3, TEdges);
+    int numTA = GetNextTriangle(NumTri, 3, TEdges);
 
     if (numTA >= 0)
     {
 
-      Standard_Integer numP2b   = -1;
-      Standard_Integer P2bIndex = -1;
+      int numP2b   = -1;
+      int P2bIndex = -1;
 
-      Standard_Integer Edge1b = -1;
-      Standard_Integer Edge2b = -1;
+      int Edge1b = -1;
+      int Edge2b = -1;
 
       GetInfoTA(numP3, numP1, numTA, TTriangles, numP2b, P2bIndex, Edge1b, Edge2b);
 
@@ -498,7 +498,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
       NewTriangle(numP2b, numP3, FinTP, TTriangles, MySurface, TPoints);
 
       /// Nouveaux Edges
-      Standard_Integer E1, E2, E3, E4;
+      int E1, E2, E3, E4;
 
       E1 = FinTE;
       NewEdge(numP2, FinTP, T1, T2, TEdges);
@@ -526,12 +526,12 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
       /// On tue le triangle adjacent
       TTriangles[numTA].SetDeflection(-1.0);
-      TTriangles[numTA].SetIntersectionPossible(Standard_False);
+      TTriangles[numTA].SetIntersectionPossible(false);
     }
     else
     { /// seulement deux nouveaux triangles
       /// Nouveaux Edges
-      Standard_Integer E1, E2, E4;
+      int E1, E2, E4;
 
       E1 = FinTE;
       NewEdge(numP2, FinTP, T1, T2, TEdges);
@@ -555,34 +555,34 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer           NumTri
 
   // make the triangle obsolete
   myDeflection             = -1.0;
-  myIsIntersectionPossible = Standard_False;
+  myIsIntersectionPossible = false;
 }
 
 //=================================================================================================
 
-void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real    theRefineCriterion,
+void IntPolyh_Triangle::MultipleMiddleRefinement(const double    theRefineCriterion,
                                                  const Bnd_Box&         theBox,
-                                                 const Standard_Integer theTriangleNumber,
-                                                 const Handle(Adaptor3d_Surface)& theSurface,
+                                                 const int theTriangleNumber,
+                                                 const occ::handle<Adaptor3d_Surface>& theSurface,
                                                  IntPolyh_ArrayOfPoints&          TPoints,
                                                  IntPolyh_ArrayOfTriangles&       TTriangles,
                                                  IntPolyh_ArrayOfEdges&           TEdges)
 {
   // Number of triangles before refinement of current triangle
-  const Standard_Integer FinTTInit = TTriangles.NbItems();
+  const int FinTTInit = TTriangles.NbItems();
   // Criteria to stop splitting - double of the initial number of triangles,
   // i.e. allow each triangle to be split at least once. Add a constant
   // to allow the splits of triangles to be checked.
-  const Standard_Integer MaxNbTT = 2 * FinTTInit + 1000;
+  const int MaxNbTT = 2 * FinTTInit + 1000;
   // Split the current triangle
   MiddleRefinement(theTriangleNumber, theSurface, TPoints, TTriangles, TEdges);
   // Refine the new triangles
-  for (Standard_Integer i = FinTTInit; i < TTriangles.NbItems() && i < MaxNbTT; ++i)
+  for (int i = FinTTInit; i < TTriangles.NbItems() && i < MaxNbTT; ++i)
   {
     IntPolyh_Triangle& aTriangle = TTriangles[i];
     if (theBox.IsOut(aTriangle.BoundingBox(TPoints)))
     {
-      aTriangle.SetIntersectionPossible(Standard_False);
+      aTriangle.SetIntersectionPossible(false);
     }
     else if (aTriangle.Deflection() > theRefineCriterion)
     {
@@ -594,10 +594,10 @@ void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real    theRefin
 //=================================================================================================
 
 void IntPolyh_Triangle::SetEdgeAndOrientation(const IntPolyh_Edge&   theEdge,
-                                              const Standard_Integer theEdgeIndex)
+                                              const int theEdgeIndex)
 {
   // Points on the edge - pe1, pe2
-  Standard_Integer pe1 = theEdge.FirstPoint(), pe2 = theEdge.SecondPoint();
+  int pe1 = theEdge.FirstPoint(), pe2 = theEdge.SecondPoint();
   //
   // We have points on the triangle - p1, p2 and p3;
   // And points on the edge - pe1, pe2;
@@ -609,7 +609,7 @@ void IntPolyh_Triangle::SetEdgeAndOrientation(const IntPolyh_Edge&   theEdge,
   // In case the order of points on the edge is forward,
   // the orientation is positive, otherwise it is negative.
 
-  for (Standard_Integer i = 0, i1 = 1; i < 3; ++i, ++i1)
+  for (int i = 0, i1 = 1; i < 3; ++i, ++i1)
   {
     if (i1 > 2)
     {
@@ -650,7 +650,7 @@ const Bnd_Box& IntPolyh_Triangle::BoundingBox(const IntPolyh_ArrayOfPoints& theP
 
 //=================================================================================================
 
-void IntPolyh_Triangle::Dump(const Standard_Integer i) const
+void IntPolyh_Triangle::Dump(const int i) const
 {
   printf("\nTriangle(%3d) : Points %5d %5d %5d Edges %5d %5d %5d deflection: %8f "
          "intersection possible %8d  intersection: %5d\n",

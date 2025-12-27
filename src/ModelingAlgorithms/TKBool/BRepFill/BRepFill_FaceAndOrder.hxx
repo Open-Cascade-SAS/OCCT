@@ -36,7 +36,6 @@ public:
 
   friend class BRepFill_Filling;
 
-protected:
 private:
   TopoDS_Face   myFace;
   GeomAbs_Shape myOrder;

@@ -40,13 +40,13 @@ public:
   //! Recognizes a kind of SphericalPairSelect select type
   //! -- 1 -> SphericalPair
   //! -- 2 -> SphericalPairWithPin
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as SphericalPair (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_SphericalPair) SphericalPair() const;
+  Standard_EXPORT occ::handle<StepKinematics_SphericalPair> SphericalPair() const;
 
   //! Returns Value as SphericalPairWithPin (or Null if another type)
-  Standard_EXPORT Handle(StepKinematics_SphericalPairWithPin) SphericalPairWithPin() const;
+  Standard_EXPORT occ::handle<StepKinematics_SphericalPairWithPin> SphericalPairWithPin() const;
 };
 #endif // _StepKinematics_SphericalPairSelect_HeaderFile

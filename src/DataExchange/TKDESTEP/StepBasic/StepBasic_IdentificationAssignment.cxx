@@ -27,8 +27,8 @@ StepBasic_IdentificationAssignment::StepBasic_IdentificationAssignment() {}
 
 //=================================================================================================
 
-void StepBasic_IdentificationAssignment::Init(const Handle(TCollection_HAsciiString)& aAssignedId,
-                                              const Handle(StepBasic_IdentificationRole)& aRole)
+void StepBasic_IdentificationAssignment::Init(const occ::handle<TCollection_HAsciiString>& aAssignedId,
+                                              const occ::handle<StepBasic_IdentificationRole>& aRole)
 {
 
   theAssignedId = aAssignedId;
@@ -38,7 +38,7 @@ void StepBasic_IdentificationAssignment::Init(const Handle(TCollection_HAsciiStr
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_IdentificationAssignment::AssignedId() const
+occ::handle<TCollection_HAsciiString> StepBasic_IdentificationAssignment::AssignedId() const
 {
   return theAssignedId;
 }
@@ -46,21 +46,21 @@ Handle(TCollection_HAsciiString) StepBasic_IdentificationAssignment::AssignedId(
 //=================================================================================================
 
 void StepBasic_IdentificationAssignment::SetAssignedId(
-  const Handle(TCollection_HAsciiString)& aAssignedId)
+  const occ::handle<TCollection_HAsciiString>& aAssignedId)
 {
   theAssignedId = aAssignedId;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_IdentificationRole) StepBasic_IdentificationAssignment::Role() const
+occ::handle<StepBasic_IdentificationRole> StepBasic_IdentificationAssignment::Role() const
 {
   return theRole;
 }
 
 //=================================================================================================
 
-void StepBasic_IdentificationAssignment::SetRole(const Handle(StepBasic_IdentificationRole)& aRole)
+void StepBasic_IdentificationAssignment::SetRole(const occ::handle<StepBasic_IdentificationRole>& aRole)
 {
   theRole = aRole;
 }

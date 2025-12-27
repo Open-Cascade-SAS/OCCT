@@ -25,26 +25,26 @@ NLPlate_HPG1Constraint::NLPlate_HPG1Constraint(const gp_XY& UV, const Plate_D1& 
 {
   SetUV(UV);
   SetActiveOrder(1);
-  IncrementalLoadingAllowed = Standard_False;
+  IncrementalLoadingAllowed = false;
   myOrientation             = 0;
 }
 
-void NLPlate_HPG1Constraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA)
+void NLPlate_HPG1Constraint::SetIncrementalLoadAllowed(const bool ILA)
 {
   IncrementalLoadingAllowed = ILA;
 }
 
-void NLPlate_HPG1Constraint::SetOrientation(const Standard_Integer Orient)
+void NLPlate_HPG1Constraint::SetOrientation(const int Orient)
 {
   myOrientation = Orient;
 }
 
-Standard_Boolean NLPlate_HPG1Constraint::IncrementalLoadAllowed() const
+bool NLPlate_HPG1Constraint::IncrementalLoadAllowed() const
 {
   return IncrementalLoadingAllowed;
 }
 
-Standard_Integer NLPlate_HPG1Constraint::ActiveOrder() const
+int NLPlate_HPG1Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 1)
     return myActiveOrder;
@@ -52,12 +52,12 @@ Standard_Integer NLPlate_HPG1Constraint::ActiveOrder() const
     return 1;
 }
 
-Standard_Boolean NLPlate_HPG1Constraint::IsG0() const
+bool NLPlate_HPG1Constraint::IsG0() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Integer NLPlate_HPG1Constraint::Orientation()
+int NLPlate_HPG1Constraint::Orientation()
 {
   return myOrientation;
 }

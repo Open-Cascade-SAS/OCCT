@@ -23,24 +23,25 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
-static Standard_Integer baddobjects(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bclearobjects(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer baddtools(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bcleartools(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer baddcompound(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer baddctools(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bclear(Draw_Interpretor&, Standard_Integer, const char**);
+static int baddobjects(Draw_Interpretor&, int, const char**);
+static int bclearobjects(Draw_Interpretor&, int, const char**);
+static int baddtools(Draw_Interpretor&, int, const char**);
+static int bcleartools(Draw_Interpretor&, int, const char**);
+static int baddcompound(Draw_Interpretor&, int, const char**);
+static int baddctools(Draw_Interpretor&, int, const char**);
+static int bclear(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::ObjCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -115,7 +116,7 @@ void BOPTest::ObjCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer baddcompound(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int baddcompound(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -128,7 +129,7 @@ Standard_Integer baddcompound(Draw_Interpretor& di, Standard_Integer n, const ch
   //
   aS = DBRep::Get(a[1]);
   //
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Shapes();
   aIt.Initialize(aS);
   for (; aIt.More(); aIt.Next())
   {
@@ -141,7 +142,7 @@ Standard_Integer baddcompound(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-Standard_Integer baddctools(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int baddctools(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -154,7 +155,7 @@ Standard_Integer baddctools(Draw_Interpretor& di, Standard_Integer n, const char
   //
   aS = DBRep::Get(a[1]);
   //
-  TopTools_ListOfShape& aLT = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLT = BOPTest_Objects::Tools();
   aIt.Initialize(aS);
   for (; aIt.More(); aIt.Next())
   {
@@ -168,7 +169,7 @@ Standard_Integer baddctools(Draw_Interpretor& di, Standard_Integer n, const char
 //
 //=================================================================================================
 
-Standard_Integer baddobjects(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int baddobjects(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -176,10 +177,10 @@ Standard_Integer baddobjects(Draw_Interpretor& di, Standard_Integer n, const cha
     return 1;
   }
   //
-  Standard_Integer i;
+  int i;
   TopoDS_Shape     aS;
   //
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Shapes();
   for (i = 1; i < n; ++i)
   {
     aS = DBRep::Get(a[i]);
@@ -191,14 +192,14 @@ Standard_Integer baddobjects(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bclearobjects(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bclearobjects(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 1)
   {
     di.PrintHelp(a[0]);
     return 1;
   }
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Shapes();
   aLS.Clear();
   //
   return 0;
@@ -206,7 +207,7 @@ Standard_Integer bclearobjects(Draw_Interpretor& di, Standard_Integer n, const c
 
 //=================================================================================================
 
-Standard_Integer baddtools(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int baddtools(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -214,10 +215,10 @@ Standard_Integer baddtools(Draw_Interpretor& di, Standard_Integer n, const char*
     return 1;
   }
   //
-  Standard_Integer i;
+  int i;
   TopoDS_Shape     aS;
   //
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Tools();
   for (i = 1; i < n; ++i)
   {
     aS = DBRep::Get(a[i]);
@@ -229,14 +230,14 @@ Standard_Integer baddtools(Draw_Interpretor& di, Standard_Integer n, const char*
 
 //=================================================================================================
 
-Standard_Integer bcleartools(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bcleartools(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 1)
   {
     di.PrintHelp(a[0]);
     return 1;
   }
-  TopTools_ListOfShape& aLS = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLS = BOPTest_Objects::Tools();
   aLS.Clear();
   //
   return 0;
@@ -244,7 +245,7 @@ Standard_Integer bcleartools(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bclear(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bclear(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 1)
   {

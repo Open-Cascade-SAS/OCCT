@@ -26,9 +26,6 @@
 class StepVisual_CurveStyle;
 class StepVisual_DirectionCountSelect;
 
-class StepVisual_SurfaceStyleParameterLine;
-DEFINE_STANDARD_HANDLE(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
-
 class StepVisual_SurfaceStyleParameterLine : public Standard_Transient
 {
 
@@ -37,30 +34,29 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleParameterLine();
 
   Standard_EXPORT void Init(
-    const Handle(StepVisual_CurveStyle)&                    aStyleOfParameterLines,
-    const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts);
+    const occ::handle<StepVisual_CurveStyle>&                    aStyleOfParameterLines,
+    const occ::handle<StepVisual_HArray1OfDirectionCountSelect>& aDirectionCounts);
 
   Standard_EXPORT void SetStyleOfParameterLines(
-    const Handle(StepVisual_CurveStyle)& aStyleOfParameterLines);
+    const occ::handle<StepVisual_CurveStyle>& aStyleOfParameterLines);
 
-  Standard_EXPORT Handle(StepVisual_CurveStyle) StyleOfParameterLines() const;
+  Standard_EXPORT occ::handle<StepVisual_CurveStyle> StyleOfParameterLines() const;
 
   Standard_EXPORT void SetDirectionCounts(
-    const Handle(StepVisual_HArray1OfDirectionCountSelect)& aDirectionCounts);
+    const occ::handle<StepVisual_HArray1OfDirectionCountSelect>& aDirectionCounts);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfDirectionCountSelect) DirectionCounts() const;
+  Standard_EXPORT occ::handle<StepVisual_HArray1OfDirectionCountSelect> DirectionCounts() const;
 
   Standard_EXPORT StepVisual_DirectionCountSelect
-    DirectionCountsValue(const Standard_Integer num) const;
+    DirectionCountsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbDirectionCounts() const;
+  Standard_EXPORT int NbDirectionCounts() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_CurveStyle)                    styleOfParameterLines;
-  Handle(StepVisual_HArray1OfDirectionCountSelect) directionCounts;
+  occ::handle<StepVisual_CurveStyle>                    styleOfParameterLines;
+  occ::handle<StepVisual_HArray1OfDirectionCountSelect> directionCounts;
 };
 
 #endif // _StepVisual_SurfaceStyleParameterLine_HeaderFile

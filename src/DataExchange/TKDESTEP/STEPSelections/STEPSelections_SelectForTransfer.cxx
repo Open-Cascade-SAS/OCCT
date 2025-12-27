@@ -28,7 +28,7 @@ STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer() {}
 //=================================================================================================
 
 STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer(
-  const Handle(XSControl_TransferReader)& TR)
+  const occ::handle<XSControl_TransferReader>& TR)
 {
   SetReader(TR);
 }
@@ -39,9 +39,9 @@ Interface_EntityIterator STEPSelections_SelectForTransfer::RootResult(
   const Interface_Graph& /*G*/) const
 {
   Interface_EntityIterator             iter;
-  Handle(TColStd_HSequenceOfTransient) roots = Reader()->TransientProcess()->RootsForTransfer();
-  Standard_Integer                     nb    = roots->Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  occ::handle<TColStd_HSequenceOfTransient> roots = Reader()->TransientProcess()->RootsForTransfer();
+  int                     nb    = roots->Length();
+  for (int i = 1; i <= nb; i++)
     iter.GetOneItem(roots->Value(i));
   return iter;
 }

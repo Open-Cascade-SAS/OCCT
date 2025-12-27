@@ -32,12 +32,12 @@ Prs3d_DimensionAspect::Prs3d_DimensionAspect()
       myArrowOrientation(Prs3d_DAO_Fit),
       myTextHPosition(Prs3d_DTHP_Fit),
       myTextVPosition(Prs3d_DTVP_Center),
-      myToDisplayUnits(Standard_False),
-      myIsText3d(Standard_False),
-      myIsTextShaded(Standard_False),
-      myIsArrows3d(Standard_False)
+      myToDisplayUnits(false),
+      myIsText3d(false),
+      myIsTextShaded(false),
+      myIsArrows3d(false)
 {
-  myTextAspect->Aspect()->SetTextZoomable(Standard_False);
+  myTextAspect->Aspect()->SetTextZoomable(false);
   myTextAspect->SetColor(Quantity_NOC_LAWNGREEN);
   myTextAspect->SetHorizontalJustification(Graphic3d_HTA_CENTER);
   myTextAspect->SetVerticalJustification(Graphic3d_VTA_CENTER);
@@ -61,7 +61,7 @@ void Prs3d_DimensionAspect::SetCommonColor(const Quantity_Color& theColor)
 
 //=================================================================================================
 
-void Prs3d_DimensionAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_DimensionAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

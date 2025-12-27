@@ -22,9 +22,6 @@
 #include <StepShape_DimensionalCharacteristic.hxx>
 #include <Standard_Transient.hxx>
 
-class StepShape_PlusMinusTolerance;
-DEFINE_STANDARD_HANDLE(StepShape_PlusMinusTolerance, Standard_Transient)
-
 //! Added for Dimensional Tolerances
 class StepShape_PlusMinusTolerance : public Standard_Transient
 {
@@ -46,7 +43,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_PlusMinusTolerance, Standard_Transient)
 
-protected:
 private:
   StepShape_ToleranceMethodDefinition theRange;
   StepShape_DimensionalCharacteristic theTolerancedDimension;

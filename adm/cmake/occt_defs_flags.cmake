@@ -40,8 +40,6 @@ else()
    add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
   endif()
   if (APPLE)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-    set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wno-deprecated-declarations")
     # Suppress elaborated-enum-base warnings from Apple system headers (CoreFoundation/CoreGraphics)
     # when using newer Clang versions (LLVM 18+) that are stricter about this C++ standard violation
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-elaborated-enum-base")

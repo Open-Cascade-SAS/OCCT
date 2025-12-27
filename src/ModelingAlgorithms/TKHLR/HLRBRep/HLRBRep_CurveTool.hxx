@@ -24,7 +24,7 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin2d.hxx>
@@ -36,61 +36,61 @@ class gp_Pnt2d;
 class gp_Vec2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
+class HLRBRep_Curve;
 
 class HLRBRep_CurveTool
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  static Standard_Real FirstParameter(const Standard_Address C);
+  static double FirstParameter(const HLRBRep_Curve* C);
 
-  static Standard_Real LastParameter(const Standard_Address C);
+  static double LastParameter(const HLRBRep_Curve* C);
 
-  static GeomAbs_Shape Continuity(const Standard_Address C);
+  static GeomAbs_Shape Continuity(const HLRBRep_Curve* C);
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(myclass) >= <S>
-  static Standard_Integer NbIntervals(const Standard_Address C);
+  static int NbIntervals(const HLRBRep_Curve* C);
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  static void Intervals(const Standard_Address C, TColStd_Array1OfReal& T);
+  static void Intervals(const HLRBRep_Curve* C, NCollection_Array1<double>& T);
 
   //! output the bounds of interval of index <Index>
   //! used if Type == Composite.
-  static void GetInterval(const Standard_Address      C,
-                          const Standard_Integer      Index,
-                          const TColStd_Array1OfReal& Tab,
-                          Standard_Real&              U1,
-                          Standard_Real&              U2);
+  static void GetInterval(const HLRBRep_Curve*      C,
+                          const int      Index,
+                          const NCollection_Array1<double>& Tab,
+                          double&              U1,
+                          double&              U2);
 
-  static Standard_Boolean IsClosed(const Standard_Address C);
+  static bool IsClosed(const HLRBRep_Curve* C);
 
-  static Standard_Boolean IsPeriodic(const Standard_Address C);
+  static bool IsPeriodic(const HLRBRep_Curve* C);
 
-  static Standard_Real Period(const Standard_Address C);
+  static double Period(const HLRBRep_Curve* C);
+  //! Computes the point of parameter U on the curve.
+  static gp_Pnt2d Value(const HLRBRep_Curve* C, const double U);
 
   //! Computes the point of parameter U on the curve.
-  static gp_Pnt2d Value(const Standard_Address C, const Standard_Real U);
-
-  //! Computes the point of parameter U on the curve.
-  static void D0(const Standard_Address C, const Standard_Real U, gp_Pnt2d& P);
+  static void D0(const HLRBRep_Curve* C, const double U, gp_Pnt2d& P);
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  static void D1(const Standard_Address C, const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V);
+  static void D1(const HLRBRep_Curve* C, const double U, gp_Pnt2d& P, gp_Vec2d& V);
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  static void D2(const Standard_Address C,
-                 const Standard_Real    U,
+  static void D2(const HLRBRep_Curve* C,
+                 const double    U,
                  gp_Pnt2d&              P,
                  gp_Vec2d&              V1,
                  gp_Vec2d&              V2);
@@ -99,8 +99,8 @@ public:
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
-  static void D3(const Standard_Address C,
-                 const Standard_Real    U,
+  static void D3(const HLRBRep_Curve* C,
+                 const double    U,
                  gp_Pnt2d&              P,
                  gp_Vec2d&              V1,
                  gp_Vec2d&              V2,
@@ -111,48 +111,46 @@ public:
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  static gp_Vec2d DN(const Standard_Address C, const Standard_Real U, const Standard_Integer N);
+  static gp_Vec2d DN(const HLRBRep_Curve* C, const double U, const int N);
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
-  static Standard_Real Resolution(const Standard_Address C, const Standard_Real R3d);
+  static double Resolution(const HLRBRep_Curve* C, const double R3d);
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
-  static GeomAbs_CurveType GetType(const Standard_Address C);
+  static GeomAbs_CurveType GetType(const HLRBRep_Curve* C);
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
-  static GeomAbs_CurveType TheType(const Standard_Address C);
+  static GeomAbs_CurveType TheType(const HLRBRep_Curve* C);
 
-  static gp_Lin2d Line(const Standard_Address C);
+  static gp_Lin2d Line(const HLRBRep_Curve* C);
 
-  static gp_Circ2d Circle(const Standard_Address C);
+  static gp_Circ2d Circle(const HLRBRep_Curve* C);
 
-  static gp_Elips2d Ellipse(const Standard_Address C);
+  static gp_Elips2d Ellipse(const HLRBRep_Curve* C);
 
-  static gp_Hypr2d Hyperbola(const Standard_Address C);
+  static gp_Hypr2d Hyperbola(const HLRBRep_Curve* C);
 
-  static gp_Parab2d Parabola(const Standard_Address C);
+  static gp_Parab2d Parabola(const HLRBRep_Curve* C);
 
-  static Handle(Geom2d_BezierCurve) Bezier(const Standard_Address C);
+  static occ::handle<Geom2d_BezierCurve> Bezier(const HLRBRep_Curve* C);
 
-  static Handle(Geom2d_BSplineCurve) BSpline(const Standard_Address C);
+  static occ::handle<Geom2d_BSplineCurve> BSpline(const HLRBRep_Curve* C);
 
-  static Standard_Real EpsX(const Standard_Address C);
+  static double EpsX(const HLRBRep_Curve* C);
 
-  Standard_EXPORT static Standard_Integer NbSamples(const Standard_Address C,
-                                                    const Standard_Real    U0,
-                                                    const Standard_Real    U1);
+  Standard_EXPORT static int NbSamples(const HLRBRep_Curve* C,
+                                                    const double    U0,
+                                                    const double    U1);
 
-  Standard_EXPORT static Standard_Integer NbSamples(const Standard_Address C);
+  Standard_EXPORT static int NbSamples(const HLRBRep_Curve* C);
 
-  static Standard_Integer Degree(const Standard_Address C);
+  static int Degree(const HLRBRep_Curve* C);
 
-protected:
-private:
 };
 
 #include <HLRBRep_CurveTool.lxx>

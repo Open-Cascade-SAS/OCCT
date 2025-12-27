@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_ARRAY_BOUNDS_EXCEEDED;
-DEFINE_STANDARD_HANDLE(OSD_Exception_ARRAY_BOUNDS_EXCEEDED, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_ARRAY_BOUNDS_EXCEEDED
   #define OSD_Exception_ARRAY_BOUNDS_EXCEEDED_Raise_if(CONDITION, MESSAGE)                         \
     if (CONDITION)                                                                                 \

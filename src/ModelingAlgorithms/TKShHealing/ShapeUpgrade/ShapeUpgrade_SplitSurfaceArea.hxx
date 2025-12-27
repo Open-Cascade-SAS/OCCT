@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitSurface.hxx>
 
-class ShapeUpgrade_SplitSurfaceArea;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
-
 //! Split surface in the parametric space
 //! in according specified number of splits on the
 class ShapeUpgrade_SplitSurfaceArea : public ShapeUpgrade_SplitSurface
@@ -35,29 +32,28 @@ public:
   Standard_EXPORT ShapeUpgrade_SplitSurfaceArea();
 
   //! Set number of split for surfaces
-  Standard_Integer& NbParts();
+  int& NbParts();
 
   //! Set splitting mode
   //! If the mode is "splitting into squares",
   //! the face is splitted approximately into <myNbParts> parts,
   //! the parts are similar to squares in 2D.
-  void SetSplittingIntoSquares(const Standard_Boolean theIsSplittingIntoSquares);
+  void SetSplittingIntoSquares(const bool theIsSplittingIntoSquares);
 
   //! Set fixed numbers of splits in U and V directions.
   //! Only for "Splitting Into Squares" mode
-  void SetNumbersUVSplits(const Standard_Integer theNbUsplits, const Standard_Integer theNbVsplits);
+  void SetNumbersUVSplits(const int theNbUsplits, const int theNbVsplits);
 
-  Standard_EXPORT virtual void Compute(const Standard_Boolean Segment = Standard_True)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const bool Segment = true)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
 
-protected:
 private:
-  Standard_Integer myNbParts;
-  Standard_Integer myUnbSplit;
-  Standard_Integer myVnbSplit;
-  Standard_Boolean myIsSplittingIntoSquares;
+  int myNbParts;
+  int myUnbSplit;
+  int myVnbSplit;
+  bool myIsSplittingIntoSquares;
 };
 
 #include <ShapeUpgrade_SplitSurfaceArea.lxx>

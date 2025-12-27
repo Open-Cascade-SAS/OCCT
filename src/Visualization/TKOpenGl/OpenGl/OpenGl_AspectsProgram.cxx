@@ -25,26 +25,26 @@ void OpenGl_AspectsProgram::Release(OpenGl_Context* theCtx)
     theCtx->ShaderManager()->Unregister(myShaderProgramId, myShaderProgram);
   }
   myShaderProgramId.Clear();
-  myIsShaderReady = Standard_False;
+  myIsShaderReady = false;
 }
 
 //=================================================================================================
 
-void OpenGl_AspectsProgram::UpdateRediness(const Handle(Graphic3d_Aspects)& theAspect)
+void OpenGl_AspectsProgram::UpdateRediness(const occ::handle<Graphic3d_Aspects>& theAspect)
 {
   const TCollection_AsciiString& aShaderKey = theAspect->ShaderProgram().IsNull()
                                                 ? TCollection_AsciiString::EmptyString()
                                                 : theAspect->ShaderProgram()->GetId();
   if (aShaderKey.IsEmpty() || myShaderProgramId != aShaderKey)
   {
-    myIsShaderReady = Standard_False;
+    myIsShaderReady = false;
   }
 }
 
 //=================================================================================================
 
-void OpenGl_AspectsProgram::build(const Handle(OpenGl_Context)&          theCtx,
-                                  const Handle(Graphic3d_ShaderProgram)& theShader)
+void OpenGl_AspectsProgram::build(const occ::handle<OpenGl_Context>&          theCtx,
+                                  const occ::handle<Graphic3d_ShaderProgram>& theShader)
 {
   if (theCtx->core20fwd == NULL)
   {

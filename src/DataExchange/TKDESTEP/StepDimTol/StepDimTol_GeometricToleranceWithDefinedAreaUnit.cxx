@@ -27,14 +27,14 @@ StepDimTol_GeometricToleranceWithDefinedAreaUnit::StepDimTol_GeometricToleranceW
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceWithDefinedAreaUnit::Init(
-  const Handle(TCollection_HAsciiString)&        theName,
-  const Handle(TCollection_HAsciiString)&        theDescription,
-  const Handle(Standard_Transient)&              theMagnitude,
+  const occ::handle<TCollection_HAsciiString>&        theName,
+  const occ::handle<TCollection_HAsciiString>&        theDescription,
+  const occ::handle<Standard_Transient>&              theMagnitude,
   const StepDimTol_GeometricToleranceTarget&     theTolerancedShapeAspect,
-  const Handle(StepBasic_LengthMeasureWithUnit)& theUnitSize,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>& theUnitSize,
   const StepDimTol_AreaUnitType                  theUnitType,
-  const Standard_Boolean                         theHasSecondUnitSize,
-  const Handle(StepBasic_LengthMeasureWithUnit)& theSecondUnitSize)
+  const bool                         theHasSecondUnitSize,
+  const occ::handle<StepBasic_LengthMeasureWithUnit>& theSecondUnitSize)
 {
   StepDimTol_GeometricToleranceWithDefinedUnit::Init(theName,
                                                      theDescription,

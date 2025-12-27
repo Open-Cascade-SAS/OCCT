@@ -21,9 +21,6 @@
 
 #include <StepRepr_DerivedShapeAspect.hxx>
 
-class StepRepr_Tangent;
-DEFINE_STANDARD_HANDLE(StepRepr_Tangent, StepRepr_DerivedShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_Tangent : public StepRepr_DerivedShapeAspect
 {

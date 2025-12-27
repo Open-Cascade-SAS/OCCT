@@ -39,26 +39,24 @@ public:
   Standard_HIDDEN RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface();
 
   Standard_HIDDEN void ReadStep(
-    const Handle(StepData_StepReaderData)&                                   data,
-    const Standard_Integer                                                   num,
-    Handle(Interface_Check)&                                                 ach,
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const;
+    const occ::handle<StepData_StepReaderData>&                                   data,
+    const int                                                   num,
+    occ::handle<Interface_Check>&                                                 ach,
+    const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const;
 
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                                     SW,
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const;
+    const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const;
 
   Standard_HIDDEN void Share(
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
+    const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
     Interface_EntityIterator&                                                iter) const;
 
   Standard_HIDDEN void Check(
-    const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
+    const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
     const Interface_ShareTool&                                               shares,
-    Handle(Interface_Check)&                                                 ach) const;
+    occ::handle<Interface_Check>&                                                 ach) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface_HeaderFile

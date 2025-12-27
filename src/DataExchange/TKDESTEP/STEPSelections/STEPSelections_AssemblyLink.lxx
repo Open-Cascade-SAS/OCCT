@@ -16,21 +16,21 @@
 
 //=================================================================================================
 
-inline Handle(StepRepr_NextAssemblyUsageOccurrence) STEPSelections_AssemblyLink::GetNAUO() const
+inline occ::handle<StepRepr_NextAssemblyUsageOccurrence> STEPSelections_AssemblyLink::GetNAUO() const
 {
   return myNAUO;
 }
 
 //=================================================================================================
 
-inline Handle(Standard_Transient) STEPSelections_AssemblyLink::GetItem() const
+inline occ::handle<Standard_Transient> STEPSelections_AssemblyLink::GetItem() const
 {
   return myItem;
 }
 
 //=================================================================================================
 
-inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyLink::GetComponent() const
+inline occ::handle<STEPSelections_AssemblyComponent> STEPSelections_AssemblyLink::GetComponent() const
 {
   return myComponent;
 }
@@ -38,14 +38,14 @@ inline Handle(STEPSelections_AssemblyComponent) STEPSelections_AssemblyLink::Get
 //=================================================================================================
 
 inline void STEPSelections_AssemblyLink::SetNAUO(
-  const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo)
+  const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo)
 {
   myNAUO = nauo;
 }
 
 //=================================================================================================
 
-inline void STEPSelections_AssemblyLink::SetItem(const Handle(Standard_Transient)& item)
+inline void STEPSelections_AssemblyLink::SetItem(const occ::handle<Standard_Transient>& item)
 {
   myItem = item;
 }
@@ -53,7 +53,7 @@ inline void STEPSelections_AssemblyLink::SetItem(const Handle(Standard_Transient
 //=================================================================================================
 
 inline void STEPSelections_AssemblyLink::SetComponent(
-  const Handle(STEPSelections_AssemblyComponent)& part)
+  const occ::handle<STEPSelections_AssemblyComponent>& part)
 {
   myComponent = part;
 }

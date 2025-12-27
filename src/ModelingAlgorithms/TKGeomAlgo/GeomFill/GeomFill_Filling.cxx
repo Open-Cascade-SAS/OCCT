@@ -20,41 +20,41 @@
 //=================================================================================================
 
 GeomFill_Filling::GeomFill_Filling()
-    : IsRational(Standard_False)
+    : IsRational(false)
 {
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_Filling::NbUPoles() const
+int GeomFill_Filling::NbUPoles() const
 {
   return myPoles->ColLength();
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_Filling::NbVPoles() const
+int GeomFill_Filling::NbVPoles() const
 {
   return myPoles->RowLength();
 }
 
 //=================================================================================================
 
-void GeomFill_Filling::Poles(TColgp_Array2OfPnt& Poles) const
+void GeomFill_Filling::Poles(NCollection_Array2<gp_Pnt>& Poles) const
 {
   Poles = myPoles->ChangeArray2();
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Filling::isRational() const
+bool GeomFill_Filling::isRational() const
 {
   return IsRational;
 }
 
 //=================================================================================================
 
-void GeomFill_Filling::Weights(TColStd_Array2OfReal& Weights) const
+void GeomFill_Filling::Weights(NCollection_Array2<double>& Weights) const
 {
   Weights = myWeights->ChangeArray2();
 }

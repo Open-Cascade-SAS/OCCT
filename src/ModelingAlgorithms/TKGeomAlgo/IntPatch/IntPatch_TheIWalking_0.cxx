@@ -26,22 +26,23 @@
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
-#include <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
+#include <IntPatch_TheIWLineOfTheIWalking.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
 #define ThePointOfPath IntSurf_PathPoint
 #define ThePointOfPath_hxx <IntSurf_PathPoint.hxx>
 #define ThePointOfPathTool IntSurf_PathPointTool
 #define ThePointOfPathTool_hxx <IntSurf_PathPointTool.hxx>
-#define ThePOPIterator IntSurf_SequenceOfPathPoint
-#define ThePOPIterator_hxx <IntSurf_SequenceOfPathPoint.hxx>
+#define ThePOPIterator NCollection_Sequence<IntSurf_PathPoint>
+#define ThePOPIterator_hxx <NCollection_Sequence<IntSurf_PathPoint>.hxx>
 #define ThePointOfLoop IntSurf_InteriorPoint
 #define ThePointOfLoop_hxx <IntSurf_InteriorPoint.hxx>
 #define ThePointOfLoopTool IntSurf_InteriorPointTool
 #define ThePointOfLoopTool_hxx <IntSurf_InteriorPointTool.hxx>
-#define ThePOLIterator IntSurf_SequenceOfInteriorPoint
-#define ThePOLIterator_hxx <IntSurf_SequenceOfInteriorPoint.hxx>
-#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePOLIterator NCollection_Sequence<IntSurf_InteriorPoint>
+#define ThePOLIterator_hxx <NCollection_Sequence<IntSurf_InteriorPoint>.hxx>
+#define ThePSurface occ::handle<Adaptor3d_Surface>
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
@@ -49,9 +50,9 @@
 #define TheIWFunction_hxx <IntPatch_TheSurfFunction.hxx>
 #define IntWalk_TheIWLine IntPatch_TheIWLineOfTheIWalking
 #define IntWalk_TheIWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
-#define IntWalk_SequenceOfIWLine IntPatch_SequenceOfIWLineOfTheIWalking
-#define IntWalk_SequenceOfIWLine_hxx <IntPatch_SequenceOfIWLineOfTheIWalking.hxx>
-#define Handle_IntWalk_TheIWLine Handle(IntPatch_TheIWLineOfTheIWalking)
+#define IntWalk_SequenceOfIWLine NCollection_Sequence<occ::handle<IntPatch_TheIWLineOfTheIWalking>>
+#define IntWalk_SequenceOfIWLine_hxx <NCollection_Sequence<occ::handle<IntPatch_TheIWLineOfTheIWalking>>.hxx>
+#define Handle_IntWalk_TheIWLine occ::handle<IntPatch_TheIWLineOfTheIWalking>
 #define IntWalk_IWalking IntPatch_TheIWalking
 #define IntWalk_IWalking_hxx <IntPatch_TheIWalking.hxx>
 #include <IntWalk_IWalking.gxx>

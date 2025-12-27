@@ -26,8 +26,8 @@ namespace TDF_DerivedAttributeGlobals
 struct CreatorData
 {
   TDF_DerivedAttribute::NewDerived myCreator;
-  Standard_CString                 myNameSpace;
-  Standard_CString                 myTypeName;
+  const char*                 myNameSpace;
+  const char*                 myTypeName;
 };
 
 //! List that contains the methods that create all registered derived attributes
@@ -38,19 +38,19 @@ static NCollection_List<CreatorData>& Creators()
 }
 
 //! Global map of the string-type of derived attribute -> instance of such attribute
-static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>&
+static NCollection_DataMap<const char*, occ::handle<TDF_Attribute>, Standard_CStringHasher>&
   Attributes()
 {
-  static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>
+  static NCollection_DataMap<const char*, occ::handle<TDF_Attribute>, Standard_CStringHasher>
     THE_DERIVED;
   return THE_DERIVED;
 }
 
 //! Global map of the string-type of derived attribute -> type name to identify this attribute
-static NCollection_DataMap<Standard_CString, TCollection_AsciiString*, Standard_CStringHasher>&
+static NCollection_DataMap<const char*, TCollection_AsciiString*, Standard_CStringHasher>&
   Types()
 {
-  static NCollection_DataMap<Standard_CString, TCollection_AsciiString*, Standard_CStringHasher>
+  static NCollection_DataMap<const char*, TCollection_AsciiString*, Standard_CStringHasher>
     THE_DERIVED_TYPES;
   return THE_DERIVED_TYPES;
 }
@@ -69,8 +69,8 @@ static std::mutex& Mutex()
 // instance
 //=======================================================================
 TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived theNewAttributeFunction,
-                                                                Standard_CString theNameSpace,
-                                                                Standard_CString theTypeName)
+                                                                const char* theNameSpace,
+                                                                const char* theTypeName)
 {
   TDF_DerivedAttributeGlobals::CreatorData aData = {theNewAttributeFunction,
                                                     theNameSpace,
@@ -93,8 +93,8 @@ static void Initialize()
     for (aCreator.Initialize(TDF_DerivedAttributeGlobals::Creators()); aCreator.More();
          aCreator.Next())
     {
-      Handle(TDF_Attribute) aDerived            = aCreator.Value().myCreator();
-      Standard_CString      aDerivedDynamicType = aDerived->DynamicType()->Name();
+      occ::handle<TDF_Attribute> aDerived            = aCreator.Value().myCreator();
+      const char*      aDerivedDynamicType = aDerived->DynamicType()->Name();
 
       TCollection_AsciiString aTypeName;
       if (aCreator.Value().myNameSpace != NULL)
@@ -126,23 +126,23 @@ static void Initialize()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDF_DerivedAttribute::Attribute(Standard_CString theType)
+occ::handle<TDF_Attribute> TDF_DerivedAttribute::Attribute(const char* theType)
 {
   std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
-  if (const Handle(TDF_Attribute)* aResult =
+  if (const occ::handle<TDF_Attribute>* aResult =
         TDF_DerivedAttributeGlobals::Attributes().Seek(theType))
   {
     return *aResult;
   }
 
-  static const Handle(TDF_Attribute) aNullAttrib;
+  static const occ::handle<TDF_Attribute> aNullAttrib;
   return aNullAttrib;
 }
 
 //=================================================================================================
 
-const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(Standard_CString theType)
+const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(const char* theType)
 {
   std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
@@ -156,11 +156,11 @@ const TCollection_AsciiString& TDF_DerivedAttribute::TypeName(Standard_CString t
 
 //=================================================================================================
 
-void TDF_DerivedAttribute::Attributes(NCollection_List<Handle(TDF_Attribute)>& theList)
+void TDF_DerivedAttribute::Attributes(NCollection_List<occ::handle<TDF_Attribute>>& theList)
 {
   std::lock_guard<std::mutex> aLock(TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
-  NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>::Iterator
+  NCollection_DataMap<const char*, occ::handle<TDF_Attribute>, Standard_CStringHasher>::Iterator
     anAttrIter;
   for (anAttrIter.Initialize(TDF_DerivedAttributeGlobals::Attributes()); anAttrIter.More();
        anAttrIter.Next())

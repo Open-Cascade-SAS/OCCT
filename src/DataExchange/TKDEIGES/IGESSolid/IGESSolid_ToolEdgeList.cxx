@@ -30,7 +30,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
@@ -43,23 +43,23 @@ IGESSolid_ToolEdgeList::IGESSolid_ToolEdgeList() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::ReadOwnParams(const Handle(IGESSolid_EdgeList)&      ent,
-                                           const Handle(IGESData_IGESReaderData)& IR,
+void IGESSolid_ToolEdgeList::ReadOwnParams(const occ::handle<IGESSolid_EdgeList>&      ent,
+                                           const occ::handle<IGESData_IGESReaderData>& IR,
                                            IGESData_ParamReader&                  PR) const
 {
   // MGE 03/08/98
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                      length, anint;
-  Handle(IGESData_IGESEntity)           anent;
-  Handle(IGESSolid_VertexList)          avert;
-  Handle(IGESData_HArray1OfIGESEntity)  tempCurves;
-  Handle(IGESSolid_HArray1OfVertexList) tempStartVertexList;
-  Handle(TColStd_HArray1OfInteger)      tempStartVertexIndex;
-  Handle(IGESSolid_HArray1OfVertexList) tempEndVertexList;
-  Handle(TColStd_HArray1OfInteger)      tempEndVertexIndex;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                      length, anint;
+  occ::handle<IGESData_IGESEntity>           anent;
+  occ::handle<IGESSolid_VertexList>          avert;
+  occ::handle<IGESData_HArray1OfIGESEntity>  tempCurves;
+  occ::handle<IGESSolid_HArray1OfVertexList> tempStartVertexList;
+  occ::handle<TColStd_HArray1OfInteger>      tempStartVertexIndex;
+  occ::handle<IGESSolid_HArray1OfVertexList> tempEndVertexList;
+  occ::handle<TColStd_HArray1OfInteger>      tempEndVertexIndex;
   IGESData_Status                       aStatus;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), length);
+  bool st = PR.ReadInteger(PR.Current(), length);
   if (!st)
   {
     Message_Msg Msg184("XSTEP_184");
@@ -73,7 +73,7 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const Handle(IGESSolid_EdgeList)&    
     tempStartVertexIndex = new TColStd_HArray1OfInteger(1, length);
     tempEndVertexList    = new IGESSolid_HArray1OfVertexList(1, length);
     tempEndVertexIndex   = new TColStd_HArray1OfInteger(1, length);
-    for (Standard_Integer i = 1; i <= length; i++)
+    for (int i = 1; i <= length; i++)
     {
       // Curves
       // st = PR.ReadEntity(IR, PR.Current(), Msg185, anent); //szv#4:S4163:12Mar99 moved in if
@@ -214,13 +214,13 @@ void IGESSolid_ToolEdgeList::ReadOwnParams(const Handle(IGESSolid_EdgeList)&    
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::WriteOwnParams(const Handle(IGESSolid_EdgeList)& ent,
+void IGESSolid_ToolEdgeList::WriteOwnParams(const occ::handle<IGESSolid_EdgeList>& ent,
                                             IGESData_IGESWriter&              IW) const
 {
-  Standard_Integer length = ent->NbEdges();
+  int length = ent->NbEdges();
 
   IW.Send(length);
-  for (Standard_Integer i = 1; i <= length; i++)
+  for (int i = 1; i <= length; i++)
   {
     IW.Send(ent->Curve(i));
     IW.Send(ent->StartVertexList(i));
@@ -232,11 +232,11 @@ void IGESSolid_ToolEdgeList::WriteOwnParams(const Handle(IGESSolid_EdgeList)& en
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::OwnShared(const Handle(IGESSolid_EdgeList)& ent,
+void IGESSolid_ToolEdgeList::OwnShared(const occ::handle<IGESSolid_EdgeList>& ent,
                                        Interface_EntityIterator&         iter) const
 {
-  Standard_Integer length = ent->NbEdges();
-  for (Standard_Integer i = 1; i <= length; i++)
+  int length = ent->NbEdges();
+  for (int i = 1; i <= length; i++)
   {
     iter.GetOneItem(ent->Curve(i));
     iter.GetOneItem(ent->StartVertexList(i));
@@ -246,22 +246,22 @@ void IGESSolid_ToolEdgeList::OwnShared(const Handle(IGESSolid_EdgeList)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::OwnCopy(const Handle(IGESSolid_EdgeList)& another,
-                                     const Handle(IGESSolid_EdgeList)& ent,
+void IGESSolid_ToolEdgeList::OwnCopy(const occ::handle<IGESSolid_EdgeList>& another,
+                                     const occ::handle<IGESSolid_EdgeList>& ent,
                                      Interface_CopyTool&               TC) const
 {
-  Standard_Integer length;
+  int length;
 
   length                                           = another->NbEdges();
-  Handle(IGESData_HArray1OfIGESEntity)  tempCurves = new IGESData_HArray1OfIGESEntity(1, length);
-  Handle(IGESSolid_HArray1OfVertexList) tempStartVertexList =
+  occ::handle<IGESData_HArray1OfIGESEntity>  tempCurves = new IGESData_HArray1OfIGESEntity(1, length);
+  occ::handle<IGESSolid_HArray1OfVertexList> tempStartVertexList =
     new IGESSolid_HArray1OfVertexList(1, length);
-  Handle(TColStd_HArray1OfInteger) tempStartVertexIndex = new TColStd_HArray1OfInteger(1, length);
-  Handle(IGESSolid_HArray1OfVertexList) tempEndVertexList =
+  occ::handle<TColStd_HArray1OfInteger> tempStartVertexIndex = new TColStd_HArray1OfInteger(1, length);
+  occ::handle<IGESSolid_HArray1OfVertexList> tempEndVertexList =
     new IGESSolid_HArray1OfVertexList(1, length);
-  Handle(TColStd_HArray1OfInteger) tempEndVertexIndex = new TColStd_HArray1OfInteger(1, length);
+  occ::handle<TColStd_HArray1OfInteger> tempEndVertexIndex = new TColStd_HArray1OfInteger(1, length);
 
-  for (Standard_Integer i = 1; i <= length; i++)
+  for (int i = 1; i <= length; i++)
   {
     // Curves
     DeclareAndCast(IGESData_IGESEntity, curve, TC.Transferred(another->Curve(i)));
@@ -292,7 +292,7 @@ void IGESSolid_ToolEdgeList::OwnCopy(const Handle(IGESSolid_EdgeList)& another,
 //=================================================================================================
 
 IGESData_DirChecker IGESSolid_ToolEdgeList::DirChecker(
-  const Handle(IGESSolid_EdgeList)& /* ent */) const
+  const occ::handle<IGESSolid_EdgeList>& /* ent */) const
 {
   IGESData_DirChecker DC(504, 1);
 
@@ -308,9 +308,9 @@ IGESData_DirChecker IGESSolid_ToolEdgeList::DirChecker(
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::OwnCheck(const Handle(IGESSolid_EdgeList)& ent,
+void IGESSolid_ToolEdgeList::OwnCheck(const occ::handle<IGESSolid_EdgeList>& ent,
                                       const Interface_ShareTool&,
-                                      Handle(Interface_Check)& ach) const
+                                      occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -327,12 +327,12 @@ void IGESSolid_ToolEdgeList::OwnCheck(const Handle(IGESSolid_EdgeList)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
+void IGESSolid_ToolEdgeList::OwnDump(const occ::handle<IGESSolid_EdgeList>& ent,
                                      const IGESData_IGESDumper&        dumper,
                                      Standard_OStream&                 S,
-                                     const Standard_Integer            level) const
+                                     const int            level) const
 {
-  Standard_Integer i, length = ent->NbEdges();
+  int i, length = ent->NbEdges();
 
   S << "IGESSolid_EdgeList\n"
     << "Number of edge tuples : " << length << "\n";

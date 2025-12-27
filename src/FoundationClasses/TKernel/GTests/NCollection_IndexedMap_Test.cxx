@@ -20,7 +20,7 @@
 #include <vector>
 
 // Basic test type for the IndexedMap
-typedef Standard_Integer KeyType;
+typedef int KeyType;
 
 // Custom class for testing complex keys
 class TestKey
@@ -58,7 +58,7 @@ struct TestKeyHasher
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
 
-  Standard_Boolean operator()(const TestKey& theKey1, const TestKey& theKey2) const
+  bool operator()(const TestKey& theKey1, const TestKey& theKey2) const
   {
     return theKey1 == theKey2;
   }
@@ -78,9 +78,9 @@ TEST(NCollection_IndexedMapTest, BasicAddFind)
   NCollection_IndexedMap<KeyType> aMap;
 
   // Test adding elements
-  Standard_Integer index1 = aMap.Add(10);
-  Standard_Integer index2 = aMap.Add(20);
-  Standard_Integer index3 = aMap.Add(30);
+  int index1 = aMap.Add(10);
+  int index2 = aMap.Add(20);
+  int index3 = aMap.Add(30);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -114,14 +114,14 @@ TEST(NCollection_IndexedMapTest, DuplicateKey)
   NCollection_IndexedMap<KeyType> aMap;
 
   // Add initial elements
-  Standard_Integer index1 = aMap.Add(10);
-  Standard_Integer index2 = aMap.Add(20);
+  int index1 = aMap.Add(10);
+  int index2 = aMap.Add(20);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
 
   // Try to add a duplicate - should return the existing index
-  Standard_Integer indexDup = aMap.Add(10);
+  int indexDup = aMap.Add(10);
   EXPECT_EQ(indexDup, 1);
   EXPECT_EQ(aMap.Extent(), 2); // Size should not change
 }
@@ -274,7 +274,7 @@ TEST(NCollection_IndexedMapTest, Clear)
   EXPECT_EQ(aMap.Extent(), 0);
 
   // Ensure we can add elements again
-  Standard_Integer index1 = aMap.Add(40);
+  int index1 = aMap.Add(40);
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(aMap.Extent(), 1);
 }
@@ -345,20 +345,20 @@ TEST(NCollection_IndexedMapTest, Iterator)
   aMap.Add(30);
 
   // Use iterator to check all elements
-  Standard_Boolean found10 = Standard_False;
-  Standard_Boolean found20 = Standard_False;
-  Standard_Boolean found30 = Standard_False;
-  Standard_Size    count   = 0;
+  bool found10 = false;
+  bool found20 = false;
+  bool found30 = false;
+  size_t    count   = 0;
 
   for (NCollection_IndexedMap<KeyType>::Iterator it(aMap); it.More(); it.Next(), ++count)
   {
     const KeyType& key = it.Value();
     if (key == 10)
-      found10 = Standard_True;
+      found10 = true;
     else if (key == 20)
-      found20 = Standard_True;
+      found20 = true;
     else if (key == 30)
-      found30 = Standard_True;
+      found30 = true;
   }
 
   EXPECT_EQ(count, 3);
@@ -377,19 +377,19 @@ TEST(NCollection_IndexedMapTest, StlIterator)
   aMap.Add(30);
 
   // Use STL-style iterator
-  Standard_Boolean found10 = Standard_False;
-  Standard_Boolean found20 = Standard_False;
-  Standard_Boolean found30 = Standard_False;
-  Standard_Size    count   = 0;
+  bool found10 = false;
+  bool found20 = false;
+  bool found30 = false;
+  size_t    count   = 0;
 
   for (auto it = aMap.cbegin(); it != aMap.cend(); ++it, ++count)
   {
     if (*it == 10)
-      found10 = Standard_True;
+      found10 = true;
     else if (*it == 20)
-      found20 = Standard_True;
+      found20 = true;
     else if (*it == 30)
-      found30 = Standard_True;
+      found30 = true;
   }
 
   EXPECT_EQ(count, 3);
@@ -404,9 +404,9 @@ TEST(NCollection_IndexedMapTest, StringKeys)
   NCollection_IndexedMap<TCollection_AsciiString> aStringMap;
 
   // Add string keys
-  Standard_Integer index1 = aStringMap.Add(TCollection_AsciiString("First"));
-  Standard_Integer index2 = aStringMap.Add(TCollection_AsciiString("Second"));
-  Standard_Integer index3 = aStringMap.Add(TCollection_AsciiString("Third"));
+  int index1 = aStringMap.Add(TCollection_AsciiString("First"));
+  int index2 = aStringMap.Add(TCollection_AsciiString("Second"));
+  int index3 = aStringMap.Add(TCollection_AsciiString("Third"));
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -433,9 +433,9 @@ TEST(NCollection_IndexedMapTest, ComplexKeys)
   TestKey key2(2, "Two");
   TestKey key3(3, "Three");
 
-  Standard_Integer index1 = aComplexMap.Add(key1);
-  Standard_Integer index2 = aComplexMap.Add(key2);
-  Standard_Integer index3 = aComplexMap.Add(key3);
+  int index1 = aComplexMap.Add(key1);
+  int index2 = aComplexMap.Add(key2);
+  int index3 = aComplexMap.Add(key3);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -489,14 +489,14 @@ TEST(NCollection_IndexedMapTest, ReSize)
   NCollection_IndexedMap<KeyType> aMap(3); // Start with small bucket count
 
   // Add many elements to trigger resize
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     aMap.Add(i);
   }
 
   // Verify all elements are present
   EXPECT_EQ(aMap.Extent(), 100);
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     EXPECT_TRUE(aMap.Contains(i));
     EXPECT_EQ(aMap.FindIndex(i), i);
@@ -508,7 +508,7 @@ TEST(NCollection_IndexedMapTest, ReSize)
 
   // Check that elements are still accessible
   EXPECT_EQ(aMap.Extent(), 100);
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     EXPECT_TRUE(aMap.Contains(i));
     EXPECT_EQ(aMap.FindIndex(i), i);
@@ -518,14 +518,14 @@ TEST(NCollection_IndexedMapTest, ReSize)
 
 TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
 {
-  NCollection_IndexedMap<Standard_Integer> aMap;
-  std::vector<Standard_Integer>            aVector;
+  NCollection_IndexedMap<int> aMap;
+  std::vector<int>            aVector;
 
   std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aMap.Add(aVal);
     aVector.push_back(aVal);
   }
@@ -542,20 +542,20 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
 
 TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
 {
-  NCollection_IndexedMap<Standard_Integer> aMap;
-  std::vector<Standard_Integer>            aVector;
+  NCollection_IndexedMap<int> aMap;
+  std::vector<int>            aVector;
 
   std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aMap.Add(aVal);
     aVector.push_back(aVal);
   }
 
   // Test std::find compatibility
-  Standard_Integer aSearchValue = aVector[10];
+  int aSearchValue = aVector[10];
   auto             aFoundOCCT   = std::find(aMap.cbegin(), aMap.cend(), aSearchValue);
   auto             aFoundStd    = std::find(aVector.begin(), aVector.end(), aSearchValue);
 

@@ -36,7 +36,6 @@ public:
 
   Standard_EXPORT const TCollection_AsciiString& URI() const;
 
-protected:
 private:
   TCollection_AsciiString myPrefix;
   TCollection_AsciiString myURI;

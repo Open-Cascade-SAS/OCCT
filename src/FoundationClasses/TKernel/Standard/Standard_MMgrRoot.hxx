@@ -33,15 +33,15 @@ public:
   //! The actually allocated space should be rounded up to
   //! double word size (4 bytes), as this is expected by implementation
   //! of some classes in OCC (e.g. TCollection_AsciiString)
-  Standard_EXPORT virtual Standard_Address Allocate(const Standard_Size theSize) = 0;
+  Standard_EXPORT virtual void* Allocate(const size_t theSize) = 0;
 
   //! Reallocate previously allocated memory to contain at least theSize bytes.
   //! In case of success, new pointer is returned.
-  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address    thePtr,
-                                                      const Standard_Size theSize) = 0;
+  Standard_EXPORT virtual void* Reallocate(void*    thePtr,
+                                                      const size_t theSize) = 0;
 
   //! Frees previously allocated memory at specified address.
-  Standard_EXPORT virtual void Free(Standard_Address thePtr) = 0;
+  Standard_EXPORT virtual void Free(void* thePtr) = 0;
 
   //! Purge internally cached unused memory blocks (if any)
   //! by releasing them to the operating system.
@@ -57,7 +57,7 @@ public:
   //! to the system and not cache any more, but still remain operable...
   //!
   //! Default implementation does nothing and returns 0.
-  Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed = Standard_False);
+  Standard_EXPORT virtual int Purge(bool isDestroyed = false);
 };
 
 #endif

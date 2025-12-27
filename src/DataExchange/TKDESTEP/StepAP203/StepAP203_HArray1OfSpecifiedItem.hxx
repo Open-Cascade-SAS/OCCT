@@ -17,9 +17,10 @@
 #ifndef StepAP203_HArray1OfSpecifiedItem_HeaderFile
 #define StepAP203_HArray1OfSpecifiedItem_HeaderFile
 
-#include <StepAP203_Array1OfSpecifiedItem.hxx>
+#include <StepAP203_SpecifiedItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP203_HArray1OfSpecifiedItem, StepAP203_Array1OfSpecifiedItem)
+DEFINE_HARRAY1(StepAP203_HArray1OfSpecifiedItem, NCollection_Array1<StepAP203_SpecifiedItem>)
 
 #endif

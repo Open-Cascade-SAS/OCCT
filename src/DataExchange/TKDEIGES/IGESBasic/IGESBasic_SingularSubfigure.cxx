@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingularSubfigure, IGESData_IGESEntity)
 
 IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure() {}
 
-void IGESBasic_SingularSubfigure::Init(const Handle(IGESBasic_SubfigureDef)& aSubfigureDef,
+void IGESBasic_SingularSubfigure::Init(const occ::handle<IGESBasic_SubfigureDef>& aSubfigureDef,
                                        const gp_XYZ&                         aTranslation,
-                                       const Standard_Boolean                hasScale,
-                                       const Standard_Real                   aScale)
+                                       const bool                hasScale,
+                                       const double                   aScale)
 {
   theSubfigureDef = aSubfigureDef;
   theTranslation  = aTranslation;
@@ -38,7 +38,7 @@ void IGESBasic_SingularSubfigure::Init(const Handle(IGESBasic_SubfigureDef)& aSu
   InitTypeAndForm(408, 0);
 }
 
-Handle(IGESBasic_SubfigureDef) IGESBasic_SingularSubfigure::Subfigure() const
+occ::handle<IGESBasic_SubfigureDef> IGESBasic_SingularSubfigure::Subfigure() const
 {
   return theSubfigureDef;
 }
@@ -48,12 +48,12 @@ gp_XYZ IGESBasic_SingularSubfigure::Translation() const
   return theTranslation;
 }
 
-Standard_Boolean IGESBasic_SingularSubfigure::HasScaleFactor() const
+bool IGESBasic_SingularSubfigure::HasScaleFactor() const
 {
   return hasScaleFactor;
 }
 
-Standard_Real IGESBasic_SingularSubfigure::ScaleFactor() const
+double IGESBasic_SingularSubfigure::ScaleFactor() const
 {
   return theScaleFactor;
 }

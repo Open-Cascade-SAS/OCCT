@@ -24,10 +24,13 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array2OfVec.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -36,7 +39,7 @@ namespace
 // Helper function for comparing directions with tolerance
 void checkDirEqual(const gp_Dir&       theDir1,
                    const gp_Dir&       theDir2,
-                   const Standard_Real theTolerance = 1e-10)
+                   const double theTolerance = 1e-10)
 {
   EXPECT_NEAR(theDir1.X(), theDir2.X(), theTolerance) << "X components differ";
   EXPECT_NEAR(theDir1.Y(), theDir2.Y(), theTolerance) << "Y components differ";
@@ -46,7 +49,7 @@ void checkDirEqual(const gp_Dir&       theDir1,
 // Helper function for comparing vectors with tolerance
 void checkVecEqual(const gp_Vec&       theVec1,
                    const gp_Vec&       theVec2,
-                   const Standard_Real theTolerance = 1e-10)
+                   const double theTolerance = 1e-10)
 {
   EXPECT_NEAR(theVec1.X(), theVec2.X(), theTolerance) << "X components differ";
   EXPECT_NEAR(theVec1.Y(), theVec2.Y(), theTolerance) << "Y components differ";
@@ -183,7 +186,7 @@ TEST_F(CSLibNormalTest, Normal_WithMagTol_Singular)
 TEST_F(CSLibNormalTest, DNNUV_ZeroDerivative)
 {
   // Create a simple surface derivative array
-  TColgp_Array2OfVec aDerSurf(0, 2, 0, 2);
+  NCollection_Array2<gp_Vec> aDerSurf(0, 2, 0, 2);
 
   // Set D1U and D1V at index (1,0) and (0,1)
   aDerSurf.SetValue(1, 0, gp_Vec(1.0, 0.0, 0.0)); // D1U
@@ -215,7 +218,7 @@ protected:
 // Test point inside a simple square polygon
 TEST_F(CSLibClass2dTest, SiDans_PointInsideSquare)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(1.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 1.0);
@@ -230,7 +233,7 @@ TEST_F(CSLibClass2dTest, SiDans_PointInsideSquare)
 
 TEST_F(CSLibClass2dTest, SiDans_PointOutsideSquare)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(1.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 1.0);
@@ -245,7 +248,7 @@ TEST_F(CSLibClass2dTest, SiDans_PointOutsideSquare)
 
 TEST_F(CSLibClass2dTest, SiDans_PointOnBoundary)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(1.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 1.0);
@@ -261,7 +264,7 @@ TEST_F(CSLibClass2dTest, SiDans_PointOnBoundary)
 
 TEST_F(CSLibClass2dTest, SiDans_TriangularPolygon)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 3);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 3);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(2.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 2.0);
@@ -280,7 +283,7 @@ TEST_F(CSLibClass2dTest, SiDans_TriangularPolygon)
 // Test with Sequence constructor
 TEST_F(CSLibClass2dTest, SequenceConstructor_PointInsideSquare)
 {
-  TColgp_SequenceOfPnt2d aPnts;
+  NCollection_Sequence<gp_Pnt2d> aPnts;
   aPnts.Append(gp_Pnt2d(0.0, 0.0));
   aPnts.Append(gp_Pnt2d(1.0, 0.0));
   aPnts.Append(gp_Pnt2d(1.0, 1.0));
@@ -295,7 +298,7 @@ TEST_F(CSLibClass2dTest, SequenceConstructor_PointInsideSquare)
 // Test InternalSiDans with normalized coordinates
 TEST_F(CSLibClass2dTest, InternalSiDans_NormalizedCoordinates)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(10.0, 0.0);
   aPnts(3) = gp_Pnt2d(10.0, 10.0);
@@ -311,7 +314,7 @@ TEST_F(CSLibClass2dTest, InternalSiDans_NormalizedCoordinates)
 // Test SiDans_OnMode
 TEST_F(CSLibClass2dTest, SiDans_OnMode_PointInside)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(1.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 1.0);
@@ -326,7 +329,7 @@ TEST_F(CSLibClass2dTest, SiDans_OnMode_PointInside)
 // Test with degenerate polygon (less than 3 points effective)
 TEST_F(CSLibClass2dTest, DegeneratePolygon_InvalidBounds)
 {
-  TColgp_Array1OfPnt2d aPnts(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 4);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(1.0, 0.0);
   aPnts(3) = gp_Pnt2d(1.0, 1.0);
@@ -356,12 +359,12 @@ protected:
 TEST_F(CSLibNormalPolyDefTest, Value_ConstantPolynomial)
 {
   // k0 = 0, lambda_0 = 1.0 -> f(X) = 1 * cos^0 * sin^0 = 1 (constant)
-  TColStd_Array1OfReal aLambda(0, 0);
+  NCollection_Array1<double> aLambda(0, 0);
   aLambda(0) = 1.0;
 
   CSLib_NormalPolyDef aPoly(0, aLambda);
 
-  Standard_Real aValue;
+  double aValue;
   EXPECT_TRUE(aPoly.Value(0.5, aValue));
   EXPECT_NEAR(aValue, 1.0, 1e-10);
 
@@ -372,13 +375,13 @@ TEST_F(CSLibNormalPolyDefTest, Value_ConstantPolynomial)
 TEST_F(CSLibNormalPolyDefTest, Value_LinearPolynomial)
 {
   // k0 = 1, lambda = [1, 1] -> f(X) = cos(X) + sin(X)
-  TColStd_Array1OfReal aLambda(0, 1);
+  NCollection_Array1<double> aLambda(0, 1);
   aLambda(0) = 1.0;
   aLambda(1) = 1.0;
 
   CSLib_NormalPolyDef aPoly(1, aLambda);
 
-  Standard_Real aValue;
+  double aValue;
 
   // At X = pi/4, cos(X) = sin(X) = sqrt(2)/2
   // f(pi/4) = cos(pi/4) + sin(pi/4) = sqrt(2)
@@ -391,14 +394,14 @@ TEST_F(CSLibNormalPolyDefTest, Value_AtSingularPoints)
   // At singular points (X=0, pi/2, pi, 3*pi/2), the function returns 0
   // as a safety measure when computing would involve 0^n terms.
   // The early return protects against numerical issues.
-  TColStd_Array1OfReal aLambda(0, 2);
+  NCollection_Array1<double> aLambda(0, 2);
   aLambda(0) = 1.0;
   aLambda(1) = 1.0;
   aLambda(2) = 1.0;
 
   CSLib_NormalPolyDef aPoly(2, aLambda);
 
-  Standard_Real aValue;
+  double aValue;
 
   // At X = 0, sin(0) = 0; at X = pi/2, cos(pi/2) ~ 0
   // The function is designed to return 0 for these edge cases
@@ -416,14 +419,14 @@ TEST_F(CSLibNormalPolyDefTest, Value_AtSingularPoints)
 TEST_F(CSLibNormalPolyDefTest, Derivative_AtRegularPoint)
 {
   // k0 = 2, test derivative at non-singular point
-  TColStd_Array1OfReal aLambda(0, 2);
+  NCollection_Array1<double> aLambda(0, 2);
   aLambda(0) = 1.0;
   aLambda(1) = 0.0;
   aLambda(2) = 1.0;
 
   CSLib_NormalPolyDef aPoly(2, aLambda);
 
-  Standard_Real aDeriv;
+  double aDeriv;
   EXPECT_TRUE(aPoly.Derivative(M_PI / 4.0, aDeriv));
   // Derivative should be computed without crash
   EXPECT_TRUE(std::isfinite(aDeriv));
@@ -431,14 +434,14 @@ TEST_F(CSLibNormalPolyDefTest, Derivative_AtRegularPoint)
 
 TEST_F(CSLibNormalPolyDefTest, Derivative_AtSingularPoint)
 {
-  TColStd_Array1OfReal aLambda(0, 2);
+  NCollection_Array1<double> aLambda(0, 2);
   aLambda(0) = 1.0;
   aLambda(1) = 1.0;
   aLambda(2) = 1.0;
 
   CSLib_NormalPolyDef aPoly(2, aLambda);
 
-  Standard_Real aDeriv;
+  double aDeriv;
 
   // At singular points, derivative should be 0
   EXPECT_TRUE(aPoly.Derivative(0.0, aDeriv));
@@ -448,15 +451,15 @@ TEST_F(CSLibNormalPolyDefTest, Derivative_AtSingularPoint)
 // Test Values function (combined value and derivative)
 TEST_F(CSLibNormalPolyDefTest, Values_Consistency)
 {
-  TColStd_Array1OfReal aLambda(0, 2);
+  NCollection_Array1<double> aLambda(0, 2);
   aLambda(0) = 1.0;
   aLambda(1) = 2.0;
   aLambda(2) = 1.0;
 
   CSLib_NormalPolyDef aPoly(2, aLambda);
 
-  Standard_Real aF1, aD1;
-  Standard_Real aF2, aD2;
+  double aF1, aD1;
+  double aF2, aD2;
 
   // Get values using separate functions
   EXPECT_TRUE(aPoly.Value(0.7, aF1));
@@ -473,23 +476,23 @@ TEST_F(CSLibNormalPolyDefTest, Values_Consistency)
 // Test numerical derivative approximation
 TEST_F(CSLibNormalPolyDefTest, Derivative_NumericalApproximation)
 {
-  TColStd_Array1OfReal aLambda(0, 2);
+  NCollection_Array1<double> aLambda(0, 2);
   aLambda(0) = 1.0;
   aLambda(1) = 2.0;
   aLambda(2) = 3.0;
 
   CSLib_NormalPolyDef aPoly(2, aLambda);
 
-  const Standard_Real aX = 0.8; // Away from singular points
-  const Standard_Real aH = 1e-6;
+  const double aX = 0.8; // Away from singular points
+  const double aH = 1e-6;
 
-  Standard_Real aFMinus, aFPlus, aAnalyticDeriv;
+  double aFMinus, aFPlus, aAnalyticDeriv;
 
   EXPECT_TRUE(aPoly.Value(aX - aH, aFMinus));
   EXPECT_TRUE(aPoly.Value(aX + aH, aFPlus));
   EXPECT_TRUE(aPoly.Derivative(aX, aAnalyticDeriv));
 
-  const Standard_Real aNumericDeriv = (aFPlus - aFMinus) / (2.0 * aH);
+  const double aNumericDeriv = (aFPlus - aFMinus) / (2.0 * aH);
 
   // Analytical derivative should match numerical approximation
   EXPECT_NEAR(aAnalyticDeriv, aNumericDeriv, 1e-4);
@@ -592,7 +595,7 @@ TEST_F(CSLibIntegrationTest, CylindricalSurface_VaryingNormal)
 TEST_F(CSLibIntegrationTest, Class2d_ComplexPolygon)
 {
   // L-shaped polygon
-  TColgp_Array1OfPnt2d aPnts(1, 6);
+  NCollection_Array1<gp_Pnt2d> aPnts(1, 6);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
   aPnts(2) = gp_Pnt2d(2.0, 0.0);
   aPnts(3) = gp_Pnt2d(2.0, 1.0);

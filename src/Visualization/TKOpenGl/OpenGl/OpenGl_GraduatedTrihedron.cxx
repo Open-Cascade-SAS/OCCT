@@ -29,7 +29,7 @@
 
 namespace
 {
-static Standard_ShortReal                THE_LABEL_HEIGHT = 16;
+static float                THE_LABEL_HEIGHT = 16;
 static Graphic3d_HorizontalTextAlignment THE_LABEL_HALIGH = Graphic3d_HTA_LEFT;
 static Graphic3d_VerticalTextAlignment   THE_LABEL_VALIGH = Graphic3d_VTA_BOTTOM;
 } // namespace
@@ -39,7 +39,7 @@ static Graphic3d_VerticalTextAlignment   THE_LABEL_VALIGH = Graphic3d_VTA_BOTTOM
 OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
     : myMin(0.0f, 0.0f, 0.0f),
       myMax(100.0f, 100.0f, 100.0f),
-      myIsInitialized(Standard_False)
+      myIsInitialized(false)
 {
   //
 }
@@ -49,7 +49,7 @@ OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
 void OpenGl_GraduatedTrihedron::SetValues(const Graphic3d_GraduatedTrihedron& theData)
 {
   myData          = theData;
-  myIsInitialized = Standard_False;
+  myIsInitialized = false;
 }
 
 //=================================================================================================
@@ -71,7 +71,7 @@ void OpenGl_GraduatedTrihedron::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::initGlResources(const Handle(OpenGl_Context)& theCtx) const
+void OpenGl_GraduatedTrihedron::initGlResources(const occ::handle<OpenGl_Context>& theCtx) const
 {
   myAxes[0].Release(theCtx.operator->());
   myAxes[1].Release(theCtx.operator->());
@@ -79,15 +79,15 @@ void OpenGl_GraduatedTrihedron::initGlResources(const Handle(OpenGl_Context)& th
   myLabelValues.Release(theCtx.operator->());
 
   // Initialize text label parameters for x, y, and z axes
-  myAxes[0] = Axis(myData.XAxisAspect(), OpenGl_Vec3(1.0f, 0.0f, 0.0f));
-  myAxes[1] = Axis(myData.YAxisAspect(), OpenGl_Vec3(0.0f, 1.0f, 0.0f));
-  myAxes[2] = Axis(myData.ZAxisAspect(), OpenGl_Vec3(0.0f, 0.0f, 1.0f));
+  myAxes[0] = Axis(myData.XAxisAspect(), NCollection_Vec3<float>(1.0f, 0.0f, 0.0f));
+  myAxes[1] = Axis(myData.YAxisAspect(), NCollection_Vec3<float>(0.0f, 1.0f, 0.0f));
+  myAxes[2] = Axis(myData.ZAxisAspect(), NCollection_Vec3<float>(0.0f, 0.0f, 1.0f));
 
   // Initialize constant primitives: text, arrows.
-  myAxes[0].InitArrow(theCtx, myData.ArrowsLength(), OpenGl_Vec3(0.0f, 0.0f, 1.0f));
-  myAxes[1].InitArrow(theCtx, myData.ArrowsLength(), OpenGl_Vec3(0.0f, 0.0f, 1.0f));
-  myAxes[2].InitArrow(theCtx, myData.ArrowsLength(), OpenGl_Vec3(1.0f, 0.0f, 0.0f));
-  for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
+  myAxes[0].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(0.0f, 0.0f, 1.0f));
+  myAxes[1].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(0.0f, 0.0f, 1.0f));
+  myAxes[2].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(1.0f, 0.0f, 0.0f));
+  for (int anIt = 0; anIt < 3; ++anIt)
   {
     myAxes[anIt].Label.SetFontSize(theCtx, myData.NamesSize());
   }
@@ -98,13 +98,13 @@ void OpenGl_GraduatedTrihedron::initGlResources(const Handle(OpenGl_Context)& th
   myAspectLabels.Aspect()->SetTextFontAspect(myData.NamesFontAspect());
   myAspectLabels.Aspect()->SetTextFont(!myData.NamesFont().IsEmpty()
                                          ? new TCollection_HAsciiString(myData.NamesFont())
-                                         : Handle(TCollection_HAsciiString)());
+                                         : occ::handle<TCollection_HAsciiString>());
 
   myAspectValues.Aspect()->SetAlphaMode(Graphic3d_AlphaMode_MaskBlend, 0.285f);
   myAspectValues.Aspect()->SetTextFontAspect(myData.ValuesFontAspect());
   myAspectValues.Aspect()->SetTextFont(!myData.ValuesFont().IsEmpty()
                                          ? new TCollection_HAsciiString(myData.ValuesFont())
-                                         : Handle(TCollection_HAsciiString)());
+                                         : occ::handle<TCollection_HAsciiString>());
 
   // Grid aspect
   myGridLineAspect.Aspect()->SetColor(myData.GridColor());
@@ -114,20 +114,20 @@ void OpenGl_GraduatedTrihedron::initGlResources(const Handle(OpenGl_Context)& th
 // method  : getNormal
 // purpose : Normal of the view (not normalized!)
 // =======================================================================
-Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Context)& theContext,
-                                                        OpenGl_Vec3& theNormal) const
+float OpenGl_GraduatedTrihedron::getNormal(const occ::handle<OpenGl_Context>& theContext,
+                                                        NCollection_Vec3<float>& theNormal) const
 {
-  const Standard_Integer* aViewport = theContext->Viewport();
+  const int* aViewport = theContext->Viewport();
 
-  OpenGl_Mat4 aModelMatrix;
-  OpenGl_Mat4 aProjMatrix;
+  NCollection_Mat4<float> aModelMatrix;
+  NCollection_Mat4<float> aProjMatrix;
   aModelMatrix.Convert(theContext->ModelWorldState.Current()
                        * theContext->WorldViewState.Current());
   aProjMatrix.Convert(theContext->ProjectionState.Current());
 
-  OpenGl_Vec3 aPoint1, aPoint2, aPoint3;
-  Graphic3d_TransformUtils::UnProject<Standard_ShortReal>((Standard_ShortReal)aViewport[0],
-                                                          (Standard_ShortReal)aViewport[1],
+  NCollection_Vec3<float> aPoint1, aPoint2, aPoint3;
+  Graphic3d_TransformUtils::UnProject<float>((float)aViewport[0],
+                                                          (float)aViewport[1],
                                                           0.0f,
                                                           aModelMatrix,
                                                           aProjMatrix,
@@ -136,9 +136,9 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Cont
                                                           aPoint1.y(),
                                                           aPoint1.z());
 
-  Graphic3d_TransformUtils::UnProject<Standard_ShortReal>(
-    (Standard_ShortReal)(aViewport[0] + aViewport[2]),
-    (Standard_ShortReal)aViewport[1],
+  Graphic3d_TransformUtils::UnProject<float>(
+    (float)(aViewport[0] + aViewport[2]),
+    (float)aViewport[1],
     0.0f,
     aModelMatrix,
     aProjMatrix,
@@ -147,9 +147,9 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Cont
     aPoint2.y(),
     aPoint2.z());
 
-  Graphic3d_TransformUtils::UnProject<Standard_ShortReal>(
-    (Standard_ShortReal)aViewport[0],
-    (Standard_ShortReal)(aViewport[1] + aViewport[3]),
+  Graphic3d_TransformUtils::UnProject<float>(
+    (float)aViewport[0],
+    (float)(aViewport[1] + aViewport[3]),
     0.0f,
     aModelMatrix,
     aProjMatrix,
@@ -158,9 +158,9 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Cont
     aPoint3.y(),
     aPoint3.z());
 
-  const OpenGl_Vec3 aD1 = aPoint3 - aPoint1;
-  const OpenGl_Vec3 aD2 = aPoint2 - aPoint1;
-  theNormal             = OpenGl_Vec3::Cross(aD1, aD2);
+  const NCollection_Vec3<float> aD1 = aPoint3 - aPoint1;
+  const NCollection_Vec3<float> aD2 = aPoint2 - aPoint1;
+  theNormal             = NCollection_Vec3<float>::Cross(aD1, aD2);
 
   // Distance corresponding to 1 pixel
   return aD2.Modulus() / (float)aViewport[2];
@@ -168,12 +168,12 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal(const Handle(OpenGl_Cont
 
 //=================================================================================================
 
-Standard_ShortReal OpenGl_GraduatedTrihedron::getDistanceToCorner(
-  const OpenGl_Vec3&       theNormal,
-  const OpenGl_Vec3&       theCenter,
-  const Standard_ShortReal theX,
-  const Standard_ShortReal theY,
-  const Standard_ShortReal theZ) const
+float OpenGl_GraduatedTrihedron::getDistanceToCorner(
+  const NCollection_Vec3<float>&       theNormal,
+  const NCollection_Vec3<float>&       theCenter,
+  const float theX,
+  const float theY,
+  const float theZ) const
 {
   return theNormal.x() * (theX - theCenter.x()) + theNormal.y() * (theY - theCenter.y())
          + theNormal.z() * (theZ - theCenter.z());
@@ -181,14 +181,14 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getDistanceToCorner(
 
 //=================================================================================================
 
-Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes(const Standard_ShortReal theCorners[8],
+char16_t OpenGl_GraduatedTrihedron::getGridAxes(const float theCorners[8],
                                                              GridAxes& theGridAxes) const
 {
   // Find the farthest corner
-  Standard_Byte      aMaxIndex = 0;
-  Standard_ShortReal aMax      = theCorners[aMaxIndex] > 0.0f ? theCorners[aMaxIndex] : 0.0f;
+  uint8_t      aMaxIndex = 0;
+  float aMax      = theCorners[aMaxIndex] > 0.0f ? theCorners[aMaxIndex] : 0.0f;
 
-  for (Standard_Byte anIt = 0; anIt < 8; ++anIt)
+  for (uint8_t anIt = 0; anIt < 8; ++anIt)
   {
     if (theCorners[anIt] > aMax)
     {
@@ -201,105 +201,105 @@ Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes(const Standard_Shor
   {
     case 0: // (0,0,0)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(1.0f, 0.0f, 0.0f);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0.0f, 1.0f, 0.0f);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0.0f, 0.0f, 1.0f);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(1.0f, 0.0f, 0.0f);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0.0f, 1.0f, 0.0f);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0.0f, 0.0f, 1.0f);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMin.x(), myMin.y(), myMax.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
 
       return OOZ_XOZ | OYO_XYO | XOO_XYO | OOZ_OYZ | XOO_XOZ | OYO_OYZ;
     }
     case 1: // (0,0,1)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMin.x(), myMin.y(), myMax.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(1.0f, 0.0f, 0.0f);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0.0f, 1.0f, 0.0f);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0.0f, 0.0f, -1.0f);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMax.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(1.0f, 0.0f, 0.0f);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0.0f, 1.0f, 0.0f);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0.0f, 0.0f, -1.0f);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMax.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMax.z());
 
       return OOZ_XOZ | OYZ_XYZ | OOZ_OYZ | XOZ_XYZ | XOO_XOZ | OYO_OYZ;
     }
     case 2: // (0,1,0)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMin.x(), myMax.y(), myMin.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(1.0f, 0.0f, 0.0f);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0.0f, -1.0f, 0.0f);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0.0f, 0.0f, 1.0f);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMin.x(), myMax.y(), myMin.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(1.0f, 0.0f, 0.0f);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0.0f, -1.0f, 0.0f);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0.0f, 0.0f, 1.0f);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMax.x(), myMax.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMax.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMin.z());
 
       return OYO_XYO | OYZ_XYZ | XOO_XYO | OOZ_OYZ | XYO_XYZ | OYO_OYZ;
     }
     case 3: // (0,1,1)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMin.x(), myMax.y(), myMax.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(1.0f, 0.0f, 0.0f);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0.0f, -1.0f, 0.0f);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0.0f, 0.0f, -1.0f);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMin.x(), myMax.y(), myMax.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(1.0f, 0.0f, 0.0f);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0.0f, -1.0f, 0.0f);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0.0f, 0.0f, -1.0f);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMin.x(), myMin.y(), myMax.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMin.x(), myMax.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMin.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMin.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMax.z());
 
       return OOZ_XOZ | OYZ_XYZ | OYO_XYO | OOZ_OYZ | XOZ_XYZ | OYO_OYZ | XYO_XYZ;
     }
     case 4: // (1,0,0)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(-1, 0, 0);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0, 1, 0);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0, 0, 1);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(-1, 0, 0);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0, 1, 0);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0, 0, 1);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMax.x(), myMin.y(), myMax.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMin.z());
 
       return OOZ_XOZ | OYO_XYO | XOO_XYO | XOZ_XYZ | XOO_XOZ | XYO_XYZ;
     }
     case 5: // (1,0,1)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMax.x(), myMin.y(), myMax.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(-1, 0, 0);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0, 1, 0);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0, 0, -1);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMax.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(-1, 0, 0);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0, 1, 0);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0, 0, -1);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMin.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMin.x(), myMin.y(), myMax.z());
 
       return OOZ_XOZ | OYZ_XYZ | XOO_XYO | XOZ_XYZ | OOZ_OYZ | XOO_XOZ | XYO_XYZ;
     }
     case 6: // (1,1,0)
     {
-      theGridAxes.Origin  = OpenGl_Vec3(myMax.x(), myMax.y(), myMin.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(-1, 0, 0);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0, -1, 0);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0, 0, 1);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMin.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(-1, 0, 0);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0, -1, 0);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0, 0, 1);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMin.x(), myMax.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMin.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMin.z());
 
       return OYO_XYO | OYZ_XYZ | XOO_XYO | XOZ_XYZ | XOO_XOZ | XYO_XYZ | OYO_OYZ;
     }
     case 7: // (1,1,1)
     default: {
-      theGridAxes.Origin  = OpenGl_Vec3(myMax.x(), myMax.y(), myMax.z());
-      theGridAxes.Axes[0] = OpenGl_Vec3(-1, 0, 0);
-      theGridAxes.Axes[1] = OpenGl_Vec3(0, -1, 0);
-      theGridAxes.Axes[2] = OpenGl_Vec3(0, 0, -1);
+      theGridAxes.Origin  = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMax.z());
+      theGridAxes.Axes[0] = NCollection_Vec3<float>(-1, 0, 0);
+      theGridAxes.Axes[1] = NCollection_Vec3<float>(0, -1, 0);
+      theGridAxes.Axes[2] = NCollection_Vec3<float>(0, 0, -1);
 
-      theGridAxes.Ticks[0] = OpenGl_Vec3(myMax.x(), myMax.y(), myMin.z());
-      theGridAxes.Ticks[1] = OpenGl_Vec3(myMax.x(), myMax.y(), myMin.z());
-      theGridAxes.Ticks[2] = OpenGl_Vec3(myMax.x(), myMin.y(), myMax.z());
+      theGridAxes.Ticks[0] = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[1] = NCollection_Vec3<float>(myMax.x(), myMax.y(), myMin.z());
+      theGridAxes.Ticks[2] = NCollection_Vec3<float>(myMax.x(), myMin.y(), myMax.z());
 
       return OYO_XYO | OYZ_XYZ | OOZ_XOZ | XOO_XYO | XOZ_XYZ | OOZ_OYZ | XOO_XOZ | XYO_XYZ
              | OYO_OYZ;
@@ -310,14 +310,14 @@ Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes(const Standard_Shor
 //=================================================================================================
 
 void OpenGl_GraduatedTrihedron::renderLine(const OpenGl_PrimitiveArray&    theLine,
-                                           const Handle(OpenGl_Workspace)& theWorkspace,
-                                           const OpenGl_Mat4&              theMat,
-                                           const Standard_ShortReal        theXt,
-                                           const Standard_ShortReal        theYt,
-                                           const Standard_ShortReal        theZt) const
+                                           const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                           const NCollection_Mat4<float>&              theMat,
+                                           const float        theXt,
+                                           const float        theYt,
+                                           const float        theZt) const
 {
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
-  OpenGl_Mat4                   aMat(theMat);
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
+  NCollection_Mat4<float>                   aMat(theMat);
   Graphic3d_TransformUtils::Translate(aMat, theXt, theYt, theZt);
   aContext->WorldViewState.SetCurrent(aMat);
   aContext->ApplyWorldViewMatrix();
@@ -326,10 +326,10 @@ void OpenGl_GraduatedTrihedron::renderLine(const OpenGl_PrimitiveArray&    theLi
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& theWorkspace,
-                                                const Standard_Integer&         theIndex,
+void OpenGl_GraduatedTrihedron::renderGridPlane(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                                const int&         theIndex,
                                                 const GridAxes&                 theGridAxes,
-                                                OpenGl_Mat4&                    theMat) const
+                                                NCollection_Mat4<float>&                    theMat) const
 {
   const Graphic3d_GraduatedTrihedron::AxisAspect& aCurAspect = myData.AxisAspectAt(theIndex);
   if (aCurAspect.TickmarksNumber() <= 0)
@@ -337,21 +337,21 @@ void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& 
     return;
   }
 
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
 
-  Standard_ShortReal aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
+  float aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
                              * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex])
                              / aCurAspect.TickmarksNumber();
 
   // NOTE:
   // Get two other axes directions and draw lines Axis.TickmarksNumber times.
   // Combining together from three axes, these lines will make a grid.
-  for (Standard_Integer anIter = 1; anIter <= 2; ++anIter)
+  for (int anIter = 1; anIter <= 2; ++anIter)
   {
-    OpenGl_Mat4            aMat(theMat);
-    const Standard_Integer anIndex = (theIndex + anIter) % 3;
+    NCollection_Mat4<float>            aMat(theMat);
+    const int anIndex = (theIndex + anIter) % 3;
     const Axis&            anAxis  = myAxes[anIndex];
-    OpenGl_Vec3            aStart(theGridAxes.Origin);
+    NCollection_Vec3<float>            aStart(theGridAxes.Origin);
     if (theGridAxes.Axes[anIndex].GetData()[anIndex] < 0.0)
     {
       aStart.ChangeData()[anIndex] = myMin.GetData()[anIndex];
@@ -361,8 +361,8 @@ void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& 
     aContext->WorldViewState.SetCurrent(aMat);
     aContext->ApplyWorldViewMatrix();
 
-    const OpenGl_Vec3 aStepVec(myAxes[theIndex].Direction * aStep);
-    for (Standard_Integer anIt = myData.ToDrawAxes() ? 1 : 0; anIt < aCurAspect.TickmarksNumber();
+    const NCollection_Vec3<float> aStepVec(myAxes[theIndex].Direction * aStep);
+    for (int anIt = myData.ToDrawAxes() ? 1 : 0; anIt < aCurAspect.TickmarksNumber();
          ++anIt)
     {
       Graphic3d_TransformUtils::Translate(aMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
@@ -375,30 +375,30 @@ void OpenGl_GraduatedTrihedron::renderGridPlane(const Handle(OpenGl_Workspace)& 
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWorkspace,
-                                           const Standard_Integer&         theIndex,
-                                           const OpenGl_Mat4&              theMat) const
+void OpenGl_GraduatedTrihedron::renderAxis(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                           const int&         theIndex,
+                                           const NCollection_Mat4<float>&              theMat) const
 {
   const Axis& anAxis = myAxes[theIndex];
 
   theWorkspace->SetAspects(&anAxis.LineAspect);
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
 
   // Reset transformations
   aContext->WorldViewState.SetCurrent(theMat);
   aContext->ApplyWorldViewMatrix();
 
   // Render arrow
-  OpenGl_Vec3 anArrowVec = myMin + anAxis.Direction * (myMax - myMin);
+  NCollection_Vec3<float> anArrowVec = myMin + anAxis.Direction * (myMax - myMin);
 
   Graphic3d_TransformPers aTransMode(Graphic3d_TMF_ZoomPers,
-                                     gp_Pnt(Standard_Real(anArrowVec.x()),
-                                            Standard_Real(anArrowVec.y()),
-                                            Standard_Real(anArrowVec.z())));
-  const OpenGl_Mat4&      aProjection = aContext->ProjectionState.Current();
-  const OpenGl_Mat4&      aWorldView  = aContext->WorldViewState.Current();
-  const Standard_Integer  aWidth      = theWorkspace->Width();
-  const Standard_Integer  aHeight     = theWorkspace->Height();
+                                     gp_Pnt(double(anArrowVec.x()),
+                                            double(anArrowVec.y()),
+                                            double(anArrowVec.z())));
+  const NCollection_Mat4<float>&      aProjection = aContext->ProjectionState.Current();
+  const NCollection_Mat4<float>&      aWorldView  = aContext->WorldViewState.Current();
+  const int  aWidth      = theWorkspace->Width();
+  const int  aHeight     = theWorkspace->Height();
 
   // Take into account Transform Persistence
   aContext->ModelWorldState.SetCurrent(
@@ -408,15 +408,15 @@ void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWo
   anAxis.Arrow.Render(theWorkspace);
 
   // Get current Model-View and Projection states
-  OpenGl_Mat4 aModelMat;
-  OpenGl_Mat4 aProjMat;
+  NCollection_Mat4<float> aModelMat;
+  NCollection_Mat4<float> aProjMat;
   aModelMat.Convert(aContext->WorldViewState.Current() * aContext->ModelWorldState.Current());
   aProjMat.Convert(aContext->ProjectionState.Current());
 
   // Get the window's (fixed) coordinates for before matrices modifications
-  OpenGl_Vec3 aEndPoint = -anAxis.Direction * myData.ArrowsLength();
-  OpenGl_Vec3 aWinPoint;
-  Graphic3d_TransformUtils::Project<Standard_ShortReal>(aEndPoint.x(),
+  NCollection_Vec3<float> aEndPoint = -anAxis.Direction * myData.ArrowsLength();
+  NCollection_Vec3<float> aWinPoint;
+  Graphic3d_TransformUtils::Project<float>(aEndPoint.x(),
                                                         aEndPoint.y(),
                                                         aEndPoint.z(),
                                                         aModelMat,
@@ -431,8 +431,8 @@ void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWo
   aProjMat.Convert(aContext->ProjectionState.Current());
 
   // Get start point of zoom persistent arrow
-  OpenGl_Vec3 anArrowStart;
-  Graphic3d_TransformUtils::UnProject<Standard_ShortReal>(aWinPoint.x(),
+  NCollection_Vec3<float> anArrowStart;
+  Graphic3d_TransformUtils::UnProject<float>(aWinPoint.x(),
                                                           aWinPoint.y(),
                                                           aWinPoint.z(),
                                                           aModelMat,
@@ -445,9 +445,9 @@ void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWo
   aModelMat = theMat;
   Graphic3d_TransformUtils::Translate(aModelMat, myMin.x(), myMin.y(), myMin.z());
 
-  Standard_ShortReal aScaleFactor = ((anArrowStart - myMin) * anAxis.Direction).Modulus()
+  float aScaleFactor = ((anArrowStart - myMin) * anAxis.Direction).Modulus()
                                     / (anAxis.Direction * (myMax - myMin)).Modulus();
-  OpenGl_Vec3 aScaleAxes = anAxis.Direction * aScaleFactor;
+  NCollection_Vec3<float> aScaleAxes = anAxis.Direction * aScaleFactor;
   Graphic3d_TransformUtils::Scale(aModelMat, aScaleAxes.x(), aScaleAxes.y(), aScaleAxes.z());
 
   aContext->WorldViewState.SetCurrent(aModelMat);
@@ -457,11 +457,11 @@ void OpenGl_GraduatedTrihedron::renderAxis(const Handle(OpenGl_Workspace)& theWo
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspace)& theWorkspace,
-                                                     const OpenGl_Mat4&              theMat,
-                                                     const Standard_Integer          theIndex,
+void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                                     const NCollection_Mat4<float>&              theMat,
+                                                     const int          theIndex,
                                                      const GridAxes&                 theGridAxes,
-                                                     const Standard_ShortReal        theDpix) const
+                                                     const float        theDpix) const
 {
   const Graphic3d_GraduatedTrihedron::AxisAspect& aCurAspect = myData.AxisAspectAt(theIndex);
   if (!aCurAspect.ToDrawName() && !aCurAspect.ToDrawValues())
@@ -469,32 +469,32 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspa
     return;
   }
 
-  Standard_Character aTextValue[128];
+  char aTextValue[128];
   const Axis&        anAxis = myAxes[theIndex];
-  const OpenGl_Vec3  aSizeVec(myMax - myMin);
-  Standard_ShortReal aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
+  const NCollection_Vec3<float>  aSizeVec(myMax - myMin);
+  float aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
                              * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex])
                              / aCurAspect.TickmarksNumber();
 
-  OpenGl_Vec3 aDir = (theGridAxes.Ticks[theIndex] - theGridAxes.Origin).Normalized();
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  NCollection_Vec3<float> aDir = (theGridAxes.Ticks[theIndex] - theGridAxes.Origin).Normalized();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
 
   if (aCurAspect.ToDrawTickmarks() && aCurAspect.TickmarksNumber() > 0)
   {
     theWorkspace->SetAspects(&myGridLineAspect);
 
-    OpenGl_Mat4 aModelMat(theMat);
+    NCollection_Mat4<float> aModelMat(theMat);
 
     anAxis.InitTickmark(aContext,
-                        aDir * (Standard_ShortReal)aCurAspect.TickmarksLength() * theDpix);
+                        aDir * (float)aCurAspect.TickmarksLength() * theDpix);
     Graphic3d_TransformUtils::Translate(aModelMat,
                                         theGridAxes.Ticks[theIndex].x(),
                                         theGridAxes.Ticks[theIndex].y(),
                                         theGridAxes.Ticks[theIndex].z());
     aContext->WorldViewState.SetCurrent(aModelMat);
     aContext->ApplyWorldViewMatrix();
-    OpenGl_Vec3 aStepVec = anAxis.Direction * aStep;
-    for (Standard_Integer anIter = 0; anIter <= aCurAspect.TickmarksNumber(); ++anIter)
+    NCollection_Vec3<float> aStepVec = anAxis.Direction * aStep;
+    for (int anIter = 0; anIter <= aCurAspect.TickmarksNumber(); ++anIter)
     {
       anAxis.Tickmark.Render(theWorkspace);
       Graphic3d_TransformUtils::Translate(aModelMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
@@ -509,10 +509,10 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspa
 
   if (aCurAspect.ToDrawName())
   {
-    Standard_Real anOffset = aCurAspect.NameOffset() + aCurAspect.TickmarksLength();
+    double anOffset = aCurAspect.NameOffset() + aCurAspect.TickmarksLength();
 
-    OpenGl_Vec3 aMiddle(theGridAxes.Ticks[theIndex] + aSizeVec * theGridAxes.Axes[theIndex] * 0.5f
-                        + aDir * (Standard_ShortReal)(theDpix * anOffset));
+    NCollection_Vec3<float> aMiddle(theGridAxes.Ticks[theIndex] + aSizeVec * theGridAxes.Axes[theIndex] * 0.5f
+                        + aDir * (float)(theDpix * anOffset));
 
     myAspectLabels.Aspect()->SetColor(anAxis.NameColor);
     theWorkspace->SetAspects(&myAspectLabels);
@@ -524,16 +524,16 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspa
   {
     myAspectValues.Aspect()->SetColor(anAxis.LineAspect.Aspect()->Color());
     theWorkspace->SetAspects(&myAspectValues);
-    Standard_Real anOffset = aCurAspect.ValuesOffset() + aCurAspect.TickmarksLength();
+    double anOffset = aCurAspect.ValuesOffset() + aCurAspect.TickmarksLength();
 
-    for (Standard_Integer anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
+    for (int anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
     {
       Sprintf(aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
-      OpenGl_Vec3 aPos(theGridAxes.Ticks[theIndex]
-                       + anAxis.Direction * (Standard_ShortReal)(anIt * aStep)
-                       + aDir * (Standard_ShortReal)(theDpix * anOffset));
+      NCollection_Vec3<float> aPos(theGridAxes.Ticks[theIndex]
+                       + anAxis.Direction * (float)(anIt * aStep)
+                       + aDir * (float)(theDpix * anOffset));
 
-      Handle(Graphic3d_Text) aText = myLabelValues.Text();
+      occ::handle<Graphic3d_Text> aText = myLabelValues.Text();
       aText->SetText(aTextValue);
       aText->SetPosition(gp_Pnt(aPos.x(), aPos.y(), aPos.z()));
 
@@ -547,45 +547,45 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(const Handle(OpenGl_Workspa
 // function : Render
 // purpose  : call_graduatedtrihedron_redraw
 // =======================================================================
-void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_GraduatedTrihedron::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
   if (!myIsInitialized)
   {
     initGlResources(theWorkspace->GetGlContext());
-    myIsInitialized = Standard_True;
+    myIsInitialized = true;
   }
 
   // Update boundary box
-  OpenGl_Vec3 anOldMin = myMin;
-  OpenGl_Vec3 anOldMax = myMax;
+  NCollection_Vec3<float> anOldMin = myMin;
+  NCollection_Vec3<float> anOldMax = myMax;
 
   if (myData.CubicAxesCallback(theWorkspace->View()))
   {
     if (!myAxes[0].Line.IsInitialized() || !myAxes[1].Line.IsInitialized()
         || !myAxes[2].Line.IsInitialized()
-        || OpenGl_Vec3(anOldMin - myMin).Modulus() > Precision::Confusion()
-        || OpenGl_Vec3(anOldMax - myMax).Modulus() > Precision::Confusion())
+        || NCollection_Vec3<float>(anOldMin - myMin).Modulus() > Precision::Confusion()
+        || NCollection_Vec3<float>(anOldMax - myMax).Modulus() > Precision::Confusion())
     {
-      myAxes[0].InitLine(aContext, OpenGl_Vec3(myMax.x() - myMin.x(), 0.0f, 0.0f));
-      myAxes[1].InitLine(aContext, OpenGl_Vec3(0.0f, myMax.y() - myMin.y(), 0.0f));
-      myAxes[2].InitLine(aContext, OpenGl_Vec3(0.0f, 0.0f, myMax.z() - myMin.z()));
+      myAxes[0].InitLine(aContext, NCollection_Vec3<float>(myMax.x() - myMin.x(), 0.0f, 0.0f));
+      myAxes[1].InitLine(aContext, NCollection_Vec3<float>(0.0f, myMax.y() - myMin.y(), 0.0f));
+      myAxes[2].InitLine(aContext, NCollection_Vec3<float>(0.0f, 0.0f, myMax.z() - myMin.z()));
     }
   }
 
   // Find the farthest point of bounding box
 
   // Get normal of the view out of user and distance corresponding to 1 pixel
-  OpenGl_Vec3        aNormal;
-  Standard_ShortReal aDpix = getNormal(aContext, aNormal);
+  NCollection_Vec3<float>        aNormal;
+  float aDpix = getNormal(aContext, aNormal);
   aNormal.Normalize();
 
   // Get central point of bounding box
-  OpenGl_Vec3 aCenter;
+  NCollection_Vec3<float> aCenter;
   aCenter = (myMin + myMax) * 0.5f;
 
   // Check distance to corners of bounding box along the normal
-  Standard_ShortReal aCorners[8];
+  float aCorners[8];
   aCorners[0] = getDistanceToCorner(aNormal, aCenter, myMin.x(), myMin.y(), myMin.z());
   aCorners[1] = getDistanceToCorner(aNormal, aCenter, myMin.x(), myMin.y(), myMax.z());
   aCorners[2] = getDistanceToCorner(aNormal, aCenter, myMin.x(), myMax.y(), myMin.z());
@@ -604,12 +604,12 @@ void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorksp
 
   // Write an axes state what axes of bounding box are to be drawn
   GridAxes              aGridAxes;
-  Standard_ExtCharacter anAxesState = getGridAxes(aCorners, aGridAxes);
+  char16_t anAxesState = getGridAxes(aCorners, aGridAxes);
 
   // Remember current aspects
   const OpenGl_Aspects* anOldAspectLine = theWorkspace->Aspects();
 
-  OpenGl_Mat4 aModelMatrix;
+  NCollection_Mat4<float> aModelMatrix;
   aModelMatrix.Convert(aContext->WorldViewState.Current());
 
   // Remember model-view matrix
@@ -667,7 +667,7 @@ void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorksp
       renderLine(myAxes[2].Line, theWorkspace, aModelMatrix, myMax.x(), myMax.y(), myMin.z());
     }
 
-    for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
+    for (int anIter = 0; anIter < 3; ++anIter)
     {
       renderGridPlane(theWorkspace, anIter, aGridAxes, aModelMatrix);
     }
@@ -676,14 +676,14 @@ void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorksp
   // Axes (arrows)
   if (myData.ToDrawAxes())
   {
-    for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
+    for (int anIter = 0; anIter < 3; ++anIter)
     {
       renderAxis(theWorkspace, anIter, aModelMatrix);
     }
   }
 
   // Names of axes & values
-  for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
+  for (int anIter = 0; anIter < 3; ++anIter)
   {
     // Restore current matrix
     aContext->WorldViewState.SetCurrent(aModelMatrix);
@@ -699,7 +699,7 @@ void OpenGl_GraduatedTrihedron::Render(const Handle(OpenGl_Workspace)& theWorksp
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::SetMinMax(const OpenGl_Vec3& theMin, const OpenGl_Vec3& theMax)
+void OpenGl_GraduatedTrihedron::SetMinMax(const NCollection_Vec3<float>& theMin, const NCollection_Vec3<float>& theMax)
 {
   myMin = theMin;
   myMax = theMax;
@@ -708,14 +708,14 @@ void OpenGl_GraduatedTrihedron::SetMinMax(const OpenGl_Vec3& theMin, const OpenG
 //=================================================================================================
 
 OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAspect& theAspect,
-                                      const OpenGl_Vec3&                              theDirection)
+                                      const NCollection_Vec3<float>&                              theDirection)
     : Direction(theDirection),
       Tickmark(NULL),
       Line(NULL),
       Arrow(NULL)
 {
-  Handle(Graphic3d_Text) aText = new Graphic3d_Text(THE_LABEL_HEIGHT);
-  aText->SetText((Standard_Utf16Char*)theAspect.Name().ToExtString());
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(THE_LABEL_HEIGHT);
+  aText->SetText((char16_t*)theAspect.Name().ToExtString());
   aText->SetPosition(gp_Pnt(theDirection.x(), theDirection.y(), theDirection.z()));
   aText->SetHorizontalAlignment(THE_LABEL_HALIGH);
   aText->SetVerticalAlignment(THE_LABEL_VALIGH);
@@ -764,16 +764,16 @@ OpenGl_GraduatedTrihedron::Axis& OpenGl_GraduatedTrihedron::Axis::operator=(cons
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::Axis::InitArrow(const Handle(OpenGl_Context)& theContext,
-                                                const Standard_ShortReal      theLength,
-                                                const OpenGl_Vec3&            theNormal) const
+void OpenGl_GraduatedTrihedron::Axis::InitArrow(const occ::handle<OpenGl_Context>& theContext,
+                                                const float      theLength,
+                                                const NCollection_Vec3<float>&            theNormal) const
 {
   // Draw from the end point of the aris
-  OpenGl_Vec3 aLengthVec = -Direction * theLength;
+  NCollection_Vec3<float> aLengthVec = -Direction * theLength;
 
   // Radial direction to the arrow
-  OpenGl_Vec3 aRadial = OpenGl_Vec3::Cross(this->Direction, theNormal);
-  if (aRadial.Modulus() < (Standard_ShortReal)Precision::Confusion())
+  NCollection_Vec3<float> aRadial = NCollection_Vec3<float>::Cross(this->Direction, theNormal);
+  if (aRadial.Modulus() < (float)Precision::Confusion())
   {
     return;
   }
@@ -781,11 +781,11 @@ void OpenGl_GraduatedTrihedron::Axis::InitArrow(const Handle(OpenGl_Context)& th
 
   // Initialize arrow primitive array
   // Make loop from polyline
-  const OpenGl_Vec3 aPoint1 = aRadial + aLengthVec;
-  const OpenGl_Vec3 aPoint2(0.0f, 0.0f, 0.0f);
-  const OpenGl_Vec3 aPoint3 = -aRadial + aLengthVec;
+  const NCollection_Vec3<float> aPoint1 = aRadial + aLengthVec;
+  const NCollection_Vec3<float> aPoint2(0.0f, 0.0f, 0.0f);
+  const NCollection_Vec3<float> aPoint3 = -aRadial + aLengthVec;
 
-  Handle(Graphic3d_ArrayOfPolylines) anArray = new Graphic3d_ArrayOfPolylines(4);
+  occ::handle<Graphic3d_ArrayOfPolylines> anArray = new Graphic3d_ArrayOfPolylines(4);
   anArray->AddVertex(aPoint1);
   anArray->AddVertex(aPoint2);
   anArray->AddVertex(aPoint3);
@@ -800,11 +800,11 @@ void OpenGl_GraduatedTrihedron::Axis::InitArrow(const Handle(OpenGl_Context)& th
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::Axis::InitTickmark(const Handle(OpenGl_Context)& theContext,
-                                                   const OpenGl_Vec3&            theDir) const
+void OpenGl_GraduatedTrihedron::Axis::InitTickmark(const occ::handle<OpenGl_Context>& theContext,
+                                                   const NCollection_Vec3<float>&            theDir) const
 {
 
-  Handle(Graphic3d_ArrayOfSegments) anArray = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> anArray = new Graphic3d_ArrayOfSegments(2);
   anArray->AddVertex(0.0f, 0.0f, 0.0f);
   anArray->AddVertex(theDir);
   Tickmark.InitBuffers(theContext,
@@ -816,11 +816,11 @@ void OpenGl_GraduatedTrihedron::Axis::InitTickmark(const Handle(OpenGl_Context)&
 
 //=================================================================================================
 
-void OpenGl_GraduatedTrihedron::Axis::InitLine(const Handle(OpenGl_Context)& theContext,
-                                               const OpenGl_Vec3&            theDir) const
+void OpenGl_GraduatedTrihedron::Axis::InitLine(const occ::handle<OpenGl_Context>& theContext,
+                                               const NCollection_Vec3<float>&            theDir) const
 {
 
-  Handle(Graphic3d_ArrayOfSegments) anArray = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> anArray = new Graphic3d_ArrayOfSegments(2);
   anArray->AddVertex(0.0f, 0.0f, 0.0f);
   anArray->AddVertex(theDir);
 
@@ -844,7 +844,7 @@ void OpenGl_GraduatedTrihedron::Axis::Release(OpenGl_Context* theCtx)
 //=================================================================================================
 
 void OpenGl_GraduatedTrihedron::DumpJson(Standard_OStream& theOStream,
-                                         Standard_Integer  theDepth) const
+                                         int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_GraduatedTrihedron)
 

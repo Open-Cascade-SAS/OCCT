@@ -38,10 +38,10 @@ public:
   }
 
   //! Constructor
-  IntPolyh_Edge(const Standard_Integer thePoint1,
-                const Standard_Integer thePoint2,
-                const Standard_Integer theTriangle1,
-                const Standard_Integer theTriangle2)
+  IntPolyh_Edge(const int thePoint1,
+                const int thePoint2,
+                const int theTriangle1,
+                const int theTriangle2)
       : myPoint1(thePoint1),
         myPoint2(thePoint2),
         myTriangle1(theTriangle1),
@@ -50,37 +50,36 @@ public:
   }
 
   //! Returns the first point
-  Standard_Integer FirstPoint() const { return myPoint1; }
+  int FirstPoint() const { return myPoint1; }
 
   //! Returns the second point
-  Standard_Integer SecondPoint() const { return myPoint2; }
+  int SecondPoint() const { return myPoint2; }
 
   //! Returns the first triangle
-  Standard_Integer FirstTriangle() const { return myTriangle1; }
+  int FirstTriangle() const { return myTriangle1; }
 
   //! Returns the second triangle
-  Standard_Integer SecondTriangle() const { return myTriangle2; }
+  int SecondTriangle() const { return myTriangle2; }
 
   //! Sets the first point
-  void SetFirstPoint(const Standard_Integer thePoint) { myPoint1 = thePoint; }
+  void SetFirstPoint(const int thePoint) { myPoint1 = thePoint; }
 
   //! Sets the second point
-  void SetSecondPoint(const Standard_Integer thePoint) { myPoint2 = thePoint; }
+  void SetSecondPoint(const int thePoint) { myPoint2 = thePoint; }
 
   //! Sets the first triangle
-  void SetFirstTriangle(const Standard_Integer theTriangle) { myTriangle1 = theTriangle; }
+  void SetFirstTriangle(const int theTriangle) { myTriangle1 = theTriangle; }
 
   //! Sets the second triangle
-  void SetSecondTriangle(const Standard_Integer theTriangle) { myTriangle2 = theTriangle; }
+  void SetSecondTriangle(const int theTriangle) { myTriangle2 = theTriangle; }
 
-  Standard_EXPORT void Dump(const Standard_Integer v) const;
+  Standard_EXPORT void Dump(const int v) const;
 
-protected:
 private:
-  Standard_Integer myPoint1;
-  Standard_Integer myPoint2;
-  Standard_Integer myTriangle1;
-  Standard_Integer myTriangle2;
+  int myPoint1;
+  int myPoint2;
+  int myTriangle1;
+  int myTriangle2;
 };
 
 #endif // _IntPolyh_Edge_HeaderFile

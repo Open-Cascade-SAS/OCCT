@@ -45,36 +45,36 @@ public:
   Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface();
 
   //! Constructor, which performs projecting.
-  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(const Handle(Adaptor3d_Curve)&   C,
-                                                      const Handle(Adaptor3d_Surface)& S,
-                                                      const Standard_Real Tol = 1.0e-4);
+  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(const occ::handle<Adaptor3d_Curve>&   C,
+                                                      const occ::handle<Adaptor3d_Surface>& S,
+                                                      const double Tol = 1.0e-4);
 
   //! Constructor, which performs projecting, using initial curve 2d InitCurve2d, which is any rough
   //! approximation of result curve. Parameter Tol is 3d tolerance of approximation.
-  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(const Handle(Adaptor2d_Curve2d)& InitCurve2d,
-                                                      const Handle(Adaptor3d_Curve)&   C,
-                                                      const Handle(Adaptor3d_Surface)& S,
-                                                      const Standard_Real              Tol);
+  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
+                                                      const occ::handle<Adaptor3d_Curve>&   C,
+                                                      const occ::handle<Adaptor3d_Surface>& S,
+                                                      const double              Tol);
 
   //! Constructor, which performs projecting, using two initial curves 2d: InitCurve2d and
   //! InitCurve2dBis that are any rough approximations of result curves. This constructor is used to
   //! get two pcurves for seem edge. Parameter Tol is 3d tolerance of approximation.
   Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(
-    const Handle(Adaptor2d_Curve2d)& InitCurve2d,
-    const Handle(Adaptor2d_Curve2d)& InitCurve2dBis,
-    const Handle(Adaptor3d_Curve)&   C,
-    const Handle(Adaptor3d_Surface)& S,
-    const Standard_Real              Tol);
+    const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
+    const occ::handle<Adaptor2d_Curve2d>& InitCurve2dBis,
+    const occ::handle<Adaptor3d_Curve>&   C,
+    const occ::handle<Adaptor3d_Surface>& S,
+    const double              Tol);
 
   //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
   //! If theDegMin/Max < 0, algorithm uses values min = 2, max = 8.
-  Standard_EXPORT void SetDegree(const Standard_Integer theDegMin,
-                                 const Standard_Integer theDegMax);
+  Standard_EXPORT void SetDegree(const int theDegMin,
+                                 const int theDegMax);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default
   //! value = 1000.
-  Standard_EXPORT void SetMaxSegments(const Standard_Integer theMaxSegments);
+  Standard_EXPORT void SetMaxSegments(const int theMaxSegments);
 
   //! Set the parameter, which defines type of boundary condition between segments during
   //! approximation. It can be AppParCurves_PassPoint or AppParCurves_TangencyPoint. Default value
@@ -85,61 +85,60 @@ public:
   //! surface. It is used only for projecting on not analytical surfaces. If theMaxDist < 0,
   //! algorithm uses default value 100.*Tolerance. If real distance between curve and surface more
   //! then theMaxDist, algorithm stops working.
-  Standard_EXPORT void SetMaxDist(const Standard_Real theMaxDist);
+  Standard_EXPORT void SetMaxDist(const double theMaxDist);
 
   //! Set the tolerance used to project
   //! the curve on the surface.
   //! Default value is Precision::Approximation().
-  Standard_EXPORT void SetTolerance(const Standard_Real theTolerance);
+  Standard_EXPORT void SetTolerance(const double theTolerance);
 
   //! Method, which performs projecting, using default values of parameters or
   //! they must be set by corresponding methods before using.
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Curve)&   C,
-                               const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>&   C,
+                               const occ::handle<Adaptor3d_Surface>& S);
 
   //! Method, which performs projecting, using default values of parameters or
   //! they must be set by corresponding methods before using.
   //! Parameter InitCurve2d is any rough estimation of 2d result curve.
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) Perform(const Handle(Adaptor2d_Curve2d)& InitCurve2d,
-                                                      const Handle(Adaptor3d_Curve)&   C,
-                                                      const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Perform(const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
+                                                      const occ::handle<Adaptor3d_Curve>&   C,
+                                                      const occ::handle<Adaptor3d_Surface>& S);
 
   //! Builds initial 2d curve as BSpline with degree = 1 using Extrema algorithm.
   //! Method is used in method Perform(...).
-  Standard_EXPORT Handle(Adaptor2d_Curve2d) BuildInitialCurve2d(
-    const Handle(Adaptor3d_Curve)&   Curve,
-    const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT occ::handle<Adaptor2d_Curve2d> BuildInitialCurve2d(
+    const occ::handle<Adaptor3d_Curve>&   Curve,
+    const occ::handle<Adaptor3d_Surface>& S);
 
   //! Method, which performs projecting.
   //! Method is used in method Perform(...).
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) ProjectUsingInitialCurve2d(
-    const Handle(Adaptor3d_Curve)&   Curve,
-    const Handle(Adaptor3d_Surface)& S,
-    const Handle(Adaptor2d_Curve2d)& InitCurve2d);
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> ProjectUsingInitialCurve2d(
+    const occ::handle<Adaptor3d_Curve>&   Curve,
+    const occ::handle<Adaptor3d_Surface>& S,
+    const occ::handle<Adaptor2d_Curve2d>& InitCurve2d);
 
   //! Returns result curve 2d.
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const;
   //! Returns second 2d curve.
-  Standard_EXPORT Handle(Geom2d_Curve) Curve2d() const;
+  Standard_EXPORT occ::handle<Geom2d_Curve> Curve2d() const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns the reached Tolerance.
-  Standard_EXPORT Standard_Real Tolerance() const;
+  Standard_EXPORT double Tolerance() const;
 
-protected:
 private:
-  Standard_Boolean            myProjIsDone;
-  Standard_Real               myTolerance;
-  Handle(Geom2d_BSplineCurve) myBSpline;
-  Handle(Geom2d_Curve)        my2ndCurve;
-  Standard_Real               myTolReached;
-  Standard_Integer            myDegMin;
-  Standard_Integer            myDegMax;
-  Standard_Integer            myMaxSegments;
-  Standard_Real               myMaxDist;
+  bool            myProjIsDone;
+  double               myTolerance;
+  occ::handle<Geom2d_BSplineCurve> myBSpline;
+  occ::handle<Geom2d_Curve>        my2ndCurve;
+  double               myTolReached;
+  int            myDegMin;
+  int            myDegMax;
+  int            myMaxSegments;
+  double               myMaxDist;
   AppParCurves_Constraint     myBndPnt;
-  Standard_Real               myDist;
+  double               myDist;
 };
 
 #endif // _ProjLib_ComputeApproxOnPolarSurface_HeaderFile

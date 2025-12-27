@@ -36,16 +36,16 @@
 #include <Message_Msg.hxx>
 
 // internal breakdown to facilitate error recovery
-static Standard_Integer recupne, recupnp; // for display in case of problem
+static int recupne, recupnp; // for display in case of problem
 
-static Handle(Interface_Check)& checkread()
+static occ::handle<Interface_Check>& checkread()
 {
-  static Handle(Interface_Check) chrd = new Interface_Check;
+  static occ::handle<Interface_Check> chrd = new Interface_Check;
   return chrd;
 }
 
-static void IGESFile_ReadHeader(const Handle(IGESData_IGESReaderData)& IR);
-static void IGESFile_ReadContent(const Handle(IGESData_IGESReaderData)& IR);
+static void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR);
+static void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR);
 void        IGESFile_Check(int mode, Message_Msg& amsg);
 // void IGESFile_Check2 (int mode,char * code, int num, char * str);
 // void IGESFile_Check3 (int mode,char * code);
@@ -55,29 +55,29 @@ static Interface_ParamType LesTypes[10];
 
 //  New way: Protocol is sufficient
 
-Standard_Integer IGESFile_Read(char*                             nomfic,
-                               const Handle(IGESData_IGESModel)& amodel,
-                               const Handle(IGESData_Protocol)&  protocol)
+int IGESFile_Read(char*                             nomfic,
+                               const occ::handle<IGESData_IGESModel>& amodel,
+                               const occ::handle<IGESData_Protocol>&  protocol)
 {
-  Handle(IGESData_FileRecognizer) nulreco;
-  return IGESFile_Read(nomfic, amodel, protocol, nulreco, Standard_False);
+  occ::handle<IGESData_FileRecognizer> nulreco;
+  return IGESFile_Read(nomfic, amodel, protocol, nulreco, false);
 }
 
-Standard_Integer IGESFile_ReadFNES(char*                             nomfic,
-                                   const Handle(IGESData_IGESModel)& amodel,
-                                   const Handle(IGESData_Protocol)&  protocol)
+int IGESFile_ReadFNES(char*                             nomfic,
+                                   const occ::handle<IGESData_IGESModel>& amodel,
+                                   const occ::handle<IGESData_Protocol>&  protocol)
 {
-  Handle(IGESData_FileRecognizer) nulreco;
-  return IGESFile_Read(nomfic, amodel, protocol, nulreco, Standard_True);
+  occ::handle<IGESData_FileRecognizer> nulreco;
+  return IGESFile_Read(nomfic, amodel, protocol, nulreco, true);
 }
 
 //  Old way: with Recognizer
 
-Standard_Integer IGESFile_Read(char*                                  nomfic,
-                               const Handle(IGESData_IGESModel)&      amodel,
-                               const Handle(IGESData_Protocol)&       protocol,
-                               const Handle(IGESData_FileRecognizer)& reco,
-                               const Standard_Boolean                 modefnes)
+int IGESFile_Read(char*                                  nomfic,
+                               const occ::handle<IGESData_IGESModel>&      amodel,
+                               const occ::handle<IGESData_Protocol>&       protocol,
+                               const occ::handle<IGESData_FileRecognizer>& reco,
+                               const bool                 modefnes)
 {
   //====================================
   Message_Msg Msg1  = Message_Msg("XSTEP_1");
@@ -110,7 +110,7 @@ Standard_Integer IGESFile_Read(char*                                  nomfic,
 
   int nbparts, nbparams;
   iges_stats(&nbparts, &nbparams); // and performs necessary initializations
-  Handle(IGESData_IGESReaderData) IR =
+  occ::handle<IGESData_IGESReaderData> IR =
     //    new IGESData_IGESReaderData (nbparts, nbparams);
     new IGESData_IGESReaderData((lesect[3] + 1) / 2, nbparams);
   {
@@ -157,14 +157,14 @@ Standard_Integer IGESFile_Read(char*                                  nomfic,
     }
   }
 
-  Standard_Integer nbr = IR->NbRecords();
+  int nbr = IR->NbRecords();
   // Sending of message : Number of total loaded entities
   Msg15.Arg(nbr);
   IGESFile_Check(2, Msg15);
   iges_finfile(1);
   IGESData_IGESReaderTool IT(IR, protocol);
   IT.Prepare(reco);
-  IT.SetErrorHandle(Standard_True);
+  IT.SetErrorHandle(true);
 
   // Sending of message : Loading of Model : Beginning
   IT.LoadModel(amodel);
@@ -174,8 +174,8 @@ Standard_Integer IGESFile_Read(char*                                  nomfic,
 
   //  Now, the check
   // Nb warning in global section.
-  Standard_Integer nbWarn = checkread()->NbWarnings(), nbFail = checkread()->NbFails();
-  const Handle(Interface_Check)& oldglob = amodel->GlobalCheck();
+  int nbWarn = checkread()->NbWarnings(), nbFail = checkread()->NbFails();
+  const occ::handle<Interface_Check>& oldglob = amodel->GlobalCheck();
   if (nbWarn + nbFail > 0)
   {
     checkread()->GetMessages(oldglob);
@@ -189,9 +189,9 @@ Standard_Integer IGESFile_Read(char*                                  nomfic,
 
 // Internal breakdown
 
-void IGESFile_ReadHeader(const Handle(IGESData_IGESReaderData)& IR)
+void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
 {
-  Standard_Integer l = 0; // szv#4:S4163:12Mar99 i,j,k not needed
+  int l = 0; // szv#4:S4163:12Mar99 i,j,k not needed
   char*            parval;
   int              typarg;
   //  first the start lines (comments)
@@ -199,7 +199,7 @@ void IGESFile_ReadHeader(const Handle(IGESData_IGESReaderData)& IR)
   /*
     while ( (j = iges_lirparam(&typarg,&parval)) != 0) {
       k = -1;
-      for (Standard_Integer j = 72; j >= 0; j --) {
+      for (int j = 72; j >= 0; j --) {
         if (parval[j] > 32) {  k = j;  break;  }
       }
       parval[k+1] = '\0';
@@ -214,7 +214,7 @@ void IGESFile_ReadHeader(const Handle(IGESData_IGESReaderData)& IR)
   */
   while (iges_lirparam(&typarg, &parval) != 0)
   {
-    Standard_Integer j; // svv Jan11 2000 : porting on DEC
+    int j; // svv Jan11 2000 : porting on DEC
     for (j = 72; j >= 0; j--)
       if (parval[j] > 32)
         break;
@@ -230,7 +230,7 @@ void IGESFile_ReadHeader(const Handle(IGESData_IGESReaderData)& IR)
   IR->SetGlobalSection();
 }
 
-void IGESFile_ReadContent(const Handle(IGESData_IGESReaderData)& IR)
+void IGESFile_ReadContent(const occ::handle<IGESData_IGESReaderData>& IR)
 {
   char *res1, *res2, *nom, *num;
   char* parval;
@@ -274,7 +274,7 @@ void IGESFile_ReadContent(const Handle(IGESData_IGESReaderData)& IR)
       recupnp++;
       if (typarg == ArgInt || typarg == ArgSign)
       {
-        Standard_Integer nument = atoi(parval);
+        int nument = atoi(parval);
         if (nument < 0)
           nument = -nument;
         if (nument & 1)

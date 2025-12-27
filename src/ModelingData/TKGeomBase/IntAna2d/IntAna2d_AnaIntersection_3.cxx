@@ -24,12 +24,12 @@
 void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
 {
 
-  done = Standard_False;
+  done = false;
 
-  iden = Standard_False;
-  para = Standard_False;
+  iden = false;
+  para = false;
   //
-  Standard_Real A, B, C0, d;
+  double A, B, C0, d;
   gp_Pnt2d      aP2D, aP2D1, aP2D2;
   //
   L.Coefficients(A, B, C0);
@@ -37,22 +37,22 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
 
   if (std::abs(d) - C.Radius() > Epsilon(C.Radius()))
   {
-    empt = Standard_True;
+    empt = true;
     nbp  = 0;
   }
   else
   { // Au moins 1 solution
-    empt = Standard_False;
+    empt = false;
     //
     // modified by NIZNHY-PKV Fri Jun 15 09:55:00 2007f
-    // Standard_Real ang;
+    // double ang;
     // ang = C.XAxis().Direction().Angle(L.Direction());
     // ang = ang + M_PI / 2.0;
     // modified by NIZNHY-PKV Fri Jun 15 09:55:29 2007t
     if (std::abs(std::abs(d) - C.Radius()) <= Epsilon(C.Radius()))
     { // Cas de tangence
 
-      Standard_Real u, XS, YS, ang;
+      double u, XS, YS, ang;
       //
       nbp = 1;
       XS  = C.Location().X() - d * A;
@@ -79,7 +79,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
     else
     { // 2 points d intersection
       // clang-format off
-      Standard_Real h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;
+      double h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;
       // clang-format on
       nbp = 2;
       h   = std::sqrt(C.Radius() * C.Radius() - d * d);
@@ -104,5 +104,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
       lpnt[1].SetValue(XS2, YS2, u2, ang2);
     }
   }
-  done = Standard_True;
+  done = true;
 }

@@ -21,9 +21,6 @@
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepVisual_HArray1OfDraughtingCalloutElement.hxx>
 
-class StepVisual_DraughtingCallout;
-DEFINE_STANDARD_HANDLE(StepVisual_DraughtingCallout, StepGeom_GeometricRepresentationItem)
-
 class StepVisual_DraughtingCallout : public StepGeom_GeometricRepresentationItem
 {
 public:
@@ -32,35 +29,35 @@ public:
 
   //! Init
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                     theName,
-    const Handle(StepVisual_HArray1OfDraughtingCalloutElement)& theContents);
+    const occ::handle<TCollection_HAsciiString>&                     theName,
+    const occ::handle<StepVisual_HArray1OfDraughtingCalloutElement>& theContents);
 
   //! Returns field Contents
-  inline Handle(StepVisual_HArray1OfDraughtingCalloutElement) Contents() const
+  inline occ::handle<StepVisual_HArray1OfDraughtingCalloutElement> Contents() const
   {
     return myContents;
   }
 
   //! Set field Contents
-  inline void SetContents(const Handle(StepVisual_HArray1OfDraughtingCalloutElement)& theContents)
+  inline void SetContents(const occ::handle<StepVisual_HArray1OfDraughtingCalloutElement>& theContents)
   {
     myContents = theContents;
   }
 
   //! Returns number of Contents
-  inline Standard_Integer NbContents() const
+  inline int NbContents() const
   {
     return (myContents.IsNull() ? 0 : myContents->Length());
   }
 
   //! Returns Contents with the given number
-  inline StepVisual_DraughtingCalloutElement ContentsValue(const Standard_Integer theNum) const
+  inline StepVisual_DraughtingCalloutElement ContentsValue(const int theNum) const
   {
     return myContents->Value(theNum);
   }
 
   //! Sets Contents with given number
-  inline void SetContentsValue(const Standard_Integer                     theNum,
+  inline void SetContentsValue(const int                     theNum,
                                const StepVisual_DraughtingCalloutElement& theItem)
   {
     myContents->SetValue(theNum, theItem);
@@ -69,6 +66,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingCallout, StepGeom_GeometricRepresentationItem)
 
 private:
-  Handle(StepVisual_HArray1OfDraughtingCalloutElement) myContents;
+  occ::handle<StepVisual_HArray1OfDraughtingCalloutElement> myContents;
 };
 #endif // _StepVisual_DraughtingCallout_HeaderFile

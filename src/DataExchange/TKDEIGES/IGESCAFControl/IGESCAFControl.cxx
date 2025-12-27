@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-Quantity_Color IGESCAFControl::DecodeColor(const Standard_Integer color)
+Quantity_Color IGESCAFControl::DecodeColor(const int color)
 {
   switch (color)
   {
@@ -44,9 +44,9 @@ Quantity_Color IGESCAFControl::DecodeColor(const Standard_Integer color)
 
 //=================================================================================================
 
-Standard_Integer IGESCAFControl::EncodeColor(const Quantity_Color& col)
+int IGESCAFControl::EncodeColor(const Quantity_Color& col)
 {
-  Standard_Integer code = 0;
+  int code = 0;
   if (std::abs(col.Red() - 1.) <= col.Epsilon())
     code |= 0x001;
   else if (std::abs(col.Red()) > col.Epsilon())

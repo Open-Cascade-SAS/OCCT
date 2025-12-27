@@ -44,7 +44,7 @@ template <typename Type>
 inline void NCollection_UtfIterator<Type>::readUTF8()
 {
   // unsigned arithmetic used
-  Standard_Utf8UChar* aPos         = (Standard_Utf8UChar*)myPosNext;
+  unsigned char* aPos         = (unsigned char*)myPosNext;
   const unsigned char aBytesToRead = UTF8_BYTES_MINUS_ONE[*aPos];
   myCharUtf32                      = 0;
   switch (aBytesToRead)
@@ -52,23 +52,23 @@ inline void NCollection_UtfIterator<Type>::readUTF8()
     case 5:
       myCharUtf32 += *aPos++;
       myCharUtf32 <<= 6; // remember, illegal UTF-8
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 4:
       myCharUtf32 += *aPos++;
       myCharUtf32 <<= 6; // remember, illegal UTF-8
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 3:
       myCharUtf32 += *aPos++;
       myCharUtf32 <<= 6;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 2:
       myCharUtf32 += *aPos++;
       myCharUtf32 <<= 6;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 1:
       myCharUtf32 += *aPos++;
       myCharUtf32 <<= 6;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 0:
       myCharUtf32 += *aPos++;
   }
@@ -81,11 +81,11 @@ inline void NCollection_UtfIterator<Type>::readUTF8()
 template <typename Type>
 inline void NCollection_UtfIterator<Type>::readUTF16()
 {
-  Standard_Utf32Char aChar = *myPosNext++;
+  char32_t aChar = *myPosNext++;
   // if we have the first half of the surrogate pair
   if (aChar >= UTF16_SURROGATE_HIGH_START && aChar <= UTF16_SURROGATE_HIGH_END)
   {
-    const Standard_Utf32Char aChar2 = *myPosNext;
+    const char32_t aChar2 = *myPosNext;
     // complete the surrogate pair
     if (aChar2 >= UTF16_SURROGATE_LOW_START && aChar2 <= UTF16_SURROGATE_LOW_END)
     {
@@ -100,22 +100,22 @@ inline void NCollection_UtfIterator<Type>::readUTF16()
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
+inline int NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
 {
   if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
   {
     // UTF-16 surrogate values are illegal in UTF-32
     return 0;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x80))
+  else if (myCharUtf32 < char32_t(0x80))
   {
     return 1;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x800))
+  else if (myCharUtf32 < char32_t(0x800))
   {
     return 2;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x10000))
+  else if (myCharUtf32 < char32_t(0x10000))
   {
     return 3;
   }
@@ -133,56 +133,56 @@ inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Utf8Char* NCollection_UtfIterator<Type>::GetUtf8(Standard_Utf8Char* theBuffer) const
+inline char* NCollection_UtfIterator<Type>::GetUtf8(char* theBuffer) const
 {
   // unsigned arithmetic used
-  return (Standard_Utf8Char*)GetUtf8((Standard_Utf8UChar*)theBuffer);
+  return (char*)GetUtf8((unsigned char*)theBuffer);
 }
 
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8(
-  Standard_Utf8UChar* theBuffer) const
+inline unsigned char* NCollection_UtfIterator<Type>::GetUtf8(
+  unsigned char* theBuffer) const
 {
-  Standard_Utf32Char aChar = myCharUtf32;
+  char32_t aChar = myCharUtf32;
   if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
   {
     // UTF-16 surrogate values are illegal in UTF-32
     return theBuffer;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x80))
+  else if (myCharUtf32 < char32_t(0x80))
   {
-    *theBuffer++ = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[1]);
+    *theBuffer++ = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[1]);
     return theBuffer;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x800))
+  else if (myCharUtf32 < char32_t(0x800))
   {
-    *++theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *++theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[2]);
+    *--theBuffer = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[2]);
     return theBuffer + 2;
   }
-  else if (myCharUtf32 < Standard_Utf32Char(0x10000))
+  else if (myCharUtf32 < char32_t(0x10000))
   {
     theBuffer += 3;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[3]);
+    *--theBuffer = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[3]);
     return theBuffer + 3;
   }
   else if (myCharUtf32 <= UTF32_MAX_LEGAL)
   {
     theBuffer += 4;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
+    *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar(aChar | UTF8_FIRST_BYTE_MARK[4]);
+    *--theBuffer = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[4]);
     return theBuffer + 4;
   }
   else
@@ -195,15 +195,15 @@ inline Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8(
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
+inline int NCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
 {
-  return AdvanceCodeUnitsUtf16() * sizeof(Standard_Utf16Char);
+  return AdvanceCodeUnitsUtf16() * sizeof(char16_t);
 }
 
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
+inline int NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
 {
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
@@ -233,8 +233,8 @@ inline Standard_Integer NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() c
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
-  Standard_Utf16Char* theBuffer) const
+inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(
+  char16_t* theBuffer) const
 {
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
@@ -245,7 +245,7 @@ inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
     }
     else
     {
-      *theBuffer++ = Standard_Utf16Char(myCharUtf32);
+      *theBuffer++ = char16_t(myCharUtf32);
       return theBuffer;
     }
   }
@@ -257,11 +257,11 @@ inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
   else
   {
     // surrogate pair
-    Standard_Utf32Char aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
+    char32_t aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
     *theBuffer++ =
-      Standard_Utf16Char((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
+      char16_t((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
     *theBuffer++ =
-      Standard_Utf16Char((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
+      char16_t((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
     return theBuffer;
   }
 }
@@ -269,8 +269,8 @@ inline Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16(
 //=================================================================================================
 
 template <typename Type>
-inline Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32(
-  Standard_Utf32Char* theBuffer) const
+inline char32_t* NCollection_UtfIterator<Type>::GetUtf32(
+  char32_t* theBuffer) const
 {
   *theBuffer++ = myCharUtf32;
   return theBuffer;

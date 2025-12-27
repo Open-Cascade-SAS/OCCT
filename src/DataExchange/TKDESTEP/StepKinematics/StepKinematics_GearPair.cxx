@@ -26,18 +26,18 @@ StepKinematics_GearPair::StepKinematics_GearPair() {}
 //=================================================================================================
 
 void StepKinematics_GearPair::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          theRadiusFirstLink,
-  const Standard_Real                          theRadiusSecondLink,
-  const Standard_Real                          theBevel,
-  const Standard_Real                          theHelicalAngle,
-  const Standard_Real                          theGearRatio)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                          theRadiusFirstLink,
+  const double                          theRadiusSecondLink,
+  const double                          theBevel,
+  const double                          theHelicalAngle,
+  const double                          theGearRatio)
 {
   StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(
     theRepresentationItem_Name,
@@ -61,70 +61,70 @@ void StepKinematics_GearPair::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPair::RadiusFirstLink() const
+double StepKinematics_GearPair::RadiusFirstLink() const
 {
   return myRadiusFirstLink;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPair::SetRadiusFirstLink(const Standard_Real theRadiusFirstLink)
+void StepKinematics_GearPair::SetRadiusFirstLink(const double theRadiusFirstLink)
 {
   myRadiusFirstLink = theRadiusFirstLink;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPair::RadiusSecondLink() const
+double StepKinematics_GearPair::RadiusSecondLink() const
 {
   return myRadiusSecondLink;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPair::SetRadiusSecondLink(const Standard_Real theRadiusSecondLink)
+void StepKinematics_GearPair::SetRadiusSecondLink(const double theRadiusSecondLink)
 {
   myRadiusSecondLink = theRadiusSecondLink;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPair::Bevel() const
+double StepKinematics_GearPair::Bevel() const
 {
   return myBevel;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPair::SetBevel(const Standard_Real theBevel)
+void StepKinematics_GearPair::SetBevel(const double theBevel)
 {
   myBevel = theBevel;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPair::HelicalAngle() const
+double StepKinematics_GearPair::HelicalAngle() const
 {
   return myHelicalAngle;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPair::SetHelicalAngle(const Standard_Real theHelicalAngle)
+void StepKinematics_GearPair::SetHelicalAngle(const double theHelicalAngle)
 {
   myHelicalAngle = theHelicalAngle;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_GearPair::GearRatio() const
+double StepKinematics_GearPair::GearRatio() const
 {
   return myGearRatio;
 }
 
 //=================================================================================================
 
-void StepKinematics_GearPair::SetGearRatio(const Standard_Real theGearRatio)
+void StepKinematics_GearPair::SetGearRatio(const double theGearRatio)
 {
   myGearRatio = theGearRatio;
 }

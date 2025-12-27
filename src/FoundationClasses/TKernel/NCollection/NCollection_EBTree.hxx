@@ -20,7 +20,8 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_List.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
 /**
@@ -45,7 +46,7 @@ public:
   /**
    * Constructor.
    */
-  NCollection_EBTree(const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
+  NCollection_EBTree(const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : UBTree(theAllocator)
   {
   }
@@ -57,9 +58,9 @@ public:
    * @return
    *   False if the tree already contains theObj.
    */
-  Standard_Boolean Add(const TheObjType& theObj, const TheBndType& theBnd) Standard_OVERRIDE
+  bool Add(const TheObjType& theObj, const TheBndType& theBnd) override
   {
-    Standard_Boolean result = Standard_False;
+    bool result = false;
     if (!Contains(theObj))
     {
       // Add object in the tree using parent method
@@ -78,7 +79,7 @@ public:
           myObjNodeMap.Bind(aNeiNode.Object(), &aNeiNode);
         }
       }
-      result = Standard_True;
+      result = true;
     }
     return result;
   }
@@ -88,13 +89,13 @@ public:
    * @return
    *   False if the tree does not contain theObj
    */
-  Standard_Boolean Remove(const TheObjType& theObj);
+  bool Remove(const TheObjType& theObj);
 
   /**
    * @return
    *   True if the tree contains the object.
    */
-  Standard_Boolean Contains(const TheObjType& theObj) const { return myObjNodeMap.IsBound(theObj); }
+  bool Contains(const TheObjType& theObj) const { return myObjNodeMap.IsBound(theObj); }
 
   /**
    * @return
@@ -105,7 +106,7 @@ public:
   /**
    * Clears the contents of the tree. Redefined virtual method
    */
-  void Clear(const Handle(NCollection_BaseAllocator)& aNewAlloc = 0L) Standard_OVERRIDE
+  void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = 0L) override
   {
     myObjNodeMap.Clear();
     UBTree::Clear(aNewAlloc);
@@ -134,9 +135,9 @@ private:
 //=======================================================================
 
 template <class TheObjType, class TheBndType>
-Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj)
+bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj)
 {
-  Standard_Boolean result = Standard_False;
+  bool result = false;
   if (Contains(theObj))
   {
     TreeNode* pNode = myObjNodeMap(theObj);
@@ -166,7 +167,7 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
         pParent->ChangeBnd().Add(pParent->Child(1).Bnd());
       }
     }
-    result = Standard_True;
+    result = true;
   }
   return result;
 }
@@ -195,12 +196,12 @@ Standard_Boolean NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObj
                                                                                                    \
     /* Access to the methods of EBTree */                                                          \
                                                                                                    \
-    Standard_Boolean Remove(const _OBJTYPE& theObj)                                                \
+    bool Remove(const _OBJTYPE& theObj)                                                \
     {                                                                                              \
       return ChangeETree().Remove(theObj);                                                         \
     }                                                                                              \
                                                                                                    \
-    Standard_Boolean Contains(const _OBJTYPE& theObj) const                                        \
+    bool Contains(const _OBJTYPE& theObj) const                                        \
     {                                                                                              \
       return ETree().Contains(theObj);                                                             \
     }                                                                                              \

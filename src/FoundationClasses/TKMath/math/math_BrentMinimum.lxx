@@ -14,13 +14,13 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function&)
+inline bool math_BrentMinimum::IsSolutionReached(math_Function&)
 {
-  const Standard_Real TwoTol = 2.0 * (XTol * fabs(x) + EPSZ);
+  const double TwoTol = 2.0 * (XTol * fabs(x) + EPSZ);
   return (x <= (TwoTol + a)) && (x >= (b - TwoTol));
 }
 
-inline Standard_Boolean math_BrentMinimum::IsDone() const
+inline bool math_BrentMinimum::IsDone() const
 {
   return Done;
 }
@@ -31,19 +31,19 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_BrentMinimum
   return o;
 }
 
-inline Standard_Real math_BrentMinimum::Location() const
+inline double math_BrentMinimum::Location() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return x;
 }
 
-inline Standard_Real math_BrentMinimum::Minimum() const
+inline double math_BrentMinimum::Minimum() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return fx;
 }
 
-inline Standard_Integer math_BrentMinimum::NbIterations() const
+inline int math_BrentMinimum::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return iter;

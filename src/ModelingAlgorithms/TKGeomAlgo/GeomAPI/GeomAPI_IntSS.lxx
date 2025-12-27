@@ -20,39 +20,39 @@ inline GeomAPI_IntSS::GeomAPI_IntSS() {}
 
 //=================================================================================================
 
-inline GeomAPI_IntSS::GeomAPI_IntSS(const Handle(Geom_Surface)& S1,
-                                    const Handle(Geom_Surface)& S2,
-                                    const Standard_Real         Tol)
-    : myIntersec(S1, S2, Tol, Standard_True)
+inline GeomAPI_IntSS::GeomAPI_IntSS(const occ::handle<Geom_Surface>& S1,
+                                    const occ::handle<Geom_Surface>& S2,
+                                    const double         Tol)
+    : myIntersec(S1, S2, Tol, true)
 {
 }
 
 //=================================================================================================
 
-inline void GeomAPI_IntSS::Perform(const Handle(Geom_Surface)& S1,
-                                   const Handle(Geom_Surface)& S2,
-                                   const Standard_Real         Tol)
+inline void GeomAPI_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
+                                   const occ::handle<Geom_Surface>& S2,
+                                   const double         Tol)
 {
-  myIntersec.Perform(S1, S2, Tol, Standard_True);
+  myIntersec.Perform(S1, S2, Tol, true);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean GeomAPI_IntSS::IsDone() const
+inline bool GeomAPI_IntSS::IsDone() const
 {
   return myIntersec.IsDone();
 }
 
 //=================================================================================================
 
-inline Standard_Integer GeomAPI_IntSS::NbLines() const
+inline int GeomAPI_IntSS::NbLines() const
 {
   return myIntersec.NbLines();
 }
 
 //=================================================================================================
 
-inline const Handle(Geom_Curve)& GeomAPI_IntSS::Line(const Standard_Integer I) const
+inline const occ::handle<Geom_Curve>& GeomAPI_IntSS::Line(const int I) const
 {
   return myIntersec.Line(I);
 }

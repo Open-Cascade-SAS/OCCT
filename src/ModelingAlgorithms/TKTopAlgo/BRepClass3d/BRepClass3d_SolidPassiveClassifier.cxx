@@ -22,23 +22,23 @@
 #include <gp_Lin.hxx>
 
 BRepClass3d_SolidPassiveClassifier::BRepClass3d_SolidPassiveClassifier()
-    : isSet(Standard_False),
+    : isSet(false),
       myParam(0.0),
       myTolerance(0.0),
       myState(TopAbs_UNKNOWN),
-      hasIntersect(Standard_False)
+      hasIntersect(false)
 {
 }
 
 void BRepClass3d_SolidPassiveClassifier::Reset(const gp_Lin& L,
-                                               const Standard_Real,
-                                               const Standard_Real Tol)
+                                               const double,
+                                               const double Tol)
 {
   myLin       = L;
   myParam     = RealLast();
   myTolerance = Tol;
   myState     = TopAbs_UNKNOWN;
-  isSet       = Standard_True;
+  isSet       = true;
 }
 
 void BRepClass3d_SolidPassiveClassifier::Compare(const TopoDS_Face& Face, const TopAbs_Orientation)
@@ -51,13 +51,13 @@ void BRepClass3d_SolidPassiveClassifier::Compare(const TopoDS_Face& Face, const 
     return;
   }
 
-  hasIntersect = Standard_False;
+  hasIntersect = false;
   myIntersector.Perform(myLin, myParam, myTolerance, Face);
   if (myIntersector.IsDone())
   {
     if (myIntersector.HasAPoint())
     {
-      hasIntersect = Standard_True;
+      hasIntersect = true;
       if (myIntersector.WParameter() < myParam)
       {
         myParam = myIntersector.WParameter();

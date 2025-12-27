@@ -26,17 +26,17 @@ public:
   Standard_EXPORT OpenGl_GraphicDriverFactory();
 
   //! Creates new empty graphic driver.
-  Standard_EXPORT virtual Handle(Graphic3d_GraphicDriver) CreateDriver(
-    const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Graphic3d_GraphicDriver> CreateDriver(
+    const occ::handle<Aspect_DisplayConnection>& theDisp) override;
 
   //! Return default driver options.
-  const Handle(OpenGl_Caps)& DefaultOptions() const { return myDefaultCaps; }
+  const occ::handle<OpenGl_Caps>& DefaultOptions() const { return myDefaultCaps; }
 
   //! Set default driver options.
-  void SetDefaultOptions(const Handle(OpenGl_Caps)& theOptions) { myDefaultCaps = theOptions; }
+  void SetDefaultOptions(const occ::handle<OpenGl_Caps>& theOptions) { myDefaultCaps = theOptions; }
 
 protected:
-  Handle(OpenGl_Caps) myDefaultCaps;
+  occ::handle<OpenGl_Caps> myDefaultCaps;
 };
 
 #endif //_OpenGl_GraphicDriverFactory_Header

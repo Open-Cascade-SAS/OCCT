@@ -4,9 +4,7 @@ set(OCCT_IGESGraph_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESGraph_FILES
   IGESGraph.cxx
   IGESGraph.hxx
-  IGESGraph_Array1OfColor.hxx
-  IGESGraph_Array1OfTextDisplayTemplate.hxx
-  IGESGraph_Array1OfTextFontDef.hxx
+
   IGESGraph_Color.cxx
   IGESGraph_Color.hxx
   IGESGraph_DefinitionLevel.cxx

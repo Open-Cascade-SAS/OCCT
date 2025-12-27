@@ -35,17 +35,17 @@ public:
   //! - a Null Handle if no Header Protocol was yet defined
   //! - a simple Protocol if only one was defined
   //! - a FileProtocol if more than one Protocol was yet defined
-  Standard_EXPORT static Handle(StepData_Protocol) HeaderProtocol();
+  Standard_EXPORT static occ::handle<StepData_Protocol> HeaderProtocol();
 
   //! Adds a new Header Protocol to the Header Definition
-  Standard_EXPORT static void AddHeaderProtocol(const Handle(StepData_Protocol)& headerproto);
+  Standard_EXPORT static void AddHeaderProtocol(const occ::handle<StepData_Protocol>& headerproto);
 
   //! Prepares General Data required to work with this package,
   //! which are the Protocol and Modules to be loaded into Libraries
   Standard_EXPORT static void Init();
 
   //! Returns a Protocol from StepData (avoids to create it)
-  Standard_EXPORT static Handle(StepData_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<StepData_Protocol> Protocol();
 };
 
 #endif // _StepData_HeaderFile

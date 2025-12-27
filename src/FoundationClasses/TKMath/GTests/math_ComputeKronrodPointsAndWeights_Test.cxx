@@ -19,7 +19,7 @@ TEST(math_ComputeKronrodPointsAndWeights_Test, OCC33048_ComputeWithOrder125)
 {
   // This method uses raw pointers for memory manipulations
   // Test that it completes successfully without crashes
-  Standard_Boolean isOK = Standard_True;
+  bool isOK = true;
   try
   {
     math_ComputeKronrodPointsAndWeights aCalc(125);
@@ -29,7 +29,7 @@ TEST(math_ComputeKronrodPointsAndWeights_Test, OCC33048_ComputeWithOrder125)
   catch (...)
   {
     FAIL() << "Exception occurred during calculation of Kronrod points and weights";
-    isOK = Standard_False;
+    isOK = false;
   }
 
   EXPECT_TRUE(isOK);

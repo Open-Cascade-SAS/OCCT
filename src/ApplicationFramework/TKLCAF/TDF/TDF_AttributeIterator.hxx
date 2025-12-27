@@ -48,46 +48,39 @@ public:
   //
   Standard_EXPORT              TDF_AttributeIterator();
   Standard_EXPORT              TDF_AttributeIterator(const TDF_Label&       aLabel,
-                                                     const Standard_Boolean withoutForgotten = Standard_True);
+                                                     const bool withoutForgotten = true);
   Standard_EXPORT              TDF_AttributeIterator(const TDF_LabelNodePtr aLabelNode,
-                                                     const Standard_Boolean withoutForgotten = Standard_True);
+                                                     const bool withoutForgotten = true);
   Standard_EXPORT void         Initialize(const TDF_Label&       aLabel,
-                                          const Standard_Boolean withoutForgotten = Standard_True);
-  inline Standard_Boolean      More() const;
+                                          const bool withoutForgotten = true);
+  inline bool      More() const;
   Standard_EXPORT void         Next();
-  inline Handle(TDF_Attribute) Value() const;
+  inline occ::handle<TDF_Attribute> Value() const;
 
   //! Provides an access to the internal pointer of the current attribute.
   //! The method has better performance as not-creating handle.
   inline const TDF_Attribute* PtrValue() const { return myValue; }
 
-protected:
-  // Methods PROTECTED
-  //
-
-  // Fields PROTECTED
-  //
-
 private:
   // Methods PRIVATE
   //
-  void goToNext(const Handle(TDF_Attribute)& anAttr);
+  void goToNext(const occ::handle<TDF_Attribute>& anAttr);
 
   // Fields PRIVATE
   //
   TDF_Attribute*   myValue;
-  Standard_Boolean myWithoutForgotten;
+  bool myWithoutForgotten;
 };
 
 // other inline functions and methods (like "C++: function call" methods)
 //
 
-inline Standard_Boolean TDF_AttributeIterator::More() const
+inline bool TDF_AttributeIterator::More() const
 {
   return (myValue != 0L);
 }
 
-inline Handle(TDF_Attribute) TDF_AttributeIterator::Value() const
+inline occ::handle<TDF_Attribute> TDF_AttributeIterator::Value() const
 {
   return myValue;
 }

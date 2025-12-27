@@ -22,6 +22,6 @@
 #include <IFSelect_ContextWrite.hxx>
 
 IGESSelect_FileModifier::IGESSelect_FileModifier()
-    : IFSelect_GeneralModifier(Standard_False)
+    : IFSelect_GeneralModifier(false)
 {
 }

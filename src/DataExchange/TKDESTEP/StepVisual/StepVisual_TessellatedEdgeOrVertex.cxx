@@ -24,8 +24,8 @@ StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedEdgeOrVertex::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_TessellatedEdgeOrVertex::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,14 +38,14 @@ Standard_Integer StepVisual_TessellatedEdgeOrVertex::CaseNum(
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedEdge) StepVisual_TessellatedEdgeOrVertex::TessellatedEdge() const
+occ::handle<StepVisual_TessellatedEdge> StepVisual_TessellatedEdgeOrVertex::TessellatedEdge() const
 {
-  return Handle(StepVisual_TessellatedEdge)::DownCast(Value());
+  return occ::down_cast<StepVisual_TessellatedEdge>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepVisual_TessellatedVertex) StepVisual_TessellatedEdgeOrVertex::TessellatedVertex() const
+occ::handle<StepVisual_TessellatedVertex> StepVisual_TessellatedEdgeOrVertex::TessellatedVertex() const
 {
-  return Handle(StepVisual_TessellatedVertex)::DownCast(Value());
+  return occ::down_cast<StepVisual_TessellatedVertex>(Value());
 }

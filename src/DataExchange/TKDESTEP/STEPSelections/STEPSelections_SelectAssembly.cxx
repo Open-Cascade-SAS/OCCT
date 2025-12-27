@@ -16,7 +16,7 @@
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepRepr_MappedItem.hxx>
@@ -35,23 +35,23 @@ STEPSelections_SelectAssembly::STEPSelections_SelectAssembly()
 {
 }
 
-Standard_Boolean STEPSelections_SelectAssembly::Explore(const Standard_Integer /*level*/,
-                                                        const Handle(Standard_Transient)& start,
+bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
+                                                        const occ::handle<Standard_Transient>& start,
                                                         const Interface_Graph&            G,
                                                         Interface_EntityIterator& explored) const
 {
   if (start.IsNull())
-    return Standard_False;
+    return false;
 
   if (start->IsKind(STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation)))
   {
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation, sdsr, start);
-    Handle(StepRepr_ProductDefinitionShape) pds = sdsr->RepresentedProductRelation();
+    occ::handle<StepRepr_ProductDefinitionShape> pds = sdsr->RepresentedProductRelation();
     if (pds.IsNull())
-      return Standard_False;
-    Handle(Standard_Transient) ent = pds->Definition().ProductDefinitionRelationship();
+      return false;
+    occ::handle<Standard_Transient> ent = pds->Definition().ProductDefinitionRelationship();
     if (ent.IsNull())
-      return Standard_False;
+      return false;
     return (ent->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence)));
   }
 
@@ -59,34 +59,34 @@ Standard_Boolean STEPSelections_SelectAssembly::Explore(const Standard_Integer /
   {
     DeclareAndCast(StepRepr_MappedItem, mapped, start);
     Interface_EntityIterator              subs = G.Sharings(mapped);
-    Handle(StepShape_ShapeRepresentation) shrep;
+    occ::handle<StepShape_ShapeRepresentation> shrep;
     for (subs.Start(); subs.More() && shrep.IsNull(); subs.Next())
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
-        shrep = Handle(StepShape_ShapeRepresentation)::DownCast(subs.Value());
+        shrep = occ::down_cast<StepShape_ShapeRepresentation>(subs.Value());
     if (shrep.IsNull())
-      return Standard_False;
+      return false;
 
     subs = G.Sharings(shrep);
-    Handle(StepShape_ShapeDefinitionRepresentation) shdefrep;
+    occ::handle<StepShape_ShapeDefinitionRepresentation> shdefrep;
     for (subs.Start(); subs.More() && shdefrep.IsNull(); subs.Next())
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
-        shdefrep = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
+        shdefrep = occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs.Value());
     if (shdefrep.IsNull())
-      return Standard_False;
+      return false;
 
-    Handle(StepRepr_ProductDefinitionShape) pds = Handle(StepRepr_ProductDefinitionShape)::DownCast(
+    occ::handle<StepRepr_ProductDefinitionShape> pds = occ::down_cast<StepRepr_ProductDefinitionShape>(
       shdefrep->Definition().PropertyDefinition());
     if (pds.IsNull())
-      return Standard_False;
-    Handle(Standard_Transient) ent = pds->Definition().ProductDefinitionRelationship();
+      return false;
+    occ::handle<Standard_Transient> ent = pds->Definition().ProductDefinitionRelationship();
     if (ent.IsNull())
-      return Standard_False;
+      return false;
     return (ent->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence)));
   }
 
   Interface_EntityIterator subs = G.Shareds(start);
   subs.Start();
-  Standard_Boolean isSome = subs.More();
+  bool isSome = subs.More();
   for (; subs.More(); subs.Next())
     explored.AddItem(subs.Value());
 

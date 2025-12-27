@@ -23,9 +23,6 @@
 #include <StepElement_ElementOrder.hxx>
 class TCollection_HAsciiString;
 
-class StepElement_Curve3dElementDescriptor;
-DEFINE_STANDARD_HANDLE(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
-
 //! Representation of STEP entity Curve3dElementDescriptor
 class StepElement_Curve3dElementDescriptor : public StepElement_ElementDescriptor
 {
@@ -37,21 +34,20 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
-    const Handle(TCollection_HAsciiString)& aElementDescriptor_Description,
-    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& aPurpose);
+    const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+    const occ::handle<StepElement_HArray1OfHSequenceOfCurveElementPurposeMember>& aPurpose);
 
   //! Returns field Purpose
-  Standard_EXPORT Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) Purpose() const;
+  Standard_EXPORT occ::handle<StepElement_HArray1OfHSequenceOfCurveElementPurposeMember> Purpose() const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember)& Purpose);
+    const occ::handle<StepElement_HArray1OfHSequenceOfCurveElementPurposeMember>& Purpose);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
-protected:
 private:
-  Handle(StepElement_HArray1OfHSequenceOfCurveElementPurposeMember) thePurpose;
+  occ::handle<StepElement_HArray1OfHSequenceOfCurveElementPurposeMember> thePurpose;
 };
 
 #endif // _StepElement_Curve3dElementDescriptor_HeaderFile

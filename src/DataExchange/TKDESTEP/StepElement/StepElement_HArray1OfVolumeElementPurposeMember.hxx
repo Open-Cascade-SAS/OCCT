@@ -14,10 +14,11 @@
 #ifndef StepElement_HArray1OfVolumeElementPurposeMember_HeaderFile
 #define StepElement_HArray1OfVolumeElementPurposeMember_HeaderFile
 
-#include <StepElement_Array1OfVolumeElementPurposeMember.hxx>
+#include <StepElement_VolumeElementPurposeMember.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepElement_HArray1OfVolumeElementPurposeMember,
-               StepElement_Array1OfVolumeElementPurposeMember)
+               NCollection_Array1<occ::handle<StepElement_VolumeElementPurposeMember>>)
 
 #endif

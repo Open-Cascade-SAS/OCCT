@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <StepVisual_MarkerType.hxx>
 
-class StepVisual_MarkerMember;
-DEFINE_STANDARD_HANDLE(StepVisual_MarkerMember, StepData_SelectInt)
-
 //! Defines MarkerType as unique member of MarkerSelect
 //! Works with an EnumTool
 class StepVisual_MarkerMember : public StepData_SelectInt
@@ -35,16 +32,16 @@ class StepVisual_MarkerMember : public StepData_SelectInt
 public:
   Standard_EXPORT StepVisual_MarkerMember();
 
-  Standard_EXPORT virtual Standard_Boolean HasName() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasName() const override;
 
-  Standard_EXPORT virtual Standard_CString Name() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* Name() const override;
 
-  Standard_EXPORT virtual Standard_Boolean SetName(const Standard_CString name) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool SetName(const char* name) override;
 
-  Standard_EXPORT virtual Standard_CString EnumText() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const Standard_Integer val,
-                                           const Standard_CString text) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetEnumText(const int val,
+                                           const char* text) override;
 
   Standard_EXPORT void SetValue(const StepVisual_MarkerType val);
 
@@ -52,8 +49,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_MarkerMember, StepData_SelectInt)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_MarkerMember_HeaderFile

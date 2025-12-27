@@ -32,10 +32,10 @@ RWStepKinematics_RWSphericalPairWithPin::RWStepKinematics_RWSphericalPairWithPin
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
-  const Handle(StepData_StepReaderData)&             theData,
-  const Standard_Integer                             theNum,
-  Handle(Interface_Check)&                           theArch,
-  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&             theData,
+  const int                             theNum,
+  occ::handle<Interface_Check>&                           theArch,
+  const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "spherical_pair_with_pin"))
@@ -43,20 +43,20 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -67,11 +67,11 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -79,7 +79,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -89,7 +89,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -99,42 +99,42 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 
   // Inherited fields of LowOrderKinematicPair
 
-  Standard_Boolean aLowOrderKinematicPair_TX;
+  bool aLowOrderKinematicPair_TX;
   theData->ReadBoolean(theNum,
                        7,
                        "low_order_kinematic_pair.t_x",
                        theArch,
                        aLowOrderKinematicPair_TX);
 
-  Standard_Boolean aLowOrderKinematicPair_TY;
+  bool aLowOrderKinematicPair_TY;
   theData->ReadBoolean(theNum,
                        8,
                        "low_order_kinematic_pair.t_y",
                        theArch,
                        aLowOrderKinematicPair_TY);
 
-  Standard_Boolean aLowOrderKinematicPair_TZ;
+  bool aLowOrderKinematicPair_TZ;
   theData->ReadBoolean(theNum,
                        9,
                        "low_order_kinematic_pair.t_z",
                        theArch,
                        aLowOrderKinematicPair_TZ);
 
-  Standard_Boolean aLowOrderKinematicPair_RX;
+  bool aLowOrderKinematicPair_RX;
   theData->ReadBoolean(theNum,
                        10,
                        "low_order_kinematic_pair.r_x",
                        theArch,
                        aLowOrderKinematicPair_RX);
 
-  Standard_Boolean aLowOrderKinematicPair_RY;
+  bool aLowOrderKinematicPair_RY;
   theData->ReadBoolean(theNum,
                        11,
                        "low_order_kinematic_pair.r_y",
                        theArch,
                        aLowOrderKinematicPair_RY);
 
-  Standard_Boolean aLowOrderKinematicPair_RZ;
+  bool aLowOrderKinematicPair_RZ;
   theData->ReadBoolean(theNum,
                        12,
                        "low_order_kinematic_pair.r_z",
@@ -161,7 +161,7 @@ void RWStepKinematics_RWSphericalPairWithPin::ReadStep(
 
 void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
   StepData_StepWriter&                               theSW,
-  const Handle(StepKinematics_SphericalPairWithPin)& theEnt) const
+  const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -205,7 +205,7 @@ void RWStepKinematics_RWSphericalPairWithPin::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithPin::Share(
-  const Handle(StepKinematics_SphericalPairWithPin)& theEnt,
+  const occ::handle<StepKinematics_SphericalPairWithPin>& theEnt,
   Interface_EntityIterator&                          iter) const
 {
 

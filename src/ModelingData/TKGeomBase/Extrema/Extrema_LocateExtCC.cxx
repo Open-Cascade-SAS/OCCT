@@ -23,12 +23,12 @@
 
 Extrema_LocateExtCC::Extrema_LocateExtCC(const Adaptor3d_Curve& C1,
                                          const Adaptor3d_Curve& C2,
-                                         const Standard_Real    U0,
-                                         const Standard_Real    V0)
+                                         const double    U0,
+                                         const double    V0)
     : mySqDist(RealLast())
 {
-  Standard_Real   TolU = C1.Resolution(Precision::Confusion());
-  Standard_Real   TolV = C2.Resolution(Precision::Confusion());
+  double   TolU = C1.Resolution(Precision::Confusion());
+  double   TolV = C2.Resolution(Precision::Confusion());
   Extrema_POnCurv P1, P2;
 
   // Non implemente pour l instant: l appel a Extrema_ELCC.
@@ -46,13 +46,13 @@ Extrema_LocateExtCC::Extrema_LocateExtCC(const Adaptor3d_Curve& C1,
   }
 }
 
-Standard_Boolean Extrema_LocateExtCC::IsDone() const
+bool Extrema_LocateExtCC::IsDone() const
 {
 
   return myDone;
 }
 
-Standard_Real Extrema_LocateExtCC::SquareDistance() const
+double Extrema_LocateExtCC::SquareDistance() const
 {
 
   if (!IsDone())

@@ -22,9 +22,6 @@
 
 #include <StepShape_ConnectedFaceSet.hxx>
 
-class StepShape_OpenShell;
-DEFINE_STANDARD_HANDLE(StepShape_OpenShell, StepShape_ConnectedFaceSet)
-
 class StepShape_OpenShell : public StepShape_ConnectedFaceSet
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OpenShell, StepShape_ConnectedFaceSet)
 
-protected:
-private:
 };
 
 #endif // _StepShape_OpenShell_HeaderFile

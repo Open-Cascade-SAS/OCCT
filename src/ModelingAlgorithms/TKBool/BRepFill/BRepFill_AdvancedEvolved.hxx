@@ -22,8 +22,10 @@
 
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 class BOPAlgo_MakerVolume;
 class TopoDS_Face;
@@ -39,17 +41,17 @@ public:
   Standard_EXPORT BRepFill_AdvancedEvolved()
       : myErrorStatus(BRepFill_AdvancedEvolved_Empty),
         myFuzzyValue(0.0),
-        myIsParallel(Standard_True),
+        myIsParallel(true),
         myDebugShapesPath("C:\\Temp")
   {
   }
 
   Standard_EXPORT void Perform(const TopoDS_Wire&     theSpine,
                                const TopoDS_Wire&     theProfile,
-                               const Standard_Real    theTolerance,
-                               const Standard_Boolean theSolidReq = Standard_True);
+                               const double    theTolerance,
+                               const bool theSolidReq = true);
 
-  Standard_Boolean IsDone(unsigned int* theErrorCode = 0) const
+  bool IsDone(unsigned int* theErrorCode = 0) const
   {
     if (theErrorCode)
       *theErrorCode = myErrorStatus;
@@ -61,10 +63,10 @@ public:
   const TopoDS_Shape& Shape() const { return myResult; }
 
   //! Sets directory where the debug shapes will be saved
-  void SetTemporaryDirectory(const Standard_CString& thePath) { myDebugShapesPath = thePath; }
+  void SetTemporaryDirectory(const char*& thePath) { myDebugShapesPath = thePath; }
 
   //! Sets/Unsets computation in parallel mode
-  void SetParallelMode(const Standard_Boolean theVal) { myIsParallel = theVal; }
+  void SetParallelMode(const bool theVal) { myIsParallel = theVal; }
 
 protected:
   Standard_EXPORT void PerformSweep();
@@ -73,29 +75,29 @@ protected:
 
   Standard_EXPORT void BuildSolid();
 
-  Standard_EXPORT void RemoveExcessSolids(const TopTools_ListOfShape& theLSplits,
+  Standard_EXPORT void RemoveExcessSolids(const NCollection_List<TopoDS_Shape>& theLSplits,
                                           const TopoDS_Shape&         theShape,
-                                          TopTools_ListOfShape&       theArgsList,
+                                          NCollection_List<TopoDS_Shape>&       theArgsList,
                                           BOPAlgo_MakerVolume&        theMV);
 
-  Standard_EXPORT void ExtractOuterSolid(TopoDS_Shape& theShape, TopTools_ListOfShape& theArgsList);
+  Standard_EXPORT void ExtractOuterSolid(TopoDS_Shape& theShape, NCollection_List<TopoDS_Shape>& theArgsList);
 
   Standard_EXPORT void GetSpineAndProfile(const TopoDS_Wire& theSpine,
                                           const TopoDS_Wire& theProfile);
 
   Standard_EXPORT void UnifyShape();
 
-  Standard_EXPORT Standard_Boolean PerformBoolean(const TopTools_ListOfShape& theArgsList,
+  Standard_EXPORT bool PerformBoolean(const NCollection_List<TopoDS_Shape>& theArgsList,
                                                   TopoDS_Shape&               theResult) const;
 
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     CheckSingularityAndAdd(const TopoDS_Face&    theF,
-                           const Standard_Real   theFuzzyToler,
-                           TopTools_ListOfShape& theListOfFaces,
-                           TopTools_ListOfShape& theListOfSplits) const;
+                           const double   theFuzzyToler,
+                           NCollection_List<TopoDS_Shape>& theListOfFaces,
+                           NCollection_List<TopoDS_Shape>& theListOfSplits) const;
 
-  Standard_EXPORT Standard_Boolean IsLid(const TopoDS_Face&                theF,
-                                         const TopTools_IndexedMapOfShape& theMapOfLids) const;
+  Standard_EXPORT bool IsLid(const TopoDS_Face&                theF,
+                                         const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfLids) const;
 
 private:
   enum
@@ -114,9 +116,9 @@ private:
   TopoDS_Shape     myPipeShell;
   TopoDS_Compound  myTopBottom; // Lids can be split on several faces
   TopoDS_Shape     myResult;
-  Standard_Real    myFuzzyValue;
-  Standard_Boolean myIsParallel;
-  Standard_CString myDebugShapesPath;
+  double    myFuzzyValue;
+  bool myIsParallel;
+  const char* myDebugShapesPath;
 };
 
 #endif // _BRepFill_AdvancedEvolved_HeaderFile

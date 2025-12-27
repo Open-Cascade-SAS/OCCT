@@ -23,9 +23,6 @@
 class StepElement_SurfaceSection;
 class StepElement_AnalysisItemWithinRepresentation;
 
-class StepFEA_FeaSurfaceSectionGeometricRelationship;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaSurfaceSectionGeometricRelationship, Standard_Transient)
-
 //! Representation of STEP entity FeaSurfaceSectionGeometricRelationship
 class StepFEA_FeaSurfaceSectionGeometricRelationship : public Standard_Transient
 {
@@ -35,27 +32,26 @@ public:
   Standard_EXPORT StepFEA_FeaSurfaceSectionGeometricRelationship();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepElement_SurfaceSection)&                   aSectionRef,
-                            const Handle(StepElement_AnalysisItemWithinRepresentation)& aItem);
+  Standard_EXPORT void Init(const occ::handle<StepElement_SurfaceSection>&                   aSectionRef,
+                            const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem);
 
   //! Returns field SectionRef
-  Standard_EXPORT Handle(StepElement_SurfaceSection) SectionRef() const;
+  Standard_EXPORT occ::handle<StepElement_SurfaceSection> SectionRef() const;
 
   //! Set field SectionRef
-  Standard_EXPORT void SetSectionRef(const Handle(StepElement_SurfaceSection)& SectionRef);
+  Standard_EXPORT void SetSectionRef(const occ::handle<StepElement_SurfaceSection>& SectionRef);
 
   //! Returns field Item
-  Standard_EXPORT Handle(StepElement_AnalysisItemWithinRepresentation) Item() const;
+  Standard_EXPORT occ::handle<StepElement_AnalysisItemWithinRepresentation> Item() const;
 
   //! Set field Item
-  Standard_EXPORT void SetItem(const Handle(StepElement_AnalysisItemWithinRepresentation)& Item);
+  Standard_EXPORT void SetItem(const occ::handle<StepElement_AnalysisItemWithinRepresentation>& Item);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaSurfaceSectionGeometricRelationship, Standard_Transient)
 
-protected:
 private:
-  Handle(StepElement_SurfaceSection)                   theSectionRef;
-  Handle(StepElement_AnalysisItemWithinRepresentation) theItem;
+  occ::handle<StepElement_SurfaceSection>                   theSectionRef;
+  occ::handle<StepElement_AnalysisItemWithinRepresentation> theItem;
 };
 
 #endif // _StepFEA_FeaSurfaceSectionGeometricRelationship_HeaderFile

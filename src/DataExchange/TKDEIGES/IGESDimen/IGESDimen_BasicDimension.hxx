@@ -25,9 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt2d;
 
-class IGESDimen_BasicDimension;
-DEFINE_STANDARD_HANDLE(IGESDimen_BasicDimension, IGESData_IGESEntity)
-
 //! Defines IGES Basic Dimension, Type 406, Form 31,
 //! in package IGESDimen
 //! The basic Dimension Property indicates that the referencing
@@ -38,14 +35,14 @@ class IGESDimen_BasicDimension : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESDimen_BasicDimension();
 
-  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
+  Standard_EXPORT void Init(const int nbPropVal,
                             const gp_XY&           lowerLeft,
                             const gp_XY&           lowerRight,
                             const gp_XY&           upperRight,
                             const gp_XY&           upperLeft);
 
   //! returns the number of properties = 8
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns coordinates of lower left corner
   Standard_EXPORT gp_Pnt2d LowerLeft() const;
@@ -61,9 +58,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_BasicDimension, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
+  int theNbPropertyValues;
   gp_XY            theLowerLeft;
   gp_XY            theLowerRight;
   gp_XY            theUpperRight;

@@ -24,8 +24,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 
-DEFINE_STANDARD_HANDLE(StepVisual_TriangulatedFace, StepVisual_TessellatedFace)
-
 //! Representation of STEP entity TriangulatedFace
 class StepVisual_TriangulatedFace : public StepVisual_TessellatedFace
 {
@@ -36,41 +34,41 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-    const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-    const Standard_Integer                    theTessellatedFace_Pnmax,
-    const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
-    const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
+    const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+    const int                    theTessellatedFace_Pnmax,
+    const occ::handle<TColStd_HArray2OfReal>&      theTessellatedFace_Normals,
+    const bool                    theHasTessellatedFace_GeometricLink,
     const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-    const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-    const Handle(TColStd_HArray2OfInteger)&   theTriangles);
+    const occ::handle<TColStd_HArray1OfInteger>&   thePnindex,
+    const occ::handle<TColStd_HArray2OfInteger>&   theTriangles);
 
   //! Returns field Pnindex
-  Standard_EXPORT Handle(TColStd_HArray1OfInteger) Pnindex() const;
+  Standard_EXPORT occ::handle<TColStd_HArray1OfInteger> Pnindex() const;
 
   //! Sets field Pnindex
-  Standard_EXPORT void SetPnindex(const Handle(TColStd_HArray1OfInteger)& thePnindex);
+  Standard_EXPORT void SetPnindex(const occ::handle<TColStd_HArray1OfInteger>& thePnindex);
 
   //! Returns number of Pnindex
-  Standard_EXPORT Standard_Integer NbPnindex() const;
+  Standard_EXPORT int NbPnindex() const;
 
   //! Returns value of Pnindex by its num
-  Standard_EXPORT Standard_Integer PnindexValue(const Standard_Integer theNum) const;
+  Standard_EXPORT int PnindexValue(const int theNum) const;
 
   //! Returns field Triangles
-  Standard_EXPORT Handle(TColStd_HArray2OfInteger) Triangles() const;
+  Standard_EXPORT occ::handle<TColStd_HArray2OfInteger> Triangles() const;
 
   //! Sets field Triangles
-  Standard_EXPORT void SetTriangles(const Handle(TColStd_HArray2OfInteger)& theTriangles);
+  Standard_EXPORT void SetTriangles(const occ::handle<TColStd_HArray2OfInteger>& theTriangles);
 
   //! Returns number of Triangles
-  Standard_EXPORT Standard_Integer NbTriangles() const;
+  Standard_EXPORT int NbTriangles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TriangulatedFace, StepVisual_TessellatedFace)
 
 private:
-  Handle(TColStd_HArray1OfInteger) myPnindex;
-  Handle(TColStd_HArray2OfInteger) myTriangles;
+  occ::handle<TColStd_HArray1OfInteger> myPnindex;
+  occ::handle<TColStd_HArray2OfInteger> myTriangles;
 };
 
 #endif // _StepVisual_TriangulatedFace_HeaderFile_

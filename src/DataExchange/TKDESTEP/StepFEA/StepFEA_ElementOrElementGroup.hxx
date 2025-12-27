@@ -39,16 +39,14 @@ public:
   //! 1 -> ElementRepresentation from StepFEA
   //! 2 -> ElementGroup from StepFEA
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as ElementRepresentation (or Null if another type)
-  Standard_EXPORT Handle(StepFEA_ElementRepresentation) ElementRepresentation() const;
+  Standard_EXPORT occ::handle<StepFEA_ElementRepresentation> ElementRepresentation() const;
 
   //! Returns Value as ElementGroup (or Null if another type)
-  Standard_EXPORT Handle(StepFEA_ElementGroup) ElementGroup() const;
+  Standard_EXPORT occ::handle<StepFEA_ElementGroup> ElementGroup() const;
 
-protected:
-private:
 };
 
 #endif // _StepFEA_ElementOrElementGroup_HeaderFile

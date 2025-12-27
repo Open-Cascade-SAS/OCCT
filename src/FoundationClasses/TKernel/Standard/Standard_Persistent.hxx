@@ -32,11 +32,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Standard_Persistent, Standard_Transient)
 
-  Standard_Integer& TypeNum() { return _typenum; }
+  int& TypeNum() { return _typenum; }
 
 private:
-  Standard_Integer _typenum;
-  Standard_Integer _refnum;
+  int _typenum;
+  int _refnum;
 
   friend class Storage_Schema;
 };

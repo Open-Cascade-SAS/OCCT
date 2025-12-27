@@ -32,39 +32,39 @@ void BinTools_OStream::WriteReference(const uint64_t& thePosition)
   uint64_t aDelta = myPosition - thePosition;
   if (aDelta <= 0xFF)
   {
-    *myStream << (Standard_Byte)BinTools_ObjectType_Reference8;
-    *myStream << (Standard_Byte)aDelta;
-    myPosition += sizeof(Standard_Byte) * 2;
+    *myStream << (uint8_t)BinTools_ObjectType_Reference8;
+    *myStream << (uint8_t)aDelta;
+    myPosition += sizeof(uint8_t) * 2;
   }
   else if (aDelta <= 0xFFFF)
   {
-    *myStream << (Standard_Byte)BinTools_ObjectType_Reference16;
+    *myStream << (uint8_t)BinTools_ObjectType_Reference16;
     uint16_t aDelta16 = uint16_t(aDelta);
 #if DO_INVERSE
     aDelta16 = (0 | ((aDelta16 & 0x00FF) << 8) | ((aDelta16 & 0xFF00) >> 8));
 #endif
     myStream->write((char*)&aDelta16, sizeof(uint16_t));
-    myPosition += sizeof(Standard_Byte) + sizeof(uint16_t);
+    myPosition += sizeof(uint8_t) + sizeof(uint16_t);
   }
   else if (aDelta <= 0xFFFFFFFF)
   {
-    *myStream << (Standard_Byte)BinTools_ObjectType_Reference32;
+    *myStream << (uint8_t)BinTools_ObjectType_Reference32;
     uint32_t aDelta32 = uint32_t(aDelta);
 #if DO_INVERSE
     aDelta32 = (0 | ((aDelta32 & 0x000000ff) << 24) | ((aDelta32 & 0x0000ff00) << 8)
                 | ((aDelta32 & 0x00ff0000) >> 8) | ((aDelta32 >> 24) & 0x000000ff));
 #endif
     myStream->write((char*)&aDelta32, sizeof(uint32_t));
-    myPosition += sizeof(Standard_Byte) + sizeof(uint32_t);
+    myPosition += sizeof(uint8_t) + sizeof(uint32_t);
   }
   else
   {
-    *myStream << (Standard_Byte)BinTools_ObjectType_Reference64;
+    *myStream << (uint8_t)BinTools_ObjectType_Reference64;
 #if DO_INVERSE
     aDelta = FSD_BinaryFile::InverseUint64(aDelta);
 #endif
     myStream->write((char*)&aDelta, sizeof(uint64_t));
-    myPosition += sizeof(Standard_Byte) + sizeof(uint64_t);
+    myPosition += sizeof(uint8_t) + sizeof(uint64_t);
   }
 }
 
@@ -73,11 +73,11 @@ void BinTools_OStream::WriteReference(const uint64_t& thePosition)
 void BinTools_OStream::WriteShape(const TopAbs_ShapeEnum&   theType,
                                   const TopAbs_Orientation& theOrientation)
 {
-  Standard_Byte aType =
-    Standard_Byte(BinTools_ObjectType_EndShape) + 1 + // taking into account that orientation <= 3
-    (Standard_Byte(theType) << 2) + Standard_Byte(theOrientation); // and type <= 8
-  myStream->put((Standard_Byte)aType);
-  myPosition += sizeof(Standard_Byte);
+  uint8_t aType =
+    static_cast<uint8_t>(BinTools_ObjectType_EndShape) + 1 + // taking into account that orientation <= 3
+    (static_cast<uint8_t>(theType) << 2) + static_cast<uint8_t>(theOrientation); // and type <= 8
+  myStream->put((uint8_t)aType);
+  myPosition += sizeof(uint8_t);
 }
 
 //=======================================================================
@@ -86,8 +86,8 @@ void BinTools_OStream::WriteShape(const TopAbs_ShapeEnum&   theType,
 //=======================================================================
 BinTools_OStream& BinTools_OStream::operator<<(const BinTools_ObjectType& theType)
 {
-  myStream->put((Standard_Byte)theType);
-  myPosition += sizeof(Standard_Byte);
+  myStream->put((uint8_t)theType);
+  myPosition += sizeof(uint8_t);
   return *this;
 }
 
@@ -95,10 +95,10 @@ BinTools_OStream& BinTools_OStream::operator<<(const BinTools_ObjectType& theTyp
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const Standard_Byte& theValue)
+BinTools_OStream& BinTools_OStream::operator<<(const uint8_t& theValue)
 {
   myStream->put(theValue);
-  myPosition += sizeof(Standard_Byte);
+  myPosition += sizeof(uint8_t);
   return *this;
 }
 
@@ -106,15 +106,15 @@ BinTools_OStream& BinTools_OStream::operator<<(const Standard_Byte& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const Standard_Real& theValue)
+BinTools_OStream& BinTools_OStream::operator<<(const double& theValue)
 {
 #if DO_INVERSE
-  const Standard_Real aRValue = FSD_BinaryFile::InverseReal(theValue);
-  myStream->write((char*)&aRValue, sizeof(Standard_Real));
+  const double aRValue = FSD_BinaryFile::InverseReal(theValue);
+  myStream->write((char*)&aRValue, sizeof(double));
 #else
-  myStream->write((char*)&theValue, sizeof(Standard_Real));
+  myStream->write((char*)&theValue, sizeof(double));
 #endif
-  myPosition += sizeof(Standard_Real);
+  myPosition += sizeof(double);
   return *this;
 }
 
@@ -122,10 +122,10 @@ BinTools_OStream& BinTools_OStream::operator<<(const Standard_Real& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const Standard_Boolean& theValue)
+BinTools_OStream& BinTools_OStream::operator<<(const bool& theValue)
 {
-  myStream->put((Standard_Byte)(theValue ? 1 : 0));
-  myPosition += sizeof(Standard_Byte);
+  myStream->put((uint8_t)(theValue ? 1 : 0));
+  myPosition += sizeof(uint8_t);
   return *this;
 }
 
@@ -133,31 +133,31 @@ BinTools_OStream& BinTools_OStream::operator<<(const Standard_Boolean& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const Standard_Integer& theValue)
-{
-#if DO_INVERSE
-  const Standard_Integer aRValue = FSD_BinaryFile::InverseInt(theValue);
-  myStream->write((char*)&aRValue, sizeof(Standard_Integer));
-#else
-  myStream->write((char*)&theValue, sizeof(Standard_Integer));
-#endif
-  myPosition += sizeof(Standard_Integer);
-  return *this;
-}
-
-//=======================================================================
-// function : operator <<
-// purpose  :
-//=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const Standard_ExtCharacter& theValue)
+BinTools_OStream& BinTools_OStream::operator<<(const int& theValue)
 {
 #if DO_INVERSE
-  const Standard_ExtCharacter aRValue = FSD_BinaryFile::InverseExtChar(theValue);
-  myStream->write((char*)&aRValue, sizeof(Standard_ExtCharacter));
+  const int aRValue = FSD_BinaryFile::InverseInt(theValue);
+  myStream->write((char*)&aRValue, sizeof(int));
 #else
-  myStream->write((char*)&theValue, sizeof(Standard_ExtCharacter));
+  myStream->write((char*)&theValue, sizeof(int));
 #endif
-  myPosition += sizeof(Standard_ExtCharacter);
+  myPosition += sizeof(int);
+  return *this;
+}
+
+//=======================================================================
+// function : operator <<
+// purpose  :
+//=======================================================================
+BinTools_OStream& BinTools_OStream::operator<<(const char16_t& theValue)
+{
+#if DO_INVERSE
+  const char16_t aRValue = FSD_BinaryFile::InverseExtChar(theValue);
+  myStream->write((char*)&aRValue, sizeof(char16_t));
+#else
+  myStream->write((char*)&theValue, sizeof(char16_t));
+#endif
+  myPosition += sizeof(char16_t);
   return *this;
 }
 
@@ -176,8 +176,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Pnt& theValue)
   myRealBuf[1] = theValue.Y();
   myRealBuf[2] = theValue.Z();
 #endif
-  myStream->write((char*)myRealBuf, sizeof(Standard_Real) * 3);
-  myPosition += sizeof(Standard_Real) * 3;
+  myStream->write((char*)myRealBuf, sizeof(double) * 3);
+  myPosition += sizeof(double) * 3;
   return *this;
 }
 
@@ -196,8 +196,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Dir& theValue)
   myRealBuf[1] = theValue.Y();
   myRealBuf[2] = theValue.Z();
 #endif
-  myStream->write((char*)myRealBuf, sizeof(Standard_Real) * 3);
-  myPosition += sizeof(Standard_Real) * 3;
+  myStream->write((char*)myRealBuf, sizeof(double) * 3);
+  myPosition += sizeof(double) * 3;
   return *this;
 }
 
@@ -214,8 +214,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Pnt2d& theValue)
   myRealBuf[0] = theValue.X();
   myRealBuf[1] = theValue.Y();
 #endif
-  myStream->write((char*)myRealBuf, sizeof(Standard_Real) * 2);
-  myPosition += sizeof(Standard_Real) * 2;
+  myStream->write((char*)myRealBuf, sizeof(double) * 2);
+  myPosition += sizeof(double) * 2;
   return *this;
 }
 
@@ -232,8 +232,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Dir2d& theValue)
   myRealBuf[0] = theValue.X();
   myRealBuf[1] = theValue.Y();
 #endif
-  myStream->write((char*)myRealBuf, sizeof(Standard_Real) * 2);
-  myPosition += sizeof(Standard_Real) * 2;
+  myStream->write((char*)myRealBuf, sizeof(double) * 2);
+  myPosition += sizeof(double) * 2;
   return *this;
 }
 
@@ -272,8 +272,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Trsf& theValue)
   myRealBuf[10] = aMat(3, 3);
   myRealBuf[11] = aTr.Coord(3);
 #endif
-  myStream->write((char*)myRealBuf, sizeof(Standard_Real) * 12);
-  myPosition += sizeof(Standard_Real) * 12;
+  myStream->write((char*)myRealBuf, sizeof(double) * 12);
+  myPosition += sizeof(double) * 12;
   return *this;
 }
 
@@ -293,8 +293,8 @@ BinTools_OStream& BinTools_OStream::operator<<(const Poly_Triangle& theValue)
   myIntBuf[1] = theValue.Value(2);
   myIntBuf[2] = theValue.Value(3);
 #endif
-  myStream->write((char*)myIntBuf, sizeof(Standard_Integer) * 3);
-  myPosition += sizeof(Standard_Integer) * 3;
+  myStream->write((char*)myIntBuf, sizeof(int) * 3);
+  myPosition += sizeof(int) * 3;
   return *this;
 }
 
@@ -302,7 +302,7 @@ BinTools_OStream& BinTools_OStream::operator<<(const Poly_Triangle& theValue)
 // function : operator <<
 // purpose  :
 //=======================================================================
-BinTools_OStream& BinTools_OStream::operator<<(const gp_Vec3f& theValue)
+BinTools_OStream& BinTools_OStream::operator<<(const NCollection_Vec3<float>& theValue)
 {
 #if DO_INVERSE
   myFloatBuf[0] = FSD_BinaryFile::InverseShortReal(theValue.x());
@@ -320,28 +320,28 @@ BinTools_OStream& BinTools_OStream::operator<<(const gp_Vec3f& theValue)
 
 //=================================================================================================
 
-void BinTools_OStream::PutBools(const Standard_Boolean theValue1,
-                                const Standard_Boolean theValue2,
-                                const Standard_Boolean theValue3)
+void BinTools_OStream::PutBools(const bool theValue1,
+                                const bool theValue2,
+                                const bool theValue3)
 {
-  Standard_Byte aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0);
-  myStream->write((char*)&aValue, sizeof(Standard_Byte));
-  myPosition += sizeof(Standard_Byte);
+  uint8_t aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0);
+  myStream->write((char*)&aValue, sizeof(uint8_t));
+  myPosition += sizeof(uint8_t);
 }
 
 //=================================================================================================
 
-void BinTools_OStream::PutBools(const Standard_Boolean theValue1,
-                                const Standard_Boolean theValue2,
-                                const Standard_Boolean theValue3,
-                                const Standard_Boolean theValue4,
-                                const Standard_Boolean theValue5,
-                                const Standard_Boolean theValue6,
-                                const Standard_Boolean theValue7)
+void BinTools_OStream::PutBools(const bool theValue1,
+                                const bool theValue2,
+                                const bool theValue3,
+                                const bool theValue4,
+                                const bool theValue5,
+                                const bool theValue6,
+                                const bool theValue7)
 {
-  Standard_Byte aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0)
+  uint8_t aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0)
                          | (theValue4 ? 8 : 0) | (theValue5 ? 16 : 0) | (theValue6 ? 32 : 0)
                          | (theValue7 ? 64 : 0);
-  myStream->write((char*)&aValue, sizeof(Standard_Byte));
-  myPosition += sizeof(Standard_Byte);
+  myStream->write((char*)&aValue, sizeof(uint8_t));
+  myPosition += sizeof(uint8_t);
 }

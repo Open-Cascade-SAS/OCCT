@@ -28,7 +28,7 @@ TopLoc_Location::TopLoc_Location() {}
 
 //=================================================================================================
 
-TopLoc_Location::TopLoc_Location(const Handle(TopLoc_Datum3D)& D)
+TopLoc_Location::TopLoc_Location(const occ::handle<TopLoc_Datum3D>& D)
 {
   myItems.Construct(TopLoc_ItemLocation(D, 1));
 }
@@ -37,7 +37,7 @@ TopLoc_Location::TopLoc_Location(const Handle(TopLoc_Datum3D)& D)
 
 TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 {
-  Handle(TopLoc_Datum3D) D = new TopLoc_Datum3D(T);
+  occ::handle<TopLoc_Datum3D> D = new TopLoc_Datum3D(T);
   myItems.Construct(TopLoc_ItemLocation(D, 1));
 }
 
@@ -94,7 +94,7 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
   TopLoc_Location result = Multiplied(Other.NextLocation());
   // does the head of Other cancel the head of result
 
-  Standard_Integer p = Other.FirstPower();
+  int p = Other.FirstPower();
   if (!result.IsIdentity())
   {
     if (Other.FirstDatum() == result.FirstDatum())
@@ -130,7 +130,7 @@ TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 
 //=================================================================================================
 
-TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
+TopLoc_Location TopLoc_Location::Powered(const int pwr) const
 {
   if (IsIdentity())
     return *this;
@@ -158,25 +158,25 @@ TopLoc_Location TopLoc_Location::Powered(const Standard_Integer pwr) const
 // two locations are Equal if the Items have the same LocalValues and Powers
 // this is a recursive function to test it
 
-Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
+bool TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 {
   const void** p = (const void**)&myItems;
   const void** q = (const void**)&Other.myItems;
   if (*p == *q)
   {
-    return Standard_True;
+    return true;
   }
   if (IsIdentity() || Other.IsIdentity())
   {
-    return Standard_False;
+    return false;
   }
   if (FirstDatum() != Other.FirstDatum())
   {
-    return Standard_False;
+    return false;
   }
   if (FirstPower() != Other.FirstPower())
   {
-    return Standard_False;
+    return false;
   }
   else
   {
@@ -186,14 +186,14 @@ Standard_Boolean TopLoc_Location::IsEqual(const TopLoc_Location& Other) const
 
 //=================================================================================================
 
-Standard_Boolean TopLoc_Location::IsDifferent(const TopLoc_Location& Other) const
+bool TopLoc_Location::IsDifferent(const TopLoc_Location& Other) const
 {
   return !IsEqual(Other);
 }
 
 //=================================================================================================
 
-void TopLoc_Location::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TopLoc_Location::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, TopLoc_Location)
 

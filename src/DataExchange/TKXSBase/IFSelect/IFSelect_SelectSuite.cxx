@@ -23,44 +23,44 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSuite, IFSelect_SelectDeduct)
 
 IFSelect_SelectSuite::IFSelect_SelectSuite() {}
 
-Standard_Boolean IFSelect_SelectSuite::AddInput(const Handle(IFSelect_Selection)& item)
+bool IFSelect_SelectSuite::AddInput(const occ::handle<IFSelect_Selection>& item)
 {
   if (item.IsNull())
-    return Standard_False;
-  Handle(IFSelect_Selection) input = Input();
+    return false;
+  occ::handle<IFSelect_Selection> input = Input();
   if (!input.IsNull())
-    return Standard_False;
-  Handle(IFSelect_SelectDeduct) first = Handle(IFSelect_SelectDeduct)::DownCast(item);
+    return false;
+  occ::handle<IFSelect_SelectDeduct> first = occ::down_cast<IFSelect_SelectDeduct>(item);
   if (first.IsNull())
     SetInput(item);
   else
     thesel.Prepend(item);
-  return Standard_True;
+  return true;
 }
 
-void IFSelect_SelectSuite::AddPrevious(const Handle(IFSelect_SelectDeduct)& item)
+void IFSelect_SelectSuite::AddPrevious(const occ::handle<IFSelect_SelectDeduct>& item)
 {
   if (!item.IsNull())
     thesel.Prepend(item);
 }
 
-void IFSelect_SelectSuite::AddNext(const Handle(IFSelect_SelectDeduct)& item)
+void IFSelect_SelectSuite::AddNext(const occ::handle<IFSelect_SelectDeduct>& item)
 {
   if (!item.IsNull())
     thesel.Append(item);
 }
 
-Standard_Integer IFSelect_SelectSuite::NbItems() const
+int IFSelect_SelectSuite::NbItems() const
 {
   return thesel.Length();
 }
 
-Handle(IFSelect_SelectDeduct) IFSelect_SelectSuite::Item(const Standard_Integer num) const
+occ::handle<IFSelect_SelectDeduct> IFSelect_SelectSuite::Item(const int num) const
 {
-  return Handle(IFSelect_SelectDeduct)::DownCast(thesel.Value(num));
+  return occ::down_cast<IFSelect_SelectDeduct>(thesel.Value(num));
 }
 
-void IFSelect_SelectSuite::SetLabel(const Standard_CString lab)
+void IFSelect_SelectSuite::SetLabel(const char* lab)
 {
   thelab.Clear();
   thelab.AssignCat(lab);
@@ -69,19 +69,19 @@ void IFSelect_SelectSuite::SetLabel(const Standard_CString lab)
 Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter;
-  Standard_Boolean         firstin = (HasInput() || HasAlternate());
+  bool         firstin = (HasInput() || HasAlternate());
   if (firstin)
     iter = InputResult(G);
   //   Starting : we take the Input/Alternate IF one of the 2 is set
   //   Otherwise, we start on the basic definition of the first selection
 
-  Standard_Integer i, nb = NbItems();
+  int i, nb = NbItems();
   for (i = 1; i <= nb; i++)
   {
-    Handle(IFSelect_SelectDeduct) anitem = Item(i);
+    occ::handle<IFSelect_SelectDeduct> anitem = Item(i);
     if (firstin)
       anitem->Alternate()->SetList(iter.Content());
-    firstin = Standard_True; // then it's systematic
+    firstin = true; // then it's systematic
     iter    = anitem->UniqueResult(G);
   }
   return iter;

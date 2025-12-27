@@ -24,30 +24,25 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-class XmlMNaming_NamingDriver;
-DEFINE_STANDARD_HANDLE(XmlMNaming_NamingDriver, XmlMDF_ADriver)
-
 class XmlMNaming_NamingDriver : public XmlMDF_ADriver
 {
 
 public:
-  Standard_EXPORT XmlMNaming_NamingDriver(const Handle(Message_Messenger)& aMessageDriver);
+  Standard_EXPORT XmlMNaming_NamingDriver(const occ::handle<Message_Messenger>& aMessageDriver);
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Paste(const XmlObjMgt_Persistent&  theSource,
-          const Handle(TDF_Attribute)& theTarget,
-          XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+          const occ::handle<TDF_Attribute>& theTarget,
+          XmlObjMgt_RRelocationTable&  theRelocTable) const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
                              XmlObjMgt_Persistent&        theTarget,
-                             XmlObjMgt_SRelocationTable&  theRelocTable) const Standard_OVERRIDE;
+                             XmlObjMgt_SRelocationTable&  theRelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamingDriver, XmlMDF_ADriver)
 
-protected:
-private:
 };
 
 #endif // _XmlMNaming_NamingDriver_HeaderFile

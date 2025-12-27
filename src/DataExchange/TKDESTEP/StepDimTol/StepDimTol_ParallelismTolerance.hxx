@@ -20,10 +20,6 @@
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 
-class StepDimTol_ParallelismTolerance;
-DEFINE_STANDARD_HANDLE(StepDimTol_ParallelismTolerance,
-                       StepDimTol_GeometricToleranceWithDatumReference)
-
 //! Representation of STEP entity ParallelismTolerance
 class StepDimTol_ParallelismTolerance : public StepDimTol_GeometricToleranceWithDatumReference
 {
@@ -35,8 +31,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ParallelismTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_ParallelismTolerance_HeaderFile

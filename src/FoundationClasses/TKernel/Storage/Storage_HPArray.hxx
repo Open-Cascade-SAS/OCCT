@@ -17,9 +17,10 @@
 #ifndef Storage_HPArray_HeaderFile
 #define Storage_HPArray_HeaderFile
 
-#include <Storage_PArray.hxx>
+#include <Standard_Persistent.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Storage_HPArray, Storage_PArray)
+DEFINE_HARRAY1(Storage_HPArray, NCollection_Array1<occ::handle<Standard_Persistent>>)
 
 #endif

@@ -23,12 +23,12 @@
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_UpdateFileName, IGESSelect_ModelModifier)
 
 IGESSelect_UpdateFileName::IGESSelect_UpdateFileName()
-    : IGESSelect_ModelModifier(Standard_False)
+    : IGESSelect_ModelModifier(false)
 {
 }
 
 void IGESSelect_UpdateFileName::Performing(IFSelect_ContextModif&            ctx,
-                                           const Handle(IGESData_IGESModel)& target,
+                                           const occ::handle<IGESData_IGESModel>& target,
                                            Interface_CopyTool& /*TC*/) const
 {
   if (!ctx.HasFileName())
@@ -39,7 +39,7 @@ void IGESSelect_UpdateFileName::Performing(IFSelect_ContextModif&            ctx
   IGESData_GlobalSection GS = target->GlobalSection();
   GS.SetFileName(new TCollection_HAsciiString(ctx.FileName()));
   target->SetGlobalSection(GS);
-  Handle(Interface_Check) check = new Interface_Check;
+  occ::handle<Interface_Check> check = new Interface_Check;
   target->VerifyCheck(check);
   ctx.AddCheck(check);
 }

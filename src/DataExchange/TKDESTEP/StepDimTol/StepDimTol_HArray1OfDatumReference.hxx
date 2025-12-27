@@ -16,9 +16,10 @@
 #ifndef StepDimTol_HArray1OfDatumReference_HeaderFile
 #define StepDimTol_HArray1OfDatumReference_HeaderFile
 
-#include <StepDimTol_Array1OfDatumReference.hxx>
+#include <StepDimTol_DatumReference.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepDimTol_HArray1OfDatumReference, StepDimTol_Array1OfDatumReference)
+DEFINE_HARRAY1(StepDimTol_HArray1OfDatumReference, NCollection_Array1<occ::handle<StepDimTol_DatumReference>>)
 
 #endif

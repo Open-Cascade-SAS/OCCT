@@ -33,10 +33,10 @@ StepAP203_CcDesignPersonAndOrganizationAssignment::
 //=================================================================================================
 
 void StepAP203_CcDesignPersonAndOrganizationAssignment::Init(
-  const Handle(StepBasic_PersonAndOrganization)&
+  const occ::handle<StepBasic_PersonAndOrganization>&
     aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-  const Handle(StepBasic_PersonAndOrganizationRole)&       aPersonAndOrganizationAssignment_Role,
-  const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems)
+  const occ::handle<StepBasic_PersonAndOrganizationRole>&       aPersonAndOrganizationAssignment_Role,
+  const occ::handle<StepAP203_HArray1OfPersonOrganizationItem>& aItems)
 {
   StepBasic_PersonAndOrganizationAssignment::Init(
     aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
@@ -47,7 +47,7 @@ void StepAP203_CcDesignPersonAndOrganizationAssignment::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfPersonOrganizationItem)
+occ::handle<StepAP203_HArray1OfPersonOrganizationItem>
   StepAP203_CcDesignPersonAndOrganizationAssignment::Items() const
 {
   return theItems;
@@ -56,7 +56,7 @@ Handle(StepAP203_HArray1OfPersonOrganizationItem)
 //=================================================================================================
 
 void StepAP203_CcDesignPersonAndOrganizationAssignment::SetItems(
-  const Handle(StepAP203_HArray1OfPersonOrganizationItem)& aItems)
+  const occ::handle<StepAP203_HArray1OfPersonOrganizationItem>& aItems)
 {
   theItems = aItems;
 }

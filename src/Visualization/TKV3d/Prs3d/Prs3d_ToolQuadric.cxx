@@ -16,11 +16,12 @@
 #include <Prs3d_ToolQuadric.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-void Prs3d_ToolQuadric::FillArray(Handle(Graphic3d_ArrayOfTriangles)& theArray,
+void Prs3d_ToolQuadric::FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
                                   const gp_Trsf&                      theTrsf) const
 {
   if (theArray.IsNull())
@@ -30,17 +31,17 @@ void Prs3d_ToolQuadric::FillArray(Handle(Graphic3d_ArrayOfTriangles)& theArray,
                                               Graphic3d_ArrayFlags_VertexNormal);
   }
 
-  const Standard_Real aStepU = 1.0f / mySlicesNb;
-  const Standard_Real aStepV = 1.0f / myStacksNb;
+  const double aStepU = 1.0f / mySlicesNb;
+  const double aStepV = 1.0f / myStacksNb;
   if (theArray->EdgeNumberAllocated() > 0)
   {
     // indexed array
-    for (Standard_Integer aU = 0; aU <= mySlicesNb; ++aU)
+    for (int aU = 0; aU <= mySlicesNb; ++aU)
     {
-      const Standard_Real aParamU = aU * aStepU;
-      for (Standard_Integer aV = 0; aV <= myStacksNb; ++aV)
+      const double aParamU = aU * aStepU;
+      for (int aV = 0; aV <= myStacksNb; ++aV)
       {
-        const Standard_Real aParamV = aV * aStepV;
+        const double aParamV = aV * aStepV;
         const gp_Pnt        aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
         const gp_Dir        aNormal = Normal(aParamU, aParamV).Transformed(theTrsf);
         theArray->AddVertex(aVertex, aNormal);
@@ -57,12 +58,12 @@ void Prs3d_ToolQuadric::FillArray(Handle(Graphic3d_ArrayOfTriangles)& theArray,
   else
   {
     // non-indexed array
-    for (Standard_Integer aU = 0; aU < mySlicesNb; ++aU)
+    for (int aU = 0; aU < mySlicesNb; ++aU)
     {
-      const Standard_Real aParamU = aU * aStepU;
-      for (Standard_Integer aV = 0; aV < myStacksNb; ++aV)
+      const double aParamU = aU * aStepU;
+      for (int aV = 0; aV < myStacksNb; ++aV)
       {
-        const Standard_Real aParamV = aV * aStepV;
+        const double aParamV = aV * aStepV;
         theArray->AddVertex(Vertex(aParamU, aParamV).Transformed(theTrsf),
                             Normal(aParamU, aParamV).Transformed(theTrsf));
         theArray->AddVertex(Vertex(aParamU + aStepU, aParamV).Transformed(theTrsf),
@@ -82,31 +83,31 @@ void Prs3d_ToolQuadric::FillArray(Handle(Graphic3d_ArrayOfTriangles)& theArray,
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolQuadric::CreateTriangulation(
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolQuadric::CreateTriangulation(
   const gp_Trsf& theTrsf) const
 {
-  Handle(Graphic3d_ArrayOfTriangles) aTriangulation;
+  occ::handle<Graphic3d_ArrayOfTriangles> aTriangulation;
   FillArray(aTriangulation, theTrsf);
   return aTriangulation;
 }
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) Prs3d_ToolQuadric::CreatePolyTriangulation(const gp_Trsf& theTrsf) const
+occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(const gp_Trsf& theTrsf) const
 {
-  Handle(Poly_Triangulation) aTriangulation =
-    new Poly_Triangulation(VerticesNb(), TrianglesNb(), Standard_False);
-  Standard_ShortReal aStepU = 1.0f / mySlicesNb;
-  Standard_ShortReal aStepV = 1.0f / myStacksNb;
+  occ::handle<Poly_Triangulation> aTriangulation =
+    new Poly_Triangulation(VerticesNb(), TrianglesNb(), false);
+  float aStepU = 1.0f / mySlicesNb;
+  float aStepV = 1.0f / myStacksNb;
 
   // Fill triangles
-  for (Standard_Integer aU = 0, anIndex = 0; aU <= mySlicesNb; ++aU)
+  for (int aU = 0, anIndex = 0; aU <= mySlicesNb; ++aU)
   {
-    const Standard_Real aParamU = aU * aStepU;
-    for (Standard_Integer aV = 0; aV <= myStacksNb; ++aV)
+    const double aParamU = aU * aStepU;
+    for (int aV = 0; aV <= myStacksNb; ++aV)
     {
-      const Standard_ShortReal aParamV = aV * aStepV;
-      const Standard_Integer   aVertId = aU * (myStacksNb + 1) + (aV + 1);
+      const float aParamV = aV * aStepV;
+      const int   aVertId = aU * (myStacksNb + 1) + (aV + 1);
       gp_Pnt                   aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
 
       aTriangulation->SetNode(aVertId, aVertex);
@@ -125,8 +126,8 @@ Handle(Poly_Triangulation) Prs3d_ToolQuadric::CreatePolyTriangulation(const gp_T
 
 //=================================================================================================
 
-void Prs3d_ToolQuadric::FillArray(Handle(Graphic3d_ArrayOfTriangles)& theArray,
-                                  Handle(Poly_Triangulation)&         theTriangulation,
+void Prs3d_ToolQuadric::FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
+                                  occ::handle<Poly_Triangulation>&         theTriangulation,
                                   const gp_Trsf&                      theTrsf) const
 {
   theArray         = CreateTriangulation(theTrsf);

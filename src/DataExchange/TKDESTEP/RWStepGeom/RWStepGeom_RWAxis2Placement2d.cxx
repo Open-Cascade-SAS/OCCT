@@ -21,10 +21,10 @@
 
 RWStepGeom_RWAxis2Placement2d::RWStepGeom_RWAxis2Placement2d() {}
 
-void RWStepGeom_RWAxis2Placement2d::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepGeom_Axis2Placement2d)& ent) const
+void RWStepGeom_RWAxis2Placement2d::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepGeom_Axis2Placement2d>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,29 +34,29 @@ void RWStepGeom_RWAxis2Placement2d::ReadStep(const Handle(StepData_StepReaderDat
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : location ---
 
-  Handle(StepGeom_CartesianPoint) aLocation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_CartesianPoint> aLocation;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "location", ach, STANDARD_TYPE(StepGeom_CartesianPoint), aLocation);
 
   // --- own field : refDirection ---
 
-  Handle(StepGeom_Direction) aRefDirection;
-  Standard_Boolean           hasArefDirection = Standard_True;
+  occ::handle<StepGeom_Direction> aRefDirection;
+  bool           hasArefDirection = true;
   if (data->IsParamDefined(num, 3))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat3 =` not needed
     data
       ->ReadEntity(num, 3, "ref_direction", ach, STANDARD_TYPE(StepGeom_Direction), aRefDirection);
   }
   else
   {
-    hasArefDirection = Standard_False;
+    hasArefDirection = false;
     aRefDirection.Nullify();
   }
 
@@ -66,7 +66,7 @@ void RWStepGeom_RWAxis2Placement2d::ReadStep(const Handle(StepData_StepReaderDat
 }
 
 void RWStepGeom_RWAxis2Placement2d::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepGeom_Axis2Placement2d)& ent) const
+                                              const occ::handle<StepGeom_Axis2Placement2d>& ent) const
 {
 
   // --- inherited field name ---
@@ -79,7 +79,7 @@ void RWStepGeom_RWAxis2Placement2d::WriteStep(StepData_StepWriter&              
 
   // --- own field : refDirection ---
 
-  Standard_Boolean hasArefDirection = ent->HasRefDirection();
+  bool hasArefDirection = ent->HasRefDirection();
   if (hasArefDirection)
   {
     SW.Send(ent->RefDirection());
@@ -90,7 +90,7 @@ void RWStepGeom_RWAxis2Placement2d::WriteStep(StepData_StepWriter&              
   }
 }
 
-void RWStepGeom_RWAxis2Placement2d::Share(const Handle(StepGeom_Axis2Placement2d)& ent,
+void RWStepGeom_RWAxis2Placement2d::Share(const occ::handle<StepGeom_Axis2Placement2d>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

@@ -14,7 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_FunctionRoot::IsDone() const
+inline bool math_FunctionRoot::IsDone() const
 {
   return Done;
 }
@@ -25,25 +25,25 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_FunctionRoot
   return o;
 }
 
-inline Standard_Real math_FunctionRoot::Root() const
+inline double math_FunctionRoot::Root() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheRoot;
 }
 
-inline Standard_Real math_FunctionRoot::Derivative() const
+inline double math_FunctionRoot::Derivative() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheDerivative;
 }
 
-inline Standard_Real math_FunctionRoot::Value() const
+inline double math_FunctionRoot::Value() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheError;
 }
 
-inline Standard_Integer math_FunctionRoot::NbIterations() const
+inline int math_FunctionRoot::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return NbIter;

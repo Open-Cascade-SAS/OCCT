@@ -19,6 +19,6 @@
 #include <NCollection_IndexedMap.hxx>
 
 class TDF_Attribute;
-typedef NCollection_IndexedMap<Handle(TDF_Attribute)> TDF_AttributeIndexedMap;
+typedef NCollection_IndexedMap<occ::handle<TDF_Attribute>> TDF_AttributeIndexedMap;
 
 #endif

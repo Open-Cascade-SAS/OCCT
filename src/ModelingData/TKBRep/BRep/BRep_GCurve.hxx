@@ -24,9 +24,6 @@
 class TopLoc_Location;
 class gp_Pnt;
 
-class BRep_GCurve;
-DEFINE_STANDARD_HANDLE(BRep_GCurve, BRep_CurveRepresentation)
-
 //! Root class for the geometric curves
 //! representation. Contains a range.
 //! Contains a first and a last parameter.
@@ -34,20 +31,20 @@ class BRep_GCurve : public BRep_CurveRepresentation
 {
 
 public:
-  void SetRange(const Standard_Real First, const Standard_Real Last);
+  void SetRange(const double First, const double Last);
 
-  void Range(Standard_Real& First, Standard_Real& Last) const;
+  void Range(double& First, double& Last) const;
 
-  Standard_Real First() const;
+  double First() const;
 
-  Standard_Real Last() const;
+  double Last() const;
 
-  void First(const Standard_Real F);
+  void First(const double F);
 
-  void Last(const Standard_Real L);
+  void Last(const double L);
 
   //! Computes the point at parameter U.
-  Standard_EXPORT virtual void D0(const Standard_Real U, gp_Pnt& P) const = 0;
+  Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const = 0;
 
   //! Recomputes any derived data after a modification.
   //! This is called when the range is modified.
@@ -55,18 +52,18 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_GCurve, BRep_CurveRepresentation)
 
 protected:
   Standard_EXPORT BRep_GCurve(const TopLoc_Location& L,
-                              const Standard_Real    First,
-                              const Standard_Real    Last);
+                              const double    First,
+                              const double    Last);
 
 private:
-  Standard_Real myFirst;
-  Standard_Real myLast;
+  double myFirst;
+  double myLast;
 };
 
 #include <BRep_GCurve.lxx>

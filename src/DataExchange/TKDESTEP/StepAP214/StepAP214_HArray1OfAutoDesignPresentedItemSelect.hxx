@@ -17,10 +17,11 @@
 #ifndef StepAP214_HArray1OfAutoDesignPresentedItemSelect_HeaderFile
 #define StepAP214_HArray1OfAutoDesignPresentedItemSelect_HeaderFile
 
-#include <StepAP214_Array1OfAutoDesignPresentedItemSelect.hxx>
+#include <StepAP214_AutoDesignPresentedItemSelect.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignPresentedItemSelect,
-               StepAP214_Array1OfAutoDesignPresentedItemSelect)
+               NCollection_Array1<StepAP214_AutoDesignPresentedItemSelect>)
 
 #endif

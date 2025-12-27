@@ -23,7 +23,7 @@
 #include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 
 #define IS_C2_COMPOSITE 0
@@ -65,14 +65,14 @@ inline gp_Hypr2d Geom2dInt_Geom2dCurveTool::Hyperbola(const Adaptor2d_Curve2d& C
 }
 
 //============================================================
-inline gp_Pnt2d Geom2dInt_Geom2dCurveTool::Value(const Adaptor2d_Curve2d& C, const Standard_Real U)
+inline gp_Pnt2d Geom2dInt_Geom2dCurveTool::Value(const Adaptor2d_Curve2d& C, const double U)
 {
   return (C.Value(U));
 }
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D0(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U,
+                                          const double      U,
                                           gp_Pnt2d&                P)
 {
   C.D0(U, P);
@@ -80,7 +80,7 @@ inline void Geom2dInt_Geom2dCurveTool::D0(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D1(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T)
 {
@@ -89,7 +89,7 @@ inline void Geom2dInt_Geom2dCurveTool::D1(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D2(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T,
                                           gp_Vec2d&                N)
@@ -100,7 +100,7 @@ inline void Geom2dInt_Geom2dCurveTool::D2(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D3(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T,
                                           gp_Vec2d&                N,
@@ -112,20 +112,20 @@ inline void Geom2dInt_Geom2dCurveTool::D3(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline gp_Vec2d Geom2dInt_Geom2dCurveTool::DN(const Adaptor2d_Curve2d& C,
-                                              const Standard_Real      U,
-                                              const Standard_Integer   N)
+                                              const double      U,
+                                              const int   N)
 {
   return C.DN(U, N);
 }
 
 //============================================================
-inline Standard_Real Geom2dInt_Geom2dCurveTool::FirstParameter(const Adaptor2d_Curve2d& C)
+inline double Geom2dInt_Geom2dCurveTool::FirstParameter(const Adaptor2d_Curve2d& C)
 {
   return (C.FirstParameter());
 }
 
 //============================================================
-inline Standard_Real Geom2dInt_Geom2dCurveTool::LastParameter(const Adaptor2d_Curve2d& C)
+inline double Geom2dInt_Geom2dCurveTool::LastParameter(const Adaptor2d_Curve2d& C)
 {
   return (C.LastParameter());
 }
@@ -133,21 +133,21 @@ inline Standard_Real Geom2dInt_Geom2dCurveTool::LastParameter(const Adaptor2d_Cu
 //============================================================
 //== tolerance used by mathemetical algorithms
 //==
-inline Standard_Real Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d&)
+inline double Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d&)
 {
   return (1.0e-10);
 }
 
 //------------------------------------------------------------
-inline Standard_Real Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d& C,
-                                                     const Standard_Real      Eps_XYZ)
+inline double Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d& C,
+                                                     const double      Eps_XYZ)
 {
   return (C.Resolution(Eps_XYZ));
 }
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::Intervals(const Adaptor2d_Curve2d& C,
-                                                 TColStd_Array1OfReal&    Tab)
+                                                 NCollection_Array1<double>&    Tab)
 {
 #if IS_C2_COMPOSITE
   C.Intervals(Tab, GeomAbs_C2);
@@ -159,19 +159,19 @@ inline void Geom2dInt_Geom2dCurveTool::Intervals(const Adaptor2d_Curve2d& C,
 //============================================================
 // inline void Geom2dInt_Geom2dCurveTool::GetInterval(const Adaptor2d_Curve2d& C,
 inline void Geom2dInt_Geom2dCurveTool::GetInterval(const Adaptor2d_Curve2d&,
-                                                   const Standard_Integer      i,
-                                                   const TColStd_Array1OfReal& Tab,
-                                                   Standard_Real&              a,
-                                                   Standard_Real&              b)
+                                                   const int      i,
+                                                   const NCollection_Array1<double>& Tab,
+                                                   double&              a,
+                                                   double&              b)
 {
   a = Tab.Value(i);
   b = Tab.Value(i + 1);
 }
 
 //============================================================
-inline Standard_Integer Geom2dInt_Geom2dCurveTool::NbIntervals(const Adaptor2d_Curve2d& C)
+inline int Geom2dInt_Geom2dCurveTool::NbIntervals(const Adaptor2d_Curve2d& C)
 {
-  Standard_Integer N = 1;
+  int N = 1;
 #if IS_C2_COMPOSITE
   N = C.NbIntervals(GeomAbs_C2);
 #else
@@ -182,7 +182,7 @@ inline Standard_Integer Geom2dInt_Geom2dCurveTool::NbIntervals(const Adaptor2d_C
 
 //============================================================
 
-inline Standard_Integer Geom2dInt_Geom2dCurveTool::Degree(const Adaptor2d_Curve2d& C)
+inline int Geom2dInt_Geom2dCurveTool::Degree(const Adaptor2d_Curve2d& C)
 {
   return C.Degree();
 }

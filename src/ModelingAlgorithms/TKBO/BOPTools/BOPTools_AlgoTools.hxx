@@ -25,16 +25,26 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <BOPTools_ListOfCoupleOfShape.hxx>
-#include <BOPTools_ListOfConnexityBlock.hxx>
+#include <NCollection_List.hxx>
+#include <BOPTools_CoupleOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <BOPTools_ConnexityBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Precision.hxx>
 class TopoDS_Vertex;
 class gp_Pnt;
@@ -66,34 +76,34 @@ public: //! @name Constants
   //! by intersection of two shapes is slightly bigger than the actual
   //! distances to these shapes. It helps to avoid numerical instability
   //! which may occur when comparing distances and tolerances.
-  static Standard_Real DTolerance() { return 1.e-12; }
+  static double DTolerance() { return 1.e-12; }
 
 public: //! @name Intersection of the vertices
   //! Intersects the vertex <theV1> with the point <theP> with tolerance <theTolP>.
   //! Returns the error status:
   //! - 0 - no error, meaning that the vertex intersects the point;
   //! - 1 - the distance between vertex and point is grater than the sum of tolerances.
-  Standard_EXPORT static Standard_Integer ComputeVV(const TopoDS_Vertex& theV,
+  Standard_EXPORT static int ComputeVV(const TopoDS_Vertex& theV,
                                                     const gp_Pnt&        theP,
-                                                    const Standard_Real  theTolP);
+                                                    const double  theTolP);
 
   //! Intersects the given vertices with given fuzzy value.
   //! Returns the error status:
   //! - 0 - no error, meaning that the vertices interferes with given tolerance;
   //! - 1 - the distance between vertices is grater than the sum of their tolerances.
-  Standard_EXPORT static Standard_Integer ComputeVV(
+  Standard_EXPORT static int ComputeVV(
     const TopoDS_Vertex& theV1,
     const TopoDS_Vertex& theV2,
-    const Standard_Real  theFuzz = Precision::Confusion());
+    const double  theFuzz = Precision::Confusion());
 
 public: //! @name Vertices construction
   //! Makes the vertex in the middle of given vertices with
   //! the tolerance covering all tolerance spheres of vertices.
-  Standard_EXPORT static void MakeVertex(const TopTools_ListOfShape& theLV, TopoDS_Vertex& theV);
+  Standard_EXPORT static void MakeVertex(const NCollection_List<TopoDS_Shape>& theLV, TopoDS_Vertex& theV);
 
   //! Make a vertex using 3D-point <aP1> and 3D-tolerance value <aTol>
   Standard_EXPORT static void MakeNewVertex(const gp_Pnt&       aP1,
-                                            const Standard_Real aTol,
+                                            const double aTol,
                                             TopoDS_Vertex&      aNewVertex);
 
   //! Make a vertex using couple of vertices <aV1, aV2>
@@ -104,15 +114,15 @@ public: //! @name Vertices construction
   //! Make a vertex in place of intersection between two edges
   //! <aE1, aE2> with parameters <aP1, aP2>
   Standard_EXPORT static void MakeNewVertex(const TopoDS_Edge&  aE1,
-                                            const Standard_Real aP1,
+                                            const double aP1,
                                             const TopoDS_Edge&  aE2,
-                                            const Standard_Real aP2,
+                                            const double aP2,
                                             TopoDS_Vertex&      aNewVertex);
 
   //! Make a vertex in place of intersection between the edge <aE1>
   //! with parameter <aP1> and the face <aF2>
   Standard_EXPORT static void MakeNewVertex(const TopoDS_Edge&  aE1,
-                                            const Standard_Real aP1,
+                                            const double aP1,
                                             const TopoDS_Face&  aF2,
                                             TopoDS_Vertex&      aNewVertex);
 
@@ -121,14 +131,14 @@ public: //! @name Updating the vertex
   //! taking into account the fact that <aV> lays on
   //! the curve <aIC>
   Standard_EXPORT static void UpdateVertex(const IntTools_Curve& aIC,
-                                           const Standard_Real   aT,
+                                           const double   aT,
                                            const TopoDS_Vertex&  aV);
 
   //! Update the tolerance value for vertex <aV>
   //! taking into account the fact that <aV> lays on
   //! the edge <aE>
   Standard_EXPORT static void UpdateVertex(const TopoDS_Edge&   aE,
-                                           const Standard_Real  aT,
+                                           const double  aT,
                                            const TopoDS_Vertex& aV);
 
   //! Update the tolerance value for vertex <aVN>
@@ -140,10 +150,10 @@ public: //! @name Edge construction
   //! Makes the edge based on the given curve with given bounding vertices.
   Standard_EXPORT static void MakeEdge(const IntTools_Curve& theCurve,
                                        const TopoDS_Vertex&  theV1,
-                                       const Standard_Real   theT1,
+                                       const double   theT1,
                                        const TopoDS_Vertex&  theV2,
-                                       const Standard_Real   theT2,
-                                       const Standard_Real   theTolR3D,
+                                       const double   theT2,
+                                       const double   theTolR3D,
                                        TopoDS_Edge&          theE);
 
   //! Makes a copy of <theEdge> with vertices.
@@ -153,18 +163,18 @@ public: //! @name Edge construction
   //! at parameters <aP1,aP2>
   Standard_EXPORT static void MakeSplitEdge(const TopoDS_Edge&   aE1,
                                             const TopoDS_Vertex& aV1,
-                                            const Standard_Real  aP1,
+                                            const double  aP1,
                                             const TopoDS_Vertex& aV2,
-                                            const Standard_Real  aP2,
+                                            const double  aP2,
                                             TopoDS_Edge&         aNewEdge);
 
   //! Make the edge from 3D-Curve <aIC> and two vertices <aV1,aV2>
   //! at parameters <aP1,aP2>
   Standard_EXPORT static void MakeSectEdge(const IntTools_Curve& aIC,
                                            const TopoDS_Vertex&  aV1,
-                                           const Standard_Real   aP1,
+                                           const double   aP1,
                                            const TopoDS_Vertex&  aV2,
-                                           const Standard_Real   aP2,
+                                           const double   aP2,
                                            TopoDS_Edge&          aNewEdge);
 
 public: //! @name Point/Edge/Face classification relatively solid
@@ -175,8 +185,8 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const gp_Pnt&                   thePoint,
                                                    const TopoDS_Solid&             theSolid,
-                                                   const Standard_Real             theTol,
-                                                   const Handle(IntTools_Context)& theContext);
+                                                   const double             theTol,
+                                                   const occ::handle<IntTools_Context>& theContext);
 
   //! Computes the 3-D state of the vertex theVertex
   //! toward solid theSolid.
@@ -185,8 +195,8 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Vertex&            theVertex,
                                                    const TopoDS_Solid&             theSolid,
-                                                   const Standard_Real             theTol,
-                                                   const Handle(IntTools_Context)& theContext);
+                                                   const double             theTol,
+                                                   const occ::handle<IntTools_Context>& theContext);
 
   //! Computes the 3-D state of the edge theEdge
   //! toward solid theSolid.
@@ -195,8 +205,8 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Edge&              theEdge,
                                                    const TopoDS_Solid&             theSolid,
-                                                   const Standard_Real             theTol,
-                                                   const Handle(IntTools_Context)& theContext);
+                                                   const double             theTol,
+                                                   const occ::handle<IntTools_Context>& theContext);
 
   //! Computes the 3-D state of the face theFace
   //! toward solid theSolid.
@@ -206,9 +216,9 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Face&                theFace,
                                                    const TopoDS_Solid&               theSolid,
-                                                   const Standard_Real               theTol,
-                                                   const TopTools_IndexedMapOfShape& theBounds,
-                                                   const Handle(IntTools_Context)&   theContext);
+                                                   const double               theTol,
+                                                   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theBounds,
+                                                   const occ::handle<IntTools_Context>&   theContext);
 
   //! Computes the 3-D state of the shape theShape
   //! toward solid theSolid.
@@ -218,19 +228,19 @@ public: //! @name Point/Edge/Face classification relatively solid
   Standard_EXPORT static TopAbs_State ComputeStateByOnePoint(
     const TopoDS_Shape&             theShape,
     const TopoDS_Solid&             theSolid,
-    const Standard_Real             theTol,
-    const Handle(IntTools_Context)& theContext);
+    const double             theTol,
+    const occ::handle<IntTools_Context>& theContext);
 
 public: //! @name Face classification relatively solid
   //! For the face theFace and its edge theEdge
   //! finds the face suitable to produce shell.
   //! theLCEF - set of faces to search. All faces
   //! from theLCEF must share edge theEdge
-  Standard_EXPORT static Standard_Boolean GetFaceOff(const TopoDS_Edge&              theEdge,
+  Standard_EXPORT static bool GetFaceOff(const TopoDS_Edge&              theEdge,
                                                      const TopoDS_Face&              theFace,
-                                                     BOPTools_ListOfCoupleOfShape&   theLCEF,
+                                                     NCollection_List<BOPTools_CoupleOfShape>&   theLCEF,
                                                      TopoDS_Face&                    theFaceOff,
-                                                     const Handle(IntTools_Context)& theContext);
+                                                     const occ::handle<IntTools_Context>& theContext);
 
   //! Returns True if the face theFace is inside of the
   //! couple of faces theFace1, theFace2.
@@ -240,12 +250,12 @@ public: //! @name Face classification relatively solid
   //!  * 0 state is not IN
   //!  * 1 state is IN
   //!  * 2 state can not be found by the method of angles
-  Standard_EXPORT static Standard_Integer IsInternalFace(
+  Standard_EXPORT static int IsInternalFace(
     const TopoDS_Face&              theFace,
     const TopoDS_Edge&              theEdge,
     const TopoDS_Face&              theFace1,
     const TopoDS_Face&              theFace2,
-    const Handle(IntTools_Context)& theContext);
+    const occ::handle<IntTools_Context>& theContext);
 
   //! Returns True if the face theFace is inside of the
   //! appropriate couple of faces (from the set theLF).
@@ -254,23 +264,23 @@ public: //! @name Face classification relatively solid
   //!  * 0 state is not IN
   //!  * 1 state is IN
   //!  * 2 state can not be found by the method of angles
-  Standard_EXPORT static Standard_Integer IsInternalFace(
+  Standard_EXPORT static int IsInternalFace(
     const TopoDS_Face&              theFace,
     const TopoDS_Edge&              theEdge,
-    TopTools_ListOfShape&           theLF,
-    const Handle(IntTools_Context)& theContext);
+    NCollection_List<TopoDS_Shape>&           theLF,
+    const occ::handle<IntTools_Context>& theContext);
 
   //! Returns True if the face theFace is inside the
   //! solid theSolid.
   //! theMEF - Map Edge/Faces for theSolid
   //! theTol - value of precision of computation
   //! theContext- cached geometrical tools
-  Standard_EXPORT static Standard_Boolean IsInternalFace(
+  Standard_EXPORT static bool IsInternalFace(
     const TopoDS_Face&                         theFace,
     const TopoDS_Solid&                        theSolid,
-    TopTools_IndexedDataMapOfShapeListOfShape& theMEF,
-    const Standard_Real                        theTol,
-    const Handle(IntTools_Context)&            theContext);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
+    const double                        theTol,
+    const occ::handle<IntTools_Context>&            theContext);
 
 public: //! @name PCurve construction
   //! Makes 2d curve of the edge <theE> on the faces <theF1> and <theF2>.
@@ -280,13 +290,13 @@ public: //! @name PCurve construction
     const TopoDS_Face&              theF1,
     const TopoDS_Face&              theF2,
     const IntTools_Curve&           theCurve,
-    const Standard_Boolean          thePC1,
-    const Standard_Boolean          thePC2,
-    const Handle(IntTools_Context)& theContext = Handle(IntTools_Context)());
+    const bool          thePC1,
+    const bool          thePC2,
+    const occ::handle<IntTools_Context>& theContext = occ::handle<IntTools_Context>());
 
 public: //! @name Wire classification relatively face
   //! Checks if the wire is a hole for the face.
-  Standard_EXPORT static Standard_Boolean IsHole(const TopoDS_Shape& theW,
+  Standard_EXPORT static bool IsHole(const TopoDS_Shape& theW,
                                                  const TopoDS_Shape& theF);
 
 public: //! @name Choosing correct orientation for the split shape
@@ -311,20 +321,20 @@ public: //! @name Choosing correct orientation for the split shape
   //! @param[in] theShape  Original shape
   //! @param[in] theContext  cached geometrical tools
   //! @param[out] theError  Error Status of the operation
-  Standard_EXPORT static Standard_Boolean IsSplitToReverse(
+  Standard_EXPORT static bool IsSplitToReverse(
     const TopoDS_Shape&             theSplit,
     const TopoDS_Shape&             theShape,
-    const Handle(IntTools_Context)& theContext,
-    Standard_Integer*               theError = NULL);
+    const occ::handle<IntTools_Context>& theContext,
+    int*               theError = NULL);
 
   //! Add-on for the *IsSplitToReverse()* to check for its errors
   //! and in case of any add the *BOPAlgo_AlertUnableToOrientTheShape*
   //! warning to the report.
-  Standard_EXPORT static Standard_Boolean IsSplitToReverseWithWarn(
+  Standard_EXPORT static bool IsSplitToReverseWithWarn(
     const TopoDS_Shape&             theSplit,
     const TopoDS_Shape&             theShape,
-    const Handle(IntTools_Context)& theContext,
-    const Handle(Message_Report)&   theReport = NULL);
+    const occ::handle<IntTools_Context>& theContext,
+    const occ::handle<Message_Report>&   theReport = NULL);
 
   //! Checks if the normal direction of the split face is opposite to
   //! the normal direction of the original face.
@@ -346,11 +356,11 @@ public: //! @name Choosing correct orientation for the split shape
   //! @param[in] theShape  Original face
   //! @param[in] theContext  cached geometrical tools
   //! @param[out] theError  Error Status of the operation
-  Standard_EXPORT static Standard_Boolean IsSplitToReverse(
+  Standard_EXPORT static bool IsSplitToReverse(
     const TopoDS_Face&              theSplit,
     const TopoDS_Face&              theShape,
-    const Handle(IntTools_Context)& theContext,
-    Standard_Integer*               theError = NULL);
+    const occ::handle<IntTools_Context>& theContext,
+    int*               theError = NULL);
 
   //! Checks if the tangent vector of the split edge is opposite to
   //! the tangent vector of the original edge.
@@ -372,11 +382,11 @@ public: //! @name Choosing correct orientation for the split shape
   //! @param[in] theShape  Original edge
   //! @param[in] theContext  cached geometrical tools
   //! @param[out] theError  Error Status of the operation
-  Standard_EXPORT static Standard_Boolean IsSplitToReverse(
+  Standard_EXPORT static bool IsSplitToReverse(
     const TopoDS_Edge&              theSplit,
     const TopoDS_Edge&              theShape,
-    const Handle(IntTools_Context)& theContext,
-    Standard_Integer*               theError = NULL);
+    const occ::handle<IntTools_Context>& theContext,
+    int*               theError = NULL);
 
   //! Checks if the normals direction of the given faces computed near
   //! the shared edge coincide.
@@ -384,9 +394,9 @@ public: //! @name Choosing correct orientation for the split shape
   //! * 0 - in case of error (shared edge not found or directions are not collinear)
   //! * 1 - normal directions coincide;
   //! * -1 - normal directions are opposite.
-  Standard_EXPORT static Standard_Integer Sense(const TopoDS_Face&              theF1,
+  Standard_EXPORT static int Sense(const TopoDS_Face&              theF1,
                                                 const TopoDS_Face&              theF2,
-                                                const Handle(IntTools_Context)& theContext);
+                                                const occ::handle<IntTools_Context>& theContext);
 
 public: //! @name Making connexity blocks
   //! For the list of faces theLS build block
@@ -394,10 +404,10 @@ public: //! @name Making connexity blocks
   //! theMapAvoid - set of edges to avoid for
   //! the treatment
   Standard_EXPORT static void MakeConnexityBlock(
-    TopTools_ListOfShape&                    theLS,
-    TopTools_IndexedMapOfShape&              theMapAvoid,
-    TopTools_ListOfShape&                    theLSCB,
-    const Handle(NCollection_BaseAllocator)& theAllocator);
+    NCollection_List<TopoDS_Shape>&                    theLS,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&              theMapAvoid,
+    NCollection_List<TopoDS_Shape>&                    theLSCB,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! For the compound <theS> builds the blocks (compounds) of
   //! elements of type <theElementType> connected through the shapes
@@ -406,7 +416,7 @@ public: //! @name Making connexity blocks
   Standard_EXPORT static void MakeConnexityBlocks(const TopoDS_Shape&    theS,
                                                   const TopAbs_ShapeEnum theConnectionType,
                                                   const TopAbs_ShapeEnum theElementType,
-                                                  TopTools_ListOfShape&  theLCB);
+                                                  NCollection_List<TopoDS_Shape>&  theLCB);
 
   //! For the compound <theS> builds the blocks (compounds) of
   //! elements of type <theElementType> connected through the shapes
@@ -417,16 +427,16 @@ public: //! @name Making connexity blocks
     const TopoDS_Shape&                        theS,
     const TopAbs_ShapeEnum                     theConnectionType,
     const TopAbs_ShapeEnum                     theElementType,
-    TopTools_ListOfListOfShape&                theLCB,
-    TopTools_IndexedDataMapOfShapeListOfShape& theConnectionMap);
+    NCollection_List<NCollection_List<TopoDS_Shape>>&                theLCB,
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theConnectionMap);
 
   //! Makes connexity blocks of elements of the given type with the given type of the
   //! connecting elements. The blocks are checked on regularity (multi-connectivity)
   //! and stored to the list of blocks <theLCB>.
-  Standard_EXPORT static void MakeConnexityBlocks(const TopTools_ListOfShape&    theLS,
+  Standard_EXPORT static void MakeConnexityBlocks(const NCollection_List<TopoDS_Shape>&    theLS,
                                                   const TopAbs_ShapeEnum         theConnectionType,
                                                   const TopAbs_ShapeEnum         theElementType,
-                                                  BOPTools_ListOfConnexityBlock& theLCB);
+                                                  NCollection_List<BOPTools_ConnexityBlock>& theLCB);
 
 public: //! @name Orienting elements in container
   //! Correctly orients edges on the wire
@@ -443,46 +453,46 @@ public: //! @name Methods for shape validation (correction)
   //! perform.
   Standard_EXPORT static void CorrectTolerances(
     const TopoDS_Shape&               theS,
-    const TopTools_IndexedMapOfShape& theMapToAvoid,
-    const Standard_Real               theTolMax      = 0.0001,
-    const Standard_Boolean            theRunParallel = Standard_False);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapToAvoid,
+    const double               theTolMax      = 0.0001,
+    const bool            theRunParallel = false);
 
   //! Provides valid values of tolerances for the shape <theS>
   //! in terms of BRepCheck_InvalidCurveOnSurface.
   Standard_EXPORT static void CorrectCurveOnSurface(
     const TopoDS_Shape&               theS,
-    const TopTools_IndexedMapOfShape& theMapToAvoid,
-    const Standard_Real               theTolMax      = 0.0001,
-    const Standard_Boolean            theRunParallel = Standard_False);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapToAvoid,
+    const double               theTolMax      = 0.0001,
+    const bool            theRunParallel = false);
 
   //! Provides valid values of tolerances for the shape <theS>
   //! in terms of BRepCheck_InvalidPointOnCurve.
   Standard_EXPORT static void CorrectPointOnCurve(
     const TopoDS_Shape&               theS,
-    const TopTools_IndexedMapOfShape& theMapToAvoid,
-    const Standard_Real               theTolMax      = 0.0001,
-    const Standard_Boolean            theRunParallel = Standard_False);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapToAvoid,
+    const double               theTolMax      = 0.0001,
+    const bool            theRunParallel = false);
 
   //! Corrects tolerance values of the sub-shapes of the shape <theS> if needed.
   Standard_EXPORT static void CorrectShapeTolerances(
     const TopoDS_Shape&               theS,
-    const TopTools_IndexedMapOfShape& theMapToAvoid,
-    const Standard_Boolean            theRunParallel = Standard_False);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapToAvoid,
+    const bool            theRunParallel = false);
 
 public: //! Checking if the faces are coinciding
   //! Checks if the given faces are same-domain, i.e. coincide.
-  Standard_EXPORT static Standard_Boolean AreFacesSameDomain(
+  Standard_EXPORT static bool AreFacesSameDomain(
     const TopoDS_Face&              theF1,
     const TopoDS_Face&              theF2,
-    const Handle(IntTools_Context)& theContext,
-    const Standard_Real             theFuzz = Precision::Confusion());
+    const occ::handle<IntTools_Context>& theContext,
+    const double             theFuzz = Precision::Confusion());
 
 public: //! @name Looking for the edge in the face
   //! Returns True if the face theFace contains
   //! the edge theEdge but with opposite orientation.
   //! If the method returns True theEdgeOff is the
   //! edge founded
-  Standard_EXPORT static Standard_Boolean GetEdgeOff(const TopoDS_Edge& theEdge,
+  Standard_EXPORT static bool GetEdgeOff(const TopoDS_Edge& theEdge,
                                                      const TopoDS_Face& theFace,
                                                      TopoDS_Edge&       theEdgeOff);
 
@@ -490,7 +500,7 @@ public: //! @name Looking for the edge in the face
   //! that is the same as theEdge
   //! Returns True if such edge exists
   //! Returns False if there is no such edge
-  Standard_EXPORT static Standard_Boolean GetEdgeOnFace(const TopoDS_Edge& theEdge,
+  Standard_EXPORT static bool GetEdgeOnFace(const TopoDS_Edge& theEdge,
                                                         const TopoDS_Face& theFace,
                                                         TopoDS_Edge&       theEdgeOnF);
 
@@ -513,21 +523,21 @@ public: //! @name Checking edge on micro status
   //! Checks if it is possible to compute shrunk range for the edge <aE>
   //! Flag <theCheckSplittable> defines whether to take into account
   //! the possibility to split the edge or not.
-  Standard_EXPORT static Standard_Boolean IsMicroEdge(
+  Standard_EXPORT static bool IsMicroEdge(
     const TopoDS_Edge&              theEdge,
-    const Handle(IntTools_Context)& theContext,
-    const Standard_Boolean          theCheckSplittable = Standard_True);
+    const occ::handle<IntTools_Context>& theContext,
+    const bool          theCheckSplittable = true);
 
 public: //! @name Solid classification
   //! Returns true if the solid <theSolid> is inverted
-  Standard_EXPORT static Standard_Boolean IsInvertedSolid(const TopoDS_Solid& theSolid);
+  Standard_EXPORT static bool IsInvertedSolid(const TopoDS_Solid& theSolid);
 
 public: //! @name Edge/Face Deviation computation
   //! Computes the necessary value of the tolerance for the edge
-  Standard_EXPORT static Standard_Boolean ComputeTolerance(const TopoDS_Face& theFace,
+  Standard_EXPORT static bool ComputeTolerance(const TopoDS_Face& theFace,
                                                            const TopoDS_Edge& theEdge,
-                                                           Standard_Real&     theMaxDist,
-                                                           Standard_Real&     theMaxPar);
+                                                           double&     theMaxDist,
+                                                           double&     theMaxPar);
 
 public: //! @name Other methods
   //! Makes empty container of requested type
@@ -535,34 +545,34 @@ public: //! @name Other methods
 
   //! Compute a 3D-point on the edge <aEdge> at parameter <aPrm>
   Standard_EXPORT static void PointOnEdge(const TopoDS_Edge&  aEdge,
-                                          const Standard_Real aPrm,
+                                          const double aPrm,
                                           gp_Pnt&             aP);
 
   //! Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e
   //! the <PB> is IN or ON in 2D of <aF>
-  Standard_EXPORT static Standard_Boolean IsBlockInOnFace(const IntTools_Range&           aShR,
+  Standard_EXPORT static bool IsBlockInOnFace(const IntTools_Range&           aShR,
                                                           const TopoDS_Face&              aF,
                                                           const TopoDS_Edge&              aE,
-                                                          const Handle(IntTools_Context)& aContext);
+                                                          const occ::handle<IntTools_Context>& aContext);
 
   //! Returns the min and max dimensions of the shape <theS>.
   Standard_EXPORT static void Dimensions(const TopoDS_Shape& theS,
-                                         Standard_Integer&   theDMin,
-                                         Standard_Integer&   theDMax);
+                                         int&   theDMin,
+                                         int&   theDMax);
 
   //! Returns dimension of the shape <theS>.
   //! If the shape contains elements of different dimension, -1 is returned.
-  Standard_EXPORT static Standard_Integer Dimension(const TopoDS_Shape& theS);
+  Standard_EXPORT static int Dimension(const TopoDS_Shape& theS);
 
   //! Collects in the output list recursively all non-compound sub-shapes of the first level
   //! of the given shape theS. The optional map theMap is used to avoid the duplicates in the
   //! output list, so it will also contain all non-compound sub-shapes.
   Standard_EXPORT static void TreatCompound(const TopoDS_Shape&   theS,
-                                            TopTools_ListOfShape& theList,
-                                            TopTools_MapOfShape*  theMap = NULL);
+                                            NCollection_List<TopoDS_Shape>& theList,
+                                            NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*  theMap = NULL);
 
   //! Returns true if the shell <theShell> is open
-  Standard_EXPORT static Standard_Boolean IsOpenShell(const TopoDS_Shell& theShell);
+  Standard_EXPORT static bool IsOpenShell(const TopoDS_Shell& theShell);
 };
 
 #endif // _BOPTools_AlgoTools_HeaderFile

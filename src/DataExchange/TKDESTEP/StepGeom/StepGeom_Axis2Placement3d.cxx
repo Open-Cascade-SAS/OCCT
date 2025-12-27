@@ -20,12 +20,12 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Axis2Placement3d, StepGeom_Placement)
 
 StepGeom_Axis2Placement3d::StepGeom_Axis2Placement3d() {}
 
-void StepGeom_Axis2Placement3d::Init(const Handle(TCollection_HAsciiString)& aName,
-                                     const Handle(StepGeom_CartesianPoint)&  aLocation,
-                                     const Standard_Boolean                  hasAaxis,
-                                     const Handle(StepGeom_Direction)&       aAxis,
-                                     const Standard_Boolean                  hasArefDirection,
-                                     const Handle(StepGeom_Direction)&       aRefDirection)
+void StepGeom_Axis2Placement3d::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                     const occ::handle<StepGeom_CartesianPoint>&  aLocation,
+                                     const bool                  hasAaxis,
+                                     const occ::handle<StepGeom_Direction>&       aAxis,
+                                     const bool                  hasArefDirection,
+                                     const occ::handle<StepGeom_Direction>&       aRefDirection)
 {
   // --- classe own fields ---
   hasAxis         = hasAaxis;
@@ -36,46 +36,46 @@ void StepGeom_Axis2Placement3d::Init(const Handle(TCollection_HAsciiString)& aNa
   StepGeom_Placement::Init(aName, aLocation);
 }
 
-void StepGeom_Axis2Placement3d::SetAxis(const Handle(StepGeom_Direction)& aAxis)
+void StepGeom_Axis2Placement3d::SetAxis(const occ::handle<StepGeom_Direction>& aAxis)
 {
   axis    = aAxis;
-  hasAxis = Standard_True;
+  hasAxis = true;
 }
 
 void StepGeom_Axis2Placement3d::UnSetAxis()
 {
-  hasAxis = Standard_False;
+  hasAxis = false;
   axis.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_Axis2Placement3d::Axis() const
+occ::handle<StepGeom_Direction> StepGeom_Axis2Placement3d::Axis() const
 {
   return axis;
 }
 
-Standard_Boolean StepGeom_Axis2Placement3d::HasAxis() const
+bool StepGeom_Axis2Placement3d::HasAxis() const
 {
   return hasAxis;
 }
 
-void StepGeom_Axis2Placement3d::SetRefDirection(const Handle(StepGeom_Direction)& aRefDirection)
+void StepGeom_Axis2Placement3d::SetRefDirection(const occ::handle<StepGeom_Direction>& aRefDirection)
 {
   refDirection    = aRefDirection;
-  hasRefDirection = Standard_True;
+  hasRefDirection = true;
 }
 
 void StepGeom_Axis2Placement3d::UnSetRefDirection()
 {
-  hasRefDirection = Standard_False;
+  hasRefDirection = false;
   refDirection.Nullify();
 }
 
-Handle(StepGeom_Direction) StepGeom_Axis2Placement3d::RefDirection() const
+occ::handle<StepGeom_Direction> StepGeom_Axis2Placement3d::RefDirection() const
 {
   return refDirection;
 }
 
-Standard_Boolean StepGeom_Axis2Placement3d::HasRefDirection() const
+bool StepGeom_Axis2Placement3d::HasRefDirection() const
 {
   return hasRefDirection;
 }

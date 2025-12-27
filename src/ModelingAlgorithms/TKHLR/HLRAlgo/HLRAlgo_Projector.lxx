@@ -29,14 +29,13 @@ inline void HLRAlgo_Projector::Directions(gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& 
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_Projector::Perspective() const
+inline bool HLRAlgo_Projector::Perspective() const
 {
   return myPersp;
 }
 
 /*
 //=================================================================================================
-
 
 inline const gp_Trsf & HLRAlgo_Projector::Transformation() const
 { return myTrsf; }
@@ -57,7 +56,7 @@ inline const gp_Trsf& HLRAlgo_Projector::FullTransformation() const
 
 //=================================================================================================
 
-inline Standard_Real HLRAlgo_Projector::Focus() const
+inline double HLRAlgo_Projector::Focus() const
 {
   Standard_NoSuchObject_Raise_if(!myPersp, "HLRAlgo_Projector::Not a Perspective");
   return myFocus;

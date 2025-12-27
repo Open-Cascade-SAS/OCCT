@@ -25,27 +25,27 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_UAttributeDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_UAttributeDriver::BinMDataStd_UAttributeDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_UAttributeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_UAttributeDriver::NewEmpty() const
 {
   return (new TDataStd_UAttribute());
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                     const Handle(TDF_Attribute)& theTarget,
+bool BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
                                                      BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDataStd_UAttribute) anUAttr = Handle(TDataStd_UAttribute)::DownCast(theTarget);
+  occ::handle<TDataStd_UAttribute> anUAttr = occ::down_cast<TDataStd_UAttribute>(theTarget);
   Standard_GUID               aGUID;
-  Standard_Boolean            ok = theSource >> aGUID;
+  bool            ok = theSource >> aGUID;
   if (ok)
     anUAttr->SetID(aGUID);
   return ok;
@@ -53,10 +53,10 @@ Standard_Boolean BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&
 
 //=================================================================================================
 
-void BinMDataStd_UAttributeDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataStd_UAttributeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&) const
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_UAttribute) anUAttr = Handle(TDataStd_UAttribute)::DownCast(theSource);
+  occ::handle<TDataStd_UAttribute> anUAttr = occ::down_cast<TDataStd_UAttribute>(theSource);
   theTarget << anUAttr->ID();
 }

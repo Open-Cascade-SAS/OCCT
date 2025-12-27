@@ -8,8 +8,7 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_Algo.hxx
   HLRBRep_AreaLimit.cxx
   HLRBRep_AreaLimit.hxx
-  HLRBRep_Array1OfEData.hxx
-  HLRBRep_Array1OfFData.hxx
+
   HLRBRep_BCurveTool.cxx
   HLRBRep_BCurveTool.hxx
   HLRBRep_BCurveTool.lxx
@@ -68,10 +67,7 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_Intersector.hxx
   HLRBRep_LineTool.hxx
   HLRBRep_LineTool.lxx
-  HLRBRep_ListIteratorOfListOfBPnt2D.hxx
-  HLRBRep_ListIteratorOfListOfBPoint.hxx
-  HLRBRep_ListOfBPnt2D.hxx
-  HLRBRep_ListOfBPoint.hxx
+
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter_0.cxx
   HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx
@@ -80,7 +76,7 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_PolyHLRToShape.cxx
   HLRBRep_PolyHLRToShape.hxx
   HLRBRep_PolyHLRToShape.lxx
-  HLRBRep_SeqOfShapeBounds.hxx
+
   HLRBRep_ShapeBounds.cxx
   HLRBRep_ShapeBounds.hxx
   HLRBRep_ShapeBounds.lxx

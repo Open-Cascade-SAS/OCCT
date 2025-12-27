@@ -47,34 +47,34 @@ public:
   Standard_EXPORT STEPConstruct_Tool();
 
   //! Creates a tool and loads it with worksession
-  Standard_EXPORT STEPConstruct_Tool(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT STEPConstruct_Tool(const occ::handle<XSControl_WorkSession>& WS);
 
   //! Returns currently loaded WorkSession
-  const Handle(XSControl_WorkSession)& WS() const;
+  const occ::handle<XSControl_WorkSession>& WS() const;
 
   //! Returns current model (Null if not loaded)
-  Handle(Interface_InterfaceModel) Model() const;
+  occ::handle<Interface_InterfaceModel> Model() const;
 
   //! Returns current graph (recomputing if necessary)
-  const Interface_Graph& Graph(const Standard_Boolean recompute = Standard_False) const;
+  const Interface_Graph& Graph(const bool recompute = false) const;
 
   //! Returns TransientProcess (reading; Null if not loaded)
-  const Handle(Transfer_TransientProcess)& TransientProcess() const;
+  const occ::handle<Transfer_TransientProcess>& TransientProcess() const;
 
   //! Returns FinderProcess (writing; Null if not loaded)
-  const Handle(Transfer_FinderProcess)& FinderProcess() const;
+  const occ::handle<Transfer_FinderProcess>& FinderProcess() const;
 
 protected:
   //! Load worksession; returns True if succeeded
   //! Returns False if either FinderProcess of TransientProcess
   //! cannot be obtained or are Null
-  Standard_EXPORT Standard_Boolean SetWS(const Handle(XSControl_WorkSession)& WS);
+  Standard_EXPORT bool SetWS(const occ::handle<XSControl_WorkSession>& WS);
 
 private:
-  Handle(XSControl_WorkSession)     myWS;
-  Handle(Transfer_FinderProcess)    myFinderProcess;
-  Handle(Transfer_TransientProcess) myTransientProcess;
-  Handle(Interface_HGraph)          myHGraph;
+  occ::handle<XSControl_WorkSession>     myWS;
+  occ::handle<Transfer_FinderProcess>    myFinderProcess;
+  occ::handle<Transfer_TransientProcess> myTransientProcess;
+  occ::handle<Interface_HGraph>          myHGraph;
 };
 
 #include <STEPConstruct_Tool.lxx>

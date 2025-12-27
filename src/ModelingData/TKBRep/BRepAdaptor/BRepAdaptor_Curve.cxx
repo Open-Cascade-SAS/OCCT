@@ -61,19 +61,19 @@ BRepAdaptor_Curve::BRepAdaptor_Curve(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) BRepAdaptor_Curve::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> BRepAdaptor_Curve::ShallowCopy() const
 {
-  Handle(BRepAdaptor_Curve) aCopy = new BRepAdaptor_Curve();
+  occ::handle<BRepAdaptor_Curve> aCopy = new BRepAdaptor_Curve();
 
   aCopy->myTrsf = myTrsf;
 
-  const Handle(Adaptor3d_Curve) aCurve     = myCurve.ShallowCopy();
-  const GeomAdaptor_Curve&      aGeomCurve = *(Handle(GeomAdaptor_Curve)::DownCast(aCurve));
+  const occ::handle<Adaptor3d_Curve> aCurve     = myCurve.ShallowCopy();
+  const GeomAdaptor_Curve&      aGeomCurve = *(occ::down_cast<GeomAdaptor_Curve>(aCurve));
   aCopy->myCurve                           = aGeomCurve;
 
   if (!myConSurf.IsNull())
   {
-    aCopy->myConSurf = Handle(Adaptor3d_CurveOnSurface)::DownCast(myConSurf->ShallowCopy());
+    aCopy->myConSurf = occ::down_cast<Adaptor3d_CurveOnSurface>(myConSurf->ShallowCopy());
   }
   aCopy->myEdge = myEdge;
 
@@ -96,10 +96,10 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E)
 {
   myConSurf.Nullify();
   myEdge = E;
-  Standard_Real pf, pl;
+  double pf, pl;
 
   TopLoc_Location    L;
-  Handle(Geom_Curve) C = BRep_Tool::Curve(E, L, pf, pl);
+  occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, L, pf, pl);
 
   if (!C.IsNull())
   {
@@ -107,14 +107,14 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E)
   }
   else
   {
-    Handle(Geom2d_Curve) PC;
-    Handle(Geom_Surface) S;
+    occ::handle<Geom2d_Curve> PC;
+    occ::handle<Geom_Surface> S;
     BRep_Tool::CurveOnSurface(E, PC, S, L, pf, pl);
     if (!PC.IsNull())
     {
-      Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface();
+      occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
       HS->Load(S);
-      Handle(Geom2dAdaptor_Curve) HC = new Geom2dAdaptor_Curve();
+      occ::handle<Geom2dAdaptor_Curve> HC = new Geom2dAdaptor_Curve();
       HC->Load(PC, pf, pl);
       myConSurf = new Adaptor3d_CurveOnSurface();
       myConSurf->Load(HC, HS);
@@ -135,13 +135,13 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
 
   myEdge = E;
   TopLoc_Location      L;
-  Standard_Real        pf, pl;
-  Handle(Geom_Surface) S  = BRep_Tool::Surface(F, L);
-  Handle(Geom2d_Curve) PC = BRep_Tool::CurveOnSurface(E, F, pf, pl);
+  double        pf, pl;
+  occ::handle<Geom_Surface> S  = BRep_Tool::Surface(F, L);
+  occ::handle<Geom2d_Curve> PC = BRep_Tool::CurveOnSurface(E, F, pf, pl);
 
-  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface();
+  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
   HS->Load(S);
-  Handle(Geom2dAdaptor_Curve) HC = new Geom2dAdaptor_Curve();
+  occ::handle<Geom2dAdaptor_Curve> HC = new Geom2dAdaptor_Curve();
   HC->Load(PC, pf, pl);
   myConSurf = new Adaptor3d_CurveOnSurface();
   myConSurf->Load(HC, HS);
@@ -158,14 +158,14 @@ const gp_Trsf& BRepAdaptor_Curve::Trsf() const
 
 //=================================================================================================
 
-Standard_Boolean BRepAdaptor_Curve::Is3DCurve() const
+bool BRepAdaptor_Curve::Is3DCurve() const
 {
   return myConSurf.IsNull();
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepAdaptor_Curve::IsCurveOnSurface() const
+bool BRepAdaptor_Curve::IsCurveOnSurface() const
 {
   return !myConSurf.IsNull();
 }
@@ -193,14 +193,14 @@ const TopoDS_Edge& BRepAdaptor_Curve::Edge() const
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Curve::Tolerance() const
+double BRepAdaptor_Curve::Tolerance() const
 {
   return BRep_Tool::Tolerance(myEdge);
 }
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Curve::FirstParameter() const
+double BRepAdaptor_Curve::FirstParameter() const
 {
   if (myConSurf.IsNull())
   {
@@ -214,7 +214,7 @@ Standard_Real BRepAdaptor_Curve::FirstParameter() const
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Curve::LastParameter() const
+double BRepAdaptor_Curve::LastParameter() const
 {
   if (myConSurf.IsNull())
   {
@@ -242,7 +242,7 @@ GeomAbs_Shape BRepAdaptor_Curve::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
+int BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 {
   if (myConSurf.IsNull())
   {
@@ -256,7 +256,7 @@ Standard_Integer BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 
 //=================================================================================================
 
-void BRepAdaptor_Curve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BRepAdaptor_Curve::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   if (myConSurf.IsNull())
   {
@@ -270,34 +270,34 @@ void BRepAdaptor_Curve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) BRepAdaptor_Curve::Trim(const Standard_Real First,
-                                                const Standard_Real Last,
-                                                const Standard_Real Tol) const
+occ::handle<Adaptor3d_Curve> BRepAdaptor_Curve::Trim(const double First,
+                                                const double Last,
+                                                const double Tol) const
 {
   // On fait une copie de this pour garder la trsf.
-  Handle(BRepAdaptor_Curve) res;
+  occ::handle<BRepAdaptor_Curve> res;
   if (myConSurf.IsNull())
   {
-    Standard_Real      pf = FirstParameter(), pl = LastParameter();
-    Handle(Geom_Curve) C = myCurve.Curve();
+    double      pf = FirstParameter(), pl = LastParameter();
+    occ::handle<Geom_Curve> C = myCurve.Curve();
     const_cast<GeomAdaptor_Curve*>(&myCurve)->Load(C, First, Last);
     res = new BRepAdaptor_Curve(*this);
     const_cast<GeomAdaptor_Curve*>(&myCurve)->Load(C, pf, pl);
   }
   else
   {
-    Handle(Adaptor3d_CurveOnSurface) sav = myConSurf;
-    const_cast<Handle(Adaptor3d_CurveOnSurface)&>(myConSurf) =
-      Handle(Adaptor3d_CurveOnSurface)::DownCast(myConSurf->Trim(First, Last, Tol));
+    occ::handle<Adaptor3d_CurveOnSurface> sav = myConSurf;
+    const_cast<occ::handle<Adaptor3d_CurveOnSurface>&>(myConSurf) =
+      occ::down_cast<Adaptor3d_CurveOnSurface>(myConSurf->Trim(First, Last, Tol));
     res                                                      = new BRepAdaptor_Curve(*this);
-    const_cast<Handle(Adaptor3d_CurveOnSurface)&>(myConSurf) = sav;
+    const_cast<occ::handle<Adaptor3d_CurveOnSurface>&>(myConSurf) = sav;
   }
   return res;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepAdaptor_Curve::IsClosed() const
+bool BRepAdaptor_Curve::IsClosed() const
 {
   if (myConSurf.IsNull())
   {
@@ -311,7 +311,7 @@ Standard_Boolean BRepAdaptor_Curve::IsClosed() const
 
 //=================================================================================================
 
-Standard_Boolean BRepAdaptor_Curve::IsPeriodic() const
+bool BRepAdaptor_Curve::IsPeriodic() const
 {
   if (myConSurf.IsNull())
   {
@@ -325,7 +325,7 @@ Standard_Boolean BRepAdaptor_Curve::IsPeriodic() const
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Curve::Period() const
+double BRepAdaptor_Curve::Period() const
 {
   if (myConSurf.IsNull())
   {
@@ -339,7 +339,7 @@ Standard_Real BRepAdaptor_Curve::Period() const
 
 //=================================================================================================
 
-gp_Pnt BRepAdaptor_Curve::Value(const Standard_Real U) const
+gp_Pnt BRepAdaptor_Curve::Value(const double U) const
 {
   gp_Pnt P;
   if (myConSurf.IsNull())
@@ -352,7 +352,7 @@ gp_Pnt BRepAdaptor_Curve::Value(const Standard_Real U) const
 
 //=================================================================================================
 
-void BRepAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
+void BRepAdaptor_Curve::D0(const double U, gp_Pnt& P) const
 {
   if (myConSurf.IsNull())
     myCurve.D0(U, P);
@@ -363,7 +363,7 @@ void BRepAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 
 //=================================================================================================
 
-void BRepAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+void BRepAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   if (myConSurf.IsNull())
     myCurve.D1(U, P, V);
@@ -375,7 +375,7 @@ void BRepAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
 
 //=================================================================================================
 
-void BRepAdaptor_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void BRepAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   if (myConSurf.IsNull())
     myCurve.D2(U, P, V1, V2);
@@ -388,7 +388,7 @@ void BRepAdaptor_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
 
 //=================================================================================================
 
-void BRepAdaptor_Curve::D3(const Standard_Real U,
+void BRepAdaptor_Curve::D3(const double U,
                            gp_Pnt&             P,
                            gp_Vec&             V1,
                            gp_Vec&             V2,
@@ -406,7 +406,7 @@ void BRepAdaptor_Curve::D3(const Standard_Real U,
 
 //=================================================================================================
 
-gp_Vec BRepAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N) const
+gp_Vec BRepAdaptor_Curve::DN(const double U, const int N) const
 {
   gp_Vec V;
   if (myConSurf.IsNull())
@@ -419,7 +419,7 @@ gp_Vec BRepAdaptor_Curve::DN(const Standard_Real U, const Standard_Integer N) co
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Curve::Resolution(const Standard_Real R) const
+double BRepAdaptor_Curve::Resolution(const double R) const
 {
   if (myConSurf.IsNull())
   {
@@ -512,7 +512,7 @@ gp_Parab BRepAdaptor_Curve::Parabola() const
 
 //=================================================================================================
 
-Standard_Integer BRepAdaptor_Curve::Degree() const
+int BRepAdaptor_Curve::Degree() const
 {
   if (myConSurf.IsNull())
     return myCurve.Degree();
@@ -522,7 +522,7 @@ Standard_Integer BRepAdaptor_Curve::Degree() const
 
 //=================================================================================================
 
-Standard_Boolean BRepAdaptor_Curve::IsRational() const
+bool BRepAdaptor_Curve::IsRational() const
 {
   if (myConSurf.IsNull())
     return myCurve.IsRational();
@@ -532,7 +532,7 @@ Standard_Boolean BRepAdaptor_Curve::IsRational() const
 
 //=================================================================================================
 
-Standard_Integer BRepAdaptor_Curve::NbPoles() const
+int BRepAdaptor_Curve::NbPoles() const
 {
   if (myConSurf.IsNull())
     return myCurve.NbPoles();
@@ -542,7 +542,7 @@ Standard_Integer BRepAdaptor_Curve::NbPoles() const
 
 //=================================================================================================
 
-Standard_Integer BRepAdaptor_Curve::NbKnots() const
+int BRepAdaptor_Curve::NbKnots() const
 {
   if (myConSurf.IsNull())
     return myCurve.NbKnots();
@@ -552,9 +552,9 @@ Standard_Integer BRepAdaptor_Curve::NbKnots() const
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) BRepAdaptor_Curve::Bezier() const
+occ::handle<Geom_BezierCurve> BRepAdaptor_Curve::Bezier() const
 {
-  Handle(Geom_BezierCurve) BC;
+  occ::handle<Geom_BezierCurve> BC;
   if (myConSurf.IsNull())
   {
     BC = myCurve.Bezier();
@@ -564,14 +564,14 @@ Handle(Geom_BezierCurve) BRepAdaptor_Curve::Bezier() const
     BC = myConSurf->Bezier();
   }
   return myTrsf.Form() == gp_Identity ? BC
-                                      : Handle(Geom_BezierCurve)::DownCast(BC->Transformed(myTrsf));
+                                      : occ::down_cast<Geom_BezierCurve>(BC->Transformed(myTrsf));
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) BRepAdaptor_Curve::BSpline() const
+occ::handle<Geom_BSplineCurve> BRepAdaptor_Curve::BSpline() const
 {
-  Handle(Geom_BSplineCurve) BS;
+  occ::handle<Geom_BSplineCurve> BS;
   if (myConSurf.IsNull())
   {
     BS = myCurve.BSpline();
@@ -582,18 +582,18 @@ Handle(Geom_BSplineCurve) BRepAdaptor_Curve::BSpline() const
   }
   return myTrsf.Form() == gp_Identity
            ? BS
-           : Handle(Geom_BSplineCurve)::DownCast(BS->Transformed(myTrsf));
+           : occ::down_cast<Geom_BSplineCurve>(BS->Transformed(myTrsf));
 }
 
 //=================================================================================================
 
-Handle(Geom_OffsetCurve) BRepAdaptor_Curve::OffsetCurve() const
+occ::handle<Geom_OffsetCurve> BRepAdaptor_Curve::OffsetCurve() const
 {
   if (!Is3DCurve() || myCurve.GetType() != GeomAbs_OffsetCurve)
     throw Standard_NoSuchObject("BRepAdaptor_Curve::OffsetCurve");
 
-  Handle(Geom_OffsetCurve) anOffC = myCurve.OffsetCurve();
+  occ::handle<Geom_OffsetCurve> anOffC = myCurve.OffsetCurve();
   return myTrsf.Form() == gp_Identity
            ? anOffC
-           : Handle(Geom_OffsetCurve)::DownCast(anOffC->Transformed(myTrsf));
+           : occ::down_cast<Geom_OffsetCurve>(anOffC->Transformed(myTrsf));
 }

@@ -34,51 +34,51 @@ public:
         myU(0.),
         myV(0.),
         myPOC(1),
-        myDegenerated(Standard_False)
+        myDegenerated(false)
   {
   }
 
   //! Constructor
-  IntPolyh_Point(const Standard_Real x,
-                 const Standard_Real y,
-                 const Standard_Real z,
-                 const Standard_Real u,
-                 const Standard_Real v)
+  IntPolyh_Point(const double x,
+                 const double y,
+                 const double z,
+                 const double u,
+                 const double v)
       : myX(x),
         myY(y),
         myZ(z),
         myU(u),
         myV(v),
         myPOC(1),
-        myDegenerated(Standard_False)
+        myDegenerated(false)
   {
   }
 
   //! Returns X coordinate of the 3D point
-  Standard_Real X() const { return myX; }
+  double X() const { return myX; }
 
   //! Returns Y coordinate of the 3D point
-  Standard_Real Y() const { return myY; }
+  double Y() const { return myY; }
 
   //! Returns the Z coordinate of the 3D point
-  Standard_Real Z() const { return myZ; }
+  double Z() const { return myZ; }
 
   //! Returns the U coordinate of the 2D point
-  Standard_Real U() const { return myU; }
+  double U() const { return myU; }
 
   //! Returns the V coordinate of the 2D point
-  Standard_Real V() const { return myV; }
+  double V() const { return myV; }
 
   //! Returns 0 if the point is not common with the other surface
-  Standard_Integer PartOfCommon() const { return myPOC; }
+  int PartOfCommon() const { return myPOC; }
 
   //! Sets the point
-  void Set(const Standard_Real    x,
-           const Standard_Real    y,
-           const Standard_Real    z,
-           const Standard_Real    u,
-           const Standard_Real    v,
-           const Standard_Integer II = 1)
+  void Set(const double    x,
+           const double    y,
+           const double    z,
+           const double    u,
+           const double    v,
+           const int II = 1)
   {
     myX   = x;
     myY   = y;
@@ -89,25 +89,25 @@ public:
   }
 
   //! Sets the X coordinate for the 3D point
-  void SetX(const Standard_Real x) { myX = x; }
+  void SetX(const double x) { myX = x; }
 
   //! Sets the Y coordinate for the 3D point
-  void SetY(const Standard_Real y) { myY = y; }
+  void SetY(const double y) { myY = y; }
 
   //! Sets the Z coordinate for the 3D point
-  void SetZ(const Standard_Real z) { myZ = z; }
+  void SetZ(const double z) { myZ = z; }
 
   //! Sets the U coordinate for the 2D point
-  void SetU(const Standard_Real u) { myU = u; }
+  void SetU(const double u) { myU = u; }
 
   //! Sets the V coordinate for the 2D point
-  void SetV(const Standard_Real v) { myV = v; }
+  void SetV(const double v) { myV = v; }
 
   //! Sets the part of common
-  void SetPartOfCommon(const Standard_Integer ii) { myPOC = ii; }
+  void SetPartOfCommon(const int ii) { myPOC = ii; }
 
   //! Creates middle point from P1 and P2 and stores it to this
-  Standard_EXPORT void Middle(const Handle(Adaptor3d_Surface)& MySurface,
+  Standard_EXPORT void Middle(const occ::handle<Adaptor3d_Surface>& MySurface,
                               const IntPolyh_Point&            P1,
                               const IntPolyh_Point&            P2);
   //! Addition
@@ -121,43 +121,42 @@ public:
   IntPolyh_Point operator-(const IntPolyh_Point& P1) const { return Sub(P1); }
 
   //! Division
-  Standard_EXPORT IntPolyh_Point Divide(const Standard_Real rr) const;
+  Standard_EXPORT IntPolyh_Point Divide(const double rr) const;
 
-  IntPolyh_Point operator/(const Standard_Real rr) const { return Divide(rr); }
+  IntPolyh_Point operator/(const double rr) const { return Divide(rr); }
 
   //! Multiplication
-  Standard_EXPORT IntPolyh_Point Multiplication(const Standard_Real rr) const;
+  Standard_EXPORT IntPolyh_Point Multiplication(const double rr) const;
 
-  IntPolyh_Point operator*(const Standard_Real rr) const { return Multiplication(rr); }
+  IntPolyh_Point operator*(const double rr) const { return Multiplication(rr); }
 
   //! Square modulus
-  Standard_EXPORT Standard_Real SquareModulus() const;
+  Standard_EXPORT double SquareModulus() const;
   //! Square distance to the other point
-  Standard_EXPORT Standard_Real SquareDistance(const IntPolyh_Point& P2) const;
+  Standard_EXPORT double SquareDistance(const IntPolyh_Point& P2) const;
   //! Dot
-  Standard_EXPORT Standard_Real Dot(const IntPolyh_Point& P2) const;
+  Standard_EXPORT double Dot(const IntPolyh_Point& P2) const;
   //! Cross
   Standard_EXPORT void Cross(const IntPolyh_Point& P1, const IntPolyh_Point& P2);
   //! Dump
   Standard_EXPORT void Dump() const;
   //! Dump
-  Standard_EXPORT void Dump(const Standard_Integer i) const;
+  Standard_EXPORT void Dump(const int i) const;
 
   //! Sets the degenerated flag
-  void SetDegenerated(const Standard_Boolean theFlag) { myDegenerated = theFlag; }
+  void SetDegenerated(const bool theFlag) { myDegenerated = theFlag; }
 
   //! Returns the degenerated flag
-  Standard_Boolean Degenerated() const { return myDegenerated; }
+  bool Degenerated() const { return myDegenerated; }
 
-protected:
 private:
-  Standard_Real    myX;
-  Standard_Real    myY;
-  Standard_Real    myZ;
-  Standard_Real    myU;
-  Standard_Real    myV;
-  Standard_Integer myPOC;
-  Standard_Boolean myDegenerated;
+  double    myX;
+  double    myY;
+  double    myZ;
+  double    myU;
+  double    myV;
+  int myPOC;
+  bool myDegenerated;
 };
 
 #endif // _IntPolyh_Point_HeaderFile

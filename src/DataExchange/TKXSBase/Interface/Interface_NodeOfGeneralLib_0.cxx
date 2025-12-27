@@ -26,7 +26,7 @@
 
 Interface_NodeOfGeneralLib::Interface_NodeOfGeneralLib() {}
 
-void Interface_NodeOfGeneralLib::AddNode(const Handle(Interface_GlobalNodeOfGeneralLib)& anode)
+void Interface_NodeOfGeneralLib::AddNode(const occ::handle<Interface_GlobalNodeOfGeneralLib>& anode)
 {
   if (thenode == anode)
     return;
@@ -44,17 +44,17 @@ void Interface_NodeOfGeneralLib::AddNode(const Handle(Interface_GlobalNodeOfGene
     thenext->AddNode(anode);
 }
 
-const Handle(Interface_GeneralModule)& Interface_NodeOfGeneralLib::Module() const
+const occ::handle<Interface_GeneralModule>& Interface_NodeOfGeneralLib::Module() const
 {
   return thenode->Module();
 }
 
-const Handle(Interface_Protocol)& Interface_NodeOfGeneralLib::Protocol() const
+const occ::handle<Interface_Protocol>& Interface_NodeOfGeneralLib::Protocol() const
 {
   return thenode->Protocol();
 }
 
-const Handle(Interface_NodeOfGeneralLib)& Interface_NodeOfGeneralLib::Next() const
+const occ::handle<Interface_NodeOfGeneralLib>& Interface_NodeOfGeneralLib::Next() const
 {
   return thenext;
 }

@@ -24,34 +24,34 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SectionLaw, Standard_Transient)
 
-Standard_Boolean GeomFill_SectionLaw::D1(const Standard_Real,
-                                         TColgp_Array1OfPnt&,
-                                         TColgp_Array1OfVec&,
-                                         TColStd_Array1OfReal&,
-                                         TColStd_Array1OfReal&)
+bool GeomFill_SectionLaw::D1(const double,
+                                         NCollection_Array1<gp_Pnt>&,
+                                         NCollection_Array1<gp_Vec>&,
+                                         NCollection_Array1<double>&,
+                                         NCollection_Array1<double>&)
 {
   throw Standard_NotImplemented("GeomFill_SectionLaw::D1");
 }
 
-Standard_Boolean GeomFill_SectionLaw::D2(const Standard_Real,
-                                         TColgp_Array1OfPnt&,
-                                         TColgp_Array1OfVec&,
-                                         TColgp_Array1OfVec&,
-                                         TColStd_Array1OfReal&,
-                                         TColStd_Array1OfReal&,
-                                         TColStd_Array1OfReal&)
+bool GeomFill_SectionLaw::D2(const double,
+                                         NCollection_Array1<gp_Pnt>&,
+                                         NCollection_Array1<gp_Vec>&,
+                                         NCollection_Array1<gp_Vec>&,
+                                         NCollection_Array1<double>&,
+                                         NCollection_Array1<double>&,
+                                         NCollection_Array1<double>&)
 {
   throw Standard_NotImplemented("GeomFill_SectionLaw::D2");
 }
 
-Handle(Geom_BSplineSurface) GeomFill_SectionLaw::BSplineSurface() const
+occ::handle<Geom_BSplineSurface> GeomFill_SectionLaw::BSplineSurface() const
 {
-  Handle(Geom_BSplineSurface) BS;
+  occ::handle<Geom_BSplineSurface> BS;
   BS.Nullify();
   return BS;
 }
 
-void GeomFill_SectionLaw::SetTolerance(const Standard_Real, const Standard_Real)
+void GeomFill_SectionLaw::SetTolerance(const double, const double)
 {
   // Ne fait Rien
 }
@@ -62,31 +62,31 @@ gp_Pnt GeomFill_SectionLaw::BarycentreOfSurf() const
   throw Standard_NotImplemented("GeomFill_SectionLaw::BarycentreOfSurf");
 }
 
-void GeomFill_SectionLaw::GetMinimalWeight(TColStd_Array1OfReal&) const
+void GeomFill_SectionLaw::GetMinimalWeight(NCollection_Array1<double>&) const
 {
   throw Standard_NotImplemented("GeomFill_SectionLaw::GetMinimalWeight");
 }
 
-Standard_Boolean GeomFill_SectionLaw::IsConstant(Standard_Real& Error) const
+bool GeomFill_SectionLaw::IsConstant(double& Error) const
 {
   Error = 0.;
-  return Standard_False;
+  return false;
 }
 
-Handle(Geom_Curve) GeomFill_SectionLaw::ConstantSection() const
+occ::handle<Geom_Curve> GeomFill_SectionLaw::ConstantSection() const
 {
-  Handle(Geom_Curve) C;
+  occ::handle<Geom_Curve> C;
   throw Standard_DomainError("GeomFill_SectionLaw::ConstantSection");
 }
 
-Standard_Boolean GeomFill_SectionLaw::IsConicalLaw(Standard_Real& Error) const
+bool GeomFill_SectionLaw::IsConicalLaw(double& Error) const
 {
   Error = 0.;
-  return Standard_False;
+  return false;
 }
 
-Handle(Geom_Curve) GeomFill_SectionLaw::CirclSection(const Standard_Real) const
+occ::handle<Geom_Curve> GeomFill_SectionLaw::CirclSection(const double) const
 {
-  Handle(Geom_Curve) C;
+  occ::handle<Geom_Curve> C;
   throw Standard_DomainError("GeomFill_SectionLaw::CirclSection");
 }

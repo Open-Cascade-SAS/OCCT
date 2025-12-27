@@ -23,7 +23,7 @@
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 // Attention :
@@ -51,17 +51,17 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
 
-  Standard_Integer ii;
+  int ii;
 
-  Standard_Real                 R, value;
-  Handle(TColStd_HArray1OfReal) CosNumeratorPtr, SinNumeratorPtr;
+  double                 R, value;
+  occ::handle<TColStd_HArray1OfReal> CosNumeratorPtr, SinNumeratorPtr;
 
   R = C.Radius();
   if (Parameterisation != Convert_TgtThetaOver2 && Parameterisation != Convert_RationalC1)
   {
     // In case if BuildCosAndSin does not know how to manage the periodicity
     // => trim on 0,2*PI
-    isperiodic = Standard_False;
+    isperiodic = false;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 0,
                                                 2 * M_PI,
@@ -74,7 +74,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
   }
   else
   {
-    isperiodic = Standard_True;
+    isperiodic = true;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 CosNumeratorPtr,
                                                 SinNumeratorPtr,
@@ -120,25 +120,25 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
 
 Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
   const gp_Circ2d&                   C,
-  const Standard_Real                UFirst,
-  const Standard_Real                ULast,
+  const double                UFirst,
+  const double                ULast,
   const Convert_ParameterisationType Parameterisation)
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
-  Standard_Real delta = ULast - UFirst;
-  Standard_Real Eps   = Precision::PConfusion();
+  double delta = ULast - UFirst;
+  double Eps   = Precision::PConfusion();
 
   if ((delta > (2 * M_PI + Eps)) || (delta <= 0.0e0))
   {
     throw Standard_DomainError("Convert_CircleToBSplineCurve");
   }
 
-  Standard_Integer              ii;
-  Standard_Real                 R, value;
-  Handle(TColStd_HArray1OfReal) CosNumeratorPtr, SinNumeratorPtr;
+  int              ii;
+  double                 R, value;
+  occ::handle<TColStd_HArray1OfReal> CosNumeratorPtr, SinNumeratorPtr;
 
   R          = C.Radius();
-  isperiodic = Standard_False;
+  isperiodic = false;
   Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                               UFirst,
                                               ULast,

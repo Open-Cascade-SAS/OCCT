@@ -23,7 +23,8 @@
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <IntTools_Curve.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 class IntTools_Curve;
 class Bnd_Box;
 class BOPDS_PaveBlock;
@@ -42,7 +43,7 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  BOPDS_Curve(const Handle(NCollection_BaseAllocator)& theAllocator);
+  BOPDS_Curve(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Modifier
   //! Sets the curve <theC>
@@ -64,17 +65,17 @@ public:
   //! Returns the bounding box of the curve
   Bnd_Box& ChangeBox();
 
-  void SetPaveBlocks(const BOPDS_ListOfPaveBlock& theLPB);
+  void SetPaveBlocks(const NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB);
 
   //! Selector
   //! Returns the list of pave blocks
   //! of the curve
-  const BOPDS_ListOfPaveBlock& PaveBlocks() const;
+  const NCollection_List<occ::handle<BOPDS_PaveBlock>>& PaveBlocks() const;
 
   //! Selector/Modifier
   //! Returns the list of pave blocks
   //! of the curve
-  BOPDS_ListOfPaveBlock& ChangePaveBlocks();
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>& ChangePaveBlocks();
 
   //! Creates initial pave block
   //! of the curve
@@ -83,41 +84,40 @@ public:
   //! Selector/Modifier
   //! Returns initial pave block
   //! of the curve
-  Handle(BOPDS_PaveBlock)& ChangePaveBlock1();
+  occ::handle<BOPDS_PaveBlock>& ChangePaveBlock1();
 
   //! Selector
   //! Returns list of indices of technologic vertices
   //! of the curve
-  const TColStd_ListOfInteger& TechnoVertices() const;
+  const NCollection_List<int>& TechnoVertices() const;
 
   //! Selector/Modifier
   //! Returns list of indices of technologic vertices
   //! of the curve
-  TColStd_ListOfInteger& ChangeTechnoVertices();
+  NCollection_List<int>& ChangeTechnoVertices();
 
   //! Query
   //! Returns true if at least one pave block of the curve
   //! has edge
-  Standard_Boolean HasEdge() const;
+  bool HasEdge() const;
 
   //! Sets the tolerance for the curve.
-  void SetTolerance(const Standard_Real theTol) { myTolerance = theTol; }
+  void SetTolerance(const double theTol) { myTolerance = theTol; }
 
   //! Returns the tolerance of the curve
-  Standard_Real Tolerance() const { return myTolerance; }
+  double Tolerance() const { return myTolerance; }
 
   //! Returns the tangential tolerance of the curve
-  Standard_Real TangentialTolerance() const { return myCurve.TangentialTolerance(); }
+  double TangentialTolerance() const { return myCurve.TangentialTolerance(); }
 
 protected:
-  Handle(NCollection_BaseAllocator) myAllocator;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
   IntTools_Curve                    myCurve;
-  BOPDS_ListOfPaveBlock             myPaveBlocks;
-  TColStd_ListOfInteger             myTechnoVertices;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>             myPaveBlocks;
+  NCollection_List<int>             myTechnoVertices;
   Bnd_Box                           myBox;
-  Standard_Real                     myTolerance;
+  double                     myTolerance;
 
-private:
 };
 
 #include <BOPDS_Curve.lxx>

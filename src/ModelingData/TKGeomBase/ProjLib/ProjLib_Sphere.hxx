@@ -45,21 +45,20 @@ public:
 
   Standard_EXPORT void Init(const gp_Sphere& Sp);
 
-  Standard_EXPORT virtual void Project(const gp_Lin& L) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Project(const gp_Lin& L) override;
 
-  Standard_EXPORT virtual void Project(const gp_Circ& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Project(const gp_Circ& C) override;
 
-  Standard_EXPORT virtual void Project(const gp_Elips& E) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Project(const gp_Elips& E) override;
 
-  Standard_EXPORT virtual void Project(const gp_Parab& P) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Project(const gp_Parab& P) override;
 
-  Standard_EXPORT virtual void Project(const gp_Hypr& H) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Project(const gp_Hypr& H) override;
 
   //! Set the point of parameter U on C in the natural
   //! restrictions of the sphere.
-  Standard_EXPORT void SetInBounds(const Standard_Real U);
+  Standard_EXPORT void SetInBounds(const double U);
 
-protected:
 private:
   gp_Sphere mySphere;
 };

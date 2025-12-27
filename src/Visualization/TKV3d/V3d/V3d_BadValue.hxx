@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class V3d_BadValue;
-DEFINE_STANDARD_HANDLE(V3d_BadValue, Standard_OutOfRange)
-
 #if !defined No_Exception && !defined No_V3d_BadValue
   #define V3d_BadValue_Raise_if(CONDITION, MESSAGE)                                                \
     if (CONDITION)                                                                                 \

@@ -20,7 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Wire;
 class TopoDS_Face;
 
@@ -39,11 +40,10 @@ public:
 
   Standard_EXPORT void AddWire(const TopoDS_Wire& W);
 
-  Standard_EXPORT void MakeFaces(const TopoDS_Face& F, TopTools_ListOfShape& LF);
+  Standard_EXPORT void MakeFaces(const TopoDS_Face& F, NCollection_List<TopoDS_Shape>& LF);
 
-protected:
 private:
-  TopTools_ListOfShape myLW;
+  NCollection_List<TopoDS_Shape> myLW;
 };
 
 #endif // _TopOpeBRepBuild_WireToFace_HeaderFile

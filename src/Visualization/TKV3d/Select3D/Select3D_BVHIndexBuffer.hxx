@@ -23,7 +23,7 @@ class Select3D_BVHIndexBuffer : public Graphic3d_Buffer
 {
 public:
   //! Empty constructor.
-  Select3D_BVHIndexBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+  Select3D_BVHIndexBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : Graphic3d_Buffer(theAlloc),
         myHasPatches(false)
   {
@@ -32,7 +32,7 @@ public:
   bool HasPatches() const { return myHasPatches; }
 
   //! Allocates new empty index array
-  bool Init(const Standard_Integer theNbElems, const bool theHasPatches)
+  bool Init(const int theNbElems, const bool theHasPatches)
   {
     release();
     Stride       = sizeof(unsigned int);
@@ -53,29 +53,29 @@ public:
   }
 
   //! Access index at specified position
-  Standard_Integer Index(const Standard_Integer theIndex) const
+  int Index(const int theIndex) const
   {
-    return Standard_Integer(*reinterpret_cast<const unsigned int*>(value(theIndex)));
+    return int(*reinterpret_cast<const unsigned int*>(value(theIndex)));
   }
 
   //! Access index at specified position
-  Standard_Integer PatchSize(const Standard_Integer theIndex) const
+  int PatchSize(const int theIndex) const
   {
-    return myHasPatches ? Standard_Integer(*reinterpret_cast<const unsigned int*>(
+    return myHasPatches ? int(*reinterpret_cast<const unsigned int*>(
                             value(theIndex) + sizeof(unsigned int)))
                         : 1;
   }
 
   //! Change index at specified position
-  void SetIndex(const Standard_Integer theIndex, const Standard_Integer theValue)
+  void SetIndex(const int theIndex, const int theValue)
   {
     *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
   }
 
   //! Change index at specified position
-  void SetIndex(const Standard_Integer theIndex,
-                const Standard_Integer theValue,
-                const Standard_Integer thePatchSize)
+  void SetIndex(const int theIndex,
+                const int theValue,
+                const int thePatchSize)
   {
     *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
     *reinterpret_cast<unsigned int*>(changeValue(theIndex) + sizeof(unsigned int)) =
@@ -88,7 +88,5 @@ private:
 public:
   DEFINE_STANDARD_RTTI_INLINE(Select3D_BVHIndexBuffer, Graphic3d_Buffer)
 };
-
-DEFINE_STANDARD_HANDLE(Select3D_BVHIndexBuffer, Graphic3d_Buffer)
 
 #endif // _Select3D_BVHIndexBuffer_Header

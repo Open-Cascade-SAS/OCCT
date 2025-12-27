@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 
 //! represent a list of shape
@@ -32,20 +33,19 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_ListOfShapeOn1State();
 
-  Standard_EXPORT const TopTools_ListOfShape& ListOnState() const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ListOnState() const;
 
-  Standard_EXPORT TopTools_ListOfShape& ChangeListOnState();
+  Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeListOnState();
 
-  Standard_EXPORT Standard_Boolean IsSplit() const;
+  Standard_EXPORT bool IsSplit() const;
 
-  Standard_EXPORT void Split(const Standard_Boolean B = Standard_True);
+  Standard_EXPORT void Split(const bool B = true);
 
   Standard_EXPORT void Clear();
 
-protected:
 private:
-  TopTools_ListOfShape myList;
-  Standard_Integer     mySplits;
+  NCollection_List<TopoDS_Shape> myList;
+  int     mySplits;
 };
 
 #endif // _TopOpeBRepDS_ListOfShapeOn1State_HeaderFile

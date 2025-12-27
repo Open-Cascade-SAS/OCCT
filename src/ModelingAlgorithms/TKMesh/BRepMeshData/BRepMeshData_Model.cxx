@@ -39,7 +39,7 @@ BRepMeshData_Model::~BRepMeshData_Model() {}
 
 //=================================================================================================
 
-Standard_Integer BRepMeshData_Model::FacesNb() const
+int BRepMeshData_Model::FacesNb() const
 {
   return myDFaces.Size();
 }
@@ -54,14 +54,14 @@ const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace(const TopoDS_Face& the
 
 //=================================================================================================
 
-const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace(const Standard_Integer theIndex) const
+const IMeshData::IFaceHandle& BRepMeshData_Model::GetFace(const int theIndex) const
 {
   return myDFaces(theIndex);
 }
 
 //=================================================================================================
 
-Standard_Integer BRepMeshData_Model::EdgesNb() const
+int BRepMeshData_Model::EdgesNb() const
 {
   return myDEdges.Size();
 }
@@ -76,7 +76,7 @@ const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge(const TopoDS_Edge& the
 
 //=================================================================================================
 
-const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge(const Standard_Integer theIndex) const
+const IMeshData::IEdgeHandle& BRepMeshData_Model::GetEdge(const int theIndex) const
 {
   return myDEdges(theIndex);
 }

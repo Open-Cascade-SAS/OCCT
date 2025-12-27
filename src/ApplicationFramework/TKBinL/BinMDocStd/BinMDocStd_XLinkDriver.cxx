@@ -17,7 +17,8 @@
 #include <BinMDocStd_XLinkDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -27,14 +28,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDocStd_XLinkDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMDocStd_XLinkDriver::BinMDocStd_XLinkDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMDocStd_XLinkDriver::BinMDocStd_XLinkDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDocStd_XLink)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDocStd_XLinkDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDocStd_XLinkDriver::NewEmpty() const
 {
   return new TDocStd_XLink();
 }
@@ -44,15 +45,15 @@ Handle(TDF_Attribute) BinMDocStd_XLinkDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
+bool BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
                                                BinObjMgt_RRelocationTable&) const
 {
   TCollection_AsciiString aStr;
-  Standard_Boolean        ok = theSource >> aStr;
+  bool        ok = theSource >> aStr;
   if (ok)
   {
-    Handle(TDocStd_XLink) anAtt = Handle(TDocStd_XLink)::DownCast(theTarget);
+    occ::handle<TDocStd_XLink> anAtt = occ::down_cast<TDocStd_XLink>(theTarget);
     anAtt->DocumentEntry(aStr);
     aStr.Clear();
     ok = theSource >> aStr;
@@ -67,10 +68,10 @@ Standard_Boolean BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&  theS
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDocStd_XLinkDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDocStd_XLinkDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    BinObjMgt_Persistent&        theTarget,
-                                   BinObjMgt_SRelocationTable&) const
+                                   NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDocStd_XLink) anAtt = Handle(TDocStd_XLink)::DownCast(theSource);
+  occ::handle<TDocStd_XLink> anAtt = occ::down_cast<TDocStd_XLink>(theSource);
   theTarget << anAtt->DocumentEntry() << anAtt->LabelEntry();
 }

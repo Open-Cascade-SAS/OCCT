@@ -16,9 +16,10 @@
 #define TColStd_HArray1OfAsciiString_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColStd_HArray1OfAsciiString, TColStd_Array1OfAsciiString)
+DEFINE_HARRAY1(TColStd_HArray1OfAsciiString, NCollection_Array1<TCollection_AsciiString>)
 
 #endif

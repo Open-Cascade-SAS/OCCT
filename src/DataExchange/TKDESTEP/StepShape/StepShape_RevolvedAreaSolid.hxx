@@ -25,9 +25,6 @@ class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;
 class StepGeom_CurveBoundedSurface;
 
-class StepShape_RevolvedAreaSolid;
-DEFINE_STANDARD_HANDLE(StepShape_RevolvedAreaSolid, StepShape_SweptAreaSolid)
-
 class StepShape_RevolvedAreaSolid : public StepShape_SweptAreaSolid
 {
 
@@ -35,25 +32,24 @@ public:
   //! Returns a RevolvedAreaSolid
   Standard_EXPORT StepShape_RevolvedAreaSolid();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aName,
-                            const Handle(StepGeom_CurveBoundedSurface)& aSweptArea,
-                            const Handle(StepGeom_Axis1Placement)&      aAxis,
-                            const Standard_Real                         aAngle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                            const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
+                            const occ::handle<StepGeom_Axis1Placement>&      aAxis,
+                            const double                         aAngle);
 
-  Standard_EXPORT void SetAxis(const Handle(StepGeom_Axis1Placement)& aAxis);
+  Standard_EXPORT void SetAxis(const occ::handle<StepGeom_Axis1Placement>& aAxis);
 
-  Standard_EXPORT Handle(StepGeom_Axis1Placement) Axis() const;
+  Standard_EXPORT occ::handle<StepGeom_Axis1Placement> Axis() const;
 
-  Standard_EXPORT void SetAngle(const Standard_Real aAngle);
+  Standard_EXPORT void SetAngle(const double aAngle);
 
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_RevolvedAreaSolid, StepShape_SweptAreaSolid)
 
-protected:
 private:
-  Handle(StepGeom_Axis1Placement) axis;
-  Standard_Real                   angle;
+  occ::handle<StepGeom_Axis1Placement> axis;
+  double                   angle;
 };
 
 #endif // _StepShape_RevolvedAreaSolid_HeaderFile

@@ -27,8 +27,8 @@ static void splitLines(const TCollection_AsciiString&                   theStrin
     return;
   }
 
-  Standard_Integer aLineFrom = 1;
-  for (Standard_Integer aCharIter = 1;; ++aCharIter)
+  int aLineFrom = 1;
+  for (int aCharIter = 1;; ++aCharIter)
   {
     const char aChar = theString.Value(aCharIter);
     if (aChar != '\r' && aChar != '\n' && aCharIter != theString.Length())
@@ -97,10 +97,10 @@ bool RWObj_ObjWriterContext::Close()
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteHeader(const Standard_Integer                      theNbNodes,
-                                         const Standard_Integer                      theNbElems,
+bool RWObj_ObjWriterContext::WriteHeader(const int                      theNbNodes,
+                                         const int                      theNbElems,
                                          const TCollection_AsciiString&              theMatLib,
-                                         const TColStd_IndexedDataMapOfStringString& theFileInfo)
+                                         const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
   bool isOk = ::Fprintf(myFile,
                         "# Exported by Open CASCADE Technology [dev.opencascade.org]\n"
@@ -109,20 +109,20 @@ bool RWObj_ObjWriterContext::WriteHeader(const Standard_Integer                 
                         theNbNodes,
                         theNbElems)
               != 0;
-  for (TColStd_IndexedDataMapOfStringString::Iterator aKeyValueIter(theFileInfo);
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aKeyValueIter(theFileInfo);
        aKeyValueIter.More();
        aKeyValueIter.Next())
   {
     NCollection_IndexedMap<TCollection_AsciiString> aKeyLines, aValLines;
     splitLines(aKeyValueIter.Key(), aKeyLines);
     splitLines(aKeyValueIter.Value(), aValLines);
-    for (Standard_Integer aLineIter = 1; aLineIter <= aKeyLines.Extent(); ++aLineIter)
+    for (int aLineIter = 1; aLineIter <= aKeyLines.Extent(); ++aLineIter)
     {
       const TCollection_AsciiString& aLine = aKeyLines.FindKey(aLineIter);
       isOk = isOk && ::Fprintf(myFile, aLineIter > 1 ? "\n# %s" : "# %s", aLine.ToCString()) != 0;
     }
     isOk = isOk && ::Fprintf(myFile, !aKeyLines.IsEmpty() ? ":" : "# ") != 0;
-    for (Standard_Integer aLineIter = 1; aLineIter <= aValLines.Extent(); ++aLineIter)
+    for (int aLineIter = 1; aLineIter <= aValLines.Extent(); ++aLineIter)
     {
       const TCollection_AsciiString& aLine = aValLines.FindKey(aLineIter);
       isOk = isOk && ::Fprintf(myFile, aLineIter > 1 ? "\n# %s" : " %s", aLine.ToCString()) != 0;
@@ -148,15 +148,15 @@ bool RWObj_ObjWriterContext::WriteActiveMaterial(const TCollection_AsciiString& 
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
+bool RWObj_ObjWriterContext::WriteTriangle(const NCollection_Vec3<int>& theTri)
 {
-  const Graphic3d_Vec3i aTriPos = theTri + myElemPosFirst.xyz();
+  const NCollection_Vec3<int> aTriPos = theTri + myElemPosFirst.xyz();
   if (myHasNormals)
   {
-    const Graphic3d_Vec3i aTriNorm = theTri + myElemNormFirst.xyz();
+    const NCollection_Vec3<int> aTriNorm = theTri + myElemNormFirst.xyz();
     if (myHasTexCoords)
     {
-      const Graphic3d_Vec3i aTriUv = theTri + myElemUVFirst.xyz();
+      const NCollection_Vec3<int> aTriUv = theTri + myElemUVFirst.xyz();
       return Fprintf(myFile,
                      "f %d/%d/%d %d/%d/%d %d/%d/%d\n",
                      aTriPos[0],
@@ -185,7 +185,7 @@ bool RWObj_ObjWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
   }
   if (myHasTexCoords)
   {
-    const Graphic3d_Vec3i aTriUv = theTri + myElemUVFirst.xyz();
+    const NCollection_Vec3<int> aTriUv = theTri + myElemUVFirst.xyz();
     return Fprintf(myFile,
                    "f %d/%d %d/%d %d/%d\n",
                    aTriPos[0],
@@ -204,15 +204,15 @@ bool RWObj_ObjWriterContext::WriteTriangle(const Graphic3d_Vec3i& theTri)
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
+bool RWObj_ObjWriterContext::WriteQuad(const NCollection_Vec4<int>& theQuad)
 {
-  const Graphic3d_Vec4i aQPos = theQuad + myElemPosFirst;
+  const NCollection_Vec4<int> aQPos = theQuad + myElemPosFirst;
   if (myHasNormals)
   {
-    const Graphic3d_Vec4i aQNorm = theQuad + myElemNormFirst;
+    const NCollection_Vec4<int> aQNorm = theQuad + myElemNormFirst;
     if (myHasTexCoords)
     {
-      const Graphic3d_Vec4i aQTex = theQuad + myElemUVFirst;
+      const NCollection_Vec4<int> aQTex = theQuad + myElemUVFirst;
       return Fprintf(myFile,
                      "f %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n",
                      aQPos[0],
@@ -246,7 +246,7 @@ bool RWObj_ObjWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
   }
   if (myHasTexCoords)
   {
-    const Graphic3d_Vec4i aQTex = theQuad + myElemUVFirst;
+    const NCollection_Vec4<int> aQTex = theQuad + myElemUVFirst;
     return Fprintf(myFile,
                    "f %d/%d %d/%d %d/%d %d/%d\n",
                    aQPos[0],
@@ -267,21 +267,21 @@ bool RWObj_ObjWriterContext::WriteQuad(const Graphic3d_Vec4i& theQuad)
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteVertex(const Graphic3d_Vec3& theValue)
+bool RWObj_ObjWriterContext::WriteVertex(const NCollection_Vec3<float>& theValue)
 {
   return Fprintf(myFile, "v %f %f %f\n", theValue.x(), theValue.y(), theValue.z()) != 0;
 }
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteNormal(const Graphic3d_Vec3& theValue)
+bool RWObj_ObjWriterContext::WriteNormal(const NCollection_Vec3<float>& theValue)
 {
   return Fprintf(myFile, "vn %f %f %f\n", theValue.x(), theValue.y(), theValue.z()) != 0;
 }
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteTexCoord(const Graphic3d_Vec2& theValue)
+bool RWObj_ObjWriterContext::WriteTexCoord(const NCollection_Vec2<float>& theValue)
 {
   return Fprintf(myFile, "vt %f %f\n", theValue.x(), theValue.y()) != 0;
 }
@@ -296,9 +296,9 @@ bool RWObj_ObjWriterContext::WriteGroup(const TCollection_AsciiString& theValue)
 
 //=================================================================================================
 
-void RWObj_ObjWriterContext::FlushFace(Standard_Integer theNbNodes)
+void RWObj_ObjWriterContext::FlushFace(int theNbNodes)
 {
-  Graphic3d_Vec4i aShift(theNbNodes, theNbNodes, theNbNodes, theNbNodes);
+  NCollection_Vec4<int> aShift(theNbNodes, theNbNodes, theNbNodes, theNbNodes);
   myElemPosFirst += aShift;
   if (myHasNormals)
   {

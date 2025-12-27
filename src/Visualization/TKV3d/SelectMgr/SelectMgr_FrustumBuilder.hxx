@@ -18,7 +18,10 @@
 
 #include <Graphic3d_Camera.hxx>
 #include <Precision.hxx>
-#include <SelectMgr_VectorTypes.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Mat4.hxx>
+#include <NCollection_Vec3.hxx>
+#include <NCollection_Vec4.hxx>
 
 //! The purpose of this class is to provide unified interface for building
 //! selecting frustum depending on current camera projection and orientation
@@ -30,47 +33,45 @@ public:
   Standard_EXPORT SelectMgr_FrustumBuilder();
 
   //! Returns current camera
-  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+  const occ::handle<Graphic3d_Camera>& Camera() const { return myCamera; }
 
   //! Stores current camera
-  Standard_EXPORT void SetCamera(const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT void SetCamera(const occ::handle<Graphic3d_Camera>& theCamera);
 
   //! Stores current window width and height
-  Standard_EXPORT void SetWindowSize(const Standard_Integer theWidth,
-                                     const Standard_Integer theHeight);
+  Standard_EXPORT void SetWindowSize(const int theWidth,
+                                     const int theHeight);
 
   //! Stores current viewport coordinates
-  Standard_EXPORT void SetViewport(const Standard_Real theX,
-                                   const Standard_Real theY,
-                                   const Standard_Real theWidth,
-                                   const Standard_Real theHeight);
+  Standard_EXPORT void SetViewport(const double theX,
+                                   const double theY,
+                                   const double theWidth,
+                                   const double theHeight);
 
   Standard_EXPORT void InvalidateViewport();
 
-  Standard_EXPORT void WindowSize(Standard_Integer& theWidth, Standard_Integer& theHeight) const;
+  Standard_EXPORT void WindowSize(int& theWidth, int& theHeight) const;
 
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
-  Standard_EXPORT Standard_Real SignedPlanePntDist(const SelectMgr_Vec3& theEq,
-                                                   const SelectMgr_Vec3& thePnt) const;
+  Standard_EXPORT double SignedPlanePntDist(const NCollection_Vec3<double>& theEq,
+                                                   const NCollection_Vec3<double>& thePnt) const;
 
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
   //! theZ = 1 - far plane
-  Standard_EXPORT gp_Pnt ProjectPntOnViewPlane(const Standard_Real& theX,
-                                               const Standard_Real& theY,
-                                               const Standard_Real& theZ) const;
+  Standard_EXPORT gp_Pnt ProjectPntOnViewPlane(const double& theX,
+                                               const double& theY,
+                                               const double& theZ) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder, Standard_Transient)
 
 private:
-  Handle(Graphic3d_Camera)        myCamera;
-  Standard_Integer                myWidth;
-  Standard_Integer                myHeight;
-  NCollection_Vec4<Standard_Real> myViewport;
-  Standard_Boolean                myIsViewportSet;
+  occ::handle<Graphic3d_Camera>        myCamera;
+  int                myWidth;
+  int                myHeight;
+  NCollection_Vec4<double> myViewport;
+  bool                myIsViewportSet;
 };
-
-DEFINE_STANDARD_HANDLE(SelectMgr_FrustumBuilder, Standard_Transient)
 
 #endif // _SelectMgr_FrustumBuilder_HeaderFile

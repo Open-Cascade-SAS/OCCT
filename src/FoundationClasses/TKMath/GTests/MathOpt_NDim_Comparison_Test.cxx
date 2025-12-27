@@ -39,14 +39,14 @@ constexpr double THE_TOLERANCE = 1.0e-6;
 class QuadraticFuncOld : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aDx = theX(1) - 1.0;
     const double aDy = theX(2) - 2.0;
     theF             = aDx * aDx + aDy * aDy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -55,16 +55,16 @@ public:
 class RosenbrockFuncOld : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aY - aX * aX;
     const double aT2 = 1.0 - aX;
     theF             = 100.0 * aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -73,16 +73,16 @@ public:
 class BoothFuncOld : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aX + 2.0 * aY - 7.0;
     const double aT2 = 2.0 * aX + aY - 5.0;
     theF             = aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -99,16 +99,16 @@ public:
   {
   }
 
-  Standard_Integer NbVariables() const override { return myN; }
+  int NbVariables() const override { return myN; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     theF = 0.0;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theF += theX(i) * theX(i);
     }
-    return Standard_True;
+    return true;
   }
 };
 
@@ -120,24 +120,24 @@ public:
 class QuadraticFuncGradOld : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aDx = theX(1) - 1.0;
     const double aDy = theX(2) - 2.0;
     theF             = aDx * aDx + aDy * aDy;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 2.0 * (theX(2) - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -147,28 +147,28 @@ public:
 class RosenbrockFuncGradOld : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aY - aX * aX;
     const double aT2 = 1.0 - aX;
     theF             = 100.0 * aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     const double aX = theX(1);
     const double aY = theX(2);
     theG(1)         = -400.0 * aX * (aY - aX * aX) - 2.0 * (1.0 - aX);
     theG(2)         = 200.0 * (aY - aX * aX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -178,19 +178,19 @@ public:
 class BoothFuncGradOld : public math_MultipleVarFunctionWithGradient
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
     const double aT1 = aX + 2.0 * aY - 7.0;
     const double aT2 = 2.0 * aX + aY - 5.0;
     theF             = aT1 * aT1 + aT2 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     const double aX  = theX(1);
     const double aY  = theX(2);
@@ -198,10 +198,10 @@ public:
     const double aT2 = 2.0 * aX + aY - 5.0;
     theG(1)          = 2.0 * aT1 + 4.0 * aT2;
     theG(2)          = 4.0 * aT1 + 2.0 * aT2;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }
@@ -219,28 +219,28 @@ public:
   {
   }
 
-  Standard_Integer NbVariables() const override { return myN; }
+  int NbVariables() const override { return myN; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     theF = 0.0;
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theF += theX(i) * theX(i);
     }
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     for (int i = theX.Lower(); i <= theX.Upper(); ++i)
     {
       theG(i) = 2.0 * theX(i);
     }
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     return Value(theX, theF) && Gradient(theX, theG);
   }

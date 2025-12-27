@@ -22,30 +22,30 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_RevolutePairWithRange, StepKinematics_
 
 StepKinematics_RevolutePairWithRange::StepKinematics_RevolutePairWithRange()
 {
-  defLowerLimitActualRotation = Standard_False;
-  defUpperLimitActualRotation = Standard_False;
+  defLowerLimitActualRotation = false;
+  defUpperLimitActualRotation = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_RevolutePairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Boolean                       theLowOrderKinematicPair_TX,
-  const Standard_Boolean                       theLowOrderKinematicPair_TY,
-  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-  const Standard_Boolean                       theLowOrderKinematicPair_RX,
-  const Standard_Boolean                       theLowOrderKinematicPair_RY,
-  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-  const Standard_Boolean                       hasLowerLimitActualRotation,
-  const Standard_Real                          theLowerLimitActualRotation,
-  const Standard_Boolean                       hasUpperLimitActualRotation,
-  const Standard_Real                          theUpperLimitActualRotation)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const bool                       theLowOrderKinematicPair_TX,
+  const bool                       theLowOrderKinematicPair_TY,
+  const bool                       theLowOrderKinematicPair_TZ,
+  const bool                       theLowOrderKinematicPair_RX,
+  const bool                       theLowOrderKinematicPair_RY,
+  const bool                       theLowOrderKinematicPair_RZ,
+  const bool                       hasLowerLimitActualRotation,
+  const double                          theLowerLimitActualRotation,
+  const bool                       hasUpperLimitActualRotation,
+  const double                          theUpperLimitActualRotation)
 {
   StepKinematics_RevolutePair::Init(theRepresentationItem_Name,
                                     theItemDefinedTransformation_Name,
@@ -80,7 +80,7 @@ void StepKinematics_RevolutePairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RevolutePairWithRange::LowerLimitActualRotation() const
+double StepKinematics_RevolutePairWithRange::LowerLimitActualRotation() const
 {
   return myLowerLimitActualRotation;
 }
@@ -88,21 +88,21 @@ Standard_Real StepKinematics_RevolutePairWithRange::LowerLimitActualRotation() c
 //=================================================================================================
 
 void StepKinematics_RevolutePairWithRange::SetLowerLimitActualRotation(
-  const Standard_Real theLowerLimitActualRotation)
+  const double theLowerLimitActualRotation)
 {
   myLowerLimitActualRotation = theLowerLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_RevolutePairWithRange::HasLowerLimitActualRotation() const
+bool StepKinematics_RevolutePairWithRange::HasLowerLimitActualRotation() const
 {
   return defLowerLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_RevolutePairWithRange::UpperLimitActualRotation() const
+double StepKinematics_RevolutePairWithRange::UpperLimitActualRotation() const
 {
   return myUpperLimitActualRotation;
 }
@@ -110,14 +110,14 @@ Standard_Real StepKinematics_RevolutePairWithRange::UpperLimitActualRotation() c
 //=================================================================================================
 
 void StepKinematics_RevolutePairWithRange::SetUpperLimitActualRotation(
-  const Standard_Real theUpperLimitActualRotation)
+  const double theUpperLimitActualRotation)
 {
   myUpperLimitActualRotation = theUpperLimitActualRotation;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_RevolutePairWithRange::HasUpperLimitActualRotation() const
+bool StepKinematics_RevolutePairWithRange::HasUpperLimitActualRotation() const
 {
   return defUpperLimitActualRotation;
 }

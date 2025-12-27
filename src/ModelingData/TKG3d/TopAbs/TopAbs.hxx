@@ -117,12 +117,12 @@ public:
   //! @param theType shape type
   //! @return string identifier from the list COMPOUND, COMPSOLID, SOLID, SHELL, FACE, WIRE, EDGE,
   //! VERTEX, SHAPE
-  Standard_EXPORT static Standard_CString ShapeTypeToString(TopAbs_ShapeEnum theType);
+  Standard_EXPORT static const char* ShapeTypeToString(TopAbs_ShapeEnum theType);
 
   //! Returns the shape type from the given string identifier (using case-insensitive comparison).
   //! @param theTypeString string identifier
   //! @return shape type or TopAbs_SHAPE if string identifier is invalid
-  static TopAbs_ShapeEnum ShapeTypeFromString(Standard_CString theTypeString)
+  static TopAbs_ShapeEnum ShapeTypeFromString(const char* theTypeString)
   {
     TopAbs_ShapeEnum aType = TopAbs_SHAPE;
     ShapeTypeFromString(theTypeString, aType);
@@ -134,20 +134,20 @@ public:
   //! @param theTypeString string identifier
   //! @param theType detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static Standard_Boolean ShapeTypeFromString(Standard_CString  theTypeString,
+  Standard_EXPORT static bool ShapeTypeFromString(const char*  theTypeString,
                                                               TopAbs_ShapeEnum& theType);
 
   //! Returns the string name for a given shape orientation.
   //! @param theOrientation shape orientation
   //! @return string identifier from the list FORWARD, REVERSED, INTERNAL, EXTERNAL
-  Standard_EXPORT static Standard_CString ShapeOrientationToString(
+  Standard_EXPORT static const char* ShapeOrientationToString(
     TopAbs_Orientation theOrientation);
 
   //! Returns the shape orientation from the given string identifier (using case-insensitive
   //! comparison).
   //! @param theOrientationString string identifier
   //! @return shape orientation or TopAbs_FORWARD if string identifier is invalid
-  static TopAbs_Orientation ShapeOrientationFromString(const Standard_CString theOrientationString)
+  static TopAbs_Orientation ShapeOrientationFromString(const char* theOrientationString)
   {
     TopAbs_Orientation aType = TopAbs_FORWARD;
     ShapeOrientationFromString(theOrientationString, aType);
@@ -159,8 +159,8 @@ public:
   //! @param theOrientationString string identifier
   //! @param theOrientation detected shape orientation
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static Standard_Boolean ShapeOrientationFromString(
-    const Standard_CString theOrientationString,
+  Standard_EXPORT static bool ShapeOrientationFromString(
+    const char* theOrientationString,
     TopAbs_Orientation&    theOrientation);
 };
 

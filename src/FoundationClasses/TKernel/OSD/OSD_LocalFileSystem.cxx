@@ -20,14 +20,14 @@ IMPLEMENT_STANDARD_RTTIEXT(OSD_LocalFileSystem, OSD_FileSystem)
 
 //=================================================================================================
 
-Standard_Boolean OSD_LocalFileSystem::IsSupportedPath(const TCollection_AsciiString& theUrl) const
+bool OSD_LocalFileSystem::IsSupportedPath(const TCollection_AsciiString& theUrl) const
 {
   return !OSD_Path::IsRemoteProtocolPath(theUrl.ToCString());
 }
 
 //=================================================================================================
 
-Standard_Boolean OSD_LocalFileSystem::IsOpenIStream(
+bool OSD_LocalFileSystem::IsOpenIStream(
   const std::shared_ptr<std::istream>& theStream) const
 {
   std::shared_ptr<OSD_IStreamBuffer> aFileStream =
@@ -42,7 +42,7 @@ Standard_Boolean OSD_LocalFileSystem::IsOpenIStream(
 
 //=================================================================================================
 
-Standard_Boolean OSD_LocalFileSystem::IsOpenOStream(
+bool OSD_LocalFileSystem::IsOpenOStream(
   const std::shared_ptr<std::ostream>& theStream) const
 {
   std::shared_ptr<OSD_OStreamBuffer> aFileStream =

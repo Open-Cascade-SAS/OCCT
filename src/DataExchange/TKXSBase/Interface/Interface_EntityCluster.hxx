@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class Interface_EntityIterator;
 
-class Interface_EntityCluster;
-DEFINE_STANDARD_HANDLE(Interface_EntityCluster, Standard_Transient)
-
 //! Auxiliary class for EntityList. An EntityList designates an
 //! EntityCluster, which brings itself an fixed maximum count of
 //! Entities. If it is full, it gives access to another cluster
@@ -45,42 +42,42 @@ public:
   Standard_EXPORT Interface_EntityCluster();
 
   //! Creates a non-chained EntityCluster, filled with one Entity
-  Standard_EXPORT Interface_EntityCluster(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT Interface_EntityCluster(const occ::handle<Standard_Transient>& ent);
 
   //! Creates an empty EntityCluster, chained with another one
   //! (that is, put BEFORE this other one in the list)
-  Standard_EXPORT Interface_EntityCluster(const Handle(Interface_EntityCluster)& ec);
+  Standard_EXPORT Interface_EntityCluster(const occ::handle<Interface_EntityCluster>& ec);
 
   //! Creates an EntityCluster, filled with a first Entity, and
   //! chained to another EntityCluster (BEFORE it, as above)
-  Standard_EXPORT Interface_EntityCluster(const Handle(Standard_Transient)&      ant,
-                                          const Handle(Interface_EntityCluster)& ec);
+  Standard_EXPORT Interface_EntityCluster(const occ::handle<Standard_Transient>&      ant,
+                                          const occ::handle<Interface_EntityCluster>& ec);
 
   //! Appends an Entity to the Cluster. If it is not full, adds the
   //! entity directly inside itself. Else, transmits to its Next
   //! and Creates it if it does not yet exist
-  Standard_EXPORT void Append(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void Append(const occ::handle<Standard_Transient>& ent);
 
   //! Removes an Entity from the Cluster. If it is not found, calls
   //! its Next one to do so.
   //! Returns True if it becomes itself empty, False else
   //! (thus, a Cluster which becomes empty is deleted from the list)
-  Standard_EXPORT Standard_Boolean Remove(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT bool Remove(const occ::handle<Standard_Transient>& ent);
 
   //! Removes an Entity from the Cluster, given its rank. If <num>
   //! is greater than NbLocal, calls its Next with (num - NbLocal),
   //! Returns True if it becomes itself empty, False else
-  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer num);
+  Standard_EXPORT bool Remove(const int num);
 
   //! Returns total count of Entities (including Next)
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! Returns the Entity identified by its rank in the list
   //! (including Next)
-  Standard_EXPORT const Handle(Standard_Transient)& Value(const Standard_Integer num) const;
+  Standard_EXPORT const occ::handle<Standard_Transient>& Value(const int num) const;
 
   //! Changes an Entity given its rank.
-  Standard_EXPORT void SetValue(const Standard_Integer num, const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void SetValue(const int num, const occ::handle<Standard_Transient>& ent);
 
   //! Fills an Iterator with designated Entities (includes Next)
   Standard_EXPORT void FillIterator(Interface_EntityIterator& iter) const;
@@ -93,24 +90,23 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Interface_EntityCluster, Standard_Transient)
 
-protected:
 private:
   //! Returns True if all the set of entities local to a Cluster is
   //! full. Used by EntityList.
-  Standard_EXPORT Standard_Boolean IsLocalFull() const;
+  Standard_EXPORT bool IsLocalFull() const;
 
   //! Returns count of entities in the local set (without Next)
   //! Entities can then be read normally by method Value
-  Standard_EXPORT Standard_Integer NbLocal() const;
+  Standard_EXPORT int NbLocal() const;
 
   //! Returns True if a Cluster has a Next
-  Standard_EXPORT Standard_Boolean HasNext() const;
+  Standard_EXPORT bool HasNext() const;
 
   //! Returns Next Cluster in the chain
-  Standard_EXPORT Handle(Interface_EntityCluster) Next() const;
+  Standard_EXPORT occ::handle<Interface_EntityCluster> Next() const;
 
-  Handle(Standard_Transient)      theents[4];
-  Handle(Interface_EntityCluster) thenext;
+  occ::handle<Standard_Transient>      theents[4];
+  occ::handle<Interface_EntityCluster> thenext;
 };
 
 #endif // _Interface_EntityCluster_HeaderFile

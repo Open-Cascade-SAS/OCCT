@@ -29,7 +29,7 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ParamList.hxx>
 #include <Interface_ReaderModule.hxx>
 #include <Message_Msg.hxx>
@@ -40,8 +40,8 @@
 
 // MGE 17/06/98
 // To use Msg class
-IGESData_IGESReaderTool::IGESData_IGESReaderTool(const Handle(IGESData_IGESReaderData)& reader,
-                                                 const Handle(IGESData_Protocol)&       protocol)
+IGESData_IGESReaderTool::IGESData_IGESReaderTool(const occ::handle<IGESData_IGESReaderData>& reader,
+                                                 const occ::handle<IGESData_Protocol>&       protocol)
     : theglib(protocol),
       therlib(protocol)
 {
@@ -51,7 +51,7 @@ IGESData_IGESReaderTool::IGESData_IGESReaderTool(const Handle(IGESData_IGESReade
 //  ###########################################################################
 //  ########                        PREPARATION                        ########
 
-void IGESData_IGESReaderTool::Prepare(const Handle(IGESData_FileRecognizer)& reco)
+void IGESData_IGESReaderTool::Prepare(const occ::handle<IGESData_FileRecognizer>& reco)
 {
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
   igesdat->SetEntityNumbers();
@@ -60,15 +60,15 @@ void IGESData_IGESReaderTool::Prepare(const Handle(IGESData_FileRecognizer)& rec
   thelist = igesdat->Params(0);
 }
 
-Standard_Boolean IGESData_IGESReaderTool::Recognize(const Standard_Integer      num,
-                                                    Handle(Interface_Check)&    ach,
-                                                    Handle(Standard_Transient)& ent)
+bool IGESData_IGESReaderTool::Recognize(const int      num,
+                                                    occ::handle<Interface_Check>&    ach,
+                                                    occ::handle<Standard_Transient>& ent)
 {
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
   thecnum = num;
   thectyp = igesdat->DirType(num);
-  Handle(IGESData_IGESEntity) anent;
-  Standard_Boolean            res = Standard_False;
+  occ::handle<IGESData_IGESEntity> anent;
+  bool            res = false;
 
   //  Recognizer -> Liste limitative
   if (!thereco.IsNull())
@@ -86,14 +86,14 @@ Standard_Boolean IGESData_IGESReaderTool::Recognize(const Standard_Integer      
 
 //    (Elements chained by the base class Interface_FileReaderTool)
 
-void IGESData_IGESReaderTool::BeginRead(const Handle(Interface_InterfaceModel)& amodel)
+void IGESData_IGESReaderTool::BeginRead(const occ::handle<Interface_InterfaceModel>& amodel)
 {
   DeclareAndCast(IGESData_IGESModel, amod, amodel);
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
   const IGESData_GlobalSection& gs = igesdat->GlobalSection();
-  amod->SetStartSection(igesdat->StartSection(), Standard_False);
+  amod->SetStartSection(igesdat->StartSection(), false);
   amod->SetGlobalSection(gs);
-  Handle(Interface_Check) glob = amod->GlobalCheck();
+  occ::handle<Interface_Check> glob = amod->GlobalCheck();
   glob->GetMessages(igesdat->GlobalCheck());
   amod->SetGlobalCheck(glob);
   themaxweight  = gs.MaxLineWeight();
@@ -107,12 +107,12 @@ void IGESData_IGESReaderTool::BeginRead(const Handle(Interface_InterfaceModel)& 
 }
 
 // Missing error recovery procedures during the process ...
-Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer            num,
-                                                        const Handle(Standard_Transient)& anent,
-                                                        Handle(Interface_Check)&          ach)
+bool IGESData_IGESReaderTool::AnalyseRecord(const int            num,
+                                                        const occ::handle<Standard_Transient>& anent,
+                                                        occ::handle<Interface_Check>&          ach)
 {
 
-  Handle(TCollection_HAsciiString) lab;
+  occ::handle<TCollection_HAsciiString> lab;
 
   DeclareAndCast(IGESData_IGESEntity, ent, anent);
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
@@ -134,19 +134,19 @@ Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer  
   thestep = IGESData_ReadDir;
 
   //   Parameter List : control of its header
-  //  Handle(Interface_ParamList) list = Data()->Params(num);
-  Standard_Integer nbpar = Data()->NbParams(num);
-  Standard_Integer n0par = (num == 1 ? 1 : (Data()->ParamFirstRank(num - 1) + 1));
+  //  occ::handle<Interface_ParamList> list = Data()->Params(num);
+  int nbpar = Data()->NbParams(num);
+  int n0par = (num == 1 ? 1 : (Data()->ParamFirstRank(num - 1) + 1));
   if (nbpar < 1)
   {
     //   Empty list not allowed, except if Undefined (for example null type)
     if (!undent.IsNull())
-      return Standard_True;
+      return true;
     // Sending of message : DE : no parameter
     Message_Msg Msg27("XSTEP_27");
     Msg27.Arg(thecnum);
     ach->SendFail(Msg27);
-    return Standard_False;
+    return false;
   }
   const Interface_FileParameter& FP = thelist->Value(n0par);
   if ((FP.ParamType() != Interface_ParamInteger) || (atoi(FP.CValue()) != ent->TypeNumber()))
@@ -155,7 +155,7 @@ Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer  
     Message_Msg Msg28("XSTEP_28");
     Msg28.Arg(thecnum);
     ach->SendFail(Msg28);
-    return Standard_False;
+    return false;
   }
 
   IGESData_ParamReader PR(thelist, ach, n0par, nbpar, num);
@@ -186,7 +186,7 @@ Standard_Boolean IGESData_IGESReaderTool::AnalyseRecord(const Standard_Integer  
   return (!ach->HasFailed());
 }
 
-void IGESData_IGESReaderTool::EndRead(const Handle(Interface_InterfaceModel)& /* amodel */)
+void IGESData_IGESReaderTool::EndRead(const occ::handle<Interface_InterfaceModel>& /* amodel */)
 {
   /*
     DeclareAndCast(IGESData_IGESModel,amod,amodel);
@@ -200,15 +200,15 @@ void IGESData_IGESReaderTool::EndRead(const Handle(Interface_InterfaceModel)& /*
 
 //  ########                      Directory  Part                      ########
 
-void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent,
-                                      const Handle(IGESData_IGESReaderData)& IR,
+void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&     ent,
+                                      const occ::handle<IGESData_IGESReaderData>& IR,
                                       const IGESData_DirPart&                DP,
-                                      Handle(Interface_Check)&               ach) const
+                                      occ::handle<Interface_Check>&               ach) const
 {
 
-  Standard_Integer   v[17]   = {};
-  Standard_Character nom[9]  = {};
-  Standard_Character snum[9] = {}, theRes1[9] = {}, theRes2[9] = {};
+  int   v[17]   = {};
+  char nom[9]  = {};
+  char snum[9] = {}, theRes1[9] = {}, theRes2[9] = {};
   DP.Values(v[0],
             v[1],
             v[2],
@@ -232,11 +232,11 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
             snum);
 
   ent->InitTypeAndForm(v[0], v[16]);
-  Handle(IGESData_IGESEntity) fieldent, Structure, fieldlab;
+  occ::handle<IGESData_IGESEntity> fieldent, Structure, fieldlab;
   if (v[2] < 0)
     Structure = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[2]) / 2));
 
-  Handle(IGESData_LineFontEntity) Lnf;
+  occ::handle<IGESData_LineFontEntity> Lnf;
   if (v[3] < 0)
   {
     fieldent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[3]) / 2));
@@ -256,7 +256,7 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
   else
     ent->InitLineFont(Lnf, v[3]); // ici Lnf Null
 
-  Handle(IGESData_LevelListEntity) Lvs;
+  occ::handle<IGESData_LevelListEntity> Lvs;
   if (v[4] < 0)
   {
     fieldent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[4]) / 2));
@@ -310,7 +310,7 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
       ent->InitTransf(Transf);
   }
 
-  Handle(IGESData_LabelDisplayEntity) Lbd;
+  occ::handle<IGESData_LabelDisplayEntity> Lbd;
   if (v[7] != 0)
   {
     fieldlab = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[7]) / 2));
@@ -327,9 +327,9 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
 
   ent->InitStatus(v[8], v[9], v[10], v[11]);
 
-  Standard_Integer LWeightNum = v[13];
+  int LWeightNum = v[13];
 
-  Handle(IGESData_ColorEntity) Color;
+  occ::handle<IGESData_ColorEntity> Color;
   if (v[14] < 0)
   {
     fieldent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[14]) / 2));
@@ -358,10 +358,10 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
   // type and form are read directly from DirPart; other info recalculated
 
   //    Remaining to analyze name (short label) and snum (subscript number)
-  Handle(TCollection_HAsciiString) ShortLabel;
-  Standard_Integer                 SubScriptN = -1;
-  Standard_Integer                 iacar      = 0;
-  Standard_Integer                 i; // svv Jan11 2000 : porting on DEC
+  occ::handle<TCollection_HAsciiString> ShortLabel;
+  int                 SubScriptN = -1;
+  int                 iacar      = 0;
+  int                 i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < 8; i++)
   {
     if (nom[i] > ' ')
@@ -387,18 +387,18 @@ void IGESData_IGESReaderTool::ReadDir(const Handle(IGESData_IGESEntity)&     ent
 
 //  ########                     Partie Specifique                     ########
 
-void IGESData_IGESReaderTool::ReadOwnParams(const Handle(IGESData_IGESEntity)&     ent,
-                                            const Handle(IGESData_IGESReaderData)& IR,
+void IGESData_IGESReaderTool::ReadOwnParams(const occ::handle<IGESData_IGESEntity>&     ent,
+                                            const occ::handle<IGESData_IGESReaderData>& IR,
                                             IGESData_ParamReader&                  PR) const
 {
-  Handle(Interface_Check)        ach = new Interface_Check();
-  Handle(Interface_ReaderModule) imodule;
-  Standard_Integer               CN;
+  occ::handle<Interface_Check>        ach = new Interface_Check();
+  occ::handle<Interface_ReaderModule> imodule;
+  int               CN;
 
   //  The Modules do everything
   if (therlib.Select(ent, imodule, CN))
   {
-    Handle(IGESData_ReadWriteModule) module = Handle(IGESData_ReadWriteModule)::DownCast(imodule);
+    occ::handle<IGESData_ReadWriteModule> module = occ::down_cast<IGESData_ReadWriteModule>(imodule);
     module->ReadOwnParams(CN, ent, IR, PR);
   }
   else if (ent.IsNull())
@@ -428,8 +428,8 @@ void IGESData_IGESReaderTool::ReadOwnParams(const Handle(IGESData_IGESEntity)&  
 
 //  ########                        Proprietes                         ########
 
-void IGESData_IGESReaderTool::ReadProps(const Handle(IGESData_IGESEntity)&     ent,
-                                        const Handle(IGESData_IGESReaderData)& IR,
+void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>&     ent,
+                                        const occ::handle<IGESData_IGESReaderData>& IR,
                                         IGESData_ParamReader&                  PR) const
 {
   // MGE 17/06/98
@@ -438,13 +438,13 @@ void IGESData_IGESReaderTool::ReadProps(const Handle(IGESData_IGESEntity)&     e
   Message_Msg Msg38("XSTEP_38");
   // Message_Msg Msg221 ("XSTEP_221");
   //=====================================
-  Handle(Interface_Check) ach = new Interface_Check;
+  occ::handle<Interface_Check> ach = new Interface_Check;
   Msg38.Arg(thecnum);
   Msg38.Arg(thectyp.Type());
   if (PR.Stage() != IGESData_ReadProps)
     ach->SendFail(Msg38);
-  Standard_Integer ncur = PR.CurrentNumber();
-  Standard_Integer nbp  = PR.NbParams();
+  int ncur = PR.CurrentNumber();
+  int nbp  = PR.NbParams();
   if (ncur == nbp + 1)
   {
     PR.EndAll();
@@ -453,7 +453,7 @@ void IGESData_IGESReaderTool::ReadProps(const Handle(IGESData_IGESEntity)&     e
   else if (ncur > nbp || ncur == 0)
     ach->SendWarning(Msg38);
 
-  Standard_Integer nbprops = 0;
+  int nbprops = 0;
   if (!PR.DefinedElseSkip())
     return;
   if (!PR.ReadInteger(ncur, nbprops))
@@ -469,14 +469,14 @@ void IGESData_IGESReaderTool::ReadProps(const Handle(IGESData_IGESEntity)&     e
 
   ++ncur;
   Interface_EntityList props;
-  if (PR.ReadEntList(IR, PR.CurrentList(nbprops), Msg38, props, Standard_False))
+  if (PR.ReadEntList(IR, PR.CurrentList(nbprops), Msg38, props, false))
     ent->LoadProperties(props);
 }
 
 //  ########                      Associativites                       ########
 
-void IGESData_IGESReaderTool::ReadAssocs(const Handle(IGESData_IGESEntity)&     ent,
-                                         const Handle(IGESData_IGESReaderData)& IR,
+void IGESData_IGESReaderTool::ReadAssocs(const occ::handle<IGESData_IGESEntity>&     ent,
+                                         const occ::handle<IGESData_IGESReaderData>& IR,
                                          IGESData_ParamReader&                  PR) const
 {
   // MGE 17/06/98
@@ -487,11 +487,11 @@ void IGESData_IGESReaderTool::ReadAssocs(const Handle(IGESData_IGESEntity)&     
   //=====================================
   Msg37.Arg(thecnum);
   Msg37.Arg(thectyp.Type());
-  Handle(Interface_Check) ach = new Interface_Check;
+  occ::handle<Interface_Check> ach = new Interface_Check;
   if (PR.Stage() != IGESData_ReadAssocs)
     ach->SendFail(Msg37);
-  Standard_Integer ncur = PR.CurrentNumber();
-  Standard_Integer nbp  = PR.NbParams();
+  int ncur = PR.CurrentNumber();
+  int nbp  = PR.NbParams();
   if (ncur == nbp + 1)
   {
     PR.EndAll();
@@ -500,7 +500,7 @@ void IGESData_IGESReaderTool::ReadAssocs(const Handle(IGESData_IGESEntity)&     
   else if (ncur > nbp || ncur == 0)
     ach->SendWarning(Msg37);
 
-  Standard_Integer nbassocs = 0;
+  int nbassocs = 0;
   if (!PR.DefinedElseSkip())
     return;
   if (!PR.ReadInteger(PR.Current(), nbassocs))
@@ -512,6 +512,6 @@ void IGESData_IGESReaderTool::ReadAssocs(const Handle(IGESData_IGESEntity)&     
   if (nbassocs == 0)
     return;
   Interface_EntityList assocs;
-  if (PR.ReadEntList(IR, PR.CurrentList(nbassocs), Msg37, assocs, Standard_False))
+  if (PR.ReadEntList(IR, PR.CurrentList(nbassocs), Msg37, assocs, false))
     ent->LoadAssociativities(assocs);
 }

@@ -37,22 +37,20 @@ public:
   Standard_HIDDEN RWStepRepr_RWQuantifiedAssemblyComponentUsage();
 
   //! Reads QuantifiedAssemblyComponentUsage
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&                   data,
-                                const Standard_Integer                                   num,
-                                Handle(Interface_Check)&                                 ach,
-                                const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&                   data,
+                                const int                                   num,
+                                occ::handle<Interface_Check>&                                 ach,
+                                const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent) const;
 
   //! Writes QuantifiedAssemblyComponentUsage
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                     SW,
-    const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent) const;
+    const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepRepr_QuantifiedAssemblyComponentUsage)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepRepr_QuantifiedAssemblyComponentUsage>& ent,
                              Interface_EntityIterator&                                iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepRepr_RWQuantifiedAssemblyComponentUsage_HeaderFile

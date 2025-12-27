@@ -43,19 +43,19 @@ public:
   //! Errors : Height < Resolution
   //! Angle < Resolution / Height
   //! Angle > PI/2 - Resolution / Height
-  Standard_EXPORT BRepPrim_Cone(const Standard_Real Angle,
+  Standard_EXPORT BRepPrim_Cone(const double Angle,
                                 const gp_Ax2&       Position,
-                                const Standard_Real Height,
-                                const Standard_Real Radius = 0);
+                                const double Height,
+                                const double Radius = 0);
 
   //! infinite cone at origin on Z negative
-  Standard_EXPORT BRepPrim_Cone(const Standard_Real Angle);
+  Standard_EXPORT BRepPrim_Cone(const double Angle);
 
   //! infinite cone at Apex on Z negative
-  Standard_EXPORT BRepPrim_Cone(const Standard_Real Angle, const gp_Pnt& Apex);
+  Standard_EXPORT BRepPrim_Cone(const double Angle, const gp_Pnt& Apex);
 
   //! infinite cone with Axes
-  Standard_EXPORT BRepPrim_Cone(const Standard_Real Angle, const gp_Ax2& Axes);
+  Standard_EXPORT BRepPrim_Cone(const double Angle, const gp_Ax2& Axes);
 
   //! create a Cone at origin on Z axis, of height H,
   //! radius R1 at Z = 0, R2 at Z = H, X is the origin
@@ -67,36 +67,35 @@ public:
   //! std::abs(R1-R2) < Resolution
   //! H < Resolution
   //! H negative
-  Standard_EXPORT BRepPrim_Cone(const Standard_Real R1,
-                                const Standard_Real R2,
-                                const Standard_Real H);
+  Standard_EXPORT BRepPrim_Cone(const double R1,
+                                const double R2,
+                                const double H);
 
   //! same as above but at a given point
   Standard_EXPORT BRepPrim_Cone(const gp_Pnt&       Center,
-                                const Standard_Real R1,
-                                const Standard_Real R2,
-                                const Standard_Real H);
+                                const double R1,
+                                const double R2,
+                                const double H);
 
   //! same as above with given axes system.
   Standard_EXPORT BRepPrim_Cone(const gp_Ax2&       Axes,
-                                const Standard_Real R1,
-                                const Standard_Real R2,
-                                const Standard_Real H);
+                                const double R1,
+                                const double R2,
+                                const double H);
 
   //! The surface normal should be directed towards the
   //! outside.
-  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const override;
 
-protected:
 private:
   Standard_EXPORT void SetMeridian();
 
-  Standard_EXPORT void SetParameters(const Standard_Real R1,
-                                     const Standard_Real R2,
-                                     const Standard_Real H);
+  Standard_EXPORT void SetParameters(const double R1,
+                                     const double R2,
+                                     const double H);
 
-  Standard_Real myHalfAngle;
-  Standard_Real myRadius;
+  double myHalfAngle;
+  double myRadius;
 };
 
 #endif // _BRepPrim_Cone_HeaderFile

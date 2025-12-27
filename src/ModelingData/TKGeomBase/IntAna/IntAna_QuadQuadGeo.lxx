@@ -14,7 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean IntAna_QuadQuadGeo::IsDone() const
+inline bool IntAna_QuadQuadGeo::IsDone() const
 {
   return (done);
 }
@@ -28,7 +28,7 @@ inline IntAna_ResultType IntAna_QuadQuadGeo::TypeInter() const
   return (typeres);
 }
 
-inline Standard_Integer IntAna_QuadQuadGeo::NbSolutions() const
+inline int IntAna_QuadQuadGeo::NbSolutions() const
 {
   if (!done)
   {

@@ -34,13 +34,13 @@ static void CAUGHT(const Standard_Failure&           theException,
   status += theException.GetMessageString();
 }
 
-CDF_StoreList::CDF_StoreList(const Handle(CDM_Document)& aDocument)
+CDF_StoreList::CDF_StoreList(const occ::handle<CDM_Document>& aDocument)
 {
   myMainDocument = aDocument;
   Add(aDocument);
 }
 
-void CDF_StoreList::Add(const Handle(CDM_Document)& aDocument)
+void CDF_StoreList::Add(const occ::handle<CDM_Document>& aDocument)
 {
 
   if (!myItems.Contains(aDocument) && aDocument != myMainDocument)
@@ -55,10 +55,10 @@ void CDF_StoreList::Add(const Handle(CDM_Document)& aDocument)
   }
 }
 
-Standard_Boolean CDF_StoreList::IsConsistent() const
+bool CDF_StoreList::IsConsistent() const
 {
-  Standard_Boolean               yes = Standard_True;
-  CDM_MapIteratorOfMapOfDocument it(myItems);
+  bool               yes = true;
+  NCollection_Map<occ::handle<CDM_Document>>::Iterator it(myItems);
   for (; it.More() && yes; it.Next())
   {
     yes = it.Key()->HasRequestedFolder();
@@ -68,10 +68,10 @@ Standard_Boolean CDF_StoreList::IsConsistent() const
 
 void CDF_StoreList::Init()
 {
-  myIterator = CDM_MapIteratorOfMapOfDocument(myItems);
+  myIterator = NCollection_Map<occ::handle<CDM_Document>>::Iterator(myItems);
 }
 
-Standard_Boolean CDF_StoreList::More() const
+bool CDF_StoreList::More() const
 {
   return myIterator.More();
 }
@@ -81,28 +81,28 @@ void CDF_StoreList::Next()
   myIterator.Next();
 }
 
-Handle(CDM_Document) CDF_StoreList::Value() const
+occ::handle<CDM_Document> CDF_StoreList::Value() const
 {
   return myIterator.Key();
 }
 
-PCDM_StoreStatus CDF_StoreList::Store(Handle(CDM_MetaData)&        aMetaData,
+PCDM_StoreStatus CDF_StoreList::Store(occ::handle<CDM_MetaData>&        aMetaData,
                                       TCollection_ExtendedString&  aStatusAssociatedText,
                                       const Message_ProgressRange& theRange)
 {
   PCDM_StoreStatus           status = PCDM_SS_OK;
-  Handle(CDF_MetaDataDriver) theMetaDataDriver =
-    Handle(CDF_Application)::DownCast((myMainDocument->Application()))->MetaDataDriver();
+  occ::handle<CDF_MetaDataDriver> theMetaDataDriver =
+    occ::down_cast<CDF_Application>((myMainDocument->Application()))->MetaDataDriver();
   for (; !myStack.IsEmpty(); myStack.RemoveFirst())
   {
-    Handle(CDM_Document) theDocument = myStack.First();
+    occ::handle<CDM_Document> theDocument = myStack.First();
     if (theDocument == myMainDocument || theDocument->IsModified())
     {
       try
       {
         OCC_CATCH_SIGNALS
-        Handle(CDF_Application) anApp =
-          Handle(CDF_Application)::DownCast(theDocument->Application());
+        occ::handle<CDF_Application> anApp =
+          occ::down_cast<CDF_Application>(theDocument->Application());
         if (anApp.IsNull())
         {
           aStatusAssociatedText = "driver failed; reason: ";
@@ -111,7 +111,7 @@ PCDM_StoreStatus CDF_StoreList::Store(Handle(CDM_MetaData)&        aMetaData,
         }
         else
         {
-          Handle(PCDM_StorageDriver) aDocumentStorageDriver =
+          occ::handle<PCDM_StorageDriver> aDocumentStorageDriver =
             anApp->WriterFromFormat(theDocument->StorageFormat());
           if (aDocumentStorageDriver.IsNull())
           {

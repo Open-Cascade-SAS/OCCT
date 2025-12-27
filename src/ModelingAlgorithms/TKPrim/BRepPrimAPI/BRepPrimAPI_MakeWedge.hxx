@@ -38,43 +38,43 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Make a STEP right angular wedge. (ltx >= 0)
-  Standard_EXPORT BRepPrimAPI_MakeWedge(const Standard_Real dx,
-                                        const Standard_Real dy,
-                                        const Standard_Real dz,
-                                        const Standard_Real ltx);
+  Standard_EXPORT BRepPrimAPI_MakeWedge(const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double ltx);
 
   //! Make a STEP right angular wedge. (ltx >= 0)
   Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
-                                        const Standard_Real dx,
-                                        const Standard_Real dy,
-                                        const Standard_Real dz,
-                                        const Standard_Real ltx);
+                                        const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double ltx);
 
   //! Make a wedge. The face at dy is xmin,zmin xmax,zmax
-  Standard_EXPORT BRepPrimAPI_MakeWedge(const Standard_Real dx,
-                                        const Standard_Real dy,
-                                        const Standard_Real dz,
-                                        const Standard_Real xmin,
-                                        const Standard_Real zmin,
-                                        const Standard_Real xmax,
-                                        const Standard_Real zmax);
+  Standard_EXPORT BRepPrimAPI_MakeWedge(const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double xmin,
+                                        const double zmin,
+                                        const double xmax,
+                                        const double zmax);
 
   //! Make a wedge. The face at dy is xmin,zmin xmax,zmax
   Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
-                                        const Standard_Real dx,
-                                        const Standard_Real dy,
-                                        const Standard_Real dz,
-                                        const Standard_Real xmin,
-                                        const Standard_Real zmin,
-                                        const Standard_Real xmax,
-                                        const Standard_Real zmax);
+                                        const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double xmin,
+                                        const double zmin,
+                                        const double xmax,
+                                        const double zmax);
 
   //! Returns the internal algorithm.
   Standard_EXPORT BRepPrim_Wedge& Wedge();
 
   //! Stores the solid in myShape.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the constructed box in the form of a shell.
   Standard_EXPORT const TopoDS_Shell& Shell();
@@ -84,7 +84,6 @@ public:
   Standard_EXPORT const TopoDS_Solid& Solid();
   Standard_EXPORT                     operator TopoDS_Solid();
 
-protected:
 private:
   BRepPrim_Wedge myWedge;
 };

@@ -14,9 +14,10 @@
 #ifndef StdStorage_HSequenceOfRoots_HeaderFile
 #define StdStorage_HSequenceOfRoots_HeaderFile
 
-#include <StdStorage_SequenceOfRoots.hxx>
+#include <StdStorage_Root.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(StdStorage_HSequenceOfRoots, StdStorage_SequenceOfRoots)
+DEFINE_HSEQUENCE(StdStorage_HSequenceOfRoots, NCollection_Sequence<occ::handle<StdStorage_Root>>)
 
 #endif // StdStorage_HSequenceOfRoots_HeaderFile

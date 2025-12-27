@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline LocOpe_Gluer::LocOpe_Gluer()
-    : myDone(Standard_False),
+    : myDone(false),
       myOri(TopAbs_INTERNAL),
       myOpe(LocOpe_INVALID)
 {
@@ -28,7 +28,7 @@ inline LocOpe_Gluer::LocOpe_Gluer()
 //=================================================================================================
 
 inline LocOpe_Gluer::LocOpe_Gluer(const TopoDS_Shape& Sbase, const TopoDS_Shape& Snew)
-    : myDone(Standard_False),
+    : myDone(false),
       mySb(Sbase),
       mySn(Snew),
       myOri(TopAbs_INTERNAL),
@@ -38,7 +38,7 @@ inline LocOpe_Gluer::LocOpe_Gluer(const TopoDS_Shape& Sbase, const TopoDS_Shape&
 
 //=================================================================================================
 
-inline Standard_Boolean LocOpe_Gluer::IsDone() const
+inline bool LocOpe_Gluer::IsDone() const
 {
   return myDone;
 }
@@ -77,14 +77,14 @@ inline LocOpe_Operation LocOpe_Gluer::OpeType() const
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& LocOpe_Gluer::Edges() const
+inline const NCollection_List<TopoDS_Shape>& LocOpe_Gluer::Edges() const
 {
   return myEdges;
 }
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& LocOpe_Gluer::TgtEdges() const
+inline const NCollection_List<TopoDS_Shape>& LocOpe_Gluer::TgtEdges() const
 {
   return myTgtEdges;
 }

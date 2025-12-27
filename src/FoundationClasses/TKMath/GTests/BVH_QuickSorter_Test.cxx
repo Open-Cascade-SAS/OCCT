@@ -22,9 +22,9 @@
 
 TEST(BVH_QuickSorterTest, Constructor)
 {
-  BVH_QuickSorter<Standard_Real, 3> aSorterX(0);
-  BVH_QuickSorter<Standard_Real, 3> aSorterY(1);
-  BVH_QuickSorter<Standard_Real, 3> aSorterZ(2);
+  BVH_QuickSorter<double, 3> aSorterX(0);
+  BVH_QuickSorter<double, 3> aSorterY(1);
+  BVH_QuickSorter<double, 3> aSorterZ(2);
 
   // Constructor should not crash
   EXPECT_TRUE(true);
@@ -32,8 +32,8 @@ TEST(BVH_QuickSorterTest, Constructor)
 
 TEST(BVH_QuickSorterTest, SortEmptySet)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
-  BVH_QuickSorter<Standard_Real, 3>   aSorter(0);
+  BVH_Triangulation<double, 3> aTriangulation;
+  BVH_QuickSorter<double, 3>   aSorter(0);
 
   // Sorting empty set should not crash
   aSorter.Perform(&aTriangulation);
@@ -42,14 +42,14 @@ TEST(BVH_QuickSorterTest, SortEmptySet)
 
 TEST(BVH_QuickSorterTest, SortSingleElement)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // Single element should remain unchanged
@@ -62,28 +62,28 @@ TEST(BVH_QuickSorterTest, SortSingleElement)
 
 TEST(BVH_QuickSorterTest, SortAlongXAxis)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create triangles with increasing X centroids: 5, 1, 3
   // Triangle 0: centroid X = 5
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(4.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(5.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(6.0, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(4.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(5.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(6.0, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
 
   // Triangle 1: centroid X = 1
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(3, 4, 5, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(3, 4, 5, 0));
 
   // Triangle 2: centroid X = 3
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(3.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(4.0, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(6, 7, 8, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(3.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(4.0, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(6, 7, 8, 0));
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0); // Sort along X
+  BVH_QuickSorter<double, 3> aSorter(0); // Sort along X
   aSorter.Perform(&aTriangulation);
 
   // After sorting: should be ordered 1, 3, 5 (indices 1, 2, 0)
@@ -98,20 +98,20 @@ TEST(BVH_QuickSorterTest, SortAlongXAxis)
 
 TEST(BVH_QuickSorterTest, SortAlongYAxis)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create triangles with Y centroids: 3, 1, 2
   for (int i = 0; i < 3; ++i)
   {
-    Standard_Real y = (i == 0 ? 3.0 : (i == 1 ? 1.0 : 2.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, y - 0.5, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, y, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, y + 0.5, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double y = (i == 0 ? 3.0 : (i == 1 ? 1.0 : 2.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, y - 0.5, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, y, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, y + 0.5, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(1); // Sort along Y
+  BVH_QuickSorter<double, 3> aSorter(1); // Sort along Y
   aSorter.Perform(&aTriangulation);
 
   // Should be ordered by Y centroid
@@ -121,20 +121,20 @@ TEST(BVH_QuickSorterTest, SortAlongYAxis)
 
 TEST(BVH_QuickSorterTest, SortAlongZAxis)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create triangles with Z centroids: 2, 0, 1
   for (int i = 0; i < 3; ++i)
   {
-    Standard_Real z = (i == 0 ? 2.0 : (i == 1 ? 0.0 : 1.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, z));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, z));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, 1.0, z));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double z = (i == 0 ? 2.0 : (i == 1 ? 0.0 : 1.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, z));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, z));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, 1.0, z));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(2); // Sort along Z
+  BVH_QuickSorter<double, 3> aSorter(2); // Sort along Z
   aSorter.Perform(&aTriangulation);
 
   // Should be ordered by Z centroid
@@ -144,16 +144,16 @@ TEST(BVH_QuickSorterTest, SortAlongZAxis)
 
 TEST(BVH_QuickSorterTest, SortRangeInSet)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create 5 triangles with X centroids: 0, 1, 2, 3, 4
   for (int i = 0; i < 5; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double x = static_cast<double>(i);
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
@@ -166,7 +166,7 @@ TEST(BVH_QuickSorterTest, SortRangeInSet)
   EXPECT_NEAR(aTriangulation.Center(3, 0), 1.5, 1e-10);
 
   // Sort only range [1, 3] (middle 3 elements)
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation, 1, 3);
 
   // Elements 0 and 4 should remain unchanged
@@ -185,20 +185,20 @@ TEST(BVH_QuickSorterTest, SortRangeInSet)
 
 TEST(BVH_QuickSorterTest, AlreadySorted)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create already sorted triangles
   for (int i = 0; i < 10; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(i);
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double x = static_cast<double>(i);
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // Should remain sorted
@@ -210,20 +210,20 @@ TEST(BVH_QuickSorterTest, AlreadySorted)
 
 TEST(BVH_QuickSorterTest, ReverseSorted)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create reverse sorted triangles
   for (int i = 0; i < 10; ++i)
   {
-    Standard_Real x = static_cast<Standard_Real>(9 - i);
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double x = static_cast<double>(9 - i);
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // Should become sorted
@@ -235,20 +235,20 @@ TEST(BVH_QuickSorterTest, ReverseSorted)
 
 TEST(BVH_QuickSorterTest, DuplicateValues)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create triangles with duplicate centroids: 1, 2, 2, 2, 3
   for (int i = 0; i < 5; ++i)
   {
-    Standard_Real x = (i == 0 ? 1.0 : (i <= 3 ? 2.0 : 3.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double x = (i == 0 ? 1.0 : (i <= 3 ? 2.0 : 3.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // Should be non-decreasing
@@ -260,19 +260,19 @@ TEST(BVH_QuickSorterTest, DuplicateValues)
 
 TEST(BVH_QuickSorterTest, AllSameValue)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // All triangles at same position
   for (int i = 0; i < 5; ++i)
   {
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.9, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.5, 0.9, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.9, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.5, 0.9, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // All should have same centroid
@@ -284,21 +284,21 @@ TEST(BVH_QuickSorterTest, AllSameValue)
 
 TEST(BVH_QuickSorterTest, LargeDataSet)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Create 1000 triangles with random-ish order
   for (int i = 0; i < 1000; ++i)
   {
     // Use simple pseudo-random pattern
-    Standard_Real x = static_cast<Standard_Real>((i * 37) % 1000);
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
-    BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements,
+    double x = static_cast<double>((i * 37) % 1000);
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
+    BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
                                             BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   // Verify sorted
@@ -310,20 +310,20 @@ TEST(BVH_QuickSorterTest, LargeDataSet)
 
 TEST(BVH_QuickSorterTest, TwoElements)
 {
-  BVH_Triangulation<Standard_Real, 3> aTriangulation;
+  BVH_Triangulation<double, 3> aTriangulation;
 
   // Two elements out of order
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(3.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.5, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(3.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(2.5, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(0, 1, 2, 0));
 
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
-  BVH::Array<Standard_Real, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, 1.0, 0.0));
-  BVH::Array<Standard_Integer, 4>::Append(aTriangulation.Elements, BVH_Vec4i(3, 4, 5, 0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
+  BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, 1.0, 0.0));
+  BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(3, 4, 5, 0));
 
-  BVH_QuickSorter<Standard_Real, 3> aSorter(0);
+  BVH_QuickSorter<double, 3> aSorter(0);
   aSorter.Perform(&aTriangulation);
 
   EXPECT_LT(aTriangulation.Center(0, 0), aTriangulation.Center(1, 0));

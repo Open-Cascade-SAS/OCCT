@@ -34,23 +34,22 @@ public:
 
   Standard_EXPORT Plate_PinpointConstraint(const gp_XY&           point2d,
                                            const gp_XYZ&          ImposedValue,
-                                           const Standard_Integer iu = 0,
-                                           const Standard_Integer iv = 0);
+                                           const int iu = 0,
+                                           const int iv = 0);
 
   const gp_XY& Pnt2d() const;
 
-  const Standard_Integer& Idu() const;
+  const int& Idu() const;
 
-  const Standard_Integer& Idv() const;
+  const int& Idv() const;
 
   const gp_XYZ& Value() const;
 
-protected:
 private:
   gp_XYZ           value;
   gp_XY            pnt2d;
-  Standard_Integer idu;
-  Standard_Integer idv;
+  int idu;
+  int idv;
 };
 
 #include <Plate_PinpointConstraint.lxx>

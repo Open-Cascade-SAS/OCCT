@@ -21,7 +21,7 @@
 //=========================================================================
 //   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
 //=========================================================================
-gce_MakeScale::gce_MakeScale(const gp_Pnt& Point, const Standard_Real Scale)
+gce_MakeScale::gce_MakeScale(const gp_Pnt& Point, const double Scale)
 {
   TheScale.SetScale(Point, Scale);
 }

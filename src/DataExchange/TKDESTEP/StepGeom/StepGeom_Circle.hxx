@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement;
 
-class StepGeom_Circle;
-DEFINE_STANDARD_HANDLE(StepGeom_Circle, StepGeom_Conic)
-
 class StepGeom_Circle : public StepGeom_Conic
 {
 
@@ -34,19 +31,18 @@ public:
   //! Returns a Circle
   Standard_EXPORT StepGeom_Circle();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const StepGeom_Axis2Placement&          aPosition,
-                            const Standard_Real                     aRadius);
+                            const double                     aRadius);
 
-  Standard_EXPORT void SetRadius(const Standard_Real aRadius);
+  Standard_EXPORT void SetRadius(const double aRadius);
 
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Circle, StepGeom_Conic)
 
-protected:
 private:
-  Standard_Real radius;
+  double radius;
 };
 
 #endif // _StepGeom_Circle_HeaderFile

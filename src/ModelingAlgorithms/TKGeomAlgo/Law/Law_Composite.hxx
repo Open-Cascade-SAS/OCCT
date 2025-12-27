@@ -20,14 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Law_Laws.hxx>
+#include <Law_Function.hxx>
+#include <NCollection_List.hxx>
 #include <Law_Function.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-class Law_Composite;
-DEFINE_STANDARD_HANDLE(Law_Composite, Law_Function)
+#include <NCollection_Array1.hxx>
 
 //! Loi composite constituee d une liste de lois de
 //! ranges consecutifs.
@@ -46,36 +44,36 @@ public:
   Standard_EXPORT Law_Composite();
 
   //! Construct an empty, trimmed Law
-  Standard_EXPORT Law_Composite(const Standard_Real First,
-                                const Standard_Real Last,
-                                const Standard_Real Tol);
+  Standard_EXPORT Law_Composite(const double First,
+                                const double Last,
+                                const double Tol);
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters,
   //! i.e. T.Length() > NbIntervals()
-  Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns the value at parameter X.
-  Standard_EXPORT Standard_Real Value(const Standard_Real X) Standard_OVERRIDE;
+  Standard_EXPORT double Value(const double X) override;
 
   //! Returns the value and the first derivative at parameter X.
-  Standard_EXPORT void D1(const Standard_Real X,
-                          Standard_Real&      F,
-                          Standard_Real&      D) Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double X,
+                          double&      F,
+                          double&      D) override;
 
   //! Returns the value, first and second derivatives
   //! at parameter X.
-  Standard_EXPORT void D2(const Standard_Real X,
-                          Standard_Real&      F,
-                          Standard_Real&      D,
-                          Standard_Real&      D2) Standard_OVERRIDE;
+  Standard_EXPORT void D2(const double X,
+                          double&      F,
+                          double&      D,
+                          double&      D2) override;
 
   //! Returns a law equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -83,20 +81,20 @@ public:
   //! It is usfule to determines the derivatives
   //! in these values <First> and <Last> if
   //! the Law is not Cn.
-  Standard_EXPORT Handle(Law_Function) Trim(const Standard_Real PFirst,
-                                            const Standard_Real PLast,
-                                            const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Law_Function> Trim(const double PFirst,
+                                            const double PLast,
+                                            const double Tol) const override;
 
   //! Returns the parametric bounds of the function.
-  Standard_EXPORT void Bounds(Standard_Real& PFirst, Standard_Real& PLast) Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(double& PFirst, double& PLast) override;
 
   //! Returns the elementary function of the composite used
   //! to compute at parameter W.
-  Standard_EXPORT Handle(Law_Function)& ChangeElementaryLaw(const Standard_Real W);
+  Standard_EXPORT occ::handle<Law_Function>& ChangeElementaryLaw(const double W);
 
-  Standard_EXPORT Law_Laws& ChangeLaws();
+  Standard_EXPORT NCollection_List<occ::handle<Law_Function>>& ChangeLaws();
 
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT bool IsPeriodic() const;
 
   Standard_EXPORT void SetPeriodic();
 
@@ -104,16 +102,16 @@ public:
 
 private:
   //! Set the current function.
-  Standard_EXPORT void Prepare(Standard_Real& W);
+  Standard_EXPORT void Prepare(double& W);
 
-  Standard_Real        first;
-  Standard_Real        last;
-  Handle(Law_Function) curfunc;
-  Law_Laws             funclist;
-  Standard_Boolean     periodic;
-  Standard_Real        TFirst;
-  Standard_Real        TLast;
-  Standard_Real        PTol;
+  double        first;
+  double        last;
+  occ::handle<Law_Function> curfunc;
+  NCollection_List<occ::handle<Law_Function>>             funclist;
+  bool     periodic;
+  double        TFirst;
+  double        TLast;
+  double        PTol;
 };
 
 #endif // _Law_Composite_HeaderFile

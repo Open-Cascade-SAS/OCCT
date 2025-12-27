@@ -23,7 +23,7 @@
 TEST(NCollection_VectorTest, DefaultConstructor)
 {
   // Default constructor should create an empty vector
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
 
   EXPECT_EQ(0, aVector.Length());
   EXPECT_TRUE(aVector.IsEmpty());
@@ -32,12 +32,12 @@ TEST(NCollection_VectorTest, DefaultConstructor)
 TEST(NCollection_VectorTest, ResizeConstructor)
 {
   // Test constructor with initial size
-  const Standard_Integer               initialSize  = 10;
-  const Standard_Integer               initialValue = 42;
-  NCollection_Vector<Standard_Integer> aVector(initialSize);
+  const int               initialSize  = 10;
+  const int               initialValue = 42;
+  NCollection_Vector<int> aVector(initialSize);
 
   // Initialize all elements to the same value
-  for (Standard_Integer i = 0; i < initialSize; i++)
+  for (int i = 0; i < initialSize; i++)
   {
     aVector.SetValue(i, initialValue);
   }
@@ -46,7 +46,7 @@ TEST(NCollection_VectorTest, ResizeConstructor)
   EXPECT_FALSE(aVector.IsEmpty());
 
   // Check all values are initialized
-  for (Standard_Integer i = 0; i < initialSize; i++)
+  for (int i = 0; i < initialSize; i++)
   {
     EXPECT_EQ(initialValue, aVector(i));
   }
@@ -54,7 +54,7 @@ TEST(NCollection_VectorTest, ResizeConstructor)
 
 TEST(NCollection_VectorTest, Append)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
 
   // Test Append method
   aVector.Append(10);
@@ -69,7 +69,7 @@ TEST(NCollection_VectorTest, Append)
 
 TEST(NCollection_VectorTest, SetValue)
 {
-  NCollection_Vector<Standard_Integer> aVector(5, 0);
+  NCollection_Vector<int> aVector(5, 0);
 
   // Test SetValue method
   aVector.SetValue(2, 42);
@@ -85,7 +85,7 @@ TEST(NCollection_VectorTest, SetValue)
 
 TEST(NCollection_VectorTest, Value)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
 
@@ -99,7 +99,7 @@ TEST(NCollection_VectorTest, Value)
 
 TEST(NCollection_VectorTest, ChangeValue)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
 
@@ -114,7 +114,7 @@ TEST(NCollection_VectorTest, ChangeValue)
 
 TEST(NCollection_VectorTest, FirstLast)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
   aVector.Append(30);
@@ -133,17 +133,17 @@ TEST(NCollection_VectorTest, FirstLast)
 
 TEST(NCollection_VectorTest, CopyConstructor)
 {
-  NCollection_Vector<Standard_Integer> aVector1;
+  NCollection_Vector<int> aVector1;
   aVector1.Append(10);
   aVector1.Append(20);
   aVector1.Append(30);
 
   // Test copy constructor
-  NCollection_Vector<Standard_Integer> aVector2(aVector1);
+  NCollection_Vector<int> aVector2(aVector1);
 
   EXPECT_EQ(aVector1.Length(), aVector2.Length());
 
-  for (Standard_Integer i = 0; i < aVector1.Length(); i++)
+  for (int i = 0; i < aVector1.Length(); i++)
   {
     EXPECT_EQ(aVector1(i), aVector2(i));
   }
@@ -155,18 +155,18 @@ TEST(NCollection_VectorTest, CopyConstructor)
 
 TEST(NCollection_VectorTest, AssignmentOperator)
 {
-  NCollection_Vector<Standard_Integer> aVector1;
+  NCollection_Vector<int> aVector1;
   aVector1.Append(10);
   aVector1.Append(20);
   aVector1.Append(30);
 
   // Test assignment operator
-  NCollection_Vector<Standard_Integer> aVector2;
+  NCollection_Vector<int> aVector2;
   aVector2 = aVector1;
 
   EXPECT_EQ(aVector1.Length(), aVector2.Length());
 
-  for (Standard_Integer i = 0; i < aVector1.Length(); i++)
+  for (int i = 0; i < aVector1.Length(); i++)
   {
     EXPECT_EQ(aVector1(i), aVector2(i));
   }
@@ -178,7 +178,7 @@ TEST(NCollection_VectorTest, AssignmentOperator)
 
 TEST(NCollection_VectorTest, Clear)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
 
@@ -191,14 +191,14 @@ TEST(NCollection_VectorTest, Clear)
 
 TEST(NCollection_VectorTest, Iterator)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
   aVector.Append(30);
 
   // Test iterator
-  Standard_Integer sum = 0;
-  for (NCollection_Vector<Standard_Integer>::Iterator it(aVector); it.More(); it.Next())
+  int sum = 0;
+  for (NCollection_Vector<int>::Iterator it(aVector); it.More(); it.Next())
   {
     sum += it.Value();
   }
@@ -206,7 +206,7 @@ TEST(NCollection_VectorTest, Iterator)
   EXPECT_EQ(60, sum);
 
   // Test modifying values through iterator
-  for (NCollection_Vector<Standard_Integer>::Iterator it(aVector); it.More(); it.Next())
+  for (NCollection_Vector<int>::Iterator it(aVector); it.More(); it.Next())
   {
     it.ChangeValue() *= 2;
   }
@@ -218,13 +218,13 @@ TEST(NCollection_VectorTest, Iterator)
 
 TEST(NCollection_VectorTest, STLIterators)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
   aVector.Append(30);
 
   // Test C++11 range-based for loop with STL-style iterators
-  Standard_Integer sum = 0;
+  int sum = 0;
   for (const auto& val : aVector)
   {
     sum += val;
@@ -250,17 +250,17 @@ TEST(NCollection_VectorTest, STLIterators)
 
 TEST(NCollection_VectorTest, Grow)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
 
   // Test automatic resize through many appends
-  for (Standard_Integer i = 0; i < 1000; i++)
+  for (int i = 0; i < 1000; i++)
   {
     aVector.Append(i);
   }
 
   EXPECT_EQ(1000, aVector.Length());
 
-  for (Standard_Integer i = 0; i < 1000; i++)
+  for (int i = 0; i < 1000; i++)
   {
     EXPECT_EQ(i, aVector(i));
   }
@@ -268,12 +268,12 @@ TEST(NCollection_VectorTest, Grow)
 
 TEST(NCollection_VectorTest, Move)
 {
-  NCollection_Vector<Standard_Integer> aVector1;
+  NCollection_Vector<int> aVector1;
   aVector1.Append(10);
   aVector1.Append(20);
 
   // Test Move constructor
-  NCollection_Vector<Standard_Integer> aVector2 = std::move(aVector1);
+  NCollection_Vector<int> aVector2 = std::move(aVector1);
 
   EXPECT_EQ(0, aVector1.Length()); // aVector1 should be empty after move
   EXPECT_EQ(2, aVector2.Length());
@@ -281,7 +281,7 @@ TEST(NCollection_VectorTest, Move)
   EXPECT_EQ(20, aVector2(1));
 
   // Test Move assignment
-  NCollection_Vector<Standard_Integer> aVector3;
+  NCollection_Vector<int> aVector3;
   aVector3.Append(30);
   aVector3 = std::move(aVector2);
 
@@ -293,7 +293,7 @@ TEST(NCollection_VectorTest, Move)
 
 TEST(NCollection_VectorTest, EraseLast)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
   aVector.Append(10);
   aVector.Append(20);
   aVector.Append(30);
@@ -323,13 +323,13 @@ TEST(NCollection_VectorTest, EraseLast)
 
 TEST(NCollection_VectorTest, Appended)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
 
   // Test Appended method - returns reference to the appended element
-  Standard_Integer& ref1 = aVector.Appended();
+  int& ref1 = aVector.Appended();
   ref1                   = 10;
 
-  Standard_Integer& ref2 = aVector.Appended();
+  int& ref2 = aVector.Appended();
   ref2                   = 20;
 
   EXPECT_EQ(2, aVector.Length());
@@ -344,8 +344,8 @@ TEST(NCollection_VectorTest, Appended)
 TEST(NCollection_VectorTest, CustomAllocator)
 {
   // Test with custom allocator
-  Handle(NCollection_BaseAllocator)    anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_Vector<Standard_Integer> aVector(256, anAlloc);
+  occ::handle<NCollection_BaseAllocator>    anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
+  NCollection_Vector<int> aVector(256, anAlloc);
 
   // Verify vector works with custom allocator
   aVector.Append(10);
@@ -364,13 +364,13 @@ TEST(NCollection_VectorTest, CustomAllocator)
 
 TEST(NCollection_VectorTest, SetIncrement)
 {
-  NCollection_Vector<Standard_Integer> aVector;
+  NCollection_Vector<int> aVector;
 
   // SetIncrement only works on empty vectors
   aVector.SetIncrement(512);
 
   // Fill the vector to test the custom increment size
-  for (Standard_Integer i = 0; i < 1000; i++)
+  for (int i = 0; i < 1000; i++)
   {
     aVector.Append(i);
   }
@@ -378,7 +378,7 @@ TEST(NCollection_VectorTest, SetIncrement)
   EXPECT_EQ(1000, aVector.Length());
 
   // Verify data integrity with the custom increment
-  for (Standard_Integer i = 0; i < 1000; i++)
+  for (int i = 0; i < 1000; i++)
   {
     EXPECT_EQ(i, aVector(i));
   }
@@ -386,14 +386,14 @@ TEST(NCollection_VectorTest, SetIncrement)
 
 TEST(NCollection_VectorTest, STLAlgorithmCompatibility_MinMax)
 {
-  NCollection_Vector<Standard_Integer> aVector;
-  std::vector<Standard_Integer>        aStdVector;
+  NCollection_Vector<int> aVector;
+  std::vector<int>        aStdVector;
 
   std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aVector.Append(aVal);
     aStdVector.push_back(aVal);
   }
@@ -410,20 +410,20 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_MinMax)
 
 TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Replace)
 {
-  NCollection_Vector<Standard_Integer> aVector;
-  std::vector<Standard_Integer>        aStdVector;
+  NCollection_Vector<int> aVector;
+  std::vector<int>        aStdVector;
 
   std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aVector.Append(aVal);
     aStdVector.push_back(aVal);
   }
 
-  Standard_Integer aTargetValue = aStdVector.back();
-  Standard_Integer aNewValue    = -1;
+  int aTargetValue = aStdVector.back();
+  int aNewValue    = -1;
 
   std::replace(aVector.begin(), aVector.end(), aTargetValue, aNewValue);
   std::replace(aStdVector.begin(), aStdVector.end(), aTargetValue, aNewValue);
@@ -433,10 +433,10 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Replace)
 
 TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Reverse)
 {
-  NCollection_Vector<Standard_Integer> aVector;
-  std::vector<Standard_Integer>        aStdVector;
+  NCollection_Vector<int> aVector;
+  std::vector<int>        aStdVector;
 
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
     aVector.Append(anIdx);
     aStdVector.push_back(anIdx);
@@ -450,14 +450,14 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Reverse)
 
 TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Sort)
 {
-  NCollection_Vector<Standard_Integer> aVector;
-  std::vector<Standard_Integer>        aStdVector;
+  NCollection_Vector<int> aVector;
+  std::vector<int>        aStdVector;
 
   std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
-  std::uniform_int_distribution<Standard_Integer> aDistribution(0, RAND_MAX);
-  for (Standard_Integer anIdx = 0; anIdx < 100; ++anIdx)
+  std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
+  for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
-    Standard_Integer aVal = aDistribution(aGenerator);
+    int aVal = aDistribution(aGenerator);
     aVector.Append(aVal);
     aStdVector.push_back(aVal);
   }

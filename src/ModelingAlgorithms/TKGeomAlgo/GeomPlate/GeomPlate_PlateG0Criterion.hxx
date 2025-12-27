@@ -20,8 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
 #include <AdvApp2Var_Criterion.hxx>
 #include <AdvApp2Var_CriterionType.hxx>
 #include <AdvApp2Var_CriterionRepartition.hxx>
@@ -35,22 +37,21 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomPlate_PlateG0Criterion(
-    const TColgp_SequenceOfXY&            Data,
-    const TColgp_SequenceOfXYZ&           G0Data,
-    const Standard_Real                   Maximum,
+    const NCollection_Sequence<gp_XY>&            Data,
+    const NCollection_Sequence<gp_XYZ>&           G0Data,
+    const double                   Maximum,
     const AdvApp2Var_CriterionType        Type   = AdvApp2Var_Absolute,
     const AdvApp2Var_CriterionRepartition Repart = AdvApp2Var_Regular);
 
   Standard_EXPORT virtual void Value(AdvApp2Var_Patch&         P,
-                                     const AdvApp2Var_Context& C) const Standard_OVERRIDE;
+                                     const AdvApp2Var_Context& C) const override;
 
-  Standard_EXPORT virtual Standard_Boolean IsSatisfied(const AdvApp2Var_Patch& P) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsSatisfied(const AdvApp2Var_Patch& P) const
+    override;
 
-protected:
 private:
-  TColgp_SequenceOfXY  myData;
-  TColgp_SequenceOfXYZ myXYZ;
+  NCollection_Sequence<gp_XY>  myData;
+  NCollection_Sequence<gp_XYZ> myXYZ;
 };
 
 #endif // _GeomPlate_PlateG0Criterion_HeaderFile

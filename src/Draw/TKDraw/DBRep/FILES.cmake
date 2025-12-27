@@ -17,11 +17,6 @@ set(OCCT_DBRep_FILES
   DBRep_HideData.hxx
   DBRep_IsoBuilder.cxx
   DBRep_IsoBuilder.hxx
-  DBRep_ListIteratorOfListOfEdge.hxx
-  DBRep_ListIteratorOfListOfFace.hxx
-  DBRep_ListIteratorOfListOfHideData.hxx
-  DBRep_ListOfEdge.hxx
-  DBRep_ListOfFace.hxx
-  DBRep_ListOfHideData.hxx
+
   DBRep_Params.hxx
 )

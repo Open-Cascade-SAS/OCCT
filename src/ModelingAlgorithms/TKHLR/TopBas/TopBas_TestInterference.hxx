@@ -31,15 +31,15 @@ public:
 
   Standard_EXPORT TopBas_TestInterference();
 
-  Standard_EXPORT TopBas_TestInterference(const Standard_Real&     Inters,
-                                          const Standard_Integer&  Bound,
+  Standard_EXPORT TopBas_TestInterference(const double&     Inters,
+                                          const int&  Bound,
                                           const TopAbs_Orientation Orient,
                                           const TopAbs_Orientation Trans,
                                           const TopAbs_Orientation BTrans);
 
-  void Intersection(const Standard_Real& I);
+  void Intersection(const double& I);
 
-  void Boundary(const Standard_Integer& B);
+  void Boundary(const int& B);
 
   void Orientation(const TopAbs_Orientation O);
 
@@ -47,13 +47,13 @@ public:
 
   void BoundaryTransition(const TopAbs_Orientation BTr);
 
-  const Standard_Real& Intersection() const;
+  const double& Intersection() const;
 
-  Standard_Real& ChangeIntersection();
+  double& ChangeIntersection();
 
-  const Standard_Integer& Boundary() const;
+  const int& Boundary() const;
 
-  Standard_Integer& ChangeBoundary();
+  int& ChangeBoundary();
 
   TopAbs_Orientation Orientation() const;
 
@@ -61,10 +61,9 @@ public:
 
   TopAbs_Orientation BoundaryTransition() const;
 
-protected:
 private:
-  Standard_Real      myIntersection;
-  Standard_Integer   myBoundary;
+  double      myIntersection;
+  int   myBoundary;
   TopAbs_Orientation myOrientation;
   TopAbs_Orientation myTransition;
   TopAbs_Orientation myBTransition;
@@ -74,14 +73,14 @@ private:
 // Inline implementations
 //=================================================================================================
 
-inline void TopBas_TestInterference::Intersection(const Standard_Real& I)
+inline void TopBas_TestInterference::Intersection(const double& I)
 {
   myIntersection = I;
 }
 
 //=================================================================================================
 
-inline void TopBas_TestInterference::Boundary(const Standard_Integer& B)
+inline void TopBas_TestInterference::Boundary(const int& B)
 {
   myBoundary = B;
 }
@@ -109,28 +108,28 @@ inline void TopBas_TestInterference::BoundaryTransition(const TopAbs_Orientation
 
 //=================================================================================================
 
-inline const Standard_Real& TopBas_TestInterference::Intersection() const
+inline const double& TopBas_TestInterference::Intersection() const
 {
   return myIntersection;
 }
 
 //=================================================================================================
 
-inline Standard_Real& TopBas_TestInterference::ChangeIntersection()
+inline double& TopBas_TestInterference::ChangeIntersection()
 {
   return myIntersection;
 }
 
 //=================================================================================================
 
-inline const Standard_Integer& TopBas_TestInterference::Boundary() const
+inline const int& TopBas_TestInterference::Boundary() const
 {
   return myBoundary;
 }
 
 //=================================================================================================
 
-inline Standard_Integer& TopBas_TestInterference::ChangeBoundary()
+inline int& TopBas_TestInterference::ChangeBoundary()
 {
   return myBoundary;
 }

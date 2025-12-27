@@ -21,7 +21,7 @@
 
 class SelectMgr_EntityOwner;
 
-typedef NCollection_Shared<NCollection_IndexedMap<Handle(SelectMgr_EntityOwner)>>
+typedef NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>
   SelectMgr_IndexedMapOfOwner;
 
 #endif // _SelectMgr_IndexedMapOfOwner_HeaderFile

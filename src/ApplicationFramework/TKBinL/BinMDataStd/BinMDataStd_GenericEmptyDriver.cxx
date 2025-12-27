@@ -15,7 +15,8 @@
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_GenericEmpty.hxx>
@@ -26,21 +27,21 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericEmptyDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataStd_GenericEmptyDriver::BinMDataStd_GenericEmptyDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_GenericEmpty)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_GenericEmptyDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_GenericEmptyDriver::NewEmpty() const
 {
-  return Handle(TDF_Attribute)(); // this attribute can not be created
+  return occ::handle<TDF_Attribute>(); // this attribute can not be created
 }
 
 //=================================================================================================
 
-const Handle(Standard_Type)& BinMDataStd_GenericEmptyDriver::SourceType() const
+const occ::handle<Standard_Type>& BinMDataStd_GenericEmptyDriver::SourceType() const
 {
   return Standard_Type::Instance<TDataStd_GenericEmpty>();
 }
@@ -49,19 +50,19 @@ const Handle(Standard_Type)& BinMDataStd_GenericEmptyDriver::SourceType() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_GenericEmptyDriver::Paste(const BinObjMgt_Persistent&,
-                                                       const Handle(TDF_Attribute)&,
+bool BinMDataStd_GenericEmptyDriver::Paste(const BinObjMgt_Persistent&,
+                                                       const occ::handle<TDF_Attribute>&,
                                                        BinObjMgt_RRelocationTable&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_GenericEmptyDriver::Paste(const Handle(TDF_Attribute)&,
+void BinMDataStd_GenericEmptyDriver::Paste(const occ::handle<TDF_Attribute>&,
                                            BinObjMgt_Persistent&,
-                                           BinObjMgt_SRelocationTable&) const
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
 }

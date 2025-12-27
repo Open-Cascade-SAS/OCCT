@@ -17,9 +17,10 @@
 #ifndef Storage_HArrayOfCallBack_HeaderFile
 #define Storage_HArrayOfCallBack_HeaderFile
 
-#include <Storage_ArrayOfCallBack.hxx>
+#include <Storage_CallBack.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(Storage_HArrayOfCallBack, Storage_ArrayOfCallBack)
+DEFINE_HARRAY1(Storage_HArrayOfCallBack, NCollection_Array1<occ::handle<Storage_CallBack>>)
 
 #endif

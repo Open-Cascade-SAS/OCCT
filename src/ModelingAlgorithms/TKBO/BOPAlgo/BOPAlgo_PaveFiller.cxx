@@ -58,15 +58,15 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 {
   myDS               = NULL;
   myIterator         = NULL;
-  myNonDestructive   = Standard_False;
-  myIsPrimary        = Standard_True;
-  myAvoidBuildPCurve = Standard_False;
+  myNonDestructive   = false;
+  myIsPrimary        = true;
+  myAvoidBuildPCurve = false;
   myGlue             = BOPAlgo_GlueOff;
 }
 
 //=================================================================================================
 
-BOPAlgo_PaveFiller::BOPAlgo_PaveFiller(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_PaveFiller::BOPAlgo_PaveFiller(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Algo(theAllocator),
       myFPBDone(1, theAllocator),
       myIncreasedSS(1, theAllocator),
@@ -75,9 +75,9 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller(const Handle(NCollection_BaseAllocator)& 
 {
   myDS               = NULL;
   myIterator         = NULL;
-  myNonDestructive   = Standard_False;
-  myIsPrimary        = Standard_True;
-  myAvoidBuildPCurve = Standard_False;
+  myNonDestructive   = false;
+  myIsPrimary        = true;
+  myAvoidBuildPCurve = false;
   myGlue             = BOPAlgo_GlueOff;
 }
 
@@ -90,14 +90,14 @@ BOPAlgo_PaveFiller::~BOPAlgo_PaveFiller()
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::SetNonDestructive(const Standard_Boolean bFlag)
+void BOPAlgo_PaveFiller::SetNonDestructive(const bool bFlag)
 {
   myNonDestructive = bFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPAlgo_PaveFiller::NonDestructive() const
+bool BOPAlgo_PaveFiller::NonDestructive() const
 {
   return myNonDestructive;
 }
@@ -118,14 +118,14 @@ BOPAlgo_GlueEnum BOPAlgo_PaveFiller::Glue() const
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::SetIsPrimary(const Standard_Boolean bFlag)
+void BOPAlgo_PaveFiller::SetIsPrimary(const bool bFlag)
 {
   myIsPrimary = bFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean BOPAlgo_PaveFiller::IsPrimary() const
+bool BOPAlgo_PaveFiller::IsPrimary() const
 {
   return myIsPrimary;
 }
@@ -164,7 +164,7 @@ BOPDS_PDS BOPAlgo_PaveFiller::PDS()
 
 //=================================================================================================
 
-const Handle(IntTools_Context)& BOPAlgo_PaveFiller::Context()
+const occ::handle<IntTools_Context>& BOPAlgo_PaveFiller::Context()
 {
   return myContext;
 }
@@ -187,7 +187,7 @@ void BOPAlgo_PaveFiller::Init(const Message_ProgressRange& theRange)
   }
   //
   Message_ProgressScope              aPS(theRange, "Initialization of Intersection algorithm", 1);
-  TopTools_ListIteratorOfListOfShape aIt(myArguments);
+  NCollection_List<TopoDS_Shape>::Iterator aIt(myArguments);
   for (; aIt.More(); aIt.Next())
   {
     if (aIt.Value().IsNull())
@@ -363,10 +363,10 @@ void BOPAlgo_PaveFiller::PerformInternal(const Message_ProgressRange& theRange)
 void BOPAlgo_PaveFiller::RepeatIntersection(const Message_ProgressRange& theRange)
 {
   // Find all vertices with increased tolerance
-  TColStd_MapOfInteger   anExtraInterfMap;
-  const Standard_Integer aNbS = myDS->NbSourceShapes();
+  NCollection_Map<int>   anExtraInterfMap;
+  const int aNbS = myDS->NbSourceShapes();
   Message_ProgressScope  aPS(theRange, "Repeat intersection", 3);
-  for (Standard_Integer i = 0; i < aNbS; ++i)
+  for (int i = 0; i < aNbS; ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_VERTEX)
@@ -379,7 +379,7 @@ void BOPAlgo_PaveFiller::RepeatIntersection(const Message_ProgressRange& theRang
     }
 
     // Check if the vertex created a new vertex with greater tolerance
-    Standard_Integer nVSD;
+    int nVSD;
     if (!myDS->HasShapeSD(i, nVSD))
       continue;
 
@@ -415,7 +415,7 @@ void BOPAlgo_PaveFiller::RepeatIntersection(const Message_ProgressRange& theRang
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::fillPIConstants(const Standard_Real theWhole,
+void BOPAlgo_PaveFiller::fillPIConstants(const double theWhole,
                                          BOPAlgo_PISteps&    theSteps) const
 {
   if (!myNonDestructive)
@@ -429,7 +429,7 @@ void BOPAlgo_PaveFiller::fillPIConstants(const Standard_Real theWhole,
 void BOPAlgo_PaveFiller::fillPISteps(BOPAlgo_PISteps& theSteps) const
 {
   // Get number of all intersecting pairs
-  Standard_Integer aVVSize = 0, aVESize = 0, aEESize = 0, aVFSize = 0, aEFSize = 0, aFFSize = 0;
+  int aVVSize = 0, aVESize = 0, aEESize = 0, aVFSize = 0, aEFSize = 0, aFFSize = 0;
 
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_VERTEX);
   aVVSize = myIterator->ExpectedLength();

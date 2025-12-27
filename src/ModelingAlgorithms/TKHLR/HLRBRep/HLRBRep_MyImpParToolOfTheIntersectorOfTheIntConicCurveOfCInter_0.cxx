@@ -23,40 +23,40 @@
 
 HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::
   HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter(const IntCurve_IConicTool& ITool,
-                                                                 const Standard_Address&    PC)
+                                                                 const HLRBRep_Curve*&    PC)
     : TheImpTool(ITool)
 {
-  TheParCurve = (Standard_Address)(&PC);
+  TheParCurve = (HLRBRep_Curve*)(&PC);
 }
 
-Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Value(
-  const Standard_Real Param,
-  Standard_Real&      ApproxDistance)
+bool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Value(
+  const double Param,
+  double&      ApproxDistance)
 {
   ApproxDistance =
-    TheImpTool.Distance(HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
-  return (Standard_True);
+    TheImpTool.Distance(HLRBRep_CurveTool::Value((*((HLRBRep_Curve**)(TheParCurve))), Param));
+  return (true);
 }
 
-Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Derivative(
-  const Standard_Real Param,
-  Standard_Real&      D_ApproxDistance_DV)
+bool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Derivative(
+  const double Param,
+  double&      D_ApproxDistance_DV)
 {
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
   gp_Vec2d Grad =
-    TheImpTool.GradDistance(HLRBRep_CurveTool::Value((*((Standard_Address*)(TheParCurve))), Param));
-  HLRBRep_CurveTool::D1((*((Standard_Address*)(TheParCurve))), Param, Pt, TanParCurve);
+    TheImpTool.GradDistance(HLRBRep_CurveTool::Value((*((HLRBRep_Curve**)(TheParCurve))), Param));
+  HLRBRep_CurveTool::D1((*((HLRBRep_Curve**)(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Values(
-  const Standard_Real Param,
-  Standard_Real&      ApproxDistance,
-  Standard_Real&      Deriv)
+bool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Values(
+  const double Param,
+  double&      ApproxDistance,
+  double&      Deriv)
 {
   this->Value(Param, ApproxDistance);
   this->Derivative(Param, Deriv);
-  return (Standard_True);
+  return (true);
 }

@@ -18,374 +18,374 @@
 
   #include <Standard_Type.hxx>
 
-static Standard_Boolean TopOpeBRepBuild_traceCU = Standard_False; // dump curves
+static bool TopOpeBRepBuild_traceCU = false; // dump curves
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceCU(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceCU(const bool b)
 {
   TopOpeBRepBuild_traceCU = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCU()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceCU()
 {
   return TopOpeBRepBuild_traceCU;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceCUV = Standard_False; // dump curves verbose or not
+static bool TopOpeBRepBuild_traceCUV = false; // dump curves verbose or not
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceCUV(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceCUV(const bool b)
 {
   TopOpeBRepBuild_traceCUV = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCUV()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceCUV()
 {
   return TopOpeBRepBuild_traceCUV;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSPF = Standard_False; // SplitFace
+static bool TopOpeBRepBuild_traceSPF = false; // SplitFace
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSPF(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSPF(const bool b)
 {
   TopOpeBRepBuild_traceSPF = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSPF()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSPF()
 {
   return TopOpeBRepBuild_traceSPF;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSPS = Standard_False; // SplitSolid
+static bool TopOpeBRepBuild_traceSPS = false; // SplitSolid
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSPS(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSPS(const bool b)
 {
   TopOpeBRepBuild_traceSPS = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSPS()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSPS()
 {
   return TopOpeBRepBuild_traceSPS;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSHEX = Standard_False; // Check edge
+static bool TopOpeBRepBuild_traceSHEX = false; // Check edge
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSHEX(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSHEX(const bool b)
 {
   TopOpeBRepBuild_traceSHEX = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSHEX()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSHEX()
 {
   return TopOpeBRepBuild_traceSHEX;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextSF2 = Standard_False;
+static bool TopOpeBRepBuild_contextSF2 = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextSF2(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextSF2(const bool b)
 {
   TopOpeBRepBuild_contextSF2 = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextSF2()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextSF2()
 {
   return TopOpeBRepBuild_contextSF2;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextSPEON = Standard_False;
+static bool TopOpeBRepBuild_contextSPEON = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextSPEON(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextSPEON(const bool b)
 {
   TopOpeBRepBuild_contextSPEON = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextSPEON()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextSPEON()
 {
   return TopOpeBRepBuild_contextSPEON;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSS = Standard_False;
+static bool TopOpeBRepBuild_traceSS = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSS(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSS(const bool b)
 {
   TopOpeBRepBuild_traceSS = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSS()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSS()
 {
   return TopOpeBRepBuild_traceSS;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextSSCONNEX = Standard_False;
+static bool TopOpeBRepBuild_contextSSCONNEX = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextSSCONNEX(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextSSCONNEX(const bool b)
 {
   TopOpeBRepBuild_contextSSCONNEX = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextSSCONNEX()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextSSCONNEX()
 {
   return TopOpeBRepBuild_contextSSCONNEX;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceAREA = Standard_False;
+static bool TopOpeBRepBuild_traceAREA = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceAREA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceAREA(const bool b)
 {
   TopOpeBRepBuild_traceAREA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceAREA()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceAREA()
 {
   return TopOpeBRepBuild_traceAREA;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceKPB = Standard_False;
+static bool TopOpeBRepBuild_traceKPB = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceKPB(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceKPB(const bool b)
 {
   TopOpeBRepBuild_traceKPB = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceKPB()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceKPB()
 {
   return TopOpeBRepBuild_traceKPB;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceCHK = Standard_False;
+static bool TopOpeBRepBuild_traceCHK = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceCHK(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceCHK(const bool b)
 {
   TopOpeBRepBuild_traceCHK = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCHK()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceCHK()
 {
   return TopOpeBRepBuild_traceCHK;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceCHKOK = Standard_False;
+static bool TopOpeBRepBuild_traceCHKOK = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceCHKOK(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceCHKOK(const bool b)
 {
   TopOpeBRepBuild_traceCHKOK = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCHKOK()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceCHKOK()
 {
   return TopOpeBRepBuild_traceCHKOK;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceCHKNOK = Standard_False;
+static bool TopOpeBRepBuild_traceCHKNOK = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceCHKNOK(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceCHKNOK(const bool b)
 {
   TopOpeBRepBuild_traceCHKNOK = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCHKNOK()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceCHKNOK()
 {
   return TopOpeBRepBuild_traceCHKNOK;
 }
 
-static Standard_Boolean TopOpeBRepBuild_tracePURGE = Standard_False;
+static bool TopOpeBRepBuild_tracePURGE = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettracePURGE(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettracePURGE(const bool b)
 {
   TopOpeBRepBuild_tracePURGE = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettracePURGE()
+Standard_EXPORT bool TopOpeBRepBuild_GettracePURGE()
 {
   return TopOpeBRepBuild_tracePURGE;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSAVFREGU = Standard_False;
+static bool TopOpeBRepBuild_traceSAVFREGU = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSAVFREGU(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSAVFREGU(const bool b)
 {
   TopOpeBRepBuild_traceSAVFREGU = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSAVFREGU()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSAVFREGU()
 {
   return TopOpeBRepBuild_traceSAVFREGU;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceSAVSREGU = Standard_False;
+static bool TopOpeBRepBuild_traceSAVSREGU = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceSAVSREGU(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceSAVSREGU(const bool b)
 {
   TopOpeBRepBuild_traceSAVSREGU = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceSAVSREGU()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceSAVSREGU()
 {
   return TopOpeBRepBuild_traceSAVSREGU;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceFUFA = Standard_False;
+static bool TopOpeBRepBuild_traceFUFA = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceFUFA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceFUFA(const bool b)
 {
   TopOpeBRepBuild_traceFUFA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceFUFA()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceFUFA()
 {
   return TopOpeBRepBuild_traceFUFA;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOPURGE = Standard_False;
+static bool TopOpeBRepBuild_contextNOPURGE = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOPURGE(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOPURGE(const bool b)
 {
   TopOpeBRepBuild_contextNOPURGE = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOPURGE()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOPURGE()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOPURGE;
+  bool b = TopOpeBRepBuild_contextNOPURGE;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOPURGE actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOREGUFA = Standard_False;
+static bool TopOpeBRepBuild_contextNOREGUFA = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUFA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUFA(const bool b)
 {
   TopOpeBRepBuild_contextNOREGUFA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOREGUFA()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOREGUFA;
+  bool b = TopOpeBRepBuild_contextNOREGUFA;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOREGUFA actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOREGUSO = Standard_False;
+static bool TopOpeBRepBuild_contextNOREGUSO = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUSO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUSO(const bool b)
 {
   TopOpeBRepBuild_contextNOREGUSO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOREGUSO()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOREGUSO;
+  bool b = TopOpeBRepBuild_contextNOREGUSO;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOREGUSO actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextREGUXPU = Standard_False;
+static bool TopOpeBRepBuild_contextREGUXPU = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextREGUXPU(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextREGUXPU(const bool b)
 {
   TopOpeBRepBuild_contextREGUXPU = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextREGUXPU()
 {
   return TopOpeBRepBuild_contextREGUXPU;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOCORRISO = Standard_False;
+static bool TopOpeBRepBuild_contextNOCORRISO = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOCORRISO(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOCORRISO(const bool b)
 {
   TopOpeBRepBuild_contextNOCORRISO = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOCORRISO()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOCORRISO()
 {
   return TopOpeBRepBuild_contextNOCORRISO;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextEINTERNAL = Standard_False;
+static bool TopOpeBRepBuild_contextEINTERNAL = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextEINTERNAL(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextEINTERNAL(const bool b)
 {
   TopOpeBRepBuild_contextEINTERNAL = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextEINTERNAL()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextEINTERNAL;
+  bool b = TopOpeBRepBuild_contextEINTERNAL;
   if (b)
     std::cout << "context (TopOpeBRepBuild) EINTERNAL actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextEEXTERNAL = Standard_False;
+static bool TopOpeBRepBuild_contextEEXTERNAL = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextEEXTERNAL(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextEEXTERNAL(const bool b)
 {
   TopOpeBRepBuild_contextEEXTERNAL = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEEXTERNAL()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextEEXTERNAL()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextEEXTERNAL;
+  bool b = TopOpeBRepBuild_contextEEXTERNAL;
   if (b)
     std::cout << "context (TopOpeBRepBuild) EEXTERNAL actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOSG = Standard_False;
+static bool TopOpeBRepBuild_contextNOSG = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOSG(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOSG(const bool b)
 {
   TopOpeBRepBuild_contextNOSG = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOSG()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOSG;
+  bool b = TopOpeBRepBuild_contextNOSG;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOSG actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOFUFA = Standard_False;
+static bool TopOpeBRepBuild_contextNOFUFA = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFUFA(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFUFA(const bool b)
 {
   TopOpeBRepBuild_contextNOFUFA = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFUFA()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOFUFA()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOFUFA;
+  bool b = TopOpeBRepBuild_contextNOFUFA;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOFUFA actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_contextNOFE = Standard_False;
+static bool TopOpeBRepBuild_contextNOFE = false;
 
-Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFE(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFE(const bool b)
 {
   TopOpeBRepBuild_contextNOFE = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFE()
+Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOFE()
 {
-  Standard_Boolean b = TopOpeBRepBuild_contextNOFE;
+  bool b = TopOpeBRepBuild_contextNOFE;
   if (b)
     std::cout << "context (TopOpeBRepBuild) NOFE actif" << std::endl;
   return b;
 }
 
-static Standard_Boolean TopOpeBRepBuild_traceFE = Standard_False; // trace FuseEdges
+static bool TopOpeBRepBuild_traceFE = false; // trace FuseEdges
 
-Standard_EXPORT void TopOpeBRepBuild_SettraceFE(const Standard_Boolean b)
+Standard_EXPORT void TopOpeBRepBuild_SettraceFE(const bool b)
 {
   TopOpeBRepBuild_traceFE = b;
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceFE()
+Standard_EXPORT bool TopOpeBRepBuild_GettraceFE()
 {
   return TopOpeBRepBuild_traceFE;
 }

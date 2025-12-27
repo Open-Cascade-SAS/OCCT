@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicTopologyStructure, StepRepr_Representation)
-
 //! Representation of STEP entity KinematicTopologyStructure
 class StepKinematics_KinematicTopologyStructure : public StepRepr_Representation
 {

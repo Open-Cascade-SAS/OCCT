@@ -21,9 +21,6 @@
 #include <StepBasic_SourceItem.hxx>
 #include <Standard_Transient.hxx>
 
-class StepBasic_ExternalSource;
-DEFINE_STANDARD_HANDLE(StepBasic_ExternalSource, Standard_Transient)
-
 //! Representation of STEP entity ExternalSource
 class StepBasic_ExternalSource : public Standard_Transient
 {
@@ -43,7 +40,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ExternalSource, Standard_Transient)
 
-protected:
 private:
   StepBasic_SourceItem theSourceId;
 };

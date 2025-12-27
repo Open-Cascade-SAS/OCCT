@@ -15,7 +15,7 @@
 #include <IGESSelect_SelectFromDrawing.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -31,8 +31,8 @@ Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interfac
   Interface_EntityIterator draws = InputResult(G);
   if (draws.NbEntities() == 0)
     return list;
-  Standard_Integer nb = G.Size();
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int nb = G.Size();
+  int i; // svv Jan11 2000 : porting on DEC
 
   //  Pour chaque Drawing : prendre d une part l integralite de son contenu,
   //  (c-a-d avec le "Frame"), d autre part les entites attachees a ses vues
@@ -53,7 +53,7 @@ Interface_EntityIterator IGESSelect_SelectFromDrawing::RootResult(const Interfac
     DeclareAndCast(IGESData_IGESEntity, igesent, G.Entity(i));
     if (igesent.IsNull())
       continue;
-    Standard_Integer nv = G.EntityNumber(igesent->View());
+    int nv = G.EntityNumber(igesent->View());
     if (nv > 0 && nv <= nb)
       list.GetOneItem(igesent);
   }

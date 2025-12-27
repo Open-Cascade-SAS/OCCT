@@ -28,9 +28,9 @@ StepElement_SurfaceElementProperty::StepElement_SurfaceElementProperty() {}
 //=================================================================================================
 
 void StepElement_SurfaceElementProperty::Init(
-  const Handle(TCollection_HAsciiString)&        aPropertyId,
-  const Handle(TCollection_HAsciiString)&        aDescription,
-  const Handle(StepElement_SurfaceSectionField)& aSection)
+  const occ::handle<TCollection_HAsciiString>&        aPropertyId,
+  const occ::handle<TCollection_HAsciiString>&        aDescription,
+  const occ::handle<StepElement_SurfaceSectionField>& aSection)
 {
 
   thePropertyId = aPropertyId;
@@ -42,7 +42,7 @@ void StepElement_SurfaceElementProperty::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_SurfaceElementProperty::PropertyId() const
+occ::handle<TCollection_HAsciiString> StepElement_SurfaceElementProperty::PropertyId() const
 {
   return thePropertyId;
 }
@@ -50,14 +50,14 @@ Handle(TCollection_HAsciiString) StepElement_SurfaceElementProperty::PropertyId(
 //=================================================================================================
 
 void StepElement_SurfaceElementProperty::SetPropertyId(
-  const Handle(TCollection_HAsciiString)& aPropertyId)
+  const occ::handle<TCollection_HAsciiString>& aPropertyId)
 {
   thePropertyId = aPropertyId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepElement_SurfaceElementProperty::Description() const
+occ::handle<TCollection_HAsciiString> StepElement_SurfaceElementProperty::Description() const
 {
   return theDescription;
 }
@@ -65,14 +65,14 @@ Handle(TCollection_HAsciiString) StepElement_SurfaceElementProperty::Description
 //=================================================================================================
 
 void StepElement_SurfaceElementProperty::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepElement_SurfaceSectionField) StepElement_SurfaceElementProperty::Section() const
+occ::handle<StepElement_SurfaceSectionField> StepElement_SurfaceElementProperty::Section() const
 {
   return theSection;
 }
@@ -80,7 +80,7 @@ Handle(StepElement_SurfaceSectionField) StepElement_SurfaceElementProperty::Sect
 //=================================================================================================
 
 void StepElement_SurfaceElementProperty::SetSection(
-  const Handle(StepElement_SurfaceSectionField)& aSection)
+  const occ::handle<StepElement_SurfaceSectionField>& aSection)
 {
   theSection = aSection;
 }

@@ -35,8 +35,9 @@
 #include <math_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -48,12 +49,12 @@
 
 //=================================================================================================
 
-static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
-                              const Handle(Geom_Plane)&   thePlane)
+static double Controle(const NCollection_Sequence<gp_Pnt>& thePoints,
+                              const occ::handle<Geom_Plane>&   thePlane)
 {
-  Standard_Real    dfMaxDist = 0.;
-  Standard_Real    a, b, c, d, dist;
-  Standard_Integer ii;
+  double    dfMaxDist = 0.;
+  double    a, b, c, d, dist;
+  int ii;
   thePlane->Coefficients(a, b, c, d);
   for (ii = 1; ii <= thePoints.Length(); ii++)
   {
@@ -71,14 +72,14 @@ static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
 // purpose  : Return true if the last vertex of theEdge1 coincides with
 //           the first vertex of theEdge2 in parametric space of theFace
 //=======================================================================
-inline static Standard_Boolean Is2DConnected(const TopoDS_Edge&          theEdge1,
+inline static bool Is2DConnected(const TopoDS_Edge&          theEdge1,
                                              const TopoDS_Edge&          theEdge2,
-                                             const Handle(Geom_Surface)& theSurface,
+                                             const occ::handle<Geom_Surface>& theSurface,
                                              const TopLoc_Location&      theLocation)
 {
-  Standard_Real f, l;
+  double f, l;
   // TopLoc_Location aLoc;
-  Handle(Geom2d_Curve) aCurve;
+  occ::handle<Geom2d_Curve> aCurve;
   gp_Pnt2d             p1, p2;
 
   // get 2D points
@@ -89,10 +90,10 @@ inline static Standard_Boolean Is2DConnected(const TopoDS_Edge&          theEdge
 
   // compare 2D points
   GeomAdaptor_Surface aSurface(theSurface);
-  TopoDS_Vertex       aV    = TopExp::FirstVertex(theEdge2, Standard_True);
-  Standard_Real       tol3D = BRep_Tool::Tolerance(aV);
-  Standard_Real       tol2D = aSurface.UResolution(tol3D) + aSurface.VResolution(tol3D);
-  Standard_Real       dist2 = p1.SquareDistance(p2);
+  TopoDS_Vertex       aV    = TopExp::FirstVertex(theEdge2, true);
+  double       tol3D = BRep_Tool::Tolerance(aV);
+  double       tol2D = aSurface.UResolution(tol3D) + aSurface.VResolution(tol3D);
+  double       dist2 = p1.SquareDistance(p2);
   return dist2 < tol2D * tol2D;
 }
 
@@ -102,8 +103,8 @@ inline static Standard_Boolean Is2DConnected(const TopoDS_Edge&          theEdge
 //           parametric space of theSurface
 //=======================================================================
 
-static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
-                                   const Handle(Geom_Surface)& theSurface,
+static bool Is2DClosed(const TopoDS_Shape&         theShape,
+                                   const occ::handle<Geom_Surface>& theSurface,
                                    const TopLoc_Location&      theLocation)
 {
   try
@@ -113,7 +114,7 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
     TopExp_Explorer aWireExp(theShape, TopAbs_WIRE);
     if (!aWireExp.More())
     {
-      return Standard_False;
+      return false;
     }
     TopoDS_Wire aWire = TopoDS::Wire(aWireExp.Current());
     // a tmp face
@@ -124,7 +125,7 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
     BRepTools_WireExplorer aWireExplorer(aWire, aTmpFace);
     if (!aWireExplorer.More())
     {
-      return Standard_False;
+      return false;
     }
     // remember the 1st and the last edges of aWire
     TopoDS_Edge aFisrtEdge = aWireExplorer.Current(), aLastEdge = aFisrtEdge;
@@ -142,13 +143,13 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
     }
     // wire is closed if ( 1st vertex of aFisrtEdge ) ==
     // ( last vertex of aLastEdge ) in 2D
-    TopoDS_Vertex aV1 = TopExp::FirstVertex(aFisrtEdge, Standard_True);
-    TopoDS_Vertex aV2 = TopExp::LastVertex(aLastEdge, Standard_True);
+    TopoDS_Vertex aV1 = TopExp::FirstVertex(aFisrtEdge, true);
+    TopoDS_Vertex aV2 = TopExp::LastVertex(aLastEdge, true);
     return (aV1.IsSame(aV2) && Is2DConnected(aLastEdge, aFisrtEdge, theSurface, theLocation));
   }
   catch (Standard_Failure const&)
   {
-    return Standard_False;
+    return false;
   }
 }
 
@@ -157,44 +158,44 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
 BRepLib_FindSurface::BRepLib_FindSurface()
     : myTolerance(0.0),
       myTolReached(0.0),
-      isExisted(Standard_False)
+      isExisted(false)
 {
 }
 
 //=================================================================================================
 
 BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S,
-                                         const Standard_Real    Tol,
-                                         const Standard_Boolean OnlyPlane,
-                                         const Standard_Boolean OnlyClosed)
+                                         const double    Tol,
+                                         const bool OnlyPlane,
+                                         const bool OnlyClosed)
 {
   Init(S, Tol, OnlyPlane, OnlyClosed);
 }
 
 namespace
 {
-static void fillParams(const TColStd_Array1OfReal&        theKnots,
-                       Standard_Integer                   theDegree,
-                       Standard_Real                      theParMin,
-                       Standard_Real                      theParMax,
-                       NCollection_Vector<Standard_Real>& theParams)
+static void fillParams(const NCollection_Array1<double>&        theKnots,
+                       int                   theDegree,
+                       double                      theParMin,
+                       double                      theParMax,
+                       NCollection_Vector<double>& theParams)
 {
-  Standard_Real aPrevPar = theParMin;
+  double aPrevPar = theParMin;
   theParams.Append(aPrevPar);
 
-  Standard_Integer aNbP = std::max(theDegree, 1);
+  int aNbP = std::max(theDegree, 1);
 
-  for (Standard_Integer i = 1;
+  for (int i = 1;
        (i < theKnots.Length()) && (theKnots(i) < (theParMax - Precision::PConfusion()));
        ++i)
   {
     if (theKnots(i + 1) < theParMin + Precision::PConfusion())
       continue;
 
-    Standard_Real aStep = (theKnots(i + 1) - theKnots(i)) / aNbP;
-    for (Standard_Integer k = 1; k <= aNbP; ++k)
+    double aStep = (theKnots(i + 1) - theKnots(i)) / aNbP;
+    for (int k = 1; k <= aNbP; ++k)
     {
-      Standard_Real aPar = theKnots(i) + k * aStep;
+      double aPar = theKnots(i) + k * aStep;
       if (aPar > theParMax - Precision::PConfusion())
         break;
 
@@ -209,18 +210,18 @@ static void fillParams(const TColStd_Array1OfReal&        theKnots,
 }
 
 static void fillPoints(const BRepAdaptor_Curve&                 theCurve,
-                       const NCollection_Vector<Standard_Real>& theParams,
-                       TColgp_SequenceOfPnt&                    thePoints,
-                       TColStd_SequenceOfReal&                  theWeights)
+                       const NCollection_Vector<double>& theParams,
+                       NCollection_Sequence<gp_Pnt>&                    thePoints,
+                       NCollection_Sequence<double>&                  theWeights)
 {
-  Standard_Real aDistPrev = 0., aDistNext;
+  double aDistPrev = 0., aDistNext;
   gp_Pnt        aPPrev(theCurve.Value(theParams(0))), aPNext;
 
-  for (Standard_Integer iP = 1; iP <= theParams.Length(); ++iP)
+  for (int iP = 1; iP <= theParams.Length(); ++iP)
   {
     if (iP < theParams.Length())
     {
-      Standard_Real aParam = theParams(iP);
+      double aParam = theParams(iP);
       aPNext               = theCurve.Value(aParam);
       aDistNext            = aPPrev.Distance(aPNext);
     }
@@ -239,13 +240,13 @@ static void fillPoints(const BRepAdaptor_Curve&                 theCurve,
 //=================================================================================================
 
 void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
-                               const Standard_Real    Tol,
-                               const Standard_Boolean OnlyPlane,
-                               const Standard_Boolean OnlyClosed)
+                               const double    Tol,
+                               const bool OnlyPlane,
+                               const bool OnlyClosed)
 {
   myTolerance  = Tol;
   myTolReached = 0.;
-  isExisted    = Standard_False;
+  isExisted    = false;
   myLocation.Identity();
   mySurface.Nullify();
 
@@ -254,7 +255,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
   for (ex.Init(S, TopAbs_EDGE); ex.More(); ex.Next())
   {
-    Standard_Real t = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
+    double t = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (t > myTolerance)
       myTolerance = t;
   }
@@ -265,11 +266,11 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     return; // no edges ....
 
   TopoDS_Edge          E = TopoDS::Edge(ex.Current());
-  Standard_Real        f, l, ff, ll;
-  Handle(Geom2d_Curve) PC, aPPC;
-  Handle(Geom_Surface) SS;
+  double        f, l, ff, ll;
+  occ::handle<Geom2d_Curve> PC, aPPC;
+  occ::handle<Geom_Surface> SS;
   TopLoc_Location      L;
-  Standard_Integer     i = 0, j;
+  int     i = 0, j;
 
   // iterate on the surfaces of the first edge
   for (;;)
@@ -313,8 +314,8 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     if (OnlyPlane && !mySurface.IsNull())
     {
       if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-        mySurface = Handle(Geom_RectangularTrimmedSurface)::DownCast(mySurface)->BasisSurface();
-      mySurface = Handle(Geom_Plane)::DownCast(mySurface);
+        mySurface = occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface)->BasisSurface();
+      mySurface = occ::down_cast<Geom_Plane>(mySurface);
     }
 
     if (!mySurface.IsNull())
@@ -326,7 +327,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
   if (!mySurface.IsNull())
   {
-    isExisted = Standard_True;
+    isExisted = true;
     return;
   }
   //
@@ -338,30 +339,30 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   //                    2. Minimizing the weighed sum of squared deviations
   //                       compute coefficients of the sought plane.
 
-  TColgp_SequenceOfPnt   aPoints;
-  TColStd_SequenceOfReal aWeight;
+  NCollection_Sequence<gp_Pnt>   aPoints;
+  NCollection_Sequence<double> aWeight;
 
   // ======================= Step #1
   for (ex.Init(S, TopAbs_EDGE); ex.More(); ex.Next())
   {
     BRepAdaptor_Curve c(TopoDS::Edge(ex.Current()));
 
-    Standard_Real dfUf = c.FirstParameter();
-    Standard_Real dfUl = c.LastParameter();
+    double dfUf = c.FirstParameter();
+    double dfUl = c.LastParameter();
     if (IsEqual(dfUf, dfUl))
     {
       // Degenerate
       continue;
     }
-    Standard_Integer iNbPoints = 0;
+    int iNbPoints = 0;
 
     // Fill the parameters of the sampling points
-    NCollection_Vector<Standard_Real> aParams;
+    NCollection_Vector<double> aParams;
     switch (c.GetType())
     {
       case GeomAbs_BezierCurve: {
-        Handle(Geom_BezierCurve) GC = c.Bezier();
-        TColStd_Array1OfReal     aKnots(1, 2);
+        occ::handle<Geom_BezierCurve> GC = c.Bezier();
+        NCollection_Array1<double>     aKnots(1, 2);
         aKnots.SetValue(1, GC->FirstParameter());
         aKnots.SetValue(2, GC->LastParameter());
 
@@ -369,7 +370,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
         break;
       }
       case GeomAbs_BSplineCurve: {
-        Handle(Geom_BSplineCurve) GC = c.BSpline();
+        occ::handle<Geom_BSplineCurve> GC = c.BSpline();
         fillParams(GC->Knots(), GC->Degree(), dfUf, dfUl, aParams);
         break;
       }
@@ -385,13 +386,13 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
       case GeomAbs_Parabola:
         // Four points on other analytical curves
         iNbPoints = 4;
-        Standard_FALLTHROUGH
+        [[fallthrough]];
       default: {
         // Put some points on other curves
         if (iNbPoints == 0)
           iNbPoints = 15 + c.NbIntervals(GeomAbs_C3);
 
-        TColStd_Array1OfReal aBounds(1, 2);
+        NCollection_Array1<double> aBounds(1, 2);
         aBounds.SetValue(1, dfUf);
         aBounds.SetValue(2, dfUl);
 
@@ -410,16 +411,16 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
   // ======================= Step #2
   myLocation.Identity();
-  Standard_Integer iPoint;
+  int iPoint;
   math_Matrix      aMat(1, 3, 1, 3, 0.);
   math_Vector      aVec(1, 3, 0.);
   // Find the barycenter and normalize weights
-  Standard_Real dfMaxWeight = 0.;
+  double dfMaxWeight = 0.;
   gp_XYZ        aBaryCenter(0., 0., 0.);
-  Standard_Real dfSumWeight = 0.;
+  double dfSumWeight = 0.;
   for (iPoint = 1; iPoint <= aPoints.Length(); iPoint++)
   {
-    Standard_Real dfW = aWeight(iPoint);
+    double dfW = aWeight(iPoint);
     aBaryCenter += dfW * aPoints(iPoint).XYZ();
     dfSumWeight += dfW;
     if (dfW > dfMaxWeight)
@@ -433,7 +434,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   for (iPoint = 1; iPoint <= aPoints.Length(); iPoint++)
   {
     gp_XYZ        p = aPoints(iPoint).XYZ() - aBaryCenter;
-    Standard_Real w = aWeight(iPoint) / dfMaxWeight;
+    double w = aWeight(iPoint) / dfMaxWeight;
     aMat(1, 1) += w * p.X() * p.X();
     aMat(1, 2) += w * p.X() * p.Y();
     aMat(1, 3) += w * p.X() * p.Z();
@@ -449,17 +450,17 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   //
   math_Jacobi      anEignval(aMat);
   math_Vector      anEVals(1, 3);
-  Standard_Boolean isSolved = anEignval.IsDone();
-  Standard_Integer isol     = 0;
+  bool isSolved = anEignval.IsDone();
+  int isol     = 0;
   if (isSolved)
   {
     anEVals = anEignval.Values();
     // We need vector with eigenvalue ~ 0.
-    Standard_Real anEMin = RealLast();
-    Standard_Real anEMax = -anEMin;
+    double anEMin = RealLast();
+    double anEMax = -anEMin;
     for (i = 1; i <= 3; ++i)
     {
-      Standard_Real anE = std::abs(anEVals(i));
+      double anE = std::abs(anEVals(i));
       if (anEMin > anE)
       {
         anEMin = anE;
@@ -473,11 +474,11 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
     if (isol == 0)
     {
-      isSolved = Standard_False;
+      isSolved = false;
     }
     else
     {
-      Standard_Real eps = Epsilon(anEMax);
+      double eps = Epsilon(anEMax);
       if (anEMin <= eps)
       {
         anEignval.Vector(isol, aVec);
@@ -485,7 +486,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
       else
       {
         // try using vector product of other axes
-        Standard_Integer ind[2] = {0, 0};
+        int ind[2] = {0, 0};
         for (i = 1; i <= 3; ++i)
         {
           if (i == isol)
@@ -515,7 +516,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
       }
       if (aVec.Norm2() < gp::Resolution())
       {
-        isSolved = Standard_False;
+        isSolved = false;
       }
     }
   }
@@ -523,17 +524,17 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   if (!isSolved)
     return;
   // Removing very small values
-  Standard_Real aMaxV = std::max(std::abs(aVec(1)), std::max(std::abs(aVec(2)), std::abs(aVec(3))));
-  Standard_Real eps   = Epsilon(aMaxV);
+  double aMaxV = std::max(std::abs(aVec(1)), std::max(std::abs(aVec(2)), std::abs(aVec(3))));
+  double eps   = Epsilon(aMaxV);
   for (i = 1; i <= 3; ++i)
   {
     if (std::abs(aVec(i)) <= eps)
       aVec(i) = 0.;
   }
   gp_Vec             aN(aVec(1), aVec(2), aVec(3));
-  Handle(Geom_Plane) aPlane     = new Geom_Plane(aBaryCenter, aN);
+  occ::handle<Geom_Plane> aPlane     = new Geom_Plane(aBaryCenter, aN);
   myTolReached                  = Controle(aPoints, aPlane);
-  const Standard_Real aWeakness = 5.0;
+  const double aWeakness = 5.0;
   if (myTolReached <= myTolerance || (Tol < 0 && myTolReached < myTolerance * aWeakness))
   {
     mySurface = aPlane;
@@ -557,35 +558,35 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_FindSurface::Found() const
+bool BRepLib_FindSurface::Found() const
 {
   return !mySurface.IsNull();
 }
 
 //=================================================================================================
 
-Handle(Geom_Surface) BRepLib_FindSurface::Surface() const
+occ::handle<Geom_Surface> BRepLib_FindSurface::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-Standard_Real BRepLib_FindSurface::Tolerance() const
+double BRepLib_FindSurface::Tolerance() const
 {
   return myTolerance;
 }
 
 //=================================================================================================
 
-Standard_Real BRepLib_FindSurface::ToleranceReached() const
+double BRepLib_FindSurface::ToleranceReached() const
 {
   return myTolReached;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_FindSurface::Existed() const
+bool BRepLib_FindSurface::Existed() const
 {
   return isExisted;
 }

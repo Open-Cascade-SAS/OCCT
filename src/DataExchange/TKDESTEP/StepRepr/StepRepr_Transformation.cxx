@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepRepr_FunctionallyDefinedTransformation.hxx>
@@ -20,7 +20,7 @@
 
 StepRepr_Transformation::StepRepr_Transformation() {}
 
-Standard_Integer StepRepr_Transformation::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepRepr_Transformation::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,13 +33,13 @@ Standard_Integer StepRepr_Transformation::CaseNum(const Handle(Standard_Transien
   return 0;
 }
 
-Handle(StepRepr_ItemDefinedTransformation) StepRepr_Transformation::ItemDefinedTransformation()
+occ::handle<StepRepr_ItemDefinedTransformation> StepRepr_Transformation::ItemDefinedTransformation()
   const
 {
   return GetCasted(StepRepr_ItemDefinedTransformation, Value());
 }
 
-Handle(StepRepr_FunctionallyDefinedTransformation) StepRepr_Transformation::
+occ::handle<StepRepr_FunctionallyDefinedTransformation> StepRepr_Transformation::
   FunctionallyDefinedTransformation() const
 {
   return GetCasted(StepRepr_FunctionallyDefinedTransformation, Value());

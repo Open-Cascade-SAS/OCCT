@@ -22,8 +22,11 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -42,7 +45,7 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_CompSolid& S)
   B.MakeSolid(TopoDS::Solid(myShape));
 
   TopExp_Explorer     ex1, ex2;
-  TopTools_MapOfShape aMapOfFaces;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfFaces;
   for (ex1.Init(S, TopAbs_SHELL); ex1.More(); ex1.Next())
   {
     for (ex2.Init(ex1.Current(), TopAbs_FACE); ex2.More(); ex2.Next())
@@ -58,7 +61,7 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_CompSolid& S)
   TopoDS_Shape aShell;
   B.MakeShell(TopoDS::Shell(aShell));
 
-  TopTools_MapIteratorOfMapOfShape aFaceIter(aMapOfFaces);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aFaceIter(aMapOfFaces);
   for (; aFaceIter.More(); aFaceIter.Next())
   {
     B.Add(aShell, aFaceIter.Key());
@@ -157,7 +160,7 @@ BRepLib_MakeSolid::operator TopoDS_Solid()
 BRepLib_ShapeModification BRepLib_MakeSolid::FaceStatus(const TopoDS_Face& F) const
 {
   BRepLib_ShapeModification          myStatus = BRepLib_Preserved;
-  TopTools_ListIteratorOfListOfShape anIter(myDeletedFaces);
+  NCollection_List<TopoDS_Shape>::Iterator anIter(myDeletedFaces);
 
   for (; anIter.More(); anIter.Next())
   {

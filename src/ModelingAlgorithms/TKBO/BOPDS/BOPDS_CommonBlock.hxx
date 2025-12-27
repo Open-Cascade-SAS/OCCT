@@ -22,11 +22,9 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 class BOPDS_PaveBlock;
-
-class BOPDS_CommonBlock;
-DEFINE_STANDARD_HANDLE(BOPDS_CommonBlock, Standard_Transient)
 
 //! The class BOPDS_CommonBlock is to store the information
 //! about pave blocks that have geometrical coincidence
@@ -44,107 +42,106 @@ public:
 
   //! Constructor
   //! @param theAllocator the allocator to manage the memory
-  Standard_EXPORT BOPDS_CommonBlock(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPDS_CommonBlock(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Modifier
   //! Adds the pave block <aPB> to the list of pave blocks
   //! of the common block
-  Standard_EXPORT void AddPaveBlock(const Handle(BOPDS_PaveBlock)& aPB);
+  Standard_EXPORT void AddPaveBlock(const occ::handle<BOPDS_PaveBlock>& aPB);
 
   //! Modifier
   //! Sets the list of pave blocks for the common block
-  Standard_EXPORT void SetPaveBlocks(const BOPDS_ListOfPaveBlock& aLPB);
+  Standard_EXPORT void SetPaveBlocks(const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB);
 
   //! Modifier
   //! Adds the index of the face <aF>
   //! to the list of indices of faces
   //! of the common block
-  Standard_EXPORT void AddFace(const Standard_Integer aF);
+  Standard_EXPORT void AddFace(const int aF);
 
   //! Modifier
   //! Sets the list of indices of faces <aLF>
   //! of the common block
-  Standard_EXPORT void SetFaces(const TColStd_ListOfInteger& aLF);
+  Standard_EXPORT void SetFaces(const NCollection_List<int>& aLF);
 
   //! Modifier
   //! Appends the list of indices of faces <aLF>
   //! to the list of indices of faces
   //! of the common block (the input list is emptied)
-  Standard_EXPORT void AppendFaces(TColStd_ListOfInteger& aLF);
+  Standard_EXPORT void AppendFaces(NCollection_List<int>& aLF);
 
   //! Selector
   //! Returns the list of pave blocks
   //! of the common block
-  Standard_EXPORT const BOPDS_ListOfPaveBlock& PaveBlocks() const;
+  Standard_EXPORT const NCollection_List<occ::handle<BOPDS_PaveBlock>>& PaveBlocks() const;
 
   //! Selector
   //! Returns the list of indices of faces
   //! of the common block
-  Standard_EXPORT const TColStd_ListOfInteger& Faces() const;
+  Standard_EXPORT const NCollection_List<int>& Faces() const;
 
   //! Selector
   //! Returns the first pave block
   //! of the common block
-  Standard_EXPORT const Handle(BOPDS_PaveBlock)& PaveBlock1() const;
+  Standard_EXPORT const occ::handle<BOPDS_PaveBlock>& PaveBlock1() const;
 
   //! Selector
   //! Returns the pave block that belongs
   //! to the edge with index <theIx>
-  Standard_EXPORT Handle(BOPDS_PaveBlock)& PaveBlockOnEdge(const Standard_Integer theIndex);
+  Standard_EXPORT occ::handle<BOPDS_PaveBlock>& PaveBlockOnEdge(const int theIndex);
 
   //! Query
   //! Returns true if the common block contains
   //! a pave block that belongs
   //! to the face with index <theIx>
-  Standard_EXPORT Standard_Boolean IsPaveBlockOnFace(const Standard_Integer theIndex) const;
+  Standard_EXPORT bool IsPaveBlockOnFace(const int theIndex) const;
 
   //! Query
   //! Returns true if the common block contains
   //! a pave block that belongs
   //! to the edge with index <theIx>
-  Standard_EXPORT Standard_Boolean IsPaveBlockOnEdge(const Standard_Integer theIndex) const;
+  Standard_EXPORT bool IsPaveBlockOnEdge(const int theIndex) const;
 
   //! Query
   //! Returns true if the common block contains
   //! a pave block that is equal to <thePB>
-  Standard_EXPORT Standard_Boolean Contains(const Handle(BOPDS_PaveBlock)& thePB) const;
+  Standard_EXPORT bool Contains(const occ::handle<BOPDS_PaveBlock>& thePB) const;
 
   //! Query
   //! Returns true if the common block contains
   //! the face with index equal to <theF>
-  Standard_EXPORT Standard_Boolean Contains(const Standard_Integer theF) const;
+  Standard_EXPORT bool Contains(const int theF) const;
 
   //! Modifier
   //! Assign the index <theEdge> as the edge index
   //! to all pave blocks of the common block
-  Standard_EXPORT void SetEdge(const Standard_Integer theEdge);
+  Standard_EXPORT void SetEdge(const int theEdge);
 
   //! Selector
   //! Returns the index of the edge
   //! of all pave blocks of the common block
-  Standard_EXPORT Standard_Integer Edge() const;
+  Standard_EXPORT int Edge() const;
 
   Standard_EXPORT void Dump() const;
 
   //! Moves the pave blocks in the list to make the given
   //! pave block to be the first.
   //! It will be representative for the whole group.
-  Standard_EXPORT void SetRealPaveBlock(const Handle(BOPDS_PaveBlock)& thePB);
+  Standard_EXPORT void SetRealPaveBlock(const occ::handle<BOPDS_PaveBlock>& thePB);
 
   //! Sets the tolerance for the common block
-  void SetTolerance(const Standard_Real theTol) { myTolerance = theTol; }
+  void SetTolerance(const double theTol) { myTolerance = theTol; }
 
   //! Return the tolerance of common block
-  Standard_Real Tolerance() const { return myTolerance; }
+  double Tolerance() const { return myTolerance; }
 
   DEFINE_STANDARD_RTTIEXT(BOPDS_CommonBlock, Standard_Transient)
 
 protected:
-  BOPDS_ListOfPaveBlock myPaveBlocks; //!< Pave blocks of the common block
-  TColStd_ListOfInteger myFaces;      //!< Faces on which the pave blocks are lying
-  Standard_Real         myTolerance;  //!< Tolerance of the common block
+  NCollection_List<occ::handle<BOPDS_PaveBlock>> myPaveBlocks; //!< Pave blocks of the common block
+  NCollection_List<int> myFaces;      //!< Faces on which the pave blocks are lying
+  double         myTolerance;  //!< Tolerance of the common block
 
-private:
 };
 
 #endif // _BOPDS_CommonBlock_HeaderFile

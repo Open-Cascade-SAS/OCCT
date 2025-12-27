@@ -25,50 +25,46 @@ class Poly_PolygonOnTriangulation;
 class Poly_Triangulation;
 class TopLoc_Location;
 
-class BRep_PolygonOnTriangulation;
-DEFINE_STANDARD_HANDLE(BRep_PolygonOnTriangulation, BRep_CurveRepresentation)
-
 //! A representation by an array of nodes on a
 //! triangulation.
 class BRep_PolygonOnTriangulation : public BRep_CurveRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_PolygonOnTriangulation(const Handle(Poly_PolygonOnTriangulation)& P,
-                                              const Handle(Poly_Triangulation)&          T,
+  Standard_EXPORT BRep_PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& P,
+                                              const occ::handle<Poly_Triangulation>&          T,
                                               const TopLoc_Location&                     L);
 
   //! returns True.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnTriangulation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygonOnTriangulation() const override;
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
-  Standard_EXPORT virtual Standard_Boolean IsPolygonOnTriangulation(
-    const Handle(Poly_Triangulation)& T,
-    const TopLoc_Location&            L) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsPolygonOnTriangulation(
+    const occ::handle<Poly_Triangulation>& T,
+    const TopLoc_Location&            L) const override;
 
   //! returns True.
-  Standard_EXPORT virtual void PolygonOnTriangulation(const Handle(Poly_PolygonOnTriangulation)& P)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& P)
+    override;
 
-  Standard_EXPORT virtual const Handle(Poly_Triangulation)& Triangulation() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Poly_Triangulation>& Triangulation() const override;
 
-  Standard_EXPORT virtual const Handle(Poly_PolygonOnTriangulation)& PolygonOnTriangulation() const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation() const
+    override;
 
   //! Return a copy of this representation.
-  Standard_EXPORT virtual Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation, BRep_CurveRepresentation)
 
-protected:
 private:
-  Handle(Poly_PolygonOnTriangulation) myPolygon;
-  Handle(Poly_Triangulation)          myTriangulation;
+  occ::handle<Poly_PolygonOnTriangulation> myPolygon;
+  occ::handle<Poly_Triangulation>          myTriangulation;
 };
 
 #endif // _BRep_PolygonOnTriangulation_HeaderFile

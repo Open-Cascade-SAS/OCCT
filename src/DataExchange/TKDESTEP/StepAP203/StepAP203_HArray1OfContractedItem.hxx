@@ -17,9 +17,10 @@
 #ifndef StepAP203_HArray1OfContractedItem_HeaderFile
 #define StepAP203_HArray1OfContractedItem_HeaderFile
 
-#include <StepAP203_Array1OfContractedItem.hxx>
+#include <StepAP203_ContractedItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepAP203_HArray1OfContractedItem, StepAP203_Array1OfContractedItem)
+DEFINE_HARRAY1(StepAP203_HArray1OfContractedItem, NCollection_Array1<StepAP203_ContractedItem>)
 
 #endif

@@ -15,13 +15,13 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline Standard_Boolean math_Powell::IsSolutionReached(math_MultipleVarFunction&)
+inline bool math_Powell::IsSolutionReached(math_MultipleVarFunction&)
 {
   return 2.0 * fabs(PreviousMinimum - TheMinimum)
          <= XTol * (fabs(PreviousMinimum) + fabs(TheMinimum) + EPSZ);
 }
 
-inline Standard_Boolean math_Powell::IsDone() const
+inline bool math_Powell::IsDone() const
 {
   return Done;
 }
@@ -44,13 +44,13 @@ inline void math_Powell::Location(math_Vector& Loc) const
   Loc = TheLocation;
 }
 
-inline Standard_Real math_Powell::Minimum() const
+inline double math_Powell::Minimum() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return TheMinimum;
 }
 
-inline Standard_Integer math_Powell::NbIterations() const
+inline int math_Powell::NbIterations() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return Iter;

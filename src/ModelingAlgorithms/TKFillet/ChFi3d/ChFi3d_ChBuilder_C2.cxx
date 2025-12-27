@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::PerformTwoCorner(const Standard_Integer Index)
+void ChFi3d_ChBuilder::PerformTwoCorner(const int Index)
 {
   PerformTwoCornerbyInter(Index);
 }

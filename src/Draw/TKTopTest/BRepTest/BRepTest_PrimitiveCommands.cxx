@@ -35,17 +35,17 @@
 // box
 //=======================================================================
 
-static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int box(Draw_Interpretor&, int n, const char** a)
 {
   gp_Pnt           anOrigin;
   gp_XYZ           aParams;
   gp_Dir           aDir;
   gp_Dir           aXDir;
-  Standard_Boolean isMinMax  = Standard_False;
-  Standard_Boolean isPreview = Standard_False;
-  Standard_Boolean isAxis    = Standard_False;
+  bool isMinMax  = false;
+  bool isPreview = false;
+  bool isAxis    = false;
 
-  for (Standard_Integer anArgIter = 2; anArgIter < n; ++anArgIter)
+  for (int anArgIter = 2; anArgIter < n; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(a[anArgIter]);
     anArgCase.LowerCase();
@@ -61,7 +61,7 @@ static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** 
       aParams.SetX(Draw::Atof(a[anArgIter + 1]));
       aParams.SetY(Draw::Atof(a[anArgIter + 2]));
       aParams.SetZ(Draw::Atof(a[anArgIter + 3]));
-      isMinMax = Standard_True;
+      isMinMax = true;
       anArgIter += 3;
     }
     else if (anArgCase == "-size" && anArgIter + 3 <= n)
@@ -69,36 +69,36 @@ static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** 
       aParams.SetX(Draw::Atof(a[anArgIter + 1]));
       aParams.SetY(Draw::Atof(a[anArgIter + 2]));
       aParams.SetZ(Draw::Atof(a[anArgIter + 3]));
-      isMinMax = Standard_False;
+      isMinMax = false;
       anArgIter += 3;
     }
     else if (anArgCase == "-dir" && anArgIter + 3 <= n)
     {
-      Standard_Real aX  = Draw::Atof(a[anArgIter + 1]);
-      Standard_Real anY = Draw::Atof(a[anArgIter + 2]);
-      Standard_Real aZ  = Draw::Atof(a[anArgIter + 3]);
+      double aX  = Draw::Atof(a[anArgIter + 1]);
+      double anY = Draw::Atof(a[anArgIter + 2]);
+      double aZ  = Draw::Atof(a[anArgIter + 3]);
       aDir.SetCoord(aX, anY, aZ);
-      isAxis = Standard_True;
+      isAxis = true;
       anArgIter += 3;
     }
     else if (anArgCase == "-xdir" && anArgIter + 3 <= n)
     {
-      Standard_Real aX  = Draw::Atof(a[anArgIter + 1]);
-      Standard_Real anY = Draw::Atof(a[anArgIter + 2]);
-      Standard_Real aZ  = Draw::Atof(a[anArgIter + 3]);
+      double aX  = Draw::Atof(a[anArgIter + 1]);
+      double anY = Draw::Atof(a[anArgIter + 2]);
+      double aZ  = Draw::Atof(a[anArgIter + 3]);
       aXDir.SetCoord(aX, anY, aZ);
-      isAxis = Standard_True;
+      isAxis = true;
       anArgIter += 3;
     }
     else if (anArgCase == "-preview")
     {
-      isPreview = Standard_True;
+      isPreview = true;
     }
     else if (anArgIter + 5 < n || anArgIter + 2 < n)
     {
-      Standard_Real    aValue     = 0.0;
-      Standard_Integer aCountReal = 0;
-      Standard_Integer anIter     = anArgIter;
+      double    aValue     = 0.0;
+      int aCountReal = 0;
+      int anIter     = anArgIter;
       while (anIter < n && Draw::ParseReal(a[anIter], aValue))
       {
         anIter++;
@@ -137,11 +137,11 @@ static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** 
     TopoDS_Shape           S;
     BRepPreviewAPI_MakeBox aPreview;
 
-    if (isMinMax == Standard_True)
+    if (isMinMax == true)
     {
       aPreview.Init(anOrigin, aParams);
     }
-    else if (isMinMax == Standard_False && isAxis == Standard_False)
+    else if (isMinMax == false && isAxis == false)
     {
       aPreview.Init(anOrigin, aParams.X(), aParams.Y(), aParams.Z());
     }
@@ -161,11 +161,11 @@ static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** 
   else
   {
     TopoDS_Solid S;
-    if (isMinMax == Standard_True)
+    if (isMinMax == true)
     {
       S = BRepPrimAPI_MakeBox(anOrigin, aParams);
     }
-    else if (isMinMax == Standard_False && isAxis == Standard_False)
+    else if (isMinMax == false && isAxis == false)
     {
       S = BRepPrimAPI_MakeBox(anOrigin, aParams.X(), aParams.Y(), aParams.Z());
     }
@@ -187,11 +187,11 @@ static Standard_Integer box(Draw_Interpretor&, Standard_Integer n, const char** 
 // wedge
 //=======================================================================
 
-static Standard_Integer wedge(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int wedge(Draw_Interpretor&, int n, const char** a)
 {
   TopoDS_Solid S;
 
-  //  Standard_Integer i = 0;
+  //  int i = 0;
   if (n == 15 || n == 18)
   {
     gp_Pnt LocalP(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
@@ -247,12 +247,12 @@ static Standard_Integer wedge(Draw_Interpretor&, Standard_Integer n, const char*
 // cylinder
 //=======================================================================
 
-static Standard_Integer cylinder(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int cylinder(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
   TopoDS_Solid       S;
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(DrawTrSurf::Get(a[2]));
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
   if (n == 4)
   {
@@ -288,13 +288,13 @@ static Standard_Integer cylinder(Draw_Interpretor&, Standard_Integer n, const ch
 // cone
 //=======================================================================
 
-static Standard_Integer cone(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int cone(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
   TopoDS_Solid S;
 
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(DrawTrSurf::Get(a[2]));
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
   if (n == 5)
   {
@@ -332,13 +332,13 @@ static Standard_Integer cone(Draw_Interpretor&, Standard_Integer n, const char**
 // sphere
 //=======================================================================
 
-static Standard_Integer sphere(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int sphere(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
   TopoDS_Solid S;
 
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(DrawTrSurf::Get(a[2]));
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
   if (n == 3)
   {
@@ -394,13 +394,13 @@ static Standard_Integer sphere(Draw_Interpretor&, Standard_Integer n, const char
 // torus
 //=======================================================================
 
-static Standard_Integer torus(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int torus(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
   TopoDS_Solid S;
 
-  Handle(Geom_Plane) P = Handle(Geom_Plane)::DownCast(DrawTrSurf::Get(a[2]));
+  occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
   if (n == 4)
   {
@@ -463,10 +463,10 @@ static Standard_Integer torus(Draw_Interpretor&, Standard_Integer n, const char*
 
 void BRepTest::PrimitiveCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

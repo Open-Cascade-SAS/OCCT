@@ -16,6 +16,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_Byte* Standard_PByte;
+typedef uint8_t* Standard_PByte;
 
 #endif

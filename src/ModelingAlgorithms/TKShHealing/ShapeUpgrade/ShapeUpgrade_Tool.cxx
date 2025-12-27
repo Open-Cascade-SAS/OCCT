@@ -31,7 +31,7 @@ ShapeUpgrade_Tool::ShapeUpgrade_Tool()
 
 //=================================================================================================
 
-void ShapeUpgrade_Tool::Set(const Handle(ShapeUpgrade_Tool)& tool)
+void ShapeUpgrade_Tool::Set(const occ::handle<ShapeUpgrade_Tool>& tool)
 {
   myContext   = tool->myContext;
   myPrecision = tool->myPrecision;

@@ -16,17 +16,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_RealVal, Standard_Transient)
 
-MoniTool_RealVal::MoniTool_RealVal(const Standard_Real val)
+MoniTool_RealVal::MoniTool_RealVal(const double val)
 {
   theval = val;
 }
 
-Standard_Real MoniTool_RealVal::Value() const
+double MoniTool_RealVal::Value() const
 {
   return theval;
 }
 
-Standard_Real& MoniTool_RealVal::CValue()
+double& MoniTool_RealVal::CValue()
 {
   return theval;
 }

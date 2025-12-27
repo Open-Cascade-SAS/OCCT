@@ -36,7 +36,7 @@ StepAP203_ApprovedItem::StepAP203_ApprovedItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_ApprovedItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP203_ApprovedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -67,78 +67,78 @@ Standard_Integer StepAP203_ApprovedItem::CaseNum(const Handle(Standard_Transient
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP203_ApprovedItem::ProductDefinitionFormation()
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ApprovedItem::ProductDefinitionFormation()
   const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinition) StepAP203_ApprovedItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP203_ApprovedItem::ProductDefinition() const
 {
-  return Handle(StepBasic_ProductDefinition)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ConfigurationEffectivity) StepAP203_ApprovedItem::ConfigurationEffectivity() const
+occ::handle<StepRepr_ConfigurationEffectivity> StepAP203_ApprovedItem::ConfigurationEffectivity() const
 {
-  return Handle(StepRepr_ConfigurationEffectivity)::DownCast(Value());
+  return occ::down_cast<StepRepr_ConfigurationEffectivity>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ConfigurationItem) StepAP203_ApprovedItem::ConfigurationItem() const
+occ::handle<StepRepr_ConfigurationItem> StepAP203_ApprovedItem::ConfigurationItem() const
 {
-  return Handle(StepRepr_ConfigurationItem)::DownCast(Value());
+  return occ::down_cast<StepRepr_ConfigurationItem>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassification) StepAP203_ApprovedItem::SecurityClassification() const
+occ::handle<StepBasic_SecurityClassification> StepAP203_ApprovedItem::SecurityClassification() const
 {
-  return Handle(StepBasic_SecurityClassification)::DownCast(Value());
+  return occ::down_cast<StepBasic_SecurityClassification>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_ChangeRequest) StepAP203_ApprovedItem::ChangeRequest() const
+occ::handle<StepAP203_ChangeRequest> StepAP203_ApprovedItem::ChangeRequest() const
 {
-  return Handle(StepAP203_ChangeRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_ChangeRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_Change) StepAP203_ApprovedItem::Change() const
+occ::handle<StepAP203_Change> StepAP203_ApprovedItem::Change() const
 {
-  return Handle(StepAP203_Change)::DownCast(Value());
+  return occ::down_cast<StepAP203_Change>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartRequest) StepAP203_ApprovedItem::StartRequest() const
+occ::handle<StepAP203_StartRequest> StepAP203_ApprovedItem::StartRequest() const
 {
-  return Handle(StepAP203_StartRequest)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartRequest>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepAP203_StartWork) StepAP203_ApprovedItem::StartWork() const
+occ::handle<StepAP203_StartWork> StepAP203_ApprovedItem::StartWork() const
 {
-  return Handle(StepAP203_StartWork)::DownCast(Value());
+  return occ::down_cast<StepAP203_StartWork>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Certification) StepAP203_ApprovedItem::Certification() const
+occ::handle<StepBasic_Certification> StepAP203_ApprovedItem::Certification() const
 {
-  return Handle(StepBasic_Certification)::DownCast(Value());
+  return occ::down_cast<StepBasic_Certification>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Contract) StepAP203_ApprovedItem::Contract() const
+occ::handle<StepBasic_Contract> StepAP203_ApprovedItem::Contract() const
 {
-  return Handle(StepBasic_Contract)::DownCast(Value());
+  return occ::down_cast<StepBasic_Contract>(Value());
 }

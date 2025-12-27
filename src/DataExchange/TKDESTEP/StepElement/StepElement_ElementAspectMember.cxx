@@ -20,16 +20,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepElement_ElementAspectMember, StepData_SelectNamed)
 
-static Standard_CString aElementVolume = "ELEMENT_VOLUME";
-static Standard_CString aVolume3dFace  = "VOLUME_3D_FACE";
-static Standard_CString aVolume2dFace  = "VOLUME_2D_FACE";
-static Standard_CString aVolume3dEdge  = "VOLUME_3D_EDGE";
-static Standard_CString aVolume2dEdge  = "VOLUME_2D_EDGE";
-static Standard_CString aSurface3dFace = "SURFACE_3D_FACE";
-static Standard_CString aSurface2dFace = "SURFACE_2D_FACE";
-static Standard_CString aSurface3dEdge = "SURFACE_3D_EDGE";
-static Standard_CString aSurface2dEdge = "SURFACE_2D_EDGE";
-static Standard_CString aCurveEdge     = "CURVE_EDGE";
+static const char* aElementVolume = "ELEMENT_VOLUME";
+static const char* aVolume3dFace  = "VOLUME_3D_FACE";
+static const char* aVolume2dFace  = "VOLUME_2D_FACE";
+static const char* aVolume3dEdge  = "VOLUME_3D_EDGE";
+static const char* aVolume2dEdge  = "VOLUME_2D_EDGE";
+static const char* aSurface3dFace = "SURFACE_3D_FACE";
+static const char* aSurface2dFace = "SURFACE_2D_FACE";
+static const char* aSurface3dEdge = "SURFACE_3D_EDGE";
+static const char* aSurface2dEdge = "SURFACE_2D_EDGE";
+static const char* aCurveEdge     = "CURVE_EDGE";
 
 //=================================================================================================
 
@@ -40,14 +40,14 @@ StepElement_ElementAspectMember::StepElement_ElementAspectMember()
 
 //=================================================================================================
 
-Standard_Boolean StepElement_ElementAspectMember::HasName() const
+bool StepElement_ElementAspectMember::HasName() const
 {
   return mycase > 0;
 }
 
 //=================================================================================================
 
-Standard_CString StepElement_ElementAspectMember::Name() const
+const char* StepElement_ElementAspectMember::Name() const
 {
   switch (mycase)
   {
@@ -79,9 +79,9 @@ Standard_CString StepElement_ElementAspectMember::Name() const
 
 //=================================================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name, Standard_Integer& numen)
+static int CompareNames(const char* name, int& numen)
 {
-  Standard_Integer thecase = 0;
+  int thecase = 0;
   if (!name || name[0] == '\0')
     thecase = 0;
   else if (!strcmp(name, aElementVolume))
@@ -115,9 +115,9 @@ static Standard_Integer CompareNames(const Standard_CString name, Standard_Integ
 
 //=================================================================================================
 
-Standard_Boolean StepElement_ElementAspectMember::SetName(const Standard_CString name)
+bool StepElement_ElementAspectMember::SetName(const char* name)
 {
-  Standard_Integer numit = 0;
+  int numit = 0;
   mycase                 = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
@@ -126,9 +126,9 @@ Standard_Boolean StepElement_ElementAspectMember::SetName(const Standard_CString
 
 //=================================================================================================
 
-Standard_Boolean StepElement_ElementAspectMember::Matches(const Standard_CString name) const
+bool StepElement_ElementAspectMember::Matches(const char* name) const
 {
-  Standard_Integer numit   = 0;
-  Standard_Integer thecase = CompareNames(name, numit);
+  int numit   = 0;
+  int thecase = CompareNames(name, numit);
   return (mycase == thecase);
 }

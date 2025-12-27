@@ -25,9 +25,9 @@ StepKinematics_RollingCurvePairValue::StepKinematics_RollingCurvePairValue() {}
 //=================================================================================================
 
 void StepKinematics_RollingCurvePairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Handle(StepGeom_PointOnCurve)&        theActualPointOnCurve1)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve1)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -36,7 +36,7 @@ void StepKinematics_RollingCurvePairValue::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_PointOnCurve) StepKinematics_RollingCurvePairValue::ActualPointOnCurve1() const
+occ::handle<StepGeom_PointOnCurve> StepKinematics_RollingCurvePairValue::ActualPointOnCurve1() const
 {
   return myActualPointOnCurve1;
 }
@@ -44,7 +44,7 @@ Handle(StepGeom_PointOnCurve) StepKinematics_RollingCurvePairValue::ActualPointO
 //=================================================================================================
 
 void StepKinematics_RollingCurvePairValue::SetActualPointOnCurve1(
-  const Handle(StepGeom_PointOnCurve)& theActualPointOnCurve1)
+  const occ::handle<StepGeom_PointOnCurve>& theActualPointOnCurve1)
 {
   myActualPointOnCurve1 = theActualPointOnCurve1;
 }

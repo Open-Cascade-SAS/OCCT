@@ -42,29 +42,29 @@ typedef gp_Vec            Vec;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_TrimmedCurve::Copy() const
+occ::handle<Geom_Geometry> Geom_TrimmedCurve::Copy() const
 {
 
-  Handle(Geom_TrimmedCurve) Tc = new TrimmedCurve(basisCurve, uTrim1, uTrim2);
+  occ::handle<Geom_TrimmedCurve> Tc = new TrimmedCurve(basisCurve, uTrim1, uTrim2);
   return Tc;
 }
 
 //=================================================================================================
 
-Geom_TrimmedCurve::Geom_TrimmedCurve(const Handle(Geom_Curve)& C,
-                                     const Standard_Real       U1,
-                                     const Standard_Real       U2,
-                                     const Standard_Boolean    Sense,
-                                     const Standard_Boolean    theAdjustPeriodic)
+Geom_TrimmedCurve::Geom_TrimmedCurve(const occ::handle<Geom_Curve>& C,
+                                     const double       U1,
+                                     const double       U2,
+                                     const bool    Sense,
+                                     const bool    theAdjustPeriodic)
     : uTrim1(U1),
       uTrim2(U2)
 {
   // kill trimmed basis curves
-  Handle(Geom_TrimmedCurve) T = Handle(Geom_TrimmedCurve)::DownCast(C);
+  occ::handle<Geom_TrimmedCurve> T = occ::down_cast<Geom_TrimmedCurve>(C);
   if (!T.IsNull())
-    basisCurve = Handle(Geom_Curve)::DownCast(T->BasisCurve()->Copy());
+    basisCurve = occ::down_cast<Geom_Curve>(T->BasisCurve()->Copy());
   else
-    basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
+    basisCurve = occ::down_cast<Geom_Curve>(C->Copy());
 
   SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
@@ -73,32 +73,32 @@ Geom_TrimmedCurve::Geom_TrimmedCurve(const Handle(Geom_Curve)& C,
 
 void Geom_TrimmedCurve::Reverse()
 {
-  Standard_Real U1 = basisCurve->ReversedParameter(uTrim2);
-  Standard_Real U2 = basisCurve->ReversedParameter(uTrim1);
+  double U1 = basisCurve->ReversedParameter(uTrim2);
+  double U2 = basisCurve->ReversedParameter(uTrim1);
   basisCurve->Reverse();
-  SetTrim(U1, U2, Standard_True, Standard_False);
+  SetTrim(U1, U2, true, false);
 }
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::ReversedParameter(const Standard_Real U) const
+double Geom_TrimmedCurve::ReversedParameter(const double U) const
 {
   return basisCurve->ReversedParameter(U);
 }
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::SetTrim(const Standard_Real    U1,
-                                const Standard_Real    U2,
-                                const Standard_Boolean Sense,
-                                const Standard_Boolean theAdjustPeriodic)
+void Geom_TrimmedCurve::SetTrim(const double    U1,
+                                const double    U2,
+                                const bool Sense,
+                                const bool theAdjustPeriodic)
 {
-  Standard_Boolean sameSense = Standard_True;
+  bool sameSense = true;
   if (U1 == U2)
     throw Standard_ConstructionError("Geom_TrimmedCurve::U1 == U2");
 
-  Standard_Real Udeb = basisCurve->FirstParameter();
-  Standard_Real Ufin = basisCurve->LastParameter();
+  double Udeb = basisCurve->FirstParameter();
+  double Ufin = basisCurve->LastParameter();
 
   if (basisCurve->IsPeriodic())
   {
@@ -142,22 +142,22 @@ void Geom_TrimmedCurve::SetTrim(const Standard_Real    U1,
 
 //=================================================================================================
 
-Standard_Boolean Geom_TrimmedCurve::IsClosed() const
+bool Geom_TrimmedCurve::IsClosed() const
 {
   return (StartPoint().Distance(EndPoint()) <= gp::Resolution());
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_TrimmedCurve::IsPeriodic() const
+bool Geom_TrimmedCurve::IsPeriodic() const
 {
   // return basisCurve->IsPeriodic();
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::Period() const
+double Geom_TrimmedCurve::Period() const
 {
   return basisCurve->Period();
 }
@@ -172,7 +172,7 @@ GeomAbs_Shape Geom_TrimmedCurve::Continuity() const
 
 //=================================================================================================
 
-Handle(Geom_Curve) Geom_TrimmedCurve::BasisCurve() const
+occ::handle<Geom_Curve> Geom_TrimmedCurve::BasisCurve() const
 {
 
   return basisCurve;
@@ -180,7 +180,7 @@ Handle(Geom_Curve) Geom_TrimmedCurve::BasisCurve() const
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D0(const Standard_Real U, Pnt& P) const
+void Geom_TrimmedCurve::D0(const double U, Pnt& P) const
 {
 
   basisCurve->D0(U, P);
@@ -188,7 +188,7 @@ void Geom_TrimmedCurve::D0(const Standard_Real U, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D1(const Standard_Real U, Pnt& P, Vec& V1) const
+void Geom_TrimmedCurve::D1(const double U, Pnt& P, Vec& V1) const
 {
 
   basisCurve->D1(U, P, V1);
@@ -196,7 +196,7 @@ void Geom_TrimmedCurve::D1(const Standard_Real U, Pnt& P, Vec& V1) const
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) const
+void Geom_TrimmedCurve::D2(const double U, Pnt& P, Vec& V1, Vec& V2) const
 {
 
   basisCurve->D2(U, P, V1, V2);
@@ -204,7 +204,7 @@ void Geom_TrimmedCurve::D2(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) cons
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+void Geom_TrimmedCurve::D3(const double U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
 {
 
   basisCurve->D3(U, P, V1, V2, V3);
@@ -212,7 +212,7 @@ void Geom_TrimmedCurve::D3(const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec&
 
 //=================================================================================================
 
-Vec Geom_TrimmedCurve::DN(const Standard_Real U, const Standard_Integer N) const
+Vec Geom_TrimmedCurve::DN(const double U, const int N) const
 {
   return basisCurve->DN(U, N);
 }
@@ -227,7 +227,7 @@ Pnt Geom_TrimmedCurve::EndPoint() const
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::FirstParameter() const
+double Geom_TrimmedCurve::FirstParameter() const
 {
 
   return uTrim1;
@@ -235,7 +235,7 @@ Standard_Real Geom_TrimmedCurve::FirstParameter() const
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::LastParameter() const
+double Geom_TrimmedCurve::LastParameter() const
 {
 
   return uTrim2;
@@ -251,7 +251,7 @@ Pnt Geom_TrimmedCurve::StartPoint() const
 
 //=================================================================================================
 
-Standard_Boolean Geom_TrimmedCurve::IsCN(const Standard_Integer N) const
+bool Geom_TrimmedCurve::IsCN(const int N) const
 {
 
   Standard_RangeError_Raise_if(N < 0, " ");
@@ -263,28 +263,28 @@ Standard_Boolean Geom_TrimmedCurve::IsCN(const Standard_Integer N) const
 void Geom_TrimmedCurve::Transform(const Trsf& T)
 {
   basisCurve->Transform(T);
-  Standard_Real U1 = basisCurve->TransformedParameter(uTrim1, T);
-  Standard_Real U2 = basisCurve->TransformedParameter(uTrim2, T);
-  SetTrim(U1, U2, Standard_True, Standard_False);
+  double U1 = basisCurve->TransformedParameter(uTrim1, T);
+  double U2 = basisCurve->TransformedParameter(uTrim2, T);
+  SetTrim(U1, U2, true, false);
 }
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::TransformedParameter(const Standard_Real U, const gp_Trsf& T) const
+double Geom_TrimmedCurve::TransformedParameter(const double U, const gp_Trsf& T) const
 {
   return basisCurve->TransformedParameter(U, T);
 }
 
 //=================================================================================================
 
-Standard_Real Geom_TrimmedCurve::ParametricTransformation(const gp_Trsf& T) const
+double Geom_TrimmedCurve::ParametricTransformation(const gp_Trsf& T) const
 {
   return basisCurve->ParametricTransformation(T);
 }
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_TrimmedCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

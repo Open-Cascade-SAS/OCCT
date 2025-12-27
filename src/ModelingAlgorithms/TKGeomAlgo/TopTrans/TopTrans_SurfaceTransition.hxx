@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <gp_Dir.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TopTrans_Array2OfOrientation.hxx>
+#include <NCollection_Array2.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
@@ -63,8 +64,8 @@ public:
                              const gp_Dir&       Norm,
                              const gp_Dir&       MaxD,
                              const gp_Dir&       MinD,
-                             const Standard_Real MaxCurv,
-                             const Standard_Real MinCurv);
+                             const double MaxCurv,
+                             const double MinCurv);
 
   //! Initialize a Surface Transition with the local
   //! description of a straight line.
@@ -84,17 +85,17 @@ public:
   //! O REVERSED means the face is AFTER
   //! O INTERNAL means the curve intersection is in the face.
   //! PREQUESITORY : Norm oriented OUTSIDE "geometric matter"
-  Standard_EXPORT void Compare(const Standard_Real      Tole,
+  Standard_EXPORT void Compare(const double      Tole,
                                const gp_Dir&            Norm,
                                const gp_Dir&            MaxD,
                                const gp_Dir&            MinD,
-                               const Standard_Real      MaxCurv,
-                               const Standard_Real      MinCurv,
+                               const double      MaxCurv,
+                               const double      MinCurv,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation O);
 
   //! Add a plane or a cylindric face to the boundary.
-  Standard_EXPORT void Compare(const Standard_Real      Tole,
+  Standard_EXPORT void Compare(const double      Tole,
                                const gp_Dir&            Norm,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation O);
@@ -115,28 +116,27 @@ public:
 
   Standard_EXPORT static TopAbs_State GetAfter(const TopAbs_Orientation Tran);
 
-protected:
 private:
-  Standard_EXPORT void UpdateReference(const Standard_Real      Tole,
-                                       const Standard_Boolean   isInfRef,
-                                       Standard_Real&           CosInf,
-                                       Standard_Real&           CosSup,
+  Standard_EXPORT void UpdateReference(const double      Tole,
+                                       const bool   isInfRef,
+                                       double&           CosInf,
+                                       double&           CosSup,
                                        const TopAbs_Orientation Tran,
                                        TopAbs_Orientation&      TranRef);
 
-  Standard_EXPORT Standard_Real ComputeCos(const Standard_Real      Tole,
+  Standard_EXPORT double ComputeCos(const double      Tole,
                                            const gp_Dir&            Norm,
                                            const TopAbs_Orientation O,
-                                           Standard_Boolean&        isleft) const;
+                                           bool&        isleft) const;
 
   gp_Dir                       myTgt;
   gp_Dir                       myNorm;
   gp_Dir                       beafter;
-  Standard_Real                myCurvRef;
-  TColStd_Array2OfReal         myAng;
-  TColStd_Array2OfReal         myCurv;
-  TopTrans_Array2OfOrientation myOri;
-  Standard_Boolean             myTouchFlag;
+  double                myCurvRef;
+  NCollection_Array2<double>         myAng;
+  NCollection_Array2<double>         myCurv;
+  NCollection_Array2<TopAbs_Orientation> myOri;
+  bool             myTouchFlag;
 };
 
 #endif // _TopTrans_SurfaceTransition_HeaderFile

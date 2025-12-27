@@ -4,7 +4,7 @@ set(OCCT_TDataXtd_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TDataXtd_FILES
   TDataXtd.cxx
   TDataXtd.hxx
-  TDataXtd_Array1OfTrsf.hxx
+
   TDataXtd_Axis.cxx
   TDataXtd_Axis.hxx
   TDataXtd_Constraint.cxx

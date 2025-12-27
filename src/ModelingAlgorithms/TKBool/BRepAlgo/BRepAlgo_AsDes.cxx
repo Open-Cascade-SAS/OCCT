@@ -18,7 +18,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes, Standard_Transient)
 
@@ -32,14 +33,14 @@ void BRepAlgo_AsDes::Add(const TopoDS_Shape& S, const TopoDS_Shape& SS)
 {
   if (!down.IsBound(S))
   {
-    TopTools_ListOfShape L;
+    NCollection_List<TopoDS_Shape> L;
     down.Bind(S, L);
   }
   down(S).Append(SS);
 
   if (!up.IsBound(SS))
   {
-    TopTools_ListOfShape L;
+    NCollection_List<TopoDS_Shape> L;
     up.Bind(SS, L);
   }
   up(SS).Append(S);
@@ -47,9 +48,9 @@ void BRepAlgo_AsDes::Add(const TopoDS_Shape& S, const TopoDS_Shape& SS)
 
 //=================================================================================================
 
-void BRepAlgo_AsDes::Add(const TopoDS_Shape& S, const TopTools_ListOfShape& SS)
+void BRepAlgo_AsDes::Add(const TopoDS_Shape& S, const NCollection_List<TopoDS_Shape>& SS)
 {
-  TopTools_ListIteratorOfListOfShape it(SS);
+  NCollection_List<TopoDS_Shape>::Iterator it(SS);
   for (; it.More(); it.Next())
   {
     Add(S, it.Value());
@@ -66,45 +67,45 @@ void BRepAlgo_AsDes::Clear()
 
 //=================================================================================================
 
-Standard_Boolean BRepAlgo_AsDes::HasAscendant(const TopoDS_Shape& S) const
+bool BRepAlgo_AsDes::HasAscendant(const TopoDS_Shape& S) const
 {
   return up.IsBound(S);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepAlgo_AsDes::HasDescendant(const TopoDS_Shape& S) const
+bool BRepAlgo_AsDes::HasDescendant(const TopoDS_Shape& S) const
 {
   return down.IsBound(S);
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepAlgo_AsDes::Ascendant(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Ascendant(const TopoDS_Shape& S) const
 {
   if (up.IsBound(S))
     return up(S);
-  static TopTools_ListOfShape empty;
+  static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepAlgo_AsDes::Descendant(const TopoDS_Shape& S) const
+const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Descendant(const TopoDS_Shape& S) const
 {
   if (down.IsBound(S))
     return down(S);
-  static TopTools_ListOfShape empty;
+  static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
 
 //=================================================================================================
 
-TopTools_ListOfShape& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Shape& S)
+NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Shape& S)
 {
   if (down.IsBound(S))
     return down.ChangeFind(S);
-  static TopTools_ListOfShape empty;
+  static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
 
@@ -112,10 +113,10 @@ TopTools_ListOfShape& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Shape& S)
 
 static void ReplaceInList(const TopoDS_Shape&   OldS,
                           const TopoDS_Shape&   NewS,
-                          TopTools_ListOfShape& L)
+                          NCollection_List<TopoDS_Shape>& L)
 {
-  TopTools_MapOfOrientedShape        aMS;
-  TopTools_ListIteratorOfListOfShape it(L);
+  NCollection_Map<TopoDS_Shape>        aMS;
+  NCollection_List<TopoDS_Shape>::Iterator it(L);
   for (; it.More(); it.Next())
   {
     aMS.Add(it.Value());
@@ -139,9 +140,9 @@ static void ReplaceInList(const TopoDS_Shape&   OldS,
 
 //=================================================================================================
 
-static void RemoveInList(const TopoDS_Shape& S, TopTools_ListOfShape& L)
+static void RemoveInList(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& L)
 {
-  TopTools_ListIteratorOfListOfShape it(L);
+  NCollection_List<TopoDS_Shape>::Iterator it(L);
   while (it.More())
   {
     if (it.Value().IsSame(S))
@@ -155,18 +156,18 @@ static void RemoveInList(const TopoDS_Shape& S, TopTools_ListOfShape& L)
 
 //=================================================================================================
 
-Standard_Boolean BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&   S1,
+bool BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&   S1,
                                                      const TopoDS_Shape&   S2,
-                                                     TopTools_ListOfShape& LC) const
+                                                     NCollection_List<TopoDS_Shape>& LC) const
 {
   LC.Clear();
   if (HasDescendant(S1) && HasDescendant(S2))
   {
-    TopTools_ListIteratorOfListOfShape it1(Descendant(S1));
+    NCollection_List<TopoDS_Shape>::Iterator it1(Descendant(S1));
     for (; it1.More(); it1.Next())
     {
       const TopoDS_Shape&                DS1 = it1.Value();
-      TopTools_ListIteratorOfListOfShape it2(Ascendant(DS1));
+      NCollection_List<TopoDS_Shape>::Iterator it2(Ascendant(DS1));
       for (; it2.More(); it2.Next())
       {
         const TopoDS_Shape& ADS1 = it2.Value();
@@ -184,10 +185,10 @@ Standard_Boolean BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&   S1,
 
 void BRepAlgo_AsDes::BackReplace(const TopoDS_Shape&         OldS,
                                  const TopoDS_Shape&         NewS,
-                                 const TopTools_ListOfShape& L,
-                                 const Standard_Boolean      InUp)
+                                 const NCollection_List<TopoDS_Shape>& L,
+                                 const bool      InUp)
 {
-  TopTools_ListIteratorOfListOfShape it(L);
+  NCollection_List<TopoDS_Shape>::Iterator it(L);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S = it.Value();
@@ -212,24 +213,24 @@ void BRepAlgo_AsDes::BackReplace(const TopoDS_Shape&         OldS,
 
 void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
 {
-  for (Standard_Integer i = 0; i < 2; ++i)
+  for (int i = 0; i < 2; ++i)
   {
-    TopTools_DataMapOfShapeListOfShape& aMap   = !i ? up : down;
-    TopTools_ListOfShape*               pLSOld = aMap.ChangeSeek(OldS);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& aMap   = !i ? up : down;
+    NCollection_List<TopoDS_Shape>*               pLSOld = aMap.ChangeSeek(OldS);
     if (!pLSOld)
     {
       continue;
     }
     //
-    Standard_Boolean InUp = !i ? Standard_False : Standard_True;
+    bool InUp = !i ? false : true;
     BackReplace(OldS, NewS, *pLSOld, InUp);
     //
-    TopTools_ListOfShape* pLSNew = aMap.ChangeSeek(NewS);
+    NCollection_List<TopoDS_Shape>* pLSNew = aMap.ChangeSeek(NewS);
     if (!pLSNew)
     {
       // filter the list
-      TopTools_MapOfOrientedShape        aMS;
-      TopTools_ListIteratorOfListOfShape aIt(*pLSOld);
+      NCollection_Map<TopoDS_Shape>        aMS;
+      NCollection_List<TopoDS_Shape>::Iterator aIt(*pLSOld);
       for (; aIt.More();)
       {
         if (!aMS.Add(aIt.Value()))
@@ -246,8 +247,8 @@ void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
     else
     {
       // avoid duplicates
-      TopTools_MapOfOrientedShape        aMS;
-      TopTools_ListIteratorOfListOfShape aIt(*pLSNew);
+      NCollection_Map<TopoDS_Shape>        aMS;
+      NCollection_List<TopoDS_Shape>::Iterator aIt(*pLSNew);
       for (; aIt.More(); aIt.Next())
       {
         aMS.Add(aIt.Value());
@@ -280,7 +281,7 @@ void BRepAlgo_AsDes::Remove(const TopoDS_Shape& SS)
   {
     throw Standard_ConstructionError(" BRepAlgo_AsDes::Remove");
   }
-  TopTools_ListIteratorOfListOfShape it(up(SS));
+  NCollection_List<TopoDS_Shape>::Iterator it(up(SS));
   for (; it.More(); it.Next())
   {
     RemoveInList(SS, down.ChangeFind((it.Value())));

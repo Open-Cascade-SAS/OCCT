@@ -22,8 +22,8 @@
 //-- closed   <--> status & 4
 //-------------------------------------------------
 
-inline void IntRes2d_Domain::SetEquivalentParameters(const Standard_Real p_first,
-                                                     const Standard_Real p_last)
+inline void IntRes2d_Domain::SetEquivalentParameters(const double p_first,
+                                                     const double p_last)
 {
   if ((status & 3) != 3)
   {
@@ -34,12 +34,12 @@ inline void IntRes2d_Domain::SetEquivalentParameters(const Standard_Real p_first
   periodlast  = p_last;
 }
 
-inline Standard_Boolean IntRes2d_Domain::HasFirstPoint() const
+inline bool IntRes2d_Domain::HasFirstPoint() const
 {
-  return (status & 1) ? Standard_True : Standard_False;
+  return (status & 1) ? true : false;
 }
 
-inline Standard_Real IntRes2d_Domain::FirstParameter() const
+inline double IntRes2d_Domain::FirstParameter() const
 {
   if (!(status & 1))
   {
@@ -57,7 +57,7 @@ inline const gp_Pnt2d& IntRes2d_Domain::FirstPoint() const
   return (first_point);
 }
 
-inline Standard_Real IntRes2d_Domain::FirstTolerance() const
+inline double IntRes2d_Domain::FirstTolerance() const
 {
   if (!(status & 1))
   {
@@ -66,12 +66,12 @@ inline Standard_Real IntRes2d_Domain::FirstTolerance() const
   return (first_tol);
 }
 
-inline Standard_Boolean IntRes2d_Domain::HasLastPoint() const
+inline bool IntRes2d_Domain::HasLastPoint() const
 {
-  return (status & 2) ? Standard_True : Standard_False;
+  return (status & 2) ? true : false;
 }
 
-inline Standard_Real IntRes2d_Domain::LastParameter() const
+inline double IntRes2d_Domain::LastParameter() const
 {
   if (!(status & 2))
   {
@@ -89,7 +89,7 @@ inline const gp_Pnt2d& IntRes2d_Domain::LastPoint() const
   return (last_point);
 }
 
-inline Standard_Real IntRes2d_Domain::LastTolerance() const
+inline double IntRes2d_Domain::LastTolerance() const
 {
   if (!(status & 2))
   {
@@ -98,13 +98,13 @@ inline Standard_Real IntRes2d_Domain::LastTolerance() const
   return (last_tol);
 }
 
-inline Standard_Boolean IntRes2d_Domain::IsClosed() const
+inline bool IntRes2d_Domain::IsClosed() const
 {
-  return (status & 4) ? Standard_True : Standard_False;
+  return (status & 4) ? true : false;
 }
 
-inline void IntRes2d_Domain::EquivalentParameters(Standard_Real& p_first,
-                                                  Standard_Real& p_last) const
+inline void IntRes2d_Domain::EquivalentParameters(double& p_first,
+                                                  double& p_last) const
 {
   p_first = periodfirst;
   p_last  = periodlast;

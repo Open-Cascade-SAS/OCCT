@@ -51,12 +51,12 @@ void StdLPersistent_Document::PChildren(
 // function : Import
 // purpose  : Import transient document from the persistent data
 //=======================================================================
-void StdLPersistent_Document::ImportDocument(const Handle(TDocStd_Document)& theDocument) const
+void StdLPersistent_Document::ImportDocument(const occ::handle<TDocStd_Document>& theDocument) const
 {
   if (theDocument.IsNull() || myData.IsNull())
     return;
 
-  Handle(TDF_Data) aData = myData->Import();
+  occ::handle<TDF_Data> aData = myData->Import();
   if (aData.IsNull())
     return;
 

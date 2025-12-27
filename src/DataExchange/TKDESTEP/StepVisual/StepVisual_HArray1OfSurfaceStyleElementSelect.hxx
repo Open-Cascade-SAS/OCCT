@@ -17,10 +17,11 @@
 #ifndef StepVisual_HArray1OfSurfaceStyleElementSelect_HeaderFile
 #define StepVisual_HArray1OfSurfaceStyleElementSelect_HeaderFile
 
-#include <StepVisual_Array1OfSurfaceStyleElementSelect.hxx>
+#include <StepVisual_SurfaceStyleElementSelect.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepVisual_HArray1OfSurfaceStyleElementSelect,
-               StepVisual_Array1OfSurfaceStyleElementSelect)
+               NCollection_Array1<StepVisual_SurfaceStyleElementSelect>)
 
 #endif

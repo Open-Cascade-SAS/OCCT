@@ -16,9 +16,10 @@
 #include <Geom_BezierSurface.hxx>
 #include <GeomGridEval_BezierSurface.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <cmath>
 
@@ -26,9 +27,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -41,18 +42,18 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_BezierSurfaceTest, BasicEvaluation)
 {
   // Simple Bezier surface 2x2 (planar)
-  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
 
   GeomGridEval_BezierSurface anEval(aBezier);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 3);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 3);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
   EXPECT_EQ(aGrid.RowLength(), 3);
@@ -72,8 +73,8 @@ TEST(GeomGridEval_BezierSurfaceTest, BasicEvaluation)
 TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
 {
   // Rational Bezier surface
-  TColgp_Array2OfPnt   aPoles(1, 2, 1, 2);
-  TColStd_Array2OfReal aWeights(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt>   aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
 
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
@@ -85,10 +86,10 @@ TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
   aWeights.SetValue(1, 2, 1.0);
   aWeights.SetValue(2, 2, 2.0); // Higher weight
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles, aWeights);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles, aWeights);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aParams, aParams);
 
@@ -104,16 +105,16 @@ TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeD1)
 {
-  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 1));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aParams, aParams);
 
@@ -133,15 +134,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD1)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aParams, aParams);
 
@@ -164,15 +165,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
 {
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
     for (int j = 1; j <= 4; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i - 1, j - 1, std::sin((i - 1) * 0.5 + (j - 1) * 0.5)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aParams, aParams);
 
@@ -205,15 +206,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V0)
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 1, 0);
 
@@ -229,15 +230,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V0)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U0V1)
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 0, 1);
 
@@ -253,15 +254,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U0V1)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U2V0)
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 2, 0);
 
@@ -277,15 +278,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U2V0)
 
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V1)
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 1, 1);
 
@@ -302,15 +303,15 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V1)
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_BeyondDegree)
 {
   // Biquadratic Bezier (degree 2 in both directions)
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   // 3rd derivative in U direction (beyond degree 2) should be zero
   NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, 3, 0);
@@ -327,8 +328,8 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_BeyondDegree)
 TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
 {
   // Rational Bezier surface
-  TColgp_Array2OfPnt   aPoles(1, 2, 1, 2);
-  TColStd_Array2OfReal aWeights(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt>   aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
 
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(1, 0, 0));
@@ -340,10 +341,10 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
   aWeights.SetValue(1, 2, 1.0);
   aWeights.SetValue(2, 2, 2.0);
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles, aWeights);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles, aWeights);
   GeomGridEval_BezierSurface anEval(aBezier);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 1.0, 5);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 5);
 
   // Test DN(1,0), DN(0,1), and DN(1,1)
   for (int aNU = 0; aNU <= 1; ++aNU)
@@ -370,7 +371,7 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
 TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
 {
   // Create a non-planar Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
   {
     for (int j = 1; j <= 3; ++j)
@@ -379,13 +380,13 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
     }
   }
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
   // U-isoline: 1 U param, multiple V params (triggers isoline path)
-  TColStd_Array1OfReal aUParams(1, 1);
+  NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, 0.5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 10);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 10);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -405,7 +406,7 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
 TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
 {
   // Create a non-planar Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
   {
     for (int j = 1; j <= 3; ++j)
@@ -414,12 +415,12 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
     }
   }
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface anEval(aBezier);
 
   // V-isoline: multiple U params, 1 V param (triggers isoline path)
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 1.0, 10);
-  TColStd_Array1OfReal aVParams(1, 1);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 10);
+  NCollection_Array1<double> aVParams(1, 1);
   aVParams.SetValue(1, 0.7);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
@@ -440,8 +441,8 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
 TEST(GeomGridEval_BezierSurfaceTest, IsolineRational_CompareToGeomD0)
 {
   // Rational Bezier surface
-  TColgp_Array2OfPnt   aPoles(1, 3, 1, 3);
-  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt>   aPoles(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
 
   for (int i = 1; i <= 3; ++i)
   {
@@ -452,13 +453,13 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineRational_CompareToGeomD0)
     }
   }
 
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aPoles, aWeights);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles, aWeights);
   GeomGridEval_BezierSurface anEval(aBezier);
 
   // U-isoline on rational surface
-  TColStd_Array1OfReal aUParams(1, 1);
+  NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, 0.3);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 1.0, 15);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 15);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 

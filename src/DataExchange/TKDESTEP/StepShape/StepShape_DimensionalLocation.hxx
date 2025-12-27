@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspectRelationship.hxx>
 
-class StepShape_DimensionalLocation;
-DEFINE_STANDARD_HANDLE(StepShape_DimensionalLocation, StepRepr_ShapeAspectRelationship)
-
 //! Representation of STEP entity DimensionalLocation
 class StepShape_DimensionalLocation : public StepRepr_ShapeAspectRelationship
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalLocation, StepRepr_ShapeAspectRelationship)
 
-protected:
-private:
 };
 
 #endif // _StepShape_DimensionalLocation_HeaderFile

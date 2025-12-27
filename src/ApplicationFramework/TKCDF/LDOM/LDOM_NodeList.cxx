@@ -31,7 +31,7 @@ LDOM_NodeList::LDOM_NodeList()
 
 //=================================================================================================
 
-LDOM_NodeList::LDOM_NodeList(const Handle(LDOM_MemManager)& aDoc)
+LDOM_NodeList::LDOM_NodeList(const occ::handle<LDOM_MemManager>& aDoc)
     : myDoc(aDoc)
 {
   mySeq = new LDOM_BasicNodeSequence;
@@ -89,7 +89,7 @@ LDOM_NodeList& LDOM_NodeList::operator=(const LDOM_NullPtr*)
 // purpose  :
 //=======================================================================
 
-Standard_Boolean LDOM_NodeList::operator==(const LDOM_NullPtr*) const
+bool LDOM_NodeList::operator==(const LDOM_NullPtr*) const
 {
   return myDoc.IsNull() || mySeq->Length() == 0;
 }
@@ -99,14 +99,14 @@ Standard_Boolean LDOM_NodeList::operator==(const LDOM_NullPtr*) const
 // purpose  :
 //=======================================================================
 
-Standard_Boolean LDOM_NodeList::operator!=(const LDOM_NullPtr*) const
+bool LDOM_NodeList::operator!=(const LDOM_NullPtr*) const
 {
   return !(myDoc.IsNull() || mySeq->Length() == 0);
 }
 
 //=================================================================================================
 
-LDOM_Node LDOM_NodeList::item(const Standard_Integer anIndex) const
+LDOM_Node LDOM_NodeList::item(const int anIndex) const
 {
   if (myDoc.IsNull() || anIndex < 0 || anIndex >= mySeq->Length())
     return LDOM_Node();
@@ -115,7 +115,7 @@ LDOM_Node LDOM_NodeList::item(const Standard_Integer anIndex) const
 
 //=================================================================================================
 
-Standard_Integer LDOM_NodeList::getLength() const
+int LDOM_NodeList::getLength() const
 {
   return mySeq->Length();
 }

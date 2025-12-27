@@ -18,8 +18,6 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(Message_Attribute, Standard_Transient)
-
 //! Additional information of extended alert attribute
 //! To provide other custom attribute container, it might be redefined.
 class Message_Attribute : public Standard_Transient
@@ -33,7 +31,7 @@ public:
   //! Return a C string to be used as a key for generating text user messages describing this alert.
   //! The messages are generated with help of Message_Msg class, in Message_Report::Dump().
   //! Base implementation returns dynamic type name of the instance.
-  Standard_EXPORT virtual Standard_CString GetMessageKey() const;
+  Standard_EXPORT virtual const char* GetMessageKey() const;
 
   //! Returns custom name of alert if it is set
   //! @return alert name
@@ -45,7 +43,7 @@ public:
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
 private:
   TCollection_AsciiString myName; //!< alert name, if defined is used in GetMessageKey

@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeometryTest_DrawableQualifiedCurve2d, DrawTrSurf_Cur
 //=================================================================================================
 
 GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
-  const Handle(Geom2d_Curve)& theCurve,
+  const occ::handle<Geom2d_Curve>& theCurve,
   const GccEnt_Position       thePosition,
-  const Standard_Boolean      theDispOrigin)
+  const bool      theDispOrigin)
     : DrawTrSurf_Curve2d(theCurve, theDispOrigin),
       myPosition(thePosition)
 {
@@ -37,14 +37,14 @@ GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
 //=================================================================================================
 
 GeometryTest_DrawableQualifiedCurve2d::GeometryTest_DrawableQualifiedCurve2d(
-  const Handle(Geom2d_Curve)& theCurve,
+  const occ::handle<Geom2d_Curve>& theCurve,
   const Draw_Color&           theColor,
-  const Standard_Integer      theDiscret,
+  const int      theDiscret,
   const GccEnt_Position       thePosition,
-  const Standard_Boolean      theDispOrigin,
-  const Standard_Boolean      theDispCurvRadius,
-  const Standard_Real         theRadiusMax,
-  const Standard_Real         theRatioOfRadius)
+  const bool      theDispOrigin,
+  const bool      theDispCurvRadius,
+  const double         theRadiusMax,
+  const double         theRatioOfRadius)
     : DrawTrSurf_Curve2d(theCurve,
                          theColor,
                          theDiscret,
@@ -77,7 +77,7 @@ void GeometryTest_DrawableQualifiedCurve2d::Dump(Standard_OStream& theStream) co
 
 void GeometryTest_DrawableQualifiedCurve2d::Whatis(Draw_Interpretor& theDI) const
 {
-  Handle(Standard_Type) aType = GetCurve()->DynamicType();
+  occ::handle<Standard_Type> aType = GetCurve()->DynamicType();
 
   if (aType == STANDARD_TYPE(Geom2d_Circle))
   {

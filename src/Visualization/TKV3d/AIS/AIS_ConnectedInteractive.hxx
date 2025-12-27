@@ -45,25 +45,25 @@ public:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Returns KOI_Object
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE
+  virtual AIS_KindOfInteractive Type() const override
   {
     return AIS_KindOfInteractive_Object;
   }
 
   //! Returns 0
-  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
+  virtual int Signature() const override { return 0; }
 
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
-  void Connect(const Handle(AIS_InteractiveObject)& theAnotherObj)
+  void Connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj)
   {
-    connect(theAnotherObj, Handle(TopLoc_Datum3D)());
+    connect(theAnotherObj, occ::handle<TopLoc_Datum3D>());
   }
 
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
   //! Locates instance in aLocation.
-  void Connect(const Handle(AIS_InteractiveObject)& theAnotherObj, const gp_Trsf& theLocation)
+  void Connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj, const gp_Trsf& theLocation)
   {
     connect(theAnotherObj, new TopLoc_Datum3D(theLocation));
   }
@@ -71,18 +71,18 @@ public:
   //! Establishes the connection between the Connected
   //! Interactive Object, anotherIobj, and its reference.
   //! Locates instance in aLocation.
-  void Connect(const Handle(AIS_InteractiveObject)& theAnotherObj,
-               const Handle(TopLoc_Datum3D)&        theLocation)
+  void Connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj,
+               const occ::handle<TopLoc_Datum3D>&        theLocation)
   {
     connect(theAnotherObj, theLocation);
   }
 
   //! Returns true if there is a connection established
   //! between the presentation and its source reference.
-  Standard_Boolean HasConnection() const { return !myReference.IsNull(); }
+  bool HasConnection() const { return !myReference.IsNull(); }
 
   //! Returns the connection with the reference Interactive Object.
-  const Handle(AIS_InteractiveObject)& ConnectedTo() const { return myReference; }
+  const occ::handle<AIS_InteractiveObject>& ConnectedTo() const { return myReference; }
 
   //! Clears the connection with a source reference. The
   //! presentation will no longer be displayed.
@@ -91,13 +91,13 @@ public:
 
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
-  virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE
+  virtual bool AcceptShapeDecomposition() const override
   {
     return !myReference.IsNull() && myReference->AcceptShapeDecomposition();
   }
 
   //! Return true if reference presentation accepts specified display mode.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual bool AcceptDisplayMode(const int theMode) const override
   {
     return myReference.IsNull() || myReference->AcceptDisplayMode(theMode);
   }
@@ -112,38 +112,36 @@ protected:
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         theprs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         theprs,
+                                       const int theMode) override;
 
   //! Computes the presentation according to a point of view.
-  Standard_EXPORT virtual void computeHLR(const Handle(Graphic3d_Camera)&   theProjector,
-                                          const Handle(TopLoc_Datum3D)&     theTrsf,
-                                          const Handle(Prs3d_Presentation)& thePrs)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                                          const occ::handle<Prs3d_Presentation>& thePrs)
+    override;
 
   //! Generates sensitive entities by copying
   //! them from myReference selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference sub shapes selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT void computeSubShapeSelection(const Handle(SelectMgr_Selection)& theSelection,
-                                                const Standard_Integer             theMode);
+  Standard_EXPORT void computeSubShapeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int             theMode);
 
-  Standard_EXPORT void updateShape(const Standard_Boolean WithLocation = Standard_True);
+  Standard_EXPORT void updateShape(const bool WithLocation = true);
 
-  Standard_EXPORT void connect(const Handle(AIS_InteractiveObject)& theAnotherObj,
-                               const Handle(TopLoc_Datum3D)&        theLocation);
+  Standard_EXPORT void connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj,
+                               const occ::handle<TopLoc_Datum3D>&        theLocation);
 
 protected:
-  Handle(AIS_InteractiveObject) myReference;
+  occ::handle<AIS_InteractiveObject> myReference;
   TopoDS_Shape                  myShape;
 };
-
-DEFINE_STANDARD_HANDLE(AIS_ConnectedInteractive, AIS_InteractiveObject)
 
 #endif // _AIS_ConnectedInteractive_HeaderFile

@@ -23,9 +23,6 @@
 #include <GeomPlate_CurveConstraint.hxx>
 #include <Standard_Integer.hxx>
 
-class BRepFill_CurveConstraint;
-DEFINE_STANDARD_HANDLE(BRepFill_CurveConstraint, GeomPlate_CurveConstraint)
-
 //! same as CurveConstraint from GeomPlate
 //! with BRepAdaptor_Surface instead of
 //! GeomAdaptor_Surface
@@ -41,22 +38,20 @@ public:
   //! TolAng is the maximum error to satisfy for G1 constraints
   //! TolCurv is the maximum error to satisfy for G2 constraints
   //! These errors can be replaced by laws of criterion.
-  Standard_EXPORT BRepFill_CurveConstraint(const Handle(Adaptor3d_CurveOnSurface)& Boundary,
-                                           const Standard_Integer                  Order,
-                                           const Standard_Integer                  NPt     = 10,
-                                           const Standard_Real                     TolDist = 0.0001,
-                                           const Standard_Real                     TolAng  = 0.01,
-                                           const Standard_Real                     TolCurv = 0.1);
+  Standard_EXPORT BRepFill_CurveConstraint(const occ::handle<Adaptor3d_CurveOnSurface>& Boundary,
+                                           const int                  Order,
+                                           const int                  NPt     = 10,
+                                           const double                     TolDist = 0.0001,
+                                           const double                     TolAng  = 0.01,
+                                           const double                     TolCurv = 0.1);
 
-  Standard_EXPORT BRepFill_CurveConstraint(const Handle(Adaptor3d_Curve)& Boundary,
-                                           const Standard_Integer         Tang,
-                                           const Standard_Integer         NPt     = 10,
-                                           const Standard_Real            TolDist = 0.0001);
+  Standard_EXPORT BRepFill_CurveConstraint(const occ::handle<Adaptor3d_Curve>& Boundary,
+                                           const int         Tang,
+                                           const int         NPt     = 10,
+                                           const double            TolDist = 0.0001);
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_CurveConstraint, GeomPlate_CurveConstraint)
 
-protected:
-private:
 };
 
 #endif // _BRepFill_CurveConstraint_HeaderFile

@@ -26,31 +26,31 @@ class BVH_BuilderTransient : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(BVH_BuilderTransient, Standard_Transient)
 public:
   //! Returns the maximum depth of constructed BVH.
-  Standard_Integer MaxTreeDepth() const { return myMaxTreeDepth; }
+  int MaxTreeDepth() const { return myMaxTreeDepth; }
 
   //! Returns the maximum number of sub-elements in the leaf.
-  Standard_Integer LeafNodeSize() const { return myLeafNodeSize; }
+  int LeafNodeSize() const { return myLeafNodeSize; }
 
   //! Returns parallel flag.
-  inline Standard_Boolean IsParallel() const { return myIsParallel; }
+  inline bool IsParallel() const { return myIsParallel; }
 
   //! Set parallel flag controlling possibility of parallel execution.
-  inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
+  inline void SetParallel(const bool isParallel) { myIsParallel = isParallel; }
 
 protected:
   //! Creates new abstract BVH builder.
-  BVH_BuilderTransient(const Standard_Integer theLeafNodeSize,
-                       const Standard_Integer theMaxTreeDepth)
+  BVH_BuilderTransient(const int theLeafNodeSize,
+                       const int theMaxTreeDepth)
       : myMaxTreeDepth(theMaxTreeDepth),
         myLeafNodeSize(theLeafNodeSize),
-        myIsParallel(Standard_False)
+        myIsParallel(false)
   {
   }
 
 protected:
-  Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
-  Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
-  Standard_Boolean myIsParallel;   //!< Parallel execution flag.
+  int myMaxTreeDepth; //!< Maximum depth of constructed BVH
+  int myLeafNodeSize; //!< Maximum number of objects per leaf
+  bool myIsParallel;   //!< Parallel execution flag.
 };
 
 //! Performs construction of BVH tree using bounding
@@ -68,13 +68,13 @@ public:
 
 protected:
   //! Creates new abstract BVH builder.
-  BVH_Builder(const Standard_Integer theLeafNodeSize, const Standard_Integer theMaxTreeDepth)
+  BVH_Builder(const int theLeafNodeSize, const int theMaxTreeDepth)
       : BVH_BuilderTransient(theLeafNodeSize, theMaxTreeDepth)
   {
   }
 
   //! Updates depth of constructed BVH tree.
-  void updateDepth(BVH_Tree<T, N>* theBVH, const Standard_Integer theLevel) const
+  void updateDepth(BVH_Tree<T, N>* theBVH, const int theLevel) const
   {
     if (theLevel > theBVH->myDepth)
     {

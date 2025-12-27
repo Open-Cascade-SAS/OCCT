@@ -25,15 +25,15 @@
 class BRepMesh_CircleInspector : public NCollection_CellFilter_InspectorXY
 {
 public:
-  typedef Standard_Integer Target;
+  typedef int Target;
 
   //! Constructor.
   //! @param theTolerance tolerance to be used for identification of shot circles.
   //! @param theReservedSize size to be reserved for vector of circles.
   //! @param theAllocator memory allocator to be used by internal collections.
-  BRepMesh_CircleInspector(const Standard_Real                     theTolerance,
-                           const Standard_Integer                  theReservedSize,
-                           const Handle(NCollection_IncAllocator)& theAllocator)
+  BRepMesh_CircleInspector(const double                     theTolerance,
+                           const int                  theReservedSize,
+                           const occ::handle<NCollection_IncAllocator>& theAllocator)
       : mySqTolerance(theTolerance * theTolerance),
         myResIndices(theAllocator),
         myCircles(theReservedSize, theAllocator)
@@ -43,7 +43,7 @@ public:
   //! Adds the circle to vector of circles at the given position.
   //! @param theIndex position of circle in the vector.
   //! @param theCircle circle to be added.
-  void Bind(const Standard_Integer theIndex, const BRepMesh_Circle& theCircle)
+  void Bind(const int theIndex, const BRepMesh_Circle& theCircle)
   {
     myCircles.SetValue(theIndex, theCircle);
   }
@@ -54,7 +54,7 @@ public:
   //! Returns circle with the given index.
   //! @param theIndex index of circle.
   //! @return circle with the given index.
-  BRepMesh_Circle& Circle(const Standard_Integer theIndex) { return myCircles(theIndex); }
+  BRepMesh_Circle& Circle(const int theIndex) { return myCircles(theIndex); }
 
   //! Set reference point to be checked.
   //! @param thePoint bullet point.
@@ -70,21 +70,21 @@ public:
   //! Performs inspection of a circle with the given index.
   //! @param theTargetIndex index of a circle to be checked.
   //! @return status of the check.
-  NCollection_CellFilter_Action Inspect(const Standard_Integer theTargetIndex)
+  NCollection_CellFilter_Action Inspect(const int theTargetIndex)
   {
     BRepMesh_Circle&     aCircle = myCircles(theTargetIndex);
-    const Standard_Real& aRadius = aCircle.Radius();
+    const double& aRadius = aCircle.Radius();
     if (aRadius < 0.)
       return CellFilter_Purge;
 
     gp_XY& aLoc = const_cast<gp_XY&>(aCircle.Location());
 
-    const Standard_Real aDX = myPoint.ChangeCoord(1) - aLoc.ChangeCoord(1);
-    const Standard_Real aDY = myPoint.ChangeCoord(2) - aLoc.ChangeCoord(2);
+    const double aDX = myPoint.ChangeCoord(1) - aLoc.ChangeCoord(1);
+    const double aDY = myPoint.ChangeCoord(2) - aLoc.ChangeCoord(2);
 
     // This check is wrong. It is better to use
     //
-    //   const Standard_Real aR = aRadius + aToler;
+    //   const double aR = aRadius + aToler;
     //   if ((aDX * aDX + aDY * aDY) <= aR * aR)
     //   {
     //     ...
@@ -106,14 +106,14 @@ public:
   }
 
   //! Checks indices for equality.
-  static Standard_Boolean IsEqual(const Standard_Integer theIndex,
-                                  const Standard_Integer theTargetIndex)
+  static bool IsEqual(const int theIndex,
+                                  const int theTargetIndex)
   {
     return (theIndex == theTargetIndex);
   }
 
 private:
-  Standard_Real             mySqTolerance;
+  double             mySqTolerance;
   IMeshData::ListOfInteger  myResIndices;
   IMeshData::VectorOfCircle myCircles;
   gp_XY                     myPoint;

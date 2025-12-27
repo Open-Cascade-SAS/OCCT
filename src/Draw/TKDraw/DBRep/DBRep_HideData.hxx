@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Trsf.hxx>
-#include <HLRBRep_ListOfBPoint.hxx>
+#include <HLRBRep_BiPoint.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 class Draw_Display;
@@ -51,23 +52,23 @@ public:
   //! TProj the projection
   //! Focal <= 0 means parallel projection
   //! Alg : the hidden lines
-  Standard_EXPORT void Set(const Standard_Integer ViewId,
+  Standard_EXPORT void Set(const int ViewId,
                            const gp_Trsf&         TProj,
-                           const Standard_Real    Focal,
+                           const double    Focal,
                            const TopoDS_Shape&    S,
-                           const Standard_Real    ang);
+                           const double    ang);
 
-  Standard_Integer ViewId() const { return myView; }
+  int ViewId() const { return myView; }
 
-  Standard_Real Angle() const { return myAngle; }
+  double Angle() const { return myAngle; }
 
   //! Returns True if the projection is the same
-  Standard_EXPORT Standard_Boolean IsSame(const gp_Trsf& TProj, const Standard_Real Focla) const;
+  Standard_EXPORT bool IsSame(const gp_Trsf& TProj, const double Focla) const;
 
   Standard_EXPORT void DrawOn(Draw_Display&          D,
-                              const Standard_Boolean withRg1,
-                              const Standard_Boolean withRgN,
-                              const Standard_Boolean withHid,
+                              const bool withRg1,
+                              const bool withRgN,
+                              const bool withHid,
                               const Draw_Color&      VisCol,
                               const Draw_Color&      HidCol);
 
@@ -75,13 +76,13 @@ public:
   Standard_EXPORT const TopoDS_Shape& LastPick() const;
 
 private:
-  Standard_Integer     myView;
+  int     myView;
   gp_Trsf              myTrsf;
-  Standard_Real        myFocal;
-  HLRBRep_ListOfBPoint myBiPntVis;
-  HLRBRep_ListOfBPoint myBiPntHid;
+  double        myFocal;
+  NCollection_List<HLRBRep_BiPoint> myBiPntVis;
+  NCollection_List<HLRBRep_BiPoint> myBiPntHid;
   TopoDS_Shape         myPickShap;
-  Standard_Real        myAngle;
+  double        myAngle;
 };
 
 #endif // _DBRep_HideData_HeaderFile

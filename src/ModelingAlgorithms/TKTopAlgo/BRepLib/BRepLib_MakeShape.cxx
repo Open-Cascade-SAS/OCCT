@@ -48,9 +48,9 @@ BRepLib_MakeShape::operator TopoDS_Shape()
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_MakeShape::HasDescendants(const TopoDS_Face&) const
+bool BRepLib_MakeShape::HasDescendants(const TopoDS_Face&) const
 {
-  return (Standard_True);
+  return (true);
 }
 
 //=================================================================================================
@@ -63,28 +63,28 @@ BRepLib_ShapeModification BRepLib_MakeShape::FaceStatus(const TopoDS_Face&) cons
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepLib_MakeShape::DescendantFaces(const TopoDS_Face&)
+const NCollection_List<TopoDS_Shape>& BRepLib_MakeShape::DescendantFaces(const TopoDS_Face&)
 {
   return myGenFaces;
 }
 
 //=================================================================================================
 
-Standard_Integer BRepLib_MakeShape::NbSurfaces() const
+int BRepLib_MakeShape::NbSurfaces() const
 {
   return (0);
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepLib_MakeShape::NewFaces(const Standard_Integer)
+const NCollection_List<TopoDS_Shape>& BRepLib_MakeShape::NewFaces(const int)
 {
   return myNewFaces;
 }
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepLib_MakeShape::FacesFromEdges(const TopoDS_Edge&)
+const NCollection_List<TopoDS_Shape>& BRepLib_MakeShape::FacesFromEdges(const TopoDS_Edge&)
 {
   return myEdgFaces;
 }

@@ -16,7 +16,7 @@
 Vrml_Instancing::Vrml_Instancing(const TCollection_AsciiString& aString)
 {
   TCollection_AsciiString tmpAS = aString;
-  tmpAS.ChangeAll(' ', '_', Standard_True);
+  tmpAS.ChangeAll(' ', '_', true);
   myName = tmpAS;
 }
 

@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyle, Standard_Transient)
 
 StepVisual_CurveStyle::StepVisual_CurveStyle() {}
 
-void StepVisual_CurveStyle::Init(const Handle(TCollection_HAsciiString)& aName,
+void StepVisual_CurveStyle::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const StepVisual_CurveStyleFontSelect&  aCurveFont,
                                  const StepBasic_SizeSelect&             aCurveWidth,
-                                 const Handle(StepVisual_Colour)&        aCurveColour)
+                                 const occ::handle<StepVisual_Colour>&        aCurveColour)
 {
   // --- classe own fields ---
   name        = aName;
@@ -32,12 +32,12 @@ void StepVisual_CurveStyle::Init(const Handle(TCollection_HAsciiString)& aName,
   curveColour = aCurveColour;
 }
 
-void StepVisual_CurveStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_CurveStyle::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_CurveStyle::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_CurveStyle::Name() const
 {
   return name;
 }
@@ -62,12 +62,12 @@ StepBasic_SizeSelect StepVisual_CurveStyle::CurveWidth() const
   return curveWidth;
 }
 
-void StepVisual_CurveStyle::SetCurveColour(const Handle(StepVisual_Colour)& aCurveColour)
+void StepVisual_CurveStyle::SetCurveColour(const occ::handle<StepVisual_Colour>& aCurveColour)
 {
   curveColour = aCurveColour;
 }
 
-Handle(StepVisual_Colour) StepVisual_CurveStyle::CurveColour() const
+occ::handle<StepVisual_Colour> StepVisual_CurveStyle::CurveColour() const
 {
   return curveColour;
 }

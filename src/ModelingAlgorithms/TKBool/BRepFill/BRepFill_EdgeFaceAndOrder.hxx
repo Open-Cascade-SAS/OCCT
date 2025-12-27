@@ -38,7 +38,6 @@ public:
 
   friend class BRepFill_Filling;
 
-protected:
 private:
   TopoDS_Edge   myEdge;
   TopoDS_Face   myFace;

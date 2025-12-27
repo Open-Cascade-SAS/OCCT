@@ -25,12 +25,12 @@
 #define SURF2 (*((ThePSurface*)(surf2)))
 
 IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1, const ThePSurface& S2)
-    : compute(Standard_False),
-      tangent(Standard_False),
+    : compute(false),
+      tangent(false),
       paramConst(0.0)
 {
-  surf1 = (Standard_Address)(&S1);
-  surf2 = (Standard_Address)(&S2);
+  surf1 = (void*)(&S1);
+  surf2 = (void*)(&S2);
 
   ua0 = ThePSurfaceTool::FirstUParameter(SURF1); //-- ThePSurfaceTool::UIntervalFirst(surf1);
   va0 = ThePSurfaceTool::FirstVParameter(SURF1); //-- ThePSurfaceTool::VIntervalFirst(surf1);
@@ -48,21 +48,21 @@ IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1, const ThePSurface& S
   ures2 = ThePSurfaceTool::UResolution(SURF2, Precision::Confusion());
   vres2 = ThePSurfaceTool::VResolution(SURF2, Precision::Confusion());
   memset(f, 0, sizeof(f));
-  compute = Standard_False;
-  tangent = Standard_False;
+  compute = false;
+  tangent = false;
 }
 
-Standard_Integer IntImp_ZerParFunc::NbVariables() const
+int IntImp_ZerParFunc::NbVariables() const
 {
   return 3;
 }
 
-Standard_Integer IntImp_ZerParFunc::NbEquations() const
+int IntImp_ZerParFunc::NbEquations() const
 {
   return 3;
 }
 
-Standard_Boolean IntImp_ZerParFunc::Value(const math_Vector& X, math_Vector& F)
+bool IntImp_ZerParFunc::Value(const math_Vector& X, math_Vector& F)
 {
 
   switch (chxIso)
@@ -92,10 +92,10 @@ Standard_Boolean IntImp_ZerParFunc::Value(const math_Vector& X, math_Vector& F)
   f[0] = F(1) = pntsol1.X() - pntsol2.X();
   f[1] = F(2) = pntsol1.Y() - pntsol2.Y();
   f[2] = F(3) = pntsol1.Z() - pntsol2.Z();
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerParFunc::Derivatives(const math_Vector& X, math_Matrix& D)
+bool IntImp_ZerParFunc::Derivatives(const math_Vector& X, math_Matrix& D)
 {
 
   switch (chxIso)
@@ -157,10 +157,10 @@ Standard_Boolean IntImp_ZerParFunc::Derivatives(const math_Vector& X, math_Matri
     }
     break;
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntImp_ZerParFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool IntImp_ZerParFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
 
   switch (chxIso)
@@ -225,11 +225,11 @@ Standard_Boolean IntImp_ZerParFunc::Values(const math_Vector& X, math_Vector& F,
   f[0] = F(1) = pntsol1.X() - pntsol2.X();
   f[1] = F(2) = pntsol1.Y() - pntsol2.Y();
   f[2] = F(3) = pntsol1.Z() - pntsol2.Z();
-  return Standard_True;
+  return true;
 }
 
 void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric ChoixIso,
-                                          const TColStd_Array1OfReal&     Param,
+                                          const NCollection_Array1<double>&     Param,
                                           math_Vector&                    UVap,
                                           math_Vector&                    BornInf,
                                           math_Vector&                    BornSup,
@@ -316,9 +316,9 @@ void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric ChoixI
     break;
   }
 
-  Standard_Real Incr1 = (BornSup(1) - BornInf(1)) * 0.01;
-  Standard_Real Incr2 = (BornSup(2) - BornInf(2)) * 0.01;
-  Standard_Real Incr3 = (BornSup(3) - BornInf(3)) * 0.01;
+  double Incr1 = (BornSup(1) - BornInf(1)) * 0.01;
+  double Incr2 = (BornSup(2) - BornInf(2)) * 0.01;
+  double Incr3 = (BornSup(3) - BornInf(3)) * 0.01;
   BornInf(1) -= Incr1;
   BornSup(1) += Incr1;
   BornInf(2) -= Incr2;
@@ -327,8 +327,8 @@ void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric ChoixI
   BornSup(3) += Incr3;
 }
 
-Standard_Boolean IntImp_ZerParFunc::IsTangent(const math_Vector&         UVap,
-                                              TColStd_Array1OfReal&      Param,
+bool IntImp_ZerParFunc::IsTangent(const math_Vector&         UVap,
+                                              NCollection_Array1<double>&      Param,
                                               IntImp_ConstIsoparametric& BestChoix)
 {
   switch (chxIso)
@@ -364,7 +364,7 @@ Standard_Boolean IntImp_ZerParFunc::IsTangent(const math_Vector&         UVap,
   }
 
   IntImp_ConstIsoparametric TabIso[4];
-  Standard_Real             EpsUV[4];
+  double             EpsUV[4];
   EpsUV[0] = ures1;
   EpsUV[1] = vres1;
 

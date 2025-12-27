@@ -19,8 +19,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationAssignment, Standard_Transient)
 
 void StepBasic_OrganizationAssignment::Init(
-  const Handle(StepBasic_Organization)&     aAssignedOrganization,
-  const Handle(StepBasic_OrganizationRole)& aRole)
+  const occ::handle<StepBasic_Organization>&     aAssignedOrganization,
+  const occ::handle<StepBasic_OrganizationRole>& aRole)
 {
   // --- classe own fields ---
   assignedOrganization = aAssignedOrganization;
@@ -28,22 +28,22 @@ void StepBasic_OrganizationAssignment::Init(
 }
 
 void StepBasic_OrganizationAssignment::SetAssignedOrganization(
-  const Handle(StepBasic_Organization)& aAssignedOrganization)
+  const occ::handle<StepBasic_Organization>& aAssignedOrganization)
 {
   assignedOrganization = aAssignedOrganization;
 }
 
-Handle(StepBasic_Organization) StepBasic_OrganizationAssignment::AssignedOrganization() const
+occ::handle<StepBasic_Organization> StepBasic_OrganizationAssignment::AssignedOrganization() const
 {
   return assignedOrganization;
 }
 
-void StepBasic_OrganizationAssignment::SetRole(const Handle(StepBasic_OrganizationRole)& aRole)
+void StepBasic_OrganizationAssignment::SetRole(const occ::handle<StepBasic_OrganizationRole>& aRole)
 {
   role = aRole;
 }
 
-Handle(StepBasic_OrganizationRole) StepBasic_OrganizationAssignment::Role() const
+occ::handle<StepBasic_OrganizationRole> StepBasic_OrganizationAssignment::Role() const
 {
   return role;
 }

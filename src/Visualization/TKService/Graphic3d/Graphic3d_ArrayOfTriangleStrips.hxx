@@ -48,8 +48,8 @@ public:
   //!                      the number of triangle really drawn is: VertexNumber() - 2 * std::min(1,
   //!                      BoundNumber())
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfTriangleStrips(Standard_Integer     theMaxVertexs,
-                                  Standard_Integer     theMaxStrips,
+  Graphic3d_ArrayOfTriangleStrips(int     theMaxVertexs,
+                                  int     theMaxStrips,
                                   Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLESTRIPS,
                                     theMaxVertexs,
@@ -74,12 +74,12 @@ public:
   //! color
   //! @param theHasVTexels  when TRUE, AddVertex(Point,Texel) or AddVertex(Point,Normal,Texel)
   //! should be used to specify vertex UV coordinates
-  Graphic3d_ArrayOfTriangleStrips(Standard_Integer theMaxVertexs,
-                                  Standard_Integer theMaxStrips   = 0,
-                                  Standard_Boolean theHasVNormals = Standard_False,
-                                  Standard_Boolean theHasVColors  = Standard_False,
-                                  Standard_Boolean theHasBColors  = Standard_False,
-                                  Standard_Boolean theHasVTexels  = Standard_False)
+  Graphic3d_ArrayOfTriangleStrips(int theMaxVertexs,
+                                  int theMaxStrips   = 0,
+                                  bool theHasVNormals = false,
+                                  bool theHasVColors  = false,
+                                  bool theHasBColors  = false,
+                                  bool theHasVTexels  = false)
       : Graphic3d_ArrayOfPrimitives(
           Graphic3d_TOPA_TRIANGLESTRIPS,
           theMaxVertexs,
@@ -92,7 +92,5 @@ public:
   {
   }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_ArrayOfTriangleStrips, Graphic3d_ArrayOfPrimitives)
 
 #endif // _Graphic3d_ArrayOfTriangleStrips_HeaderFile

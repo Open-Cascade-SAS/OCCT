@@ -16,8 +16,7 @@ set(OCCT_IntCurveSurface_FILES
   IntCurveSurface_PolygonUtils.pxx
   IntCurveSurface_PolyhedronUtils.pxx
   IntCurveSurface_QuadricCurveExactInterUtils.pxx
-  IntCurveSurface_SequenceOfPnt.hxx
-  IntCurveSurface_SequenceOfSeg.hxx
+
   IntCurveSurface_TheCSFunctionOfHInter.hxx
   IntCurveSurface_TheCSFunctionOfHInter_0.cxx
   IntCurveSurface_TheExactHInter.hxx

@@ -32,14 +32,14 @@ LDOM_BasicAttribute::LDOM_BasicAttribute(const LDOM_Attr& anAttr)
 //=======================================================================
 
 LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&         theName,
-                                                 const Handle(LDOM_MemManager)& theDoc,
-                                                 Standard_Integer&              theHash)
+                                                 const occ::handle<LDOM_MemManager>& theDoc,
+                                                 int&              theHash)
 {
   void*                aMem    = theDoc->Allocate(sizeof(LDOM_BasicAttribute));
   LDOM_BasicAttribute* aNewAtt = new (aMem) LDOM_BasicAttribute;
 
   const char* aString = theName.GetString();
-  aNewAtt->myName     = theDoc->HashedAllocate(aString, (Standard_Integer)strlen(aString), theHash);
+  aNewAtt->myName     = theDoc->HashedAllocate(aString, (int)strlen(aString), theHash);
 
   aNewAtt->myNodeType = LDOM_Node::ATTRIBUTE_NODE;
   return *aNewAtt;

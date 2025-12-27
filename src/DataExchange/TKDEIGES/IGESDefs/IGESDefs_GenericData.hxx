@@ -27,9 +27,6 @@
 class TCollection_HAsciiString;
 class Standard_Transient;
 
-class IGESDefs_GenericData;
-DEFINE_STANDARD_HANDLE(IGESDefs_GenericData, IGESData_IGESEntity)
-
 //! defines IGES Generic Data, Type <406> Form <27>
 //! in package IGESDefs
 //! Used to communicate information defined by the system
@@ -50,58 +47,57 @@ public:
   //! - aName     : Property Name
   //! - allTypes  : Property Types
   //! - allValues : Property Values
-  Standard_EXPORT void Init(const Standard_Integer                    nbPropVal,
-                            const Handle(TCollection_HAsciiString)&   aName,
-                            const Handle(TColStd_HArray1OfInteger)&   allTypes,
-                            const Handle(TColStd_HArray1OfTransient)& allValues);
+  Standard_EXPORT void Init(const int                    nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>&   aName,
+                            const occ::handle<TColStd_HArray1OfInteger>&   allTypes,
+                            const occ::handle<TColStd_HArray1OfTransient>& allValues);
 
   //! returns the number of property values
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns property name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! returns the number of TYPE/VALUE pairs
-  Standard_EXPORT Standard_Integer NbTypeValuePairs() const;
+  Standard_EXPORT int NbTypeValuePairs() const;
 
   //! returns the Index'th property value data type
   //! raises exception if Index <= 0 or Index > NbTypeValuePairs()
-  Standard_EXPORT Standard_Integer Type(const Standard_Integer Index) const;
+  Standard_EXPORT int Type(const int Index) const;
 
   //! HArray1OfInteger (length 1), HArray1OfReal (length 1) for
   //! Integer, Real, Boolean (= Integer 0/1),
   //! HAsciiString for String (the value itself),
   //! IGESEntity for Entity (the value itself)
-  Standard_EXPORT Handle(Standard_Transient) Value(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Value(const int Index) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
   //! Error if Index out of Range, or not an Integer
-  Standard_EXPORT Standard_Integer ValueAsInteger(const Standard_Integer ValueNum) const;
+  Standard_EXPORT int ValueAsInteger(const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Real
   //! Error if Index out of Range, or not a Real
-  Standard_EXPORT Standard_Real ValueAsReal(const Standard_Integer ValueNum) const;
+  Standard_EXPORT double ValueAsReal(const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
-  Standard_EXPORT Handle(TCollection_HAsciiString) ValueAsString(
-    const Standard_Integer ValueNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ValueAsString(
+    const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
   //! Error if Index out of Range, or not a Entity
-  Standard_EXPORT Handle(IGESData_IGESEntity) ValueAsEntity(const Standard_Integer ValueNum) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ValueAsEntity(const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Boolean
   //! Error if Index out of Range, or not a Logical
-  Standard_EXPORT Standard_Boolean ValueAsLogical(const Standard_Integer ValueNum) const;
+  Standard_EXPORT bool ValueAsLogical(const int ValueNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_GenericData, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                   theNbPropertyValues;
-  Handle(TCollection_HAsciiString)   theName;
-  Handle(TColStd_HArray1OfInteger)   theTypes;
-  Handle(TColStd_HArray1OfTransient) theValues;
+  int                   theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString>   theName;
+  occ::handle<TColStd_HArray1OfInteger>   theTypes;
+  occ::handle<TColStd_HArray1OfTransient> theValues;
 };
 
 #endif // _IGESDefs_GenericData_HeaderFile

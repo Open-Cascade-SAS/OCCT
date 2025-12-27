@@ -62,7 +62,6 @@ public:
   Standard_EXPORT const gp_Lin& Operator() const;
   Standard_EXPORT               operator gp_Lin() const;
 
-protected:
 private:
   gp_Lin TheLin;
 };

@@ -23,11 +23,11 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
   const gp_Dir& aViewRayDir = thePickRay.Direction();
   const gp_Pnt& aNearPnt    = thePickRay.Location();
 
-  Graphic3d_Vec4d aPlaneABCD;
+  NCollection_Vec4<double> aPlaneABCD;
   for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt(thePlanes); aPlaneIt.More();
        aPlaneIt.Next())
   {
-    const Handle(Graphic3d_ClipPlane)& aClipPlane = aPlaneIt.Value();
+    const occ::handle<Graphic3d_ClipPlane>& aClipPlane = aPlaneIt.Value();
     if (!aClipPlane->IsOn())
     {
       continue;
@@ -41,9 +41,9 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
       aGeomPlane.Coefficients(aPlaneABCD[0], aPlaneABCD[1], aPlaneABCD[2], aPlaneABCD[3]);
 
       const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
-      Standard_Real aDotProduct  = aViewRayDir.XYZ().Dot(aPlaneDirXYZ);
-      Standard_Real aDistance    = -aNearPnt.XYZ().Dot(aPlaneDirXYZ) - aPlaneABCD[3];
-      Standard_Real aDistToPln   = 0.0;
+      double aDotProduct  = aViewRayDir.XYZ().Dot(aPlaneDirXYZ);
+      double aDistance    = -aNearPnt.XYZ().Dot(aPlaneDirXYZ) - aPlaneABCD[3];
+      double aDistToPln   = 0.0;
 
       // check whether the pick line is parallel to clip plane
       if (std::abs(aDotProduct) < Precision::Angular())
@@ -58,7 +58,7 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
       else
       {
         // compute distance to point of pick line intersection with the plane
-        const Standard_Real aParam = aDistance / aDotProduct;
+        const double aParam = aDistance / aDotProduct;
 
         const gp_Pnt anIntersectionPnt = aNearPnt.XYZ() + aViewRayDir.XYZ() * aParam;
         aDistToPln                     = anIntersectionPnt.Distance(aNearPnt);
@@ -104,7 +104,7 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
 //=================================================================================================
 
 void SelectMgr_ViewClipRange::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_ViewClipRange)
 

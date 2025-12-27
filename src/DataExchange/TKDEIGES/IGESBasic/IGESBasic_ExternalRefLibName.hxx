@@ -22,9 +22,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESBasic_ExternalRefLibName;
-DEFINE_STANDARD_HANDLE(IGESBasic_ExternalRefLibName, IGESData_IGESEntity)
-
 //! defines ExternalRefLibName, Type <416> Form <4>
 //! in package IGESBasic
 //! Used when it is assumed that a copy of the subfigure
@@ -40,22 +37,21 @@ public:
   //! ExternalRefLibName
   //! - aLibName  : Name of library in which ExtName resides
   //! - anExtName : External Reference Entity Symbolic Name
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aLibName,
-                            const Handle(TCollection_HAsciiString)& anExtName);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aLibName,
+                            const occ::handle<TCollection_HAsciiString>& anExtName);
 
   //! returns name of library in which External Reference Entity
   //! Symbolic Name resides
-  Standard_EXPORT Handle(TCollection_HAsciiString) LibraryName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> LibraryName() const;
 
   //! returns External Reference Entity Symbolic Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) ReferenceName() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ReferenceName() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefLibName, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theLibName;
-  Handle(TCollection_HAsciiString) theExtRefEntitySymbName;
+  occ::handle<TCollection_HAsciiString> theLibName;
+  occ::handle<TCollection_HAsciiString> theExtRefEntitySymbName;
 };
 
 #endif // _IGESBasic_ExternalRefLibName_HeaderFile

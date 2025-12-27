@@ -19,7 +19,7 @@
 #include <IntPatch_WLine.hxx>
 #include <ApproxInt_SvSurfaces.hxx>
 
-#define Handle_TheLine Handle(IntPatch_WLine)
+#define Handle_TheLine occ::handle<IntPatch_WLine>
 #define TheLine IntPatch_WLine
 #define TheLine_hxx <IntPatch_WLine.hxx>
 #define TheSvSurfaces ApproxInt_SvSurfaces

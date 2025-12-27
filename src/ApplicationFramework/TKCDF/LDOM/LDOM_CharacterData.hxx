@@ -57,17 +57,17 @@ public:
   Standard_EXPORT void setData(const LDOMString& aValue);
   // Assign to data
 
-  Standard_EXPORT Standard_Integer getLength() const;
+  Standard_EXPORT int getLength() const;
   // Length of the string
 
 protected:
   // ---------- PROTECTED METHODS ----------
 
-  LDOM_CharacterData(const LDOM_BasicText& aText, const Handle(LDOM_MemManager)& aDoc);
+  LDOM_CharacterData(const LDOM_BasicText& aText, const occ::handle<LDOM_MemManager>& aDoc);
 
 private:
   // ------------ PRIVATE FIELDS -----------
-  Standard_Integer myLength;
+  int myLength;
 };
 
 #endif

@@ -28,10 +28,10 @@ RWStepAP214_RWRepItemGroup::RWStepAP214_RWRepItemGroup() {}
 
 //=================================================================================================
 
-void RWStepAP214_RWRepItemGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepAP214_RepItemGroup)&  ent) const
+void RWStepAP214_RWRepItemGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepAP214_RepItemGroup>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "rep_item_group"))
@@ -39,23 +39,23 @@ void RWStepAP214_RWRepItemGroup::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of Group
 
-  Handle(TCollection_HAsciiString) aGroup_Name;
+  occ::handle<TCollection_HAsciiString> aGroup_Name;
   data->ReadString(num, 1, "group.name", ach, aGroup_Name);
 
-  Handle(TCollection_HAsciiString) aGroup_Description;
-  Standard_Boolean                 hasGroup_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aGroup_Description;
+  bool                 hasGroup_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "group.description", ach, aGroup_Description);
   }
   else
   {
-    hasGroup_Description = Standard_False;
+    hasGroup_Description = false;
   }
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 3, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Initialize entity
@@ -65,7 +65,7 @@ void RWStepAP214_RWRepItemGroup::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepAP214_RWRepItemGroup::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepAP214_RepItemGroup)& ent) const
+                                           const occ::handle<StepAP214_RepItemGroup>& ent) const
 {
 
   // Inherited fields of Group
@@ -86,7 +86,7 @@ void RWStepAP214_RWRepItemGroup::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepAP214_RWRepItemGroup::Share(const Handle(StepAP214_RepItemGroup)&,
+void RWStepAP214_RWRepItemGroup::Share(const occ::handle<StepAP214_RepItemGroup>&,
                                        Interface_EntityIterator&) const
 {
   // Inherited fields of Group

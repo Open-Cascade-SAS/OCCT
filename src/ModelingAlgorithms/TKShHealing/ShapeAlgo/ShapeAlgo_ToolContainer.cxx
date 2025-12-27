@@ -26,14 +26,14 @@ ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer() {}
 
 //=================================================================================================
 
-Handle(ShapeFix_Shape) ShapeAlgo_ToolContainer::FixShape() const
+occ::handle<ShapeFix_Shape> ShapeAlgo_ToolContainer::FixShape() const
 {
   return new ShapeFix_Shape;
 }
 
 //=================================================================================================
 
-Handle(ShapeFix_EdgeProjAux) ShapeAlgo_ToolContainer::EdgeProjAux() const
+occ::handle<ShapeFix_EdgeProjAux> ShapeAlgo_ToolContainer::EdgeProjAux() const
 {
   return new ShapeFix_EdgeProjAux;
 }

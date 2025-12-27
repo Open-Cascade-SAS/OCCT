@@ -50,7 +50,7 @@
 #define SeqToArrayFrom(seq, arr, typarr, lowind)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                               \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(lowind, lenseq + 1 - lowind);                                               \
@@ -62,7 +62,7 @@
 #define SeqToArray(seq, arr, typarr)                                                               \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                               \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -74,7 +74,7 @@
 #define SeqToArrayCast(seq, arr, typarr, typent)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    Standard_Integer numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                               \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -86,7 +86,7 @@
 #define ArrayToSeq                                                                                 \
   (arr, seq)                                                                                       \
   {                                                                                                \
-    Standard_Integer nument, numlow = arr->Lower(), numup = arr->Upper();                          \
+    int nument, numlow = arr->Lower(), numup = arr->Upper();                          \
     for (nument = numlow; nument <= numup; nument++)                                               \
       seq->Append(arr->Value(nument));                                                             \
   }

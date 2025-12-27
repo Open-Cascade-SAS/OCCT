@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline void BRep_GCurve::SetRange(const Standard_Real First, const Standard_Real Last)
+inline void BRep_GCurve::SetRange(const double First, const double Last)
 {
   myFirst = First;
   myLast  = Last;
@@ -25,7 +25,7 @@ inline void BRep_GCurve::SetRange(const Standard_Real First, const Standard_Real
 
 //=================================================================================================
 
-inline void BRep_GCurve::Range(Standard_Real& First, Standard_Real& Last) const
+inline void BRep_GCurve::Range(double& First, double& Last) const
 {
   First = myFirst;
   Last  = myLast;
@@ -33,21 +33,21 @@ inline void BRep_GCurve::Range(Standard_Real& First, Standard_Real& Last) const
 
 //=================================================================================================
 
-inline Standard_Real BRep_GCurve::First() const
+inline double BRep_GCurve::First() const
 {
   return myFirst;
 }
 
 //=================================================================================================
 
-inline Standard_Real BRep_GCurve::Last() const
+inline double BRep_GCurve::Last() const
 {
   return myLast;
 }
 
 //=================================================================================================
 
-inline void BRep_GCurve::First(const Standard_Real F)
+inline void BRep_GCurve::First(const double F)
 {
   myFirst = F;
   Update();
@@ -55,7 +55,7 @@ inline void BRep_GCurve::First(const Standard_Real F)
 
 //=================================================================================================
 
-inline void BRep_GCurve::Last(const Standard_Real L)
+inline void BRep_GCurve::Last(const double L)
 {
   myLast = L;
   Update();

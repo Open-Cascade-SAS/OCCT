@@ -26,9 +26,6 @@
 class gp_Pnt2d;
 class gp_Pnt;
 
-class IGESGeom_Flash;
-DEFINE_STANDARD_HANDLE(IGESGeom_Flash, IGESData_IGESEntity)
-
 //! defines IGESFlash, Type <125> Form <0 - 4>
 //! in package IGESGeom
 //! A flash entity is a point in the ZT=0 plane that locates
@@ -52,16 +49,16 @@ public:
   //! in radians
   //! - aReference : Pointer to the referenced entity or Null
   Standard_EXPORT void Init(const gp_XY&                       aPoint,
-                            const Standard_Real                aDim,
-                            const Standard_Real                anotherDim,
-                            const Standard_Real                aRotation,
-                            const Handle(IGESData_IGESEntity)& aReference);
+                            const double                aDim,
+                            const double                anotherDim,
+                            const double                aRotation,
+                            const occ::handle<IGESData_IGESEntity>& aReference);
 
   //! Changes FormNumber (indicates the Nature of the Flash :
   //! 0 Unspecified, then given by Reference, 1->4 various
   //! Specialisations (Circle,Rectangle, etc...) )
   //! Error if not in range [0-4]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns the referenced point, Z = 0 always
   Standard_EXPORT gp_Pnt2d ReferencePoint() const;
@@ -70,30 +67,29 @@ public:
   Standard_EXPORT gp_Pnt TransformedReferencePoint() const;
 
   //! returns first flash sizing parameter
-  Standard_EXPORT Standard_Real Dimension1() const;
+  Standard_EXPORT double Dimension1() const;
 
   //! returns second flash sizing parameter
-  Standard_EXPORT Standard_Real Dimension2() const;
+  Standard_EXPORT double Dimension2() const;
 
   //! returns the angle in radians of the rotation of flash about the
   //! reference point
-  Standard_EXPORT Standard_Real Rotation() const;
+  Standard_EXPORT double Rotation() const;
 
   //! returns the referenced entity or Null handle.
-  Standard_EXPORT Handle(IGESData_IGESEntity) ReferenceEntity() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ReferenceEntity() const;
 
   //! returns True if referenced entity is present.
-  Standard_EXPORT Standard_Boolean HasReferenceEntity() const;
+  Standard_EXPORT bool HasReferenceEntity() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Flash, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XY                       thePoint;
-  Standard_Real               theDim1;
-  Standard_Real               theDim2;
-  Standard_Real               theRotation;
-  Handle(IGESData_IGESEntity) theReference;
+  double               theDim1;
+  double               theDim2;
+  double               theRotation;
+  occ::handle<IGESData_IGESEntity> theReference;
 };
 
 #endif // _IGESGeom_Flash_HeaderFile

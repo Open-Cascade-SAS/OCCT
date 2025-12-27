@@ -37,10 +37,10 @@ constexpr double THE_PI        = 3.14159265358979323846;
 class SinFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::sin(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -49,10 +49,10 @@ public:
 class QuadraticFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -61,10 +61,10 @@ public:
 class ExpFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::exp(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -73,10 +73,10 @@ public:
 class CosFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -85,10 +85,10 @@ public:
 class LogIntegrandOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = 1.0 / (1.0 + theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -97,10 +97,10 @@ public:
 class LinearFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -109,10 +109,10 @@ public:
 class CubicFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -121,10 +121,10 @@ public:
 class ConstantFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real /*theX*/, Standard_Real& theF) override
+  bool Value(const double /*theX*/, double& theF) override
   {
     theF = 1.0;
-    return Standard_True;
+    return true;
   }
 };
 

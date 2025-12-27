@@ -33,17 +33,17 @@
 
 #define ishankana(c) ((c) >= 0xa0 && (c) <= 0xdf)
 
-static inline Standard_Boolean isshift(unsigned char c)
+static inline bool isshift(unsigned char c)
 {
   return c >= 0x80;
 }
 
-static inline Standard_Boolean isshift(unsigned int c)
+static inline bool isshift(unsigned int c)
 {
   return c >= 0x80 && c <= 0xff;
 }
 
-void Resource_Unicode::ConvertSJISToUnicode(const Standard_CString      fromstr,
+void Resource_Unicode::ConvertSJISToUnicode(const char*      fromstr,
                                             TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
@@ -65,7 +65,7 @@ void Resource_Unicode::ConvertSJISToUnicode(const Standard_CString      fromstr,
       currentstr++;
 
       Resource_sjis_to_unicode(&ph, &pl);
-      Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)((ph << 8) | pl));
+      char16_t      curcar = ((char16_t)((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
@@ -78,7 +78,7 @@ void Resource_Unicode::ConvertSJISToUnicode(const Standard_CString      fromstr,
   }
 }
 
-void Resource_Unicode::ConvertEUCToUnicode(const Standard_CString      fromstr,
+void Resource_Unicode::ConvertEUCToUnicode(const char*      fromstr,
                                            TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
@@ -100,7 +100,7 @@ void Resource_Unicode::ConvertEUCToUnicode(const Standard_CString      fromstr,
       currentstr++;
 
       Resource_euc_to_unicode(&ph, &pl);
-      Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)((ph << 8) | pl));
+      char16_t      curcar = ((char16_t)((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
@@ -113,7 +113,7 @@ void Resource_Unicode::ConvertEUCToUnicode(const Standard_CString      fromstr,
   }
 }
 
-void Resource_Unicode::ConvertGBToUnicode(const Standard_CString      fromstr,
+void Resource_Unicode::ConvertGBToUnicode(const char*      fromstr,
                                           TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
@@ -135,7 +135,7 @@ void Resource_Unicode::ConvertGBToUnicode(const Standard_CString      fromstr,
       currentstr++;
 
       Resource_gb_to_unicode(&ph, &pl);
-      Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)((ph << 8) | pl));
+      char16_t      curcar = ((char16_t)((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
@@ -148,7 +148,7 @@ void Resource_Unicode::ConvertGBToUnicode(const Standard_CString      fromstr,
   }
 }
 
-Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString      fromstr,
+bool Resource_Unicode::ConvertGBKToUnicode(const char*      fromstr,
                                                        TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
@@ -168,7 +168,7 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
         tostr.Insert(0, curext3);
         tostr.Insert(0, curext2);
         tostr.Insert(0, curext1);
-        return Standard_False;
+        return false;
       }
 
       unsigned int codepnt = ((gb1 - 0x81) * (10 * 126 * 10)) + ((gb2 - 0x30) * (10 * 126))
@@ -176,14 +176,14 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
       if (codepnt < 23940)
       {
         unsigned short             uni    = gbkuni[codepnt];
-        Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)uni);
+        char16_t      curcar = ((char16_t)uni);
         TCollection_ExtendedString curext(curcar);
         tostr.AssignCat(curext);
         currentch++;
         continue;
       }
 
-      return Standard_False;
+      return false;
     }
     else if (gb2 != 0x00)
     {
@@ -197,7 +197,7 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
       TCollection_ExtendedString curext1(((char)gb2));
       tostr.Insert(0, curext2);
       tostr.Insert(0, curext1);
-      return Standard_False;
+      return false;
     }
     else if (gb1 != 0x00)
     {
@@ -220,7 +220,7 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
         if (pointer < 23940)
         {
           unsigned short             uni    = gbkuni[pointer];
-          Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)uni);
+          char16_t      curcar = ((char16_t)uni);
           TCollection_ExtendedString curext(curcar);
           tostr.AssignCat(curext);
           currentch++;
@@ -235,7 +235,7 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
         tostr.Insert(0, curext);
         continue;
       }
-      return Standard_False;
+      return false;
     }
     else
     {
@@ -249,7 +249,7 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
       else if (*currentch == 0x80)
       {
         // Special symbol
-        Standard_ExtCharacter      curcar = ((Standard_ExtCharacter)((0x20 << 8) | 0xAC));
+        char16_t      curcar = ((char16_t)((0x20 << 8) | 0xAC));
         TCollection_ExtendedString curext(curcar);
         tostr.AssignCat(curext);
         currentch++;
@@ -261,13 +261,13 @@ Standard_Boolean Resource_Unicode::ConvertGBKToUnicode(const Standard_CString   
         currentch++;
       }
       else
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString      fromstr,
+bool Resource_Unicode::ConvertBig5ToUnicode(const char*      fromstr,
                                                         TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
@@ -288,30 +288,30 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString  
       {
         pointer = (lead - 0x81) * 157 + (*currentch - offset);
 
-        Standard_Integer aLength = tostr.Length();
+        int aLength = tostr.Length();
         switch (pointer)
         {
           case 1133: {
-            tostr.Insert(aLength + 1, (Standard_ExtCharacter)0x00CA);
-            tostr.Insert(aLength + 2, (Standard_ExtCharacter)0x0304);
+            tostr.Insert(aLength + 1, (char16_t)0x00CA);
+            tostr.Insert(aLength + 2, (char16_t)0x0304);
             currentch++;
             continue;
           }
           case 1135: {
-            tostr.Insert(aLength + 1, (Standard_ExtCharacter)0x00CA);
-            tostr.Insert(aLength + 2, (Standard_ExtCharacter)0x030C);
+            tostr.Insert(aLength + 1, (char16_t)0x00CA);
+            tostr.Insert(aLength + 2, (char16_t)0x030C);
             currentch++;
             continue;
           }
           case 1164: {
-            tostr.Insert(aLength + 1, (Standard_ExtCharacter)0x00EA);
-            tostr.Insert(aLength + 2, (Standard_ExtCharacter)0x0304);
+            tostr.Insert(aLength + 1, (char16_t)0x00EA);
+            tostr.Insert(aLength + 2, (char16_t)0x0304);
             currentch++;
             continue;
           }
           case 1166: {
-            tostr.Insert(aLength + 1, (Standard_ExtCharacter)0x00EA);
-            tostr.Insert(aLength + 2, (Standard_ExtCharacter)0x030C);
+            tostr.Insert(aLength + 1, (char16_t)0x00EA);
+            tostr.Insert(aLength + 2, (char16_t)0x030C);
             currentch++;
             continue;
           }
@@ -321,21 +321,21 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString  
               unsigned int uni = big5uni[pointer];
               if (uni <= 0xFFFF)
               {
-                Standard_ExtCharacter curcar = ((Standard_ExtCharacter)uni);
+                char16_t curcar = ((char16_t)uni);
                 tostr.Insert(aLength + 1, curcar);
               }
               else
               {
-                Standard_Utf32Char      aChar32[] = {uni};
-                NCollection_Utf32String aStr32(aChar32);
-                NCollection_Utf16String aStr16 = aStr32.ToUtf16();
+                char32_t      aChar32[] = {uni};
+                NCollection_UtfString<char32_t> aStr32(aChar32);
+                NCollection_UtfString<char16_t> aStr16 = aStr32.ToUtf16();
 
                 if (aStr16.Size() != 4)
-                  return Standard_False; // not a surrogate pair
-                const Standard_Utf16Char* aChar16 = aStr16.ToCString();
-                tostr.Insert(aLength + 1, (Standard_ExtCharacter)(*aChar16));
+                  return false; // not a surrogate pair
+                const char16_t* aChar16 = aStr16.ToCString();
+                tostr.Insert(aLength + 1, (char16_t)(*aChar16));
                 aChar16++;
-                tostr.Insert(aLength + 2, (Standard_ExtCharacter)(*aChar16));
+                tostr.Insert(aLength + 2, (char16_t)(*aChar16));
               }
               currentch++;
               continue;
@@ -351,7 +351,7 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString  
         tostr.Insert(0, curext);
         continue;
       }
-      return Standard_False;
+      return false;
     }
     else
     {
@@ -369,20 +369,20 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString  
         currentch++;
       }
       else
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_ExtendedString& fromstr,
+bool Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_ExtendedString& fromstr,
                                                         Standard_PCharacter&              tostr,
-                                                        const Standard_Integer            maxsize)
+                                                        const int            maxsize)
 {
-  Standard_Integer      nbtrans  = 0;
-  Standard_Integer      nbext    = 1;
-  Standard_Boolean      finished = Standard_False;
-  Standard_ExtCharacter curcar;
+  int      nbtrans  = 0;
+  int      nbext    = 1;
+  bool      finished = false;
+  char16_t curcar;
   unsigned int          pl, ph;
   // BIG INDIAN USED HERE
 
@@ -390,7 +390,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_Extend
   {
     if (nbext > fromstr.Length())
     {
-      finished       = Standard_True;
+      finished       = true;
       tostr[nbtrans] = '\0';
     }
     else
@@ -412,7 +412,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_Extend
         else
         {
           tostr[nbtrans] = '\0';
-          return Standard_False;
+          return false;
         }
       }
       else
@@ -423,21 +423,21 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_Extend
       if (nbtrans >= (maxsize - 1))
       {
         tostr[maxsize - 1] = '\0';
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToEUC(const TCollection_ExtendedString& fromstr,
+bool Resource_Unicode::ConvertUnicodeToEUC(const TCollection_ExtendedString& fromstr,
                                                        Standard_PCharacter&              tostr,
-                                                       const Standard_Integer            maxsize)
+                                                       const int            maxsize)
 {
-  Standard_Integer      nbtrans  = 0;
-  Standard_Integer      nbext    = 1;
-  Standard_Boolean      finished = Standard_False;
-  Standard_ExtCharacter curcar;
+  int      nbtrans  = 0;
+  int      nbext    = 1;
+  bool      finished = false;
+  char16_t curcar;
   unsigned int          pl, ph;
   // BIG INDIAN USED HERE
 
@@ -445,7 +445,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToEUC(const TCollection_Extende
   {
     if (nbext > fromstr.Length())
     {
-      finished       = Standard_True;
+      finished       = true;
       tostr[nbtrans] = '\0';
     }
     else
@@ -467,7 +467,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToEUC(const TCollection_Extende
         else
         {
           tostr[nbtrans - 1] = '\0';
-          return Standard_False;
+          return false;
         }
       }
       else
@@ -478,21 +478,21 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToEUC(const TCollection_Extende
       if (nbtrans >= (maxsize - 1))
       {
         tostr[maxsize - 1] = '\0';
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToGB(const TCollection_ExtendedString& fromstr,
+bool Resource_Unicode::ConvertUnicodeToGB(const TCollection_ExtendedString& fromstr,
                                                       Standard_PCharacter&              tostr,
-                                                      const Standard_Integer            maxsize)
+                                                      const int            maxsize)
 {
-  Standard_Integer      nbtrans  = 0;
-  Standard_Integer      nbext    = 1;
-  Standard_Boolean      finished = Standard_False;
-  Standard_ExtCharacter curcar;
+  int      nbtrans  = 0;
+  int      nbext    = 1;
+  bool      finished = false;
+  char16_t curcar;
   unsigned int          pl, ph;
   // BIG INDIAN USED HERE
 
@@ -500,7 +500,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToGB(const TCollection_Extended
   {
     if (nbext > fromstr.Length())
     {
-      finished       = Standard_True;
+      finished       = true;
       tostr[nbtrans] = '\0';
     }
     else
@@ -522,7 +522,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToGB(const TCollection_Extended
         else
         {
           tostr[nbtrans - 1] = '\0';
-          return Standard_False;
+          return false;
         }
       }
       else
@@ -533,21 +533,21 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToGB(const TCollection_Extended
       if (nbtrans >= (maxsize - 1))
       {
         tostr[maxsize - 1] = '\0';
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToANSI(const TCollection_ExtendedString& fromstr,
+bool Resource_Unicode::ConvertUnicodeToANSI(const TCollection_ExtendedString& fromstr,
                                                         Standard_PCharacter&              tostr,
-                                                        const Standard_Integer            maxsize)
+                                                        const int            maxsize)
 {
-  Standard_Integer      nbtrans  = 0;
-  Standard_Integer      nbext    = 1;
-  Standard_Boolean      finished = Standard_False;
-  Standard_ExtCharacter curcar;
+  int      nbtrans  = 0;
+  int      nbext    = 1;
+  bool      finished = false;
+  char16_t curcar;
   unsigned int          pl, ph;
   // BIG INDIAN USED HERE
 
@@ -555,7 +555,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToANSI(const TCollection_Extend
   {
     if (nbext > fromstr.Length())
     {
-      finished       = Standard_True;
+      finished       = true;
       tostr[nbtrans] = '\0';
     }
     else
@@ -577,21 +577,21 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToANSI(const TCollection_Extend
     if (nbtrans >= (maxsize - 1))
     {
       tostr[maxsize - 1] = '\0';
-      return Standard_False;
+      return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
-static Standard_Boolean AlreadyRead = Standard_False;
+static bool AlreadyRead = false;
 
 static Resource_FormatType& Resource_Current_Format()
 {
   static Resource_FormatType theformat = Resource_ANSI;
   if (!AlreadyRead)
   {
-    AlreadyRead                  = Standard_True;
-    Handle(Resource_Manager) mgr = new Resource_Manager("CharSet");
+    AlreadyRead                  = true;
+    occ::handle<Resource_Manager> mgr = new Resource_Manager("CharSet");
     if (mgr->Find("FormatType"))
     {
       TCollection_AsciiString form = mgr->Value("FormatType");
@@ -622,7 +622,7 @@ static Resource_FormatType& Resource_Current_Format()
 
 void Resource_Unicode::SetFormat(const Resource_FormatType typecode)
 {
-  AlreadyRead               = Standard_True;
+  AlreadyRead               = true;
   Resource_Current_Format() = typecode;
 }
 
@@ -633,12 +633,12 @@ Resource_FormatType Resource_Unicode::GetFormat()
 
 void Resource_Unicode::ReadFormat()
 {
-  AlreadyRead = Standard_False;
+  AlreadyRead = false;
   Resource_Unicode::GetFormat();
 }
 
 void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFormat,
-                                              const Standard_CString      theFromStr,
+                                              const char*      theFromStr,
                                               TCollection_ExtendedString& theToStr)
 {
   switch (theFormat)
@@ -656,7 +656,7 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
       break;
     }
     case Resource_FormatType_ANSI: {
-      theToStr = TCollection_ExtendedString(theFromStr, Standard_False);
+      theToStr = TCollection_ExtendedString(theFromStr, false);
       break;
     }
     case Resource_FormatType_CP1250:
@@ -679,12 +679,12 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
     case Resource_FormatType_iso8859_9:
     case Resource_FormatType_CP850: {
       const int                aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
-      const Standard_ExtString aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      const char16_t* aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
       theToStr.Clear();
       for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
       {
         unsigned char         anInputChar = (unsigned char)(*anInputPntr);
-        Standard_ExtCharacter aRes =
+        char16_t aRes =
           (anInputChar & 0x80) != 0 ? aCodePage[(0x7f & anInputChar)] : anInputChar;
         if (aRes == 0)
         {
@@ -703,11 +703,11 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
       break;
     }
     case Resource_FormatType_UTF8: {
-      theToStr = TCollection_ExtendedString(theFromStr, Standard_True);
+      theToStr = TCollection_ExtendedString(theFromStr, true);
       break;
     }
     case Resource_FormatType_SystemLocale: {
-      NCollection_Utf16String aString;
+      NCollection_UtfString<char16_t> aString;
       aString.FromLocale(theFromStr);
       theToStr = TCollection_ExtendedString(aString.ToCString());
       break;
@@ -715,11 +715,11 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
   }
 }
 
-Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(
+bool Resource_Unicode::ConvertUnicodeToFormat(
   const Resource_FormatType         theFormat,
   const TCollection_ExtendedString& theFromStr,
   Standard_PCharacter&              theToStr,
-  const Standard_Integer            theMaxSize)
+  const int            theMaxSize)
 {
   switch (theFormat)
   {
@@ -756,14 +756,14 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(
     case Resource_FormatType_CP850: {
       if (theMaxSize < theFromStr.Length())
       {
-        return Standard_False;
+        return false;
       }
       const int                aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
-      const Standard_ExtString aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
-      for (Standard_Integer aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
+      const char16_t* aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      for (int aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
       {
-        Standard_Boolean      isFind    = Standard_False;
-        Standard_ExtCharacter aFromChar = theFromStr.Value(aToCharInd + 1);
+        bool      isFind    = false;
+        char16_t aFromChar = theFromStr.Value(aToCharInd + 1);
         if (aFromChar == 0)
         {
           // zero value should be handled explicitly to avoid false conversion by
@@ -778,7 +778,7 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(
             if (aCodePage[anIndCP] == aFromChar)
             {
               theToStr[aToCharInd] = anIndCP | 0x80;
-              isFind               = Standard_True;
+              isFind               = true;
             }
           }
           // if character is not found, put '?'
@@ -789,18 +789,18 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(
         }
       }
       theToStr[theMaxSize - 1] = '\0';
-      return Standard_True;
+      return true;
     }
     case Resource_FormatType_UTF8: {
       if (theMaxSize < theFromStr.LengthOfCString())
       {
-        return Standard_False;
+        return false;
       }
       theFromStr.ToUTF8CString(theToStr);
-      return Standard_True;
+      return true;
     }
     case Resource_FormatType_SystemLocale: {
-      const NCollection_Utf16String aString(theFromStr.ToExtString());
+      const NCollection_UtfString<char16_t> aString(theFromStr.ToExtString());
       return aString.ToLocale(theToStr, theMaxSize);
     }
     case Resource_FormatType_GBK:
@@ -809,5 +809,5 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(
                                     "and Big5 to Unocode is not implemented");
     }
   }
-  return Standard_False;
+  return false;
 }

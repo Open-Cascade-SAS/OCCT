@@ -19,7 +19,7 @@
 #include <IGESSelect_ViewSorter.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -45,20 +45,20 @@ void IGESSelect_DispPerDrawing::Packets(const Interface_Graph&    G,
   thesorter->Clear();
   thesorter->AddList(list.Content());
   thesorter->SortDrawings(G);
-  Handle(IFSelect_PacketList) sets = thesorter->Sets(Standard_True);
+  occ::handle<IFSelect_PacketList> sets = thesorter->Sets(true);
 
   packs.SetLoad();
-  Standard_Integer nb = sets->NbPackets();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = sets->NbPackets();
+  for (int i = 1; i <= nb; i++)
   {
     packs.AddPart();
     packs.GetFromIter(sets->Entities(i));
   }
 }
 
-Standard_Boolean IGESSelect_DispPerDrawing::CanHaveRemainder() const
+bool IGESSelect_DispPerDrawing::CanHaveRemainder() const
 {
-  return Standard_True;
+  return true;
 }
 
 Interface_EntityIterator IGESSelect_DispPerDrawing::Remainder(const Interface_Graph& G) const
@@ -73,5 +73,5 @@ Interface_EntityIterator IGESSelect_DispPerDrawing::Remainder(const Interface_Gr
     thesorter->AddList(list.Content());
     thesorter->SortDrawings(G);
   }
-  return thesorter->Sets(Standard_True)->Duplicated(0, Standard_False);
+  return thesorter->Sets(true)->Duplicated(0, false);
 }

@@ -15,9 +15,10 @@
 #ifndef TColStd_HSequenceOfHAsciiString_HeaderFile
 #define TColStd_HSequenceOfHAsciiString_HeaderFile
 
-#include <TColStd_SequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColStd_HSequenceOfHAsciiString, TColStd_SequenceOfHAsciiString)
+DEFINE_HSEQUENCE(TColStd_HSequenceOfHAsciiString, NCollection_Sequence<occ::handle<TCollection_HAsciiString>>)
 
 #endif

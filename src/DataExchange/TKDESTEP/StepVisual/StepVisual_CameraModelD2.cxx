@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD2, StepVisual_CameraModel)
 
 StepVisual_CameraModelD2::StepVisual_CameraModelD2() {}
 
-void StepVisual_CameraModelD2::Init(const Handle(TCollection_HAsciiString)& aName,
-                                    const Handle(StepVisual_PlanarBox)&     aViewWindow,
-                                    const Standard_Boolean                  aViewWindowClipping)
+void StepVisual_CameraModelD2::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                    const occ::handle<StepVisual_PlanarBox>&     aViewWindow,
+                                    const bool                  aViewWindowClipping)
 {
   // --- classe own fields ---
   viewWindow         = aViewWindow;
@@ -30,22 +30,22 @@ void StepVisual_CameraModelD2::Init(const Handle(TCollection_HAsciiString)& aNam
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepVisual_CameraModelD2::SetViewWindow(const Handle(StepVisual_PlanarBox)& aViewWindow)
+void StepVisual_CameraModelD2::SetViewWindow(const occ::handle<StepVisual_PlanarBox>& aViewWindow)
 {
   viewWindow = aViewWindow;
 }
 
-Handle(StepVisual_PlanarBox) StepVisual_CameraModelD2::ViewWindow() const
+occ::handle<StepVisual_PlanarBox> StepVisual_CameraModelD2::ViewWindow() const
 {
   return viewWindow;
 }
 
-void StepVisual_CameraModelD2::SetViewWindowClipping(const Standard_Boolean aViewWindowClipping)
+void StepVisual_CameraModelD2::SetViewWindowClipping(const bool aViewWindowClipping)
 {
   viewWindowClipping = aViewWindowClipping;
 }
 
-Standard_Boolean StepVisual_CameraModelD2::ViewWindowClipping() const
+bool StepVisual_CameraModelD2::ViewWindowClipping() const
 {
   return viewWindowClipping;
 }

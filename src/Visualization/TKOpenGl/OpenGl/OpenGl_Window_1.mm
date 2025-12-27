@@ -63,12 +63,12 @@ OpenGl_Window::OpenGl_Window()
 
 //=================================================================================================
 
-void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
-                          const Handle(Aspect_Window)&  thePlatformWindow,
-                          const Handle(Aspect_Window)&  theSizeWindow,
+void OpenGl_Window::Init (const occ::handle<OpenGl_GraphicDriver>& theDriver,
+                          const occ::handle<Aspect_Window>&  thePlatformWindow,
+                          const occ::handle<Aspect_Window>&  theSizeWindow,
                           Aspect_RenderingContext       theGContext,
-                          const Handle(OpenGl_Caps)&    theCaps,
-                          const Handle(OpenGl_Context)& theShareCtx)
+                          const occ::handle<OpenGl_Caps>&    theCaps,
+                          const occ::handle<OpenGl_Context>& theShareCtx)
 {
   myGlContext = new OpenGl_Context (theCaps);
   myOwnGContext = (theGContext == 0);
@@ -114,7 +114,7 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
       }
     }
 
-    myGlContext->Init (aGLContext, Standard_False);
+    myGlContext->Init (aGLContext, false);
   }
   else
   {
@@ -124,7 +124,7 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
       throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
     }
 
-    myGlContext->Init (aGLContext, Standard_False);
+    myGlContext->Init (aGLContext, false);
   }
 #else
 
@@ -137,7 +137,7 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
   if (aGLContext == NULL)
   {
     NSOpenGLPixelFormatAttribute anAttribs[32] = {};
-    Standard_Integer aLastAttrib = 0;
+    int aLastAttrib = 0;
     //anAttribs[aLastAttrib++] = NSOpenGLPFAColorSize;    anAttribs[aLastAttrib++] = 32,
     anAttribs[aLastAttrib++] = NSOpenGLPFADepthSize;    anAttribs[aLastAttrib++] = 24;
     anAttribs[aLastAttrib++] = NSOpenGLPFAStencilSize;  anAttribs[aLastAttrib++] = 8;
@@ -152,9 +152,9 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
       anAttribs[aLastAttrib++] = NSOpenGLPFAAccelerated;
     }
     anAttribs[aLastAttrib] = 0;
-    const Standard_Integer aLastMainAttrib = aLastAttrib;
-    Standard_Integer aTryCore   = 0;
-    Standard_Integer aTryStereo = 0;
+    const int aLastMainAttrib = aLastAttrib;
+    int aTryCore   = 0;
+    int aTryStereo = 0;
     for (aTryCore = 1; aTryCore >= 0; --aTryCore)
     {
       aLastAttrib = aLastMainAttrib;
@@ -268,7 +268,7 @@ OpenGl_Window::~OpenGl_Window()
 void OpenGl_Window::Resize()
 {
   // If the size is not changed - do nothing
-  Graphic3d_Vec2i aWinSize;
+  NCollection_Vec2<int> aWinSize;
   mySizeWindow->Size (aWinSize.x(), aWinSize.y());
   if (myPlatformWindow->IsVirtual()
    || mySizeWindow != myPlatformWindow)
@@ -296,8 +296,8 @@ void OpenGl_Window::Resize()
 
     NSRect aBounds = [aView bounds];
     NSSize aRes    = [aView convertSizeToBacking: aBounds.size];
-    if (mySize.x() == Standard_Integer(aRes.width)
-     && mySize.y() == Standard_Integer(aRes.height))
+    if (mySize.x() == int(aRes.width)
+     && mySize.y() == int(aRes.height))
     {
       return;
     }
@@ -319,7 +319,7 @@ void OpenGl_Window::init()
   }
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  Handle(OpenGl_FrameBuffer) aDefFbo = myGlContext->SetDefaultFrameBuffer (NULL);
+  occ::handle<OpenGl_FrameBuffer> aDefFbo = myGlContext->SetDefaultFrameBuffer (NULL);
   if (!aDefFbo.IsNull())
   {
     aDefFbo->Release (myGlContext.operator->());
@@ -379,22 +379,22 @@ void OpenGl_Window::init()
     if ([aView respondsToSelector: @selector(convertSizeToBacking:)])
     {
       NSSize aRes = [aView convertSizeToBacking: aBounds.size];
-      mySize.x() = Standard_Integer(aRes.width);
-      mySize.y() = Standard_Integer(aRes.height);
+      mySize.x() = int(aRes.width);
+      mySize.y() = int(aRes.height);
     }
     else
     {
-      mySize.x() = Standard_Integer(aBounds.size.width);
-      mySize.y() = Standard_Integer(aBounds.size.height);
+      mySize.x() = int(aBounds.size.width);
+      mySize.y() = int(aBounds.size.height);
     }
-    mySizePt.x() = Standard_Integer(aBounds.size.width);
-    mySizePt.y() = Standard_Integer(aBounds.size.height);
+    mySizePt.x() = int(aBounds.size.width);
+    mySizePt.y() = int(aBounds.size.height);
   }
 #endif
 
   myGlContext->core11fwd->glDisable (GL_DITHER);
   myGlContext->core11fwd->glDisable (GL_SCISSOR_TEST);
-  const Standard_Integer aViewport[4] = { 0, 0, mySize.x(), mySize.y() };
+  const int aViewport[4] = { 0, 0, mySize.x(), mySize.y() };
   myGlContext->ResizeViewport (aViewport);
   myGlContext->SetDrawBuffer (GL_BACK);
   if (myGlContext->core11ffp != NULL)
@@ -405,9 +405,9 @@ void OpenGl_Window::init()
 
 //=================================================================================================
 
-void OpenGl_Window::SetSwapInterval (Standard_Boolean theToForceNoSync)
+void OpenGl_Window::SetSwapInterval (bool theToForceNoSync)
 {
-  const Standard_Integer aSwapInterval = theToForceNoSync ? 0 : myGlContext->caps->swapInterval;
+  const int aSwapInterval = theToForceNoSync ? 0 : myGlContext->caps->swapInterval;
   if (mySwapInterval != aSwapInterval)
   {
     mySwapInterval = aSwapInterval;

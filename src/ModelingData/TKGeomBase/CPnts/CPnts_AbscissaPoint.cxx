@@ -38,7 +38,7 @@
 #include <StdFail_NotDone.hxx>
 
 // auxiliary functions to compute the length of the derivative
-static Standard_Real f3d(const Standard_Real X, const Standard_Address C)
+static double f3d(const double X, void* const C)
 {
   gp_Pnt P;
   gp_Vec V;
@@ -46,7 +46,7 @@ static Standard_Real f3d(const Standard_Real X, const Standard_Address C)
   return V.Magnitude();
 }
 
-static Standard_Real f2d(const Standard_Real X, const Standard_Address C)
+static double f2d(const double X, void* const C)
 {
   gp_Pnt2d P;
   gp_Vec2d V;
@@ -54,7 +54,7 @@ static Standard_Real f2d(const Standard_Real X, const Standard_Address C)
   return V.Magnitude();
 }
 
-static Standard_Integer order(const Adaptor3d_Curve& C)
+static int order(const Adaptor3d_Curve& C)
 {
   switch (C.GetType())
   {
@@ -76,7 +76,7 @@ static Standard_Integer order(const Adaptor3d_Curve& C)
   }
 }
 
-static Standard_Integer order(const Adaptor2d_Curve2d& C)
+static int order(const Adaptor2d_Curve2d& C)
 {
   switch (C.GetType())
   {
@@ -100,43 +100,43 @@ static Standard_Integer order(const Adaptor2d_Curve2d& C)
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C)
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter());
 }
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C)
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter());
 }
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const Standard_Real Tol)
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double Tol)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const Standard_Real Tol)
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double Tol)
 {
   return CPnts_AbscissaPoint::Length(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
-                                          const Standard_Real    U1,
-                                          const Standard_Real    U2)
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
+                                          const double    U1,
+                                          const double    U2)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
-  FG.Init(rf, (Standard_Address)&C);
-  //  FG.Init(f3d,(Standard_Address)&C);
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f3d,(void*)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
   if (!TheLength.IsDone())
   {
@@ -147,15 +147,15 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
 
 //=================================================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U1,
-                                          const Standard_Real      U2)
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
+                                          const double      U1,
+                                          const double      U2)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
-  FG.Init(rf, (Standard_Address)&C);
-  //  FG.Init(f2d,(Standard_Address)&C);
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f2d,(void*)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
   if (!TheLength.IsDone())
   {
@@ -169,16 +169,16 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
 // purpose  : 3d with parameters and tolerance
 //=======================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
-                                          const Standard_Real    U1,
-                                          const Standard_Real    U2,
-                                          const Standard_Real    Tol)
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
+                                          const double    U1,
+                                          const double    U2,
+                                          const double    Tol)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
-  FG.Init(rf, (Standard_Address)&C);
-  //  FG.Init(f3d,(Standard_Address)&C);
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f3d,(void*)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
   if (!TheLength.IsDone())
   {
@@ -192,16 +192,16 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
 // purpose  : 2d with parameters and tolerance
 //=======================================================================
 
-Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
-                                          const Standard_Real      U1,
-                                          const Standard_Real      U2,
-                                          const Standard_Real      Tol)
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
+                                          const double      U1,
+                                          const double      U2,
+                                          const double      Tol)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
-  FG.Init(rf, (Standard_Address)&C);
-  //  FG.Init(f2d,(Standard_Address)&C);
+  FG.Init(rf, (void*)&C);
+  //  FG.Init(f2d,(void*)&C);
   math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
   if (!TheLength.IsDone())
   {
@@ -213,7 +213,7 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint()
-    : myDone(Standard_False),
+    : myDone(false),
       myL(0.0),
       myParam(0.0),
       myUMin(0.0),
@@ -224,9 +224,9 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint()
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                         const Standard_Real    Abscissa,
-                                         const Standard_Real    U0,
-                                         const Standard_Real    Resolution)
+                                         const double    Abscissa,
+                                         const double    U0,
+                                         const double    Resolution)
 {
   //  Init(C);
   Init(C, Resolution); // rbv's modification
@@ -237,9 +237,9 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                         const Standard_Real      Abscissa,
-                                         const Standard_Real      U0,
-                                         const Standard_Real      Resolution)
+                                         const double      Abscissa,
+                                         const double      U0,
+                                         const double      Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Resolution);
@@ -248,10 +248,10 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                         const Standard_Real    Abscissa,
-                                         const Standard_Real    U0,
-                                         const Standard_Real    Ui,
-                                         const Standard_Real    Resolution)
+                                         const double    Abscissa,
+                                         const double    U0,
+                                         const double    Ui,
+                                         const double    Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Ui, Resolution);
@@ -260,10 +260,10 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                         const Standard_Real      Abscissa,
-                                         const Standard_Real      U0,
-                                         const Standard_Real      Ui,
-                                         const Standard_Real      Resolution)
+                                         const double      Abscissa,
+                                         const double      U0,
+                                         const double      Ui,
+                                         const double      Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Ui, Resolution);
@@ -288,14 +288,14 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C)
 // purpose  : introduced by rbv for curvilinear parametrization
 //=======================================================================
 
-void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C, const Standard_Real Tol)
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C, const double Tol)
 {
   Init(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const Standard_Real Tol)
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double Tol)
 {
   Init(C, C.FirstParameter(), C.LastParameter(), Tol);
 }
@@ -303,17 +303,17 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const Standard_Real T
 //=================================================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
-                               const Standard_Real    U1,
-                               const Standard_Real    U2)
+                               const double    U1,
+                               const double    U2)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
-  myF.Init(rf, (Standard_Address)&C, order(C));
-  //  myF.Init(f3d,(Standard_Address)&C,order(C));
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f3d,(void*)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
   myUMin           = std::min(U1, U2);
   myUMax           = std::max(U1, U2);
-  Standard_Real DU = myUMax - myUMin;
+  double DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
 }
@@ -321,17 +321,17 @@ void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
-                               const Standard_Real      U1,
-                               const Standard_Real      U2)
+                               const double      U1,
+                               const double      U2)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
-  myF.Init(rf, (Standard_Address)&C, order(C));
-  //  myF.Init(f2d,(Standard_Address)&C,order(C));
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f2d,(void*)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
   myUMin           = std::min(U1, U2);
   myUMax           = std::max(U1, U2);
-  Standard_Real DU = myUMax - myUMin;
+  double DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
 }
@@ -342,18 +342,18 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
 //=======================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
-                               const Standard_Real    U1,
-                               const Standard_Real    U2,
-                               const Standard_Real    Tol)
+                               const double    U1,
+                               const double    U2,
+                               const double    Tol)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
-  myF.Init(rf, (Standard_Address)&C, order(C));
-  //  myF.Init(f3d,(Standard_Address)&C,order(C));
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f3d,(void*)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
   myUMin           = std::min(U1, U2);
   myUMax           = std::max(U1, U2);
-  Standard_Real DU = myUMax - myUMin;
+  double DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
 }
@@ -361,27 +361,27 @@ void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
-                               const Standard_Real      U1,
-                               const Standard_Real      U2,
-                               const Standard_Real      Tol)
+                               const double      U1,
+                               const double      U2,
+                               const double      Tol)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
-  myF.Init(rf, (Standard_Address)&C, order(C));
-  //  myF.Init(f2d,(Standard_Address)&C,order(C));
+  myF.Init(rf, (void*)&C, order(C));
+  //  myF.Init(f2d,(void*)&C,order(C));
   myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
   myUMin           = std::min(U1, U2);
   myUMax           = std::max(U1, U2);
-  Standard_Real DU = myUMax - myUMin;
+  double DU = myUMax - myUMin;
   myUMin           = myUMin - DU;
   myUMax           = myUMax + DU;
 }
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
-                                  const Standard_Real U0,
-                                  const Standard_Real Resolution)
+void CPnts_AbscissaPoint::Perform(const double Abscissa,
+                                  const double U0,
+                                  const double Resolution)
 {
   if (myL < Precision::Confusion())
   {
@@ -389,12 +389,12 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
     //  leave less violently : it is expected that
     //  the increment of the level of myParam will not be great
     //
-    myDone  = Standard_True;
+    myDone  = true;
     myParam = U0;
   }
   else
   {
-    Standard_Real Ui = U0 + (Abscissa / myL) * (myUMax - myUMin) / 3.;
+    double Ui = U0 + (Abscissa / myL) * (myUMax - myUMin) / 3.;
     // exercise : why 3 ?
     Perform(Abscissa, U0, Ui, Resolution);
   }
@@ -402,22 +402,22 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
-                                  const Standard_Real U0,
-                                  const Standard_Real Ui,
-                                  const Standard_Real Resolution)
+void CPnts_AbscissaPoint::Perform(const double Abscissa,
+                                  const double U0,
+                                  const double Ui,
+                                  const double Resolution)
 {
   if (myL < Precision::Confusion())
   {
     //
     //  leave less violently :
     //
-    myDone  = Standard_True;
+    myDone  = true;
     myParam = U0;
   }
   else
   {
-    myDone = Standard_False;
+    myDone = false;
     myF.Init(U0, Abscissa);
 
     math_FunctionRoot Solution(myF, Ui, Resolution, myUMin, myUMax);
@@ -426,16 +426,16 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
     // it is necessary to make a tolreached as soon as one will make a cdl
     // lbo 21/03/97
     //    if (Solution.IsDone()) {
-    //      Standard_Real D;
+    //      double D;
     //      myF.Derivative(Solution.Root(),D);
     //      if (std::abs(Solution.Value()) < Resolution * D) {
-    //	myDone = Standard_True;
+    //	myDone = true;
     //	myParam = Solution.Root();
     //      }
     //    }
     if (Solution.IsDone())
     {
-      myDone  = Standard_True;
+      myDone  = true;
       myParam = Solution.Root();
     }
   }
@@ -443,22 +443,22 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real Abscissa,
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::AdvPerform(const Standard_Real Abscissa,
-                                     const Standard_Real U0,
-                                     const Standard_Real Ui,
-                                     const Standard_Real Resolution)
+void CPnts_AbscissaPoint::AdvPerform(const double Abscissa,
+                                     const double U0,
+                                     const double Ui,
+                                     const double Resolution)
 {
   if (myL < Precision::Confusion())
   {
     //
     //  leave less violently :
     //
-    myDone  = Standard_True;
+    myDone  = true;
     myParam = U0;
   }
   else
   {
-    myDone = Standard_False;
+    myDone = false;
     //    myF.Init(U0, Abscissa);
     myF.Init(U0, Abscissa, Resolution / 10); // rbv's modification
 
@@ -468,16 +468,16 @@ void CPnts_AbscissaPoint::AdvPerform(const Standard_Real Abscissa,
     // it is necessary to make a tolreached as soon as one will make a cdl
     // lbo 21/03/97
     //    if (Solution.IsDone()) {
-    //      Standard_Real D;
+    //      double D;
     //      myF.Derivative(Solution.Root(),D);
     //      if (std::abs(Solution.Value()) < Resolution * D) {
-    //	myDone = Standard_True;
+    //	myDone = true;
     //	myParam = Solution.Root();
     //      }
     //    }
     if (Solution.IsDone())
     {
-      myDone  = Standard_True;
+      myDone  = true;
       myParam = Solution.Root();
     }
   }

@@ -22,44 +22,47 @@
 #include <Standard_Transient.hxx>
 
 //      Declaration of Array1 class managed by Handle
+//      Uses variadic macro to support template types with commas (e.g., NCollection_Array1<A, B>)
 
-#define DEFINE_HARRAY1(HClassName, _Array1Type_)                                                   \
-  class HClassName : public _Array1Type_, public Standard_Transient                                \
+#define DEFINE_HARRAY1(HClassName, ...)                                                            \
+  class HClassName : public __VA_ARGS__, public Standard_Transient                                 \
   {                                                                                                \
+    using Array1Type_ = __VA_ARGS__;                                                               \
+                                                                                                   \
   public:                                                                                          \
     DEFINE_STANDARD_ALLOC                                                                          \
     DEFINE_NCOLLECTION_ALLOC                                                                       \
     HClassName()                                                                                   \
-        : _Array1Type_()                                                                           \
+        : Array1Type_()                                                                            \
     {                                                                                              \
     }                                                                                              \
-    HClassName(const Standard_Integer theLower, const Standard_Integer theUpper)                   \
-        : _Array1Type_(theLower, theUpper)                                                         \
+    HClassName(const int theLower, const int theUpper)                                             \
+        : Array1Type_(theLower, theUpper)                                                          \
     {                                                                                              \
     }                                                                                              \
-    HClassName(const Standard_Integer          theLower,                                           \
-               const Standard_Integer          theUpper,                                           \
-               const _Array1Type_::value_type& theValue)                                           \
-        : _Array1Type_(theLower, theUpper)                                                         \
+    HClassName(const int                               theLower,                                   \
+               const int                               theUpper,                                   \
+               const typename Array1Type_::value_type& theValue)                                   \
+        : Array1Type_(theLower, theUpper)                                                          \
     {                                                                                              \
       Init(theValue);                                                                              \
     }                                                                                              \
-    explicit HClassName(const typename _Array1Type_::value_type& theBegin,                         \
-                        const Standard_Integer                   theLower,                         \
-                        const Standard_Integer                   theUpper,                         \
+    explicit HClassName(const typename Array1Type_::value_type& theBegin,                          \
+                        const int                               theLower,                          \
+                        const int                               theUpper,                          \
                         const bool)                                                                \
-        : _Array1Type_(theBegin, theLower, theUpper)                                               \
+        : Array1Type_(theBegin, theLower, theUpper)                                                \
     {                                                                                              \
     }                                                                                              \
-    HClassName(const _Array1Type_& theOther)                                                       \
-        : _Array1Type_(theOther)                                                                   \
+    HClassName(const Array1Type_& theOther)                                                        \
+        : Array1Type_(theOther)                                                                    \
     {                                                                                              \
     }                                                                                              \
-    const _Array1Type_& Array1() const noexcept                                                    \
+    const Array1Type_& Array1() const noexcept                                                     \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
-    _Array1Type_& ChangeArray1() noexcept                                                          \
+    Array1Type_& ChangeArray1() noexcept                                                           \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \

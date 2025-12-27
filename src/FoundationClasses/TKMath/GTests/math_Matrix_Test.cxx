@@ -25,16 +25,16 @@ namespace
 // Helper function for comparing matrices with tolerance
 void checkMatricesEqual(const math_Matrix&  theM1,
                         const math_Matrix&  theM2,
-                        const Standard_Real theTolerance = Precision::Confusion())
+                        const double theTolerance = Precision::Confusion())
 {
   ASSERT_EQ(theM1.RowNumber(), theM2.RowNumber());
   ASSERT_EQ(theM1.ColNumber(), theM2.ColNumber());
   ASSERT_EQ(theM1.LowerRow(), theM2.LowerRow());
   ASSERT_EQ(theM1.LowerCol(), theM2.LowerCol());
 
-  for (Standard_Integer anI = theM1.LowerRow(); anI <= theM1.UpperRow(); anI++)
+  for (int anI = theM1.LowerRow(); anI <= theM1.UpperRow(); anI++)
   {
-    for (Standard_Integer aJ = theM1.LowerCol(); aJ <= theM1.UpperCol(); aJ++)
+    for (int aJ = theM1.LowerCol(); aJ <= theM1.UpperCol(); aJ++)
     {
       EXPECT_NEAR(theM1(anI, aJ), theM2(anI, aJ), theTolerance);
     }
@@ -59,9 +59,9 @@ TEST(MathMatrixTest, Constructors)
   EXPECT_EQ(aMatrix2.RowNumber(), 3);
   EXPECT_EQ(aMatrix2.ColNumber(), 3);
 
-  for (Standard_Integer anI = 2; anI <= 4; anI++)
+  for (int anI = 2; anI <= 4; anI++)
   {
-    for (Standard_Integer aJ = 3; aJ <= 5; aJ++)
+    for (int aJ = 3; aJ <= 5; aJ++)
     {
       EXPECT_EQ(aMatrix2(anI, aJ), 2.5);
     }
@@ -80,9 +80,9 @@ TEST(MathMatrixTest, InitAndAccess)
   // Test Init
   aMatrix.Init(5.0);
 
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aMatrix(anI, aJ), 5.0);
     }
@@ -109,9 +109,9 @@ TEST(MathMatrixTest, MatrixOperations)
 
   // Test addition
   math_Matrix anAddResult = aMatrix1.Added(aMatrix2);
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(anAddResult(anI, aJ), 5.0);
     }
@@ -119,9 +119,9 @@ TEST(MathMatrixTest, MatrixOperations)
 
   // Test subtraction
   math_Matrix aSubResult = aMatrix1.Subtracted(aMatrix2);
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aSubResult(anI, aJ), -1.0);
     }
@@ -129,18 +129,18 @@ TEST(MathMatrixTest, MatrixOperations)
 
   // Test multiplication by scalar
   math_Matrix aMulResult = aMatrix1.Multiplied(2.5);
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aMulResult(anI, aJ), 5.0);
     }
   }
   // Test division by scalar
   math_Matrix aDivResult = aMatrix1.Divided(0.5);
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aDivResult(anI, aJ), 4.0);
     }
@@ -151,9 +151,9 @@ TEST(MathMatrixTest, MatrixOperations)
   aInPlaceMul.Init(3.0);
   aInPlaceMul.Multiply(2.0);
 
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aInPlaceMul(anI, aJ), 6.0);
     }
@@ -164,9 +164,9 @@ TEST(MathMatrixTest, MatrixOperations)
   aInPlaceOp.Init(2.0);
   aInPlaceOp *= 3.0;
 
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       EXPECT_EQ(aInPlaceOp(anI, aJ), 6.0);
     }
@@ -185,9 +185,9 @@ TEST(MathMatrixTest, MatrixMultiplication)
 
   // Create test matrix
   math_Matrix aMatrix(1, 3, 1, 3);
-  for (Standard_Integer anI = 1; anI <= 3; anI++)
+  for (int anI = 1; anI <= 3; anI++)
   {
-    for (Standard_Integer aJ = 1; aJ <= 3; aJ++)
+    for (int aJ = 1; aJ <= 3; aJ++)
     {
       aMatrix(anI, aJ) = anI + aJ;
     }
@@ -601,8 +601,8 @@ TEST(MathMatrixTest, MoveSemantics)
   // --- Move Constructor ---
 
   // Large matrix (heap allocated)
-  Standard_Integer aRows = 10;
-  Standard_Integer aCols = 10;
+  int aRows = 10;
+  int aCols = 10;
   math_Matrix      aMat1(1, aRows, 1, aCols);
   aMat1.Init(1.0);
   aMat1(1, 1) = 2.0;
@@ -618,8 +618,8 @@ TEST(MathMatrixTest, MoveSemantics)
   EXPECT_EQ(aMat1.RowNumber(), 0);
 
   // Small matrix (buffer allocated)
-  Standard_Integer aSmallRows = 4;
-  Standard_Integer aSmallCols = 4;
+  int aSmallRows = 4;
+  int aSmallCols = 4;
   math_Matrix      aSmallMat1(1, aSmallRows, 1, aSmallCols);
   aSmallMat1.Init(1.0);
 

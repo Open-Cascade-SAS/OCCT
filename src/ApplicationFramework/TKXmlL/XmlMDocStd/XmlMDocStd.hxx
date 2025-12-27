@@ -30,8 +30,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Adds the attribute drivers to <aDriverTable>.
-  Standard_EXPORT static void AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                                         const Handle(Message_Messenger)&   theMessageDriver);
+  Standard_EXPORT static void AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                                         const occ::handle<Message_Messenger>&   theMessageDriver);
 };
 
 #endif // _XmlMDocStd_HeaderFile

@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_BasicDimension, IGESData_IGESEntity)
 
 IGESDimen_BasicDimension::IGESDimen_BasicDimension() {}
 
-void IGESDimen_BasicDimension::Init(const Standard_Integer nbPropVal,
+void IGESDimen_BasicDimension::Init(const int nbPropVal,
                                     const gp_XY&           thell,
                                     const gp_XY&           thelr,
                                     const gp_XY&           theur,
@@ -39,7 +39,7 @@ void IGESDimen_BasicDimension::Init(const Standard_Integer nbPropVal,
   InitTypeAndForm(406, 31);
 }
 
-Standard_Integer IGESDimen_BasicDimension::NbPropertyValues() const
+int IGESDimen_BasicDimension::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }

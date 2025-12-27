@@ -30,12 +30,12 @@
 
 IGESGraph_ToolHighLight::IGESGraph_ToolHighLight() {}
 
-void IGESGraph_ToolHighLight::ReadOwnParams(const Handle(IGESGraph_HighLight)& ent,
-                                            const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESGraph_ToolHighLight::ReadOwnParams(const occ::handle<IGESGraph_HighLight>& ent,
+                                            const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                             IGESData_ParamReader& PR) const
 {
-  Standard_Integer nbPropertyValues;
-  Standard_Integer highLightStatus;
+  int nbPropertyValues;
+  int highLightStatus;
 
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
@@ -52,35 +52,35 @@ void IGESGraph_ToolHighLight::ReadOwnParams(const Handle(IGESGraph_HighLight)& e
   ent->Init(nbPropertyValues, highLightStatus);
 }
 
-void IGESGraph_ToolHighLight::WriteOwnParams(const Handle(IGESGraph_HighLight)& ent,
+void IGESGraph_ToolHighLight::WriteOwnParams(const occ::handle<IGESGraph_HighLight>& ent,
                                              IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->HighLightStatus());
 }
 
-void IGESGraph_ToolHighLight::OwnShared(const Handle(IGESGraph_HighLight)& /*ent*/,
+void IGESGraph_ToolHighLight::OwnShared(const occ::handle<IGESGraph_HighLight>& /*ent*/,
                                         Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolHighLight::OwnCopy(const Handle(IGESGraph_HighLight)& another,
-                                      const Handle(IGESGraph_HighLight)& ent,
+void IGESGraph_ToolHighLight::OwnCopy(const occ::handle<IGESGraph_HighLight>& another,
+                                      const occ::handle<IGESGraph_HighLight>& ent,
                                       Interface_CopyTool& /*TC*/) const
 {
   ent->Init(1, another->HighLightStatus());
 }
 
-Standard_Boolean IGESGraph_ToolHighLight::OwnCorrect(const Handle(IGESGraph_HighLight)& ent) const
+bool IGESGraph_ToolHighLight::OwnCorrect(const occ::handle<IGESGraph_HighLight>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 1);
+  bool res = (ent->NbPropertyValues() != 1);
   if (res)
     ent->Init(1, ent->HighLightStatus()); // nbpropertyvalues=1
   return res;
 }
 
 IGESData_DirChecker IGESGraph_ToolHighLight::DirChecker(
-  const Handle(IGESGraph_HighLight)& /*ent*/) const
+  const occ::handle<IGESGraph_HighLight>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 20);
   DC.Structure(IGESData_DefVoid);
@@ -93,18 +93,18 @@ IGESData_DirChecker IGESGraph_ToolHighLight::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolHighLight::OwnCheck(const Handle(IGESGraph_HighLight)& ent,
+void IGESGraph_ToolHighLight::OwnCheck(const occ::handle<IGESGraph_HighLight>& ent,
                                        const Interface_ShareTool&,
-                                       Handle(Interface_Check)& ach) const
+                                       occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
     ach->AddFail("No. of Property values : Value != 1");
 }
 
-void IGESGraph_ToolHighLight::OwnDump(const Handle(IGESGraph_HighLight)& ent,
+void IGESGraph_ToolHighLight::OwnDump(const occ::handle<IGESGraph_HighLight>& ent,
                                       const IGESData_IGESDumper& /*dumper*/,
                                       Standard_OStream& S,
-                                      const Standard_Integer /*level*/) const
+                                      const int /*level*/) const
 {
   S << "IGESGraph_HighLight\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"

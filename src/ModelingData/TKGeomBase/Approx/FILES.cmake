@@ -2,8 +2,7 @@
 set(OCCT_Approx_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Approx_FILES
-  Approx_Array1OfAdHSurface.hxx
-  Approx_Array1OfGTrsf2d.hxx
+
   Approx_BSplComputeLine.gxx
   Approx_ComputeCLine.gxx
   Approx_ComputeLine.gxx
@@ -28,7 +27,7 @@ set(OCCT_Approx_FILES
   Approx_ParametrizationType.hxx
   Approx_SameParameter.cxx
   Approx_SameParameter.hxx
-  Approx_SequenceOfHArray1OfReal.hxx
+
   Approx_Status.hxx
   Approx_SweepApproximation.cxx
   Approx_SweepApproximation.hxx

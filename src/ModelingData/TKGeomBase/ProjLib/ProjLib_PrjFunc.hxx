@@ -32,33 +32,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT ProjLib_PrjFunc(const Adaptor3d_Curve*   C,
-                                  const Standard_Real      FixVal,
+                                  const double      FixVal,
                                   const Adaptor3d_Surface* S,
-                                  const Standard_Integer   Fix);
+                                  const int   Fix);
 
   //! returns the number of variables of the function.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! returns the number of equations of the function.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
   //! returns point on surface
   Standard_EXPORT gp_Pnt2d Solution() const;
@@ -66,11 +66,11 @@ public:
 private:
   const Adaptor3d_Curve*   myCurve;
   const Adaptor3d_Surface* mySurface;
-  Standard_Real            myt;
-  Standard_Real            myU;
-  Standard_Real            myV;
-  Standard_Integer         myFix;
-  Standard_Real            myNorm;
+  double            myt;
+  double            myU;
+  double            myV;
+  int         myFix;
+  double            myNorm;
 };
 
 #endif // _ProjLib_PrjFunc_HeaderFile

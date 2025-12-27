@@ -16,17 +16,17 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean Contap_Contour::IsDone() const
+inline bool Contap_Contour::IsDone() const
 {
   return done;
 }
 
-inline Standard_Boolean Contap_Contour::IsEmpty() const
+inline bool Contap_Contour::IsEmpty() const
 {
   return NbLines() == 0;
 }
 
-inline Standard_Integer Contap_Contour::NbLines() const
+inline int Contap_Contour::NbLines() const
 {
   if (!done)
   {
@@ -35,7 +35,7 @@ inline Standard_Integer Contap_Contour::NbLines() const
   return slin.Length();
 }
 
-inline const Contap_Line& Contap_Contour::Line(const Standard_Integer Index) const
+inline const Contap_Line& Contap_Contour::Line(const int Index) const
 {
   if (!done)
   {

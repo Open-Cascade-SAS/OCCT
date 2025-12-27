@@ -31,9 +31,6 @@ class ShapeBuild_ReShape;
 class ShapeExtend_BasicMsgRegistrator;
 class Message_Msg;
 
-class ShapeFix_Root;
-DEFINE_STANDARD_HANDLE(ShapeFix_Root, Standard_Transient)
-
 //! Root class for fixing operations
 //! Provides context for recording changes (optional),
 //! basic precision value and limit (minimal and
@@ -47,41 +44,41 @@ public:
   Standard_EXPORT ShapeFix_Root();
 
   //! Copy all fields from another Root object
-  Standard_EXPORT virtual void Set(const Handle(ShapeFix_Root)& Root);
+  Standard_EXPORT virtual void Set(const occ::handle<ShapeFix_Root>& Root);
 
   //! Sets context
-  Standard_EXPORT virtual void SetContext(const Handle(ShapeBuild_ReShape)& context);
+  Standard_EXPORT virtual void SetContext(const occ::handle<ShapeBuild_ReShape>& context);
 
   //! Returns context
-  Handle(ShapeBuild_ReShape) Context() const;
+  occ::handle<ShapeBuild_ReShape> Context() const;
 
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
-    const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg);
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg);
 
   //! Returns message registrator
-  Handle(ShapeExtend_BasicMsgRegistrator) MsgRegistrator() const;
+  occ::handle<ShapeExtend_BasicMsgRegistrator> MsgRegistrator() const;
 
   //! Sets basic precision value
-  Standard_EXPORT virtual void SetPrecision(const Standard_Real preci);
+  Standard_EXPORT virtual void SetPrecision(const double preci);
 
   //! Returns basic precision value
-  Standard_Real Precision() const;
+  double Precision() const;
 
   //! Sets minimal allowed tolerance
-  Standard_EXPORT virtual void SetMinTolerance(const Standard_Real mintol);
+  Standard_EXPORT virtual void SetMinTolerance(const double mintol);
 
   //! Returns minimal allowed tolerance
-  Standard_Real MinTolerance() const;
+  double MinTolerance() const;
 
   //! Sets maximal allowed tolerance
-  Standard_EXPORT virtual void SetMaxTolerance(const Standard_Real maxtol);
+  Standard_EXPORT virtual void SetMaxTolerance(const double maxtol);
 
   //! Returns maximal allowed tolerance
-  Standard_Real MaxTolerance() const;
+  double MaxTolerance() const;
 
   //! Returns tolerance limited by [myMinTol,myMaxTol]
-  Standard_Real LimitTolerance(const Standard_Real toler) const;
+  double LimitTolerance(const double toler) const;
 
   //! Sends a message to be attached to the shape.
   //! Calls corresponding message of message registrator.
@@ -112,17 +109,17 @@ public:
 protected:
   //! Auxiliary method for work with three-position
   //! (on/off/default) flags (modes) in ShapeFix.
-  static Standard_Boolean NeedFix(const Standard_Integer flag,
-                                  const Standard_Boolean def = Standard_True);
+  static bool NeedFix(const int flag,
+                                  const bool def = true);
 
   TopoDS_Shape myShape;
 
 private:
-  Handle(ShapeBuild_ReShape)              myContext;
-  Handle(ShapeExtend_BasicMsgRegistrator) myMsgReg;
-  Standard_Real                           myPrecision;
-  Standard_Real                           myMinTol;
-  Standard_Real                           myMaxTol;
+  occ::handle<ShapeBuild_ReShape>              myContext;
+  occ::handle<ShapeExtend_BasicMsgRegistrator> myMsgReg;
+  double                           myPrecision;
+  double                           myMinTol;
+  double                           myMaxTol;
 };
 
 #include <ShapeFix_Root.lxx>

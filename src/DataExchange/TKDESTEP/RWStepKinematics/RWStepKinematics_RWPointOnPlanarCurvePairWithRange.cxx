@@ -38,10 +38,10 @@ RWStepKinematics_RWPointOnPlanarCurvePairWithRange::
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&                        theData,
-  const Standard_Integer                                        theNum,
-  Handle(Interface_Check)&                                      theArch,
-  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                        theData,
+  const int                                        theNum,
+  occ::handle<Interface_Check>&                                      theArch,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 15, theArch, "point_on_planar_curve_pair_with_range"))
@@ -49,20 +49,20 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -73,11 +73,11 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -85,7 +85,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -95,7 +95,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -105,7 +105,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
   // Inherited fields of PointOnPlanarCurvePair
 
-  Handle(StepGeom_Curve) aPointOnPlanarCurvePair_PairCurve;
+  occ::handle<StepGeom_Curve> aPointOnPlanarCurvePair_PairCurve;
   theData->ReadEntity(theNum,
                       7,
                       "point_on_planar_curve_pair.pair_curve",
@@ -113,7 +113,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_Curve),
                       aPointOnPlanarCurvePair_PairCurve);
 
-  Standard_Boolean aPointOnPlanarCurvePair_Orientation;
+  bool aPointOnPlanarCurvePair_Orientation;
   theData->ReadBoolean(theNum,
                        8,
                        "point_on_planar_curve_pair.orientation",
@@ -122,7 +122,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
   // Own fields of PointOnPlanarCurvePairWithRange
 
-  Handle(StepGeom_TrimmedCurve) aRangeOnPairCurve;
+  occ::handle<StepGeom_TrimmedCurve> aRangeOnPairCurve;
   theData->ReadEntity(theNum,
                       9,
                       "range_on_pair_curve",
@@ -130,75 +130,75 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_TrimmedCurve),
                       aRangeOnPairCurve);
 
-  Standard_Real    aLowerLimitYaw;
-  Standard_Boolean hasLowerLimitYaw = Standard_True;
+  double    aLowerLimitYaw;
+  bool hasLowerLimitYaw = true;
   if (theData->IsParamDefined(theNum, 10))
   {
     theData->ReadReal(theNum, 10, "lower_limit_yaw", theArch, aLowerLimitYaw);
   }
   else
   {
-    hasLowerLimitYaw = Standard_False;
+    hasLowerLimitYaw = false;
     aLowerLimitYaw   = 0;
   }
 
-  Standard_Real    aUpperLimitYaw;
-  Standard_Boolean hasUpperLimitYaw = Standard_True;
+  double    aUpperLimitYaw;
+  bool hasUpperLimitYaw = true;
   if (theData->IsParamDefined(theNum, 11))
   {
     theData->ReadReal(theNum, 11, "upper_limit_yaw", theArch, aUpperLimitYaw);
   }
   else
   {
-    hasUpperLimitYaw = Standard_False;
+    hasUpperLimitYaw = false;
     aUpperLimitYaw   = 0;
   }
 
-  Standard_Real    aLowerLimitPitch;
-  Standard_Boolean hasLowerLimitPitch = Standard_True;
+  double    aLowerLimitPitch;
+  bool hasLowerLimitPitch = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     theData->ReadReal(theNum, 12, "lower_limit_pitch", theArch, aLowerLimitPitch);
   }
   else
   {
-    hasLowerLimitPitch = Standard_False;
+    hasLowerLimitPitch = false;
     aLowerLimitPitch   = 0;
   }
 
-  Standard_Real    aUpperLimitPitch;
-  Standard_Boolean hasUpperLimitPitch = Standard_True;
+  double    aUpperLimitPitch;
+  bool hasUpperLimitPitch = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum, 13, "upper_limit_pitch", theArch, aUpperLimitPitch);
   }
   else
   {
-    hasUpperLimitPitch = Standard_False;
+    hasUpperLimitPitch = false;
     aUpperLimitPitch   = 0;
   }
 
-  Standard_Real    aLowerLimitRoll;
-  Standard_Boolean hasLowerLimitRoll = Standard_True;
+  double    aLowerLimitRoll;
+  bool hasLowerLimitRoll = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum, 14, "lower_limit_roll", theArch, aLowerLimitRoll);
   }
   else
   {
-    hasLowerLimitRoll = Standard_False;
+    hasLowerLimitRoll = false;
     aLowerLimitRoll   = 0;
   }
 
-  Standard_Real    aUpperLimitRoll;
-  Standard_Boolean hasUpperLimitRoll = Standard_True;
+  double    aUpperLimitRoll;
+  bool hasUpperLimitRoll = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum, 15, "upper_limit_roll", theArch, aUpperLimitRoll);
   }
   else
   {
-    hasUpperLimitRoll = Standard_False;
+    hasUpperLimitRoll = false;
     aUpperLimitRoll   = 0;
   }
 
@@ -231,7 +231,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
   StepData_StepWriter&                                          theSW,
-  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt) const
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -313,7 +313,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::Share(
-  const Handle(StepKinematics_PointOnPlanarCurvePairWithRange)& theEnt,
+  const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt,
   Interface_EntityIterator&                                     iter) const
 {
 

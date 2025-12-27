@@ -39,19 +39,19 @@ public:
   //! @param[in] R1  cone bottom radius, may be null (z = 0)
   //! @param[in] R2  cone top radius, may be null (z = H)
   //! @param[in] H   cone height
-  Standard_EXPORT BRepPrimAPI_MakeCone(const Standard_Real R1,
-                                       const Standard_Real R2,
-                                       const Standard_Real H);
+  Standard_EXPORT BRepPrimAPI_MakeCone(const double R1,
+                                       const double R2,
+                                       const double H);
 
   //! Make a cone.
   //! @param[in] R1     cone bottom radius, may be null (z = 0)
   //! @param[in] R2     cone top radius, may be null (z = H)
   //! @param[in] H      cone height
   //! @param[in] angle  angle to create a part cone
-  Standard_EXPORT BRepPrimAPI_MakeCone(const Standard_Real R1,
-                                       const Standard_Real R2,
-                                       const Standard_Real H,
-                                       const Standard_Real angle);
+  Standard_EXPORT BRepPrimAPI_MakeCone(const double R1,
+                                       const double R2,
+                                       const double H,
+                                       const double angle);
 
   //! Make a cone.
   //! @param[in] axes  coordinate system for the construction of the cone
@@ -59,9 +59,9 @@ public:
   //! @param[in] R2    cone top radius, may be null (z = H)
   //! @param[in] H     cone height
   Standard_EXPORT BRepPrimAPI_MakeCone(const gp_Ax2&       Axes,
-                                       const Standard_Real R1,
-                                       const Standard_Real R2,
-                                       const Standard_Real H);
+                                       const double R1,
+                                       const double R2,
+                                       const double H);
 
   //! Make a cone of height H radius R1 in the plane z =
   //! 0, R2 in the plane Z = H. R1 and R2 may be null.
@@ -95,18 +95,17 @@ public:
   //! R1, R2 and H, is less than Precision::Confusion()/H, or greater than
   //! (Pi/2)-Precision::Confusion()/H.f
   Standard_EXPORT BRepPrimAPI_MakeCone(const gp_Ax2&       Axes,
-                                       const Standard_Real R1,
-                                       const Standard_Real R2,
-                                       const Standard_Real H,
-                                       const Standard_Real angle);
+                                       const double R1,
+                                       const double R2,
+                                       const double H,
+                                       const double angle);
 
   //! Returns the algorithm.
-  Standard_EXPORT Standard_Address OneAxis();
+  Standard_EXPORT void* OneAxis();
 
   //! Returns the algorithm.
   Standard_EXPORT BRepPrim_Cone& Cone();
 
-protected:
 private:
   BRepPrim_Cone myCone;
 };

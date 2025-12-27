@@ -23,17 +23,11 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_CORRISO.hxx
   TopOpeBRepTool_CurveTool.cxx
   TopOpeBRepTool_CurveTool.hxx
-  TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF.hxx
-  TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeface.hxx
-  TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeListOfC2DF.hxx
-  TopOpeBRepTool_DataMapOfOrientedShapeC2DF.hxx
-  TopOpeBRepTool_DataMapOfShapeface.hxx
-  TopOpeBRepTool_DataMapOfShapeListOfC2DF.hxx
-  TopOpeBRepTool_define.hxx
+
   TopOpeBRepTool_defineG.hxx
   TopOpeBRepTool_DRAW.cxx
   TopOpeBRepTool_DRAW.hxx
-  TopOpeBRepTool_EXPORT.hxx
+
   TopOpeBRepTool_face.cxx
   TopOpeBRepTool_face.hxx
   TopOpeBRepTool_faulty.cxx
@@ -45,13 +39,9 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_GeomTool.hxx
   TopOpeBRepTool_HBoxTool.cxx
   TopOpeBRepTool_HBoxTool.hxx
-  TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx
-  TopOpeBRepTool_IndexedDataMapOfShapeBox2d.hxx
-  TopOpeBRepTool_IndexedDataMapOfShapeconnexity.hxx
-  TopOpeBRepTool_IndexedDataMapOfSolidClassifier.hxx
+
   TopOpeBRepTool_KRO.hxx
-  TopOpeBRepTool_ListIteratorOfListOfC2DF.hxx
-  TopOpeBRepTool_ListOfC2DF.hxx
+
   TopOpeBRepTool_makeTransition.cxx
   TopOpeBRepTool_makeTransition.hxx
   TopOpeBRepTool_matter.cxx

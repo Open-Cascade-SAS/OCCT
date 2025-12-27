@@ -35,15 +35,15 @@ public:
 
   Standard_HIDDEN RWStepGeom_RWSuParameters();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& theData,
-                                const Standard_Integer                 theNum,
-                                Handle(Interface_Check)&               theAch,
-                                const Handle(StepGeom_SuParameters)&   theEnt) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+                                const int                 theNum,
+                                occ::handle<Interface_Check>&               theAch,
+                                const occ::handle<StepGeom_SuParameters>&   theEnt) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                 theSW,
-                                 const Handle(StepGeom_SuParameters)& theEnt) const;
+                                 const occ::handle<StepGeom_SuParameters>& theEnt) const;
 
-  Standard_HIDDEN void Share(const Handle(StepGeom_SuParameters)& theEnt,
+  Standard_HIDDEN void Share(const occ::handle<StepGeom_SuParameters>& theEnt,
                              Interface_EntityIterator&            iter) const;
 };
 #endif // _RWStepGeom_RWSuParameters_HeaderFile_

@@ -36,14 +36,12 @@ public:
   //! and the length aLength to the presentation object aPresentation.
   //! The display attributes of the tangent are defined by
   //! the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     OffsetPoint,
                                   const gp_Dir&                     aDirection,
-                                  const Standard_Real               aLength);
+                                  const double               aLength);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_TangentPresentation_HeaderFile

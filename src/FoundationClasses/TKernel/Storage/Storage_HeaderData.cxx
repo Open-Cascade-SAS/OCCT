@@ -28,14 +28,14 @@ Storage_HeaderData::Storage_HeaderData()
 {
 }
 
-Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theDriver)
+bool Storage_HeaderData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Read info section
@@ -43,7 +43,7 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadInfoSection";
-    return Standard_False;
+    return false;
   }
 
   {
@@ -64,13 +64,13 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadInfo";
-      return Standard_False;
+      return false;
     }
     catch (Storage_StreamExtCharParityError const&)
     {
       myErrorStatus    = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadInfo";
-      return Standard_False;
+      return false;
     }
   }
 
@@ -78,7 +78,7 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadInfoSection";
-    return Standard_False;
+    return false;
   }
 
   // Read comment section
@@ -86,7 +86,7 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadCommentSection";
-    return Standard_False;
+    return false;
   }
 
   {
@@ -99,13 +99,13 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadComment";
-      return Standard_False;
+      return false;
     }
     catch (Storage_StreamExtCharParityError const&)
     {
       myErrorStatus    = Storage_VSExtCharParityError;
       myErrorStatusExt = "ReadComment";
-      return Standard_False;
+      return false;
     }
   }
 
@@ -113,10 +113,10 @@ Standard_Boolean Storage_HeaderData::Read(const Handle(Storage_BaseDriver)& theD
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadCommentSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString Storage_HeaderData::CreationDate() const
@@ -179,7 +179,7 @@ void Storage_HeaderData::AddToUserInfo(const TCollection_AsciiString& theUserInf
   myUserInfo.Append(theUserInfo);
 }
 
-const TColStd_SequenceOfAsciiString& Storage_HeaderData::UserInfo() const
+const NCollection_Sequence<TCollection_AsciiString>& Storage_HeaderData::UserInfo() const
 {
   return myUserInfo;
 }
@@ -189,17 +189,17 @@ void Storage_HeaderData::AddToComments(const TCollection_ExtendedString& aCommen
   myComments.Append(aComments);
 }
 
-const TColStd_SequenceOfExtendedString& Storage_HeaderData::Comments() const
+const NCollection_Sequence<TCollection_ExtendedString>& Storage_HeaderData::Comments() const
 {
   return myComments;
 }
 
-Standard_Integer Storage_HeaderData::NumberOfObjects() const
+int Storage_HeaderData::NumberOfObjects() const
 {
   return myNBObj;
 }
 
-void Storage_HeaderData::SetNumberOfObjects(const Standard_Integer anObjectNumber)
+void Storage_HeaderData::SetNumberOfObjects(const int anObjectNumber)
 {
   myNBObj = anObjectNumber;
 }

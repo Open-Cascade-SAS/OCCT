@@ -15,12 +15,13 @@
 // commercial license or contractual agreement.
 
 #include <Plate_SampledCurveConstraint.hxx>
-#include <Plate_SequenceOfPinpointConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_DimensionMismatch.hxx>
 
-static inline Standard_Real B0(Standard_Real t)
+static inline double B0(double t)
 {
-  Standard_Real s = t;
+  double s = t;
   if (s < 0.)
     s = -s;
   s = 1. - s;
@@ -30,20 +31,20 @@ static inline Standard_Real B0(Standard_Real t)
 }
 
 Plate_SampledCurveConstraint::Plate_SampledCurveConstraint(
-  const Plate_SequenceOfPinpointConstraint& SOPPC,
-  const Standard_Integer                    n)
+  const NCollection_Sequence<Plate_PinpointConstraint>& SOPPC,
+  const int                    n)
     : myLXYZC(n, SOPPC.Length())
 {
-  Standard_Integer m = SOPPC.Length();
+  int m = SOPPC.Length();
 
   if (n > m)
     throw Standard_DimensionMismatch();
-  for (Standard_Integer index = 1; index <= m; index++)
+  for (int index = 1; index <= m; index++)
     myLXYZC.SetPPC(index, SOPPC(index));
 
-  Standard_Real ratio = Standard_Real(n + 1) / Standard_Real(m + 1);
-  for (Standard_Integer i = 1; i <= n; i++)
-    for (Standard_Integer j = 1; j <= m; j++)
+  double ratio = double(n + 1) / double(m + 1);
+  for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= m; j++)
     {
       myLXYZC.SetCoeff(i, j, B0(ratio * j - i));
     }

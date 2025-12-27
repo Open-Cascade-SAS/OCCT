@@ -16,9 +16,9 @@
 #define TShort_HSequenceOfShortReal_HeaderFile
 
 #include <Standard_ShortReal.hxx>
-#include <TShort_SequenceOfShortReal.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TShort_HSequenceOfShortReal, TShort_SequenceOfShortReal)
+DEFINE_HSEQUENCE(TShort_HSequenceOfShortReal, NCollection_Sequence<float>)
 
 #endif

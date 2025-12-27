@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
 
 //=================================================================================================
 
-BRepMesh_ShapeVisitor::BRepMesh_ShapeVisitor(const Handle(IMeshData_Model)& theModel)
+BRepMesh_ShapeVisitor::BRepMesh_ShapeVisitor(const occ::handle<IMeshData_Model>& theModel)
     : myModel(theModel),
       myDEdgeMap(1, new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
@@ -88,23 +88,23 @@ void BRepMesh_ShapeVisitor::Visit(const TopoDS_Face& theFace)
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            theWire,
+bool BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            theWire,
                                                 const IMeshData::IFaceHandle& theDFace)
 {
   if (theWire.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Handle(ShapeExtend_WireData) aWireData =
-    new ShapeExtend_WireData(theWire, Standard_True, Standard_False);
+  occ::handle<ShapeExtend_WireData> aWireData =
+    new ShapeExtend_WireData(theWire, true, false);
   ShapeAnalysis_Wire aWireTool(aWireData, theDFace->GetFace(), Precision::Confusion());
 
   ShapeAnalysis_WireOrder aOrderTool;
-  aWireTool.CheckOrder(aOrderTool, Standard_True, Standard_False);
+  aWireTool.CheckOrder(aOrderTool, true, false);
   if (aWireTool.LastCheckStatus(ShapeExtend_FAIL))
   {
-    return Standard_False;
+    return false;
   }
 
   if (aWireTool.LastCheckStatus(ShapeExtend_DONE3))
@@ -112,16 +112,16 @@ Standard_Boolean BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            th
     theDFace->SetStatus(IMeshData_UnorientedWire);
   }
 
-  const Standard_Integer aEdgesNb = aOrderTool.NbEdges();
+  const int aEdgesNb = aOrderTool.NbEdges();
   if (aEdgesNb != aWireData->NbEdges())
   {
-    return Standard_False;
+    return false;
   }
 
   const IMeshData::IWireHandle& aDWire = theDFace->AddWire(theWire, aEdgesNb);
-  for (Standard_Integer i = 1; i <= aEdgesNb; ++i)
+  for (int i = 1; i <= aEdgesNb; ++i)
   {
-    const Standard_Integer aEdgeIndex = aOrderTool.Ordered(i);
+    const int aEdgeIndex = aOrderTool.Ordered(i);
     const TopoDS_Edge&     aEdge      = aWireData->Edge(aEdgeIndex);
     if (aEdge.Orientation() != TopAbs_EXTERNAL)
     {
@@ -132,5 +132,5 @@ Standard_Boolean BRepMesh_ShapeVisitor::addWire(const TopoDS_Wire&            th
     }
   }
 
-  return Standard_True;
+  return true;
 }

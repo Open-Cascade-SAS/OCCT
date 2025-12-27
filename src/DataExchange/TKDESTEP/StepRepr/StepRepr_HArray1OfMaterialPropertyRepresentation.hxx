@@ -17,10 +17,11 @@
 #ifndef StepRepr_HArray1OfMaterialPropertyRepresentation_HeaderFile
 #define StepRepr_HArray1OfMaterialPropertyRepresentation_HeaderFile
 
-#include <StepRepr_Array1OfMaterialPropertyRepresentation.hxx>
+#include <StepRepr_MaterialPropertyRepresentation.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepRepr_HArray1OfMaterialPropertyRepresentation,
-               StepRepr_Array1OfMaterialPropertyRepresentation)
+               NCollection_Array1<occ::handle<StepRepr_MaterialPropertyRepresentation>>)
 
 #endif

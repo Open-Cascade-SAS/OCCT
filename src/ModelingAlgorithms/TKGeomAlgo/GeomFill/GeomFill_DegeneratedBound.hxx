@@ -24,9 +24,6 @@
 #include <GeomFill_Boundary.hxx>
 class gp_Vec;
 
-class GeomFill_DegeneratedBound;
-DEFINE_STANDARD_HANDLE(GeomFill_DegeneratedBound, GeomFill_Boundary)
-
 //! Description of a degenerated boundary (a point).
 //! Class defining a degenerated boundary for a
 //! constrained filling with a point and no other
@@ -37,34 +34,33 @@ class GeomFill_DegeneratedBound : public GeomFill_Boundary
 
 public:
   Standard_EXPORT GeomFill_DegeneratedBound(const gp_Pnt&       Point,
-                                            const Standard_Real First,
-                                            const Standard_Real Last,
-                                            const Standard_Real Tol3d,
-                                            const Standard_Real Tolang);
+                                            const double First,
+                                            const double Last,
+                                            const double Tol3d,
+                                            const double Tolang);
 
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pnt Value(const double U) const override;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const Standard_OVERRIDE;
+  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override;
 
-  Standard_EXPORT void Reparametrize(const Standard_Real    First,
-                                     const Standard_Real    Last,
-                                     const Standard_Boolean HasDF,
-                                     const Standard_Boolean HasDL,
-                                     const Standard_Real    DF,
-                                     const Standard_Real    DL,
-                                     const Standard_Boolean Rev) Standard_OVERRIDE;
+  Standard_EXPORT void Reparametrize(const double    First,
+                                     const double    Last,
+                                     const bool HasDF,
+                                     const bool HasDL,
+                                     const double    DF,
+                                     const double    DL,
+                                     const bool Rev) override;
 
-  Standard_EXPORT void Bounds(Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
+  Standard_EXPORT void Bounds(double& First, double& Last) const override;
 
-  Standard_EXPORT Standard_Boolean IsDegenerated() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsDegenerated() const override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_DegeneratedBound, GeomFill_Boundary)
 
-protected:
 private:
   gp_Pnt        myPoint;
-  Standard_Real myFirst;
-  Standard_Real myLast;
+  double myFirst;
+  double myLast;
 };
 
 #endif // _GeomFill_DegeneratedBound_HeaderFile

@@ -18,7 +18,7 @@
 //==================================================================================================
 
 GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
-  const Handle(Geom_SurfaceOfLinearExtrusion)& theExtrusion)
+  const occ::handle<Geom_SurfaceOfLinearExtrusion>& theExtrusion)
     : myGeom(theExtrusion)
 {
   if (!myGeom.IsNull())
@@ -31,8 +31,8 @@ GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
 //==================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -75,8 +75,8 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD1(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -126,8 +126,8 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD2(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -182,8 +182,8 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
 //==================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD3(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams) const
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams) const
 {
   if (myBasisCurve.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
   {
@@ -244,8 +244,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
 //==================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(
-  const TColStd_Array1OfReal& theUParams,
-  const TColStd_Array1OfReal& theVParams,
+  const NCollection_Array1<double>& theUParams,
+  const NCollection_Array1<double>& theVParams,
   int                         theNU,
   int                         theNV) const
 {

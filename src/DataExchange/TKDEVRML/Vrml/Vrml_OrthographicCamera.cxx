@@ -28,8 +28,8 @@ Vrml_OrthographicCamera::Vrml_OrthographicCamera()
 
 Vrml_OrthographicCamera::Vrml_OrthographicCamera(const gp_Vec&          aPosition,
                                                  const Vrml_SFRotation& aOrientation,
-                                                 const Standard_Real    aFocalDistance,
-                                                 const Standard_Real    aHeight)
+                                                 const double    aFocalDistance,
+                                                 const double    aHeight)
 {
   myPosition      = aPosition;
   myOrientation   = aOrientation;
@@ -57,22 +57,22 @@ Vrml_SFRotation Vrml_OrthographicCamera::Orientation() const
   return myOrientation;
 }
 
-void Vrml_OrthographicCamera::SetFocalDistance(const Standard_Real aFocalDistance)
+void Vrml_OrthographicCamera::SetFocalDistance(const double aFocalDistance)
 {
   myFocalDistance = aFocalDistance;
 }
 
-Standard_Real Vrml_OrthographicCamera::FocalDistance() const
+double Vrml_OrthographicCamera::FocalDistance() const
 {
   return myFocalDistance;
 }
 
-void Vrml_OrthographicCamera::SetHeight(const Standard_Real aHeight)
+void Vrml_OrthographicCamera::SetHeight(const double aHeight)
 {
   myHeight = aHeight;
 }
 
-Standard_Real Vrml_OrthographicCamera::Height() const
+double Vrml_OrthographicCamera::Height() const
 {
   return myHeight;
 }

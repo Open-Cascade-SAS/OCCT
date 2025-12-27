@@ -57,7 +57,7 @@ public:
   //! length "Focal".
   //! The "Location" point of "Axis" is the vertex of the parabola
   //! Status is "NegativeFocusLength" if Focal < 0.0
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& Axis, const Standard_Real Focal);
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& Axis, const double Focal);
 
   //! Creates a parabola with its "MirrorAxis" and it's focal length "Focal".
   //! MirrorAxis is the axis of symmetry of the curve, it is the
@@ -65,8 +65,8 @@ public:
   //! parabola. The "Location" point of "MirrorAxis" is the vertex of the parabola
   //! Status is "NegativeFocusLength" if Focal < 0.0
   Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
-                                     const Standard_Real    Focal,
-                                     const Standard_Boolean Sense);
+                                     const double    Focal,
+                                     const bool Sense);
 
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis "XAxis" of the parabola is normal to the
@@ -76,7 +76,7 @@ public:
   //! point is the vertex of the parabola.
   Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         D,
                                      const gp_Pnt2d&        F,
-                                     const Standard_Boolean Sense = Standard_True);
+                                     const bool Sense = true);
 
   //! Make a parabola with focal point S1 and
   //! center O
@@ -98,12 +98,12 @@ public:
 
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
-  Standard_EXPORT const Handle(Geom2d_Parabola)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Parabola>& Value() const;
 
-  operator const Handle(Geom2d_Parabola)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Parabola>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_Parabola) TheParabola;
+  occ::handle<Geom2d_Parabola> TheParabola;
 };
 
 #endif // _GCE2d_MakeParabola_HeaderFile

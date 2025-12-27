@@ -26,7 +26,7 @@ BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider()
 
 //=================================================================================================
 
-BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Builder(theAllocator),
       myTools(myAllocator),
       myMapTools(100, myAllocator)
@@ -52,10 +52,10 @@ void BOPAlgo_ToolsProvider::AddTool(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-void BOPAlgo_ToolsProvider::SetTools(const TopTools_ListOfShape& theShapes)
+void BOPAlgo_ToolsProvider::SetTools(const NCollection_List<TopoDS_Shape>& theShapes)
 {
   myTools.Clear();
-  TopTools_ListIteratorOfListOfShape aIt(theShapes);
+  NCollection_List<TopoDS_Shape>::Iterator aIt(theShapes);
   for (; aIt.More(); aIt.Next())
     AddTool(aIt.Value());
 }

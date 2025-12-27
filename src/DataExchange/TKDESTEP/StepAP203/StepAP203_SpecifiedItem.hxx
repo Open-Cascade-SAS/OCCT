@@ -40,16 +40,14 @@ public:
   //! 1 -> ProductDefinition from StepBasic
   //! 2 -> ShapeAspect from StepRepr
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
-  Standard_EXPORT Handle(StepBasic_ProductDefinition) ProductDefinition() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as ShapeAspect (or Null if another type)
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) ShapeAspect() const;
+  Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
-protected:
-private:
 };
 
 #endif // _StepAP203_SpecifiedItem_HeaderFile

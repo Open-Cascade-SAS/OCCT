@@ -41,19 +41,19 @@
 #include <Prs3d_Presentation.hxx>
 #include <Quantity_Color.hxx>
 
-void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
-                           const Handle(Prs3d_DimensionAspect)& LA,
+void DsgPrs::ComputeSymbol(const occ::handle<Prs3d_Presentation>&    aPresentation,
+                           const occ::handle<Prs3d_DimensionAspect>& LA,
                            const gp_Pnt&                        pt1,
                            const gp_Pnt&                        pt2,
                            const gp_Dir&                        dir1,
                            const gp_Dir&                        dir2,
                            const DsgPrs_ArrowSide               ArrowSide,
-                           const Standard_Boolean               drawFromCenter)
+                           const bool               drawFromCenter)
 {
-  Handle(Graphic3d_Group) aGroup = aPresentation->NewGroup();
+  occ::handle<Graphic3d_Group> aGroup = aPresentation->NewGroup();
 
   Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
-  Handle(Graphic3d_AspectMarker3d) aMarkerAsp =
+  occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
     new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
   aGroup->SetGroupPrimitivesAspect(LA->LineAspect()->Aspect());
 
@@ -82,7 +82,7 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
     case DsgPrs_AS_FIRSTPT: {
       if (drawFromCenter)
       {
-        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+        occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
         anArrayOfPoints->AddVertex(pt1.X(), pt1.Y(), pt1.Z());
         aPresentation->CurrentGroup()->AddPrimitiveArray(anArrayOfPoints);
       }
@@ -91,7 +91,7 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
 
     case DsgPrs_AS_LASTPT: {
       // On dessine un rond
-      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+      occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
       anArrayOfPoints->AddVertex(pt2.X(), pt2.Y(), pt2.Z());
       aPresentation->CurrentGroup()->AddPrimitiveArray(anArrayOfPoints);
       break;
@@ -100,7 +100,7 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
     case DsgPrs_AS_BOTHPT: {
       if (drawFromCenter)
       {
-        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints(2);
+        occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints1 = new Graphic3d_ArrayOfPoints(2);
         anArrayOfPoints1->AddVertex(pt1.X(), pt1.Y(), pt1.Z());
         anArrayOfPoints1->AddVertex(pt2.X(), pt2.Y(), pt2.Z());
         aGroup->SetGroupPrimitivesAspect(aMarkerAsp);
@@ -113,7 +113,7 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
       // an Arrow
       Prs3d_Arrow::Draw(aGroup, pt1, dir1, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
       // a Round
-      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+      occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
       anArrayOfPoints->AddVertex(pt2.X(), pt2.Y(), pt2.Z());
       aGroup->SetPrimitivesAspect(aMarkerAsp);
       aGroup->AddPrimitiveArray(anArrayOfPoints);
@@ -127,7 +127,7 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
       // a Round
       if (drawFromCenter)
       {
-        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
+        occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(1);
         anArrayOfPoints->AddVertex(pt1.X(), pt1.Y(), pt1.Z());
         aGroup->SetPrimitivesAspect(aMarkerAsp);
         aGroup->AddPrimitiveArray(anArrayOfPoints);
@@ -139,8 +139,8 @@ void DsgPrs::ComputeSymbol(const Handle(Prs3d_Presentation)&    aPresentation,
 
 //=================================================================================================
 
-void DsgPrs::ComputePlanarFacesLengthPresentation(const Standard_Real FirstArrowLength,
-                                                  const Standard_Real SecondArrowLength,
+void DsgPrs::ComputePlanarFacesLengthPresentation(const double FirstArrowLength,
+                                                  const double SecondArrowLength,
                                                   const gp_Pnt&       AttachmentPoint1,
                                                   const gp_Pnt&       AttachmentPoint2,
                                                   const gp_Dir&       DirAttach,
@@ -171,34 +171,34 @@ void DsgPrs::ComputePlanarFacesLengthPresentation(const Standard_Real FirstArrow
 
 //=================================================================================================
 
-void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const Standard_Real FirstArrowLength,
-                                                       const Standard_Real SecondArrowLength,
-                                                       const Handle(Geom_Surface)& SecondSurf,
+void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const double FirstArrowLength,
+                                                       const double SecondArrowLength,
+                                                       const occ::handle<Geom_Surface>& SecondSurf,
                                                        const gp_Pnt&               AttachmentPoint1,
                                                        const gp_Pnt&               AttachmentPoint2,
                                                        const gp_Dir&               DirAttach,
                                                        gp_Pnt&                     EndOfArrow2,
                                                        gp_Dir&                     DirOfArrow1,
-                                                       Handle(Geom_Curve)&         VCurve,
-                                                       Handle(Geom_Curve)&         UCurve,
-                                                       Standard_Real&              FirstU,
-                                                       Standard_Real&              deltaU,
-                                                       Standard_Real&              FirstV,
-                                                       Standard_Real&              deltaV)
+                                                       occ::handle<Geom_Curve>&         VCurve,
+                                                       occ::handle<Geom_Curve>&         UCurve,
+                                                       double&              FirstU,
+                                                       double&              deltaU,
+                                                       double&              FirstV,
+                                                       double&              deltaV)
 {
   GeomAPI_ProjectPointOnSurf  ProjectorOnSurface;
   GeomAPI_ProjectPointOnCurve ProjectorOnCurve;
-  Standard_Real               U1, V1, U2, V2;
-  Standard_Real               LastU, LastV;
-  constexpr Standard_Real     SquareTolerance = Precision::SquareConfusion();
+  double               U1, V1, U2, V2;
+  double               LastU, LastV;
+  constexpr double     SquareTolerance = Precision::SquareConfusion();
 
   ProjectorOnSurface.Init(AttachmentPoint1, SecondSurf);
-  Standard_Integer Index(1);
-  Standard_Real    MinDist = RealLast();
-  Standard_Real    LocalU, LocalV;
+  int Index(1);
+  double    MinDist = RealLast();
+  double    LocalU, LocalV;
   gp_Vec           D1U, D1V;
   gp_Dir           LocalDir;
-  for (Standard_Integer i = 1; i <= ProjectorOnSurface.NbPoints(); i++)
+  for (int i = 1; i <= ProjectorOnSurface.NbPoints(); i++)
   {
     ProjectorOnSurface.Parameters(i, LocalU, LocalV);
 
@@ -247,13 +247,13 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const Standard_Real First
 
     if (VCurve->IsPeriodic() && std::abs(deltaU) > VCurve->Period() / 2)
     {
-      Standard_Real Sign = (deltaU > 0.0) ? -1.0 : 1.0;
+      double Sign = (deltaU > 0.0) ? -1.0 : 1.0;
       deltaU             = VCurve->Period() - std::abs(deltaU);
       deltaU *= Sign;
     }
     if (UCurve->IsPeriodic() && std::abs(deltaV) > UCurve->Period() / 2)
     {
-      Standard_Real Sign = (deltaV > 0.0) ? -1.0 : 1.0;
+      double Sign = (deltaV > 0.0) ? -1.0 : 1.0;
       deltaV             = UCurve->Period() - std::abs(deltaV);
       deltaV *= Sign;
     }
@@ -262,28 +262,28 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation(const Standard_Real First
 
 //=================================================================================================
 
-void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
-                                           const Standard_Real    Value,
+void DsgPrs::ComputeFacesAnglePresentation(const double    ArrowLength,
+                                           const double    Value,
                                            const gp_Pnt&          CenterPoint,
                                            const gp_Pnt&          AttachmentPoint1,
                                            const gp_Pnt&          AttachmentPoint2,
                                            const gp_Dir&          dir1,
                                            const gp_Dir&          dir2,
                                            const gp_Dir&          axisdir,
-                                           const Standard_Boolean isPlane,
+                                           const bool isPlane,
                                            const gp_Ax1&          AxisOfSurf,
                                            const gp_Pnt&          OffsetPoint,
                                            gp_Circ&               AngleCirc,
-                                           Standard_Real&         FirstParAngleCirc,
-                                           Standard_Real&         LastParAngleCirc,
+                                           double&         FirstParAngleCirc,
+                                           double&         LastParAngleCirc,
                                            gp_Pnt&                EndOfArrow1,
                                            gp_Pnt&                EndOfArrow2,
                                            gp_Dir&                DirOfArrow1,
                                            gp_Dir&                DirOfArrow2,
                                            gp_Pnt&                ProjAttachPoint2,
                                            gp_Circ&               AttachCirc,
-                                           Standard_Real&         FirstParAttachCirc,
-                                           Standard_Real&         LastParAttachCirc)
+                                           double&         FirstParAttachCirc,
+                                           double&         LastParAttachCirc)
 {
   if (Value > Precision::Angular() && std::abs(M_PI - Value) > Precision::Angular())
   {
@@ -298,17 +298,17 @@ void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
     vec2 *= AngleCirc.Radius();
     gp_Pnt p2 = CenterPoint.Translated(vec2);
 
-    Standard_Real Par1 = 0.;
-    Standard_Real Par2 = ElCLib::Parameter(AngleCirc, p2);
-    Standard_Real Par0 = ElCLib::Parameter(AngleCirc, OffsetPoint);
+    double Par1 = 0.;
+    double Par2 = ElCLib::Parameter(AngleCirc, p2);
+    double Par0 = ElCLib::Parameter(AngleCirc, OffsetPoint);
 
     gp_Vec PosVec(CenterPoint, OffsetPoint);
     gp_Vec NormalOfPlane = vec1 ^ vec2;
 
     gp_Vec           Normal1 = NormalOfPlane ^ vec1;
     gp_Vec           Normal2 = NormalOfPlane ^ vec2;
-    Standard_Integer Sign1   = (PosVec * Normal1 >= 0) ? 1 : -1;
-    Standard_Integer Sign2   = (PosVec * Normal2 >= 0) ? 1 : -1;
+    int Sign1   = (PosVec * Normal1 >= 0) ? 1 : -1;
+    int Sign2   = (PosVec * Normal2 >= 0) ? 1 : -1;
     if (Sign1 == 1 && Sign2 == -1)
     {
       FirstParAngleCirc = Par1;
@@ -339,7 +339,7 @@ void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
     // Computing presentation of arrows
     EndOfArrow1        = ElCLib::Value(Par1, AngleCirc);
     EndOfArrow2        = ElCLib::Value(Par2, AngleCirc);
-    Standard_Real beta = 0.;
+    double beta = 0.;
     if (AngleCirc.Radius() > Precision::Confusion())
       beta = ArrowLength / AngleCirc.Radius();
     gp_Pnt OriginOfArrow1 = ElCLib::Value(Par1 + beta, AngleCirc);
@@ -386,7 +386,7 @@ void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
       GeomAPI_ExtremaCurveCurve Intersection(new Geom_Circle(AttachCirc), new Geom_Line(SecondLin));
       Intersection.NearestPoints(ProjAttachPoint2, ProjAttachPoint2);
 
-      Standard_Real U2 = ElCLib::Parameter(AttachCirc, ProjAttachPoint2);
+      double U2 = ElCLib::Parameter(AttachCirc, ProjAttachPoint2);
       if (U2 <= M_PI)
       {
         FirstParAttachCirc = 0;
@@ -401,31 +401,31 @@ void DsgPrs::ComputeFacesAnglePresentation(const Standard_Real    ArrowLength,
   }
 }
 
-void DsgPrs::ComputeFilletRadiusPresentation(const Standard_Real /*ArrowLength*/,
-                                             const Standard_Real    Value,
+void DsgPrs::ComputeFilletRadiusPresentation(const double /*ArrowLength*/,
+                                             const double    Value,
                                              const gp_Pnt&          Position,
                                              const gp_Dir&          NormalDir,
                                              const gp_Pnt&          FirstPoint,
                                              const gp_Pnt&          SecondPoint,
                                              const gp_Pnt&          Center,
                                              const gp_Pnt&          BasePnt,
-                                             const Standard_Boolean drawRevers,
-                                             Standard_Boolean&      SpecCase,
+                                             const bool drawRevers,
+                                             bool&      SpecCase,
                                              gp_Circ&               FilletCirc,
-                                             Standard_Real&         FirstParCirc,
-                                             Standard_Real&         LastParCirc,
+                                             double&         FirstParCirc,
+                                             double&         LastParCirc,
                                              gp_Pnt&                EndOfArrow,
                                              gp_Dir&                DirOfArrow,
                                              gp_Pnt&                DrawPosition)
 {
   gp_Dir        dir1(gp_Vec(Center, FirstPoint));
   gp_Dir        dir2(gp_Vec(Center, SecondPoint));
-  Standard_Real Angle = dir1.Angle(dir2);
+  double Angle = dir1.Angle(dir2);
   if (Angle <= Precision::Angular() || (M_PI - Angle) <= Precision::Angular()
       || Value <= Precision::Confusion())
-    SpecCase = Standard_True;
+    SpecCase = true;
   else
-    SpecCase = Standard_False;
+    SpecCase = false;
   if (!SpecCase)
   {
     // Computing presentation of fillet's arc
@@ -444,15 +444,15 @@ void DsgPrs::ComputeFilletRadiusPresentation(const Standard_Real /*ArrowLength*/
     gp_Vec           NormalOfPlane = vec1 ^ vec2;
     gp_Vec           Normal1       = NormalOfPlane ^ vec1;
     gp_Vec           Normal2       = NormalOfPlane ^ vec2;
-    Standard_Integer Sign1         = (PosVec * Normal1 >= 0) ? 1 : -1;
-    Standard_Integer Sign2         = (PosVec * Normal2 >= 0) ? 1 : -1;
+    int Sign1         = (PosVec * Normal1 >= 0) ? 1 : -1;
+    int Sign2         = (PosVec * Normal2 >= 0) ? 1 : -1;
     gp_Lin           L1(Center, dir1);
     gp_Lin           L2(Center, dir2);
     if (Sign1 != Sign2)
     {
       DrawPosition = Position; //***
       gp_Dir        direction(PosVec);
-      Standard_Real angle = dir1.Angle(direction);
+      double angle = dir1.Angle(direction);
       if ((dir1 ^ direction) * NormalDir < 0.0e0)
         angle = -angle;
       if (Sign1 == -1)
@@ -500,15 +500,15 @@ void DsgPrs::ComputeFilletRadiusPresentation(const Standard_Real /*ArrowLength*/
 void DsgPrs::ComputeRadiusLine(const gp_Pnt&          aCenter,
                                const gp_Pnt&          anEndOfArrow,
                                const gp_Pnt&          aPosition,
-                               const Standard_Boolean drawFromCenter,
+                               const bool drawFromCenter,
                                gp_Pnt&                aRadLineOrign,
                                gp_Pnt&                aRadLineEnd)
 {
   if (drawFromCenter)
   {
     gp_Lin        RadiusLine    = gce_MakeLin(aCenter, anEndOfArrow);
-    Standard_Real PosParOnLine  = ElCLib::Parameter(RadiusLine, aPosition);
-    Standard_Real EndOfArrowPar = ElCLib::Parameter(RadiusLine, anEndOfArrow);
+    double PosParOnLine  = ElCLib::Parameter(RadiusLine, aPosition);
+    double EndOfArrowPar = ElCLib::Parameter(RadiusLine, anEndOfArrow);
     if (PosParOnLine < 0.0)
     {
       aRadLineOrign = aPosition;
@@ -534,12 +534,12 @@ void DsgPrs::ComputeRadiusLine(const gp_Pnt&          aCenter,
 
 //=================================================================================================
 
-Standard_Real DsgPrs::DistanceFromApex(const gp_Elips&     elips,
+double DsgPrs::DistanceFromApex(const gp_Elips&     elips,
                                        const gp_Pnt&       Apex,
-                                       const Standard_Real par)
+                                       const double par)
 {
-  Standard_Real dist;
-  Standard_Real parApex = ElCLib::Parameter(elips, Apex);
+  double dist;
+  double parApex = ElCLib::Parameter(elips, Apex);
   if (parApex == 0.0 || parApex == M_PI)
   {                     // Major case
     if (parApex == 0.0) // pos Apex

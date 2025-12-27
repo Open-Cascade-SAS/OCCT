@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <StepData_SelectMember.hxx>
 
-class StepData_SelectInt;
-DEFINE_STANDARD_HANDLE(StepData_SelectInt, StepData_SelectMember)
-
 //! A SelectInt is a SelectMember specialised for a basic integer
 //! type in a select which also accepts entities : this one has
 //! NO NAME.
@@ -36,20 +33,19 @@ class StepData_SelectInt : public StepData_SelectMember
 public:
   Standard_EXPORT StepData_SelectInt();
 
-  Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int Kind() const override;
 
-  Standard_EXPORT virtual void SetKind(const Standard_Integer kind) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetKind(const int kind) override;
 
-  Standard_EXPORT virtual Standard_Integer Int() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int Int() const override;
 
-  Standard_EXPORT virtual void SetInt(const Standard_Integer val) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetInt(const int val) override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectInt, StepData_SelectMember)
 
-protected:
 private:
-  Standard_Integer thekind;
-  Standard_Integer theval;
+  int thekind;
+  int theval;
 };
 
 #endif // _StepData_SelectInt_HeaderFile

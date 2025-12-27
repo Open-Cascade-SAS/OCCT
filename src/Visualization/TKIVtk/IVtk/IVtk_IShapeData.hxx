@@ -21,14 +21,12 @@
 #include <IVtk_Types.hxx>
 #include <NCollection_Vec3.hxx>
 
-DEFINE_STANDARD_HANDLE(IVtk_IShapeData, IVtk_Interface)
-
 //! @class IVtk_IShapeData
 //! @brief Interface for working with triangulated data.
 class IVtk_IShapeData : public IVtk_Interface
 {
 public:
-  typedef Handle(IVtk_IShapeData) Handle;
+  typedef occ::handle<IVtk_IShapeData> Handle;
 
   virtual ~IVtk_IShapeData() {}
 
@@ -64,7 +62,7 @@ public:
   //! @param[in]  pointIds vector of point ids
   //! @param[in]  meshType mesh type of the subshape (MT_Undefined by default)
   virtual void InsertLine(const IVtk_IdType       theShapeID,
-                          const IVtk_PointIdList* thePointIds,
+                          const NCollection_List<IVtk_PointId>* thePointIds,
                           const IVtk_MeshType     theMeshType = MT_Undefined) = 0;
 
   //! Insert a triangle

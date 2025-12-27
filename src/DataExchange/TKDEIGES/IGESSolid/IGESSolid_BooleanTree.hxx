@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 
-class IGESSolid_BooleanTree;
-DEFINE_STANDARD_HANDLE(IGESSolid_BooleanTree, IGESData_IGESEntity)
-
 //! defines BooleanTree, Type <180> Form Number <0>
 //! in package IGESSolid
 //! The Boolean tree describes a binary tree structure
@@ -42,33 +39,32 @@ public:
   //! BooleanTree
   //! - operands   : Array containing pointer to DE of operands
   //! - operations : Array containing integer type for operations
-  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)& operands,
-                            const Handle(TColStd_HArray1OfInteger)&     operations);
+  Standard_EXPORT void Init(const occ::handle<IGESData_HArray1OfIGESEntity>& operands,
+                            const occ::handle<TColStd_HArray1OfInteger>&     operations);
 
   //! returns the length of the post-order list
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
   //! returns True if Index'th value in the post-order list is an Operand;
   //! else returns False if it is an Integer Operations
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Standard_Boolean IsOperand(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsOperand(const int Index) const;
 
   //! returns the Index'th value in the post-order list only if it is
   //! an operand else returns NULL
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Operand(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Operand(const int Index) const;
 
   //! returns the Index'th value in the post-order list only if it is
   //! an operation else returns 0
   //! raises exception if Index < 1 or Index > Length()
-  Standard_EXPORT Standard_Integer Operation(const Standard_Integer Index) const;
+  Standard_EXPORT int Operation(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_BooleanTree, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_HArray1OfIGESEntity) theOperands;
-  Handle(TColStd_HArray1OfInteger)     theOperations;
+  occ::handle<IGESData_HArray1OfIGESEntity> theOperands;
+  occ::handle<TColStd_HArray1OfInteger>     theOperations;
 };
 
 #endif // _IGESSolid_BooleanTree_HeaderFile

@@ -14,9 +14,10 @@
 #ifndef StepElement_HArray1OfSurfaceSection_HeaderFile
 #define StepElement_HArray1OfSurfaceSection_HeaderFile
 
-#include <StepElement_Array1OfSurfaceSection.hxx>
+#include <StepElement_SurfaceSection.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepElement_HArray1OfSurfaceSection, StepElement_Array1OfSurfaceSection)
+DEFINE_HARRAY1(StepElement_HArray1OfSurfaceSection, NCollection_Array1<occ::handle<StepElement_SurfaceSection>>)
 
 #endif

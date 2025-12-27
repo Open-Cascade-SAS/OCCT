@@ -21,9 +21,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class Aspect_GraphicDeviceDefinitionError;
-DEFINE_STANDARD_HANDLE(Aspect_GraphicDeviceDefinitionError, Standard_OutOfRange)
-
 #if !defined No_Exception && !defined No_Aspect_GraphicDeviceDefinitionError
   #define Aspect_GraphicDeviceDefinitionError_Raise_if(CONDITION, MESSAGE)                         \
     if (CONDITION)                                                                                 \

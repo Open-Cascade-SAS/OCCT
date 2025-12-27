@@ -24,9 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 class gp_Vec;
 
-class IGESGeom_Direction;
-DEFINE_STANDARD_HANDLE(IGESGeom_Direction, IGESData_IGESEntity)
-
 //! defines IGESDirection, Type <123> Form <0>
 //! in package IGESGeom
 //! A direction entity is a non-zero vector in Euclidean 3-space
@@ -51,7 +48,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Direction, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XYZ theDirection;
 };

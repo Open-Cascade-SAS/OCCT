@@ -26,16 +26,16 @@ class StdObjMgt_Attribute : public Standard_Transient
   {
   public:
     //! Create an empty transient attribute
-    virtual Handle(TDF_Attribute) CreateAttribute() { return myTransient = new Transient; }
+    virtual occ::handle<TDF_Attribute> CreateAttribute() { return myTransient = new Transient; }
 
     //! Get transient attribute for the persistent data
-    virtual Handle(TDF_Attribute) GetAttribute() const
+    virtual occ::handle<TDF_Attribute> GetAttribute() const
     {
-      return Handle(TDF_Attribute)(myTransient);
+      return occ::handle<TDF_Attribute>(myTransient);
     }
 
   protected:
-    Handle(Transient) myTransient;
+    occ::handle<Transient> myTransient;
   };
 
 public:
@@ -55,17 +55,17 @@ public:
 
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
-    virtual Standard_CString PName() const { return "StdObjMgt_Attribute::undefined"; }
+    virtual const char* PName() const { return "StdObjMgt_Attribute::undefined"; }
 
   protected:
     DataType myData;
   };
 
-  struct SingleInt : Simple<Standard_Integer>
+  struct SingleInt : Simple<int>
   {
   };
 
-  struct SingleRef : Simple<Handle(StdObjMgt_Persistent)>
+  struct SingleRef : Simple<occ::handle<StdObjMgt_Persistent>>
   {
   };
 
@@ -89,7 +89,7 @@ private:
 
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
-    virtual Standard_CString PName() const { return myPersistent->PName(); }
+    virtual const char* PName() const { return myPersistent->PName(); }
 
     //! Import transient attribute from the persistent data
     virtual void ImportAttribute()
@@ -102,12 +102,12 @@ private:
     }
 
   private:
-    Handle(Persistent) myPersistent;
+    occ::handle<Persistent> myPersistent;
   };
 
 public:
   template <class Persistent>
-  static Handle(StdObjMgt_Persistent) Instantiate()
+  static occ::handle<StdObjMgt_Persistent> Instantiate()
   {
     return new container<Persistent>;
   }

@@ -15,18 +15,18 @@
 #include <IntSurf_Transition.hxx>
 #include <Standard_DomainError.hxx>
 
-IntSurf_Transition::IntSurf_Transition(const Standard_Boolean Tangent, const IntSurf_TypeTrans Type)
+IntSurf_Transition::IntSurf_Transition(const bool Tangent, const IntSurf_TypeTrans Type)
     : tangent(Tangent),
       typetra(Type),
       situat(IntSurf_Unknown),
-      oppos(Standard_False)
+      oppos(false)
 
 {
 }
 
-IntSurf_Transition::IntSurf_Transition(const Standard_Boolean  Tangent,
+IntSurf_Transition::IntSurf_Transition(const bool  Tangent,
                                        const IntSurf_Situation Situ,
-                                       const Standard_Boolean  Oppos)
+                                       const bool  Oppos)
     : tangent(Tangent),
       typetra(IntSurf_Touch),
       situat(Situ),
@@ -35,9 +35,9 @@ IntSurf_Transition::IntSurf_Transition(const Standard_Boolean  Tangent,
 }
 
 IntSurf_Transition::IntSurf_Transition()
-    : tangent(Standard_False),
+    : tangent(false),
       typetra(IntSurf_Undecided),
       situat(IntSurf_Unknown),
-      oppos(Standard_False)
+      oppos(false)
 {
 }

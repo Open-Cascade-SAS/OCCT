@@ -21,16 +21,27 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfOrientedShapeInteger.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopAbs_State.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeState.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopAbs_State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 class TopOpeBRepDS_BuildTool;
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepBuild_GTopo;
@@ -54,80 +65,80 @@ public:
 
   //! Removes all splits and merges already performed.
   //! Does NOT clear the handled DS (except ShapeWithStatesMaps).
-  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() override;
 
-  Standard_EXPORT virtual void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
+    override;
 
-  Standard_EXPORT virtual void Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
+  Standard_EXPORT virtual void Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
                                        const TopoDS_Shape&                        S1,
-                                       const TopoDS_Shape& S2) Standard_OVERRIDE;
+                                       const TopoDS_Shape& S2) override;
 
-  Standard_EXPORT virtual void MergeKPart() Standard_OVERRIDE;
+  Standard_EXPORT virtual void MergeKPart() override;
 
   Standard_EXPORT virtual void MergeKPart(const TopAbs_State TB1,
-                                          const TopAbs_State TB2) Standard_OVERRIDE;
+                                          const TopAbs_State TB2) override;
 
   Standard_EXPORT virtual void GFillSolidSFS(const TopoDS_Shape&           SO1,
-                                             const TopTools_ListOfShape&   LSO2,
+                                             const NCollection_List<TopoDS_Shape>&   LSO2,
                                              const TopOpeBRepBuild_GTopo&  G,
-                                             TopOpeBRepBuild_ShellFaceSet& SFS) Standard_OVERRIDE;
+                                             TopOpeBRepBuild_ShellFaceSet& SFS) override;
 
   Standard_EXPORT virtual void GFillShellSFS(const TopoDS_Shape&           SH1,
-                                             const TopTools_ListOfShape&   LSO2,
+                                             const NCollection_List<TopoDS_Shape>&   LSO2,
                                              const TopOpeBRepBuild_GTopo&  G,
-                                             TopOpeBRepBuild_ShellFaceSet& SFS) Standard_OVERRIDE;
+                                             TopOpeBRepBuild_ShellFaceSet& SFS) override;
 
   Standard_EXPORT virtual void GWESMakeFaces(const TopoDS_Shape&          FF,
                                              TopOpeBRepBuild_WireEdgeSet& WES,
-                                             TopTools_ListOfShape&        LOF) Standard_OVERRIDE;
+                                             NCollection_List<TopoDS_Shape>&        LOF) override;
 
   Standard_EXPORT void GFillSplitsPVS(const TopoDS_Shape&          anEdge,
                                       const TopOpeBRepBuild_GTopo& G1,
                                       TopOpeBRepBuild_PaveSet&     PVS);
 
   Standard_EXPORT void GFillFaceNotSameDomSFS(const TopoDS_Shape&           F1,
-                                              const TopTools_ListOfShape&   LSO2,
+                                              const NCollection_List<TopoDS_Shape>&   LSO2,
                                               const TopOpeBRepBuild_GTopo&  G,
                                               TopOpeBRepBuild_ShellFaceSet& SFS);
 
   Standard_EXPORT void GFillFaceNotSameDomWES(const TopoDS_Shape&          F1,
-                                              const TopTools_ListOfShape&  LSO2,
+                                              const NCollection_List<TopoDS_Shape>&  LSO2,
                                               const TopOpeBRepBuild_GTopo& G,
                                               TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void GFillWireNotSameDomWES(const TopoDS_Shape&          W1,
-                                              const TopTools_ListOfShape&  LSO2,
+                                              const NCollection_List<TopoDS_Shape>&  LSO2,
                                               const TopOpeBRepBuild_GTopo& G,
                                               TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void GFillEdgeNotSameDomWES(const TopoDS_Shape&          E1,
-                                              const TopTools_ListOfShape&  LSO2,
+                                              const NCollection_List<TopoDS_Shape>&  LSO2,
                                               const TopOpeBRepBuild_GTopo& G,
                                               TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void GFillFaceSameDomSFS(const TopoDS_Shape&           F1,
-                                           const TopTools_ListOfShape&   LSO2,
+                                           const NCollection_List<TopoDS_Shape>&   LSO2,
                                            const TopOpeBRepBuild_GTopo&  G,
                                            TopOpeBRepBuild_ShellFaceSet& SFS);
 
   Standard_EXPORT void GFillFaceSameDomWES(const TopoDS_Shape&          F1,
-                                           const TopTools_ListOfShape&  LSO2,
+                                           const NCollection_List<TopoDS_Shape>&  LSO2,
                                            const TopOpeBRepBuild_GTopo& G,
                                            TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void GFillWireSameDomWES(const TopoDS_Shape&          W1,
-                                           const TopTools_ListOfShape&  LSO2,
+                                           const NCollection_List<TopoDS_Shape>&  LSO2,
                                            const TopOpeBRepBuild_GTopo& G,
                                            TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void GFillEdgeSameDomWES(const TopoDS_Shape&          E1,
-                                           const TopTools_ListOfShape&  LSO2,
+                                           const NCollection_List<TopoDS_Shape>&  LSO2,
                                            const TopOpeBRepBuild_GTopo& G,
                                            TopOpeBRepBuild_WireEdgeSet& WES);
 
   Standard_EXPORT void PerformONParts(const TopoDS_Shape&               F,
-                                      const TopTools_IndexedMapOfShape& SDfaces,
+                                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& SDfaces,
                                       const TopOpeBRepBuild_GTopo&      G,
                                       TopOpeBRepBuild_WireEdgeSet&      WES);
 
@@ -136,21 +147,21 @@ public:
                                         const TopoDS_Face&           edgeFace,
                                         const TopoDS_Face&           toFace,
                                         const TopOpeBRepBuild_GTopo& G,
-                                        Standard_Boolean&            keep);
+                                        bool&            keep);
 
-  Standard_EXPORT Standard_Integer PerformPieceOn2D(const TopoDS_Shape&   aPieceObj,
+  Standard_EXPORT int PerformPieceOn2D(const TopoDS_Shape&   aPieceObj,
                                                     const TopoDS_Shape&   aFaceObj,
                                                     const TopoDS_Shape&   aEdgeObj,
-                                                    TopTools_ListOfShape& aListOfPieces,
-                                                    TopTools_ListOfShape& aListOfFaces,
-                                                    TopTools_ListOfShape& aListOfPiecesOut2d);
+                                                    NCollection_List<TopoDS_Shape>& aListOfPieces,
+                                                    NCollection_List<TopoDS_Shape>& aListOfFaces,
+                                                    NCollection_List<TopoDS_Shape>& aListOfPiecesOut2d);
 
-  Standard_EXPORT Standard_Integer TwoPiecesON(const TopTools_SequenceOfShape& aSeq,
-                                               TopTools_ListOfShape&           aListOfPieces,
-                                               TopTools_ListOfShape&           aListOfFaces,
-                                               TopTools_ListOfShape&           aListOfPiecesOut2d);
+  Standard_EXPORT int TwoPiecesON(const NCollection_Sequence<TopoDS_Shape>& aSeq,
+                                               NCollection_List<TopoDS_Shape>&           aListOfPieces,
+                                               NCollection_List<TopoDS_Shape>&           aListOfFaces,
+                                               NCollection_List<TopoDS_Shape>&           aListOfPiecesOut2d);
 
-  Standard_EXPORT Standard_Integer CorrectResult2d(TopoDS_Shape& aResult);
+  Standard_EXPORT int CorrectResult2d(TopoDS_Shape& aResult);
 
   friend class TopOpeBRepBuild_HBuilder;
 
@@ -160,40 +171,40 @@ protected:
   Standard_EXPORT void PerformShapeWithStates(const TopoDS_Shape& anObj, const TopoDS_Shape& aTool);
 
   Standard_EXPORT void StatusEdgesToSplit(const TopoDS_Shape&               anObj,
-                                          const TopTools_IndexedMapOfShape& anEdgesToSplitMap,
-                                          const TopTools_IndexedMapOfShape& anEdgesToRestMap);
+                                          const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& anEdgesToSplitMap,
+                                          const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& anEdgesToRestMap);
 
   Standard_EXPORT void SplitEdge(const TopoDS_Shape&               anEdge,
-                                 TopTools_ListOfShape&             aLNew,
-                                 TopOpeBRepDS_DataMapOfShapeState& aDataMapOfShapeState);
+                                 NCollection_List<TopoDS_Shape>&             aLNew,
+                                 NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aDataMapOfShapeState);
 
   Standard_EXPORT void PerformFacesWithStates(const TopoDS_Shape&               anObj,
-                                              const TopTools_IndexedMapOfShape& aFaces,
-                                              TopOpeBRepDS_DataMapOfShapeState& aSplF);
+                                              const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aFaces,
+                                              NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>& aSplF);
 
-  Standard_EXPORT Standard_Integer IsSame2d(const TopTools_SequenceOfShape& aSeq,
-                                            TopTools_ListOfShape&           aListOfPiecesOut2d);
+  Standard_EXPORT int IsSame2d(const NCollection_Sequence<TopoDS_Shape>& aSeq,
+                                            NCollection_List<TopoDS_Shape>&           aListOfPiecesOut2d);
 
   Standard_EXPORT void OrientateEdgeOnFace(TopoDS_Edge&                 EdgeToPerform,
                                            const TopoDS_Face&           baseFace,
                                            const TopoDS_Face&           edgeFace,
                                            const TopOpeBRepBuild_GTopo& G1,
-                                           Standard_Boolean&            stateOfFaceOri) const;
+                                           bool&            stateOfFaceOri) const;
 
-  TopTools_DataMapOfShapeListOfShape myFSplits;
-  TopTools_DataMapOfShapeListOfShape myESplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myFSplits;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myESplits;
 
 private:
-  TopTools_IndexedMapOfShape                          mySameDomMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                          mySameDomMap;
   TopoDS_Shape                                        mySDFaceToFill;
   TopoDS_Shape                                        myBaseFaceToFill;
-  TopTools_IndexedDataMapOfShapeListOfShape           myMapOfEdgeFaces;
-  NCollection_DataMap<TopoDS_Shape, Standard_Boolean> myMapOfEdgeWithFaceState;
-  TopTools_IndexedMapOfShape                          myProcessedPartsOut2d;
-  TopTools_IndexedMapOfShape                          myProcessedPartsON2d;
-  TopTools_IndexedMapOfShape                          mySplitsONtoKeep;
-  TopTools_IndexedMapOfOrientedShape                  mySourceShapes;
-  TopTools_IndexedDataMapOfShapeShape                 myMapOfCorrect2dEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>           myMapOfEdgeFaces;
+  NCollection_DataMap<TopoDS_Shape, bool> myMapOfEdgeWithFaceState;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                          myProcessedPartsOut2d;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                          myProcessedPartsON2d;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                          mySplitsONtoKeep;
+  NCollection_IndexedMap<TopoDS_Shape>                  mySourceShapes;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>                 myMapOfCorrect2dEdges;
 };
 
 #endif // _TopOpeBRepBuild_Builder1_HeaderFile

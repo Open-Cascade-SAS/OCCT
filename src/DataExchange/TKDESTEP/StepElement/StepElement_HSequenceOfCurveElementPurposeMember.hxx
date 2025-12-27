@@ -15,10 +15,11 @@
 #define StepElement_HSequenceOfCurveElementPurposeMember_HeaderFile
 
 #include <StepElement_CurveElementPurposeMember.hxx>
-#include <StepElement_SequenceOfCurveElementPurposeMember.hxx>
+#include <StepElement_CurveElementPurposeMember.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 DEFINE_HSEQUENCE(StepElement_HSequenceOfCurveElementPurposeMember,
-                 StepElement_SequenceOfCurveElementPurposeMember)
+                 NCollection_Sequence<occ::handle<StepElement_CurveElementPurposeMember>>)
 
 #endif

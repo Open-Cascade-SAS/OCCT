@@ -28,11 +28,11 @@ StepDimTol_DatumTarget::StepDimTol_DatumTarget() {}
 //=================================================================================================
 
 void StepDimTol_DatumTarget::Init(
-  const Handle(TCollection_HAsciiString)&        theShapeAspect_Name,
-  const Handle(TCollection_HAsciiString)&        theShapeAspect_Description,
-  const Handle(StepRepr_ProductDefinitionShape)& theShapeAspect_OfShape,
+  const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Name,
+  const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Description,
+  const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
   const StepData_Logical                         theShapeAspect_ProductDefinitional,
-  const Handle(TCollection_HAsciiString)&        theTargetId)
+  const occ::handle<TCollection_HAsciiString>&        theTargetId)
 {
   StepRepr_ShapeAspect::Init(theShapeAspect_Name,
                              theShapeAspect_Description,
@@ -43,14 +43,14 @@ void StepDimTol_DatumTarget::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepDimTol_DatumTarget::TargetId() const
+occ::handle<TCollection_HAsciiString> StepDimTol_DatumTarget::TargetId() const
 {
   return myTargetId;
 }
 
 //=================================================================================================
 
-void StepDimTol_DatumTarget::SetTargetId(const Handle(TCollection_HAsciiString)& theTargetId)
+void StepDimTol_DatumTarget::SetTargetId(const occ::handle<TCollection_HAsciiString>& theTargetId)
 {
   myTargetId = theTargetId;
 }

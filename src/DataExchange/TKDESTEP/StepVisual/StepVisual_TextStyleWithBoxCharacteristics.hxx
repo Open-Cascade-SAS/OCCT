@@ -27,9 +27,6 @@ class TCollection_HAsciiString;
 class StepVisual_TextStyleForDefinedFont;
 class StepVisual_BoxCharacteristicSelect;
 
-class StepVisual_TextStyleWithBoxCharacteristics;
-DEFINE_STANDARD_HANDLE(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
-
 class StepVisual_TextStyleWithBoxCharacteristics : public StepVisual_TextStyle
 {
 
@@ -38,25 +35,24 @@ public:
   Standard_EXPORT StepVisual_TextStyleWithBoxCharacteristics();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                    aName,
-    const Handle(StepVisual_TextStyleForDefinedFont)&          aCharacterAppearance,
-    const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
+    const occ::handle<TCollection_HAsciiString>&                    aName,
+    const occ::handle<StepVisual_TextStyleForDefinedFont>&          aCharacterAppearance,
+    const occ::handle<StepVisual_HArray1OfBoxCharacteristicSelect>& aCharacteristics);
 
   Standard_EXPORT void SetCharacteristics(
-    const Handle(StepVisual_HArray1OfBoxCharacteristicSelect)& aCharacteristics);
+    const occ::handle<StepVisual_HArray1OfBoxCharacteristicSelect>& aCharacteristics);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfBoxCharacteristicSelect) Characteristics() const;
+  Standard_EXPORT occ::handle<StepVisual_HArray1OfBoxCharacteristicSelect> Characteristics() const;
 
   Standard_EXPORT StepVisual_BoxCharacteristicSelect
-    CharacteristicsValue(const Standard_Integer num) const;
+    CharacteristicsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbCharacteristics() const;
+  Standard_EXPORT int NbCharacteristics() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisual_TextStyle)
 
-protected:
 private:
-  Handle(StepVisual_HArray1OfBoxCharacteristicSelect) characteristics;
+  occ::handle<StepVisual_HArray1OfBoxCharacteristicSelect> characteristics;
 };
 
 #endif // _StepVisual_TextStyleWithBoxCharacteristics_HeaderFile

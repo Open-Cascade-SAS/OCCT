@@ -49,7 +49,7 @@ ShapeUpgrade_ShapeDivide::ShapeUpgrade_ShapeDivide()
   mySplitFaceTool        = new ShapeUpgrade_FaceDivide;
   myContext              = new ShapeBuild_ReShape;
   // myMsgReg = new ShapeExtend_BasicMsgRegistrator;
-  mySegmentMode = Standard_True;
+  mySegmentMode = true;
   myEdgeMode    = 2;
 }
 
@@ -62,7 +62,7 @@ ShapeUpgrade_ShapeDivide::ShapeUpgrade_ShapeDivide(const TopoDS_Shape& S)
   myMaxTol               = 1; // Precision::Infinite() ?? pdn
   mySplitFaceTool        = new ShapeUpgrade_FaceDivide;
   myContext              = new ShapeBuild_ReShape;
-  mySegmentMode          = Standard_True;
+  mySegmentMode          = true;
   myEdgeMode             = 2;
   Init(S);
 }
@@ -80,41 +80,41 @@ ShapeUpgrade_ShapeDivide::~ShapeUpgrade_ShapeDivide() {}
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetPrecision(const Standard_Real Prec)
+void ShapeUpgrade_ShapeDivide::SetPrecision(const double Prec)
 {
   myPrecision = Prec;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetMaxTolerance(const Standard_Real maxtol)
+void ShapeUpgrade_ShapeDivide::SetMaxTolerance(const double maxtol)
 {
   myMaxTol = maxtol;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetMinTolerance(const Standard_Real mintol)
+void ShapeUpgrade_ShapeDivide::SetMinTolerance(const double mintol)
 {
   myMinTol = mintol;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetSurfaceSegmentMode(const Standard_Boolean Segment)
+void ShapeUpgrade_ShapeDivide::SetSurfaceSegmentMode(const bool Segment)
 {
   mySegmentMode = Segment;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newContext)
+bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (myShape.IsNull())
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
-    return Standard_False;
+    return false;
   }
 
   if (newContext || myContext.IsNull())
@@ -124,12 +124,12 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
   // NOTE: not optimized: subshape can be processed twice (second time - no modif)
   if (myShape.ShapeType() == TopAbs_COMPOUND)
   {
-    Standard_Integer locStatus = myStatus;
+    int locStatus = myStatus;
     TopoDS_Compound  C;
     BRep_Builder     B;
     B.MakeCompound(C);
     TopoDS_Shape savShape = myShape;
-    for (TopoDS_Iterator it(savShape, Standard_False); it.More(); it.Next())
+    for (TopoDS_Iterator it(savShape, false); it.More(); it.Next())
     {
       TopoDS_Shape    shape = it.Value();
       TopLoc_Location L     = shape.Location();
@@ -139,7 +139,7 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
         shape.Location(nullLoc);
       }
       myShape = myContext->Apply(shape);
-      Perform(Standard_False);
+      Perform(false);
       if (myContext->ModeConsiderLocation())
         myResult.Location(L);
       myResult.Orientation(TopAbs::Compose(myResult.Orientation(), savShape.Orientation()));
@@ -153,20 +153,20 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
     {
       myResult = myContext->Apply(C, TopAbs_SHAPE);
       myContext->Replace(myShape, myResult);
-      return Standard_True;
+      return true;
     }
     myResult = myShape;
-    return Standard_False;
+    return false;
   }
 
   // Process FACEs
-  Handle(ShapeUpgrade_FaceDivide) SplitFace = GetSplitFaceTool();
+  occ::handle<ShapeUpgrade_FaceDivide> SplitFace = GetSplitFaceTool();
   if (!SplitFace.IsNull())
   {
     SplitFace->SetPrecision(myPrecision);
     SplitFace->SetMaxTolerance(myMaxTol);
     SplitFace->SetSurfaceSegmentMode(mySegmentMode);
-    Handle(ShapeUpgrade_WireDivide) SplitWire = SplitFace->GetWireDivideTool();
+    occ::handle<ShapeUpgrade_WireDivide> SplitWire = SplitFace->GetWireDivideTool();
     if (!SplitWire.IsNull())
     {
       SplitWire->SetMinTolerance(myMinTol);
@@ -229,7 +229,7 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
   }
 
   // Process free WIREs
-  Handle(ShapeUpgrade_WireDivide) SplitWire = SplitFace->GetWireDivideTool();
+  occ::handle<ShapeUpgrade_WireDivide> SplitWire = SplitFace->GetWireDivideTool();
   if (!SplitWire.IsNull())
   {
     SplitWire->SetFace(TopoDS_Face());
@@ -311,7 +311,7 @@ TopoDS_Shape ShapeUpgrade_ShapeDivide::Result() const
 
 //=================================================================================================
 
-Handle(ShapeBuild_ReShape) ShapeUpgrade_ShapeDivide::GetContext() const
+occ::handle<ShapeBuild_ReShape> ShapeUpgrade_ShapeDivide::GetContext() const
 {
   // if ( myContext.IsNull() ) myContext = new ShapeBuild_ReShape;
   return myContext;
@@ -319,7 +319,7 @@ Handle(ShapeBuild_ReShape) ShapeUpgrade_ShapeDivide::GetContext() const
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetContext(const Handle(ShapeBuild_ReShape)& context)
+void ShapeUpgrade_ShapeDivide::SetContext(const occ::handle<ShapeBuild_ReShape>& context)
 {
   myContext = context;
 }
@@ -327,28 +327,28 @@ void ShapeUpgrade_ShapeDivide::SetContext(const Handle(ShapeBuild_ReShape)& cont
 //=================================================================================================
 
 void ShapeUpgrade_ShapeDivide::SetSplitFaceTool(
-  const Handle(ShapeUpgrade_FaceDivide)& splitFaceTool)
+  const occ::handle<ShapeUpgrade_FaceDivide>& splitFaceTool)
 {
   mySplitFaceTool = splitFaceTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeDivide::GetSplitFaceTool() const
+occ::handle<ShapeUpgrade_FaceDivide> ShapeUpgrade_ShapeDivide::GetSplitFaceTool() const
 {
   return mySplitFaceTool;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_ShapeDivide::Status(const ShapeExtend_Status status) const
+bool ShapeUpgrade_ShapeDivide::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivide::SetEdgeMode(const Standard_Integer aEdgeMode)
+void ShapeUpgrade_ShapeDivide::SetEdgeMode(const int aEdgeMode)
 {
   myEdgeMode = aEdgeMode;
 }
@@ -356,14 +356,14 @@ void ShapeUpgrade_ShapeDivide::SetEdgeMode(const Standard_Integer aEdgeMode)
 //=================================================================================================
 
 void ShapeUpgrade_ShapeDivide::SetMsgRegistrator(
-  const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg)
+  const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg)
 {
   myMsgReg = msgreg;
 }
 
 //=================================================================================================
 
-Handle(ShapeExtend_BasicMsgRegistrator) ShapeUpgrade_ShapeDivide::MsgRegistrator() const
+occ::handle<ShapeExtend_BasicMsgRegistrator> ShapeUpgrade_ShapeDivide::MsgRegistrator() const
 {
   return myMsgReg;
 }

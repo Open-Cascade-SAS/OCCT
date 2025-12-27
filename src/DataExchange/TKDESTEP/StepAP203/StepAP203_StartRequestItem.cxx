@@ -26,7 +26,7 @@ StepAP203_StartRequestItem::StepAP203_StartRequestItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_StartRequestItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP203_StartRequestItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,8 +37,8 @@ Standard_Integer StepAP203_StartRequestItem::CaseNum(const Handle(Standard_Trans
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP203_StartRequestItem::
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_StartRequestItem::
   ProductDefinitionFormation() const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }

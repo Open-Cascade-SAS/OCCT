@@ -31,12 +31,12 @@
 
 #include <TopoDS.hxx>
 
-static Standard_Integer MakeConnected(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer MakePeriodic(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer MaterialsOn(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer RepeatShape(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer GetTwins(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, const char**);
+static int MakeConnected(Draw_Interpretor&, int, const char**);
+static int MakePeriodic(Draw_Interpretor&, int, const char**);
+static int MaterialsOn(Draw_Interpretor&, int, const char**);
+static int RepeatShape(Draw_Interpretor&, int, const char**);
+static int GetTwins(Draw_Interpretor&, int, const char**);
+static int ClearRepetitions(Draw_Interpretor&, int, const char**);
 
 namespace
 {
@@ -51,10 +51,10 @@ static BOPAlgo_MakeConnected& getMakeConnectedTool()
 
 void BOPTest::MkConnectedCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
@@ -115,8 +115,8 @@ void BOPTest::MkConnectedCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer MakeConnected(Draw_Interpretor& theDI,
-                               Standard_Integer  theArgc,
+int MakeConnected(Draw_Interpretor& theDI,
+                               int  theArgc,
                                const char**      theArgv)
 {
   if (theArgc < 3)
@@ -127,7 +127,7 @@ Standard_Integer MakeConnected(Draw_Interpretor& theDI,
 
   getMakeConnectedTool().Clear();
 
-  for (Standard_Integer i = 2; i < theArgc; ++i)
+  for (int i = 2; i < theArgc; ++i)
   {
     TopoDS_Shape aS = DBRep::Get(theArgv[i]);
     if (aS.IsNull())
@@ -160,8 +160,8 @@ Standard_Integer MakeConnected(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
-                              Standard_Integer  theArgc,
+int MakePeriodic(Draw_Interpretor& theDI,
+                              int  theArgc,
                               const char**      theArgv)
 {
   if (theArgc < 4)
@@ -178,9 +178,9 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
 
   BOPAlgo_MakePeriodic::PeriodicityParams aParams;
 
-  for (Standard_Integer i = 2; i < theArgc;)
+  for (int i = 2; i < theArgc;)
   {
-    Standard_Integer aDirID = -1;
+    int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
       aDirID = 0;
     else if (!strcasecmp(theArgv[i], "-y"))
@@ -196,7 +196,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
     char cDirName[2];
     Sprintf(cDirName, "%c", theArgv[i][1]);
 
-    Standard_Real aPeriod = 0;
+    double aPeriod = 0;
     if (theArgc > i + 1)
       aPeriod = Draw::Atof(theArgv[++i]);
 
@@ -206,7 +206,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
       return 1;
     }
 
-    aParams.myPeriodic[aDirID] = Standard_True;
+    aParams.myPeriodic[aDirID] = true;
     aParams.myPeriod[aDirID]   = aPeriod;
 
     ++i;
@@ -220,9 +220,9 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
           theDI << "Trim bounds for " << cDirName << " direction are not set\n";
           return 1;
         }
-        Standard_Real aFirst = Draw::Atof(theArgv[++i]);
+        double aFirst = Draw::Atof(theArgv[++i]);
 
-        aParams.myIsTrimmed[aDirID]   = Standard_False;
+        aParams.myIsTrimmed[aDirID]   = false;
         aParams.myPeriodFirst[aDirID] = aFirst;
         ++i;
       }
@@ -249,8 +249,8 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer RepeatShape(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgc,
+int RepeatShape(Draw_Interpretor& theDI,
+                             int  theArgc,
                              const char**      theArgv)
 {
   if (theArgc < 4)
@@ -265,9 +265,9 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
     return 1;
   }
 
-  for (Standard_Integer i = 2; i < theArgc; ++i)
+  for (int i = 2; i < theArgc; ++i)
   {
-    Standard_Integer aDirID = -1;
+    int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
       aDirID = 0;
     else if (!strcasecmp(theArgv[i], "-y"))
@@ -283,7 +283,7 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
     char cDirName[2];
     Sprintf(cDirName, "%c", theArgv[i][1]);
 
-    Standard_Integer aTimes = 0;
+    int aTimes = 0;
     if (theArgc > i + 1)
       aTimes = Draw::Atoi(theArgv[++i]);
 
@@ -314,8 +314,8 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
-                             Standard_Integer  theArgc,
+int MaterialsOn(Draw_Interpretor& theDI,
+                             int  theArgc,
                              const char**      theArgv)
 {
   if (theArgc != 4)
@@ -333,19 +333,19 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
   }
 
   // Get the sign of a shape
-  Standard_Boolean bPositive;
+  bool bPositive;
 
   if (!strcmp("+", theArgv[2]))
-    bPositive = Standard_True;
+    bPositive = true;
   else if (!strcmp("-", theArgv[2]))
-    bPositive = Standard_False;
+    bPositive = false;
   else
   {
     theDI << theArgv[2] << " - invalid key.\n";
     return 1;
   }
 
-  const TopTools_ListOfShape& aLS = bPositive
+  const NCollection_List<TopoDS_Shape>& aLS = bPositive
                                       ? getMakeConnectedTool().MaterialsOnPositiveSide(aShape)
                                       : getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
 
@@ -357,7 +357,7 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aResult));
-    for (TopTools_ListIteratorOfListOfShape it(aLS); it.More(); it.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator it(aLS); it.More(); it.Next())
       BRep_Builder().Add(aResult, it.Value());
   }
 
@@ -368,7 +368,7 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -384,7 +384,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
     return 1;
   }
 
-  const TopTools_ListOfShape& aTwins = getMakeConnectedTool().PeriodicityTool().GetTwins(aShape);
+  const NCollection_List<TopoDS_Shape>& aTwins = getMakeConnectedTool().PeriodicityTool().GetTwins(aShape);
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
@@ -394,7 +394,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aCTwins));
-    for (TopTools_ListIteratorOfListOfShape it(aTwins); it.More(); it.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator it(aTwins); it.More(); it.Next())
       BRep_Builder().Add(aCTwins, it.Value());
   }
 
@@ -405,7 +405,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI, Standard_Integer theArgc, con
 
 //=================================================================================================
 
-Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer theArgc, const char** theArgv)
+int ClearRepetitions(Draw_Interpretor&, int theArgc, const char** theArgv)
 {
   // Clear all previous repetitions
   getMakeConnectedTool().ClearRepetitions();

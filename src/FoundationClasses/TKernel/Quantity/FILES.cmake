@@ -2,7 +2,7 @@
 set(OCCT_Quantity_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Quantity_FILES
-  Quantity_Array1OfColor.hxx
+
   Quantity_Color.cxx
   Quantity_Color.hxx
   Quantity_ColorTable.pxx

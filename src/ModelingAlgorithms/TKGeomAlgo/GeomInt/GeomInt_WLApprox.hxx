@@ -47,7 +47,7 @@ private:
   struct Approx_Data
   {
     Approx_Data()
-        : myBezierApprox(Standard_True),
+        : myBezierApprox(true),
           Xo(0.0),
           Yo(0.0),
           Zo(0.0),
@@ -55,9 +55,9 @@ private:
           V1o(0.0),
           U2o(0.0),
           V2o(0.0),
-          ApproxXYZ(Standard_True),
-          ApproxU1V1(Standard_True),
-          ApproxU2V2(Standard_True),
+          ApproxXYZ(true),
+          ApproxU1V1(true),
+          ApproxU2V2(true),
           indicemin(0),
           indicemax(0),
           myNbPntMax(30),
@@ -65,10 +65,10 @@ private:
     {
     }
 
-    Standard_Boolean           myBezierApprox;
-    Standard_Real              Xo, Yo, Zo, U1o, V1o, U2o, V2o;
-    Standard_Boolean           ApproxXYZ, ApproxU1V1, ApproxU2V2;
-    Standard_Integer           indicemin, indicemax, myNbPntMax;
+    bool           myBezierApprox;
+    double              Xo, Yo, Zo, U1o, V1o, U2o, V2o;
+    bool           ApproxXYZ, ApproxU1V1, ApproxU2V2;
+    int           indicemin, indicemax, myNbPntMax;
     Approx_ParametrizationType parametrization;
   };
 
@@ -77,94 +77,93 @@ public:
 
   Standard_EXPORT GeomInt_WLApprox();
 
-  Standard_EXPORT void Perform(const Handle(Adaptor3d_Surface)& Surf1,
-                               const Handle(Adaptor3d_Surface)& Surf2,
-                               const Handle(IntPatch_WLine)&    aLine,
-                               const Standard_Boolean           ApproxXYZ  = Standard_True,
-                               const Standard_Boolean           ApproxU1V1 = Standard_True,
-                               const Standard_Boolean           ApproxU2V2 = Standard_True,
-                               const Standard_Integer           indicemin  = 0,
-                               const Standard_Integer           indicemax  = 0);
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>& Surf1,
+                               const occ::handle<Adaptor3d_Surface>& Surf2,
+                               const occ::handle<IntPatch_WLine>&    aLine,
+                               const bool           ApproxXYZ  = true,
+                               const bool           ApproxU1V1 = true,
+                               const bool           ApproxU2V2 = true,
+                               const int           indicemin  = 0,
+                               const int           indicemax  = 0);
 
-  Standard_EXPORT void Perform(const Handle(IntPatch_WLine)& aLine,
-                               const Standard_Boolean        ApproxXYZ  = Standard_True,
-                               const Standard_Boolean        ApproxU1V1 = Standard_True,
-                               const Standard_Boolean        ApproxU2V2 = Standard_True,
-                               const Standard_Integer        indicemin  = 0,
-                               const Standard_Integer        indicemax  = 0);
+  Standard_EXPORT void Perform(const occ::handle<IntPatch_WLine>& aLine,
+                               const bool        ApproxXYZ  = true,
+                               const bool        ApproxU1V1 = true,
+                               const bool        ApproxU2V2 = true,
+                               const int        indicemin  = 0,
+                               const int        indicemax  = 0);
 
   Standard_EXPORT void SetParameters(
-    const Standard_Real              Tol3d,
-    const Standard_Real              Tol2d,
-    const Standard_Integer           DegMin,
-    const Standard_Integer           DegMax,
-    const Standard_Integer           NbIterMax,
-    const Standard_Integer           NbPntMax           = 30,
-    const Standard_Boolean           ApproxWithTangency = Standard_True,
+    const double              Tol3d,
+    const double              Tol2d,
+    const int           DegMin,
+    const int           DegMax,
+    const int           NbIterMax,
+    const int           NbPntMax           = 30,
+    const bool           ApproxWithTangency = true,
     const Approx_ParametrizationType Parametrization    = Approx_ChordLength);
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT Standard_Real TolReached3d() const;
+  Standard_EXPORT double TolReached3d() const;
 
-  Standard_EXPORT Standard_Real TolReached2d() const;
+  Standard_EXPORT double TolReached2d() const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Integer NbMultiCurves() const;
+  Standard_EXPORT int NbMultiCurves() const;
 
-  Standard_EXPORT const AppParCurves_MultiBSpCurve& Value(const Standard_Integer Index) const;
+  Standard_EXPORT const AppParCurves_MultiBSpCurve& Value(const int Index) const;
 
   Standard_EXPORT static void Parameters(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                         const Standard_Integer                firstP,
-                                         const Standard_Integer                lastP,
+                                         const int                firstP,
+                                         const int                lastP,
                                          const Approx_ParametrizationType      Par,
                                          math_Vector&                          TheParameters);
 
-protected:
 private:
   Standard_EXPORT void Perform(const IntSurf_Quadric&           Surf1,
-                               const Handle(Adaptor3d_Surface)& Surf2,
-                               const Handle(IntPatch_WLine)&    aLine,
-                               const Standard_Boolean           ApproxXYZ,
-                               const Standard_Boolean           ApproxU1V1,
-                               const Standard_Boolean           ApproxU2V2,
-                               const Standard_Integer           indicemin,
-                               const Standard_Integer           indicemax,
-                               const Standard_Boolean           isTheQuadFirst);
+                               const occ::handle<Adaptor3d_Surface>& Surf2,
+                               const occ::handle<IntPatch_WLine>&    aLine,
+                               const bool           ApproxXYZ,
+                               const bool           ApproxU1V1,
+                               const bool           ApproxU2V2,
+                               const int           indicemin,
+                               const int           indicemax,
+                               const bool           isTheQuadFirst);
 
   Standard_EXPORT void UpdateTolReached();
 
   //! Fill data structure for intersection approximation.
-  Standard_EXPORT void fillData(const Handle(IntPatch_WLine)& theLine);
+  Standard_EXPORT void fillData(const occ::handle<IntPatch_WLine>& theLine);
 
   //! Prepare data structure for further computations.
-  Standard_EXPORT void prepareDS(const Standard_Boolean theApproxXYZ,
-                                 const Standard_Boolean theApproxU1V1,
-                                 const Standard_Boolean theApproxU2V2,
-                                 const Standard_Integer indicemin,
-                                 const Standard_Integer indicemax);
+  Standard_EXPORT void prepareDS(const bool theApproxXYZ,
+                                 const bool theApproxU1V1,
+                                 const bool theApproxU2V2,
+                                 const int indicemin,
+                                 const int indicemax);
 
   //! Build knot sequence.
-  Standard_EXPORT void buildKnots(const Handle(IntPatch_WLine)& theline,
-                                  const Standard_Address        thePtrSVSurf);
+  Standard_EXPORT void buildKnots(const occ::handle<IntPatch_WLine>& theline,
+                                  void* const        thePtrSVSurf);
 
   //! Build curve.
-  Standard_EXPORT void buildCurve(const Handle(IntPatch_WLine)& theline,
-                                  const Standard_Address        thePtrSVSurf);
+  Standard_EXPORT void buildCurve(const occ::handle<IntPatch_WLine>& theline,
+                                  void* const        thePtrSVSurf);
 
   GeomInt_TheComputeLineOfWLApprox       myComputeLine;
   GeomInt_TheComputeLineBezierOfWLApprox myComputeLineBezier;
   Approx_MCurvesToBSpCurve               myBezToBSpl;
-  Standard_Boolean                       myWithTangency;
-  Standard_Real                          myTol3d;
-  Standard_Real                          myTol2d;
-  Standard_Integer                       myDegMin;
-  Standard_Integer                       myDegMax;
-  Standard_Integer                       myNbIterMax;
-  Standard_Real                          myTolReached3d;
-  Standard_Real                          myTolReached2d;
+  bool                       myWithTangency;
+  double                          myTol3d;
+  double                          myTol2d;
+  int                       myDegMin;
+  int                       myDegMax;
+  int                       myNbIterMax;
+  double                          myTolReached3d;
+  double                          myTolReached2d;
   Approx_Data                            myData;
-  NCollection_Vector<Standard_Integer>   myKnots;
+  NCollection_Vector<int>   myKnots;
 };
 
 #endif // _GeomInt_WLApprox_HeaderFile

@@ -29,7 +29,7 @@ inline const TopoDS_Shape& BRepTools_Modifier::ModifiedShape(const TopoDS_Shape&
 
 //=================================================================================================
 
-inline Standard_Boolean BRepTools_Modifier::IsDone() const
+inline bool BRepTools_Modifier::IsDone() const
 {
   return myDone;
 }

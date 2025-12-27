@@ -23,7 +23,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Template class for function used to find extremal distance between two curves.
 //! This class inherits from math_FunctionSetWithDerivatives and is used by
@@ -63,24 +63,24 @@ public:
   void SetTolerance(const double theTol) { myTol = theTol; }
 
   //! Returns the number of variables (2).
-  virtual int NbVariables() const Standard_OVERRIDE { return 2; }
+  virtual int NbVariables() const override { return 2; }
 
   //! Returns the number of equations (2).
-  virtual int NbEquations() const Standard_OVERRIDE { return 2; }
+  virtual int NbEquations() const override { return 2; }
 
   //! Calculate Fi(U,V).
-  virtual Standard_Boolean Value(const math_Vector& theUV, math_Vector& theF) Standard_OVERRIDE;
+  virtual bool Value(const math_Vector& theUV, math_Vector& theF) override;
 
   //! Calculate Fi'(U,V).
-  Standard_Boolean Derivatives(const math_Vector& theUV, math_Matrix& theDF) Standard_OVERRIDE;
+  bool Derivatives(const math_Vector& theUV, math_Matrix& theDF) override;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_Boolean Values(const math_Vector& theUV,
+  bool Values(const math_Vector& theUV,
                           math_Vector&       theF,
-                          math_Matrix&       theDF) Standard_OVERRIDE;
+                          math_Matrix&       theDF) override;
 
   //! Save the found extremum.
-  virtual int GetStateNumber() Standard_OVERRIDE;
+  virtual int GetStateNumber() override;
 
   //! Return the number of found extrema.
   int NbExt() const { return mySqDist.Length(); }
@@ -92,7 +92,7 @@ public:
   void Points(const int theN, ThePOnC& theP1, ThePOnC& theP2) const;
 
   //! Returns a pointer to the curve specified in the constructor or in SetCurve() method.
-  Standard_Address CurvePtr(const int theRank) const
+  void* CurvePtr(const int theRank) const
   {
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > 2, "Extrema_GFuncExtCC::CurvePtr()");
     return (theRank == 1 ? myC1 : myC2);
@@ -105,7 +105,7 @@ public:
   void SubIntervalInitialize(const math_Vector& theUfirst, const math_Vector& theUlast);
 
   //! Computes a Tol value. If 1st derivative of curve |D1|<Tol, it is considered D1=0.
-  double SearchOfTolerance(const Standard_Address theC);
+  double SearchOfTolerance(void* const theC);
 
 private:
   static constexpr double THE_MIN_TOL    = 1.e-20;
@@ -113,8 +113,8 @@ private:
   static constexpr double THE_MIN_STEP   = 1e-7;
   static constexpr int    THE_MAX_ORDER  = 3;
 
-  Standard_Address       myC1;
-  Standard_Address       myC2;
+  void*       myC1;
+  void*       myC2;
   double                 myTol;
   double                 myU;
   double                 myV;
@@ -122,7 +122,7 @@ private:
   ThePoint               myP2;
   TheVector              myDu;
   TheVector              myDv;
-  TColStd_SequenceOfReal mySqDist;
+  NCollection_Sequence<double> mySqDist;
   TheSequenceOfPOnC      myPoints;
   double                 myTolC1;
   double                 myTolC2;
@@ -155,7 +155,7 @@ double Extrema_GFuncExtCC<TheCurve1,
                           ThePOnC,
                           ThePoint,
                           TheVector,
-                          TheSequenceOfPOnC>::SearchOfTolerance(const Standard_Address theC)
+                          TheSequenceOfPOnC>::SearchOfTolerance(void* const theC)
 {
   const int NPoint = 10;
   double    aStartParam, anEndParam;
@@ -251,8 +251,8 @@ Extrema_GFuncExtCC<TheCurve1,
                    TheSequenceOfPOnC>::Extrema_GFuncExtCC(const TheCurve1& theC1,
                                                           const TheCurve2& theC2,
                                                           const double     theTol)
-    : myC1((Standard_Address)&theC1),
-      myC2((Standard_Address)&theC2),
+    : myC1((void*)&theC1),
+      myC2((void*)&theC2),
       myTol(theTol)
 {
   math_Vector V1(1, 2), V2(1, 2);
@@ -269,7 +269,7 @@ Extrema_GFuncExtCC<TheCurve1,
     case GeomAbs_OffsetCurve:
     case GeomAbs_OtherCurve:
       myMaxDerivOrderC1 = THE_MAX_ORDER;
-      myTolC1           = SearchOfTolerance((Standard_Address)&theC1);
+      myTolC1           = SearchOfTolerance((void*)&theC1);
       break;
     default:
       myMaxDerivOrderC1 = 0;
@@ -284,7 +284,7 @@ Extrema_GFuncExtCC<TheCurve1,
     case GeomAbs_OffsetCurve:
     case GeomAbs_OtherCurve:
       myMaxDerivOrderC2 = THE_MAX_ORDER;
-      myTolC2           = SearchOfTolerance((Standard_Address)&theC2);
+      myTolC2           = SearchOfTolerance((void*)&theC2);
       break;
     default:
       myMaxDerivOrderC2 = 0;
@@ -316,7 +316,7 @@ void Extrema_GFuncExtCC<TheCurve1,
 
     if (theRank == 1)
   {
-    myC1 = (Standard_Address)&theC;
+    myC1 = (void*)&theC;
     switch (theC.GetType())
     {
       case GeomAbs_BezierCurve:
@@ -324,7 +324,7 @@ void Extrema_GFuncExtCC<TheCurve1,
       case GeomAbs_OffsetCurve:
       case GeomAbs_OtherCurve:
         myMaxDerivOrderC1 = THE_MAX_ORDER;
-        myTolC1           = SearchOfTolerance((Standard_Address)&theC);
+        myTolC1           = SearchOfTolerance((void*)&theC);
         break;
       default:
         myMaxDerivOrderC1 = 0;
@@ -334,7 +334,7 @@ void Extrema_GFuncExtCC<TheCurve1,
   }
   else if (theRank == 2)
   {
-    myC2 = (Standard_Address)&theC;
+    myC2 = (void*)&theC;
     switch (theC.GetType())
     {
       case GeomAbs_BezierCurve:
@@ -342,7 +342,7 @@ void Extrema_GFuncExtCC<TheCurve1,
       case GeomAbs_OffsetCurve:
       case GeomAbs_OtherCurve:
         myMaxDerivOrderC2 = THE_MAX_ORDER;
-        myTolC2           = SearchOfTolerance((Standard_Address)&theC);
+        myTolC2           = SearchOfTolerance((void*)&theC);
         break;
       default:
         myMaxDerivOrderC2 = 0;
@@ -362,7 +362,7 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheVector,
           typename TheSequenceOfPOnC>
-Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
+bool Extrema_GFuncExtCC<TheCurve1,
                                     TheCurveTool1,
                                     TheCurve2,
                                     TheCurveTool2,
@@ -396,7 +396,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       int              n = 1;
       TheVector        V;
-      Standard_Boolean IsDeriveFound;
+      bool IsDeriveFound;
 
       do
       {
@@ -430,21 +430,21 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
       {
         ThePoint         Ptemp;
         ThePoint         P1, P2, P3;
-        Standard_Boolean IsParameterGrown;
+        bool IsParameterGrown;
 
         if (myU - myUinfium < 2 * aDelta)
         {
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU, P1);
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU + aDelta, P2);
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU + 2 * aDelta, P3);
-          IsParameterGrown = Standard_True;
+          IsParameterGrown = true;
         }
         else
         {
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU - 2 * aDelta, P1);
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU - aDelta, P2);
           TheCurveTool1::D0(*((TheCurve1*)myC1), myU, P3);
-          IsParameterGrown = Standard_False;
+          IsParameterGrown = false;
         }
 
         TheVector V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
@@ -460,7 +460,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
   if (Ndu <= THE_MIN_TOL)
   {
-    return Standard_False;
+    return false;
   }
 
   double Ndv = myDv.Magnitude();
@@ -480,7 +480,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       int              n = 1;
       TheVector        V;
-      Standard_Boolean IsDeriveFound;
+      bool IsDeriveFound;
 
       do
       {
@@ -514,21 +514,21 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
       {
         ThePoint         Ptemp;
         ThePoint         P1, P2, P3;
-        Standard_Boolean IsParameterGrown;
+        bool IsParameterGrown;
 
         if (myV - myVinfium < 2 * aDelta)
         {
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV, P1);
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV + aDelta, P2);
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV + 2 * aDelta, P3);
-          IsParameterGrown = Standard_True;
+          IsParameterGrown = true;
         }
         else
         {
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV - 2 * aDelta, P1);
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV - aDelta, P2);
           TheCurveTool2::D0(*((TheCurve2*)myC2), myV, P3);
-          IsParameterGrown = Standard_False;
+          IsParameterGrown = false;
         }
 
         TheVector V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
@@ -545,12 +545,12 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
   if (Ndv <= THE_MIN_TOL)
   {
-    return Standard_False;
+    return false;
   }
 
   theF(1) = P1P2.Dot(myDu) / Ndu;
   theF(2) = P1P2.Dot(myDv) / Ndv;
-  return Standard_True;
+  return true;
 }
 
 //==================================================================================================
@@ -563,7 +563,7 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheVector,
           typename TheSequenceOfPOnC>
-Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
+bool Extrema_GFuncExtCC<TheCurve1,
                                     TheCurveTool1,
                                     TheCurve2,
                                     TheCurveTool2,
@@ -587,7 +587,7 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheVector,
           typename TheSequenceOfPOnC>
-Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
+bool Extrema_GFuncExtCC<TheCurve1,
                                     TheCurveTool1,
                                     TheCurve2,
                                     TheCurveTool2,
@@ -601,9 +601,9 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
   myU = theUV(1);
   myV = theUV(2);
 
-  if (Value(theUV, theF) == Standard_False)
+  if (Value(theUV, theF) == false)
   {
-    return Standard_False;
+    return false;
   }
 
   TheVector Du, Dv, Duu, Dvv;
@@ -649,7 +649,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
       UV3(2) = myV;
       if (!((Value(UV2, FF2)) && (Value(UV3, FF3))))
       {
-        return Standard_False;
+        return false;
       }
 
       F2 = FF2(1);
@@ -668,7 +668,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       if (!((Value(UV2, FF2)) && (Value(UV1, FF1))))
       {
-        return Standard_False;
+        return false;
       }
 
       F1 = FF1(1);
@@ -691,7 +691,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       if (!((Value(UV2, FF2)) && (Value(UV3, FF3))))
       {
-        return Standard_False;
+        return false;
       }
       F2 = FF2(1);
       F3 = FF3(1);
@@ -708,7 +708,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
       UV1(2) = myV - 2 * aDeltaV;
       if (!((Value(UV2, FF2)) && (Value(UV1, FF1))))
       {
-        return Standard_False;
+        return false;
       }
 
       F1 = FF1(1);
@@ -745,7 +745,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       if (!((Value(UV2, FF2)) && (Value(UV3, FF3))))
       {
-        return Standard_False;
+        return false;
       }
 
       F2 = FF2(2);
@@ -764,7 +764,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       if (!((Value(UV2, FF2)) && (Value(UV1, FF1))))
       {
-        return Standard_False;
+        return false;
       }
 
       F1 = FF1(2);
@@ -786,7 +786,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
       UV3(2) = myV;
       if (!((Value(UV2, FF2)) && (Value(UV3, FF3))))
       {
-        return Standard_False;
+        return false;
       }
 
       F2 = FF2(2);
@@ -805,7 +805,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
 
       if (!((Value(UV2, FF2)) && (Value(UV1, FF1))))
       {
-        return Standard_False;
+        return false;
       }
 
       F1 = FF1(2);
@@ -828,7 +828,7 @@ Standard_Boolean Extrema_GFuncExtCC<TheCurve1,
     theDF(2, 1) = -myDu.Dot(myDv) / Ndv;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //==================================================================================================

@@ -24,7 +24,7 @@
 class RWGltf_GltfPrimArrayData
 {
 public:
-  Handle(NCollection_Buffer) StreamData;
+  occ::handle<NCollection_Buffer> StreamData;
   TCollection_AsciiString    StreamUri;
   int64_t                    StreamOffset;
   int64_t                    StreamLength;

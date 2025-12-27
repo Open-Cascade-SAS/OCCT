@@ -56,20 +56,20 @@ public:
   Standard_EXPORT BOPAlgo_Splitter();
   Standard_EXPORT virtual ~BOPAlgo_Splitter();
 
-  Standard_EXPORT BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_Splitter(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Performs the operation
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
   //! Checks the input data
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Adds images of the argument shapes into result.
   //! When called the for the last time (for compound) it rebuilds the result
   //! shape to avoid multiple enclosure into compounds.
-  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
+  Standard_EXPORT virtual void BuildResult(const TopAbs_ShapeEnum theType) override;
 };
 
 #endif // _BOPAlgo_Splitter_HeaderFile

@@ -55,7 +55,7 @@ public:
 
   //! Make a Line from Geom2d <TheLin> parallel to another
   //! Lin <Lin> at a distance <Dist>.
-  Standard_EXPORT GCE2d_MakeLine(const gp_Lin2d& Lin, const Standard_Real Dist);
+  Standard_EXPORT GCE2d_MakeLine(const gp_Lin2d& Lin, const double Dist);
 
   //! Make a Line from Geom2d <TheLin> passing through 2
   //! Pnt <P1>,<P2>.
@@ -67,12 +67,12 @@ public:
 
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone if no line is constructed.
-  Standard_EXPORT const Handle(Geom2d_Line)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_Line>& Value() const;
 
-  operator const Handle(Geom2d_Line)&() const { return Value(); }
+  operator const occ::handle<Geom2d_Line>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_Line) TheLine;
+  occ::handle<Geom2d_Line> TheLine;
 };
 
 #endif // _GCE2d_MakeLine_HeaderFile

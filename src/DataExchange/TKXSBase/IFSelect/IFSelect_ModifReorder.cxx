@@ -23,15 +23,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModifReorder, IFSelect_Modifier)
 
-IFSelect_ModifReorder::IFSelect_ModifReorder(const Standard_Boolean rootlast)
-    : IFSelect_Modifier(Standard_True)
+IFSelect_ModifReorder::IFSelect_ModifReorder(const bool rootlast)
+    : IFSelect_Modifier(true)
 {
   thertl = rootlast;
 }
 
 void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                  ctx,
-                                    const Handle(Interface_InterfaceModel)& target,
-                                    const Handle(Interface_Protocol)& /*protocol*/,
+                                    const occ::handle<Interface_InterfaceModel>& target,
+                                    const occ::handle<Interface_Protocol>& /*protocol*/,
                                     Interface_CopyTool& /*TC*/) const
 {
   Interface_ShareTool      sht(ctx.OriginalGraph());
@@ -43,8 +43,8 @@ void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                  ctx,
 
 TCollection_AsciiString IFSelect_ModifReorder::Label() const
 {
-  Standard_CString astr =
-    (Standard_CString)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
+  const char* astr =
+    (const char*)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
   return TCollection_AsciiString(astr);
   //    ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
 }

@@ -52,15 +52,15 @@ public:
   //! EpsX is a internal tolerance used in math
   //! algorithms, usually about 1e-10
   //! (See FunctionAllRoots for more details)
-  Standard_EXPORT void SetEpsX(const Standard_Real EpsDist);
+  Standard_EXPORT void SetEpsX(const double EpsDist);
 
   //! Accuracy is the number of samples used to
   //! approximate the parametric curve on its domain.
-  Standard_EXPORT void SetAccuracy(const Standard_Integer Nb);
+  Standard_EXPORT void SetAccuracy(const int Nb);
 
-  Standard_Integer Accuracy() const;
+  int Accuracy() const;
 
-  Standard_Real EpsX() const;
+  double EpsX() const;
 
   //! The Conics are manipulated as objects which only
   //! depend on three parameters : Axis and two Real from Standards.
@@ -69,17 +69,16 @@ public:
 
   const gp_Ax22d& Axis2() const;
 
-  Standard_Real Param1() const;
+  double Param1() const;
 
-  Standard_Real Param2() const;
+  double Param2() const;
 
-protected:
 private:
   gp_Ax22d          axe;
-  Standard_Real     prm1;
-  Standard_Real     prm2;
-  Standard_Real     TheEpsX;
-  Standard_Integer  TheAccuracy;
+  double     prm1;
+  double     prm2;
+  double     TheEpsX;
+  int  TheAccuracy;
   GeomAbs_CurveType type;
 };
 

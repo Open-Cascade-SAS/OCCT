@@ -20,9 +20,6 @@
 
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 
-class StepRepr_ProductDefinitionUsage;
-DEFINE_STANDARD_HANDLE(StepRepr_ProductDefinitionUsage, StepBasic_ProductDefinitionRelationship)
-
 //! Representation of STEP entity ProductDefinitionUsage
 class StepRepr_ProductDefinitionUsage : public StepBasic_ProductDefinitionRelationship
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ProductDefinitionUsage, StepBasic_ProductDefinitionRelationship)
 
-protected:
-private:
 };
 
 #endif // _StepRepr_ProductDefinitionUsage_HeaderFile

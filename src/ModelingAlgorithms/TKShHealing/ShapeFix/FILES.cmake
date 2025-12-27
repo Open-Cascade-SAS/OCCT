@@ -6,8 +6,7 @@ set(OCCT_ShapeFix_FILES
   ShapeFix.hxx
   ShapeFix_ComposeShell.cxx
   ShapeFix_ComposeShell.hxx
-  ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d.hxx
-  ShapeFix_DataMapOfShapeBox2d.hxx
+
   ShapeFix_Edge.cxx
   ShapeFix_Edge.hxx
   ShapeFix_EdgeConnect.cxx
@@ -32,7 +31,7 @@ set(OCCT_ShapeFix_FILES
   ShapeFix_Root.cxx
   ShapeFix_Root.hxx
   ShapeFix_Root.lxx
-  ShapeFix_SequenceOfWireSegment.hxx
+
   ShapeFix_Shape.cxx
   ShapeFix_Shape.hxx
   ShapeFix_Shape.lxx

@@ -15,9 +15,10 @@
 #define StepFEA_HArray1OfCurveElementInterval_HeaderFile
 
 #include <StepFEA_CurveElementInterval.hxx>
-#include <StepFEA_Array1OfCurveElementInterval.hxx>
+#include <StepFEA_CurveElementInterval.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepFEA_HArray1OfCurveElementInterval, StepFEA_Array1OfCurveElementInterval)
+DEFINE_HARRAY1(StepFEA_HArray1OfCurveElementInterval, NCollection_Array1<occ::handle<StepFEA_CurveElementInterval>>)
 
 #endif

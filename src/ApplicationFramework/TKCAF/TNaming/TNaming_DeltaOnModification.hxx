@@ -24,9 +24,6 @@
 #include <TDF_DeltaOnModification.hxx>
 class TNaming_NamedShape;
 
-class TNaming_DeltaOnModification;
-DEFINE_STANDARD_HANDLE(TNaming_DeltaOnModification, TDF_DeltaOnModification)
-
 //! This class provides default services for an
 //! AttributeDelta on a MODIFICATION action.
 //!
@@ -37,17 +34,16 @@ class TNaming_DeltaOnModification : public TDF_DeltaOnModification
 
 public:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TNaming_DeltaOnModification(const Handle(TNaming_NamedShape)& NS);
+  Standard_EXPORT TNaming_DeltaOnModification(const occ::handle<TNaming_NamedShape>& NS);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_DeltaOnModification, TDF_DeltaOnModification)
 
-protected:
 private:
-  Handle(TopTools_HArray1OfShape) myOld;
-  Handle(TopTools_HArray1OfShape) myNew;
+  occ::handle<TopTools_HArray1OfShape> myOld;
+  occ::handle<TopTools_HArray1OfShape> myNew;
 };
 
 #endif // _TNaming_DeltaOnModification_HeaderFile

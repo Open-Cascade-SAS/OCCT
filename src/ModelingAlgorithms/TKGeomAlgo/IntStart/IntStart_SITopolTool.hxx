@@ -25,9 +25,6 @@
 #include <Standard_Real.hxx>
 class gp_Pnt2d;
 
-class IntStart_SITopolTool;
-DEFINE_STANDARD_HANDLE(IntStart_SITopolTool, Standard_Transient)
-
 //! template class for a topological tool.
 //! This tool is linked with the surface on which
 //! the classification has to be made.
@@ -35,12 +32,10 @@ class IntStart_SITopolTool : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P, const Standard_Real Tol) = 0;
+  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P, const double Tol) = 0;
 
   DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _IntStart_SITopolTool_HeaderFile

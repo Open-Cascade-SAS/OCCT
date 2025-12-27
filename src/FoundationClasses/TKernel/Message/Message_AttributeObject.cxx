@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_AttributeObject, Message_Attribute)
 
 //=================================================================================================
 
-Message_AttributeObject::Message_AttributeObject(const Handle(Standard_Transient)& theObject,
+Message_AttributeObject::Message_AttributeObject(const occ::handle<Standard_Transient>& theObject,
                                                  const TCollection_AsciiString&    theName)
     : Message_Attribute(theName)
 {
@@ -28,7 +28,7 @@ Message_AttributeObject::Message_AttributeObject(const Handle(Standard_Transient
 //=================================================================================================
 
 void Message_AttributeObject::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Message_Attribute)

@@ -17,9 +17,10 @@
 #ifndef Units_QuantitiesSequence_HeaderFile
 #define Units_QuantitiesSequence_HeaderFile
 
-#include <Units_QtsSequence.hxx>
+#include <Units_Quantity.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(Units_QuantitiesSequence, Units_QtsSequence)
+DEFINE_HSEQUENCE(Units_QuantitiesSequence, NCollection_Sequence<occ::handle<Units_Quantity>>)
 
 #endif

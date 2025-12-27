@@ -4,7 +4,7 @@ set(OCCT_IGESDefs_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESDefs_FILES
   IGESDefs.cxx
   IGESDefs.hxx
-  IGESDefs_Array1OfTabularData.hxx
+
   IGESDefs_AssociativityDef.cxx
   IGESDefs_AssociativityDef.hxx
   IGESDefs_AttributeDef.cxx

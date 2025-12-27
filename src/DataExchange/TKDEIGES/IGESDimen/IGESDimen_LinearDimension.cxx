@@ -27,11 +27,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LinearDimension, IGESData_IGESEntity)
 
 IGESDimen_LinearDimension::IGESDimen_LinearDimension() {}
 
-void IGESDimen_LinearDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                                     const Handle(IGESDimen_LeaderArrow)& aLeader,
-                                     const Handle(IGESDimen_LeaderArrow)& anotherLeader,
-                                     const Handle(IGESDimen_WitnessLine)& aWitness,
-                                     const Handle(IGESDimen_WitnessLine)& anotherWitness)
+void IGESDimen_LinearDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                                     const occ::handle<IGESDimen_LeaderArrow>& aLeader,
+                                     const occ::handle<IGESDimen_LeaderArrow>& anotherLeader,
+                                     const occ::handle<IGESDimen_WitnessLine>& aWitness,
+                                     const occ::handle<IGESDimen_WitnessLine>& anotherWitness)
 {
   theNote          = aNote;
   theFirstLeader   = aLeader;
@@ -42,44 +42,44 @@ void IGESDimen_LinearDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
   //  FormNumber : Nature of the Dimension 0-1-2
 }
 
-void IGESDimen_LinearDimension::SetFormNumber(const Standard_Integer fm)
+void IGESDimen_LinearDimension::SetFormNumber(const int fm)
 {
   if (fm < 0 || fm > 2)
     throw Standard_OutOfRange("IGESDimen_LinearDimension : SetFormNumber");
   InitTypeAndForm(216, fm);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_LinearDimension::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_LinearDimension::Note() const
 {
   return theNote;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_LinearDimension::FirstLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_LinearDimension::FirstLeader() const
 {
   return theFirstLeader;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_LinearDimension::SecondLeader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_LinearDimension::SecondLeader() const
 {
   return theSecondLeader;
 }
 
-Standard_Boolean IGESDimen_LinearDimension::HasFirstWitness() const
+bool IGESDimen_LinearDimension::HasFirstWitness() const
 {
   return (!theFirstWitness.IsNull());
 }
 
-Handle(IGESDimen_WitnessLine) IGESDimen_LinearDimension::FirstWitness() const
+occ::handle<IGESDimen_WitnessLine> IGESDimen_LinearDimension::FirstWitness() const
 {
   return theFirstWitness;
 }
 
-Standard_Boolean IGESDimen_LinearDimension::HasSecondWitness() const
+bool IGESDimen_LinearDimension::HasSecondWitness() const
 {
   return (!theSecondWitness.IsNull());
 }
 
-Handle(IGESDimen_WitnessLine) IGESDimen_LinearDimension::SecondWitness() const
+occ::handle<IGESDimen_WitnessLine> IGESDimen_LinearDimension::SecondWitness() const
 {
   return theSecondWitness;
 }

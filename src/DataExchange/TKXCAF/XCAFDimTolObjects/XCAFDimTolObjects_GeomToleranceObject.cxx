@@ -19,17 +19,17 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Trans
 
 XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
 {
-  myHasAxis           = Standard_False;
-  myHasPlane          = Standard_False;
-  myHasPnt            = Standard_False;
-  myHasPntText        = Standard_False;
+  myHasAxis           = false;
+  myHasPlane          = false;
+  myHasPnt            = false;
+  myHasPntText        = false;
   myAffectedPlaneType = XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
 }
 
 //=================================================================================================
 
 XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(
-  const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObj)
+  const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObj)
 {
   myType              = theObj->myType;
   myTypeOfValue       = theObj->myTypeOfValue;
@@ -56,7 +56,7 @@ XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) XCAFDimTolObjects_GeomToleranceObject::GetSemanticName() const
+occ::handle<TCollection_HAsciiString> XCAFDimTolObjects_GeomToleranceObject::GetSemanticName() const
 {
   return mySemanticName;
 }
@@ -64,7 +64,7 @@ Handle(TCollection_HAsciiString) XCAFDimTolObjects_GeomToleranceObject::GetSeman
 //=================================================================================================
 
 void XCAFDimTolObjects_GeomToleranceObject::SetSemanticName(
-  const Handle(TCollection_HAsciiString)& theName)
+  const occ::handle<TCollection_HAsciiString>& theName)
 {
   mySemanticName = theName;
 }
@@ -102,14 +102,14 @@ XCAFDimTolObjects_GeomToleranceTypeValue XCAFDimTolObjects_GeomToleranceObject::
 
 //=================================================================================================
 
-void XCAFDimTolObjects_GeomToleranceObject::SetValue(const Standard_Real theValue)
+void XCAFDimTolObjects_GeomToleranceObject::SetValue(const double theValue)
 {
   myValue = theValue;
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetValue() const
+double XCAFDimTolObjects_GeomToleranceObject::GetValue() const
 {
   return myValue;
 }
@@ -148,14 +148,14 @@ XCAFDimTolObjects_GeomToleranceZoneModif XCAFDimTolObjects_GeomToleranceObject::
 
 //=================================================================================================
 
-void XCAFDimTolObjects_GeomToleranceObject::SetValueOfZoneModifier(const Standard_Real theValue)
+void XCAFDimTolObjects_GeomToleranceObject::SetValueOfZoneModifier(const double theValue)
 {
   myValueOfZoneModif = theValue;
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetValueOfZoneModifier() const
+double XCAFDimTolObjects_GeomToleranceObject::GetValueOfZoneModifier() const
 {
   return myValueOfZoneModif;
 }
@@ -163,7 +163,7 @@ Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetValueOfZoneModifier() co
 //=================================================================================================
 
 void XCAFDimTolObjects_GeomToleranceObject::SetModifiers(
-  const XCAFDimTolObjects_GeomToleranceModifiersSequence& theModifiers)
+  const NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>& theModifiers)
 {
   myModifiers = theModifiers;
 }
@@ -178,7 +178,7 @@ void XCAFDimTolObjects_GeomToleranceObject::AddModifier(
 
 //=================================================================================================
 
-XCAFDimTolObjects_GeomToleranceModifiersSequence XCAFDimTolObjects_GeomToleranceObject::
+NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> XCAFDimTolObjects_GeomToleranceObject::
   GetModifiers() const
 {
   return myModifiers;
@@ -186,14 +186,14 @@ XCAFDimTolObjects_GeomToleranceModifiersSequence XCAFDimTolObjects_GeomTolerance
 
 //=================================================================================================
 
-void XCAFDimTolObjects_GeomToleranceObject::SetMaxValueModifier(const Standard_Real theModifier)
+void XCAFDimTolObjects_GeomToleranceObject::SetMaxValueModifier(const double theModifier)
 {
   myMaxValueModif = theModifier;
 }
 
 //=================================================================================================
 
-Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetMaxValueModifier() const
+double XCAFDimTolObjects_GeomToleranceObject::GetMaxValueModifier() const
 {
   return myMaxValueModif;
 }
@@ -203,7 +203,7 @@ Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetMaxValueModifier() const
 void XCAFDimTolObjects_GeomToleranceObject::SetAxis(const gp_Ax2& theAxis)
 {
   myAxis    = theAxis;
-  myHasAxis = Standard_True;
+  myHasAxis = true;
 }
 
 //=================================================================================================
@@ -215,7 +215,7 @@ gp_Ax2 XCAFDimTolObjects_GeomToleranceObject::GetAxis() const
 
 //=================================================================================================
 
-Standard_Boolean XCAFDimTolObjects_GeomToleranceObject::HasAxis() const
+bool XCAFDimTolObjects_GeomToleranceObject::HasAxis() const
 {
   return myHasAxis;
 }
@@ -223,7 +223,7 @@ Standard_Boolean XCAFDimTolObjects_GeomToleranceObject::HasAxis() const
 //=================================================================================================
 
 void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStream,
-                                                     Standard_Integer  theDepth) const
+                                                     int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -263,18 +263,18 @@ void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStrea
 
   if (!mySemanticName.IsNull())
   {
-    Standard_CString aSemanticName = mySemanticName->ToCString();
+    const char* aSemanticName = mySemanticName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aSemanticName)
   }
   if (!myPresentationName.IsNull())
   {
-    Standard_CString aPresentationName = myPresentationName->ToCString();
+    const char* aPresentationName = myPresentationName->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
   }
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myAffectedPlane)
 
-  for (XCAFDimTolObjects_GeomToleranceModifiersSequence::Iterator aModifIt(myModifiers);
+  for (NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>::Iterator aModifIt(myModifiers);
        aModifIt.More();
        aModifIt.Next())
   {

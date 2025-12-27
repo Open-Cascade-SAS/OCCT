@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepRepr_PropertyDefinition;
-DEFINE_STANDARD_HANDLE(StepRepr_PropertyDefinition, Standard_Transient)
-
 //! Representation of STEP entity PropertyDefinition
 class StepRepr_PropertyDefinition : public Standard_Transient
 {
@@ -35,25 +32,25 @@ public:
   Standard_EXPORT StepRepr_PropertyDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Standard_Boolean                  hasDescription,
-                            const Handle(TCollection_HAsciiString)& aDescription,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const bool                  hasDescription,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
                             const StepRepr_CharacterizedDefinition& aDefinition);
 
   //! Returns field Name
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
   //! Set field Name
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& Name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& Name);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns True if optional field Description is defined
-  Standard_EXPORT Standard_Boolean HasDescription() const;
+  Standard_EXPORT bool HasDescription() const;
 
   //! Returns field Definition
   Standard_EXPORT StepRepr_CharacterizedDefinition Definition() const;
@@ -63,12 +60,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_PropertyDefinition, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> theDescription;
   StepRepr_CharacterizedDefinition theDefinition;
-  Standard_Boolean                 defDescription;
+  bool                 defDescription;
 };
 
 #endif // _StepRepr_PropertyDefinition_HeaderFile

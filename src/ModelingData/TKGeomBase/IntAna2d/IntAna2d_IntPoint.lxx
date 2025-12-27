@@ -21,12 +21,12 @@ inline const gp_Pnt2d& IntAna2d_IntPoint::Value() const
   return myp;
 }
 
-inline Standard_Real IntAna2d_IntPoint::ParamOnFirst() const
+inline double IntAna2d_IntPoint::ParamOnFirst() const
 {
   return myu1;
 }
 
-inline Standard_Real IntAna2d_IntPoint::ParamOnSecond() const
+inline double IntAna2d_IntPoint::ParamOnSecond() const
 {
 
   if (myimplicit)
@@ -36,7 +36,7 @@ inline Standard_Real IntAna2d_IntPoint::ParamOnSecond() const
   return myu2;
 }
 
-inline Standard_Boolean IntAna2d_IntPoint::SecondIsImplicit() const
+inline bool IntAna2d_IntPoint::SecondIsImplicit() const
 {
   return (myimplicit);
 }

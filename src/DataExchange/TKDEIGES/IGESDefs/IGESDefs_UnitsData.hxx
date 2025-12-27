@@ -26,9 +26,6 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
-class IGESDefs_UnitsData;
-DEFINE_STANDARD_HANDLE(IGESDefs_UnitsData, IGESData_IGESEntity)
-
 //! defines IGES UnitsData Entity, Type <316> Form <0>
 //! in package IGESDefs
 //! This class stores data about a model's fundamental units.
@@ -45,33 +42,32 @@ public:
   //! - unitScales : Multiplicative Scale Factors
   //! raises exception if lengths of unitTypes, unitValues and
   //! unitScale are not same
-  Standard_EXPORT void Init(const Handle(Interface_HArray1OfHAsciiString)& unitTypes,
-                            const Handle(Interface_HArray1OfHAsciiString)& unitValues,
-                            const Handle(TColStd_HArray1OfReal)&           unitScales);
+  Standard_EXPORT void Init(const occ::handle<Interface_HArray1OfHAsciiString>& unitTypes,
+                            const occ::handle<Interface_HArray1OfHAsciiString>& unitValues,
+                            const occ::handle<TColStd_HArray1OfReal>&           unitScales);
 
   //! returns the Number of units defined by this entity
-  Standard_EXPORT Standard_Integer NbUnits() const;
+  Standard_EXPORT int NbUnits() const;
 
   //! returns the Type of the UnitNum'th unit being defined
   //! raises exception if UnitNum <= 0 or UnitNum > NbUnits()
-  Standard_EXPORT Handle(TCollection_HAsciiString) UnitType(const Standard_Integer UnitNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> UnitType(const int UnitNum) const;
 
   //! returns the Units of the UnitNum'th unit being defined
   //! raises exception if UnitNum <= 0 or UnitNum > NbUnits()
-  Standard_EXPORT Handle(TCollection_HAsciiString) UnitValue(const Standard_Integer UnitNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> UnitValue(const int UnitNum) const;
 
   //! returns the multiplicative scale factor to be applied to the
   //! UnitNum'th unit being defined
   //! raises exception if UnitNum <= 0 or UnitNum > NbUnits()
-  Standard_EXPORT Standard_Real ScaleFactor(const Standard_Integer UnitNum) const;
+  Standard_EXPORT double ScaleFactor(const int UnitNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_UnitsData, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(Interface_HArray1OfHAsciiString) theUnitTypes;
-  Handle(Interface_HArray1OfHAsciiString) theUnitValues;
-  Handle(TColStd_HArray1OfReal)           theUnitScales;
+  occ::handle<Interface_HArray1OfHAsciiString> theUnitTypes;
+  occ::handle<Interface_HArray1OfHAsciiString> theUnitValues;
+  occ::handle<TColStd_HArray1OfReal>           theUnitScales;
 };
 
 #endif // _IGESDefs_UnitsData_HeaderFile

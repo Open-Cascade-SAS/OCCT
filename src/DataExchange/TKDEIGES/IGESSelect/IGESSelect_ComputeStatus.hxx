@@ -26,9 +26,6 @@ class IGESData_IGESModel;
 class Interface_CopyTool;
 class TCollection_AsciiString;
 
-class IGESSelect_ComputeStatus;
-DEFINE_STANDARD_HANDLE(IGESSelect_ComputeStatus, IGESSelect_ModelModifier)
-
 //! Computes Status of IGES Entities for a whole IGESModel.
 //! This concerns SubordinateStatus and UseFlag, which must have
 //! some definite values according the way they are referenced.
@@ -48,17 +45,15 @@ public:
   //! IGES Entity). Then it corrects them, for the whole target.
   //! Works with a Protocol. Implementation uses BasicEditor
   Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
-                                  const Handle(IGESData_IGESModel)& target,
-                                  Interface_CopyTool&               TC) const Standard_OVERRIDE;
+                                  const occ::handle<IGESData_IGESModel>& target,
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Compute Subordinate Status and Use Flag"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ComputeStatus, IGESSelect_ModelModifier)
 
-protected:
-private:
 };
 
 #endif // _IGESSelect_ComputeStatus_HeaderFile

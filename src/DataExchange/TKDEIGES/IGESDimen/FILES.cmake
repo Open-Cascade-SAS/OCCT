@@ -6,8 +6,7 @@ set(OCCT_IGESDimen_FILES
   IGESDimen.hxx
   IGESDimen_AngularDimension.cxx
   IGESDimen_AngularDimension.hxx
-  IGESDimen_Array1OfGeneralNote.hxx
-  IGESDimen_Array1OfLeaderArrow.hxx
+
   IGESDimen_BasicDimension.cxx
   IGESDimen_BasicDimension.hxx
   IGESDimen_CenterLine.cxx

@@ -27,25 +27,25 @@
 
 //=================================================================================================
 
-Handle(Graphic3d_AspectFillArea3d) MeshVS_Tool::CreateAspectFillArea3d(
-  const Handle(MeshVS_Drawer)&    theDr,
+occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
+  const occ::handle<MeshVS_Drawer>&    theDr,
   const Graphic3d_MaterialAspect& Mat,
-  const Standard_Boolean          UseDefaults)
+  const bool          UseDefaults)
 {
-  Handle(Graphic3d_AspectFillArea3d) anAsp;
+  occ::handle<Graphic3d_AspectFillArea3d> anAsp;
   if (theDr.IsNull())
     return anAsp;
 
   Aspect_InteriorStyle     anIntStyle = Aspect_IS_EMPTY;
   Quantity_Color           anIntColor = Quantity_NOC_CYAN1, anEdgeColor = Quantity_NOC_WHITE;
   Aspect_TypeOfLine        anEdgeType  = Aspect_TOL_SOLID;
-  Standard_Real            anEdgeWidth = 1.0;
+  double            anEdgeWidth = 1.0;
   Aspect_HatchStyle        aHStyle     = Aspect_HS_HORIZONTAL;
   Graphic3d_MaterialAspect aFrMat = Mat, aBackMat = Mat;
 
-  Standard_Integer anIntStyleI = (Standard_Integer)Aspect_IS_EMPTY;
-  Standard_Integer anEdgeTypeI = (Standard_Integer)Aspect_TOL_SOLID;
-  Standard_Integer aHStyleI    = (Standard_Integer)Aspect_HS_HORIZONTAL;
+  int anIntStyleI = (int)Aspect_IS_EMPTY;
+  int anEdgeTypeI = (int)Aspect_TOL_SOLID;
+  int aHStyleI    = (int)Aspect_HS_HORIZONTAL;
 
   if (!theDr->GetColor(MeshVS_DA_InteriorColor, anIntColor) && !UseDefaults)
     return anAsp;
@@ -90,14 +90,14 @@ Handle(Graphic3d_AspectFillArea3d) MeshVS_Tool::CreateAspectFillArea3d(
 
 //=================================================================================================
 
-Handle(Graphic3d_AspectFillArea3d) MeshVS_Tool::CreateAspectFillArea3d(
-  const Handle(MeshVS_Drawer)& theDr,
-  const Standard_Boolean       UseDefaults)
+occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
+  const occ::handle<MeshVS_Drawer>& theDr,
+  const bool       UseDefaults)
 {
   Graphic3d_MaterialAspect aFrMat    = Graphic3d_NameOfMaterial_Brass;
   Graphic3d_MaterialAspect aBackMat  = Graphic3d_NameOfMaterial_Brass;
-  Standard_Integer         aFrMatI   = (Standard_Integer)Graphic3d_NameOfMaterial_Brass;
-  Standard_Integer         aBackMatI = (Standard_Integer)Graphic3d_NameOfMaterial_Brass;
+  int         aFrMatI   = (int)Graphic3d_NameOfMaterial_Brass;
+  int         aBackMatI = (int)Graphic3d_NameOfMaterial_Brass;
 
   if (!theDr->GetInteger(MeshVS_DA_FrontMaterial, aFrMatI) && !UseDefaults)
     return 0;
@@ -109,7 +109,7 @@ Handle(Graphic3d_AspectFillArea3d) MeshVS_Tool::CreateAspectFillArea3d(
   else
     aBackMat = (Graphic3d_MaterialAspect)(Graphic3d_NameOfMaterial)aBackMatI;
 
-  Handle(Graphic3d_AspectFillArea3d) aFill = CreateAspectFillArea3d(theDr, aFrMat, UseDefaults);
+  occ::handle<Graphic3d_AspectFillArea3d> aFill = CreateAspectFillArea3d(theDr, aFrMat, UseDefaults);
   aFill->SetBackMaterial(aBackMat);
 
   return aFill;
@@ -117,17 +117,17 @@ Handle(Graphic3d_AspectFillArea3d) MeshVS_Tool::CreateAspectFillArea3d(
 
 //=================================================================================================
 
-Handle(Graphic3d_AspectLine3d) MeshVS_Tool::CreateAspectLine3d(const Handle(MeshVS_Drawer)& theDr,
-                                                               const Standard_Boolean UseDefaults)
+occ::handle<Graphic3d_AspectLine3d> MeshVS_Tool::CreateAspectLine3d(const occ::handle<MeshVS_Drawer>& theDr,
+                                                               const bool UseDefaults)
 {
-  Handle(Graphic3d_AspectLine3d) anAsp;
+  occ::handle<Graphic3d_AspectLine3d> anAsp;
   if (theDr.IsNull())
     return anAsp;
 
   Quantity_Color    aBeamColor = Quantity_NOC_YELLOW;
   Aspect_TypeOfLine aBeamType  = Aspect_TOL_SOLID;
-  Standard_Real     aBeamWidth = 1.0;
-  Standard_Integer  aBeamTypeI = (Standard_Integer)Aspect_TOL_SOLID;
+  double     aBeamWidth = 1.0;
+  int  aBeamTypeI = (int)Aspect_TOL_SOLID;
 
   if (!theDr->GetColor(MeshVS_DA_BeamColor, aBeamColor) && !UseDefaults)
     return anAsp;
@@ -147,18 +147,18 @@ Handle(Graphic3d_AspectLine3d) MeshVS_Tool::CreateAspectLine3d(const Handle(Mesh
 
 //=================================================================================================
 
-Handle(Graphic3d_AspectMarker3d) MeshVS_Tool::CreateAspectMarker3d(
-  const Handle(MeshVS_Drawer)& theDr,
-  const Standard_Boolean       UseDefaults)
+occ::handle<Graphic3d_AspectMarker3d> MeshVS_Tool::CreateAspectMarker3d(
+  const occ::handle<MeshVS_Drawer>& theDr,
+  const bool       UseDefaults)
 {
-  Handle(Graphic3d_AspectMarker3d) anAsp;
+  occ::handle<Graphic3d_AspectMarker3d> anAsp;
   if (theDr.IsNull())
     return anAsp;
 
   Quantity_Color      aMColor = Quantity_NOC_YELLOW;
   Aspect_TypeOfMarker aMType  = Aspect_TOM_X;
-  Standard_Real       aMScale = 1.0;
-  Standard_Integer    aMTypeI = (Standard_Integer)Aspect_TOM_X;
+  double       aMScale = 1.0;
+  int    aMTypeI = (int)Aspect_TOM_X;
 
   if (!theDr->GetColor(MeshVS_DA_MarkerColor, aMColor) && !UseDefaults)
     return anAsp;
@@ -178,24 +178,24 @@ Handle(Graphic3d_AspectMarker3d) MeshVS_Tool::CreateAspectMarker3d(
 
 //=================================================================================================
 
-Handle(Graphic3d_AspectText3d) MeshVS_Tool::CreateAspectText3d(const Handle(MeshVS_Drawer)& theDr,
-                                                               const Standard_Boolean UseDefaults)
+occ::handle<Graphic3d_AspectText3d> MeshVS_Tool::CreateAspectText3d(const occ::handle<MeshVS_Drawer>& theDr,
+                                                               const bool UseDefaults)
 {
-  Handle(Graphic3d_AspectText3d) anAsp;
+  occ::handle<Graphic3d_AspectText3d> anAsp;
   if (theDr.IsNull())
     return anAsp;
 
   Quantity_Color           aTColor     = Quantity_NOC_YELLOW;
-  Standard_Real            anExpFactor = 1.0, aSpace = 0.0;
-  Standard_CString         aFont       = Font_NOF_ASCII_MONO;
+  double            anExpFactor = 1.0, aSpace = 0.0;
+  const char*         aFont       = Font_NOF_ASCII_MONO;
   Aspect_TypeOfStyleText   aStyle      = Aspect_TOST_NORMAL;
   Aspect_TypeOfDisplayText aDispText   = Aspect_TODT_NORMAL;
   TCollection_AsciiString  aFontString = Font_NOF_ASCII_MONO;
   Font_FontAspect          aFontAspect = Font_FA_Regular;
-  Standard_Integer         aStyleI     = (Standard_Integer)Aspect_TOST_NORMAL;
-  Standard_Integer         aDispTextI  = (Standard_Integer)Aspect_TODT_NORMAL;
+  int         aStyleI     = (int)Aspect_TOST_NORMAL;
+  int         aDispTextI  = (int)Aspect_TODT_NORMAL;
   // Bold font is used by default for better text readability
-  Standard_Integer aFontAspectI = (Standard_Integer)Font_FA_Bold;
+  int aFontAspectI = (int)Font_FA_Bold;
 
   if (!theDr->GetColor(MeshVS_DA_TextColor, aTColor) && !UseDefaults)
     return anAsp;
@@ -233,23 +233,23 @@ Handle(Graphic3d_AspectText3d) MeshVS_Tool::CreateAspectText3d(const Handle(Mesh
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Tool::GetNormal(const TColStd_Array1OfReal& Nodes, gp_Vec& Norm)
+bool MeshVS_Tool::GetNormal(const NCollection_Array1<double>& Nodes, gp_Vec& Norm)
 {
-  Standard_Integer first = Nodes.Lower(), last = Nodes.Upper(), count = (last - first + 1) / 3, i,
+  int first = Nodes.Lower(), last = Nodes.Upper(), count = (last - first + 1) / 3, i,
                    j;
   if (first == 0)
   {
     first = 1;
-    count = Standard_Integer(Nodes.Value(0));
+    count = int(Nodes.Value(0));
   }
 
   if (count < 3)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean res = Standard_True;
+  bool res = true;
 
-  Standard_Real           normal[3], first_vec[3], cur_vec[3], xx, yy, zz;
-  constexpr Standard_Real conf = Precision::Confusion();
+  double           normal[3], first_vec[3], cur_vec[3], xx, yy, zz;
+  constexpr double conf = Precision::Confusion();
 
   for (i = 0; i < 3; i++)
   {
@@ -272,20 +272,20 @@ Standard_Boolean MeshVS_Tool::GetNormal(const TColStd_Array1OfReal& Nodes, gp_Ve
 
     if (fabs(cur_vec[0]) > conf || fabs(cur_vec[1]) > conf || fabs(cur_vec[2]) > conf)
     {
-      Standard_Real cur =
+      double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (Standard_Integer k = 0; k < 3; k++)
+      for (int k = 0; k < 3; k++)
         cur_vec[k] /= cur;
     }
 
     if (fabs(normal[0]) <= conf && fabs(normal[1]) <= conf && fabs(normal[2]) <= conf)
-      for (Standard_Integer k = 0; k < 3; k++)
+      for (int k = 0; k < 3; k++)
         normal[k] = cur_vec[k];
 
     if (fabs(normal[0] - cur_vec[0]) > conf || fabs(normal[1] - cur_vec[1]) > conf
         || fabs(normal[2] - cur_vec[2]) > conf)
     {
-      res = Standard_False;
+      res = false;
       break;
     }
   }
@@ -298,23 +298,23 @@ Standard_Boolean MeshVS_Tool::GetNormal(const TColStd_Array1OfReal& Nodes, gp_Ve
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_Tool::GetAverageNormal(const TColStd_Array1OfReal& Nodes, gp_Vec& Norm)
+bool MeshVS_Tool::GetAverageNormal(const NCollection_Array1<double>& Nodes, gp_Vec& Norm)
 {
-  Standard_Integer first = Nodes.Lower(), last = Nodes.Upper(), count = (last - first + 1) / 3, i,
+  int first = Nodes.Lower(), last = Nodes.Upper(), count = (last - first + 1) / 3, i,
                    j;
   if (first == 0)
   {
     first = 1;
-    count = Standard_Integer(Nodes.Value(0));
+    count = int(Nodes.Value(0));
   }
 
   if (count < 3)
-    return Standard_False;
+    return false;
 
-  Standard_Boolean res = Standard_True;
+  bool res = true;
 
-  Standard_Real           normal[3], first_vec[3], cur_vec[3], xx, yy, zz;
-  constexpr Standard_Real conf = Precision::Confusion();
+  double           normal[3], first_vec[3], cur_vec[3], xx, yy, zz;
+  constexpr double conf = Precision::Confusion();
 
   for (i = 0; i < 3; i++)
   {
@@ -341,22 +341,22 @@ Standard_Boolean MeshVS_Tool::GetAverageNormal(const TColStd_Array1OfReal& Nodes
 
     if (fabs(cur_vec[0]) > conf || fabs(cur_vec[1]) > conf || fabs(cur_vec[2]) > conf)
     {
-      Standard_Real cur =
+      double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (Standard_Integer k = 0; k < 3; k++)
+      for (int k = 0; k < 3; k++)
         cur_vec[k] /= cur;
     }
 
     norm_vec[i - 2].SetCoord(cur_vec[0], cur_vec[1], cur_vec[2]);
 
     if (fabs(normal[0]) <= conf && fabs(normal[1]) <= conf && fabs(normal[2]) <= conf)
-      for (Standard_Integer k = 0; k < 3; k++)
+      for (int k = 0; k < 3; k++)
         normal[k] = cur_vec[k];
 
     if (fabs(normal[0] - cur_vec[0]) > conf || fabs(normal[1] - cur_vec[1]) > conf
         || fabs(normal[2] - cur_vec[2]) > conf)
     {
-      res = Standard_False;
+      res = false;
     }
   }
 

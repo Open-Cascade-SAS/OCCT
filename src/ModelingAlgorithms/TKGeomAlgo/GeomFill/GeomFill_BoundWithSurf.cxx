@@ -33,8 +33,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_BoundWithSurf, GeomFill_Boundary)
 //=================================================================================================
 
 GeomFill_BoundWithSurf::GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
-                                               const Standard_Real             Tol3d,
-                                               const Standard_Real             Tolang)
+                                               const double             Tol3d,
+                                               const double             Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myConS(CurveOnSurf)
 {
@@ -42,9 +42,9 @@ GeomFill_BoundWithSurf::GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& C
 
 //=================================================================================================
 
-gp_Pnt GeomFill_BoundWithSurf::Value(const Standard_Real U) const
+gp_Pnt GeomFill_BoundWithSurf::Value(const double U) const
 {
-  Standard_Real x = U;
+  double x = U;
   if (!myPar.IsNull())
     x = myPar->Value(U);
   return myConS.Value(x);
@@ -52,9 +52,9 @@ gp_Pnt GeomFill_BoundWithSurf::Value(const Standard_Real U) const
 
 //=================================================================================================
 
-void GeomFill_BoundWithSurf::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+void GeomFill_BoundWithSurf::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
-  Standard_Real x = U, dx = 1.;
+  double x = U, dx = 1.;
   if (!myPar.IsNull())
     myPar->D1(U, x, dx);
   myConS.D1(x, P, V);
@@ -63,23 +63,23 @@ void GeomFill_BoundWithSurf::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) con
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_BoundWithSurf::HasNormals() const
+bool GeomFill_BoundWithSurf::HasNormals() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-gp_Vec GeomFill_BoundWithSurf::Norm(const Standard_Real U) const
+gp_Vec GeomFill_BoundWithSurf::Norm(const double U) const
 {
   // voir s il ne faudrait pas utiliser LProp ou autre.
   if (!HasNormals())
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
 
-  //  Handle(Adaptor3d_Surface)& S = myConS.GetSurface();
-  //  Handle(Adaptor2d_Curve2d)& C2d = myConS.GetCurve();
-  Standard_Real x, y;
-  Standard_Real w = U;
+  //  occ::handle<Adaptor3d_Surface>& S = myConS.GetSurface();
+  //  occ::handle<Adaptor2d_Curve2d>& C2d = myConS.GetCurve();
+  double x, y;
+  double w = U;
   if (!myPar.IsNull())
     w = myPar->Value(U);
   myConS.GetCurve()->Value(w).Coord(x, y);
@@ -93,16 +93,16 @@ gp_Vec GeomFill_BoundWithSurf::Norm(const Standard_Real U) const
 
 //=================================================================================================
 
-void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U, gp_Vec& N, gp_Vec& DN) const
+void GeomFill_BoundWithSurf::D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const
 {
   if (!HasNormals())
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
-  //  Handle(Adaptor3d_Surface)& S = myConS.GetSurface();
-  //  Handle(Adaptor2d_Curve2d)& C2d = myConS.GetCurve();
+  //  occ::handle<Adaptor3d_Surface>& S = myConS.GetSurface();
+  //  occ::handle<Adaptor2d_Curve2d>& C2d = myConS.GetCurve();
   gp_Pnt2d      P2d;
   gp_Vec2d      V2d;
-  Standard_Real x, y, dx, dy;
-  Standard_Real w = U, dw = 1.;
+  double x, y, dx, dy;
+  double w = U, dw = 1.;
   if (!myPar.IsNull())
     myPar->D1(U, w, dw);
   myConS.GetCurve()->D1(w, P2d, V2d);
@@ -114,9 +114,9 @@ void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U, gp_Vec& N, gp_Vec& DN
   myConS.GetSurface()->D2(x, y, P, Su, Sv, Suu, Svv, Suv);
   N = Su.Crossed(Sv);
   N.Normalize();
-  Standard_Real nsuu = N.Dot(Suu), nsuv = N.Dot(Suv), nsvv = N.Dot(Svv);
-  Standard_Real susu = Su.Dot(Su), susv = Su.Dot(Sv), svsv = Sv.Dot(Sv);
-  Standard_Real deno = (susu * svsv) - (susv * susv);
+  double nsuu = N.Dot(Suu), nsuv = N.Dot(Suv), nsvv = N.Dot(Svv);
+  double susu = Su.Dot(Su), susv = Su.Dot(Sv), svsv = Sv.Dot(Sv);
+  double deno = (susu * svsv) - (susv * susv);
   if (std::abs(deno) < 1.e-16)
   {
     // on embraye sur un calcul approche, c est mieux que rien!?!
@@ -127,10 +127,10 @@ void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U, gp_Vec& N, gp_Vec& DN
   }
   else
   {
-    Standard_Real a = (-nsuu * svsv + nsuv * susv) / deno;
-    Standard_Real b = (nsuu * susv - nsuv * susu) / deno;
-    Standard_Real c = (-nsuv * svsv + nsvv * susv) / deno;
-    Standard_Real d = (nsuv * susv - nsvv * susu) / deno;
+    double a = (-nsuu * svsv + nsuv * susv) / deno;
+    double b = (nsuu * susv - nsuv * susu) / deno;
+    double c = (-nsuv * svsv + nsvv * susv) / deno;
+    double d = (nsuv * susv - nsvv * susu) / deno;
 
     gp_Vec temp1 = Su.Multiplied(a);
     gp_Vec temp2 = Sv.Multiplied(b);
@@ -146,23 +146,23 @@ void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U, gp_Vec& N, gp_Vec& DN
 
 //=================================================================================================
 
-void GeomFill_BoundWithSurf::Reparametrize(const Standard_Real    First,
-                                           const Standard_Real    Last,
-                                           const Standard_Boolean HasDF,
-                                           const Standard_Boolean HasDL,
-                                           const Standard_Real    DF,
-                                           const Standard_Real    DL,
-                                           const Standard_Boolean Rev)
+void GeomFill_BoundWithSurf::Reparametrize(const double    First,
+                                           const double    Last,
+                                           const bool HasDF,
+                                           const bool HasDL,
+                                           const double    DF,
+                                           const double    DL,
+                                           const bool Rev)
 {
-  Handle(Law_BSpline) curve =
+  occ::handle<Law_BSpline> curve =
     Law::Reparametrize(myConS, First, Last, HasDF, HasDL, DF, DL, Rev, 30);
   myPar = new Law_BSpFunc();
-  Handle(Law_BSpFunc)::DownCast(myPar)->SetCurve(curve);
+  occ::down_cast<Law_BSpFunc>(myPar)->SetCurve(curve);
 }
 
 //=================================================================================================
 
-void GeomFill_BoundWithSurf::Bounds(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_BoundWithSurf::Bounds(double& First, double& Last) const
 {
   if (!myPar.IsNull())
     myPar->Bounds(First, Last);
@@ -175,7 +175,7 @@ void GeomFill_BoundWithSurf::Bounds(Standard_Real& First, Standard_Real& Last) c
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_BoundWithSurf::IsDegenerated() const
+bool GeomFill_BoundWithSurf::IsDegenerated() const
 {
-  return Standard_False;
+  return false;
 }

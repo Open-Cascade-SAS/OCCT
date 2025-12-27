@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-Standard_Integer Blend_CurvPointFuncInv::NbVariables() const
+int Blend_CurvPointFuncInv::NbVariables() const
 {
   return 2;
 }

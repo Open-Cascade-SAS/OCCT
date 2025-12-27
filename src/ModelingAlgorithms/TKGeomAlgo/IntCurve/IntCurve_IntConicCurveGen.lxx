@@ -34,8 +34,8 @@ inline IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Lin2d&     
                                                             const IntRes2d_Domain& D1,
                                                             const ThePCurve&       PCurve,
                                                             const IntRes2d_Domain& D2,
-                                                            const Standard_Real    TolConf,
-                                                            const Standard_Real    Tol)
+                                                            const double    TolConf,
+                                                            const double    Tol)
 {
 
   Perform(IntCurve_IConicTool(L), D1, PCurve, D2, TolConf, Tol);
@@ -45,8 +45,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const gp_Lin2d&        L,
                                                const IntRes2d_Domain& D1,
                                                const ThePCurve&       PCurve,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
 
   Perform(IntCurve_IConicTool(L), D1, PCurve, D2, TolConf, Tol);
@@ -57,8 +57,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const gp_Circ2d&       C,
                                                const IntRes2d_Domain& D1,
                                                const ThePCurve&       PCurve,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
   if (!D1.IsClosed())
   {
@@ -78,8 +78,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const gp_Elips2d&      E,
                                                const IntRes2d_Domain& D1,
                                                const ThePCurve&       PCurve,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
   if (!D1.IsClosed())
   {
@@ -98,8 +98,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const gp_Parab2d&      Prb,
                                                const IntRes2d_Domain& D1,
                                                const ThePCurve&       PCurve,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
   Perform(IntCurve_IConicTool(Prb), D1, PCurve, D2, TolConf, Tol);
 }
@@ -109,8 +109,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const gp_Hypr2d&       H,
                                                const IntRes2d_Domain& D1,
                                                const ThePCurve&       PCurve,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
   Perform(IntCurve_IConicTool(H), D1, PCurve, D2, TolConf, Tol);
 }
@@ -120,8 +120,8 @@ inline void IntCurve_IntConicCurveGen::Perform(const IntCurve_IConicTool& ICurve
                                                const IntRes2d_Domain&     D1,
                                                const ThePCurve&           PCurve,
                                                const IntRes2d_Domain&     D2,
-                                               const Standard_Real        TolConf,
-                                               const Standard_Real        Tol)
+                                               const double        TolConf,
+                                               const double        Tol)
 {
   IntCurve_TheIntersector myintersection;
   myintersection.SetReversedParameters(ReversedParameters());

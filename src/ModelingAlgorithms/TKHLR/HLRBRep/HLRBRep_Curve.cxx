@@ -30,7 +30,8 @@
 #include <ProjLib.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 
 // OCC155 // jfa 05.03.2002 // bad vectors projection
@@ -47,7 +48,7 @@ void HLRBRep_Curve::Curve(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-Standard_Real HLRBRep_Curve::Parameter2d(const Standard_Real P3d) const
+double HLRBRep_Curve::Parameter2d(const double P3d) const
 {
   // Mathematical formula for lines
 
@@ -60,7 +61,7 @@ Standard_Real HLRBRep_Curve::Parameter2d(const Standard_Real P3d) const
     case GeomAbs_Line:
       if (((HLRAlgo_Projector*)myProj)->Perspective())
       {
-        const Standard_Real FmOZ = myOF - myOZ;
+        const double FmOZ = myOF - myOZ;
         return myOF * P3d * (myVX * FmOZ + myOX * myVZ) / (FmOZ * (FmOZ - P3d * myVZ));
       }
       return P3d * myVX;
@@ -76,7 +77,7 @@ Standard_Real HLRBRep_Curve::Parameter2d(const Standard_Real P3d) const
 
 //=================================================================================================
 
-Standard_Real HLRBRep_Curve::Parameter3d(const Standard_Real P2d) const
+double HLRBRep_Curve::Parameter3d(const double P2d) const
 {
   // Mathematical formula for lines
 
@@ -89,7 +90,7 @@ Standard_Real HLRBRep_Curve::Parameter3d(const Standard_Real P2d) const
   {
     if (((HLRAlgo_Projector*)myProj)->Perspective())
     {
-      const Standard_Real FmOZ = myOF - myOZ;
+      const double FmOZ = myOF - myOZ;
       return P2d * FmOZ * FmOZ / (FmOZ * (myOF * myVX + P2d * myVZ) + myOF * myOX * myVZ);
     }
     return ((myVX <= gp::Resolution()) ? P2d : (P2d / myVX));
@@ -105,7 +106,7 @@ Standard_Real HLRBRep_Curve::Parameter3d(const Standard_Real P2d) const
 
 //=================================================================================================
 
-Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotMax[16])
+double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
 {
   GeomAbs_CurveType typ = HLRBRep_BCurveTool::GetType(myCurve);
   myType                = GeomAbs_OtherCurve;
@@ -173,7 +174,7 @@ Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotM
   {
     // compute the values for a line
     gp_Lin        L;
-    Standard_Real l3d = 1.; // length of the 3d bezier curve
+    double l3d = 1.; // length of the 3d bezier curve
     if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_Line)
     {
       L = HLRBRep_BCurveTool::Line(myCurve);
@@ -197,7 +198,7 @@ Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotM
       D1(0., F, VFX);
       VFX.Normalize();
       myVX            = (VFX.X() * V.X() + VFX.Y() * V.Y()) * l3d;
-      Standard_Real l = -(VFX.X() * F.X() + VFX.Y() * F.Y());
+      double l = -(VFX.X() * F.X() + VFX.Y() * F.Y());
       F.SetCoord(F.X() + VFX.X() * l, F.Y() + VFX.Y() * l);
       myOX = VFX.X() * (P.X() - F.X()) + VFX.Y() * (P.Y() - F.Y());
       gp_Vec VFZ(-F.X(), -F.Y(), ((HLRAlgo_Projector*)myProj)->Focus());
@@ -215,22 +216,22 @@ Standard_Real HLRBRep_Curve::Update(Standard_Real TotMin[16], Standard_Real TotM
 
 //=================================================================================================
 
-Standard_Real HLRBRep_Curve::UpdateMinMax(Standard_Real TotMin[16], Standard_Real TotMax[16])
+double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
 {
-  Standard_Real a = HLRBRep_BCurveTool::FirstParameter(myCurve);
-  Standard_Real b = HLRBRep_BCurveTool::LastParameter(myCurve);
-  Standard_Real x, y, z, tolMinMax = 0;
+  double a = HLRBRep_BCurveTool::FirstParameter(myCurve);
+  double b = HLRBRep_BCurveTool::LastParameter(myCurve);
+  double x, y, z, tolMinMax = 0;
   ((HLRAlgo_Projector*)myProj)->Project(Value3D(a), x, y, z);
   HLRAlgo::UpdateMinMax(x, y, z, TotMin, TotMax);
 
   if (myType != GeomAbs_Line)
   {
-    Standard_Integer nbPnt = 30;
-    Standard_Integer i;
-    Standard_Real    step = (b - a) / (nbPnt + 1);
-    Standard_Real    xa, ya, za, xb = 0., yb = 0., zb = 0.;
-    Standard_Real    dx1, dy1, dz1, dd1;
-    Standard_Real    dx2, dy2, dz2, dd2;
+    int nbPnt = 30;
+    int i;
+    double    step = (b - a) / (nbPnt + 1);
+    double    xa, ya, za, xb = 0., yb = 0., zb = 0.;
+    double    dx1, dy1, dz1, dd1;
+    double    dx2, dy2, dz2, dd2;
 
     for (i = 1; i <= nbPnt; i++)
     {
@@ -257,7 +258,7 @@ Standard_Real HLRBRep_Curve::UpdateMinMax(Standard_Real TotMin[16], Standard_Rea
           dd2 = sqrt(dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
           if (dd2 > 0)
           {
-            Standard_Real p = (dx1 * dx2 + dy1 * dy2 + dz1 * dz2) / (dd1 * dd2);
+            double p = (dx1 * dx2 + dy1 * dy2 + dz1 * dz2) / (dd1 * dd2);
             dx1             = xa + p * dx1 - xb;
             dy1             = ya + p * dy1 - yb;
             dz1             = za + p * dz1 - zb;
@@ -276,7 +277,7 @@ Standard_Real HLRBRep_Curve::UpdateMinMax(Standard_Real TotMin[16], Standard_Rea
 
 //=================================================================================================
 
-Standard_Real HLRBRep_Curve::Z(const Standard_Real U) const
+double HLRBRep_Curve::Z(const double U) const
 {
   gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve, U, P3d);
@@ -286,9 +287,9 @@ Standard_Real HLRBRep_Curve::Z(const Standard_Real U) const
 
 //=================================================================================================
 
-void HLRBRep_Curve::Tangent(const Standard_Boolean AtStart, gp_Pnt2d& P, gp_Dir2d& D) const
+void HLRBRep_Curve::Tangent(const bool AtStart, gp_Pnt2d& P, gp_Dir2d& D) const
 {
-  Standard_Real U = AtStart ? HLRBRep_BCurveTool::FirstParameter(myCurve)
+  double U = AtStart ? HLRBRep_BCurveTool::FirstParameter(myCurve)
                             : HLRBRep_BCurveTool::LastParameter(myCurve);
 
   D0(U, P);
@@ -302,13 +303,13 @@ void HLRBRep_Curve::Tangent(const Standard_Boolean AtStart, gp_Pnt2d& P, gp_Dir2
 
 //=================================================================================================
 
-void HLRBRep_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
+void HLRBRep_Curve::D0(const double U, gp_Pnt2d& P) const
 {
   /* gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve,U,P3d);
   P3d.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
   if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-    Standard_Real R = 1.-P3d.Z()/((HLRAlgo_Projector*) myProj)->Focus();
+    double R = 1.-P3d.Z()/((HLRAlgo_Projector*) myProj)->Focus();
     P.SetCoord(P3d.X()/R,P3d.Y()/R);
   }
   else P.SetCoord(P3d.X(),P3d.Y()); */
@@ -319,7 +320,7 @@ void HLRBRep_Curve::D0(const Standard_Real U, gp_Pnt2d& P) const
 
 //=================================================================================================
 
-void HLRBRep_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
+void HLRBRep_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
   // Mathematical formula for lines
 
@@ -337,9 +338,9 @@ void HLRBRep_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
     P3D.Transform(myProj->Transformation());
     V13D.Transform(myProj->Transformation());
 
-    Standard_Real f = myProj->Focus();
-    Standard_Real R = 1. - P3D.Z() / f;
-    Standard_Real e = V13D.Z() / (f * R * R);
+    double f = myProj->Focus();
+    double R = 1. - P3D.Z() / f;
+    double e = V13D.Z() / (f * R * R);
     P.SetCoord(P3D.X() / R, P3D.Y() / R);
     V.SetCoord(V13D.X() / R + P3D.X() * e, V13D.Y() / R + P3D.Y() * e);
   }
@@ -352,7 +353,7 @@ void HLRBRep_Curve::D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
 
 //=================================================================================================
 
-void HLRBRep_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+void HLRBRep_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
   // Mathematical formula for lines
 
@@ -371,11 +372,11 @@ void HLRBRep_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2
   V23D.Transform(myProj->Transformation());
   if (myProj->Perspective())
   {
-    Standard_Real f = myProj->Focus();
-    Standard_Real R = 1. - P3D.Z() / f;
-    Standard_Real q = f * R * R;
-    Standard_Real e = V13D.Z() / q;
-    Standard_Real c = e * V13D.Z() / (f * R);
+    double f = myProj->Focus();
+    double R = 1. - P3D.Z() / f;
+    double q = f * R * R;
+    double e = V13D.Z() / q;
+    double c = e * V13D.Z() / (f * R);
     P.SetCoord(P3D.X() / R, P3D.Y() / R);
     V1.SetCoord(V13D.X() / R + P3D.X() * e, V13D.Y() / R + P3D.Y() * e);
     V2.SetCoord(V23D.X() / R + 2 * V13D.X() * e + P3D.X() * V23D.Z() / q + 2 * P3D.X() * c,
@@ -391,11 +392,11 @@ void HLRBRep_Curve::D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2
 
 //=================================================================================================
 
-void HLRBRep_Curve::D3(const Standard_Real, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const {}
+void HLRBRep_Curve::D3(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const {}
 
 //=================================================================================================
 
-gp_Vec2d HLRBRep_Curve::DN(const Standard_Real, const Standard_Integer) const
+gp_Vec2d HLRBRep_Curve::DN(const double, const int) const
 {
   return gp_Vec2d();
 }
@@ -435,7 +436,7 @@ gp_Elips2d HLRBRep_Curve::Ellipse() const
   const gp_Dir& D1  = C.Axis().Direction();
   const gp_Dir& D3  = D1.Crossed(gp::DZ());
   const gp_Dir& D2  = D1.Crossed(D3);
-  Standard_Real rap = sqrt(D2.X() * D2.X() + D2.Y() * D2.Y());
+  double rap = sqrt(D2.X() * D2.X() + D2.Y() * D2.Y());
   gp_Dir2d      d(D1.Y(), -D1.X());
   gp_Pnt2d      p(C.Location().X(), C.Location().Y());
   gp_Elips2d    El(gp_Ax2d(p, d), C.Radius(), C.Radius() * rap);
@@ -460,11 +461,11 @@ gp_Parab2d HLRBRep_Curve::Parabola() const
 
 //=================================================================================================
 
-void HLRBRep_Curve::Poles(TColgp_Array1OfPnt2d& TP) const
+void HLRBRep_Curve::Poles(NCollection_Array1<gp_Pnt2d>& TP) const
 {
-  Standard_Integer   i1 = TP.Lower();
-  Standard_Integer   i2 = TP.Upper();
-  TColgp_Array1OfPnt TP3(i1, i2);
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
+  NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::Poles(myCurve,TP3);
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
@@ -474,7 +475,7 @@ void HLRBRep_Curve::Poles(TColgp_Array1OfPnt2d& TP) const
   {
     (HLRBRep_BCurveTool::Bezier(myCurve))->Poles(TP3);
   }
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     myProj->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
@@ -483,15 +484,15 @@ void HLRBRep_Curve::Poles(TColgp_Array1OfPnt2d& TP) const
 
 //=================================================================================================
 
-void HLRBRep_Curve::Poles(const Handle(Geom_BSplineCurve)& aCurve, TColgp_Array1OfPnt2d& TP) const
+void HLRBRep_Curve::Poles(const occ::handle<Geom_BSplineCurve>& aCurve, NCollection_Array1<gp_Pnt2d>& TP) const
 {
-  Standard_Integer   i1 = TP.Lower();
-  Standard_Integer   i2 = TP.Upper();
-  TColgp_Array1OfPnt TP3(i1, i2);
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
+  NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::Poles(myCurve,TP3);
   aCurve->Poles(TP3);
 
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
@@ -500,28 +501,28 @@ void HLRBRep_Curve::Poles(const Handle(Geom_BSplineCurve)& aCurve, TColgp_Array1
 
 //=================================================================================================
 
-void HLRBRep_Curve::PolesAndWeights(TColgp_Array1OfPnt2d& TP, TColStd_Array1OfReal& TW) const
+void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP, NCollection_Array1<double>& TW) const
 {
-  Standard_Integer   i1 = TP.Lower();
-  Standard_Integer   i2 = TP.Upper();
-  TColgp_Array1OfPnt TP3(i1, i2);
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
+  NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
 
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    Handle(Geom_BSplineCurve) HB = (HLRBRep_BCurveTool::BSpline(myCurve));
+    occ::handle<Geom_BSplineCurve> HB = (HLRBRep_BCurveTool::BSpline(myCurve));
     HB->Poles(TP3);
     HB->Weights(TW);
     //-- (HLRBRep_BCurveTool::BSpline(myCurve))->PolesAndWeights(TP3,TW);
   }
   else
   {
-    Handle(Geom_BezierCurve) HB = (HLRBRep_BCurveTool::Bezier(myCurve));
+    occ::handle<Geom_BezierCurve> HB = (HLRBRep_BCurveTool::Bezier(myCurve));
     HB->Poles(TP3);
     HB->Weights(TW);
     //-- (HLRBRep_BCurveTool::Bezier(myCurve))->PolesAndWeights(TP3,TW);
   }
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
@@ -530,20 +531,20 @@ void HLRBRep_Curve::PolesAndWeights(TColgp_Array1OfPnt2d& TP, TColStd_Array1OfRe
 
 //=================================================================================================
 
-void HLRBRep_Curve::PolesAndWeights(const Handle(Geom_BSplineCurve)& aCurve,
-                                    TColgp_Array1OfPnt2d&            TP,
-                                    TColStd_Array1OfReal&            TW) const
+void HLRBRep_Curve::PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve,
+                                    NCollection_Array1<gp_Pnt2d>&            TP,
+                                    NCollection_Array1<double>&            TW) const
 {
-  Standard_Integer   i1 = TP.Lower();
-  Standard_Integer   i2 = TP.Upper();
-  TColgp_Array1OfPnt TP3(i1, i2);
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
+  NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
 
   aCurve->Poles(TP3);
   aCurve->Weights(TW);
   //-- (HLRBRep_BCurveTool::BSpline(myCurve))->PolesAndWeights(TP3,TW);
 
-  for (Standard_Integer i = i1; i <= i2; i++)
+  for (int i = i1; i <= i2; i++)
   {
     ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
@@ -552,22 +553,22 @@ void HLRBRep_Curve::PolesAndWeights(const Handle(Geom_BSplineCurve)& aCurve,
 
 //=================================================================================================
 
-void HLRBRep_Curve::Knots(TColStd_Array1OfReal& kn) const
+void HLRBRep_Curve::Knots(NCollection_Array1<double>& kn) const
 {
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    Handle(Geom_BSplineCurve) HB = (HLRBRep_BCurveTool::BSpline(myCurve));
+    occ::handle<Geom_BSplineCurve> HB = (HLRBRep_BCurveTool::BSpline(myCurve));
     HB->Knots(kn);
   }
 }
 
 //=================================================================================================
 
-void HLRBRep_Curve::Multiplicities(TColStd_Array1OfInteger& mu) const
+void HLRBRep_Curve::Multiplicities(NCollection_Array1<int>& mu) const
 {
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    Handle(Geom_BSplineCurve) HB = (HLRBRep_BCurveTool::BSpline(myCurve));
+    occ::handle<Geom_BSplineCurve> HB = (HLRBRep_BCurveTool::BSpline(myCurve));
     HB->Multiplicities(mu);
   }
 }

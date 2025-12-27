@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_PresentedItemSelect.hxx>
 #include <StepBasic_ProductDefinition.hxx>
@@ -19,7 +19,7 @@
 
 StepAP214_PresentedItemSelect::StepAP214_PresentedItemSelect() {}
 
-Standard_Integer StepAP214_PresentedItemSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_PresentedItemSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -30,12 +30,12 @@ Standard_Integer StepAP214_PresentedItemSelect::CaseNum(const Handle(Standard_Tr
   return 0;
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_PresentedItemSelect::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_PresentedItemSelect::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship) StepAP214_PresentedItemSelect::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_PresentedItemSelect::
   ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());

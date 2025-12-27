@@ -19,7 +19,7 @@
 //=================================================================================================
 
 IntTools_PntOn2Faces::IntTools_PntOn2Faces()
-    : myIsValid(Standard_False)
+    : myIsValid(false)
 {
 }
 
@@ -27,7 +27,7 @@ IntTools_PntOn2Faces::IntTools_PntOn2Faces()
 
 IntTools_PntOn2Faces::IntTools_PntOn2Faces(const IntTools_PntOnFace& aP1,
                                            const IntTools_PntOnFace& aP2)
-    : myIsValid(Standard_False)
+    : myIsValid(false)
 {
   myPnt1 = aP1;
   myPnt2 = aP2;
@@ -63,14 +63,14 @@ const IntTools_PntOnFace& IntTools_PntOn2Faces::P2() const
 
 //=================================================================================================
 
-void IntTools_PntOn2Faces::SetValid(const Standard_Boolean bF)
+void IntTools_PntOn2Faces::SetValid(const bool bF)
 {
   myIsValid = bF;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_PntOn2Faces::IsValid() const
+bool IntTools_PntOn2Faces::IsValid() const
 {
   return myIsValid;
 }

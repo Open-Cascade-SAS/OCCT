@@ -23,9 +23,6 @@
 #include <Draw_Color.hxx>
 #include <Standard_Transient.hxx>
 
-class DBRep_Edge;
-DEFINE_STANDARD_HANDLE(DBRep_Edge, Standard_Transient)
-
 //! Display of an edge. Edge + color.
 class DBRep_Edge : public Standard_Transient
 {
@@ -43,7 +40,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(DBRep_Edge, Standard_Transient)
 
-protected:
 private:
   TopoDS_Edge myEdge;
   Draw_Color  myColor;

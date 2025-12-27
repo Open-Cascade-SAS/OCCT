@@ -25,13 +25,13 @@ StepKinematics_KinematicPair::StepKinematics_KinematicPair() {}
 //=================================================================================================
 
 void StepKinematics_KinematicPair::Init(
-  const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)& theItemDefinedTransformation_Name,
-  const Standard_Boolean /*hasItemDefinedTransformation_Description*/,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theJoint)
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>& theItemDefinedTransformation_Name,
+  const bool /*hasItemDefinedTransformation_Description*/,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theJoint)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
   myItemDefinedTransformation = new StepRepr_ItemDefinedTransformation;
@@ -46,7 +46,7 @@ void StepKinematics_KinematicPair::Init(
 
 //=================================================================================================
 
-Handle(StepRepr_ItemDefinedTransformation) StepKinematics_KinematicPair::ItemDefinedTransformation()
+occ::handle<StepRepr_ItemDefinedTransformation> StepKinematics_KinematicPair::ItemDefinedTransformation()
   const
 {
   return myItemDefinedTransformation;
@@ -55,21 +55,21 @@ Handle(StepRepr_ItemDefinedTransformation) StepKinematics_KinematicPair::ItemDef
 //=================================================================================================
 
 void StepKinematics_KinematicPair::SetItemDefinedTransformation(
-  const Handle(StepRepr_ItemDefinedTransformation)& theItemDefinedTransformation)
+  const occ::handle<StepRepr_ItemDefinedTransformation>& theItemDefinedTransformation)
 {
   myItemDefinedTransformation = theItemDefinedTransformation;
 }
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicJoint) StepKinematics_KinematicPair::Joint() const
+occ::handle<StepKinematics_KinematicJoint> StepKinematics_KinematicPair::Joint() const
 {
   return myJoint;
 }
 
 //=================================================================================================
 
-void StepKinematics_KinematicPair::SetJoint(const Handle(StepKinematics_KinematicJoint)& theJoint)
+void StepKinematics_KinematicPair::SetJoint(const occ::handle<StepKinematics_KinematicJoint>& theJoint)
 {
   myJoint = theJoint;
 }

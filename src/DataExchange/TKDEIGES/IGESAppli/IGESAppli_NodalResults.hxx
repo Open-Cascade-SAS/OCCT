@@ -28,9 +28,6 @@
 class IGESDimen_GeneralNote;
 class IGESAppli_Node;
 
-class IGESAppli_NodalResults;
-DEFINE_STANDARD_HANDLE(IGESAppli_NodalResults, IGESData_IGESEntity)
-
 //! defines NodalResults, Type <146>
 //! in package IGESAppli
 //! Used to store the Analysis Data results per FEM Node
@@ -52,58 +49,57 @@ public:
   //! result data
   //! raises exception if Lengths of allNodeIdentifiers, allNodes and
   //! allData (Cols) are not same
-  Standard_EXPORT void Init(const Handle(IGESDimen_GeneralNote)&    aNote,
-                            const Standard_Integer                  aNumber,
-                            const Standard_Real                     aTime,
-                            const Handle(TColStd_HArray1OfInteger)& allNodeIdentifiers,
-                            const Handle(IGESAppli_HArray1OfNode)&  allNodes,
-                            const Handle(TColStd_HArray2OfReal)&    allData);
+  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&    aNote,
+                            const int                  aNumber,
+                            const double                     aTime,
+                            const occ::handle<TColStd_HArray1OfInteger>& allNodeIdentifiers,
+                            const occ::handle<IGESAppli_HArray1OfNode>&  allNodes,
+                            const occ::handle<TColStd_HArray2OfReal>&    allData);
 
   //! Changes the FormNumber (which indicates Type of Result)
   //! Error if not in range [0-34]
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns the General Note Entity that describes the analysis case
-  Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
+  Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
 
   //! returns zero if there is no subcase
-  Standard_EXPORT Standard_Integer SubCaseNumber() const;
+  Standard_EXPORT int SubCaseNumber() const;
 
   //! returns the Analysis time value for this subcase. It is the time
   //! at which transient analysis results occur in the mathematical
   //! FEM model.
-  Standard_EXPORT Standard_Real Time() const;
+  Standard_EXPORT double Time() const;
 
   //! returns number of real values in array V for a FEM node
-  Standard_EXPORT Standard_Integer NbData() const;
+  Standard_EXPORT int NbData() const;
 
   //! returns number of FEM nodes for which data is to be read.
-  Standard_EXPORT Standard_Integer NbNodes() const;
+  Standard_EXPORT int NbNodes() const;
 
   //! returns FEM node number identifier for the (Index)th node
   //! raises exception if Index <= 0 or Index > NbNodes
-  Standard_EXPORT Standard_Integer NodeIdentifier(const Standard_Integer Index) const;
+  Standard_EXPORT int NodeIdentifier(const int Index) const;
 
   //! returns the node as specified by the Index
   //! raises exception if Index <= 0 or Index > NbNodes
-  Standard_EXPORT Handle(IGESAppli_Node) Node(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESAppli_Node> Node(const int Index) const;
 
   //! returns the finite element analysis result value
   //! raises exception if (NodeNum <= 0 or NodeNum > NbNodes()) or
   //! if (DataNum <=0 or DataNum > NbData())
-  Standard_EXPORT Standard_Real Data(const Standard_Integer NodeNum,
-                                     const Standard_Integer DataNum) const;
+  Standard_EXPORT double Data(const int NodeNum,
+                                     const int DataNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalResults, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESDimen_GeneralNote)    theNote;
-  Standard_Integer                 theSubCaseNum;
-  Standard_Real                    theTime;
-  Handle(TColStd_HArray1OfInteger) theNodeIdentifiers;
-  Handle(IGESAppli_HArray1OfNode)  theNodes;
-  Handle(TColStd_HArray2OfReal)    theData;
+  occ::handle<IGESDimen_GeneralNote>    theNote;
+  int                 theSubCaseNum;
+  double                    theTime;
+  occ::handle<TColStd_HArray1OfInteger> theNodeIdentifiers;
+  occ::handle<IGESAppli_HArray1OfNode>  theNodes;
+  occ::handle<TColStd_HArray2OfReal>    theData;
 };
 
 #endif // _IGESAppli_NodalResults_HeaderFile

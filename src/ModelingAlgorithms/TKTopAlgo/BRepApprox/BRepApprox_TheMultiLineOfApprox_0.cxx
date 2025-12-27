@@ -19,7 +19,7 @@
 #include <BRepApprox_ApproxLine.hxx>
 #include <ApproxInt_SvSurfaces.hxx>
 
-#define Handle_TheLine Handle(BRepApprox_ApproxLine)
+#define Handle_TheLine occ::handle<BRepApprox_ApproxLine>
 #define TheLine BRepApprox_ApproxLine
 #define TheLine_hxx <BRepApprox_ApproxLine.hxx>
 #define TheSvSurfaces ApproxInt_SvSurfaces

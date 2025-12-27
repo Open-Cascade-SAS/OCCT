@@ -18,9 +18,10 @@
 #define Units_UnitsSequence_HeaderFile
 
 #include <Units_Unit.hxx>
-#include <Units_UtsSequence.hxx>
+#include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(Units_UnitsSequence, Units_UtsSequence)
+DEFINE_HSEQUENCE(Units_UnitsSequence, NCollection_Sequence<occ::handle<Units_Unit>>)
 
 #endif

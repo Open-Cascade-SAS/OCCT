@@ -29,10 +29,10 @@ RWStepDimTol_RWLineProfileTolerance::RWStepDimTol_RWLineProfileTolerance() {}
 //=================================================================================================
 
 void RWStepDimTol_RWLineProfileTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepDimTol_LineProfileTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                         num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepDimTol_LineProfileTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "line_profile_tolerance"))
@@ -40,13 +40,13 @@ void RWStepDimTol_RWLineProfileTolerance::ReadStep(
 
   // Inherited fields of GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Name;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Name;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Description;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
-  Handle(Standard_Transient) aGeometricTolerance_Magnitude;
+  occ::handle<Standard_Transient> aGeometricTolerance_Magnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -72,7 +72,7 @@ void RWStepDimTol_RWLineProfileTolerance::ReadStep(
 
 void RWStepDimTol_RWLineProfileTolerance::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepDimTol_LineProfileTolerance)& ent) const
+  const occ::handle<StepDimTol_LineProfileTolerance>& ent) const
 {
 
   // Inherited fields of GeometricTolerance
@@ -88,7 +88,7 @@ void RWStepDimTol_RWLineProfileTolerance::WriteStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWLineProfileTolerance::Share(const Handle(StepDimTol_LineProfileTolerance)& ent,
+void RWStepDimTol_RWLineProfileTolerance::Share(const occ::handle<StepDimTol_LineProfileTolerance>& ent,
                                                 Interface_EntityIterator& iter) const
 {
 

@@ -39,9 +39,9 @@ const Standard_GUID& TFunction_Function::GetID()
 // purpose  : Finds or creates a function attribute
 //=======================================================================
 
-Handle(TFunction_Function) TFunction_Function::Set(const TDF_Label& L)
+occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label& L)
 {
-  Handle(TFunction_Function) F;
+  occ::handle<TFunction_Function> F;
   if (!L.FindAttribute(TFunction_Function::GetID(), F))
   {
     F = new TFunction_Function();
@@ -56,10 +56,10 @@ Handle(TFunction_Function) TFunction_Function::Set(const TDF_Label& L)
 //         : a driver for it
 //=======================================================================
 
-Handle(TFunction_Function) TFunction_Function::Set(const TDF_Label&     L,
+occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label&     L,
                                                    const Standard_GUID& DriverID)
 {
-  Handle(TFunction_Function) F;
+  occ::handle<TFunction_Function> F;
   if (!L.FindAttribute(TFunction_Function::GetID(), F))
   {
     F = new TFunction_Function();
@@ -84,12 +84,12 @@ const Standard_GUID& TFunction_Function::ID() const
 // purpose  : Finds a function if it is on the label
 //=======================================================================
 
-// Standard_Boolean TFunction_Function::Find(const TDF_Label& L,
-// 					  Handle(TFunction_Function)& F)
+// bool TFunction_Function::Find(const TDF_Label& L,
+// 					  occ::handle<TFunction_Function>& F)
 // {
 //   if (!L.FindAttribute(TFunction_Function::GetID(), F))
-//     return Standard_False;
-//   return Standard_True;
+//     return false;
+//   return true;
 // }
 
 //=================================================================================================
@@ -116,7 +116,7 @@ void TFunction_Function::SetDriverGUID(const Standard_GUID& guid)
 // purpose  : Sets the failed status of the function
 //=======================================================================
 
-void TFunction_Function::SetFailure(const Standard_Integer mode)
+void TFunction_Function::SetFailure(const int mode)
 {
   // OCC2932 correction
   if (myFailure == mode)
@@ -128,9 +128,9 @@ void TFunction_Function::SetFailure(const Standard_Integer mode)
 
 //=================================================================================================
 
-void TFunction_Function::Restore(const Handle(TDF_Attribute)& other)
+void TFunction_Function::Restore(const occ::handle<TDF_Attribute>& other)
 {
-  Handle(TFunction_Function) F = Handle(TFunction_Function)::DownCast(other);
+  occ::handle<TFunction_Function> F = occ::down_cast<TFunction_Function>(other);
   myFailure                    = F->myFailure;
   myDriverGUID                 = F->myDriverGUID;
 }
@@ -140,10 +140,10 @@ void TFunction_Function::Restore(const Handle(TDF_Attribute)& other)
 // purpose  : Method for Copy mechanism
 //=======================================================================
 
-void TFunction_Function::Paste(const Handle(TDF_Attribute)& into,
-                               const Handle(TDF_RelocationTable)& /*RT*/) const
+void TFunction_Function::Paste(const occ::handle<TDF_Attribute>& into,
+                               const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
-  Handle(TFunction_Function) intof = Handle(TFunction_Function)::DownCast(into);
+  occ::handle<TFunction_Function> intof = occ::down_cast<TFunction_Function>(into);
   intof->SetFailure(myFailure);
   intof->SetDriverGUID(myDriverGUID);
 }
@@ -153,7 +153,7 @@ void TFunction_Function::Paste(const Handle(TDF_Attribute)& into,
 // purpose  : Returns new empty function attribute
 //=======================================================================
 
-Handle(TDF_Attribute) TFunction_Function::NewEmpty() const
+occ::handle<TDF_Attribute> TFunction_Function::NewEmpty() const
 {
   return new TFunction_Function();
 }
@@ -163,7 +163,7 @@ Handle(TDF_Attribute) TFunction_Function::NewEmpty() const
 // purpose  : Collects the references
 //=======================================================================
 
-void TFunction_Function::References(const Handle(TDF_DataSet)& /*aDataSet*/) const {}
+void TFunction_Function::References(const occ::handle<TDF_DataSet>& /*aDataSet*/) const {}
 
 //=================================================================================================
 
@@ -175,7 +175,7 @@ Standard_OStream& TFunction_Function::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TFunction_Function::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TFunction_Function::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

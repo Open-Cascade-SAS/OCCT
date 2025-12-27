@@ -31,13 +31,13 @@ public:
   OpenGl_SetOfPrograms() {}
 
   //! Access program by index
-  Handle(OpenGl_ShaderProgram)& ChangeValue(Standard_Integer theProgramBits)
+  occ::handle<OpenGl_ShaderProgram>& ChangeValue(int theProgramBits)
   {
     return myPrograms[theProgramBits];
   }
 
 protected:
-  Handle(OpenGl_ShaderProgram) myPrograms[Graphic3d_ShaderFlags_NB]; //!< programs array
+  occ::handle<OpenGl_ShaderProgram> myPrograms[Graphic3d_ShaderFlags_NB]; //!< programs array
 };
 
 //! Alias to 2D programs array of predefined length
@@ -49,19 +49,19 @@ public:
   OpenGl_SetOfShaderPrograms() {}
 
   //! Constructor
-  OpenGl_SetOfShaderPrograms(const Handle(OpenGl_SetOfPrograms)& thePrograms)
+  OpenGl_SetOfShaderPrograms(const occ::handle<OpenGl_SetOfPrograms>& thePrograms)
   {
-    for (Standard_Integer aSetIter = 0; aSetIter < Graphic3d_TypeOfShadingModel_NB - 1; ++aSetIter)
+    for (int aSetIter = 0; aSetIter < Graphic3d_TypeOfShadingModel_NB - 1; ++aSetIter)
     {
       myPrograms[aSetIter] = thePrograms;
     }
   }
 
   //! Access program by index
-  Handle(OpenGl_ShaderProgram)& ChangeValue(Graphic3d_TypeOfShadingModel theShadingModel,
-                                            Standard_Integer             theProgramBits)
+  occ::handle<OpenGl_ShaderProgram>& ChangeValue(Graphic3d_TypeOfShadingModel theShadingModel,
+                                            int             theProgramBits)
   {
-    Handle(OpenGl_SetOfPrograms)& aSet = myPrograms[theShadingModel - 1];
+    occ::handle<OpenGl_SetOfPrograms>& aSet = myPrograms[theShadingModel - 1];
     if (aSet.IsNull())
     {
       aSet = new OpenGl_SetOfPrograms();
@@ -71,11 +71,8 @@ public:
 
 protected:
   // clang-format off
-  Handle(OpenGl_SetOfPrograms) myPrograms[Graphic3d_TypeOfShadingModel_NB - 1]; //!< programs array, excluding Graphic3d_TypeOfShadingModel_Unlit
+  occ::handle<OpenGl_SetOfPrograms> myPrograms[Graphic3d_TypeOfShadingModel_NB - 1]; //!< programs array, excluding Graphic3d_TypeOfShadingModel_Unlit
   // clang-format on
 };
-
-typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_SetOfShaderPrograms)>
-  OpenGl_MapOfShaderPrograms;
 
 #endif // _OpenGl_SetOfShaderPrograms_HeaderFile

@@ -17,10 +17,11 @@
 #ifndef StepAP214_HArray1OfPersonAndOrganizationItem_HeaderFile
 #define StepAP214_HArray1OfPersonAndOrganizationItem_HeaderFile
 
-#include <StepAP214_Array1OfPersonAndOrganizationItem.hxx>
+#include <StepAP214_PersonAndOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepAP214_HArray1OfPersonAndOrganizationItem,
-               StepAP214_Array1OfPersonAndOrganizationItem)
+               NCollection_Array1<StepAP214_PersonAndOrganizationItem>)
 
 #endif

@@ -24,25 +24,25 @@ namespace
 class CubicFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) override
+  virtual bool Value(const double X, double& F) override
   {
     F = X * X * X - 6.0 * X * X + 11.0 * X - 6.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D) override
+  virtual bool Derivative(const double X, double& D) override
   {
     D = 3.0 * X * X - 12.0 * X + 11.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const Standard_Real X,
-                                  Standard_Real&      F,
-                                  Standard_Real&      D) override
+  virtual bool Values(const double X,
+                                  double&      F,
+                                  double&      D) override
   {
     F = X * X * X - 6.0 * X * X + 11.0 * X - 6.0;
     D = 3.0 * X * X - 12.0 * X + 11.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -50,25 +50,25 @@ public:
 class SineFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) override
+  virtual bool Value(const double X, double& F) override
   {
     F = sin(X);
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D) override
+  virtual bool Derivative(const double X, double& D) override
   {
     D = cos(X);
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const Standard_Real X,
-                                  Standard_Real&      F,
-                                  Standard_Real&      D) override
+  virtual bool Values(const double X,
+                                  double&      F,
+                                  double&      D) override
   {
     F = sin(X);
     D = cos(X);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -76,7 +76,7 @@ public:
 class NullIntervalFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) override
+  virtual bool Value(const double X, double& F) override
   {
     if (X >= 2.0 && X <= 4.0)
       F = 0.0;
@@ -84,21 +84,21 @@ public:
       F = X - 2.0;
     else
       F = X - 4.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D) override
+  virtual bool Derivative(const double X, double& D) override
   {
     if (X >= 2.0 && X <= 4.0)
       D = 0.0;
     else
       D = 1.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const Standard_Real X,
-                                  Standard_Real&      F,
-                                  Standard_Real&      D) override
+  virtual bool Values(const double X,
+                                  double&      F,
+                                  double&      D) override
   {
     if (X >= 2.0 && X <= 4.0)
     {
@@ -115,7 +115,7 @@ public:
       F = X - 4.0;
       D = 1.0;
     }
-    return Standard_True;
+    return true;
   }
 };
 
@@ -123,25 +123,25 @@ public:
 class QuadraticFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value(const Standard_Real X, Standard_Real& F) override
+  virtual bool Value(const double X, double& F) override
   {
     F = (X - 1.5) * (X - 1.5) - 0.25;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D) override
+  virtual bool Derivative(const double X, double& D) override
   {
     D = 2.0 * (X - 1.5);
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const Standard_Real X,
-                                  Standard_Real&      F,
-                                  Standard_Real&      D) override
+  virtual bool Values(const double X,
+                                  double&      F,
+                                  double&      D) override
   {
     F = (X - 1.5) * (X - 1.5) - 0.25;
     D = 2.0 * (X - 1.5);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -149,23 +149,23 @@ public:
 class ZeroFunction : public math_FunctionWithDerivative
 {
 public:
-  virtual Standard_Boolean Value(const Standard_Real, Standard_Real& F) override
+  virtual bool Value(const double, double& F) override
   {
     F = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Derivative(const Standard_Real, Standard_Real& D) override
+  virtual bool Derivative(const double, double& D) override
   {
     D = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  virtual Standard_Boolean Values(const Standard_Real, Standard_Real& F, Standard_Real& D) override
+  virtual bool Values(const double, double& F, double& D) override
   {
     F = 0.0;
     D = 0.0;
-    return Standard_True;
+    return true;
   }
 };
 } // namespace
@@ -183,8 +183,8 @@ TEST(math_FunctionAllRoots, CubicFunctionBasic)
 
   if (solver.NbPoints() >= 2)
   {
-    Standard_Real root1 = solver.GetPoint(1);
-    Standard_Real root2 = solver.GetPoint(2);
+    double root1 = solver.GetPoint(1);
+    double root2 = solver.GetPoint(2);
 
     // Check if we found roots near 1, 2, or 3
     EXPECT_TRUE(fabs(root1 - 1.0) < 1.0e-4 || fabs(root1 - 2.0) < 1.0e-4
@@ -207,7 +207,7 @@ TEST(math_FunctionAllRoots, SineFunctionRoots)
 
   if (solver.NbPoints() >= 1)
   {
-    Standard_Real root1 = solver.GetPoint(1);
+    double root1 = solver.GetPoint(1);
     // Check if we found a root near 0 or PI
     EXPECT_TRUE(fabs(root1) < 1.0e-4 || fabs(root1 - M_PI) < 1.0e-4
                 || fabs(root1 - 2 * M_PI) < 1.0e-4);
@@ -227,7 +227,7 @@ TEST(math_FunctionAllRoots, NullIntervalFunction)
 
   if (solver.NbIntervals() >= 1)
   {
-    Standard_Real a, b;
+    double a, b;
     solver.GetInterval(1, a, b);
     EXPECT_NEAR(a, 2.0, 1.0e-3);
     EXPECT_NEAR(b, 4.0, 1.0e-3);
@@ -247,7 +247,7 @@ TEST(math_FunctionAllRoots, QuadraticTwoRoots)
 
   if (solver.NbPoints() >= 1)
   {
-    Standard_Real root1 = solver.GetPoint(1);
+    double root1 = solver.GetPoint(1);
     EXPECT_TRUE(fabs(root1 - 1.0) < 1.0e-4 || fabs(root1 - 2.0) < 1.0e-4);
   }
 }
@@ -265,7 +265,7 @@ TEST(math_FunctionAllRoots, ZeroFunction)
 
   if (solver.NbIntervals() >= 1)
   {
-    Standard_Real a, b;
+    double a, b;
     solver.GetInterval(1, a, b);
     EXPECT_NEAR(a, 0.0, 1.0e-3);
     EXPECT_NEAR(b, 1.0, 1.0e-3);
@@ -282,7 +282,7 @@ TEST(math_FunctionAllRoots, GetIntervalState)
 
   if (solver.NbIntervals() >= 1)
   {
-    Standard_Integer iFirst, iLast;
+    int iFirst, iLast;
     solver.GetIntervalState(1, iFirst, iLast);
     EXPECT_GE(iFirst, 0);
     EXPECT_GE(iLast, 0);
@@ -300,7 +300,7 @@ TEST(math_FunctionAllRoots, GetPointState)
 
   if (solver.NbPoints() >= 1)
   {
-    Standard_Integer state = solver.GetPointState(1);
+    int state = solver.GetPointState(1);
     EXPECT_GE(state, 0);
   }
 }
@@ -390,7 +390,7 @@ TEST(math_FunctionAllRoots, IntervalBounds)
 
   if (solver.NbIntervals() >= 1)
   {
-    Standard_Real a, b;
+    double a, b;
     solver.GetInterval(1, a, b);
     EXPECT_LT(a, b);
     EXPECT_GE(a, 0.0);
@@ -403,9 +403,9 @@ TEST(math_FunctionAllRoots, MultiplePrecisionLevels)
   CubicFunction func;
 
   // Test with different precision levels
-  std::vector<Standard_Real> tolerances = {1.0e-4, 1.0e-6, 1.0e-8};
+  std::vector<double> tolerances = {1.0e-4, 1.0e-6, 1.0e-8};
 
-  for (Standard_Real tol : tolerances)
+  for (double tol : tolerances)
   {
     math_FunctionSample   sample(0.0, 5.0, 21);
     math_FunctionAllRoots solver(func, sample, tol, tol, tol * 0.01);

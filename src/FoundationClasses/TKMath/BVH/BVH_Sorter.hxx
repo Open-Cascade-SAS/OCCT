@@ -25,7 +25,7 @@ class BVH_Sorter
 public:
   //! Performs default initialization.
   BVH_Sorter()
-      : myIsParallel(Standard_False)
+      : myIsParallel(false)
   {
   }
 
@@ -37,17 +37,17 @@ public:
 
   //! Sorts the given (inclusive) range in the set.
   virtual void Perform(BVH_Set<T, N>*         theSet,
-                       const Standard_Integer theStart,
-                       const Standard_Integer theFinal) = 0;
+                       const int theStart,
+                       const int theFinal) = 0;
 
   //! Returns parallel flag.
-  inline Standard_Boolean IsParallel() const { return myIsParallel; }
+  inline bool IsParallel() const { return myIsParallel; }
 
   //! Set parallel flag controlling possibility of parallel execution.
-  inline void SetParallel(const Standard_Boolean isParallel) { myIsParallel = isParallel; }
+  inline void SetParallel(const bool isParallel) { myIsParallel = isParallel; }
 
 private:
-  Standard_Boolean myIsParallel;
+  bool myIsParallel;
 };
 
 #endif // _BVH_Sorter_Header

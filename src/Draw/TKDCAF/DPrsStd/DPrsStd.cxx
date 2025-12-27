@@ -27,10 +27,10 @@
 
 void DPrsStd::AllCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DPrsStd::AISPresentationCommands(theCommands);
   DPrsStd::AISViewerCommands(theCommands);
@@ -42,10 +42,10 @@ void DPrsStd::AllCommands(Draw_Interpretor& theCommands)
 //==============================================================================
 void DPrsStd::Factory(Draw_Interpretor& theDI)
 {
-  static Standard_Boolean DPrsStdFactoryDone = Standard_False;
+  static bool DPrsStdFactoryDone = false;
   if (DPrsStdFactoryDone)
     return;
-  DPrsStdFactoryDone = Standard_True;
+  DPrsStdFactoryDone = true;
 
   DDF::AllCommands(theDI);
   DNaming::AllCommands(theDI);

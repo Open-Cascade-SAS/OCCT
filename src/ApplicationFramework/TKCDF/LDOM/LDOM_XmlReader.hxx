@@ -48,15 +48,15 @@ public:
   };
 
   // ---------- PUBLIC METHODS ----------
-  LDOM_XmlReader(const Handle(LDOM_MemManager)& aDocument,
+  LDOM_XmlReader(const occ::handle<LDOM_MemManager>& aDocument,
                  TCollection_AsciiString&       anErrorString,
-                 const Standard_Boolean         theTagPerStep = Standard_False);
+                 const bool         theTagPerStep = false);
   // Constructor - takes a file descriptor for input
   // Constructor - takes an std::istream for input
 
   RecordType ReadRecord(Standard_IStream& theIStream,
                         LDOM_OSStream&    theData,
-                        Standard_Boolean& theDocStart);
+                        bool& theDocStart);
 
   // reading a markup or other element of XML format
 
@@ -64,9 +64,9 @@ public:
 
   // get the last element retrieved from the stream
 
-  void CreateElement(const char* theName, const Standard_Integer theLen);
+  void CreateElement(const char* theName, const int theLen);
 
-  static Standard_Boolean getInteger(LDOMBasicString& theValue,
+  static bool getInteger(LDOMBasicString& theValue,
                                      const char*      theStart,
                                      const char*      theEnd);
 
@@ -86,15 +86,15 @@ private:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Boolean         myEOF;
+  bool         myEOF;
   TCollection_AsciiString& myError;
-  Handle(LDOM_MemManager)  myDocument;
+  occ::handle<LDOM_MemManager>  myDocument;
   LDOM_BasicElement*       myElement;
   const LDOM_BasicNode*    myLastChild; // optim. reading attributes
   const char*              myPtr;
   const char*              myEndPtr;
   char                     myBuffer[XML_BUFFER_SIZE + 4];
-  Standard_Boolean         myTagPerStep;
+  bool         myTagPerStep;
   LDOM_OSStream::BOMType   myBOM;
 };
 

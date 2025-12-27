@@ -75,7 +75,7 @@ static void VmsExtract(const TCollection_AsciiString& what,
 {
 
   TCollection_AsciiString buffer;
-  Standard_Integer        pos;
+  int        pos;
 
   buffer = what;
 
@@ -166,7 +166,7 @@ static void UnixExtract(const TCollection_AsciiString& what,
                         TCollection_AsciiString&       ext)
 {
 
-  Standard_Integer        pos;
+  int        pos;
   TCollection_AsciiString buffer; // To manipulate 'what' without modifying it
 
   Standard_PCharacter p;
@@ -260,7 +260,7 @@ static void DosExtract(const TCollection_AsciiString& what,
 {
 
   TCollection_AsciiString buffer;
-  Standard_Integer        pos;
+  int        pos;
   Standard_PCharacter     p;
 
   buffer = what;
@@ -312,7 +312,7 @@ static void MacExtract(const TCollection_AsciiString& what,
                        TCollection_AsciiString&)
 {
 
-  Standard_Integer    pos;
+  int    pos;
   Standard_PCharacter p;
 
   // I don't know how to distinguish a disk from a trek !
@@ -349,7 +349,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_SysT
   mySysDep = whereAmI();
 
   OSD_SysType todo;
-  //  Standard_Integer i,l;
+  //  int i,l;
 
   if (aSysType == OSD_Default)
   {
@@ -388,7 +388,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_SysT
       break;
     default:
   #ifdef OCCT_DEBUG
-      std::cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (Standard_Integer)todo
+      std::cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (int)todo
                 << std::endl;
   #endif
       break;
@@ -446,12 +446,12 @@ void OSD_Path::SetValues(const TCollection_AsciiString& Nod,
 
 void OSD_Path::UpTrek()
 {
-  Standard_Integer length = TrekLength();
+  int length = TrekLength();
 
   if (length == 0)
     return;
 
-  Standard_Integer        awhere, aHowmany;
+  int        awhere, aHowmany;
   TCollection_AsciiString tok;
 
   tok      = myTrek.Token("|", length);
@@ -472,9 +472,9 @@ void OSD_Path::DownTrek(const TCollection_AsciiString& aName)
     myTrek += "|";
 }
 
-Standard_Integer OSD_Path::TrekLength() const
+int OSD_Path::TrekLength() const
 {
-  Standard_Integer cpt = 0;
+  int cpt = 0;
 
   while (myTrek.Token("|", cpt + 1) != "") // Counts token separated by '|'
     cpt++;
@@ -482,14 +482,14 @@ Standard_Integer OSD_Path::TrekLength() const
   return (cpt);
 }
 
-void OSD_Path::RemoveATrek(const Standard_Integer thewhere)
+void OSD_Path::RemoveATrek(const int thewhere)
 {
-  Standard_Integer length = TrekLength();
+  int length = TrekLength();
 
   if (length <= 0 || thewhere > length)
     throw Standard_NumericError("OSD_Path::RemoveATrek : where has an invalid value");
 
-  Standard_Integer        posit, aHowmany;
+  int        posit, aHowmany;
   TCollection_AsciiString tok;
 
   tok      = myTrek.Token("|", thewhere);
@@ -504,12 +504,12 @@ void OSD_Path::RemoveATrek(const Standard_Integer thewhere)
 
 void OSD_Path::RemoveATrek(const TCollection_AsciiString& aName)
 {
-  Standard_Integer length = TrekLength();
+  int length = TrekLength();
 
   if (length == 0)
     return;
 
-  Standard_Integer awhere;
+  int awhere;
 
   awhere = myTrek.Search(aName);
   if (awhere != -1)
@@ -522,7 +522,7 @@ void OSD_Path::RemoveATrek(const TCollection_AsciiString& aName)
   }
 }
 
-TCollection_AsciiString OSD_Path::TrekValue(const Standard_Integer thewhere) const
+TCollection_AsciiString OSD_Path::TrekValue(const int thewhere) const
 {
   TCollection_AsciiString result = myTrek.Token("|", thewhere);
 
@@ -532,15 +532,15 @@ TCollection_AsciiString OSD_Path::TrekValue(const Standard_Integer thewhere) con
   return (result);
 }
 
-void OSD_Path::InsertATrek(const TCollection_AsciiString& aName, const Standard_Integer thewhere)
+void OSD_Path::InsertATrek(const TCollection_AsciiString& aName, const int thewhere)
 {
-  Standard_Integer length = TrekLength();
+  int length = TrekLength();
 
   if (thewhere <= 0 || thewhere > length)
     throw Standard_NumericError("OSD_Path::InsertATrek : where has an invalid value");
 
   TCollection_AsciiString tok    = myTrek.Token("|", thewhere);
-  Standard_Integer        wwhere = myTrek.Search(tok);
+  int        wwhere = myTrek.Search(tok);
   TCollection_AsciiString what   = aName;
   what += "|";
 
@@ -560,7 +560,7 @@ static void VMSDisk2Other(TCollection_AsciiString& Disk)
 
 static void P2VMS(TCollection_AsciiString& Way)
 {
-  Standard_Integer length = Way.Length();
+  int length = Way.Length();
 
   if (length == 0)
     return;
@@ -600,7 +600,7 @@ static void P2MAC(TCollection_AsciiString& Way)
 static void P2UNIX(TCollection_AsciiString& Way)
 {
   int              i, l;
-  Standard_Integer length = Way.Length();
+  int length = Way.Length();
 
   if (length == 0)
     return;
@@ -627,7 +627,7 @@ static void P2UNIX(TCollection_AsciiString& Way)
 static void P2DOS(TCollection_AsciiString& Way)
 {
   int              i, l;
-  Standard_Integer len = Way.Length();
+  int len = Way.Length();
 
   if (len == 0)
     return;
@@ -920,21 +920,21 @@ void OSD_Path::SetExtension(const TCollection_AsciiString& aName)
 
   #define TEST_RAISE(type, arg) _test_raise((type), (arg))
 
-static void __fastcall _test_raise(OSD_SysType, Standard_CString);
+static void __fastcall _test_raise(OSD_SysType, const char*);
 static void __fastcall _remove_dup(TCollection_AsciiString&);
 
 OSD_Path ::OSD_Path()
-    : myUNCFlag(Standard_False),
+    : myUNCFlag(false),
       mySysDep(OSD_WindowsNT)
 {
 } // end constructor ( 1 )
 
 OSD_Path ::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_SysType aSysType)
-    : myUNCFlag(Standard_False),
+    : myUNCFlag(false),
       mySysDep(OSD_WindowsNT)
 {
 
-  Standard_Integer i, j, len;
+  int i, j, len;
   char             __drive[_MAX_DRIVE];
   char             __dir[_MAX_DIR];
   char             __trek[_MAX_DIR];
@@ -946,7 +946,7 @@ OSD_Path ::OSD_Path(const TCollection_AsciiString& aDependentName, const OSD_Sys
   memset(__trek, 0, _MAX_DIR);
   memset(__fname, 0, _MAX_FNAME);
   memset(__ext, 0, _MAX_EXT);
-  Standard_Character chr;
+  char chr;
 
   TEST_RAISE(aSysType, "OSD_Path");
 
@@ -995,7 +995,7 @@ OSD_Path ::OSD_Path(const TCollection_AsciiString& aNode,
                     const TCollection_AsciiString& aTrek,
                     const TCollection_AsciiString& aName,
                     const TCollection_AsciiString& anExtension)
-    : myUNCFlag(Standard_False),
+    : myUNCFlag(false),
       mySysDep(OSD_WindowsNT)
 {
 
@@ -1052,10 +1052,10 @@ void OSD_Path ::SetValues(const TCollection_AsciiString& aNode,
 void OSD_Path ::SystemName(TCollection_AsciiString& FullName, const OSD_SysType aType) const
 {
 
-  Standard_Integer        i, j;
+  int        i, j;
   TCollection_AsciiString fullPath;
-  Standard_Character      trek[_MAX_PATH];
-  Standard_Character      chr;
+  char      trek[_MAX_PATH];
+  char      chr;
 
   memset(trek, 0, _MAX_PATH);
 
@@ -1102,7 +1102,7 @@ void OSD_Path ::SystemName(TCollection_AsciiString& FullName, const OSD_SysType 
 void OSD_Path ::UpTrek()
 {
 
-  Standard_Integer pos = myTrek.SearchFromEnd("|");
+  int pos = myTrek.SearchFromEnd("|");
 
   if (pos == -1)
 
@@ -1123,7 +1123,7 @@ void OSD_Path ::UpTrek()
 void OSD_Path ::DownTrek(const TCollection_AsciiString& aName)
 {
 
-  Standard_Integer pos = myTrek.Length();
+  int pos = myTrek.Length();
 
   if (!aName.IsEmpty() && aName.Value(1) != '|' && pos && myTrek.Value(pos) != '|')
 
@@ -1135,11 +1135,11 @@ void OSD_Path ::DownTrek(const TCollection_AsciiString& aName)
 
 } // end OSD_Path :: DownTrek
 
-Standard_Integer OSD_Path ::TrekLength() const
+int OSD_Path ::TrekLength() const
 {
 
-  Standard_Integer i      = 1;
-  Standard_Integer retVal = 0;
+  int i      = 1;
+  int retVal = 0;
 
   if (myTrek.IsEmpty() || (myTrek.Length() == 1 && myTrek.Value(1) == '|'))
 
@@ -1160,11 +1160,11 @@ Standard_Integer OSD_Path ::TrekLength() const
 
 } // end TrekLength
 
-void OSD_Path ::RemoveATrek(const Standard_Integer thewhere)
+void OSD_Path ::RemoveATrek(const int thewhere)
 {
 
-  Standard_Integer i, j;
-  Standard_Boolean flag = Standard_False;
+  int i, j;
+  bool flag = false;
 
   if (TrekLength() < thewhere)
 
@@ -1173,7 +1173,7 @@ void OSD_Path ::RemoveATrek(const Standard_Integer thewhere)
   if (myTrek.Value(1) != '|')
   {
 
-    flag = Standard_True;
+    flag = true;
     myTrek.Insert(1, '|');
 
   } // end if
@@ -1202,14 +1202,14 @@ void OSD_Path ::RemoveATrek(const Standard_Integer thewhere)
 void OSD_Path ::RemoveATrek(const TCollection_AsciiString& aName)
 {
 
-  Standard_Integer        i;
-  Standard_Boolean        flag = Standard_False;
+  int        i;
+  bool        flag = false;
   TCollection_AsciiString tmp;
 
   if (myTrek.Value(1) != '|')
   {
 
-    flag = Standard_True;
+    flag = true;
     myTrek.Insert(1, '|');
 
   } // end if
@@ -1242,7 +1242,7 @@ void OSD_Path ::RemoveATrek(const TCollection_AsciiString& aName)
 
 } // end OSD_Path :: RemoveATrek ( 2 )
 
-TCollection_AsciiString OSD_Path ::TrekValue(const Standard_Integer thewhere) const
+TCollection_AsciiString OSD_Path ::TrekValue(const int thewhere) const
 {
 
   TCollection_AsciiString retVal;
@@ -1258,17 +1258,17 @@ TCollection_AsciiString OSD_Path ::TrekValue(const Standard_Integer thewhere) co
 
 } // end OSD_Path :: TrekValue
 
-void OSD_Path ::InsertATrek(const TCollection_AsciiString& aName, const Standard_Integer thewhere)
+void OSD_Path ::InsertATrek(const TCollection_AsciiString& aName, const int thewhere)
 {
 
-  Standard_Integer        pos;
+  int        pos;
   TCollection_AsciiString tmp  = aName;
-  Standard_Boolean        flag = Standard_False;
+  bool        flag = false;
 
   if (myTrek.Value(1) != '|')
   {
 
-    flag = Standard_True;
+    flag = true;
     myTrek.Insert(1, '|');
 
   } // end if
@@ -1404,10 +1404,10 @@ void OSD_Path ::SetExtension(const TCollection_AsciiString& aName)
 
 } // end OSD_Path :: SetExtension
 
-static void __fastcall _test_raise(OSD_SysType type, Standard_CString str)
+static void __fastcall _test_raise(OSD_SysType type, const char* str)
 {
 
-  Standard_Character buff[64];
+  char buff[64];
 
   if (type != OSD_Default && type != OSD_WindowsNT)
   {
@@ -1425,7 +1425,7 @@ static void __fastcall _test_raise(OSD_SysType type, Standard_CString str)
 static void __fastcall _remove_dup(TCollection_AsciiString& str)
 {
 
-  Standard_Integer pos = 1, orgLen, len = str.Length();
+  int pos = 1, orgLen, len = str.Length();
 
   orgLen = len;
 
@@ -1477,45 +1477,45 @@ static void __fastcall _remove_dup(TCollection_AsciiString& str)
 
 //=================================================================================================
 
-static Standard_Boolean Analyse_VMS(const TCollection_AsciiString& theName)
+static bool Analyse_VMS(const TCollection_AsciiString& theName)
 {
   if (theName.Search("/") != -1 || theName.Search("@") != -1 || theName.Search("\\") != -1)
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean Analyse_DOS(const TCollection_AsciiString& theName)
+static bool Analyse_DOS(const TCollection_AsciiString& theName)
 {
   if (theName.Search("/") != -1 || theName.Search(":") != -1 || theName.Search("*") != -1
       || theName.Search("?") != -1 || theName.Search("\"") != -1 || theName.Search("<") != -1
       || theName.Search(">") != -1 || theName.Search("|") != -1)
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean Analyse_MACOS(const TCollection_AsciiString& theName)
+static bool Analyse_MACOS(const TCollection_AsciiString& theName)
 {
-  return theName.Search(":") == -1 ? theName.Length() <= 31 : Standard_True;
+  return theName.Search(":") == -1 ? theName.Length() <= 31 : true;
 }
 
 //=================================================================================================
 
-Standard_Boolean OSD_Path::IsValid(const TCollection_AsciiString& theDependentName,
+bool OSD_Path::IsValid(const TCollection_AsciiString& theDependentName,
                                    const OSD_SysType              theSysType)
 {
   if (theDependentName.Length() == 0)
   {
-    return Standard_True;
+    return true;
   }
 
   switch (theSysType == OSD_Default ? whereAmI() : theSysType)
@@ -1528,7 +1528,7 @@ Standard_Boolean OSD_Path::IsValid(const TCollection_AsciiString& theDependentNa
     case OSD_MacOs:
       return Analyse_MACOS(theDependentName);
     default:
-      return Standard_True;
+      return true;
   }
 }
 
@@ -1536,10 +1536,10 @@ Standard_Boolean OSD_Path::IsValid(const TCollection_AsciiString& theDependentNa
 
 // Elimine les separateurs inutiles
 
-static Standard_Integer RemoveExtraSeparator(TCollection_AsciiString& aString)
+static int RemoveExtraSeparator(TCollection_AsciiString& aString)
 {
 
-  Standard_Integer i, j, len, start = 1;
+  int i, j, len, start = 1;
 
   len = aString.Length();
 #ifdef _WIN32
@@ -1548,7 +1548,7 @@ static Standard_Integer RemoveExtraSeparator(TCollection_AsciiString& aString)
 #endif
   for (i = j = start; j <= len; i++, j++)
   {
-    Standard_Character c = aString.Value(j);
+    char c = aString.Value(j);
     aString.SetValue(i, c);
     if (c == '/')
       while (j < len && aString.Value(j + 1) == '/')
@@ -1568,8 +1568,8 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
 {
   TCollection_AsciiString EmptyString = "";
   TCollection_AsciiString FilePath;
-  Standard_Integer        len;
-  Standard_Boolean        Wnt = 0;
+  int        len;
+  bool        Wnt = 0;
 
   FilePath = aAbsFilePath;
 
@@ -1600,9 +1600,9 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
     FilePath = FilePath.SubString(2, len);
   }
   TCollection_AsciiString DirToken, FileToken;
-  Standard_Boolean        Sibling = 0;
+  bool        Sibling = 0;
 
-  for (Standard_Integer n = 1;; n++)
+  for (int n = 1;; n++)
   {
     DirToken = aDirPath.Token("/\\", n);
     if (DirToken.IsEmpty())
@@ -1611,7 +1611,7 @@ TCollection_AsciiString OSD_Path::RelativePath(const TCollection_AsciiString& aD
     if (!Sibling)
     {
       len                = FilePath.Length();
-      Standard_Integer i = FilePath.Search("/");
+      int i = FilePath.Search("/");
       if (i > 0)
       {
         if (i == len)
@@ -1648,7 +1648,7 @@ TCollection_AsciiString OSD_Path::AbsolutePath(const TCollection_AsciiString& aD
   if (aRelFilePath.Search("/") == 1 || aRelFilePath.Search(":") == 2)
     return aRelFilePath;
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath;
-  Standard_Integer        i, len;
+  int        i, len;
 
   if (DirPath.Search("/") != 1 && DirPath.Search(":") != 2)
     return EmptyString;
@@ -1680,10 +1680,10 @@ TCollection_AsciiString OSD_Path::AbsolutePath(const TCollection_AsciiString& aD
 // void OSD_Path::ExpandedName(TCollection_AsciiString& aName)
 void OSD_Path::ExpandedName(TCollection_AsciiString&) {}
 
-// Standard_Boolean LocateExecFile(OSD_Path& aPath)
-Standard_Boolean LocateExecFile(OSD_Path&)
+// bool LocateExecFile(OSD_Path& aPath)
+bool LocateExecFile(OSD_Path&)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -1692,9 +1692,9 @@ void OSD_Path::FolderAndFileFromPath(const TCollection_AsciiString& theFilePath,
                                      TCollection_AsciiString&       theFolder,
                                      TCollection_AsciiString&       theFileName)
 {
-  Standard_Integer aLastSplit = -1;
-  Standard_CString aString    = theFilePath.ToCString();
-  for (Standard_Integer anIter = 0; anIter < theFilePath.Length(); ++anIter)
+  int aLastSplit = -1;
+  const char* aString    = theFilePath.ToCString();
+  for (int anIter = 0; anIter < theFilePath.Length(); ++anIter)
   {
     if (aString[anIter] == '/' || aString[anIter] == '\\')
     {
@@ -1727,14 +1727,14 @@ void OSD_Path::FileNameAndExtension(const TCollection_AsciiString& theFilePath,
                                     TCollection_AsciiString&       theExtension)
 {
   // clang-format off
-  const Standard_Integer THE_EXT_MAX_LEN = 20; // this method is supposed to be used with normal extension
+  const int THE_EXT_MAX_LEN = 20; // this method is supposed to be used with normal extension
   // clang-format on
-  const Standard_Integer aLen = theFilePath.Length();
-  for (Standard_Integer anExtLen = 1; anExtLen < aLen && anExtLen < THE_EXT_MAX_LEN; ++anExtLen)
+  const int aLen = theFilePath.Length();
+  for (int anExtLen = 1; anExtLen < aLen && anExtLen < THE_EXT_MAX_LEN; ++anExtLen)
   {
     if (theFilePath.Value(aLen - anExtLen) == '.')
     {
-      const Standard_Integer aNameUpper = aLen - anExtLen - 1;
+      const int aNameUpper = aLen - anExtLen - 1;
       if (aNameUpper < 1)
       {
         break;

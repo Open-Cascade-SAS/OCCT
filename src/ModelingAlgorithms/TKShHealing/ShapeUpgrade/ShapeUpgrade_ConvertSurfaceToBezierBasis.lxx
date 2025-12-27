@@ -16,56 +16,56 @@
 
 //=================================================================================================
 
-inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const Standard_Boolean mode)
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetPlaneMode(const bool mode)
 {
   myPlaneMode = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode() const
+inline bool ShapeUpgrade_ConvertSurfaceToBezierBasis::GetPlaneMode() const
 {
   return myPlaneMode;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const Standard_Boolean mode)
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetRevolutionMode(const bool mode)
 {
   myRevolutionMode = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionMode() const
+inline bool ShapeUpgrade_ConvertSurfaceToBezierBasis::GetRevolutionMode() const
 {
   return myRevolutionMode;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const Standard_Boolean mode)
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetExtrusionMode(const bool mode)
 {
   myExtrusionMode = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMode() const
+inline bool ShapeUpgrade_ConvertSurfaceToBezierBasis::GetExtrusionMode() const
 {
   return myExtrusionMode;
 }
 
 //=================================================================================================
 
-inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const Standard_Boolean mode)
+inline void ShapeUpgrade_ConvertSurfaceToBezierBasis::SetBSplineMode(const bool mode)
 {
   myBSplineMode = mode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeUpgrade_ConvertSurfaceToBezierBasis::GetBSplineMode() const
+inline bool ShapeUpgrade_ConvertSurfaceToBezierBasis::GetBSplineMode() const
 {
   return myBSplineMode;
 }

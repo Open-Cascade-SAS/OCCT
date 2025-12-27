@@ -38,7 +38,7 @@ set(OCCT_Draw_FILES
   Draw_Interpretor.hxx
   Draw_Main.cxx
   Draw_Main.hxx
-  Draw_MapOfAsciiString.hxx
+
   Draw_Marker2D.cxx
   Draw_Marker2D.hxx
   Draw_Marker3D.cxx
@@ -59,7 +59,7 @@ set(OCCT_Draw_FILES
   Draw_Segment2D.hxx
   Draw_Segment3D.cxx
   Draw_Segment3D.hxx
-  Draw_SequenceOfDrawable3D.hxx
+
   Draw_Text2D.cxx
   Draw_Text2D.hxx
   Draw_Text3D.cxx

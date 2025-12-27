@@ -18,9 +18,10 @@
 #define TopTools_HSequenceOfShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TopTools_HSequenceOfShape, TopTools_SequenceOfShape)
+DEFINE_HSEQUENCE(TopTools_HSequenceOfShape, NCollection_Sequence<TopoDS_Shape>)
 
 #endif

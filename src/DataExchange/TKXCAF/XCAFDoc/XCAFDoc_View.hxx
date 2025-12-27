@@ -29,9 +29,6 @@ class XCAFView_Object;
   #undef GetObject
 #endif
 
-class XCAFDoc_View;
-DEFINE_STANDARD_HANDLE(XCAFDoc_View, TDataStd_GenericEmpty)
-
 //! Attribute to store view
 class XCAFDoc_View : public TDataStd_GenericEmpty
 {
@@ -41,16 +38,16 @@ public:
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT static Handle(XCAFDoc_View) Set(const TDF_Label& theLabel);
+  Standard_EXPORT static occ::handle<XCAFDoc_View> Set(const TDF_Label& theLabel);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Updates parent's label and its sub-labels with data taken from theViewObject.
   //! Old data associated with the label will be lost.
-  Standard_EXPORT void SetObject(const Handle(XCAFView_Object)& theViewObject);
+  Standard_EXPORT void SetObject(const occ::handle<XCAFView_Object>& theViewObject);
 
   //! Returns view object data taken from the paren's label and its sub-labels.
-  Standard_EXPORT Handle(XCAFView_Object) GetObject() const;
+  Standard_EXPORT occ::handle<XCAFView_Object> GetObject() const;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_View, TDataStd_GenericEmpty)
 };

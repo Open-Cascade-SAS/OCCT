@@ -35,6 +35,5 @@ struct Aspect_TrackedDevicePose
 };
 
 //! Array of tracked poses.
-typedef NCollection_Array1<Aspect_TrackedDevicePose> Aspect_TrackedDevicePoseArray;
 
 #endif // _Aspect_TrackedDevicePose_HeaderFile

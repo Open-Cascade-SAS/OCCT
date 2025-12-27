@@ -15,37 +15,37 @@
 
 #include <Interface_FloatWriter.hxx>
 
-Interface_FloatWriter::Interface_FloatWriter(const Standard_Integer chars)
+Interface_FloatWriter::Interface_FloatWriter(const int chars)
 {
   SetDefaults(chars);
 }
 
 //  ....                Control of Float Transmission                ....
 
-void Interface_FloatWriter::SetFormat(const Standard_CString form, const Standard_Boolean reset)
+void Interface_FloatWriter::SetFormat(const char* form, const bool reset)
 {
   strcpy(themainform, form);
   if (!reset)
     return;
   therange1 = therange2 = 0.; // second form : inhibee
-  thezerosup            = Standard_False;
+  thezerosup            = false;
 }
 
-void Interface_FloatWriter::SetFormatForRange(const Standard_CString form,
-                                              const Standard_Real    R1,
-                                              const Standard_Real    R2)
+void Interface_FloatWriter::SetFormatForRange(const char* form,
+                                              const double    R1,
+                                              const double    R2)
 {
   strcpy(therangeform, form);
   therange1 = R1;
   therange2 = R2;
 }
 
-void Interface_FloatWriter::SetZeroSuppress(const Standard_Boolean mode)
+void Interface_FloatWriter::SetZeroSuppress(const bool mode)
 {
   thezerosup = mode;
 }
 
-void Interface_FloatWriter::SetDefaults(const Standard_Integer chars)
+void Interface_FloatWriter::SetDefaults(const int chars)
 {
   if (chars <= 0)
   {
@@ -61,13 +61,13 @@ void Interface_FloatWriter::SetDefaults(const Standard_Integer chars)
   }
   therange1  = 0.1;
   therange2  = 1000.;
-  thezerosup = Standard_True;
+  thezerosup = true;
 }
 
-void Interface_FloatWriter::Options(Standard_Boolean& zerosup,
-                                    Standard_Boolean& range,
-                                    Standard_Real&    R1,
-                                    Standard_Real&    R2) const
+void Interface_FloatWriter::Options(bool& zerosup,
+                                    bool& range,
+                                    double&    R1,
+                                    double&    R2) const
 {
   zerosup = thezerosup;
   range   = (therange2 >= therange1 && therange1 >= 0.);
@@ -75,44 +75,44 @@ void Interface_FloatWriter::Options(Standard_Boolean& zerosup,
   R2      = therange2;
 }
 
-Standard_CString Interface_FloatWriter::MainFormat() const
+const char* Interface_FloatWriter::MainFormat() const
 {
-  const Standard_CString mainform = Standard_CString(&themainform[0]);
+  const char* mainform = static_cast<const char*>(&themainform[0]);
   return mainform;
 }
 
-Standard_CString Interface_FloatWriter::FormatForRange() const
+const char* Interface_FloatWriter::FormatForRange() const
 {
-  const Standard_CString rangeform = Standard_CString(&therangeform[0]);
+  const char* rangeform = static_cast<const char*>(&therangeform[0]);
   return rangeform;
 }
 
 //  ########################################################################
 
-Standard_Integer Interface_FloatWriter::Write(const Standard_Real    val,
-                                              const Standard_CString text) const
+int Interface_FloatWriter::Write(const double    val,
+                                              const char* text) const
 {
-  const Standard_CString mainform  = Standard_CString(themainform);
-  const Standard_CString rangeform = Standard_CString(therangeform);
+  const char* mainform  = static_cast<const char*>(themainform);
+  const char* rangeform = static_cast<const char*>(therangeform);
   return Convert(val, text, thezerosup, therange1, therange2, mainform, rangeform);
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_FloatWriter::Convert(const Standard_Real    val,
-                                                const Standard_CString text,
-                                                const Standard_Boolean zsup,
-                                                const Standard_Real    R1,
-                                                const Standard_Real    R2,
-                                                const Standard_CString mainform,
-                                                const Standard_CString rangeform)
+int Interface_FloatWriter::Convert(const double    val,
+                                                const char* text,
+                                                const bool zsup,
+                                                const double    R1,
+                                                const double    R2,
+                                                const char* mainform,
+                                                const char* rangeform)
 {
   //    Float value, purged of trailing "0000" and "E+00"
-  const Standard_Integer anMasSize = 5; // change 6 to 5: index 5 is not used below
+  const int anMasSize = 5; // change 6 to 5: index 5 is not used below
   char                   lxp[anMasSize], *pText;
   int                    i0 = 0, j0 = 0;
 
-  for (Standard_Integer i = 0; i < anMasSize; ++i)
+  for (int i = 0; i < anMasSize; ++i)
     lxp[i] = '\0';
 
   pText = (char*)text;
@@ -161,5 +161,5 @@ Standard_Integer Interface_FloatWriter::Convert(const Standard_Real    val,
     pText[j0 + 5] = lxp[4];
     pText[j0 + 6] = '\0';
   }
-  return (Standard_Integer)strlen(text);
+  return (int)strlen(text);
 }

@@ -87,44 +87,44 @@ public:
   bool ToPrintDebugMessages() const { return myToPrintDebugMessages; }
 
   //! Sets flag to print debug information.
-  void SetToPrintDebugMessages(const Standard_Boolean theToPrint)
+  void SetToPrintDebugMessages(const bool theToPrint)
   {
     myToPrintDebugMessages = theToPrint;
   }
 
 protected:
   //! Read the mesh from specified file.
-  Standard_EXPORT virtual Standard_Boolean performMesh(std::istream&                  theStream,
+  Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
                                                        const TCollection_AsciiString& theFile,
                                                        const Message_ProgressRange&   theProgress,
-                                                       const Standard_Boolean         theToProbe)
-    Standard_OVERRIDE;
+                                                       const bool         theToProbe)
+    override;
 
   //! Fill document with new root shapes.
-  Standard_EXPORT virtual void fillDocument() Standard_OVERRIDE;
+  Standard_EXPORT virtual void fillDocument() override;
 
   //! Append new shape into the document (recursively).
-  Standard_EXPORT Standard_Boolean addShapeIntoDoc(CafDocumentTools&              theTools,
+  Standard_EXPORT bool addShapeIntoDoc(CafDocumentTools&              theTools,
                                                    const TopoDS_Shape&            theShape,
                                                    const TDF_Label&               theLabel,
                                                    const TCollection_AsciiString& theParentName,
-                                                   const Standard_Boolean theHasScale = false,
+                                                   const bool theHasScale = false,
                                                    const gp_XYZ& theScale = gp_XYZ(0., 0., 0.));
 
   //! Create primitive array reader context.
   //! Can be overridden by sub-class to read triangulation into application-specific data structures
   //! instead of Poly_Triangulation. Default implementation creates RWGltf_TriangulationReader.
-  Standard_EXPORT virtual Handle(RWMesh_TriangulationReader) createMeshReaderContext() const;
+  Standard_EXPORT virtual occ::handle<RWMesh_TriangulationReader> createMeshReaderContext() const;
 
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
-  Standard_EXPORT virtual Standard_Boolean readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
+  Standard_EXPORT virtual bool readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
                                                         const TCollection_AsciiString&   theFile,
                                                         const Message_ProgressRange& theProgress);
 
   //! Set reader for each late data.
   Standard_EXPORT void updateLateDataReader(
     NCollection_Vector<TopoDS_Face>&          theFaces,
-    const Handle(RWMesh_TriangulationReader)& theReader) const;
+    const occ::handle<RWMesh_TriangulationReader>& theReader) const;
 
 protected:
   class CafReader_GltfBaseLoadingFunctor;
@@ -132,17 +132,17 @@ protected:
   class CafReader_GltfStreamDataLoadingFunctor;
 
 protected:
-  Standard_Boolean myToParallel;           //!< flag to use multithreading; FALSE by default
-  Standard_Boolean myToSkipEmptyNodes;     //!< ignore nodes without Geometry; TRUE by default
+  bool myToParallel;           //!< flag to use multithreading; FALSE by default
+  bool myToSkipEmptyNodes;     //!< ignore nodes without Geometry; TRUE by default
                                            // clang-format off
-  Standard_Boolean myToLoadAllScenes;       //!< flag to load all scenes in the document, FALSE by default
-  Standard_Boolean myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
-  Standard_Boolean myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
-  Standard_Boolean myToSkipLateDataLoading; //!< flag to skip triangulation loading
-  Standard_Boolean myToKeepLateData;        //!< flag to keep information about deferred storage to load/unload triangulation later
+  bool myToLoadAllScenes;       //!< flag to load all scenes in the document, FALSE by default
+  bool myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
+  bool myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
+  bool myToSkipLateDataLoading; //!< flag to skip triangulation loading
+  bool myToKeepLateData;        //!< flag to keep information about deferred storage to load/unload triangulation later
                                            // clang-format on
-  Standard_Boolean myToPrintDebugMessages; //!< flag to print additional debug information
-  Standard_Boolean myToApplyScale;         //!< flag to apply non-uniform scaling
+  bool myToPrintDebugMessages; //!< flag to print additional debug information
+  bool myToApplyScale;         //!< flag to apply non-uniform scaling
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
     myShapeScaleMap; //!< map of shapes with non-uniform scalings
 };

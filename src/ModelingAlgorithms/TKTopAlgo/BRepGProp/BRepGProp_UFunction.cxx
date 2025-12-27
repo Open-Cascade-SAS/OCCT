@@ -23,8 +23,8 @@
 //=======================================================================
 BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face&  theSurface,
                                          const gp_Pnt&          theVertex,
-                                         const Standard_Boolean IsByPoint,
-                                         const Standard_Real*   theCoeffs)
+                                         const bool IsByPoint,
+                                         const double*   theCoeffs)
     : mySurface(theSurface),
       myVertex(theVertex),
       myCoeffs(theCoeffs),
@@ -39,18 +39,18 @@ BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face&  theSurface,
 // purpose  : Returns a value of the function.
 //=======================================================================
 
-Standard_Boolean BRepGProp_UFunction::Value(const Standard_Real X, Standard_Real& F)
+bool BRepGProp_UFunction::Value(const double X, double& F)
 {
   // Volume computation
   if (myValueType == GProp_Mass)
   {
     gp_XYZ        aPMP0;
-    Standard_Real aTmpPar1;
-    Standard_Real aTmpPar2;
+    double aTmpPar1;
+    double aTmpPar2;
 
     F = VolumeValue(X, aPMP0, aTmpPar1, aTmpPar2);
 
-    return Standard_True;
+    return true;
   }
 
   // Center of mass computation
@@ -64,7 +64,7 @@ Standard_Boolean BRepGProp_UFunction::Value(const Standard_Real X, Standard_Real
       || myValueType == GProp_InertiaXZ || myValueType == GProp_InertiaYZ)
     return InertiaValue(X, F);
 
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -72,10 +72,10 @@ Standard_Boolean BRepGProp_UFunction::Value(const Standard_Real X, Standard_Real
 // purpose  : Returns the value for volume computation.
 //=======================================================================
 
-Standard_Real BRepGProp_UFunction::VolumeValue(const Standard_Real X,
+double BRepGProp_UFunction::VolumeValue(const double X,
                                                gp_XYZ&             thePMP0,
-                                               Standard_Real&      theS,
-                                               Standard_Real&      theD1)
+                                               double&      theS,
+                                               double&      theD1)
 {
   gp_Pnt aPnt;
   gp_Vec aNorm;
@@ -89,7 +89,7 @@ Standard_Real BRepGProp_UFunction::VolumeValue(const Standard_Real X,
     return thePMP0.Dot(aNorm.XYZ());
 
   // Volume and additional coefficients computation for ByPlane mode.
-  const Standard_Real* aCoeff = myCoeffs;
+  const double* aCoeff = myCoeffs;
 
   theS  = aNorm.X() * aCoeff[0] + aNorm.Y() * aCoeff[1] + aNorm.Z() * aCoeff[2];
   theD1 = thePMP0.X() * aCoeff[0] + thePMP0.Y() * aCoeff[1] + thePMP0.Z() * aCoeff[2] - aCoeff[3];
@@ -102,11 +102,11 @@ Standard_Real BRepGProp_UFunction::VolumeValue(const Standard_Real X,
 // purpose  : Returns a value for the center of mass computation.
 //=======================================================================
 
-Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real X, Standard_Real& F)
+bool BRepGProp_UFunction::CenterMassValue(const double X, double& F)
 {
   gp_XYZ        aPmP0;
-  Standard_Real aS;
-  Standard_Real aD1;
+  double aS;
+  double aD1;
 
   F = VolumeValue(X, aPmP0, aS, aD1);
 
@@ -125,14 +125,14 @@ Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real X, Sta
         F *= aPmP0.Z();
         break;
       default:
-        return Standard_False;
+        return false;
     }
 
-    return Standard_True;
+    return true;
   }
 
   // Center of mass computation for ByPlane mode.
-  const Standard_Real* aCoeff = myCoeffs;
+  const double* aCoeff = myCoeffs;
 
   switch (myValueType)
   {
@@ -146,10 +146,10 @@ Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real X, Sta
       F *= (aPmP0.Z() - 0.5 * aCoeff[2] * aD1);
       break;
     default:
-      return Standard_False;
+      return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -157,14 +157,14 @@ Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real X, Sta
 // purpose  : Compute the value of inertia.
 //=======================================================================
 
-Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standard_Real& F)
+bool BRepGProp_UFunction::InertiaValue(const double X, double& F)
 {
   gp_XYZ               aPmP0;
-  Standard_Real        aS;
-  Standard_Real        aD1;
-  Standard_Real        aParam1;
-  Standard_Real        aParam2;
-  const Standard_Real* aCoeffs = myCoeffs;
+  double        aS;
+  double        aD1;
+  double        aParam1;
+  double        aParam2;
+  const double* aCoeffs = myCoeffs;
 
   F = VolumeValue(X, aPmP0, aS, aD1);
 
@@ -189,7 +189,7 @@ Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standa
         aParam2 = aPmP0.Y() - aCoeffs[1];
         break;
       default:
-        return Standard_False;
+        return false;
     }
 
     if (myValueType == GProp_InertiaXX || myValueType == GProp_InertiaYY
@@ -198,16 +198,16 @@ Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standa
     else
       F *= -aParam1 * aParam2;
 
-    return Standard_True;
+    return true;
   }
 
   // Inertia computation for ByPlane mode.
-  Standard_Real aD2 = aD1 * aD1;
-  Standard_Real aD3 = aD1 * aD2 / 3.;
-  Standard_Real aPPar1;
-  Standard_Real aPPar2;
-  Standard_Real aCoeff1;
-  Standard_Real aCoeff2;
+  double aD2 = aD1 * aD1;
+  double aD3 = aD1 * aD2 / 3.;
+  double aPPar1;
+  double aPPar2;
+  double aCoeff1;
+  double aCoeff2;
 
   // Inertia computation for XX, YY and ZZ.
   if (myValueType == GProp_InertiaXX || myValueType == GProp_InertiaYY
@@ -243,7 +243,7 @@ Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standa
 
     F = (aParam1 + aParam2) * aS;
 
-    return Standard_True;
+    return true;
   }
 
   // Inertia computation for XY, YZ and XZ.
@@ -281,8 +281,8 @@ Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real X, Standa
 
     F = -aParam1 * aS;
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }

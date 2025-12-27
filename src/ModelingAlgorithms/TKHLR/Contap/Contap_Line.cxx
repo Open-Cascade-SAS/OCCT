@@ -35,21 +35,21 @@ void Contap_Line::ResetSeqOfVertex()
 
 void Contap_Line::Add(const Contap_Point& P)
 {
-  Standard_Integer n = svtx->Length();
+  int n = svtx->Length();
   if (n == 0)
   {
     svtx->Append(P);
   }
   else
   {
-    Standard_Real prm = P.ParameterOnLine();
+    double prm = P.ParameterOnLine();
     if (prm > svtx->Value(n).ParameterOnLine())
     {
       svtx->Append(P);
     }
     else
     {
-      for (Standard_Integer i = n - 1; i > 0; i--)
+      for (int i = n - 1; i > 0; i--)
       {
         if (prm > svtx->Value(i).ParameterOnLine())
         {
@@ -86,13 +86,13 @@ void Contap_Line::SetValue(const gp_Circ& C)
   typL = Contap_Circle;
 }
 
-void Contap_Line::SetValue(const Handle(Adaptor2d_Curve2d)& A)
+void Contap_Line::SetValue(const occ::handle<Adaptor2d_Curve2d>& A)
 {
   thearc = A;
   typL   = Contap_Restriction;
 }
 
-void Contap_Line::SetLineOn2S(const Handle(IntSurf_LineOn2S)& L)
+void Contap_Line::SetLineOn2S(const occ::handle<IntSurf_LineOn2S>& L)
 {
   curv = L;
   typL = Contap_Walking;
@@ -108,7 +108,7 @@ IntSurf_TypeTrans Contap_Line::TransitionOnS() const
   return (Trans);
 }
 
-const Handle(Adaptor2d_Curve2d)& Contap_Line::Arc() const
+const occ::handle<Adaptor2d_Curve2d>& Contap_Line::Arc() const
 {
   if (typL != Contap_Restriction)
   {

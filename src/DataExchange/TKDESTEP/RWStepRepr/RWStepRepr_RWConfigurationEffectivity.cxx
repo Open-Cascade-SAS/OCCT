@@ -31,10 +31,10 @@ RWStepRepr_RWConfigurationEffectivity::RWStepRepr_RWConfigurationEffectivity() {
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationEffectivity::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepRepr_ConfigurationEffectivity)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepRepr_ConfigurationEffectivity>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "configuration_effectivity"))
@@ -42,12 +42,12 @@ void RWStepRepr_RWConfigurationEffectivity::ReadStep(
 
   // Inherited fields of Effectivity
 
-  Handle(TCollection_HAsciiString) aEffectivity_Id;
+  occ::handle<TCollection_HAsciiString> aEffectivity_Id;
   data->ReadString(num, 1, "effectivity.id", ach, aEffectivity_Id);
 
   // Inherited fields of ProductDefinitionEffectivity
 
-  Handle(StepBasic_ProductDefinitionRelationship) aProductDefinitionEffectivity_Usage;
+  occ::handle<StepBasic_ProductDefinitionRelationship> aProductDefinitionEffectivity_Usage;
   data->ReadEntity(num,
                    2,
                    "product_definition_effectivity.usage",
@@ -57,7 +57,7 @@ void RWStepRepr_RWConfigurationEffectivity::ReadStep(
 
   // Own fields of ConfigurationEffectivity
 
-  Handle(StepRepr_ConfigurationDesign) aConfiguration;
+  occ::handle<StepRepr_ConfigurationDesign> aConfiguration;
   data->ReadEntity(num,
                    3,
                    "configuration",
@@ -73,7 +73,7 @@ void RWStepRepr_RWConfigurationEffectivity::ReadStep(
 
 void RWStepRepr_RWConfigurationEffectivity::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepRepr_ConfigurationEffectivity)& ent) const
+  const occ::handle<StepRepr_ConfigurationEffectivity>& ent) const
 {
 
   // Inherited fields of Effectivity
@@ -92,7 +92,7 @@ void RWStepRepr_RWConfigurationEffectivity::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationEffectivity::Share(
-  const Handle(StepRepr_ConfigurationEffectivity)& ent,
+  const occ::handle<StepRepr_ConfigurationEffectivity>& ent,
   Interface_EntityIterator&                        iter) const
 {
 

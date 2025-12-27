@@ -24,9 +24,6 @@
 class StepBasic_Document;
 class TCollection_HAsciiString;
 
-class StepAP203_CcDesignSpecificationReference;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignSpecificationReference, StepBasic_DocumentReference)
-
 //! Representation of STEP entity CcDesignSpecificationReference
 class StepAP203_CcDesignSpecificationReference : public StepBasic_DocumentReference
 {
@@ -36,21 +33,20 @@ public:
   Standard_EXPORT StepAP203_CcDesignSpecificationReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_Document)& aDocumentReference_AssignedDocument,
-                            const Handle(TCollection_HAsciiString)& aDocumentReference_Source,
-                            const Handle(StepAP203_HArray1OfSpecifiedItem)& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>& aDocumentReference_AssignedDocument,
+                            const occ::handle<TCollection_HAsciiString>& aDocumentReference_Source,
+                            const occ::handle<StepAP203_HArray1OfSpecifiedItem>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfSpecifiedItem) Items() const;
+  Standard_EXPORT occ::handle<StepAP203_HArray1OfSpecifiedItem> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfSpecifiedItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<StepAP203_HArray1OfSpecifiedItem>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference, StepBasic_DocumentReference)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfSpecifiedItem) theItems;
+  occ::handle<StepAP203_HArray1OfSpecifiedItem> theItems;
 };
 
 #endif // _StepAP203_CcDesignSpecificationReference_HeaderFile

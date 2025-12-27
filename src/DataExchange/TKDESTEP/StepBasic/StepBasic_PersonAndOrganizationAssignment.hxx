@@ -24,32 +24,28 @@
 class StepBasic_PersonAndOrganization;
 class StepBasic_PersonAndOrganizationRole;
 
-class StepBasic_PersonAndOrganizationAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_PersonAndOrganizationAssignment, Standard_Transient)
-
 class StepBasic_PersonAndOrganizationAssignment : public Standard_Transient
 {
 
 public:
   Standard_EXPORT void Init(
-    const Handle(StepBasic_PersonAndOrganization)&     aAssignedPersonAndOrganization,
-    const Handle(StepBasic_PersonAndOrganizationRole)& aRole);
+    const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,
+    const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole);
 
   Standard_EXPORT void SetAssignedPersonAndOrganization(
-    const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization);
+    const occ::handle<StepBasic_PersonAndOrganization>& aAssignedPersonAndOrganization);
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganization) AssignedPersonAndOrganization() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> AssignedPersonAndOrganization() const;
 
-  Standard_EXPORT void SetRole(const Handle(StepBasic_PersonAndOrganizationRole)& aRole);
+  Standard_EXPORT void SetRole(const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole);
 
-  Standard_EXPORT Handle(StepBasic_PersonAndOrganizationRole) Role() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> Role() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PersonAndOrganizationAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(StepBasic_PersonAndOrganization)     assignedPersonAndOrganization;
-  Handle(StepBasic_PersonAndOrganizationRole) role;
+  occ::handle<StepBasic_PersonAndOrganization>     assignedPersonAndOrganization;
+  occ::handle<StepBasic_PersonAndOrganizationRole> role;
 };
 
 #endif // _StepBasic_PersonAndOrganizationAssignment_HeaderFile

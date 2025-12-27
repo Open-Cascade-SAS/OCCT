@@ -23,7 +23,7 @@ StepAP242_IdAttribute::StepAP242_IdAttribute() {}
 
 //=================================================================================================
 
-void StepAP242_IdAttribute::Init(const Handle(TCollection_HAsciiString)& theAttributeValue,
+void StepAP242_IdAttribute::Init(const occ::handle<TCollection_HAsciiString>& theAttributeValue,
                                  const StepAP242_IdAttributeSelect&      theIdentifiedItem)
 {
   // --- classe own fields ---

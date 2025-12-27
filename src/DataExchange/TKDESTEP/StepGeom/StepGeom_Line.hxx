@@ -25,9 +25,6 @@ class StepGeom_CartesianPoint;
 class StepGeom_Vector;
 class TCollection_HAsciiString;
 
-class StepGeom_Line;
-DEFINE_STANDARD_HANDLE(StepGeom_Line, StepGeom_Curve)
-
 class StepGeom_Line : public StepGeom_Curve
 {
 
@@ -35,24 +32,23 @@ public:
   //! Returns a Line
   Standard_EXPORT StepGeom_Line();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepGeom_CartesianPoint)&  aPnt,
-                            const Handle(StepGeom_Vector)&          aDir);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepGeom_CartesianPoint>&  aPnt,
+                            const occ::handle<StepGeom_Vector>&          aDir);
 
-  Standard_EXPORT void SetPnt(const Handle(StepGeom_CartesianPoint)& aPnt);
+  Standard_EXPORT void SetPnt(const occ::handle<StepGeom_CartesianPoint>& aPnt);
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) Pnt() const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> Pnt() const;
 
-  Standard_EXPORT void SetDir(const Handle(StepGeom_Vector)& aDir);
+  Standard_EXPORT void SetDir(const occ::handle<StepGeom_Vector>& aDir);
 
-  Standard_EXPORT Handle(StepGeom_Vector) Dir() const;
+  Standard_EXPORT occ::handle<StepGeom_Vector> Dir() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Line, StepGeom_Curve)
 
-protected:
 private:
-  Handle(StepGeom_CartesianPoint) pnt;
-  Handle(StepGeom_Vector)         dir;
+  occ::handle<StepGeom_CartesianPoint> pnt;
+  occ::handle<StepGeom_Vector>         dir;
 };
 
 #endif // _StepGeom_Line_HeaderFile

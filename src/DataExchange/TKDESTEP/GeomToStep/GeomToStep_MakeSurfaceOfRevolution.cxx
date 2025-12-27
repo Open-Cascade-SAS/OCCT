@@ -31,29 +31,29 @@
 // SurfaceOfRevolution de Geom
 //=============================================================================
 GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution(
-  const Handle(Geom_SurfaceOfRevolution)& S,
+  const occ::handle<Geom_SurfaceOfRevolution>& S,
   const StepData_Factors&                 theLocalFactors)
 {
-  Handle(StepGeom_SurfaceOfRevolution) Surf;
-  Handle(StepGeom_Curve)               aSweptCurve;
-  Handle(StepGeom_Axis1Placement)      aAxisPosition;
+  occ::handle<StepGeom_SurfaceOfRevolution> Surf;
+  occ::handle<StepGeom_Curve>               aSweptCurve;
+  occ::handle<StepGeom_Axis1Placement>      aAxisPosition;
 
   GeomToStep_MakeCurve          MkSwept(S->BasisCurve(), theLocalFactors);
   GeomToStep_MakeAxis1Placement MkAxis1(S->Axis(), theLocalFactors);
   aSweptCurve                           = MkSwept.Value();
   aAxisPosition                         = MkAxis1.Value();
   Surf                                  = new StepGeom_SurfaceOfRevolution;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Surf->Init(name, aSweptCurve, aAxisPosition);
   theSurfaceOfRevolution = Surf;
-  done                   = Standard_True;
+  done                   = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_SurfaceOfRevolution)& GeomToStep_MakeSurfaceOfRevolution::Value() const
+const occ::handle<StepGeom_SurfaceOfRevolution>& GeomToStep_MakeSurfaceOfRevolution::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSurfaceOfRevolution::Value() - no result");
   return theSurfaceOfRevolution;

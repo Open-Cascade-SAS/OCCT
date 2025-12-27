@@ -22,9 +22,6 @@
 
 #include <StepShape_TopologicalRepresentationItem.hxx>
 
-class StepShape_Vertex;
-DEFINE_STANDARD_HANDLE(StepShape_Vertex, StepShape_TopologicalRepresentationItem)
-
 class StepShape_Vertex : public StepShape_TopologicalRepresentationItem
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Vertex, StepShape_TopologicalRepresentationItem)
 
-protected:
-private:
 };
 
 #endif // _StepShape_Vertex_HeaderFile

@@ -20,30 +20,30 @@ IMPLEMENT_STANDARD_RTTIEXT(HeaderSection_FileSchema, Standard_Transient)
 HeaderSection_FileSchema::HeaderSection_FileSchema() {}
 
 void HeaderSection_FileSchema::Init(
-  const Handle(Interface_HArray1OfHAsciiString)& aSchemaIdentifiers)
+  const occ::handle<Interface_HArray1OfHAsciiString>& aSchemaIdentifiers)
 {
   // --- class own fields ---
   schemaIdentifiers = aSchemaIdentifiers;
 }
 
 void HeaderSection_FileSchema::SetSchemaIdentifiers(
-  const Handle(Interface_HArray1OfHAsciiString)& aSchemaIdentifiers)
+  const occ::handle<Interface_HArray1OfHAsciiString>& aSchemaIdentifiers)
 {
   schemaIdentifiers = aSchemaIdentifiers;
 }
 
-Handle(Interface_HArray1OfHAsciiString) HeaderSection_FileSchema::SchemaIdentifiers() const
+occ::handle<Interface_HArray1OfHAsciiString> HeaderSection_FileSchema::SchemaIdentifiers() const
 {
   return schemaIdentifiers;
 }
 
-Handle(TCollection_HAsciiString) HeaderSection_FileSchema::SchemaIdentifiersValue(
-  const Standard_Integer num) const
+occ::handle<TCollection_HAsciiString> HeaderSection_FileSchema::SchemaIdentifiersValue(
+  const int num) const
 {
   return schemaIdentifiers->Value(num);
 }
 
-Standard_Integer HeaderSection_FileSchema::NbSchemaIdentifiers() const
+int HeaderSection_FileSchema::NbSchemaIdentifiers() const
 {
   if (schemaIdentifiers.IsNull())
     return 0;

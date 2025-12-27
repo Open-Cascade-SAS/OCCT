@@ -26,16 +26,16 @@ StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aUDegree,
-  const Standard_Integer                          aVDegree,
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
+  const occ::handle<StepGeom_HArray2OfCartesianPoint>& aControlPointsList,
   const StepGeom_BSplineSurfaceForm               aSurfaceForm,
   const StepData_Logical                          aUClosed,
   const StepData_Logical                          aVClosed,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(StepGeom_BSplineSurfaceWithKnots)& aBSplineSurfaceWithKnots,
-  const Handle(StepGeom_RationalBSplineSurface)&  aRationalBSplineSurface)
+  const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots,
+  const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface)
 {
   // --- classe own fields ---
   bSplineSurfaceWithKnots = aBSplineSurfaceWithKnots;
@@ -52,20 +52,20 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aUDegree,
-  const Standard_Integer                          aVDegree,
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
+  const occ::handle<StepGeom_HArray2OfCartesianPoint>& aControlPointsList,
   const StepGeom_BSplineSurfaceForm               aSurfaceForm,
   const StepData_Logical                          aUClosed,
   const StepData_Logical                          aVClosed,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfInteger)&         aUMultiplicities,
-  const Handle(TColStd_HArray1OfInteger)&         aVMultiplicities,
-  const Handle(TColStd_HArray1OfReal)&            aUKnots,
-  const Handle(TColStd_HArray1OfReal)&            aVKnots,
+  const occ::handle<TColStd_HArray1OfInteger>&         aUMultiplicities,
+  const occ::handle<TColStd_HArray1OfInteger>&         aVMultiplicities,
+  const occ::handle<TColStd_HArray1OfReal>&            aUKnots,
+  const occ::handle<TColStd_HArray1OfReal>&            aVKnots,
   const StepGeom_KnotType                         aKnotSpec,
-  const Handle(TColStd_HArray2OfReal)&            aWeightsData)
+  const occ::handle<TColStd_HArray2OfReal>&            aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -110,24 +110,24 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetBSplineSurfaceWithKnots(
-  const Handle(StepGeom_BSplineSurfaceWithKnots)& aBSplineSurfaceWithKnots)
+  const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots)
 {
   bSplineSurfaceWithKnots = aBSplineSurfaceWithKnots;
 }
 
-Handle(StepGeom_BSplineSurfaceWithKnots) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+occ::handle<StepGeom_BSplineSurfaceWithKnots> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
   BSplineSurfaceWithKnots() const
 {
   return bSplineSurfaceWithKnots;
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetRationalBSplineSurface(
-  const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface)
+  const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface)
 {
   rationalBSplineSurface = aRationalBSplineSurface;
 }
 
-Handle(StepGeom_RationalBSplineSurface) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+occ::handle<StepGeom_RationalBSplineSurface> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
   RationalBSplineSurface() const
 {
   return rationalBSplineSurface;
@@ -136,95 +136,95 @@ Handle(StepGeom_RationalBSplineSurface) StepGeom_BSplineSurfaceWithKnotsAndRatio
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetUMultiplicities(
-  const Handle(TColStd_HArray1OfInteger)& aUMultiplicities)
+  const occ::handle<TColStd_HArray1OfInteger>& aUMultiplicities)
 {
   bSplineSurfaceWithKnots->SetUMultiplicities(aUMultiplicities);
 }
 
-Handle(TColStd_HArray1OfInteger) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+occ::handle<TColStd_HArray1OfInteger> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
   UMultiplicities() const
 {
   return bSplineSurfaceWithKnots->UMultiplicities();
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UMultiplicitiesValue(
-  const Standard_Integer num) const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UMultiplicitiesValue(
+  const int num) const
 {
   return bSplineSurfaceWithKnots->UMultiplicitiesValue(num);
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUMultiplicities()
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUMultiplicities()
   const
 {
   return bSplineSurfaceWithKnots->NbUMultiplicities();
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetVMultiplicities(
-  const Handle(TColStd_HArray1OfInteger)& aVMultiplicities)
+  const occ::handle<TColStd_HArray1OfInteger>& aVMultiplicities)
 {
   bSplineSurfaceWithKnots->SetVMultiplicities(aVMultiplicities);
 }
 
-Handle(TColStd_HArray1OfInteger) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+occ::handle<TColStd_HArray1OfInteger> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
   VMultiplicities() const
 {
   return bSplineSurfaceWithKnots->VMultiplicities();
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VMultiplicitiesValue(
-  const Standard_Integer num) const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VMultiplicitiesValue(
+  const int num) const
 {
   return bSplineSurfaceWithKnots->VMultiplicitiesValue(num);
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVMultiplicities()
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVMultiplicities()
   const
 {
   return bSplineSurfaceWithKnots->NbVMultiplicities();
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetUKnots(
-  const Handle(TColStd_HArray1OfReal)& aUKnots)
+  const occ::handle<TColStd_HArray1OfReal>& aUKnots)
 {
   bSplineSurfaceWithKnots->SetUKnots(aUKnots);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnots()
+occ::handle<TColStd_HArray1OfReal> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnots()
   const
 {
   return bSplineSurfaceWithKnots->UKnots();
 }
 
-Standard_Real StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnotsValue(
-  const Standard_Integer num) const
+double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnotsValue(
+  const int num) const
 {
   return bSplineSurfaceWithKnots->UKnotsValue(num);
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUKnots() const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUKnots() const
 {
   return bSplineSurfaceWithKnots->NbUKnots();
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetVKnots(
-  const Handle(TColStd_HArray1OfReal)& aVKnots)
+  const occ::handle<TColStd_HArray1OfReal>& aVKnots)
 {
   bSplineSurfaceWithKnots->SetVKnots(aVKnots);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnots()
+occ::handle<TColStd_HArray1OfReal> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnots()
   const
 {
   return bSplineSurfaceWithKnots->VKnots();
 }
 
-Standard_Real StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnotsValue(
-  const Standard_Integer num) const
+double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnotsValue(
+  const int num) const
 {
   return bSplineSurfaceWithKnots->VKnotsValue(num);
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVKnots() const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVKnots() const
 {
   return bSplineSurfaceWithKnots->NbVKnots();
 }
@@ -243,30 +243,30 @@ StepGeom_KnotType StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Kno
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetWeightsData(
-  const Handle(TColStd_HArray2OfReal)& aWeightsData)
+  const occ::handle<TColStd_HArray2OfReal>& aWeightsData)
 {
   rationalBSplineSurface->SetWeightsData(aWeightsData);
 }
 
-Handle(TColStd_HArray2OfReal) StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+occ::handle<TColStd_HArray2OfReal> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
   WeightsData() const
 {
   return rationalBSplineSurface->WeightsData();
 }
 
-Standard_Real StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::WeightsDataValue(
-  const Standard_Integer num1,
-  const Standard_Integer num2) const
+double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::WeightsDataValue(
+  const int num1,
+  const int num2) const
 {
   return rationalBSplineSurface->WeightsDataValue(num1, num2);
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbWeightsDataI() const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbWeightsDataI() const
 {
   return rationalBSplineSurface->NbWeightsDataI();
 }
 
-Standard_Integer StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbWeightsDataJ() const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbWeightsDataJ() const
 {
   return rationalBSplineSurface->NbWeightsDataJ();
 }

@@ -47,7 +47,7 @@ gp_Trsf Vrml_MatrixTransform::Matrix() const
 
 Standard_OStream& Vrml_MatrixTransform::Print(Standard_OStream& anOStream) const
 {
-  Standard_Integer i, j;
+  int i, j;
   anOStream << "MatrixTransform {\n";
 
   if (std::abs(myMatrix.Value(1, 1) - 1) > 0.0000001

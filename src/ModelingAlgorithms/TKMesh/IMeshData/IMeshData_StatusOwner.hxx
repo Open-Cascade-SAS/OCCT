@@ -26,10 +26,10 @@ public:
   virtual ~IMeshData_StatusOwner() {}
 
   //! Returns true in case if status is strictly equal to the given value.
-  Standard_Boolean IsEqual(const IMeshData_Status theValue) const { return (myStatus == theValue); }
+  bool IsEqual(const IMeshData_Status theValue) const { return (myStatus == theValue); }
 
   //! Returns true in case if status is set.
-  Standard_Boolean IsSet(const IMeshData_Status theValue) const
+  bool IsSet(const IMeshData_Status theValue) const
   {
     return (myStatus & theValue) != 0;
   }
@@ -41,7 +41,7 @@ public:
   void UnsetStatus(const IMeshData_Status theValue) { myStatus &= ~theValue; }
 
   //! Returns complete status mask.
-  Standard_Integer GetStatusMask() const { return myStatus; }
+  int GetStatusMask() const { return myStatus; }
 
 protected:
   //! Constructor. Initializes default status.
@@ -51,7 +51,7 @@ protected:
   }
 
 private:
-  Standard_Integer myStatus;
+  int myStatus;
 };
 
 #endif

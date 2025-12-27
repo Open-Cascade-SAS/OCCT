@@ -16,7 +16,7 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_UndefinedEntity.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
@@ -29,24 +29,24 @@ IGESData_DefaultSpecific::IGESData_DefaultSpecific()
   IGESData_SpecificLib::SetGlobal(this, IGESData::Protocol());
 }
 
-void IGESData_DefaultSpecific::OwnDump(const Standard_Integer /*CN*/,
-                                       const Handle(IGESData_IGESEntity)& ent,
+void IGESData_DefaultSpecific::OwnDump(const int /*CN*/,
+                                       const occ::handle<IGESData_IGESEntity>& ent,
                                        const IGESData_IGESDumper&         dumper,
                                        Standard_OStream&                  S,
-                                       const Standard_Integer /*own*/) const
+                                       const int /*own*/) const
 {
   DeclareAndCast(IGESData_UndefinedEntity, lent, ent);
   if (lent.IsNull())
     return;
 
-  Standard_Integer dstat = lent->DirStatus();
+  int dstat = lent->DirStatus();
   if (dstat != 0)
     S << " --  Directory Entry Error Status = " << dstat << "  --\n";
-  Handle(Interface_UndefinedContent) cont = lent->UndefinedContent();
-  Standard_Integer                   nb   = cont->NbParams();
+  occ::handle<Interface_UndefinedContent> cont = lent->UndefinedContent();
+  int                   nb   = cont->NbParams();
   S << " UNDEFINED ENTITY ...\n"
     << nb << " Parameters (WARNING : Odd Integer Values Interpreted as Entities)\n";
-  for (Standard_Integer i = 1; i <= nb; i++)
+  for (int i = 1; i <= nb; i++)
   {
     Interface_ParamType ptyp = cont->ParamType(i);
     if (ptyp == Interface_ParamVoid)

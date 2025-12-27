@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepRepr_RepresentationContextReference, Standard_Transient)
-
 //! Representation of STEP entity RepresentationContextReference
 class StepRepr_RepresentationContextReference : public Standard_Transient
 {
@@ -32,17 +30,17 @@ public:
   Standard_EXPORT StepRepr_RepresentationContextReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theContextIdentifier);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theContextIdentifier);
 
   //! Returns field ContextIdentifier
-  Standard_EXPORT Handle(TCollection_HAsciiString) ContextIdentifier() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ContextIdentifier() const;
   //! Sets field ContextIdentifier
   Standard_EXPORT void SetContextIdentifier(
-    const Handle(TCollection_HAsciiString)& theContextIdentifier);
+    const occ::handle<TCollection_HAsciiString>& theContextIdentifier);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_RepresentationContextReference, Standard_Transient)
 
 private:
-  Handle(TCollection_HAsciiString) myContextIdentifier;
+  occ::handle<TCollection_HAsciiString> myContextIdentifier;
 };
 #endif // _StepRepr_RepresentationContextReference_HeaderFile_

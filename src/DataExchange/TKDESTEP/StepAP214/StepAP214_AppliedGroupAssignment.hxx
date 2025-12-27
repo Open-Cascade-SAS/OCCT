@@ -22,9 +22,6 @@
 #include <StepBasic_GroupAssignment.hxx>
 class StepBasic_Group;
 
-class StepAP214_AppliedGroupAssignment;
-DEFINE_STANDARD_HANDLE(StepAP214_AppliedGroupAssignment, StepBasic_GroupAssignment)
-
 //! Representation of STEP entity AppliedGroupAssignment
 class StepAP214_AppliedGroupAssignment : public StepBasic_GroupAssignment
 {
@@ -34,20 +31,19 @@ public:
   Standard_EXPORT StepAP214_AppliedGroupAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_Group)& aGroupAssignment_AssignedGroup,
-                            const Handle(StepAP214_HArray1OfGroupItem)& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Group>& aGroupAssignment_AssignedGroup,
+                            const occ::handle<StepAP214_HArray1OfGroupItem>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP214_HArray1OfGroupItem) Items() const;
+  Standard_EXPORT occ::handle<StepAP214_HArray1OfGroupItem> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP214_HArray1OfGroupItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<StepAP214_HArray1OfGroupItem>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedGroupAssignment, StepBasic_GroupAssignment)
 
-protected:
 private:
-  Handle(StepAP214_HArray1OfGroupItem) theItems;
+  occ::handle<StepAP214_HArray1OfGroupItem> theItems;
 };
 
 #endif // _StepAP214_AppliedGroupAssignment_HeaderFile

@@ -20,15 +20,14 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TDF_AttributeDeltaList.hxx>
+#include <TDF_AttributeDelta.hxx>
+#include <NCollection_List.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Transient.hxx>
-#include <TDF_LabelList.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 class TDF_AttributeDelta;
-
-class TDF_Delta;
-DEFINE_STANDARD_HANDLE(TDF_Delta, Standard_Transient)
 
 //! A set of AttributeDelta for a given transaction
 //! number and reference time number.
@@ -43,24 +42,24 @@ public:
   Standard_EXPORT TDF_Delta();
 
   //! Returns true if there is nothing to undo.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Returns true if the Undo action of <me> is
   //! applicable at <aCurrentTime>.
-  Standard_Boolean IsApplicable(const Standard_Integer aCurrentTime) const;
+  bool IsApplicable(const int aCurrentTime) const;
 
   //! Returns the field <myBeginTime>.
-  Standard_Integer BeginTime() const;
+  int BeginTime() const;
 
   //! Returns the field <myEndTime>.
-  Standard_Integer EndTime() const;
+  int EndTime() const;
 
   //! Adds in <aLabelList> the labels of the attribute deltas.
   //! Caution: <aLabelList> is not cleared before use.
-  Standard_EXPORT void Labels(TDF_LabelList& aLabelList) const;
+  Standard_EXPORT void Labels(NCollection_List<TDF_Label>& aLabelList) const;
 
   //! Returns the field <myAttDeltaList>.
-  const TDF_AttributeDeltaList& AttributeDeltas() const;
+  const NCollection_List<occ::handle<TDF_AttributeDelta>>& AttributeDeltas() const;
 
   //! Returns a name associated with this delta.
   TCollection_ExtendedString Name() const;
@@ -71,7 +70,7 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& OS) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   friend class TDF_Data;
 
@@ -81,24 +80,24 @@ protected:
   //! Validates <me> at <aBeginTime>. If applied, it
   //! restores the TDF_Data in the state it was at
   //! <anEndTime>. Reserved to TDF_Data.
-  Standard_EXPORT void Validity(const Standard_Integer aBeginTime,
-                                const Standard_Integer anEndTime);
+  Standard_EXPORT void Validity(const int aBeginTime,
+                                const int anEndTime);
 
   //! Adds an AttributeDelta to the list. Reserved to
   //! TDF_Data.
-  Standard_EXPORT void AddAttributeDelta(const Handle(TDF_AttributeDelta)& anAttributeDelta);
+  Standard_EXPORT void AddAttributeDelta(const occ::handle<TDF_AttributeDelta>& anAttributeDelta);
 
 private:
   //! Replaces Attribute Delta List
-  void ReplaceDeltaList(const TDF_AttributeDeltaList& theList);
+  void ReplaceDeltaList(const NCollection_List<occ::handle<TDF_AttributeDelta>>& theList);
 
-  void BeforeOrAfterApply(const Standard_Boolean before) const;
+  void BeforeOrAfterApply(const bool before) const;
 
   void Apply();
 
-  Standard_Integer           myBeginTime;
-  Standard_Integer           myEndTime;
-  TDF_AttributeDeltaList     myAttDeltaList;
+  int           myBeginTime;
+  int           myEndTime;
+  NCollection_List<occ::handle<TDF_AttributeDelta>>     myAttDeltaList;
   TCollection_ExtendedString myName;
 };
 

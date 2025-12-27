@@ -21,8 +21,11 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 
 //! Describes functions to build a middle path of a
@@ -40,18 +43,17 @@ public:
                                            const TopoDS_Shape& EndShape);
 
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
-protected:
 private:
   TopoDS_Shape                            myInitialShape;
   TopoDS_Wire                             myStartWire;
   TopoDS_Wire                             myEndWire;
-  Standard_Boolean                        myClosedSection;
-  Standard_Boolean                        myClosedRing;
-  TopTools_MapOfShape                     myStartWireEdges;
-  TopTools_MapOfShape                     myEndWireEdges;
-  BRepOffsetAPI_SequenceOfSequenceOfShape myPaths;
+  bool                        myClosedSection;
+  bool                        myClosedRing;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                     myStartWireEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                     myEndWireEdges;
+  NCollection_Sequence<NCollection_Sequence<TopoDS_Shape>> myPaths;
 };
 
 #endif // _BRepOffsetAPI_MiddlePath_HeaderFile

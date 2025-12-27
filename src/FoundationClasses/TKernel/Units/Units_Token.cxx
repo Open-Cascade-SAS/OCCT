@@ -42,7 +42,7 @@ Units_Token::Units_Token()
 
 //=================================================================================================
 
-Units_Token::Units_Token(const Standard_CString aword)
+Units_Token::Units_Token(const char* aword)
 {
   theword       = aword;
   themean       = " ";
@@ -52,7 +52,7 @@ Units_Token::Units_Token(const Standard_CString aword)
 
 //=================================================================================================
 
-Units_Token::Units_Token(const Standard_CString aword, const Standard_CString amean)
+Units_Token::Units_Token(const char* aword, const char* amean)
 {
   theword       = aword;
   themean       = amean;
@@ -62,9 +62,9 @@ Units_Token::Units_Token(const Standard_CString aword, const Standard_CString am
 
 //=================================================================================================
 
-Units_Token::Units_Token(const Standard_CString aword,
-                         const Standard_CString amean,
-                         const Standard_Real    avalue)
+Units_Token::Units_Token(const char* aword,
+                         const char* amean,
+                         const double    avalue)
 {
   theword       = aword;
   themean       = amean;
@@ -74,10 +74,10 @@ Units_Token::Units_Token(const Standard_CString aword,
 
 //=================================================================================================
 
-Units_Token::Units_Token(const Standard_CString          aword,
-                         const Standard_CString          amean,
-                         const Standard_Real             avalue,
-                         const Handle(Units_Dimensions)& adimensions)
+Units_Token::Units_Token(const char*          aword,
+                         const char*          amean,
+                         const double             avalue,
+                         const occ::handle<Units_Dimensions>& adimensions)
 {
   theword  = aword;
   themean  = amean;
@@ -98,7 +98,7 @@ Units_Token::Units_Token(const Standard_CString          aword,
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Creates() const
+occ::handle<Units_Token> Units_Token::Creates() const
 {
   TCollection_AsciiString word = Word();
   TCollection_AsciiString mean = Mean();
@@ -107,14 +107,14 @@ Handle(Units_Token) Units_Token::Creates() const
 
 //=================================================================================================
 
-Standard_Integer Units_Token::Length() const
+int Units_Token::Length() const
 {
   return theword.Length();
 }
 
 //=================================================================================================
 
-void Units_Token::Dimensions(const Handle(Units_Dimensions)& adimensions)
+void Units_Token::Dimensions(const occ::handle<Units_Dimensions>& adimensions)
 {
   if (adimensions.IsNull())
     thedimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
@@ -132,7 +132,7 @@ void Units_Token::Dimensions(const Handle(Units_Dimensions)& adimensions)
 
 //=================================================================================================
 
-Units_Token::Units_Token(const Handle(Units_Token)& atoken)
+Units_Token::Units_Token(const occ::handle<Units_Token>& atoken)
 {
   theword       = atoken->Word();
   themean       = atoken->Mean();
@@ -142,7 +142,7 @@ Units_Token::Units_Token(const Handle(Units_Token)& atoken)
 
 //=================================================================================================
 
-void Units_Token::Update(const Standard_CString amean)
+void Units_Token::Update(const char* amean)
 {
   TCollection_AsciiString string = Mean();
   if (string.Search(amean) != -1)
@@ -154,9 +154,9 @@ void Units_Token::Update(const Standard_CString amean)
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Add(const Standard_Integer) const
+occ::handle<Units_Token> Units_Token::Add(const int) const
 {
-  //  Standard_CString s=new char[thelength+1];
+  //  const char* s=new char[thelength+1];
   //  strcpy(s,theword);
   //  s[thelength-1]=s[thelength-1]+int(i);
   return new Units_Token();
@@ -164,7 +164,7 @@ Handle(Units_Token) Units_Token::Add(const Standard_Integer) const
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Add(const Handle(Units_Token)& atoken) const
+occ::handle<Units_Token> Units_Token::Add(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString word = Word();
   if (thedimensions->IsEqual(atoken->Dimensions()))
@@ -175,7 +175,7 @@ Handle(Units_Token) Units_Token::Add(const Handle(Units_Token)& atoken) const
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Subtract(const Handle(Units_Token)& atoken) const
+occ::handle<Units_Token> Units_Token::Subtract(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString word = Word();
   if (thedimensions->IsEqual(atoken->Dimensions()))
@@ -186,7 +186,7 @@ Handle(Units_Token) Units_Token::Subtract(const Handle(Units_Token)& atoken) con
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Multiply(const Handle(Units_Token)& atoken) const
+occ::handle<Units_Token> Units_Token::Multiply(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString string = Word();
   string.Insert(1, '(');
@@ -201,14 +201,14 @@ Handle(Units_Token) Units_Token::Multiply(const Handle(Units_Token)& atoken) con
 
 //=================================================================================================
 
-Standard_Real Units_Token::Multiplied(const Standard_Real avalue) const
+double Units_Token::Multiplied(const double avalue) const
 {
   return avalue * thevalue;
 }
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Divide(const Handle(Units_Token)& atoken) const
+occ::handle<Units_Token> Units_Token::Divide(const occ::handle<Units_Token>& atoken) const
 {
   if (fabs(atoken->Value()) < 1.e-40)
   {
@@ -230,14 +230,14 @@ Handle(Units_Token) Units_Token::Divide(const Handle(Units_Token)& atoken) const
 
 //=================================================================================================
 
-Standard_Real Units_Token::Divided(const Standard_Real avalue) const
+double Units_Token::Divided(const double avalue) const
 {
   return avalue / thevalue;
 }
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Power(const Handle(Units_Token)& atoken) const
+occ::handle<Units_Token> Units_Token::Power(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString string = Word();
   string.Insert(1, '(');
@@ -252,7 +252,7 @@ Handle(Units_Token) Units_Token::Power(const Handle(Units_Token)& atoken) const
 
 //=================================================================================================
 
-Handle(Units_Token) Units_Token::Power(const Standard_Real anexponent) const
+occ::handle<Units_Token> Units_Token::Power(const double anexponent) const
 {
   TCollection_AsciiString exponent(anexponent);
   TCollection_AsciiString string = Word();
@@ -268,37 +268,37 @@ Handle(Units_Token) Units_Token::Power(const Standard_Real anexponent) const
 
 //=================================================================================================
 
-Standard_Boolean Units_Token::IsEqual(const Standard_CString astring) const
+bool Units_Token::IsEqual(const char* astring) const
 {
   TCollection_AsciiString string = Word();
 #ifdef UNX
-  Standard_Integer length = string.Length();
+  int length = string.Length();
 #else
   unsigned int length = string.Length();
 #endif
   if (strlen(astring) == length)
-    return (strncmp(string.ToCString(), astring, unsigned(length)) == 0) ? Standard_True
-                                                                         : Standard_False;
+    return (strncmp(string.ToCString(), astring, unsigned(length)) == 0) ? true
+                                                                         : false;
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Units_Token::IsEqual(const Handle(Units_Token)& atoken) const
+bool Units_Token::IsEqual(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString string1 = Word();
   TCollection_AsciiString string2 = atoken->Word();
-  Standard_Integer        length  = string1.Length();
+  int        length  = string1.Length();
   if (length == atoken->Length())
-    return (strcmp(string1.ToCString(), string2.ToCString()) == 0) ? Standard_True : Standard_False;
+    return (strcmp(string1.ToCString(), string2.ToCString()) == 0) ? true : false;
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-void Units_Token::Dump(const Standard_Integer ashift, const Standard_Integer alevel) const
+void Units_Token::Dump(const int ashift, const int alevel) const
 {
   int                     i;
   TCollection_AsciiString word = Word();
@@ -325,7 +325,7 @@ void Units_Token::Dump(const Standard_Integer ashift, const Standard_Integer ale
 // purpose  :
 //=======================================================================
 
-Handle(Units_Token) operator+(const Handle(Units_Token)& atoken, const Standard_Integer aninteger)
+occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken, const int aninteger)
 {
   return atoken->Add(aninteger);
 }
@@ -335,8 +335,8 @@ Handle(Units_Token) operator+(const Handle(Units_Token)& atoken, const Standard_
 // purpose  :
 //=======================================================================
 
-Handle(Units_Token) operator+(const Handle(Units_Token)& atoken1,
-                              const Handle(Units_Token)& atoken2)
+occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken1,
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Add(atoken2);
 }
@@ -346,8 +346,8 @@ Handle(Units_Token) operator+(const Handle(Units_Token)& atoken1,
 // purpose  :
 //=======================================================================
 
-Handle(Units_Token) operator-(const Handle(Units_Token)& atoken1,
-                              const Handle(Units_Token)& atoken2)
+occ::handle<Units_Token> operator-(const occ::handle<Units_Token>& atoken1,
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Subtract(atoken2);
 }
@@ -357,8 +357,8 @@ Handle(Units_Token) operator-(const Handle(Units_Token)& atoken1,
 // purpose  :
 //=======================================================================
 
-Handle(Units_Token) operator*(const Handle(Units_Token)& atoken1,
-                              const Handle(Units_Token)& atoken2)
+occ::handle<Units_Token> operator*(const occ::handle<Units_Token>& atoken1,
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Multiply(atoken2);
 }
@@ -368,22 +368,22 @@ Handle(Units_Token) operator*(const Handle(Units_Token)& atoken1,
 // purpose  :
 //=======================================================================
 
-Handle(Units_Token) operator/(const Handle(Units_Token)& atoken1,
-                              const Handle(Units_Token)& atoken2)
+occ::handle<Units_Token> operator/(const occ::handle<Units_Token>& atoken1,
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Divide(atoken2);
 }
 
 //=================================================================================================
 
-Handle(Units_Token) pow(const Handle(Units_Token)& atoken1, const Handle(Units_Token)& atoken2)
+occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Power(atoken2);
 }
 
 //=================================================================================================
 
-Handle(Units_Token) pow(const Handle(Units_Token)& atoken, const Standard_Real areal)
+occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken, const double areal)
 {
   return atoken->Power(areal);
 }
@@ -393,7 +393,7 @@ Handle(Units_Token) pow(const Handle(Units_Token)& atoken, const Standard_Real a
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator==(const Handle(Units_Token)& atoken, const Standard_CString astring)
+bool operator==(const occ::handle<Units_Token>& atoken, const char* astring)
 {
   return atoken->IsEqual(astring);
 }
@@ -403,7 +403,7 @@ Standard_Boolean operator==(const Handle(Units_Token)& atoken, const Standard_CS
 // purpose  :
 //=======================================================================
 
-// Standard_Boolean operator ==(const Handle(Units_Token)& atoken1,const Handle(Units_Token)&
+// bool operator ==(const occ::handle<Units_Token>& atoken1,const occ::handle<Units_Token>&
 // atoken2)
 //{
 //   return atoken1->IsEqual(atoken2);
@@ -414,7 +414,7 @@ Standard_Boolean operator==(const Handle(Units_Token)& atoken, const Standard_CS
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator!=(const Handle(Units_Token)& atoken, const Standard_CString astring)
+bool operator!=(const occ::handle<Units_Token>& atoken, const char* astring)
 {
   return atoken->IsNotEqual(astring);
 }
@@ -424,7 +424,7 @@ Standard_Boolean operator!=(const Handle(Units_Token)& atoken, const Standard_CS
 // purpose  :
 //=======================================================================
 
-// Standard_Boolean operator !=(const Handle(Units_Token)& atoken1,const Handle(Units_Token)&
+// bool operator !=(const occ::handle<Units_Token>& atoken1,const occ::handle<Units_Token>&
 // atoken2)
 //{
 //   return atoken1->IsNotEqual(atoken2);
@@ -435,7 +435,7 @@ Standard_Boolean operator!=(const Handle(Units_Token)& atoken, const Standard_CS
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator<=(const Handle(Units_Token)& atoken, const Standard_CString astring)
+bool operator<=(const occ::handle<Units_Token>& atoken, const char* astring)
 {
   return atoken->IsLessOrEqual(astring);
 }
@@ -445,7 +445,7 @@ Standard_Boolean operator<=(const Handle(Units_Token)& atoken, const Standard_CS
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator>(const Handle(Units_Token)& atoken, const Standard_CString astring)
+bool operator>(const occ::handle<Units_Token>& atoken, const char* astring)
 {
   return atoken->IsGreater(astring);
 }
@@ -455,7 +455,7 @@ Standard_Boolean operator>(const Handle(Units_Token)& atoken, const Standard_CSt
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator>(const Handle(Units_Token)& atoken1, const Handle(Units_Token)& atoken2)
+bool operator>(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->IsGreater(atoken2);
 }
@@ -465,7 +465,7 @@ Standard_Boolean operator>(const Handle(Units_Token)& atoken1, const Handle(Unit
 // purpose  :
 //=======================================================================
 
-Standard_Boolean operator>=(const Handle(Units_Token)& atoken1, const Handle(Units_Token)& atoken2)
+bool operator>=(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->IsGreaterOrEqual(atoken2);
 }

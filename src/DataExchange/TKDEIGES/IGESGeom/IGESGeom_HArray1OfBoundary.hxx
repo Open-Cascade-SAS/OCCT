@@ -17,9 +17,10 @@
 #ifndef IGESGeom_HArray1OfBoundary_HeaderFile
 #define IGESGeom_HArray1OfBoundary_HeaderFile
 
-#include <IGESGeom_Array1OfBoundary.hxx>
+#include <IGESGeom_Boundary.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESGeom_HArray1OfBoundary, IGESGeom_Array1OfBoundary)
+DEFINE_HARRAY1(IGESGeom_HArray1OfBoundary, NCollection_Array1<occ::handle<IGESGeom_Boundary>>)
 
 #endif

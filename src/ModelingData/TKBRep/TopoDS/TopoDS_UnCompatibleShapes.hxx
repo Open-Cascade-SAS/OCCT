@@ -24,9 +24,6 @@
 
 //! An incorrect insertion was attempted.
 
-class TopoDS_UnCompatibleShapes;
-DEFINE_STANDARD_HANDLE(TopoDS_UnCompatibleShapes, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_TopoDS_UnCompatibleShapes
   #define TopoDS_UnCompatibleShapes_Raise_if(CONDITION, MESSAGE)                                   \
     if (CONDITION)                                                                                 \

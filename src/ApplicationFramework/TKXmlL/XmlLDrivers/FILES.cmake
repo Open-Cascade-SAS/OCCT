@@ -10,5 +10,5 @@ set(OCCT_XmlLDrivers_FILES
   XmlLDrivers_DocumentStorageDriver.hxx
   XmlLDrivers_NamespaceDef.cxx
   XmlLDrivers_NamespaceDef.hxx
-  XmlLDrivers_SequenceOfNamespaceDef.hxx
+
 )

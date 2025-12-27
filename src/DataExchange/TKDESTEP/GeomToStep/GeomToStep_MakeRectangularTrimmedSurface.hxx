@@ -37,14 +37,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeRectangularTrimmedSurface(
-    const Handle(Geom_RectangularTrimmedSurface)& RTSurf,
+    const occ::handle<Geom_RectangularTrimmedSurface>& RTSurf,
     const StepData_Factors&                       theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_RectangularTrimmedSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_RectangularTrimmedSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_RectangularTrimmedSurface) theRectangularTrimmedSurface;
+  occ::handle<StepGeom_RectangularTrimmedSurface> theRectangularTrimmedSurface;
 };
 
 #endif // _GeomToStep_MakeRectangularTrimmedSurface_HeaderFile

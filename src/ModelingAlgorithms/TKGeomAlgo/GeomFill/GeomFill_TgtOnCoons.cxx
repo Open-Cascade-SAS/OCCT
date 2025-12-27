@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TgtOnCoons, GeomFill_TgtField)
 
 //=================================================================================================
 
-GeomFill_TgtOnCoons::GeomFill_TgtOnCoons(const Handle(GeomFill_CoonsAlgPatch)& K,
-                                         const Standard_Integer                I)
+GeomFill_TgtOnCoons::GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K,
+                                         const int                I)
     : myK(K),
       ibound(I)
 {
@@ -33,9 +33,9 @@ GeomFill_TgtOnCoons::GeomFill_TgtOnCoons(const Handle(GeomFill_CoonsAlgPatch)& K
 
 //=================================================================================================
 
-gp_Vec GeomFill_TgtOnCoons::Value(const Standard_Real W) const
+gp_Vec GeomFill_TgtOnCoons::Value(const double W) const
 {
-  Standard_Real U = 0., V = 0., bid = 0.;
+  double U = 0., V = 0., bid = 0.;
   switch (ibound)
   {
     case 0:
@@ -69,7 +69,7 @@ gp_Vec GeomFill_TgtOnCoons::Value(const Standard_Real W) const
   }
 
   gp_Vec        n    = myK->Bound(ibound)->Norm(W);
-  Standard_Real scal = tgk.Dot(n);
+  double scal = tgk.Dot(n);
   n.Multiply(-scal);
   tgk.Add(n);
   return tgk;
@@ -77,9 +77,9 @@ gp_Vec GeomFill_TgtOnCoons::Value(const Standard_Real W) const
 
 //=================================================================================================
 
-gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const
+gp_Vec GeomFill_TgtOnCoons::D1(const double W) const
 {
-  Standard_Real U = 0., V = 0., bid = 0.;
+  double U = 0., V = 0., bid = 0.;
   switch (ibound)
   {
     case 0:
@@ -116,13 +116,13 @@ gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const
   gp_Vec n, dn;
   myK->Bound(ibound)->D1Norm(W, n, dn);
 
-  Standard_Real scal  = tgsc.Dot(n);
+  double scal  = tgsc.Dot(n);
   gp_Vec        scaln = n.Multiplied(-scal);
   tgsc.Add(scaln);
 
   gp_Vec scaldn = dn.Multiplied(-scal);
 
-  Standard_Real scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
+  double scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
   gp_Vec        temp  = n.Multiplied(scal2);
 
   temp.Add(scaldn);
@@ -133,9 +133,9 @@ gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const
 
 //=================================================================================================
 
-void GeomFill_TgtOnCoons::D1(const Standard_Real W, gp_Vec& T, gp_Vec& DT) const
+void GeomFill_TgtOnCoons::D1(const double W, gp_Vec& T, gp_Vec& DT) const
 {
-  Standard_Real U = 0., V = 0., bid = 0.;
+  double U = 0., V = 0., bid = 0.;
   switch (ibound)
   {
     case 0:
@@ -172,13 +172,13 @@ void GeomFill_TgtOnCoons::D1(const Standard_Real W, gp_Vec& T, gp_Vec& DT) const
   gp_Vec n, dn;
   myK->Bound(ibound)->D1Norm(W, n, dn);
 
-  Standard_Real scal  = tgsc.Dot(n);
+  double scal  = tgsc.Dot(n);
   gp_Vec        scaln = n.Multiplied(-scal);
   T                   = tgsc.Added(scaln);
 
   gp_Vec scaldn = dn.Multiplied(-scal);
 
-  Standard_Real scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
+  double scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
   gp_Vec        temp  = n.Multiplied(scal2);
 
   temp.Add(scaldn);

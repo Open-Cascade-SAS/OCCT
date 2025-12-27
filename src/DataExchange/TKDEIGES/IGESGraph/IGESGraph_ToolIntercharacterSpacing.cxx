@@ -31,14 +31,14 @@
 IGESGraph_ToolIntercharacterSpacing::IGESGraph_ToolIntercharacterSpacing() {}
 
 void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
-  const Handle(IGESGraph_IntercharacterSpacing)& ent,
-  const Handle(IGESData_IGESReaderData)& /*IR*/,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  Standard_Integer nbPropertyValues;
-  Standard_Real    iSpace;
+  int nbPropertyValues;
+  double    iSpace;
 
   // Reading nbPropertyValues(Integer)
   // clang-format off
@@ -55,7 +55,7 @@ void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
 }
 
 void IGESGraph_ToolIntercharacterSpacing::WriteOwnParams(
-  const Handle(IGESGraph_IntercharacterSpacing)& ent,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
   IGESData_IGESWriter&                           IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -63,30 +63,30 @@ void IGESGraph_ToolIntercharacterSpacing::WriteOwnParams(
 }
 
 void IGESGraph_ToolIntercharacterSpacing::OwnShared(
-  const Handle(IGESGraph_IntercharacterSpacing)& /*ent*/,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& /*ent*/,
   Interface_EntityIterator& /*iter*/) const
 {
 }
 
 void IGESGraph_ToolIntercharacterSpacing::OwnCopy(
-  const Handle(IGESGraph_IntercharacterSpacing)& another,
-  const Handle(IGESGraph_IntercharacterSpacing)& ent,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& another,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
   Interface_CopyTool& /*TC*/) const
 {
   ent->Init(1, another->ISpace());
 }
 
-Standard_Boolean IGESGraph_ToolIntercharacterSpacing::OwnCorrect(
-  const Handle(IGESGraph_IntercharacterSpacing)& ent) const
+bool IGESGraph_ToolIntercharacterSpacing::OwnCorrect(
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 1);
+  bool res = (ent->NbPropertyValues() != 1);
   if (res)
     ent->Init(1, ent->ISpace()); // nbpropertyvalues=1
   return res;
 }
 
 IGESData_DirChecker IGESGraph_ToolIntercharacterSpacing::DirChecker(
-  const Handle(IGESGraph_IntercharacterSpacing)& /*ent*/) const
+  const occ::handle<IGESGraph_IntercharacterSpacing>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 18);
   DC.Structure(IGESData_DefVoid);
@@ -100,9 +100,9 @@ IGESData_DirChecker IGESGraph_ToolIntercharacterSpacing::DirChecker(
 }
 
 void IGESGraph_ToolIntercharacterSpacing::OwnCheck(
-  const Handle(IGESGraph_IntercharacterSpacing)& ent,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& ach) const
+  occ::handle<Interface_Check>& ach) const
 {
   if ((ent->ISpace() < 0.0) || (ent->ISpace() > 100.0))
     ach->AddFail("Intercharacter Space : Value not in the range [0-100]");
@@ -111,10 +111,10 @@ void IGESGraph_ToolIntercharacterSpacing::OwnCheck(
 }
 
 void IGESGraph_ToolIntercharacterSpacing::OwnDump(
-  const Handle(IGESGraph_IntercharacterSpacing)& ent,
+  const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
   const IGESData_IGESDumper& /*dumper*/,
   Standard_OStream& S,
-  const Standard_Integer /*level*/) const
+  const int /*level*/) const
 {
   S << "IGESGraph_IntercharacterSpacing\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"

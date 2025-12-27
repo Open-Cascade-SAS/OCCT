@@ -39,7 +39,7 @@ public:
   //! Returns the <U,V> parameters which are associated
   //! with <P>
   //! it's the parameters which start the marching algorithm
-  static void Value2d(const IntSurf_InteriorPoint& PStart, Standard_Real& U, Standard_Real& V);
+  static void Value2d(const IntSurf_InteriorPoint& PStart, double& U, double& V);
 
   //! returns the tangent at the intersection in 3d space
   //! associated to <P>
@@ -50,8 +50,6 @@ public:
   //! is associated to the value2d
   static gp_Dir2d Direction2d(const IntSurf_InteriorPoint& PStart);
 
-protected:
-private:
 };
 
 #include <IntSurf_InteriorPointTool.lxx>

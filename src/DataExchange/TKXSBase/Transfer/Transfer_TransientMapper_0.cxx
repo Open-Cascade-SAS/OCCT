@@ -23,43 +23,43 @@
 
 //=================================================================================================
 
-Transfer_TransientMapper::Transfer_TransientMapper(const Handle(Standard_Transient)& akey)
+Transfer_TransientMapper::Transfer_TransientMapper(const occ::handle<Standard_Transient>& akey)
     : theval(akey)
 {
-  SetHashCode(std::hash<Handle(Standard_Transient)>{}(akey));
+  SetHashCode(std::hash<occ::handle<Standard_Transient>>{}(akey));
 }
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Transfer_TransientMapper::Value() const
+const occ::handle<Standard_Transient>& Transfer_TransientMapper::Value() const
 {
   return theval;
 }
 
 //=================================================================================================
 
-Standard_Boolean Transfer_TransientMapper::Equates(const Handle(Transfer_Finder)& other) const
+bool Transfer_TransientMapper::Equates(const occ::handle<Transfer_Finder>& other) const
 {
   if (other.IsNull())
-    return Standard_False;
+    return false;
   if (GetHashCode() != other->GetHashCode())
-    return Standard_False;
+    return false;
   if (other->DynamicType() != DynamicType())
-    return Standard_False;
-  Handle(Transfer_TransientMapper) another = Handle(Transfer_TransientMapper)::DownCast(other);
+    return false;
+  occ::handle<Transfer_TransientMapper> another = occ::down_cast<Transfer_TransientMapper>(other);
   return theval == another->Value();
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) Transfer_TransientMapper::ValueType() const
+occ::handle<Standard_Type> Transfer_TransientMapper::ValueType() const
 {
   return Transfer_DataInfo::Type(theval);
 }
 
 //=================================================================================================
 
-Standard_CString Transfer_TransientMapper::ValueTypeName() const
+const char* Transfer_TransientMapper::ValueTypeName() const
 {
   return Transfer_DataInfo::TypeName(theval);
 }

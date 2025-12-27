@@ -19,7 +19,8 @@
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -27,7 +28,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_GTopo.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_FuseEdges.hxx>
@@ -35,7 +39,7 @@
 
 // #include <BRepAdaptor_Curve2d.hxx>
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRepBuild_GetcontextNOFE();
+extern bool TopOpeBRepBuild_GetcontextNOFE();
 #endif
 
 //=================================================================================================
@@ -47,7 +51,7 @@ void TopOpeBRepBuild_Builder::End()
     // recodage de la continuite (edge,(f1,f2)) != C0 perdue lors
     // du changement de surface-support d'une arete non decoupee
     // d'une face tangente.
-    for (Standard_Integer i = 1; i <= 2; i++)
+    for (int i = 1; i <= 2; i++)
     {
       TopoDS_Shape S;
       TopAbs_State sta = TopAbs_UNKNOWN;
@@ -67,11 +71,11 @@ void TopOpeBRepBuild_Builder::End()
       {
         //      for (TopExp_Explorer exs(S,TopAbs_SHELL);exs.More();exs.Next()) {
         const TopoDS_Shape& SH       = exs.Current();
-        Standard_Boolean    SHhassha = BDS.HasShape(SH);
+        bool    SHhassha = BDS.HasShape(SH);
         if (!SHhassha)
           continue;
 
-        Standard_Boolean Fhassam = Standard_False;
+        bool Fhassam = false;
         TopExp_Explorer  exf;
         for (exf.Init(SH, TopAbs_FACE); exf.More(); exf.Next())
         {
@@ -83,20 +87,20 @@ void TopOpeBRepBuild_Builder::End()
         if (!Fhassam)
           continue;
 
-        TopTools_IndexedDataMapOfShapeListOfShape M;
+        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> M;
         TopExp::MapShapesAndAncestors(S, TopAbs_EDGE, TopAbs_FACE, M);
-        Standard_Integer nE = M.Extent();
-        for (Standard_Integer iE = 1; iE <= nE; iE++)
+        int nE = M.Extent();
+        for (int iE = 1; iE <= nE; iE++)
         {
           const TopoDS_Edge& E = TopoDS::Edge(M.FindKey(iE));
           if (IsSplit(E, sta))
             continue;
-          const TopTools_ListOfShape& LF = M.FindFromIndex(iE);
+          const NCollection_List<TopoDS_Shape>& LF = M.FindFromIndex(iE);
           if (LF.Extent() < 2)
             continue;
 
           // NYI : > 2 faces connexes par E : iterer sur tous les couples
-          TopTools_ListIteratorOfListOfShape itLF(LF);
+          NCollection_List<TopoDS_Shape>::Iterator itLF(LF);
           const TopoDS_Face&                 F1 = TopoDS::Face(itLF.Value());
           itLF.Next();
           const TopoDS_Face& F2 = TopoDS::Face(itLF.Value());
@@ -104,20 +108,20 @@ void TopOpeBRepBuild_Builder::End()
           if (C == GeomAbs_C0)
             continue;
 
-          Standard_Boolean F1hassam = myDataStructure->HasSameDomain(F1);
-          Standard_Boolean F2hassam = myDataStructure->HasSameDomain(F2);
+          bool F1hassam = myDataStructure->HasSameDomain(F1);
+          bool F2hassam = myDataStructure->HasSameDomain(F2);
           if (!F1hassam && !F2hassam)
             continue;
 
-          Standard_Boolean F1issplit = IsSplit(F1, sta);
-          Standard_Boolean F2issplit = IsSplit(F2, sta);
+          bool F1issplit = IsSplit(F1, sta);
+          bool F2issplit = IsSplit(F2, sta);
           F1issplit &= (Splits(F1, sta).Extent() != 0);
           F2issplit &= (Splits(F2, sta).Extent() != 0);
           if (!F1issplit && !F2issplit)
             continue;
 
           TopoDS_Face FF1 = F1, FF2 = F2;
-          for (Standard_Integer ii = 1; ii <= 2; ii++)
+          for (int ii = 1; ii <= 2; ii++)
           {
             if ((ii == 1 && !F1issplit) || (ii == 2 && !F2issplit))
               continue;
@@ -126,8 +130,8 @@ void TopOpeBRepBuild_Builder::End()
               F = F1;
             else
               F = F2;
-            Standard_Boolean                   f = Standard_False;
-            TopTools_ListIteratorOfListOfShape it;
+            bool                   f = false;
+            NCollection_List<TopoDS_Shape>::Iterator it;
             for (it.Initialize(Splits(F, sta)); it.More(); it.Next())
             {
               const TopoDS_Shape& SF = it.Value();
@@ -142,7 +146,7 @@ void TopOpeBRepBuild_Builder::End()
                     FF1 = TopoDS::Face(it.Value());
                   else
                     FF2 = TopoDS::Face(it.Value());
-                  f = Standard_True;
+                  f = true;
                   break;
                 }
               }
@@ -160,9 +164,9 @@ void TopOpeBRepBuild_Builder::End()
   // M.A.J de la tolerance des vertex
   {
     // modified by NIZHNY-MKK  Fri Oct  6 16:13:33 2000.BEGIN
-    TopTools_MapOfShape                aMapOfNewEdges, aMapOfNewVertices;
-    TopTools_ListIteratorOfListOfShape anIt;
-    Standard_Integer                   iteratorofnewshape = 0;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapOfNewEdges, aMapOfNewVertices;
+    NCollection_List<TopoDS_Shape>::Iterator anIt;
+    int                   iteratorofnewshape = 0;
     for (iteratorofnewshape = 1; iteratorofnewshape <= myDataStructure->NbCurves();
          iteratorofnewshape++)
     {
@@ -181,88 +185,88 @@ void TopOpeBRepBuild_Builder::End()
     TopoDS_Compound R;
     BRep_Builder    B;
     B.MakeCompound(R);
-    const TopTools_ListOfShape&        lmergesha1 = Merged(myShape1, myState1);
-    TopTools_ListIteratorOfListOfShape it(lmergesha1);
+    const NCollection_List<TopoDS_Shape>&        lmergesha1 = Merged(myShape1, myState1);
+    NCollection_List<TopoDS_Shape>::Iterator it(lmergesha1);
     for (; it.More(); it.Next())
       B.Add(R, it.Value());
-    const TopTools_ListOfShape& LOES = Section();
+    const NCollection_List<TopoDS_Shape>& LOES = Section();
 #ifdef OCCT_DEBUG
-//    Standard_Integer nLOES = LOES.Extent();
+//    int nLOES = LOES.Extent();
 #endif
 
-    TopTools_IndexedDataMapOfShapeListOfShape idmoelof;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> idmoelof;
     TopExp::MapShapesAndAncestors(R, TopAbs_EDGE, TopAbs_FACE, idmoelof);
-    TopTools_IndexedDataMapOfShapeListOfShape idmovloe;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> idmovloe;
     TopExp::MapShapesAndUniqueAncestors(R, TopAbs_VERTEX, TopAbs_EDGE, idmovloe);
-    TopTools_IndexedDataMapOfShapeListOfShape idmovloes;
-    for (TopTools_ListIteratorOfListOfShape I(LOES); I.More(); I.Next())
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> idmovloes;
+    for (NCollection_List<TopoDS_Shape>::Iterator I(LOES); I.More(); I.Next())
       TopExp::MapShapesAndAncestors(I.Value(), TopAbs_VERTEX, TopAbs_EDGE, idmovloes);
-    Standard_Integer iv, nv = idmovloe.Extent();
+    int iv, nv = idmovloe.Extent();
     for (iv = 1; iv <= nv; iv++)
     {
-      Standard_Integer     nP1  = 0;
+      int     nP1  = 0;
       const TopoDS_Vertex& V    = TopoDS::Vertex(idmovloe.FindKey(iv));
-      Standard_Boolean     isbe = idmovloes.Contains(V);
+      bool     isbe = idmovloes.Contains(V);
       if (!isbe)
         continue;
 
-      const TopTools_ListOfShape& loe = idmovloe.FindFromIndex(iv);
+      const NCollection_List<TopoDS_Shape>& loe = idmovloe.FindFromIndex(iv);
 
 #ifdef OCCT_DEBUG
-//      Standard_Integer nloe = loe.Extent();
+//      int nloe = loe.Extent();
 #endif
-      TopTools_ListIteratorOfListOfShape iloe;
+      NCollection_List<TopoDS_Shape>::Iterator iloe;
       for (iloe.Initialize(loe); iloe.More(); iloe.Next())
       {
         const TopoDS_Edge&          E    = TopoDS::Edge(iloe.Value());
-        const TopTools_ListOfShape& lof  = idmoelof.FindFromKey(E);
-        Standard_Integer            nlof = lof.Extent();
+        const NCollection_List<TopoDS_Shape>& lof  = idmoelof.FindFromKey(E);
+        int            nlof = lof.Extent();
         nP1 += nlof + 1;
       }
 
-      TColgp_Array1OfPnt TP(1, nP1);
-      Standard_Integer   nP2 = 0;
+      NCollection_Array1<gp_Pnt> TP(1, nP1);
+      int   nP2 = 0;
       for (iloe.Initialize(loe); iloe.More(); iloe.Next())
       {
         const TopoDS_Edge& E  = TopoDS::Edge(iloe.Value());
-        Standard_Real      pv = BRep_Tool::Parameter(V, E);
+        double      pv = BRep_Tool::Parameter(V, E);
         gp_Pnt             Pv;
-        Standard_Real      f, l;
-        Handle(Geom_Curve) C3D = BRep_Tool::Curve(E, f, l);
+        double      f, l;
+        occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(E, f, l);
         if (!C3D.IsNull())
         {
           Pv        = C3D->Value(pv);
           TP(++nP2) = Pv;
         }
-        const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
+        const NCollection_List<TopoDS_Shape>& lof = idmoelof.FindFromKey(E);
 #ifdef OCCT_DEBUG
-//	Standard_Integer nlof = lof.Extent();
+//	int nlof = lof.Extent();
 #endif
-        for (TopTools_ListIteratorOfListOfShape ilof(lof); ilof.More(); ilof.Next())
+        for (NCollection_List<TopoDS_Shape>::Iterator ilof(lof); ilof.More(); ilof.Next())
         {
           const TopoDS_Face&   F = TopoDS::Face(ilof.Value());
-          Standard_Real        tolpc;
-          Standard_Boolean     pcf = FC2D_HasCurveOnSurface(E, F);
-          Handle(Geom2d_Curve) C2D;
+          double        tolpc;
+          bool     pcf = FC2D_HasCurveOnSurface(E, F);
+          occ::handle<Geom2d_Curve> C2D;
           if (!pcf)
           {
             C2D = FC2D_CurveOnSurface(E, F, f, l, tolpc);
             if (C2D.IsNull())
               throw Standard_ProgramError("TopOpeBRepBuild_Builder::End 1");
-            Standard_Real tolE = BRep_Tool::Tolerance(E);
-            Standard_Real tol  = std::max(tolE, tolpc);
+            double tolE = BRep_Tool::Tolerance(E);
+            double tol  = std::max(tolE, tolpc);
             B.UpdateEdge(E, C2D, F, tol);
           }
           C2D                    = FC2D_CurveOnSurface(E, F, f, l, tolpc);
           gp_Pnt2d            P2 = C2D->Value(pv);
-          BRepAdaptor_Surface BAS(F, Standard_False);
+          BRepAdaptor_Surface BAS(F, false);
           Pv        = BAS.Value(P2.X(), P2.Y());
           TP(++nP2) = Pv;
           // modified by NIZHNY-MKK  Fri Sep 29 16:08:28 2000.BEGIN
           if (aMapOfNewEdges.Contains(E))
           {
-            Standard_Real anEdgeTol = BRep_Tool::Tolerance(E);
-            Standard_Real aFaceTol  = BRep_Tool::Tolerance(F);
+            double anEdgeTol = BRep_Tool::Tolerance(E);
+            double aFaceTol  = BRep_Tool::Tolerance(F);
             if (anEdgeTol < aFaceTol)
               B.UpdateEdge(E, aFaceTol);
           }
@@ -271,28 +275,28 @@ void TopOpeBRepBuild_Builder::End()
         // modified by NIZHNY-MKK  Fri Sep 29 16:54:08 2000.BEGIN
         if (aMapOfNewVertices.Contains(V))
         {
-          Standard_Real aVertexTol = BRep_Tool::Tolerance(V);
-          Standard_Real anEdgeTol  = BRep_Tool::Tolerance(E);
+          double aVertexTol = BRep_Tool::Tolerance(V);
+          double anEdgeTol  = BRep_Tool::Tolerance(E);
           if (aVertexTol < anEdgeTol)
             B.UpdateVertex(V, anEdgeTol);
         }
         // modified by NIZHNY-MKK  Fri Sep 29 16:54:12 2000.END
       }
 
-      Standard_Real newtol = BRep_Tool::Tolerance(V);
+      double newtol = BRep_Tool::Tolerance(V);
       Bnd_Box       BOX;
       gp_Pnt        Pv = BRep_Tool::Pnt(V);
       BOX.Set(Pv);
-      for (Standard_Integer i = 1; i <= nP2; i++)
+      for (int i = 1; i <= nP2; i++)
       {
         const gp_Pnt& Pi = TP(i);
         BOX.Update(Pi.X(), Pi.Y(), Pi.Z());
       }
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+      double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
       BOX.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
       gp_Pnt        P1(aXmin, aYmin, aZmin);
       gp_Pnt        P2(aXmax, aYmax, aZmax);
-      Standard_Real d = P1.Distance(P2);
+      double d = P1.Distance(P2);
       if (d > newtol)
       {
 #ifdef OCCT_DEBUG
@@ -307,7 +311,7 @@ void TopOpeBRepBuild_Builder::End()
     }
   }
 
-  Standard_Boolean makeFE = Standard_True;
+  bool makeFE = true;
 #ifdef OCCT_DEBUG
   makeFE = !TopOpeBRepBuild_GetcontextNOFE();
 #endif
@@ -315,30 +319,30 @@ void TopOpeBRepBuild_Builder::End()
   if (makeFE)
   {
     //    TopAbs_State state = myState1;
-    TopTools_ListOfShape& ls = ChangeMerged(myShape1, myState1);
-    for (TopTools_ListIteratorOfListOfShape itls(ls); itls.More(); itls.Next())
+    NCollection_List<TopoDS_Shape>& ls = ChangeMerged(myShape1, myState1);
+    for (NCollection_List<TopoDS_Shape>::Iterator itls(ls); itls.More(); itls.Next())
     {
       TopoDS_Shape&            SFE = itls.ChangeValue();
       TopOpeBRepTool_FuseEdges FE(SFE);
 
       // avoid fusing old edges
-      TopTools_IndexedMapOfShape mapOldEdges;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapOldEdges;
       TopExp::MapShapes(myShape1, TopAbs_EDGE, mapOldEdges);
       TopExp::MapShapes(myShape2, TopAbs_EDGE, mapOldEdges);
       FE.AvoidEdges(mapOldEdges);
 
       // Get List of edges that have been fused
-      TopTools_DataMapOfIntegerListOfShape mle;
+      NCollection_DataMap<int, NCollection_List<TopoDS_Shape>> mle;
       FE.Edges(mle);
 
-      Standard_Integer nle = mle.Extent();
+      int nle = mle.Extent();
       if (nle != 0)
       {
         FE.Perform();
         SFE = FE.Shape();
 
-        TopTools_DataMapOfIntegerShape mre;
-        TopTools_DataMapOfShapeShape   mlf;
+        NCollection_DataMap<int, TopoDS_Shape> mre;
+        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>   mlf;
         FE.ResultEdges(mre);
         FE.Faces(mlf);
 
@@ -359,13 +363,13 @@ void TopOpeBRepBuild_Builder::End()
 // purpose  :  edit the split to remove to edges to be fused and put them into the Merged
 //=======================================================================
 
-void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const TopTools_DataMapOfIntegerListOfShape& mle,
-                                                   const TopTools_DataMapOfIntegerShape&       mre,
-                                                   const TopTools_DataMapOfShapeShape&         mlf,
+void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>& mle,
+                                                   const NCollection_DataMap<int, TopoDS_Shape>&       mre,
+                                                   const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&         mlf,
                                                    const TopAbs_State state)
 {
-  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State&           MapSplit = MSplit(state);
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State it;
+  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>&           MapSplit = MSplit(state);
+  NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator it;
   for (it.Initialize(MapSplit); it.More(); it.Next())
   {
     const TopoDS_Shape& e = it.Key();
@@ -375,33 +379,33 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const TopTools_DataMapOfInteg
     {
 
       // get the list of split edges.
-      TopTools_ListOfShape& LstSplit = ChangeSplit(e, state);
+      NCollection_List<TopoDS_Shape>& LstSplit = ChangeSplit(e, state);
 
       // for each edge of the list of split edges
-      TopTools_ListIteratorOfListOfShape itSplitEdg;
+      NCollection_List<TopoDS_Shape>::Iterator itSplitEdg;
       itSplitEdg.Initialize(LstSplit);
       while (itSplitEdg.More())
       {
         const TopoDS_Shape& edgecur = itSplitEdg.Value();
 
         // for each "packet" of edges to be fused
-        TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape itLstEdg;
+        NCollection_DataMap<int, NCollection_List<TopoDS_Shape>>::Iterator itLstEdg;
         itLstEdg.Initialize(mle);
-        Standard_Boolean Found = Standard_False;
+        bool Found = false;
         while (itLstEdg.More() && !Found)
         {
-          const Standard_Integer&     iLst    = itLstEdg.Key();
-          const TopTools_ListOfShape& LmapEdg = mle.Find(iLst);
+          const int&     iLst    = itLstEdg.Key();
+          const NCollection_List<TopoDS_Shape>& LmapEdg = mle.Find(iLst);
 
           // look for each edge of the list if it is in the map Split
-          TopTools_ListIteratorOfListOfShape itEdg;
+          NCollection_List<TopoDS_Shape>::Iterator itEdg;
           itEdg.Initialize(LmapEdg);
           while (itEdg.More() && !Found)
           {
             const TopoDS_Shape& edgefuse = itEdg.Value();
             if (edgecur.IsSame(edgefuse))
             {
-              Found = Standard_True;
+              Found = true;
 
               LstSplit.Remove(itSplitEdg);
 
@@ -412,7 +416,7 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const TopTools_DataMapOfInteg
               else
                 stateMerged = myState2;
 
-              TopTools_ListOfShape LstMerged;
+              NCollection_List<TopoDS_Shape> LstMerged;
               LstMerged.Append(mre(iLst));
               ChangeMerged(e, stateMerged) = LstMerged;
             }
@@ -432,10 +436,10 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const TopTools_DataMapOfInteg
     else if (e.ShapeType() == TopAbs_FACE)
     {
       // get the list of split faces.
-      TopTools_ListOfShape& LstSplit = ChangeSplit(e, state);
+      NCollection_List<TopoDS_Shape>& LstSplit = ChangeSplit(e, state);
 
       // for each face of the list of split faces
-      TopTools_ListIteratorOfListOfShape itSplitFac;
+      NCollection_List<TopoDS_Shape>::Iterator itSplitFac;
       itSplitFac.Initialize(LstSplit);
       while (itSplitFac.More())
       {

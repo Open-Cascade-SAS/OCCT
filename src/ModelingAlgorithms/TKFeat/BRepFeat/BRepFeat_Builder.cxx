@@ -16,15 +16,18 @@
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_ListOfPave.hxx>
+#include <NCollection_List.hxx>
+#include <BOPDS_Pave.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_MapOfSet.hxx>
+#include <BOPTools_Set.hxx>
+#include <NCollection_Map.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
@@ -34,7 +37,10 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 //=================================================================================================
 
@@ -78,7 +84,7 @@ void BRepFeat_Builder::Init(const TopoDS_Shape& theShape, const TopoDS_Shape& th
 
 //=================================================================================================
 
-void BRepFeat_Builder::SetOperation(const Standard_Integer theFuse)
+void BRepFeat_Builder::SetOperation(const int theFuse)
 {
   myFuse      = theFuse;
   myOperation = myFuse ? BOPAlgo_FUSE : BOPAlgo_CUT;
@@ -86,7 +92,7 @@ void BRepFeat_Builder::SetOperation(const Standard_Integer theFuse)
 
 //=================================================================================================
 
-void BRepFeat_Builder::SetOperation(const Standard_Integer theFuse, const Standard_Boolean theFlag)
+void BRepFeat_Builder::SetOperation(const int theFuse, const bool theFlag)
 {
   myFuse = theFuse;
   if (!theFlag)
@@ -101,7 +107,7 @@ void BRepFeat_Builder::SetOperation(const Standard_Integer theFuse, const Standa
 
 //=================================================================================================
 
-void BRepFeat_Builder::PartsOfTool(TopTools_ListOfShape& aLT)
+void BRepFeat_Builder::PartsOfTool(NCollection_List<TopoDS_Shape>& aLT)
 {
   TopExp_Explorer aExp;
   //
@@ -116,9 +122,9 @@ void BRepFeat_Builder::PartsOfTool(TopTools_ListOfShape& aLT)
 
 //=================================================================================================
 
-void BRepFeat_Builder::KeepParts(const TopTools_ListOfShape& theIm)
+void BRepFeat_Builder::KeepParts(const NCollection_List<TopoDS_Shape>& theIm)
 {
-  TopTools_ListIteratorOfListOfShape aItT;
+  NCollection_List<TopoDS_Shape>::Iterator aItT;
   aItT.Initialize(theIm);
   for (; aItT.More(); aItT.Next())
   {
@@ -172,9 +178,9 @@ void BRepFeat_Builder::FillRemoved()
     return;
   }
   //
-  TopTools_ListIteratorOfListOfShape aItIm;
+  NCollection_List<TopoDS_Shape>::Iterator aItIm;
   //
-  TopTools_ListOfShape& aLS = myImages.ChangeFind(aArgs1);
+  NCollection_List<TopoDS_Shape>& aLS = myImages.ChangeFind(aArgs1);
   aItIm.Initialize(aLS);
   for (; aItIm.More(); aItIm.Next())
   {
@@ -194,25 +200,25 @@ void BRepFeat_Builder::PerformResult(const Message_ProgressRange& theRange)
     return;
   }
 
-  Standard_Real         aWhole = 100.;
+  double         aWhole = 100.;
   Message_ProgressScope aPS(theRange, "BRepFeat_Builder", aWhole);
-  Standard_Real         aBSPart = 15;
+  double         aBSPart = 15;
   aWhole -= aBSPart;
 
   // Compute PI steps
-  const Standard_Integer            aSize = 4;
-  NCollection_Array1<Standard_Real> aSteps(0, aSize - 1);
+  const int            aSize = 4;
+  NCollection_Array1<double> aSteps(0, aSize - 1);
   {
-    for (Standard_Integer i = 0; i < aSize; ++i)
+    for (int i = 0; i < aSize; ++i)
       aSteps(i) = 0.;
 
     NbShapes      aNbShapes       = getNbShapes();
-    Standard_Real aTreatFaces     = 5 * aNbShapes.NbFaces();
-    Standard_Real aTreatShells    = aNbShapes.NbShells();
-    Standard_Real aTreatSolids    = 20 * aNbShapes.NbSolids();
-    Standard_Real aTreatCompounds = aNbShapes.NbCompounds();
+    double aTreatFaces     = 5 * aNbShapes.NbFaces();
+    double aTreatShells    = aNbShapes.NbShells();
+    double aTreatSolids    = 20 * aNbShapes.NbSolids();
+    double aTreatCompounds = aNbShapes.NbCompounds();
 
-    Standard_Real aSum = aTreatFaces + aTreatShells + aTreatSolids + aTreatCompounds;
+    double aSum = aTreatFaces + aTreatShells + aTreatSolids + aTreatCompounds;
     if (aSum > 0)
     {
       aSteps(0) = aTreatFaces * aWhole / aSum;
@@ -266,19 +272,19 @@ void BRepFeat_Builder::PerformResult(const Message_ProgressRange& theRange)
 
 void BRepFeat_Builder::RebuildFaces()
 {
-  Standard_Integer    aNbS, i, iRank, nSp, j;
-  Standard_Boolean    bIsClosed, bIsDegenerated, bToReverse, bRem, bIm, bFlagSD, bVInShapes;
+  int    aNbS, i, iRank, nSp, j;
+  bool    bIsClosed, bIsDegenerated, bToReverse, bRem, bIm, bFlagSD, bVInShapes;
   TopAbs_Orientation  anOriF, anOriE;
   TopoDS_Face         aFF, aFSD;
   TopoDS_Edge         aSp;
   TopoDS_Shape        aSx;
   TopExp_Explorer     aExp, aExpE;
-  TopTools_MapOfShape aME, aMESplit;
-  TopTools_ListIteratorOfListOfShape aItIm;
-  BOPDS_MapIteratorOfMapOfPaveBlock  aItMPB;
-  TopTools_MapIteratorOfMapOfShape   aItM;
-  BOPTools_MapOfSet                  aMST;
-  TopTools_ListOfShape               aLE;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aME, aMESplit;
+  NCollection_List<TopoDS_Shape>::Iterator aItIm;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator  aItMPB;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator   aItM;
+  NCollection_Map<BOPTools_Set>                  aMST;
+  NCollection_List<TopoDS_Shape>               aLE;
   //
   aItM.Initialize(myShapes);
   for (; aItM.More(); aItM.Next())
@@ -304,7 +310,7 @@ void BRepFeat_Builder::RebuildFaces()
       //
       if (myImages.IsBound(aS))
       {
-        TopTools_ListOfShape& aLIm = myImages.ChangeFind(aS);
+        NCollection_List<TopoDS_Shape>& aLIm = myImages.ChangeFind(aS);
         aItIm.Initialize(aLIm);
         for (; aItIm.More();)
         {
@@ -337,8 +343,8 @@ void BRepFeat_Builder::RebuildFaces()
     aFF    = aF;
     aFF.Orientation(TopAbs_FORWARD);
 
-    const BOPDS_IndexedMapOfPaveBlock& aMPBIn = aFI.PaveBlocksIn();
-    const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
+    const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBIn = aFI.PaveBlocksIn();
+    const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBSc = aFI.PaveBlocksSc();
 
     aLE.Clear();
 
@@ -352,22 +358,22 @@ void BRepFeat_Builder::RebuildFaces()
       bIsClosed             = BRep_Tool::IsClosed(aE, aF);
       if (myImages.IsBound(aE))
       {
-        TopTools_ListOfShape& aLEIm = myImages.ChangeFind(aE);
+        NCollection_List<TopoDS_Shape>& aLEIm = myImages.ChangeFind(aE);
         //
-        bRem = Standard_False;
-        bIm  = Standard_False;
+        bRem = false;
+        bIm  = false;
         aME.Clear();
-        TopTools_ListOfShape aLEImNew;
+        NCollection_List<TopoDS_Shape> aLEImNew;
         //
         aItIm.Initialize(aLEIm);
         for (; aItIm.More(); aItIm.Next())
         {
           const TopoDS_Shape& aS = aItIm.Value();
 
-          bVInShapes = Standard_False;
+          bVInShapes = false;
           if (myShapes.Contains(aS))
           {
-            bVInShapes = Standard_True;
+            bVInShapes = true;
           }
           else
           {
@@ -377,7 +383,7 @@ void BRepFeat_Builder::RebuildFaces()
               const TopoDS_Shape& aV = aExpE.Current();
               if (myShapes.Contains(aV))
               {
-                bVInShapes = Standard_True;
+                bVInShapes = true;
                 break;
               }
             }
@@ -385,12 +391,12 @@ void BRepFeat_Builder::RebuildFaces()
           //
           if (bVInShapes)
           {
-            bIm = Standard_True;
+            bIm = true;
             aLEImNew.Append(aS);
           }
           else
           {
-            bRem = Standard_True;
+            bRem = true;
             aME.Add(aS);
           }
         }
@@ -470,14 +476,14 @@ void BRepFeat_Builder::RebuildFaces()
       }
     }
 
-    Standard_Integer aNbPBIn, aNbPBSc;
+    int aNbPBIn, aNbPBSc;
     aNbPBIn = aMPBIn.Extent();
     aNbPBSc = aMPBSc.Extent();
     //
     // in edges
     for (j = 1; j <= aNbPBIn; ++j)
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aMPBIn(j);
+      const occ::handle<BOPDS_PaveBlock>& aPB = aMPBIn(j);
       nSp                                = aPB->Edge();
       aSp                                = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       if (myRemoved.Contains(aSp))
@@ -493,7 +499,7 @@ void BRepFeat_Builder::RebuildFaces()
     // section edges
     for (j = 1; j <= aNbPBSc; ++j)
     {
-      const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(j);
+      const occ::handle<BOPDS_PaveBlock>& aPB = aMPBSc(j);
       nSp                                = aPB->Edge();
       aSp                                = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       if (myRemoved.Contains(aSp))
@@ -514,10 +520,10 @@ void BRepFeat_Builder::RebuildFaces()
 
     aBF.Perform();
 
-    TopTools_ListOfShape& aLFIm = myImages.ChangeFind(aF);
+    NCollection_List<TopoDS_Shape>& aLFIm = myImages.ChangeFind(aF);
     aLFIm.Clear();
 
-    const TopTools_ListOfShape& aLFR = aBF.Areas();
+    const NCollection_List<TopoDS_Shape>& aLFR = aBF.Areas();
     aItIm.Initialize(aLFR);
     for (; aItIm.More(); aItIm.Next())
     {
@@ -532,10 +538,10 @@ void BRepFeat_Builder::RebuildFaces()
       aSx.Orientation(anOriF);
       aLFIm.Append(aSx);
       //
-      TopTools_ListOfShape* pLOr = myOrigins.ChangeSeek(aSx);
+      NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aSx);
       if (!pLOr)
       {
-        pLOr = myOrigins.Bound(aSx, TopTools_ListOfShape());
+        pLOr = myOrigins.Bound(aSx, NCollection_List<TopoDS_Shape>());
       }
       pLOr->Append(aF);
       //
@@ -556,32 +562,32 @@ void BRepFeat_Builder::RebuildFaces()
 
 void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
                                    const TopoDS_Face&         theF,
-                                   const TopTools_MapOfShape& aME,
-                                   TopTools_ListOfShape&      aLIm)
+                                   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aME,
+                                   NCollection_List<TopoDS_Shape>&      aLIm)
 {
-  Standard_Integer                    nE, nSp, nV1, nV2, nE1, nV, nVx, nVSD;
-  Standard_Integer                    nV11, nV21;
-  Standard_Boolean                    bOld;
-  Standard_Real                       aT11, aT21;
-  Standard_Real                       aT1, aT2;
+  int                    nE, nSp, nV1, nV2, nE1, nV, nVx, nVSD;
+  int                    nV11, nV21;
+  bool                    bOld;
+  double                       aT11, aT21;
+  double                       aT1, aT2;
   TopoDS_Edge                         aSp, aE;
   BOPDS_ShapeInfo                     aSI;
   TopoDS_Vertex                       aV1, aV2;
-  Handle(BOPDS_PaveBlock)             aPBNew;
-  TColStd_MapOfInteger                aMI, aMAdd, aMV, aMVOr;
-  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
-  TopTools_ListIteratorOfListOfShape  aIt;
-  TColStd_ListIteratorOfListOfInteger aItLI;
-  TopTools_MapIteratorOfMapOfShape    aItM;
-  BOPDS_MapOfPaveBlock                aMPB;
-  BOPDS_MapIteratorOfMapOfPaveBlock   aItMPB;
+  occ::handle<BOPDS_PaveBlock>             aPBNew;
+  NCollection_Map<int>                aMI, aMAdd, aMV, aMVOr;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
+  NCollection_List<TopoDS_Shape>::Iterator  aIt;
+  NCollection_List<int>::Iterator aItLI;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator    aItM;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>                aMPB;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator   aItMPB;
   //
   aSI.SetShapeType(TopAbs_EDGE);
 
   // 1. collect origin vertices to aMV map.
   nE                                = myDS->Index(theE);
   const BOPDS_ShapeInfo&       aSIE = myDS->ShapeInfo(nE);
-  const TColStd_ListOfInteger& aLS  = aSIE.SubShapes();
+  const NCollection_List<int>& aLS  = aSIE.SubShapes();
   aItLI.Initialize(aLS);
   for (; aItLI.More(); aItLI.Next())
   {
@@ -597,12 +603,12 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
   //
   // 2. collect vertices that should be removed to aMI map.
   aPBNew                        = new BOPDS_PaveBlock;
-  BOPDS_ListOfPave&      aLPExt = aPBNew->ChangeExtPaves();
-  BOPDS_ListOfPaveBlock& aLPB   = myDS->ChangePaveBlocks(nE);
+  NCollection_List<BOPDS_Pave>&      aLPExt = aPBNew->ChangeExtPaves();
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB   = myDS->ChangePaveBlocks(nE);
   //
   for (aItPB.Initialize(aLPB); aItPB.More(); aItPB.Next())
   {
-    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
     nE1                                = aPB->Edge();
     const TopoDS_Shape& aE1            = myDS->Shape(nE1);
     //
@@ -620,7 +626,7 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
   // 3. collect vertices that split the source shape.
   for (aItPB.Initialize(aLPB); aItPB.More(); aItPB.Next())
   {
-    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
     aPB->Indices(nV1, nV2);
     //
     if (!aMI.Contains(nV1))
@@ -635,7 +641,7 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
   // 4. collect ext paves.
   for (aItPB.Initialize(aLPB); aItPB.More(); aItPB.Next())
   {
-    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+    const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
     aPB->Indices(nV1, nV2);
     //
     if (aMV.Contains(nV1))
@@ -663,11 +669,11 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
   // 5. split edge by new set of vertices.
   aLPB.Clear();
   aPBNew->SetOriginalEdge(nE);
-  aPBNew->Update(aLPB, Standard_False);
+  aPBNew->Update(aLPB, false);
   //
   for (aItPB.Initialize(aLPB); aItPB.More(); aItPB.Next())
   {
-    Handle(BOPDS_PaveBlock)& aPB    = aItPB.ChangeValue();
+    occ::handle<BOPDS_PaveBlock>& aPB    = aItPB.ChangeValue();
     const BOPDS_Pave&        aPave1 = aPB->Pave1();
     aPave1.Contents(nV1, aT1);
     //
@@ -676,17 +682,17 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
     //
     aItMPB.Initialize(aMPB);
     // check if it is the old pave block.
-    bOld = Standard_False;
+    bOld = false;
     for (; aItMPB.More(); aItMPB.Next())
     {
-      const Handle(BOPDS_PaveBlock)& aPB1 = aItMPB.Value();
+      const occ::handle<BOPDS_PaveBlock>& aPB1 = aItMPB.Value();
       aPB1->Indices(nV11, nV21);
       aPB1->Range(aT11, aT21);
       if (nV1 == nV11 && nV2 == nV21 && aT1 == aT11 && aT2 == aT21)
       {
         const TopoDS_Shape& aEIm = myDS->Shape(aPB1->Edge());
         aLIm.Append(aEIm);
-        bOld = Standard_True;
+        bOld = true;
         break;
       }
     }
@@ -720,17 +726,17 @@ void BRepFeat_Builder::RebuildEdge(const TopoDS_Shape&        theE,
 
 void BRepFeat_Builder::CheckSolidImages()
 {
-  BOPTools_MapOfSet                  aMST;
-  TopTools_ListOfShape               aLSImNew;
-  TopTools_MapOfShape                aMS;
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_Map<BOPTools_Set>                  aMST;
+  NCollection_List<TopoDS_Shape>               aLSImNew;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMS;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   TopExp_Explorer                    aExp, aExpF;
-  Standard_Boolean                   bFlagSD;
+  bool                   bFlagSD;
   //
   const TopoDS_Shape& aArgs0 = myArguments.First();
   const TopoDS_Shape& aArgs1 = myTools.First();
   //
-  const TopTools_ListOfShape& aLSIm = myImages.Find(aArgs1);
+  const NCollection_List<TopoDS_Shape>& aLSIm = myImages.Find(aArgs1);
   aIt.Initialize(aLSIm);
   for (; aIt.More(); aIt.Next())
   {
@@ -747,7 +753,7 @@ void BRepFeat_Builder::CheckSolidImages()
     const TopoDS_Shape& aSolid = aExp.Current();
     if (myImages.IsBound(aSolid))
     {
-      TopTools_ListOfShape& aLSImSol = myImages.ChangeFind(aSolid);
+      NCollection_List<TopoDS_Shape>& aLSImSol = myImages.ChangeFind(aSolid);
       aIt.Initialize(aLSImSol);
       for (; aIt.More(); aIt.Next())
       {
@@ -773,7 +779,7 @@ void BRepFeat_Builder::CheckSolidImages()
 
 //=================================================================================================
 
-void BRepFeat_Builder::FillRemoved(const TopoDS_Shape& S, TopTools_MapOfShape& M)
+void BRepFeat_Builder::FillRemoved(const TopoDS_Shape& S, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
   if (myShapes.Contains(S))
   {
@@ -791,7 +797,7 @@ void BRepFeat_Builder::FillRemoved(const TopoDS_Shape& S, TopTools_MapOfShape& M
 
 //=================================================================================================
 
-void BRepFeat_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
+void BRepFeat_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
                                      const Message_ProgressRange&  theRange)
 {
   GetReport()->Clear();
@@ -799,11 +805,11 @@ void BRepFeat_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolid
   BOPAlgo_Builder::FillIn3DParts(theDraftSolids, theRange);
 
   // Clear the IN parts of the solids from the removed faces
-  TopTools_DataMapOfShapeListOfShape::Iterator itM(myInParts);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itM(myInParts);
   for (; itM.More(); itM.Next())
   {
-    TopTools_ListOfShape&          aList = itM.ChangeValue();
-    TopTools_ListOfShape::Iterator itL(aList);
+    NCollection_List<TopoDS_Shape>&          aList = itM.ChangeValue();
+    NCollection_List<TopoDS_Shape>::Iterator itL(aList);
     for (; itL.More();)
     {
       if (myRemoved.Contains(itL.Value()))

@@ -19,7 +19,7 @@
 
 #include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_ListOfShape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -47,8 +47,8 @@ public:
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
   TopoDS_Iterator(const TopoDS_Shape&    S,
-                  const Standard_Boolean cumOri = Standard_True,
-                  const Standard_Boolean cumLoc = Standard_True)
+                  const bool cumOri = true,
+                  const bool cumLoc = true)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -61,12 +61,12 @@ public:
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
   Standard_EXPORT void Initialize(const TopoDS_Shape&    S,
-                                  const Standard_Boolean cumOri = Standard_True,
-                                  const Standard_Boolean cumLoc = Standard_True);
+                                  const bool cumOri = true,
+                                  const bool cumLoc = true);
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  Standard_Boolean More() const { return myShapes.More(); }
+  bool More() const { return myShapes.More(); }
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -86,7 +86,7 @@ public:
 
 private:
   TopoDS_Shape                     myShape;
-  TopoDS_ListIteratorOfListOfShape myShapes;
+  NCollection_List<TopoDS_Shape>::Iterator myShapes;
   TopAbs_Orientation               myOrientation;
   TopLoc_Location                  myLocation;
 };

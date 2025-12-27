@@ -18,8 +18,9 @@
 #define _GCPnts_QuasiUniformDeflection_HeaderFile
 
 #include <StdFail_NotDone.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomAbs_Shape.hxx>
 
 class Adaptor3d_Curve;
@@ -48,19 +49,19 @@ public:
 
   //! Computes a QuasiUniform Deflection distribution of points on the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& theC,
-                                                const Standard_Real    theDeflection,
+                                                const double    theDeflection,
                                                 const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                const Standard_Real      theDeflection,
+                                                const double      theDeflection,
                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& theC,
-                                                const Standard_Real    theDeflection,
-                                                const Standard_Real    theU1,
-                                                const Standard_Real    theU2,
+                                                const double    theDeflection,
+                                                const double    theU1,
+                                                const double    theU2,
                                                 const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
@@ -104,26 +105,26 @@ public:
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                const Standard_Real      theDeflection,
-                                                const Standard_Real      theU1,
-                                                const Standard_Real      theU2,
+                                                const double      theDeflection,
+                                                const double      theU1,
+                                                const double      theU2,
                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 3D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const Standard_Real    theDeflection,
+                                  const double    theDeflection,
                                   const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 2D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const Standard_Real      theDeflection,
+                                  const double      theDeflection,
                                   const GeomAbs_Shape      theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 3D curve, deflection and parameter range.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const Standard_Real    theDeflection,
-                                  const Standard_Real    theU1,
-                                  const Standard_Real    theU2,
+                                  const double    theDeflection,
+                                  const double    theU1,
+                                  const double    theU2,
                                   const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with theC, theDeflection, theU1, theU2.
@@ -168,23 +169,23 @@ public:
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //!     and those required on the curve by the computation algorithm.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const Standard_Real      theDeflection,
-                                  const Standard_Real      theU1,
-                                  const Standard_Real      theU2,
+                                  const double      theDeflection,
+                                  const double      theU1,
+                                  const double      theU2,
                                   const GeomAbs_Shape      theContinuity = GeomAbs_C1);
 
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
   //! -   querying the results before computation.
-  Standard_Boolean IsDone() const { return myDone; }
+  bool IsDone() const { return myDone; }
 
   //! Returns the number of points of the distribution
   //! computed by this algorithm.
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-  Standard_Integer NbPoints() const
+  int NbPoints() const
   {
     StdFail_NotDone_Raise_if(!myDone, "GCPnts_QuasiUniformDeflection::NbPoints()");
     return myParams.Length();
@@ -200,7 +201,7 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-  Standard_Real Parameter(const Standard_Integer Index) const
+  double Parameter(const int Index) const
   {
     StdFail_NotDone_Raise_if(!myDone, "GCPnts_QuasiUniformDeflection::Parameter()");
     return myParams(Index);
@@ -216,7 +217,7 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-  Standard_EXPORT gp_Pnt Value(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt Value(const int Index) const;
 
   //! Returns the deflection between the curve and the
   //! polygon resulting from the points of the distribution
@@ -226,7 +227,7 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm has not been
   //! initialized, or if the computation was not successful.
-  Standard_Real Deflection() const
+  double Deflection() const
   {
     StdFail_NotDone_Raise_if(!myDone, "GCPnts_QuasiUniformDeflection::Deflection()");
     return myDeflection;
@@ -236,16 +237,16 @@ private:
   //! Initializes algorithm.
   template <class TheCurve>
   void initialize(const TheCurve&     theC,
-                  const Standard_Real theDeflection,
-                  const Standard_Real theU1,
-                  const Standard_Real theU2,
+                  const double theDeflection,
+                  const double theU1,
+                  const double theU2,
                   const GeomAbs_Shape theContinuity);
 
 private:
-  Standard_Boolean       myDone;
-  Standard_Real          myDeflection;
-  TColStd_SequenceOfReal myParams;
-  TColgp_SequenceOfPnt   myPoints;
+  bool       myDone;
+  double          myDeflection;
+  NCollection_Sequence<double> myParams;
+  NCollection_Sequence<gp_Pnt>   myPoints;
   GeomAbs_Shape          myCont;
 };
 

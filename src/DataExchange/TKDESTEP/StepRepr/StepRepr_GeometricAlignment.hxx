@@ -20,9 +20,6 @@
 #include <Standard_Type.hxx>
 #include <StepRepr_DerivedShapeAspect.hxx>
 
-class StepRepr_GeometricAlignment;
-DEFINE_STANDARD_HANDLE(StepRepr_GeometricAlignment, StepRepr_DerivedShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_GeometricAlignment : public StepRepr_DerivedShapeAspect
 {

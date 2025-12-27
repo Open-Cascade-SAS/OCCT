@@ -28,14 +28,14 @@ public:
 
   Standard_EXPORT IntTools_BaseRangeSample();
 
-  Standard_EXPORT IntTools_BaseRangeSample(const Standard_Integer theDepth);
+  Standard_EXPORT IntTools_BaseRangeSample(const int theDepth);
 
-  void SetDepth(const Standard_Integer theDepth) { myDepth = theDepth; }
+  void SetDepth(const int theDepth) { myDepth = theDepth; }
 
-  Standard_Integer GetDepth() const { return myDepth; }
+  int GetDepth() const { return myDepth; }
 
 private:
-  Standard_Integer myDepth;
+  int myDepth;
 };
 
 #endif // _IntTools_BaseRangeSample_HeaderFile

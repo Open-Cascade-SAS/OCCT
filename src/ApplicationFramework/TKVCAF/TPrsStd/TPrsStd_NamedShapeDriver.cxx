@@ -46,30 +46,30 @@ TPrsStd_NamedShapeDriver::TPrsStd_NamedShapeDriver() {}
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_NamedShapeDriver::Update(const TDF_Label&               aLabel,
-                                                  Handle(AIS_InteractiveObject)& AIS)
+bool TPrsStd_NamedShapeDriver::Update(const TDF_Label&               aLabel,
+                                                  occ::handle<AIS_InteractiveObject>& AIS)
 {
-  Handle(TNaming_NamedShape) NS;
+  occ::handle<TNaming_NamedShape> NS;
 
   if (!aLabel.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
-    return Standard_False;
+    return false;
   }
 
   // TopoDS_Shape S = TNaming_Tool::CurrentShape (NS);
   TopoDS_Shape S = TNaming_Tool::GetShape(NS);
   if (S.IsNull())
   {
-    return Standard_False;
+    return false;
   }
   TopLoc_Location L = S.Location();
 
-  Handle(AIS_Shape) AISShape;
+  occ::handle<AIS_Shape> AISShape;
   if (AIS.IsNull())
     AISShape = new AIS_Shape(S);
   else
   {
-    AISShape = Handle(AIS_Shape)::DownCast(AIS);
+    AISShape = occ::down_cast<AIS_Shape>(AIS);
     if (AISShape.IsNull())
     {
       AISShape = new AIS_Shape(S);
@@ -82,7 +82,7 @@ Standard_Boolean TPrsStd_NamedShapeDriver::Update(const TDF_Label&              
         AISShape->ResetTransformation();
 
 #ifdef OPTIM_UPDATE
-        Handle(AIS_InteractiveContext) ctx = AISShape->GetContext();
+        occ::handle<AIS_InteractiveContext> ctx = AISShape->GetContext();
         if (S.IsPartner(oldShape) && (!ctx.IsNull() && !ctx->IsDisplayed(AISShape)))
         {
           if (L != oldShape.Location())
@@ -105,5 +105,5 @@ Standard_Boolean TPrsStd_NamedShapeDriver::Update(const TDF_Label&              
     AISShape->SetInfiniteState(S.Infinite());
   }
   AIS = AISShape;
-  return Standard_True;
+  return true;
 }

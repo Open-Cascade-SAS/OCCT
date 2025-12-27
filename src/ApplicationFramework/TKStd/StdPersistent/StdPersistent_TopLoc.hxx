@@ -37,7 +37,7 @@ public:
     virtual void PChildren(SequenceOfPersistent&) const {}
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const { return "PTopLoc_Datum3D"; }
+    virtual const char* PName() const { return "PTopLoc_Datum3D"; }
   };
 
   class ItemLocation : public StdObjMgt_Persistent
@@ -53,22 +53,22 @@ public:
     Standard_EXPORT virtual void PChildren(SequenceOfPersistent& theChildren) const;
 
     //! Returns persistent type name
-    virtual Standard_CString PName() const { return "PTopLoc_ItemLocation"; }
+    virtual const char* PName() const { return "PTopLoc_ItemLocation"; }
 
     //! Import transient object from the persistent data.
     Standard_EXPORT TopLoc_Location Import() const;
 
   private:
-    Handle(Datum3D)    myDatum;
-    Standard_Integer   myPower;
+    occ::handle<Datum3D>    myDatum;
+    int   myPower;
     StdObject_Location myNext;
   };
 
 public:
-  Standard_EXPORT static Handle(ItemLocation) Translate(const TopLoc_Location&            theLoc,
-                                                        StdObjMgt_TransientPersistentMap& theMap);
-  Standard_EXPORT static Handle(Datum3D)      Translate(const Handle(TopLoc_Datum3D)&     theDatum,
-                                                        StdObjMgt_TransientPersistentMap& theMap);
+  Standard_EXPORT static occ::handle<ItemLocation> Translate(const TopLoc_Location&            theLoc,
+                                                        NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Datum3D>      Translate(const occ::handle<TopLoc_Datum3D>&     theDatum,
+                                                        NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
 };
 
 #endif

@@ -14,10 +14,11 @@
 #ifndef StepElement_HArray1OfCurveElementEndReleasePacket_HeaderFile
 #define StepElement_HArray1OfCurveElementEndReleasePacket_HeaderFile
 
-#include <StepElement_Array1OfCurveElementEndReleasePacket.hxx>
+#include <StepElement_CurveElementEndReleasePacket.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepElement_HArray1OfCurveElementEndReleasePacket,
-               StepElement_Array1OfCurveElementEndReleasePacket)
+               NCollection_Array1<occ::handle<StepElement_CurveElementEndReleasePacket>>)
 
 #endif

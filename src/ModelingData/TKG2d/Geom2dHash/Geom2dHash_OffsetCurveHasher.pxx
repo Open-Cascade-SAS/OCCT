@@ -24,7 +24,7 @@
 struct Geom2dHash_OffsetCurveHasher
 {
   // Hashes the offset curve by its offset distance and basis curve.
-  std::size_t operator()(const Handle(Geom2d_OffsetCurve)& theCurve) const noexcept
+  std::size_t operator()(const occ::handle<Geom2d_OffsetCurve>& theCurve) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -37,8 +37,8 @@ struct Geom2dHash_OffsetCurveHasher
   }
 
   // Compares two offset curves.
-  bool operator()(const Handle(Geom2d_OffsetCurve)& theCurve1,
-                  const Handle(Geom2d_OffsetCurve)& theCurve2) const noexcept
+  bool operator()(const occ::handle<Geom2d_OffsetCurve>& theCurve1,
+                  const occ::handle<Geom2d_OffsetCurve>& theCurve2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

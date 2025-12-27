@@ -17,16 +17,17 @@
 #include <Prs3d_ToolCylinder.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
 //=================================================================================================
 
-Prs3d_ToolCylinder::Prs3d_ToolCylinder(const Standard_Real    theBottomRad,
-                                       const Standard_Real    theTopRad,
-                                       const Standard_Real    theHeight,
-                                       const Standard_Integer theNbSlices,
-                                       const Standard_Integer theNbStacks)
+Prs3d_ToolCylinder::Prs3d_ToolCylinder(const double    theBottomRad,
+                                       const double    theTopRad,
+                                       const double    theHeight,
+                                       const int theNbSlices,
+                                       const int theNbStacks)
     : myBottomRadius(theBottomRad),
       myTopRadius(theTopRad),
       myHeight(theHeight)
@@ -37,31 +38,31 @@ Prs3d_ToolCylinder::Prs3d_ToolCylinder(const Standard_Real    theBottomRad,
 
 //=================================================================================================
 
-gp_Pnt Prs3d_ToolCylinder::Vertex(const Standard_Real theU, const Standard_Real theV) const
+gp_Pnt Prs3d_ToolCylinder::Vertex(const double theU, const double theV) const
 {
-  const Standard_Real aU      = theU * M_PI * 2.0;
-  const Standard_Real aRadius = myBottomRadius + (myTopRadius - myBottomRadius) * theV;
+  const double aU      = theU * M_PI * 2.0;
+  const double aRadius = myBottomRadius + (myTopRadius - myBottomRadius) * theV;
   return gp_Pnt(std::cos(aU) * aRadius, std::sin(aU) * aRadius, theV * myHeight);
 }
 
 //=================================================================================================
 
-gp_Dir Prs3d_ToolCylinder::Normal(const Standard_Real theU, const Standard_Real) const
+gp_Dir Prs3d_ToolCylinder::Normal(const double theU, const double) const
 {
-  const Standard_Real aU = theU * M_PI * 2.0;
+  const double aU = theU * M_PI * 2.0;
   return gp_Dir(std::cos(aU) * myHeight, std::sin(aU) * myHeight, myBottomRadius - myTopRadius);
 }
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolCylinder::Create(const Standard_Real    theBottomRad,
-                                                              const Standard_Real    theTopRad,
-                                                              const Standard_Real    theHeight,
-                                                              const Standard_Integer theNbSlices,
-                                                              const Standard_Integer theNbStacks,
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolCylinder::Create(const double    theBottomRad,
+                                                              const double    theTopRad,
+                                                              const double    theHeight,
+                                                              const int theNbSlices,
+                                                              const int theNbStacks,
                                                               const gp_Trsf&         theTrsf)
 {
-  Handle(Graphic3d_ArrayOfTriangles) anArray;
+  occ::handle<Graphic3d_ArrayOfTriangles> anArray;
   Prs3d_ToolCylinder aTool(theBottomRad, theTopRad, theHeight, theNbSlices, theNbStacks);
   aTool.FillArray(anArray, theTrsf);
   return anArray;

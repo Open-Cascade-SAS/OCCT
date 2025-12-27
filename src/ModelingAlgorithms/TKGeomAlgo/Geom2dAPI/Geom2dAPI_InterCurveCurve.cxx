@@ -30,34 +30,34 @@
 
 Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve()
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
 }
 
 //=================================================================================================
 
-Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1,
-                                                     const Handle(Geom2d_Curve)& C2,
-                                                     const Standard_Real         Tol)
+Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve(const occ::handle<Geom2d_Curve>& C1,
+                                                     const occ::handle<Geom2d_Curve>& C2,
+                                                     const double         Tol)
 {
   Init(C1, C2, Tol);
 }
 
 //=================================================================================================
 
-Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve(const Handle(Geom2d_Curve)& C1,
-                                                     const Standard_Real         Tol)
+Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve(const occ::handle<Geom2d_Curve>& C1,
+                                                     const double         Tol)
 {
   Init(C1, Tol);
 }
 
 //=================================================================================================
 
-void Geom2dAPI_InterCurveCurve::Init(const Handle(Geom2d_Curve)& C1,
-                                     const Handle(Geom2d_Curve)& C2,
-                                     const Standard_Real         Tol)
+void Geom2dAPI_InterCurveCurve::Init(const occ::handle<Geom2d_Curve>& C1,
+                                     const occ::handle<Geom2d_Curve>& C2,
+                                     const double         Tol)
 {
-  myCurve1 = Handle(Geom2d_Curve)::DownCast(C1->Copy());
-  myCurve2 = Handle(Geom2d_Curve)::DownCast(C2->Copy());
+  myCurve1 = occ::down_cast<Geom2d_Curve>(C1->Copy());
+  myCurve2 = occ::down_cast<Geom2d_Curve>(C2->Copy());
 
   Geom2dAdaptor_Curve AC1(C1);
   Geom2dAdaptor_Curve AC2(C2);
@@ -67,9 +67,9 @@ void Geom2dAPI_InterCurveCurve::Init(const Handle(Geom2d_Curve)& C1,
 
 //=================================================================================================
 
-void Geom2dAPI_InterCurveCurve::Init(const Handle(Geom2d_Curve)& C1, const Standard_Real Tol)
+void Geom2dAPI_InterCurveCurve::Init(const occ::handle<Geom2d_Curve>& C1, const double Tol)
 {
-  myCurve1 = Handle(Geom2d_Curve)::DownCast(C1->Copy());
+  myCurve1 = occ::down_cast<Geom2d_Curve>(C1->Copy());
   myCurve2.Nullify();
 
   Geom2dAdaptor_Curve AC1(C1);
@@ -79,7 +79,7 @@ void Geom2dAPI_InterCurveCurve::Init(const Handle(Geom2d_Curve)& C1, const Stand
 
 //=================================================================================================
 
-Standard_Integer Geom2dAPI_InterCurveCurve::NbPoints() const
+int Geom2dAPI_InterCurveCurve::NbPoints() const
 {
   if (myIsDone)
     return myIntersector.NbPoints();
@@ -89,7 +89,7 @@ Standard_Integer Geom2dAPI_InterCurveCurve::NbPoints() const
 
 //=================================================================================================
 
-gp_Pnt2d Geom2dAPI_InterCurveCurve::Point(const Standard_Integer Index) const
+gp_Pnt2d Geom2dAPI_InterCurveCurve::Point(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 0 || Index > NbPoints(),
                                "Geom2dAPI_InterCurveCurve::Points");
@@ -99,7 +99,7 @@ gp_Pnt2d Geom2dAPI_InterCurveCurve::Point(const Standard_Integer Index) const
 
 //=================================================================================================
 
-Standard_Integer Geom2dAPI_InterCurveCurve::NbSegments() const
+int Geom2dAPI_InterCurveCurve::NbSegments() const
 {
   if (myIsDone)
     return myIntersector.NbSegments();
@@ -132,16 +132,16 @@ Standard_Integer Geom2dAPI_InterCurveCurve::NbSegments() const
 //    Segment:  FirstPoint--->LastPoint
 //=======================================================================
 
-void Geom2dAPI_InterCurveCurve::Segment(const Standard_Integer theIndex,
-                                        Handle(Geom2d_Curve)&  theCurve1,
-                                        Handle(Geom2d_Curve)&  theCurve2) const
+void Geom2dAPI_InterCurveCurve::Segment(const int theIndex,
+                                        occ::handle<Geom2d_Curve>&  theCurve1,
+                                        occ::handle<Geom2d_Curve>&  theCurve2) const
 {
   Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > NbSegments(),
                                "Geom2dAPI_InterCurveCurve::Segment");
 
   Standard_NullObject_Raise_if(myCurve1.IsNull(), "Geom2dAPI_InterCurveCurve::Segment");
 
-  Standard_Real aU1, aU2, aV1, aV2;
+  double aU1, aU2, aV1, aV2;
   aU1 = myCurve1->FirstParameter();
   aU2 = myCurve1->LastParameter();
   if (myCurve2.IsNull())
@@ -156,7 +156,7 @@ void Geom2dAPI_InterCurveCurve::Segment(const Standard_Integer theIndex,
   }
 
   const IntRes2d_IntersectionSegment& aSeg       = myIntersector.Segment(theIndex);
-  const Standard_Boolean              isOpposite = aSeg.IsOpposite();
+  const bool              isOpposite = aSeg.IsOpposite();
 
   if (aSeg.HasFirstPoint())
   {

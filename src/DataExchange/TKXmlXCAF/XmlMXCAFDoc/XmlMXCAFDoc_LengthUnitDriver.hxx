@@ -23,27 +23,24 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
-class XmlMXCAFDoc_LengthUnitDriver;
-DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
-
 //! Attribute Driver.
 class XmlMXCAFDoc_LengthUnitDriver : public XmlMDF_ADriver
 {
 
 public:
-  Standard_EXPORT XmlMXCAFDoc_LengthUnitDriver(const Handle(Message_Messenger)& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_LengthUnitDriver(const occ::handle<Message_Messenger>& theMessageDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual Standard_Boolean Paste(const XmlObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
+  Standard_EXPORT virtual bool Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
                                                  XmlObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                                      XmlObjMgt_Persistent&        theTarget,
                                      XmlObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_LengthUnitDriver, XmlMDF_ADriver)
 };

@@ -17,21 +17,21 @@
 namespace
 {
 //! Returns true if the given type matches the type to find.
-inline Standard_Boolean isSameType(const TopAbs_ShapeEnum theType,
+inline bool isSameType(const TopAbs_ShapeEnum theType,
                                    const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind == theType;
 }
 
 //! Returns true if the given type should be avoided.
-inline Standard_Boolean shouldAvoid(const TopAbs_ShapeEnum theType,
+inline bool shouldAvoid(const TopAbs_ShapeEnum theType,
                                     const TopAbs_ShapeEnum toAvoid) noexcept
 {
   return toAvoid != TopAbs_SHAPE && toAvoid == theType;
 }
 
 //! Returns true if the given type is more complex than the type to find.
-inline Standard_Boolean isMoreComplex(const TopAbs_ShapeEnum theType,
+inline bool isMoreComplex(const TopAbs_ShapeEnum theType,
                                       const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind > theType;
@@ -44,7 +44,7 @@ TopExp_Explorer::TopExp_Explorer() noexcept
     : myStack(20),
       toFind(TopAbs_SHAPE),
       toAvoid(TopAbs_SHAPE),
-      hasMore(Standard_False)
+      hasMore(false)
 {
 }
 
@@ -56,7 +56,7 @@ TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape&    S,
     : myStack(20),
       toFind(ToFind),
       toAvoid(ToAvoid),
-      hasMore(Standard_False)
+      hasMore(false)
 {
   Init(S, ToFind, ToAvoid);
 }
@@ -82,28 +82,28 @@ void TopExp_Explorer::Init(const TopoDS_Shape&    S,
 
   if (S.IsNull())
   {
-    hasMore = Standard_False;
+    hasMore = false;
     return;
   }
 
   if (toFind == TopAbs_SHAPE)
-    hasMore = Standard_False;
+    hasMore = false;
   else
   {
     TopAbs_ShapeEnum ty = S.ShapeType();
 
     if (ty > toFind)
     {
-      hasMore = Standard_False;
+      hasMore = false;
     }
     else if (!isSameType(ty, toFind))
     {
-      hasMore = Standard_True;
+      hasMore = true;
       Next();
     }
     else
     {
-      hasMore = Standard_True;
+      hasMore = true;
     }
   }
 }
@@ -118,12 +118,12 @@ void TopExp_Explorer::Next()
 
     if (isSameType(ty, toFind))
     {
-      hasMore = Standard_False;
+      hasMore = false;
       return;
     }
     else if (shouldAvoid(ty, toAvoid))
     {
-      hasMore = Standard_False;
+      hasMore = false;
       return;
     }
     else
@@ -145,7 +145,7 @@ void TopExp_Explorer::Next()
 
       if (isSameType(ty, toFind))
       {
-        hasMore = Standard_True;
+        hasMore = true;
         return;
       }
       else if (isMoreComplex(ty, toFind) && !shouldAvoid(ty, toAvoid))
@@ -166,7 +166,7 @@ void TopExp_Explorer::Next()
       myStack.ChangeLast().Next();
     }
   }
-  hasMore = Standard_False;
+  hasMore = false;
 }
 
 //=================================================================================================
@@ -178,7 +178,7 @@ const TopoDS_Shape& TopExp_Explorer::Current() const noexcept
 
 //=================================================================================================
 
-Standard_Integer TopExp_Explorer::Depth() const noexcept
+int TopExp_Explorer::Depth() const noexcept
 {
   return myStack.Length();
 }
@@ -187,6 +187,6 @@ Standard_Integer TopExp_Explorer::Depth() const noexcept
 
 void TopExp_Explorer::Clear()
 {
-  hasMore = Standard_False;
+  hasMore = false;
   myStack.Clear();
 }

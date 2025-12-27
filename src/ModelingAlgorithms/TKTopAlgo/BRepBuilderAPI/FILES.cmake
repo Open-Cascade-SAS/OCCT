@@ -5,7 +5,7 @@ set(OCCT_BRepBuilderAPI_FILES
   BRepBuilderAPI.cxx
   BRepBuilderAPI.hxx
   BRepBuilderAPI_BndBoxTreeSelector.hxx
-  BRepBuilderAPI_CellFilter.hxx
+
   BRepBuilderAPI_Collect.cxx
   BRepBuilderAPI_Collect.hxx
   BRepBuilderAPI_Command.cxx

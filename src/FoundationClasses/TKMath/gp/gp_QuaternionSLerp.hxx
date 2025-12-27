@@ -28,7 +28,7 @@ public:
   //!             with 0 pointing to theStart and 1 to theEnd.
   static gp_Quaternion Interpolate(const gp_Quaternion& theQStart,
                                    const gp_Quaternion& theQEnd,
-                                   Standard_Real        theT)
+                                   double        theT)
   {
     gp_Quaternion      aResult;
     gp_QuaternionSLerp aLerp(theQStart, theQEnd);
@@ -57,7 +57,7 @@ public:
   {
     myQStart               = theQStart;
     myQEnd                 = theQEnd;
-    Standard_Real cosOmega = myQStart.Dot(myQEnd);
+    double cosOmega = myQStart.Dot(myQEnd);
     if (cosOmega < 0.0)
     {
       cosOmega = -cosOmega;
@@ -68,13 +68,13 @@ public:
       cosOmega = 0.9999;
     }
     myOmega                   = std::acos(cosOmega);
-    Standard_Real invSinOmega = (1.0 / std::sin(myOmega));
+    double invSinOmega = (1.0 / std::sin(myOmega));
     myQStart.Scale(invSinOmega);
     myQEnd.Scale(invSinOmega);
   }
 
   //! Set interpolated quaternion for theT position (from 0.0 to 1.0)
-  void Interpolate(Standard_Real theT, gp_Quaternion& theResultQ) const
+  void Interpolate(double theT, gp_Quaternion& theResultQ) const
   {
     theResultQ = myQStart * std::sin((1.0 - theT) * myOmega) + myQEnd * std::sin(theT * myOmega);
   }
@@ -82,7 +82,7 @@ public:
 private:
   gp_Quaternion myQStart;
   gp_Quaternion myQEnd;
-  Standard_Real myOmega;
+  double myOmega;
 };
 
 #endif //_gp_QuaternionSLerp_HeaderFile

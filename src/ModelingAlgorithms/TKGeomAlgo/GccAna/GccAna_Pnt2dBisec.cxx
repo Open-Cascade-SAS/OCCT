@@ -30,7 +30,7 @@
 GccAna_Pnt2dBisec::GccAna_Pnt2dBisec(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2)
 {
 
-  WellDone = Standard_False;
+  WellDone = false;
   //   if (Point1.Distance(Point2) > gp::Resolution()) {
   if (Point1.Distance(Point2) > 1.e-10)
   {
@@ -41,24 +41,24 @@ GccAna_Pnt2dBisec::GccAna_Pnt2dBisec(const gp_Pnt2d& Point1, const gp_Pnt2d& Poi
                       //                                 ============================
                       gp_Dir2d(-dir1.Y(), dir1.X()));
     //                        =============================
-    HasSol   = Standard_True;
-    WellDone = Standard_True;
+    HasSol   = true;
+    WellDone = true;
   }
   else
   {
-    HasSol   = Standard_False;
-    WellDone = Standard_True;
+    HasSol   = false;
+    WellDone = true;
   }
 }
 
 //=========================================================================
 
-Standard_Boolean GccAna_Pnt2dBisec::IsDone() const
+bool GccAna_Pnt2dBisec::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Boolean GccAna_Pnt2dBisec::HasSolution() const
+bool GccAna_Pnt2dBisec::HasSolution() const
 {
   return HasSol;
 }

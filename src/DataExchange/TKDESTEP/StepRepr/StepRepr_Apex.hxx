@@ -21,9 +21,6 @@
 
 #include <StepRepr_DerivedShapeAspect.hxx>
 
-class StepRepr_Apex;
-DEFINE_STANDARD_HANDLE(StepRepr_Apex, StepRepr_DerivedShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_Apex : public StepRepr_DerivedShapeAspect
 {

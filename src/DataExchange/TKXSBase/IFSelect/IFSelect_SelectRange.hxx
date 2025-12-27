@@ -27,9 +27,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IFSelect_SelectRange;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectRange, IFSelect_SelectExtract)
-
 //! A SelectRange keeps or rejects a sub-set of the input set,
 //! that is the Entities of which rank in the iteration list
 //! is in a given range (for instance form 2nd to 6th, etc...)
@@ -42,52 +39,52 @@ public:
 
   //! Sets a Range for numbers, with a lower and a upper limits
   //! Error if rankto is lower then rankfrom
-  Standard_EXPORT void SetRange(const Handle(IFSelect_IntParam)& rankfrom,
-                                const Handle(IFSelect_IntParam)& rankto);
+  Standard_EXPORT void SetRange(const occ::handle<IFSelect_IntParam>& rankfrom,
+                                const occ::handle<IFSelect_IntParam>& rankto);
 
   //! Sets a unique number (only one Entity will be sorted as True)
-  Standard_EXPORT void SetOne(const Handle(IFSelect_IntParam)& rank);
+  Standard_EXPORT void SetOne(const occ::handle<IFSelect_IntParam>& rank);
 
   //! Sets a Lower limit but no upper limit
-  Standard_EXPORT void SetFrom(const Handle(IFSelect_IntParam)& rankfrom);
+  Standard_EXPORT void SetFrom(const occ::handle<IFSelect_IntParam>& rankfrom);
 
   //! Sets an Upper limit but no lower limit (equivalent to lower 1)
-  Standard_EXPORT void SetUntil(const Handle(IFSelect_IntParam)& rankto);
+  Standard_EXPORT void SetUntil(const occ::handle<IFSelect_IntParam>& rankto);
 
   //! Returns True if a Lower limit is defined
-  Standard_EXPORT Standard_Boolean HasLower() const;
+  Standard_EXPORT bool HasLower() const;
 
   //! Returns Lower limit (if there is; else, value is senseless)
-  Standard_EXPORT Handle(IFSelect_IntParam) Lower() const;
+  Standard_EXPORT occ::handle<IFSelect_IntParam> Lower() const;
 
   //! Returns Value of Lower Limit (0 if none is defined)
-  Standard_EXPORT Standard_Integer LowerValue() const;
+  Standard_EXPORT int LowerValue() const;
 
   //! Returns True if a Lower limit is defined
-  Standard_EXPORT Standard_Boolean HasUpper() const;
+  Standard_EXPORT bool HasUpper() const;
 
   //! Returns Upper limit (if there is; else, value is senseless)
-  Standard_EXPORT Handle(IFSelect_IntParam) Upper() const;
+  Standard_EXPORT occ::handle<IFSelect_IntParam> Upper() const;
 
   //! Returns Value of Upper Limit (0 if none is defined)
-  Standard_EXPORT Standard_Integer UpperValue() const;
+  Standard_EXPORT int UpperValue() const;
 
   //! Returns True for an Entity of which occurrence number in the
   //! iteration is inside the selected Range (considers <rank>)
-  Standard_EXPORT Standard_Boolean
-    Sort(const Standard_Integer                  rank,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : following cases,
   //! " From .. Until .." or "From .." or "Until .." or "Rank no .."
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRange, IFSelect_SelectExtract)
 
 private:
-  Handle(IFSelect_IntParam) thelower;
-  Handle(IFSelect_IntParam) theupper;
+  occ::handle<IFSelect_IntParam> thelower;
+  occ::handle<IFSelect_IntParam> theupper;
 };
 
 #endif // _IFSelect_SelectRange_HeaderFile

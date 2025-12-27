@@ -36,9 +36,9 @@ public:
 
   //! Constructor. Initialize new entity.
   Standard_EXPORT math_Powell(const math_MultipleVarFunction& theFunction,
-                              const Standard_Real             theTolerance,
-                              const Standard_Integer          theNbIterations = 200,
-                              const Standard_Real             theZEPS         = 1.0e-12);
+                              const double             theTolerance,
+                              const int          theNbIterations = 200,
+                              const double             theZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_Powell();
@@ -55,10 +55,10 @@ public:
   //! Solution F = Fi is found when:
   //! 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
   //! The maximum number of iterations allowed is given by NbIterations.
-  virtual Standard_Boolean IsSolutionReached(math_MultipleVarFunction& theFunction);
+  virtual bool IsSolutionReached(math_MultipleVarFunction& theFunction);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the location vector of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
@@ -72,12 +72,12 @@ public:
 
   //! Returns the value of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Real Minimum() const;
+  double Minimum() const;
 
   //! Returns the number of iterations really done during the
   //! computation of the minimum.
   //! Exception NotDone is raised if the minimum was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
@@ -85,19 +85,19 @@ public:
 
 protected:
   math_Vector   TheLocation;
-  Standard_Real TheMinimum;
-  Standard_Real TheLocationError;
-  Standard_Real PreviousMinimum;
-  Standard_Real XTol;
-  Standard_Real EPSZ;
+  double TheMinimum;
+  double TheLocationError;
+  double PreviousMinimum;
+  double XTol;
+  double EPSZ;
 
 private:
-  Standard_Boolean Done;
-  Standard_Integer Iter;
+  bool Done;
+  int Iter;
   math_Status      TheStatus;
   math_Matrix      TheDirections;
-  Standard_Integer State;
-  Standard_Integer Itermax;
+  int State;
+  int Itermax;
 };
 
 #include <math_Powell.lxx>

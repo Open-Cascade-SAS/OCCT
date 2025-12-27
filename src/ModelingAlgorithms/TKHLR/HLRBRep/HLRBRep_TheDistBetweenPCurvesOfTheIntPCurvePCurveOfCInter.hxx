@@ -23,6 +23,7 @@
 
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Boolean.hxx>
+#include <HLRBRep_Curve.hxx>
 #include <math_Vector.hxx>
 class HLRBRep_CurveTool;
 class math_Matrix;
@@ -33,38 +34,48 @@ class HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(
-    const Standard_Address& curve1,
-    const Standard_Address& curve2);
+  HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(
+    const HLRBRep_Curve& curve1,
+    const HLRBRep_Curve& curve2)
+    {
+      thecurve1 = (HLRBRep_Curve*)(&curve1);
+      thecurve2 = (HLRBRep_Curve*)(&curve2);
+    }
+    
+      HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter(
+    const HLRBRep_Curve* curve1,
+    const HLRBRep_Curve* curve2)
+    {
+      thecurve1 = (HLRBRep_Curve*)curve1;
+      thecurve2 = (HLRBRep_Curve*)curve2;
+    }
+  //! returns 2.
+  Standard_EXPORT int NbVariables() const;
 
   //! returns 2.
-  Standard_EXPORT Standard_Integer NbVariables() const;
-
-  //! returns 2.
-  Standard_EXPORT Standard_Integer NbEquations() const;
+  Standard_EXPORT int NbEquations() const;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F);
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F);
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X, math_Matrix& D);
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D);
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
-protected:
 private:
-  Standard_Address thecurve1;
-  Standard_Address thecurve2;
+  HLRBRep_Curve* thecurve1;
+  HLRBRep_Curve* thecurve2;
 };
 
 #endif // _HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter_HeaderFile

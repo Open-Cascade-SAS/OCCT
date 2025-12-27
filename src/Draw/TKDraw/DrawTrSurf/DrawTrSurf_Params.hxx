@@ -30,15 +30,15 @@ public:
 
   Draw_MarkerShape PntMarker;
   Draw_MarkerShape KnotsMarker;
-  Standard_Boolean IsShowPoles;
-  Standard_Boolean IsShowKnots;
-  Standard_Boolean NeedKnotsIsos;
-  Standard_Real    Deflection;
-  Standard_Integer KnotsSize;
-  Standard_Integer Discret;
-  Standard_Integer DrawMode;
-  Standard_Integer NbUIsos;
-  Standard_Integer NbVIsos;
+  bool IsShowPoles;
+  bool IsShowKnots;
+  bool NeedKnotsIsos;
+  double    Deflection;
+  int KnotsSize;
+  int Discret;
+  int DrawMode;
+  int NbUIsos;
+  int NbVIsos;
 
   DrawTrSurf_Params()
       : PntColor(Draw_rouge),

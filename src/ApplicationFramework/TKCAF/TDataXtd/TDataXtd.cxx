@@ -23,11 +23,12 @@
 #include <TDataXtd_Point.hxx>
 #include <TDataXtd_Position.hxx>
 #include <TDataXtd_Shape.hxx>
-#include <TDF_IDList.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_List.hxx>
 
 //=================================================================================================
 
-void TDataXtd::IDList(TDF_IDList& anIDList)
+void TDataXtd::IDList(NCollection_List<Standard_GUID>& anIDList)
 {
   anIDList.Append(TDataXtd_Axis::GetID());
   anIDList.Append(TDataXtd_Constraint::GetID());

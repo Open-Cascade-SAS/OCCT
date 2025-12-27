@@ -47,7 +47,7 @@ public:
   TheItemType& ChangeValue() noexcept { return myValue; }
 
   //! Static deleter to be passed to BaseList
-  static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+  static void delNode(NCollection_ListNode* theNode, occ::handle<NCollection_BaseAllocator>& theAl)
   {
     ((NCollection_TListNode*)theNode)->myValue.~TheItemType();
     theAl->Free(theNode);

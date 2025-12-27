@@ -29,7 +29,7 @@ std::shared_ptr<T> make_shared(Args&&... theArgs)
 }
 
 template <class T, class... Args>
-std::shared_ptr<T> make_oshared(const Handle(NCollection_BaseAllocator)& theAlloc,
+std::shared_ptr<T> make_oshared(const occ::handle<NCollection_BaseAllocator>& theAlloc,
                                 Args&&... theArgs)
 {
   return std::allocate_shared<T, NCollection_OccAllocator<T>, Args...>(

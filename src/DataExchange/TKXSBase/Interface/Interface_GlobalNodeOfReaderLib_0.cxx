@@ -26,8 +26,8 @@
 
 Interface_GlobalNodeOfReaderLib::Interface_GlobalNodeOfReaderLib() {}
 
-void Interface_GlobalNodeOfReaderLib::Add(const Handle(Interface_ReaderModule)& amodule,
-                                          const Handle(Interface_Protocol)&     aprotocol)
+void Interface_GlobalNodeOfReaderLib::Add(const occ::handle<Interface_ReaderModule>& amodule,
+                                          const occ::handle<Interface_Protocol>&     aprotocol)
 {
   if (themod == amodule)
     return;
@@ -50,17 +50,17 @@ void Interface_GlobalNodeOfReaderLib::Add(const Handle(Interface_ReaderModule)& 
     thenext->Add(amodule, aprotocol);
 }
 
-const Handle(Interface_ReaderModule)& Interface_GlobalNodeOfReaderLib::Module() const
+const occ::handle<Interface_ReaderModule>& Interface_GlobalNodeOfReaderLib::Module() const
 {
   return themod;
 }
 
-const Handle(Interface_Protocol)& Interface_GlobalNodeOfReaderLib::Protocol() const
+const occ::handle<Interface_Protocol>& Interface_GlobalNodeOfReaderLib::Protocol() const
 {
   return theprot;
 }
 
-const Handle(Interface_GlobalNodeOfReaderLib)& Interface_GlobalNodeOfReaderLib::Next() const
+const occ::handle<Interface_GlobalNodeOfReaderLib>& Interface_GlobalNodeOfReaderLib::Next() const
 {
   return thenext;
 }

@@ -18,9 +18,10 @@
 #define Extrema_HArray2OfPOnSurf_HeaderFile
 
 #include <Extrema_POnSurf.hxx>
-#include <Extrema_Array2OfPOnSurf.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(Extrema_HArray2OfPOnSurf, Extrema_Array2OfPOnSurf)
+DEFINE_HARRAY2(Extrema_HArray2OfPOnSurf, NCollection_Array2<Extrema_POnSurf>)
 
 #endif

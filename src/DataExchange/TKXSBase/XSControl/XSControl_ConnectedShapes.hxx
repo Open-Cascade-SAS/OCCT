@@ -32,9 +32,6 @@ class TCollection_AsciiString;
 class TopoDS_Shape;
 class Transfer_TransientProcess;
 
-class XSControl_ConnectedShapes;
-DEFINE_STANDARD_HANDLE(XSControl_ConnectedShapes, IFSelect_SelectExplore)
-
 //! From a TopoDS_Shape, or from the entity which has produced it,
 //! searches for the shapes, and the entities which have produced
 //! them in last transfer, which are adjacent to it by VERTICES
@@ -48,36 +45,35 @@ public:
 
   //! Creates a Selection ConnectedShapes, which will work with the
   //! current TransferProcess brought by the TransferReader
-  Standard_EXPORT XSControl_ConnectedShapes(const Handle(XSControl_TransferReader)& TR);
+  Standard_EXPORT XSControl_ConnectedShapes(const occ::handle<XSControl_TransferReader>& TR);
 
   //! Sets a TransferReader to sort entities : it brings the
   //! TransferProcess which may change, while the TransferReader does not
-  Standard_EXPORT void SetReader(const Handle(XSControl_TransferReader)& TR);
+  Standard_EXPORT void SetReader(const occ::handle<XSControl_TransferReader>& TR);
 
   //! Explores an entity : entities from which are connected to that
   //! produced by this entity, including itself
-  Standard_EXPORT Standard_Boolean
-    Explore(const Standard_Integer            level,
-            const Handle(Standard_Transient)& ent,
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
             const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const Standard_OVERRIDE;
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium.
   //! "Connected Entities through produced Shapes"
-  Standard_EXPORT TCollection_AsciiString ExploreLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   //! This functions considers a shape from a transfer and performs
   //! the search function explained above
-  Standard_EXPORT static Handle(TColStd_HSequenceOfTransient) AdjacentEntities(
+  Standard_EXPORT static occ::handle<TColStd_HSequenceOfTransient> AdjacentEntities(
     const TopoDS_Shape&                      ashape,
-    const Handle(Transfer_TransientProcess)& TP,
+    const occ::handle<Transfer_TransientProcess>& TP,
     const TopAbs_ShapeEnum                   type);
 
   DEFINE_STANDARD_RTTIEXT(XSControl_ConnectedShapes, IFSelect_SelectExplore)
 
-protected:
 private:
-  Handle(XSControl_TransferReader) theTR;
+  occ::handle<XSControl_TransferReader> theTR;
 };
 
 #endif // _XSControl_ConnectedShapes_HeaderFile

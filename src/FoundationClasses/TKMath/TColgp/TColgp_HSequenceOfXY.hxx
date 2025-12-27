@@ -18,9 +18,10 @@
 #define TColgp_HSequenceOfXY_HeaderFile
 
 #include <gp_XY.hxx>
-#include <TColgp_SequenceOfXY.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColgp_HSequenceOfXY, TColgp_SequenceOfXY)
+DEFINE_HSEQUENCE(TColgp_HSequenceOfXY, NCollection_Sequence<gp_XY>)
 
 #endif

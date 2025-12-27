@@ -24,8 +24,8 @@ StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_PathOrCompositeCurve::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_PathOrCompositeCurve::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -38,14 +38,14 @@ Standard_Integer StepVisual_PathOrCompositeCurve::CaseNum(
 
 //=================================================================================================
 
-Handle(StepGeom_CompositeCurve) StepVisual_PathOrCompositeCurve::CompositeCurve() const
+occ::handle<StepGeom_CompositeCurve> StepVisual_PathOrCompositeCurve::CompositeCurve() const
 {
-  return Handle(StepGeom_CompositeCurve)::DownCast(Value());
+  return occ::down_cast<StepGeom_CompositeCurve>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepShape_Path) StepVisual_PathOrCompositeCurve::Path() const
+occ::handle<StepShape_Path> StepVisual_PathOrCompositeCurve::Path() const
 {
-  return Handle(StepShape_Path)::DownCast(Value());
+  return occ::down_cast<StepShape_Path>(Value());
 }

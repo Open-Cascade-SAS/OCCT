@@ -93,7 +93,7 @@ public:
   }
 
   //! Check status for being set
-  Standard_Boolean IsSet(Message_Status theStatus) const
+  bool IsSet(Message_Status theStatus) const
   {
     switch (TypeOfStatus(theStatus))
     {
@@ -106,7 +106,7 @@ public:
       case Message_FAIL:
         return (myFail & getBitFlag(theStatus)) != 0;
     }
-    return Standard_False;
+    return false;
   }
 
   //! Clear one status
@@ -135,13 +135,13 @@ public:
   //!@{
 
   //! Check if at least one status of each type is set
-  Standard_Boolean IsDone() const { return myDone != Message_None; }
+  bool IsDone() const { return myDone != Message_None; }
 
-  Standard_Boolean IsFail() const { return myFail != Message_None; }
+  bool IsFail() const { return myFail != Message_None; }
 
-  Standard_Boolean IsWarn() const { return myWarn != Message_None; }
+  bool IsWarn() const { return myWarn != Message_None; }
 
-  Standard_Boolean IsAlarm() const { return myAlarm != Message_None; }
+  bool IsAlarm() const { return myAlarm != Message_None; }
 
   //! Set all statuses of each type
   void SetAllDone() { myDone = ~0; }
@@ -210,7 +210,7 @@ public:
   };
 
   //! Returns index of status in whole range [FirstStatus, LastStatus]
-  static Standard_Integer StatusIndex(Message_Status theStatus)
+  static int StatusIndex(Message_Status theStatus)
   {
     switch (TypeOfStatus(theStatus))
     {
@@ -228,21 +228,21 @@ public:
 
   //! Returns index of status inside type of status (Done or Warn or, etc)
   //! in range [1, StatusesPerType]
-  static Standard_Integer LocalStatusIndex(Message_Status theStatus)
+  static int LocalStatusIndex(Message_Status theStatus)
   {
-    return ((Standard_UInteger)theStatus & (Standard_UInteger)MIndex) + 1;
+    return ((unsigned int)theStatus & (unsigned int)MIndex) + 1;
   }
 
   //! Returns status type (DONE, WARN, ALARM, or FAIL)
   static Message_StatusType TypeOfStatus(Message_Status theStatus)
   {
-    return (Message_StatusType)((Standard_UInteger)theStatus & (Standard_UInteger)MType);
+    return (Message_StatusType)((unsigned int)theStatus & (unsigned int)MType);
   }
 
   //! Returns status with index theIndex in whole range [FirstStatus, LastStatus]
-  static Message_Status StatusByIndex(const Standard_Integer theIndex)
+  static Message_Status StatusByIndex(const int theIndex)
   {
-    Standard_Integer indx = theIndex - 1;
+    int indx = theIndex - 1;
     if (indx < 32)
       return (Message_Status)(Message_DONE + indx);
     else if (indx < 64)
@@ -257,10 +257,10 @@ public:
   //!@}
 
 private:
-  Standard_Integer myDone;
-  Standard_Integer myWarn;
-  Standard_Integer myAlarm;
-  Standard_Integer myFail;
+  int myDone;
+  int myWarn;
+  int myAlarm;
+  int myFail;
 };
 
 #endif

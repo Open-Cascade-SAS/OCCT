@@ -49,7 +49,7 @@ public:
   const Poly_MergeNodesTool::Vec3AndNormal& Key() const { return myKey; }
 
   //! Static deleter to be passed to BaseMap
-  static void delNode(NCollection_ListNode* theNode, Handle(NCollection_BaseAllocator)& theAl)
+  static void delNode(NCollection_ListNode* theNode, occ::handle<NCollection_BaseAllocator>& theAl)
   {
     ((DataMapNode*)theNode)->~DataMapNode();
     theAl->Free(theNode);
@@ -111,7 +111,7 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Ve
     // compute DJB2 hash of a string
     const size_t              aLength   = sizeof(NCollection_Vec3<float>);
     unsigned int              aHashCode = 0;
-    const Standard_Character* c         = (Standard_CString)&thePos;
+    const char* c         = (const char*)&thePos;
     for (size_t i = 0; i < aLength; ++i, ++c)
     {
       aHashCode = ((aHashCode << 5) + aHashCode) ^ (*c);
@@ -394,9 +394,9 @@ void Poly_MergeNodesTool::PushLastElement(int theNbNodes)
 
 //=================================================================================================
 
-void Poly_MergeNodesTool::AddTriangulation(const Handle(Poly_Triangulation)& theTris,
+void Poly_MergeNodesTool::AddTriangulation(const occ::handle<Poly_Triangulation>& theTris,
                                            const gp_Trsf&                    theTrsf,
-                                           const Standard_Boolean            theToReverse)
+                                           const bool            theToReverse)
 {
   if (theTris.IsNull())
   {
@@ -429,11 +429,11 @@ void Poly_MergeNodesTool::AddTriangulation(const Handle(Poly_Triangulation)& the
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) Poly_MergeNodesTool::Result()
+occ::handle<Poly_Triangulation> Poly_MergeNodesTool::Result()
 {
   if (myPolyData.IsNull())
   {
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
 
   // compress data
@@ -444,17 +444,17 @@ Handle(Poly_Triangulation) Poly_MergeNodesTool::Result()
 
 //=================================================================================================
 
-Handle(Poly_Triangulation) Poly_MergeNodesTool::MergeNodes(
-  const Handle(Poly_Triangulation)& theTris,
+occ::handle<Poly_Triangulation> Poly_MergeNodesTool::MergeNodes(
+  const occ::handle<Poly_Triangulation>& theTris,
   const gp_Trsf&                    theTrsf,
-  const Standard_Boolean            theToReverse,
+  const bool            theToReverse,
   const double                      theSmoothAngle,
   const double                      theMergeTolerance,
   const bool                        theToForce)
 {
   if (theTris.IsNull() || theTris->NbNodes() < 3 || theTris->NbTriangles() < 1)
   {
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
 
   Poly_MergeNodesTool aMergeTool(theSmoothAngle, theMergeTolerance, theTris->NbTriangles());
@@ -462,7 +462,7 @@ Handle(Poly_Triangulation) Poly_MergeNodesTool::MergeNodes(
   if (!theToForce && aMergeTool.NbNodes() == theTris->NbNodes()
       && aMergeTool.NbElements() == theTris->NbTriangles())
   {
-    return Handle(Poly_Triangulation)();
+    return occ::handle<Poly_Triangulation>();
   }
   return aMergeTool.Result();
 }

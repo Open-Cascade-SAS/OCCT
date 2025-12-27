@@ -56,51 +56,51 @@ public:
   BRepPrimAPI_MakeBox() {}
 
   //! Make a box with a corner at 0,0,0 and the other dx,dy,dz
-  Standard_EXPORT BRepPrimAPI_MakeBox(const Standard_Real dx,
-                                      const Standard_Real dy,
-                                      const Standard_Real dz);
+  Standard_EXPORT BRepPrimAPI_MakeBox(const double dx,
+                                      const double dy,
+                                      const double dz);
 
   //! Make a box with a corner at P and size dx, dy, dz.
   Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Pnt&       P,
-                                      const Standard_Real dx,
-                                      const Standard_Real dy,
-                                      const Standard_Real dz);
+                                      const double dx,
+                                      const double dy,
+                                      const double dz);
 
   //! Make a box with corners P1,P2.
   Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Make a box with Ax2 (the left corner and the axis) and size dx, dy, dz.
   Standard_EXPORT BRepPrimAPI_MakeBox(const gp_Ax2&       Axes,
-                                      const Standard_Real dx,
-                                      const Standard_Real dy,
-                                      const Standard_Real dz);
+                                      const double dx,
+                                      const double dy,
+                                      const double dz);
 
   //! Init a box with a corner at 0,0,0 and the other theDX, theDY, theDZ
-  Standard_EXPORT void Init(const Standard_Real theDX,
-                            const Standard_Real theDY,
-                            const Standard_Real theDZ);
+  Standard_EXPORT void Init(const double theDX,
+                            const double theDY,
+                            const double theDZ);
 
   //! Init a box with a corner at thePnt and size theDX, theDY, theDZ.
   Standard_EXPORT void Init(const gp_Pnt&       thePnt,
-                            const Standard_Real theDX,
-                            const Standard_Real theDY,
-                            const Standard_Real theDZ);
+                            const double theDX,
+                            const double theDY,
+                            const double theDZ);
 
   //! Init a box with corners thePnt1, thePnt2.
   Standard_EXPORT void Init(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2);
 
   //! Init a box with Ax2 (the left corner and the theAxes) and size theDX, theDY, theDZ.
   Standard_EXPORT void Init(const gp_Ax2&       theAxes,
-                            const Standard_Real theDX,
-                            const Standard_Real theDY,
-                            const Standard_Real theDZ);
+                            const double theDX,
+                            const double theDY,
+                            const double theDZ);
 
   //! Returns the internal algorithm.
   Standard_EXPORT BRepPrim_Wedge& Wedge();
 
   //! Stores the solid in myShape.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the constructed box as a shell.
   Standard_EXPORT const TopoDS_Shell& Shell();
@@ -131,7 +131,6 @@ public:
 protected:
   BRepPrim_Wedge myWedge;
 
-private:
 };
 
 #endif // _BRepPrimAPI_MakeBox_HeaderFile

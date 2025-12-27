@@ -50,6 +50,4 @@ private:
   using Graphic3d_CLight::Smoothness;
 };
 
-DEFINE_STANDARD_HANDLE(V3d_AmbientLight, Graphic3d_CLight)
-
 #endif // _V3d_AmbientLight_HeaderFile

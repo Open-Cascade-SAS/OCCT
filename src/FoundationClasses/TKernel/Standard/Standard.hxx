@@ -42,15 +42,15 @@ public:
 
   //! Allocates memory blocks
   //! theSize - bytes to  allocate
-  Standard_EXPORT static Standard_Address Allocate(const Standard_Size theSize);
+  Standard_EXPORT static void* Allocate(const size_t theSize);
 
   //! Allocates memory blocks
   //! theSize - bytes to  allocate
-  Standard_EXPORT static Standard_Address AllocateOptimal(const Standard_Size theSize);
+  Standard_EXPORT static void* AllocateOptimal(const size_t theSize);
 
   //! Deallocates memory blocks
   //! @param thePtr - previously allocated memory block to be freed
-  Standard_EXPORT static void Free(const Standard_Address thePtr);
+  Standard_EXPORT static void Free(void* const thePtr);
 
   //! Template version of function Free(), nullifies the argument pointer
   //! @param thePtr - previously allocated memory block to be freed
@@ -64,20 +64,20 @@ public:
   //! Reallocates memory blocks
   //! theStorage - previously allocated memory block
   //! theNewSize - new size in bytes
-  Standard_EXPORT static Standard_Address Reallocate(const Standard_Address theStorage,
-                                                     const Standard_Size    theNewSize);
+  Standard_EXPORT static void* Reallocate(void* const theStorage,
+                                                     const size_t    theNewSize);
 
   //! Allocates aligned memory blocks.
   //! Should be used with CPU instructions which require specific alignment.
   //! For example: SSE requires 16 bytes, AVX requires 32 bytes.
   //! @param theSize  bytes to allocate
   //! @param theAlign alignment in bytes
-  Standard_EXPORT static Standard_Address AllocateAligned(const Standard_Size theSize,
-                                                          const Standard_Size theAlign);
+  Standard_EXPORT static void* AllocateAligned(const size_t theSize,
+                                                          const size_t theAlign);
 
   //! Deallocates memory blocks
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
-  Standard_EXPORT static void FreeAligned(const Standard_Address thePtrAligned);
+  Standard_EXPORT static void FreeAligned(void* const thePtrAligned);
 
   //! Template version of function FreeAligned(), nullifies the argument pointer
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
@@ -91,7 +91,7 @@ public:
   //! Deallocates the storage retained on the free list
   //! and clears the list.
   //! Returns non-zero if some memory has been actually freed.
-  Standard_EXPORT static Standard_Integer Purge();
+  Standard_EXPORT static int Purge();
 
   //! Appends backtrace to a message buffer.
   //! Stack information might be incomplete in case of stripped binaries.
@@ -109,7 +109,7 @@ public:
   //!                        in case of DbgHelp (Windows) should be a pointer to CONTEXT
   //! @param[in] theNbTopSkip  number of traces on top of the stack to skip
   //! @return TRUE on success
-  Standard_EXPORT static Standard_Boolean StackTrace(char*     theBuffer,
+  Standard_EXPORT static bool StackTrace(char*     theBuffer,
                                                      const int theBufferSize,
                                                      const int theNbTraces,
                                                      void*     theContext   = NULL,

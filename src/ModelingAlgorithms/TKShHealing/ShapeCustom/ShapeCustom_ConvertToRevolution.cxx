@@ -46,25 +46,25 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeCustom_ConvertToRevolution, ShapeCustom_Modifica
 ShapeCustom_ConvertToRevolution::ShapeCustom_ConvertToRevolution() {}
 
 // Analyze surface: is it to be converted?
-static Standard_Boolean IsToConvert(const Handle(Geom_Surface)&     S,
-                                    Handle(Geom_ElementarySurface)& ES)
+static bool IsToConvert(const occ::handle<Geom_Surface>&     S,
+                                    occ::handle<Geom_ElementarySurface>& ES)
 {
-  ES = Handle(Geom_ElementarySurface)::DownCast(S);
+  ES = occ::down_cast<Geom_ElementarySurface>(S);
   if (ES.IsNull())
   {
     if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
-      Handle(Geom_RectangularTrimmedSurface) RTS =
-        Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
-      ES = Handle(Geom_ElementarySurface)::DownCast(RTS->BasisSurface());
+      occ::handle<Geom_RectangularTrimmedSurface> RTS =
+        occ::down_cast<Geom_RectangularTrimmedSurface>(S);
+      ES = occ::down_cast<Geom_ElementarySurface>(RTS->BasisSurface());
     }
     else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
     {
-      Handle(Geom_OffsetSurface) OS = Handle(Geom_OffsetSurface)::DownCast(S);
-      ES                            = Handle(Geom_ElementarySurface)::DownCast(OS->BasisSurface());
+      occ::handle<Geom_OffsetSurface> OS = occ::down_cast<Geom_OffsetSurface>(S);
+      ES                            = occ::down_cast<Geom_ElementarySurface>(OS->BasisSurface());
     }
     if (ES.IsNull())
-      return Standard_False;
+      return false;
   }
 
   return ES->IsKind(STANDARD_TYPE(Geom_SphericalSurface))
@@ -75,25 +75,25 @@ static Standard_Boolean IsToConvert(const Handle(Geom_Surface)&     S,
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face&    F,
-                                                             Handle(Geom_Surface)& S,
+bool ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face&    F,
+                                                             occ::handle<Geom_Surface>& S,
                                                              TopLoc_Location&      L,
-                                                             Standard_Real&        Tol,
-                                                             Standard_Boolean&     RevWires,
-                                                             Standard_Boolean&     RevFace)
+                                                             double&        Tol,
+                                                             bool&     RevWires,
+                                                             bool&     RevFace)
 {
   S = BRep_Tool::Surface(F, L);
 
-  Handle(Geom_ElementarySurface) ES;
+  occ::handle<Geom_ElementarySurface> ES;
   if (!IsToConvert(S, ES))
-    return Standard_False;
+    return false;
 
   // remove location if it contains inversion
   /*
     gp_Trsf t = L.Transformation();
     gp_Mat m = t.VectorialPart();
-    Standard_Boolean neg = t.IsNegative();
-    Standard_Boolean det = ( m.Determinant() <0 ? Standard_True : Standard_False );
+    bool neg = t.IsNegative();
+    bool det = ( m.Determinant() <0 ? true : false );
     if ( neg != det ) {
       ES = Handle(Geom_ElementarySurface)::DownCast ( ES->Transformed(t) );
       L.Identity();
@@ -106,29 +106,29 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face& 
   gp_Dir X   = Ax3.XDirection();
 
   // create basis line to rotate
-  Handle(Geom_Curve) BasisCurve;
+  occ::handle<Geom_Curve> BasisCurve;
   if (ES->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
-    Handle(Geom_SphericalSurface) SS = Handle(Geom_SphericalSurface)::DownCast(ES);
+    occ::handle<Geom_SphericalSurface> SS = occ::down_cast<Geom_SphericalSurface>(ES);
     gp_Ax2                        Ax2(pos, X ^ dir, X);
-    Handle(Geom_Circle)           Circ = new Geom_Circle(Ax2, SS->Radius());
+    occ::handle<Geom_Circle>           Circ = new Geom_Circle(Ax2, SS->Radius());
     BasisCurve                         = new Geom_TrimmedCurve(Circ, -M_PI / 2., M_PI / 2.);
   }
   else if (ES->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
   {
-    Handle(Geom_ToroidalSurface) TS = Handle(Geom_ToroidalSurface)::DownCast(ES);
+    occ::handle<Geom_ToroidalSurface> TS = occ::down_cast<Geom_ToroidalSurface>(ES);
     gp_Ax2                       Ax2(pos.XYZ() + X.XYZ() * TS->MajorRadius(), X ^ dir, X);
     BasisCurve = new Geom_Circle(Ax2, TS->MinorRadius());
   }
   else if (ES->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
   {
-    Handle(Geom_CylindricalSurface) CS = Handle(Geom_CylindricalSurface)::DownCast(ES);
+    occ::handle<Geom_CylindricalSurface> CS = occ::down_cast<Geom_CylindricalSurface>(ES);
     gp_Ax1                          Ax1(pos.XYZ() + X.XYZ() * CS->Radius(), dir);
     BasisCurve = new Geom_Line(Ax1);
   }
   else if (ES->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
-    Handle(Geom_ConicalSurface) CS = Handle(Geom_ConicalSurface)::DownCast(ES);
+    occ::handle<Geom_ConicalSurface> CS = occ::down_cast<Geom_ConicalSurface>(ES);
     gp_Dir                      N  = dir.XYZ() + X.XYZ() * std::tan(CS->SemiAngle());
     gp_Ax1                      Ax1(pos.XYZ() + X.XYZ() * CS->RefRadius(), N);
     BasisCurve = new Geom_Line(Ax1);
@@ -142,15 +142,15 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face& 
   /*
     gp_Trsf t = L.Transformation();
     gp_Mat m = t.VectorialPart();
-    Standard_Boolean neg = t.IsNegative();
-    Standard_Boolean det = ( m.Determinant() <0 ? Standard_True : Standard_False );
-    Standard_Boolean isdir = Ax3.Direct();
+    bool neg = t.IsNegative();
+    bool det = ( m.Determinant() <0 ? true : false );
+    bool isdir = Ax3.Direct();
     if ( ( neg != det ) == isdir ) Axis.Reverse();
   */
   if (!Ax3.Direct())
     Axis.Reverse();
 
-  Handle(Geom_SurfaceOfRevolution) Rev = new Geom_SurfaceOfRevolution(BasisCurve, Axis);
+  occ::handle<Geom_SurfaceOfRevolution> Rev = new Geom_SurfaceOfRevolution(BasisCurve, Axis);
 
   // set resulting surface and restore trimming or offsetting if necessary
   if (ES == S)
@@ -159,15 +159,15 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face& 
   {
     if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
-      Handle(Geom_RectangularTrimmedSurface) RTS =
-        Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
-      Standard_Real U1, U2, V1, V2;
+      occ::handle<Geom_RectangularTrimmedSurface> RTS =
+        occ::down_cast<Geom_RectangularTrimmedSurface>(S);
+      double U1, U2, V1, V2;
       RTS->Bounds(U1, U2, V1, V2);
       S = new Geom_RectangularTrimmedSurface(Rev, U1, U2, V1, V2);
     }
     else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
     {
-      Handle(Geom_OffsetSurface) OS = Handle(Geom_OffsetSurface)::DownCast(S);
+      occ::handle<Geom_OffsetSurface> OS = occ::down_cast<Geom_OffsetSurface>(S);
       S                             = new Geom_OffsetSurface(Rev, OS->Offset());
     }
     else
@@ -176,74 +176,74 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface(const TopoDS_Face& 
   SendMsg(F, Message_Msg("ConvertToRevolution.NewSurface.MSG0"));
 
   Tol      = BRep_Tool::Tolerance(F);
-  RevWires = Standard_False;
-  RevFace  = Standard_False;
-  return Standard_True;
+  RevWires = false;
+  RevFace  = false;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_ConvertToRevolution::NewCurve(const TopoDS_Edge&  E,
-                                                           Handle(Geom_Curve)& C,
+bool ShapeCustom_ConvertToRevolution::NewCurve(const TopoDS_Edge&  E,
+                                                           occ::handle<Geom_Curve>& C,
                                                            TopLoc_Location&    L,
-                                                           Standard_Real&      Tol)
+                                                           double&      Tol)
 {
   //: p5 abv 26 Feb 99: force copying of edge if any its pcurve will be replaced
-  Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
+  occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
 
   // iterate on pcurves
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   for (; itcr.More(); itcr.Next())
   {
-    Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
+    occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
       continue;
-    Handle(Geom_Surface)           S = GC->Surface();
-    Handle(Geom_ElementarySurface) ES;
+    occ::handle<Geom_Surface>           S = GC->Surface();
+    occ::handle<Geom_ElementarySurface> ES;
     if (!IsToConvert(S, ES))
       continue;
-    Standard_Real f, l;
+    double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
-      C = Handle(Geom_Curve)::DownCast(C->Copy());
+      C = occ::down_cast<Geom_Curve>(C->Copy());
     Tol = BRep_Tool::Tolerance(E);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_ConvertToRevolution::NewPoint(const TopoDS_Vertex& /*V*/,
+bool ShapeCustom_ConvertToRevolution::NewPoint(const TopoDS_Vertex& /*V*/,
                                                            gp_Pnt& /*P*/,
-                                                           Standard_Real& /*Tol*/)
+                                                           double& /*Tol*/)
 {
   // 3d points are never modified
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_ConvertToRevolution::NewCurve2d(const TopoDS_Edge& E,
+bool ShapeCustom_ConvertToRevolution::NewCurve2d(const TopoDS_Edge& E,
                                                              const TopoDS_Face& F,
                                                              const TopoDS_Edge& NewE,
                                                              const TopoDS_Face& /*NewF*/,
-                                                             Handle(Geom2d_Curve)& C,
-                                                             Standard_Real&        Tol)
+                                                             occ::handle<Geom2d_Curve>& C,
+                                                             double&        Tol)
 {
   TopLoc_Location                L;
-  Handle(Geom_Surface)           S = BRep_Tool::Surface(F, L);
-  Handle(Geom_ElementarySurface) ES;
+  occ::handle<Geom_Surface>           S = BRep_Tool::Surface(F, L);
+  occ::handle<Geom_ElementarySurface> ES;
 
   // just copy pcurve if either its surface is changing or edge was copied
   if (!IsToConvert(S, ES) && E.IsSame(NewE))
-    return Standard_False;
+    return false;
 
-  Standard_Real f, l;
+  double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (!C.IsNull())
   {
-    C = Handle(Geom2d_Curve)::DownCast(C->Copy());
+    C = occ::down_cast<Geom2d_Curve>(C->Copy());
 
     // for spherical surface, surface of revolution since based on TrimmedCurve
     // has V parametrisation shifted on 2PI; translate pcurve accordingly
@@ -255,17 +255,17 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewCurve2d(const TopoDS_Edge& 
   }
 
   Tol = BRep_Tool::Tolerance(E);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeCustom_ConvertToRevolution::NewParameter(const TopoDS_Vertex& /*V*/,
+bool ShapeCustom_ConvertToRevolution::NewParameter(const TopoDS_Vertex& /*V*/,
                                                                const TopoDS_Edge& /*E*/,
-                                                               Standard_Real& /*P*/,
-                                                               Standard_Real& /*Tol*/)
+                                                               double& /*P*/,
+                                                               double& /*Tol*/)
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

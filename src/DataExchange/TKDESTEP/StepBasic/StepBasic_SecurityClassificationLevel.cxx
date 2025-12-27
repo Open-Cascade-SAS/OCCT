@@ -18,18 +18,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationLevel, Standard_Trans
 
 StepBasic_SecurityClassificationLevel::StepBasic_SecurityClassificationLevel() {}
 
-void StepBasic_SecurityClassificationLevel::Init(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_SecurityClassificationLevel::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {
   // --- classe own fields ---
   name = aName;
 }
 
-void StepBasic_SecurityClassificationLevel::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_SecurityClassificationLevel::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_SecurityClassificationLevel::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_SecurityClassificationLevel::Name() const
 {
   return name;
 }

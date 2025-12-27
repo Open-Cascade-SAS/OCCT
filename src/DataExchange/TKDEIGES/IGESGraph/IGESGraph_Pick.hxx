@@ -22,9 +22,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGraph_Pick;
-DEFINE_STANDARD_HANDLE(IGESGraph_Pick, IGESData_IGESEntity)
-
 //! defines IGESPick, Type <406> Form <21>
 //! in package IGESGraph
 //!
@@ -40,24 +37,23 @@ public:
   //! This method is used to set the fields of the class Pick
   //! - nbProps     : Number of property values (NP = 1)
   //! - aPickStatus : Pick Flag
-  Standard_EXPORT void Init(const Standard_Integer nbProps, const Standard_Integer aPickStatus);
+  Standard_EXPORT void Init(const int nbProps, const int aPickStatus);
 
   //! returns the number of property values in <me>.
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns 0 if <me> is pickable(default),
   //! 1 if <me> is not pickable.
-  Standard_EXPORT Standard_Integer PickFlag() const;
+  Standard_EXPORT int PickFlag() const;
 
   //! returns True if thePick is 0.
-  Standard_EXPORT Standard_Boolean IsPickable() const;
+  Standard_EXPORT bool IsPickable() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_Pick, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer thePick;
+  int theNbPropertyValues;
+  int thePick;
 };
 
 #endif // _IGESGraph_Pick_HeaderFile

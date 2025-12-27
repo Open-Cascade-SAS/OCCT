@@ -23,40 +23,40 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <StdPrs_ShadedSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-void StdPrs_ShadedSurface::Add(const Handle(Prs3d_Presentation)& thePrs,
+void StdPrs_ShadedSurface::Add(const occ::handle<Prs3d_Presentation>& thePrs,
                                const Adaptor3d_Surface&          theSurface,
-                               const Handle(Prs3d_Drawer)&       theDrawer)
+                               const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
-  Standard_Integer N1 = theDrawer->UIsoAspect()->Number();
-  Standard_Integer N2 = theDrawer->VIsoAspect()->Number();
+  int N1 = theDrawer->UIsoAspect()->Number();
+  int N2 = theDrawer->VIsoAspect()->Number();
   N1                  = N1 < 3 ? 3 : N1;
   N2                  = N2 < 3 ? 3 : N2;
 
   // If the surface is closed, the faces from back-side are not traced:
-  Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+  occ::handle<Graphic3d_Group> aGroup = thePrs->CurrentGroup();
   aGroup->SetGroupPrimitivesAspect(theDrawer->ShadingAspect()->Aspect());
   aGroup->SetClosed(theSurface.IsUClosed() && theSurface.IsVClosed());
 
-  Standard_Integer     aNBUintv = theSurface.NbUIntervals(GeomAbs_C1);
-  Standard_Integer     aNBVintv = theSurface.NbVIntervals(GeomAbs_C1);
-  TColStd_Array1OfReal anInterU(1, aNBUintv + 1);
-  TColStd_Array1OfReal anInterV(1, aNBVintv + 1);
+  int     aNBUintv = theSurface.NbUIntervals(GeomAbs_C1);
+  int     aNBVintv = theSurface.NbVIntervals(GeomAbs_C1);
+  NCollection_Array1<double> anInterU(1, aNBUintv + 1);
+  NCollection_Array1<double> anInterV(1, aNBVintv + 1);
 
   theSurface.UIntervals(anInterU, GeomAbs_C1);
   theSurface.VIntervals(anInterV, GeomAbs_C1);
 
-  Standard_Real U1, U2, V1, V2, DU, DV;
+  double U1, U2, V1, V2, DU, DV;
 
   gp_Pnt P1, P2;
   gp_Vec D1U, D1V, D1, D2;
 
-  for (Standard_Integer NU = 1; NU <= aNBUintv; ++NU)
+  for (int NU = 1; NU <= aNBUintv; ++NU)
   {
-    for (Standard_Integer NV = 1; NV <= aNBVintv; ++NV)
+    for (int NV = 1; NV <= aNBVintv; ++NV)
     {
       U1 = anInterU(NU);
       U2 = anInterU(NU + 1);
@@ -72,17 +72,17 @@ void StdPrs_ShadedSurface::Add(const Handle(Prs3d_Presentation)& thePrs,
       DU = (U2 - U1) / N1;
       DV = (V2 - V1) / N2;
 
-      Handle(Graphic3d_ArrayOfTriangleStrips) aPArray =
+      occ::handle<Graphic3d_ArrayOfTriangleStrips> aPArray =
         new Graphic3d_ArrayOfTriangleStrips(2 * (N1 + 1) * (N2 + 1),
                                             N1 + 1,
-                                            Standard_True,
-                                            Standard_False,
-                                            Standard_False,
-                                            Standard_False);
-      for (Standard_Integer i = 1; i <= N1 + 1; ++i)
+                                            true,
+                                            false,
+                                            false,
+                                            false);
+      for (int i = 1; i <= N1 + 1; ++i)
       {
         aPArray->AddBound(N2 + 1);
-        for (Standard_Integer j = 1; j <= N2 + 1; ++j)
+        for (int j = 1; j <= N2 + 1; ++j)
         {
           theSurface.D1(U1 + DU * (i - 1), V1 + DV * (j - 1), P2, D1U, D1V);
           D1 = D1U ^ D1V;

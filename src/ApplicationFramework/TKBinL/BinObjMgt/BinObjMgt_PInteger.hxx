@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_Integer* BinObjMgt_PInteger;
+typedef int* BinObjMgt_PInteger;
 
 #endif

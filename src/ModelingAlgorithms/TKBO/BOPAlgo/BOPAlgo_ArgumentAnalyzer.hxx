@@ -23,7 +23,7 @@
 #include <TopoDS_Shape.hxx>
 #include <BOPAlgo_Algo.hxx>
 #include <BOPAlgo_Operation.hxx>
-#include <BOPAlgo_ListOfCheckResult.hxx>
+#include <BOPAlgo_CheckResult.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
 //! check the validity of argument(s) for Boolean Operations
@@ -52,52 +52,52 @@ public:
   Standard_EXPORT BOPAlgo_Operation& OperationType();
 
   //! returns ref
-  Standard_EXPORT Standard_Boolean& StopOnFirstFaulty();
+  Standard_EXPORT bool& StopOnFirstFaulty();
 
   //! Returns (modifiable) mode
   //! that means checking types of shapes.
-  Standard_Boolean& ArgumentTypeMode();
+  bool& ArgumentTypeMode();
 
   //! Returns (modifiable) mode that means
   //! checking of self-intersection of shapes.
-  Standard_Boolean& SelfInterMode();
+  bool& SelfInterMode();
 
   //! Returns (modifiable) mode that means
   //! checking of small edges.
-  Standard_Boolean& SmallEdgeMode();
+  bool& SmallEdgeMode();
 
   //! Returns (modifiable) mode that means
   //! checking of possibility to split or rebuild faces.
-  Standard_Boolean& RebuildFaceMode();
+  bool& RebuildFaceMode();
 
   //! Returns (modifiable) mode that means
   //! checking of tangency between subshapes.
-  Standard_Boolean& TangentMode();
+  bool& TangentMode();
 
   //! Returns (modifiable) mode that means
   //! checking of problem of merging vertices.
-  Standard_Boolean& MergeVertexMode();
+  bool& MergeVertexMode();
 
   //! Returns (modifiable) mode that means
   //! checking of problem of merging edges.
-  Standard_Boolean& MergeEdgeMode();
+  bool& MergeEdgeMode();
 
   //! Returns (modifiable) mode that means
   //! checking of problem of continuity of the shape.
-  Standard_Boolean& ContinuityMode();
+  bool& ContinuityMode();
 
   //! Returns (modifiable) mode that means
   //! checking of problem of invalid curve on surface.
-  Standard_Boolean& CurveOnSurfaceMode();
+  bool& CurveOnSurfaceMode();
 
   //! performs analysis
   Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! result of test
-  Standard_EXPORT Standard_Boolean HasFaulty() const;
+  Standard_EXPORT bool HasFaulty() const;
 
   //! returns a result of test
-  Standard_EXPORT const BOPAlgo_ListOfCheckResult& GetCheckResult() const;
+  Standard_EXPORT const NCollection_List<BOPAlgo_CheckResult>& GetCheckResult() const;
 
 protected:
   //! Prepares data;
@@ -126,20 +126,20 @@ protected:
 private:
   TopoDS_Shape              myShape1;
   TopoDS_Shape              myShape2;
-  Standard_Boolean          myStopOnFirst;
+  bool          myStopOnFirst;
   BOPAlgo_Operation         myOperation;
-  Standard_Boolean          myArgumentTypeMode;
-  Standard_Boolean          mySelfInterMode;
-  Standard_Boolean          mySmallEdgeMode;
-  Standard_Boolean          myRebuildFaceMode;
-  Standard_Boolean          myTangentMode;
-  Standard_Boolean          myMergeVertexMode;
-  Standard_Boolean          myMergeEdgeMode;
-  Standard_Boolean          myContinuityMode;
-  Standard_Boolean          myCurveOnSurfaceMode;
-  Standard_Boolean          myEmpty1;
-  Standard_Boolean          myEmpty2;
-  BOPAlgo_ListOfCheckResult myResult;
+  bool          myArgumentTypeMode;
+  bool          mySelfInterMode;
+  bool          mySmallEdgeMode;
+  bool          myRebuildFaceMode;
+  bool          myTangentMode;
+  bool          myMergeVertexMode;
+  bool          myMergeEdgeMode;
+  bool          myContinuityMode;
+  bool          myCurveOnSurfaceMode;
+  bool          myEmpty1;
+  bool          myEmpty2;
+  NCollection_List<BOPAlgo_CheckResult> myResult;
 };
 
 #include <BOPAlgo_ArgumentAnalyzer.lxx>

@@ -30,12 +30,12 @@ NLPlate_HPG0G1Constraint::NLPlate_HPG0G1Constraint(const gp_XY&    UV,
   myOrientation = 0;
 }
 
-void NLPlate_HPG0G1Constraint::SetOrientation(const Standard_Integer Orient)
+void NLPlate_HPG0G1Constraint::SetOrientation(const int Orient)
 {
   myOrientation = Orient;
 }
 
-Standard_Integer NLPlate_HPG0G1Constraint::ActiveOrder() const
+int NLPlate_HPG0G1Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 1)
     return myActiveOrder;
@@ -43,7 +43,7 @@ Standard_Integer NLPlate_HPG0G1Constraint::ActiveOrder() const
     return 1;
 }
 
-Standard_Integer NLPlate_HPG0G1Constraint::Orientation()
+int NLPlate_HPG0G1Constraint::Orientation()
 {
   return myOrientation;
 }

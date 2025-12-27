@@ -6,6 +6,5 @@ set(OCCT_RWStl_FILES
   RWStl.hxx
   RWStl_Reader.cxx
   RWStl_Reader.hxx
-  RWStl_ConfigurationNode.hxx
-  RWStl_Provider.hxx
+
 )

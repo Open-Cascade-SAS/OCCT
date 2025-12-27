@@ -21,16 +21,17 @@
 #include <Standard_Type.hxx>
 
 #include <HLRAlgo_Projector.hxx>
-#include <HLRBRep_SeqOfShapeBounds.hxx>
-#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+#include <HLRBRep_ShapeBounds.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <BRepTopAdaptor_Tool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_Data;
 class HLRTopoBRep_OutLiner;
 class HLRBRep_ShapeBounds;
-
-class HLRBRep_InternalAlgo;
-DEFINE_STANDARD_HANDLE(HLRBRep_InternalAlgo, Standard_Transient)
 
 class HLRBRep_InternalAlgo : public Standard_Transient
 {
@@ -38,7 +39,7 @@ class HLRBRep_InternalAlgo : public Standard_Transient
 public:
   Standard_EXPORT HLRBRep_InternalAlgo();
 
-  Standard_EXPORT HLRBRep_InternalAlgo(const Handle(HLRBRep_InternalAlgo)& A);
+  Standard_EXPORT HLRBRep_InternalAlgo(const occ::handle<HLRBRep_InternalAlgo>& A);
 
   //! set the projector.
   Standard_EXPORT void Projector(const HLRAlgo_Projector& P);
@@ -50,29 +51,29 @@ public:
   Standard_EXPORT void Update();
 
   //! add the shape <S>.
-  Standard_EXPORT void Load(const Handle(HLRTopoBRep_OutLiner)& S,
-                            const Handle(Standard_Transient)&   SData,
-                            const Standard_Integer              nbIso = 0);
+  Standard_EXPORT void Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                            const occ::handle<Standard_Transient>&   SData,
+                            const int              nbIso = 0);
 
   //! add the shape <S>.
-  Standard_EXPORT void Load(const Handle(HLRTopoBRep_OutLiner)& S,
-                            const Standard_Integer              nbIso = 0);
+  Standard_EXPORT void Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                            const int              nbIso = 0);
 
   //! return the index of the Shape <S> and return 0 if
   //! the Shape <S> is not found.
-  Standard_EXPORT Standard_Integer Index(const Handle(HLRTopoBRep_OutLiner)& S) const;
+  Standard_EXPORT int Index(const occ::handle<HLRTopoBRep_OutLiner>& S) const;
 
   //! remove the Shape of Index <I>.
-  Standard_EXPORT void Remove(const Standard_Integer I);
+  Standard_EXPORT void Remove(const int I);
 
   //! Change the Shape Data of the Shape of index <I>.
-  Standard_EXPORT void ShapeData(const Standard_Integer I, const Handle(Standard_Transient)& SData);
+  Standard_EXPORT void ShapeData(const int I, const occ::handle<Standard_Transient>& SData);
 
-  Standard_EXPORT HLRBRep_SeqOfShapeBounds& SeqOfShapeBounds();
+  Standard_EXPORT NCollection_Sequence<HLRBRep_ShapeBounds>& SeqOfShapeBounds();
 
-  Standard_EXPORT Standard_Integer NbShapes() const;
+  Standard_EXPORT int NbShapes() const;
 
-  Standard_EXPORT HLRBRep_ShapeBounds& ShapeBounds(const Standard_Integer I);
+  Standard_EXPORT HLRBRep_ShapeBounds& ShapeBounds(const int I);
 
   //! init the status of the selected edges depending of
   //! the back faces of a closed shell.
@@ -82,25 +83,25 @@ public:
   Standard_EXPORT void Select();
 
   //! select only the Shape of index <I>.
-  Standard_EXPORT void Select(const Standard_Integer I);
+  Standard_EXPORT void Select(const int I);
 
   //! select only the edges of the Shape <S>.
-  Standard_EXPORT void SelectEdge(const Standard_Integer I);
+  Standard_EXPORT void SelectEdge(const int I);
 
   //! select only the faces of the Shape <S>.
-  Standard_EXPORT void SelectFace(const Standard_Integer I);
+  Standard_EXPORT void SelectFace(const int I);
 
   //! set to visible all the edges.
   Standard_EXPORT void ShowAll();
 
   //! set to visible all the edges of the Shape <S>.
-  Standard_EXPORT void ShowAll(const Standard_Integer I);
+  Standard_EXPORT void ShowAll(const int I);
 
   //! set to hide all the edges.
   Standard_EXPORT void HideAll();
 
   //! set to hide all the edges of the Shape <S>.
-  Standard_EXPORT void HideAll(const Standard_Integer I);
+  Standard_EXPORT void HideAll(const int I);
 
   //! own hiding of all the shapes of the DataStructure
   //! without hiding by each other.
@@ -110,31 +111,30 @@ public:
   Standard_EXPORT void Hide();
 
   //! hide the Shape <S> by itself.
-  Standard_EXPORT void Hide(const Standard_Integer I);
+  Standard_EXPORT void Hide(const int I);
 
   //! hide the Shape <S1> by the shape <S2>.
-  Standard_EXPORT void Hide(const Standard_Integer I, const Standard_Integer J);
+  Standard_EXPORT void Hide(const int I, const int J);
 
-  Standard_EXPORT void Debug(const Standard_Boolean deb);
+  Standard_EXPORT void Debug(const bool deb);
 
-  Standard_EXPORT Standard_Boolean Debug() const;
+  Standard_EXPORT bool Debug() const;
 
-  Standard_EXPORT Handle(HLRBRep_Data) DataStructure() const;
+  Standard_EXPORT occ::handle<HLRBRep_Data> DataStructure() const;
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_InternalAlgo, Standard_Transient)
 
-protected:
 private:
   //! first if <SideFace> own hiding of the side faces.
   //! After hiding of the selected parts of the
   //! DataStructure.
-  Standard_EXPORT void HideSelected(const Standard_Integer I, const Standard_Boolean SideFace);
+  Standard_EXPORT void HideSelected(const int I, const bool SideFace);
 
-  Handle(HLRBRep_Data)          myDS;
+  occ::handle<HLRBRep_Data>          myDS;
   HLRAlgo_Projector             myProj;
-  HLRBRep_SeqOfShapeBounds      myShapes;
-  BRepTopAdaptor_MapOfShapeTool myMapOfShapeTool;
-  Standard_Boolean              myDebug;
+  NCollection_Sequence<HLRBRep_ShapeBounds>      myShapes;
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> myMapOfShapeTool;
+  bool              myDebug;
 };
 
 #endif // _HLRBRep_InternalAlgo_HeaderFile

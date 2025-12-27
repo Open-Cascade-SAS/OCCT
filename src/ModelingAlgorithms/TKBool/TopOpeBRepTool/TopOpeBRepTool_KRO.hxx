@@ -47,7 +47,7 @@ public:
 
   void Print(Standard_OStream& OS)
   {
-    Standard_Real s;
+    double s;
     Show(s);
     OS << myname << " : ";
     if (!mystart)
@@ -62,7 +62,7 @@ public:
 
 private:
   TCollection_AsciiString myname;
-  Standard_Integer        mystart, mystop;
+  int        mystart, mystop;
 };
 #endif
 #endif

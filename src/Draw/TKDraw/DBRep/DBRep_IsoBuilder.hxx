@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -37,18 +38,18 @@ public:
 
   //! Creates the builder.
   Standard_EXPORT DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
-                                   const Standard_Real    Infinite,
-                                   const Standard_Integer NbIsos);
+                                   const double    Infinite,
+                                   const int NbIsos);
 
   //! Returns the total number of domains.
-  Standard_Integer NbDomains() const { return myNbDom; }
+  int NbDomains() const { return myNbDom; }
 
   //! Loading of the isoparametric curves in the
   //! Data Structure of a drawable face.
-  Standard_EXPORT void LoadIsos(const Handle(DBRep_Face)& Face) const;
+  Standard_EXPORT void LoadIsos(const occ::handle<DBRep_Face>& Face) const;
 
 protected:
-  typedef NCollection_IndexedDataMap<TopoDS_Shape, Handle(Geom2d_Curve)> DataMapOfEdgePCurve;
+  typedef NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<Geom2d_Curve>> DataMapOfEdgePCurve;
 
   //! Adds to the hatcher the 2D segments connecting the p-curves
   //! of the neighboring edges to close the 2D gaps which are
@@ -60,16 +61,16 @@ protected:
   Standard_EXPORT void FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve& theEdgePCurveMap);
 
 private:
-  Standard_Real           myInfinite;
-  Standard_Real           myUMin;
-  Standard_Real           myUMax;
-  Standard_Real           myVMin;
-  Standard_Real           myVMax;
-  TColStd_Array1OfReal    myUPrm;
-  TColStd_Array1OfInteger myUInd;
-  TColStd_Array1OfReal    myVPrm;
-  TColStd_Array1OfInteger myVInd;
-  Standard_Integer        myNbDom;
+  double           myInfinite;
+  double           myUMin;
+  double           myUMax;
+  double           myVMin;
+  double           myVMax;
+  NCollection_Array1<double>    myUPrm;
+  NCollection_Array1<int> myUInd;
+  NCollection_Array1<double>    myVPrm;
+  NCollection_Array1<int> myVInd;
+  int        myNbDom;
 };
 
 #endif // _DBRep_IsoBuilder_HeaderFile

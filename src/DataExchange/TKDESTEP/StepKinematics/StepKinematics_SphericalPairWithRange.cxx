@@ -22,42 +22,42 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_SphericalPairWithRange, StepKinematics
 
 StepKinematics_SphericalPairWithRange::StepKinematics_SphericalPairWithRange()
 {
-  defLowerLimitYaw   = Standard_False;
-  defUpperLimitYaw   = Standard_False;
-  defLowerLimitPitch = Standard_False;
-  defUpperLimitPitch = Standard_False;
-  defLowerLimitRoll  = Standard_False;
-  defUpperLimitRoll  = Standard_False;
+  defLowerLimitYaw   = false;
+  defUpperLimitYaw   = false;
+  defLowerLimitPitch = false;
+  defUpperLimitPitch = false;
+  defLowerLimitRoll  = false;
+  defUpperLimitRoll  = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_SphericalPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Boolean                       theLowOrderKinematicPair_TX,
-  const Standard_Boolean                       theLowOrderKinematicPair_TY,
-  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-  const Standard_Boolean                       theLowOrderKinematicPair_RX,
-  const Standard_Boolean                       theLowOrderKinematicPair_RY,
-  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-  const Standard_Boolean                       hasLowerLimitYaw,
-  const Standard_Real                          theLowerLimitYaw,
-  const Standard_Boolean                       hasUpperLimitYaw,
-  const Standard_Real                          theUpperLimitYaw,
-  const Standard_Boolean                       hasLowerLimitPitch,
-  const Standard_Real                          theLowerLimitPitch,
-  const Standard_Boolean                       hasUpperLimitPitch,
-  const Standard_Real                          theUpperLimitPitch,
-  const Standard_Boolean                       hasLowerLimitRoll,
-  const Standard_Real                          theLowerLimitRoll,
-  const Standard_Boolean                       hasUpperLimitRoll,
-  const Standard_Real                          theUpperLimitRoll)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const bool                       theLowOrderKinematicPair_TX,
+  const bool                       theLowOrderKinematicPair_TY,
+  const bool                       theLowOrderKinematicPair_TZ,
+  const bool                       theLowOrderKinematicPair_RX,
+  const bool                       theLowOrderKinematicPair_RY,
+  const bool                       theLowOrderKinematicPair_RZ,
+  const bool                       hasLowerLimitYaw,
+  const double                          theLowerLimitYaw,
+  const bool                       hasUpperLimitYaw,
+  const double                          theUpperLimitYaw,
+  const bool                       hasLowerLimitPitch,
+  const double                          theLowerLimitPitch,
+  const bool                       hasUpperLimitPitch,
+  const double                          theUpperLimitPitch,
+  const bool                       hasLowerLimitRoll,
+  const double                          theLowerLimitRoll,
+  const bool                       hasUpperLimitRoll,
+  const double                          theUpperLimitRoll)
 {
   StepKinematics_SphericalPair::Init(theRepresentationItem_Name,
                                      theItemDefinedTransformation_Name,
@@ -124,49 +124,49 @@ void StepKinematics_SphericalPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::LowerLimitYaw() const
+double StepKinematics_SphericalPairWithRange::LowerLimitYaw() const
 {
   return myLowerLimitYaw;
 }
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithRange::SetLowerLimitYaw(const Standard_Real theLowerLimitYaw)
+void StepKinematics_SphericalPairWithRange::SetLowerLimitYaw(const double theLowerLimitYaw)
 {
   myLowerLimitYaw = theLowerLimitYaw;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasLowerLimitYaw() const
+bool StepKinematics_SphericalPairWithRange::HasLowerLimitYaw() const
 {
   return defLowerLimitYaw;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::UpperLimitYaw() const
+double StepKinematics_SphericalPairWithRange::UpperLimitYaw() const
 {
   return myUpperLimitYaw;
 }
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithRange::SetUpperLimitYaw(const Standard_Real theUpperLimitYaw)
+void StepKinematics_SphericalPairWithRange::SetUpperLimitYaw(const double theUpperLimitYaw)
 {
   myUpperLimitYaw = theUpperLimitYaw;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasUpperLimitYaw() const
+bool StepKinematics_SphericalPairWithRange::HasUpperLimitYaw() const
 {
   return defUpperLimitYaw;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::LowerLimitPitch() const
+double StepKinematics_SphericalPairWithRange::LowerLimitPitch() const
 {
   return myLowerLimitPitch;
 }
@@ -174,21 +174,21 @@ Standard_Real StepKinematics_SphericalPairWithRange::LowerLimitPitch() const
 //=================================================================================================
 
 void StepKinematics_SphericalPairWithRange::SetLowerLimitPitch(
-  const Standard_Real theLowerLimitPitch)
+  const double theLowerLimitPitch)
 {
   myLowerLimitPitch = theLowerLimitPitch;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasLowerLimitPitch() const
+bool StepKinematics_SphericalPairWithRange::HasLowerLimitPitch() const
 {
   return defLowerLimitPitch;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::UpperLimitPitch() const
+double StepKinematics_SphericalPairWithRange::UpperLimitPitch() const
 {
   return myUpperLimitPitch;
 }
@@ -196,56 +196,56 @@ Standard_Real StepKinematics_SphericalPairWithRange::UpperLimitPitch() const
 //=================================================================================================
 
 void StepKinematics_SphericalPairWithRange::SetUpperLimitPitch(
-  const Standard_Real theUpperLimitPitch)
+  const double theUpperLimitPitch)
 {
   myUpperLimitPitch = theUpperLimitPitch;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasUpperLimitPitch() const
+bool StepKinematics_SphericalPairWithRange::HasUpperLimitPitch() const
 {
   return defUpperLimitPitch;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::LowerLimitRoll() const
+double StepKinematics_SphericalPairWithRange::LowerLimitRoll() const
 {
   return myLowerLimitRoll;
 }
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithRange::SetLowerLimitRoll(const Standard_Real theLowerLimitRoll)
+void StepKinematics_SphericalPairWithRange::SetLowerLimitRoll(const double theLowerLimitRoll)
 {
   myLowerLimitRoll = theLowerLimitRoll;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasLowerLimitRoll() const
+bool StepKinematics_SphericalPairWithRange::HasLowerLimitRoll() const
 {
   return defLowerLimitRoll;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_SphericalPairWithRange::UpperLimitRoll() const
+double StepKinematics_SphericalPairWithRange::UpperLimitRoll() const
 {
   return myUpperLimitRoll;
 }
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithRange::SetUpperLimitRoll(const Standard_Real theUpperLimitRoll)
+void StepKinematics_SphericalPairWithRange::SetUpperLimitRoll(const double theUpperLimitRoll)
 {
   myUpperLimitRoll = theUpperLimitRoll;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_SphericalPairWithRange::HasUpperLimitRoll() const
+bool StepKinematics_SphericalPairWithRange::HasUpperLimitRoll() const
 {
   return defUpperLimitRoll;
 }

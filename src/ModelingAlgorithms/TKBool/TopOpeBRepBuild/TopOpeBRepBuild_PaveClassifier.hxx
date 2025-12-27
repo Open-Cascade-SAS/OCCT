@@ -47,21 +47,20 @@ public:
   Standard_EXPORT TopOpeBRepBuild_PaveClassifier(const TopoDS_Shape& E);
 
   //! Returns state of vertex <L1> compared with <L2>.
-  Standard_EXPORT TopAbs_State Compare(const Handle(TopOpeBRepBuild_Loop)& L1,
-                                       const Handle(TopOpeBRepBuild_Loop)& L2);
+  Standard_EXPORT TopAbs_State Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
+                                       const occ::handle<TopOpeBRepBuild_Loop>& L2);
 
-  Standard_EXPORT void SetFirstParameter(const Standard_Real P);
+  Standard_EXPORT void SetFirstParameter(const double P);
 
-  Standard_EXPORT void ClosedVertices(const Standard_Boolean B);
+  Standard_EXPORT void ClosedVertices(const bool B);
 
-  Standard_EXPORT static Standard_Real AdjustCase(const Standard_Real      p1,
+  Standard_EXPORT static double AdjustCase(const double      p1,
                                                   const TopAbs_Orientation o,
-                                                  const Standard_Real      first,
-                                                  const Standard_Real      period,
-                                                  const Standard_Real      tol,
-                                                  Standard_Integer&        cas);
+                                                  const double      first,
+                                                  const double      period,
+                                                  const double      tol,
+                                                  int&        cas);
 
-protected:
 private:
   Standard_EXPORT TopAbs_State CompareOnNonPeriodic();
 
@@ -69,20 +68,20 @@ private:
 
   Standard_EXPORT void AdjustOnPeriodic();
 
-  Standard_EXPORT Standard_Boolean ToAdjustOnPeriodic() const;
+  Standard_EXPORT bool ToAdjustOnPeriodic() const;
 
   TopoDS_Edge        myEdge;
-  Standard_Boolean   myEdgePeriodic;
-  Standard_Real      myFirst;
-  Standard_Real      myPeriod;
-  Standard_Boolean   mySameParameters;
-  Standard_Boolean   myClosedVertices;
-  Standard_Real      myP1;
-  Standard_Real      myP2;
+  bool   myEdgePeriodic;
+  double      myFirst;
+  double      myPeriod;
+  bool   mySameParameters;
+  bool   myClosedVertices;
+  double      myP1;
+  double      myP2;
   TopAbs_Orientation myO1;
   TopAbs_Orientation myO2;
-  Standard_Integer   myCas1;
-  Standard_Integer   myCas2;
+  int   myCas1;
+  int   myCas2;
 };
 
 #endif // _TopOpeBRepBuild_PaveClassifier_HeaderFile

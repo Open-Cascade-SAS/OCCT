@@ -20,14 +20,14 @@
 // recuperation des surfaces des conges approximes.
 //*************************************************
 
-static Standard_Boolean Blend_traceDRAWSECT = Standard_False;
+static bool Blend_traceDRAWSECT = false;
 
-void Blend_SettraceDRAWSECT(const Standard_Boolean b)
+void Blend_SettraceDRAWSECT(const bool b)
 {
   Blend_traceDRAWSECT = b;
 }
 
-Standard_Boolean Blend_GettraceDRAWSECT()
+bool Blend_GettraceDRAWSECT()
 {
   return Blend_traceDRAWSECT;
 }
@@ -36,14 +36,14 @@ Standard_Boolean Blend_GettraceDRAWSECT()
 // Contexte sans test de deflexion
 //*************************************************
 
-static Standard_Boolean Blend_contextNOTESTDEFL = Standard_False;
+static bool Blend_contextNOTESTDEFL = false;
 
-void Blend_SetcontextNOTESTDEFL(const Standard_Boolean b)
+void Blend_SetcontextNOTESTDEFL(const bool b)
 {
   Blend_contextNOTESTDEFL = b;
 }
 
-Standard_Boolean Blend_GetcontextNOTESTDEFL()
+bool Blend_GetcontextNOTESTDEFL()
 {
   return Blend_contextNOTESTDEFL;
 }

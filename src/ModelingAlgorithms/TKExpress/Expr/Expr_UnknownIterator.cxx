@@ -18,30 +18,30 @@
 #include <Expr_UnknownIterator.hxx>
 #include <Standard_NoMoreObject.hxx>
 
-Expr_UnknownIterator::Expr_UnknownIterator(const Handle(Expr_GeneralExpression)& exp)
+Expr_UnknownIterator::Expr_UnknownIterator(const occ::handle<Expr_GeneralExpression>& exp)
 {
   Perform(exp);
   myCurrent = 1;
 }
 
-void Expr_UnknownIterator::Perform(const Handle(Expr_GeneralExpression)& exp)
+void Expr_UnknownIterator::Perform(const occ::handle<Expr_GeneralExpression>& exp)
 {
   if (exp->IsKind(STANDARD_TYPE(Expr_NamedUnknown)))
   {
-    Handle(Expr_NamedUnknown) varexp = Handle(Expr_NamedUnknown)::DownCast(exp);
+    occ::handle<Expr_NamedUnknown> varexp = occ::down_cast<Expr_NamedUnknown>(exp);
     if (!myMap.Contains(varexp))
     {
       myMap.Add(varexp);
     }
   }
-  Standard_Integer nbsub = exp->NbSubExpressions();
-  for (Standard_Integer i = 1; i <= nbsub; i++)
+  int nbsub = exp->NbSubExpressions();
+  for (int i = 1; i <= nbsub; i++)
   {
     Perform(exp->SubExpression(i));
   }
 }
 
-Standard_Boolean Expr_UnknownIterator::More() const
+bool Expr_UnknownIterator::More() const
 {
   return (myCurrent <= myMap.Extent());
 }
@@ -55,7 +55,7 @@ void Expr_UnknownIterator::Next()
   myCurrent++;
 }
 
-Handle(Expr_NamedUnknown) Expr_UnknownIterator::Value() const
+occ::handle<Expr_NamedUnknown> Expr_UnknownIterator::Value() const
 {
   return myMap(myCurrent);
 }

@@ -31,7 +31,7 @@ SelectMgr_BaseFrustum::SelectMgr_BaseFrustum()
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
+void SelectMgr_BaseFrustum::SetCamera(const occ::handle<Graphic3d_Camera>& theCamera)
 {
   SelectMgr_BaseIntersector::SetCamera(theCamera);
   if (!myBuilder.IsNull())
@@ -45,40 +45,40 @@ void SelectMgr_BaseFrustum::SetCamera(const Handle(Graphic3d_Camera)& theCamera)
 // function : SetViewport
 // purpose  : Passes viewport parameters to builder
 //=======================================================================
-void SelectMgr_BaseFrustum::SetViewport(const Standard_Real theX,
-                                        const Standard_Real theY,
-                                        const Standard_Real theWidth,
-                                        const Standard_Real theHeight)
+void SelectMgr_BaseFrustum::SetViewport(const double theX,
+                                        const double theY,
+                                        const double theWidth,
+                                        const double theHeight)
 {
   myBuilder->SetViewport(theX, theY, theWidth, theHeight);
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::SetPixelTolerance(const Standard_Integer theTol)
+void SelectMgr_BaseFrustum::SetPixelTolerance(const int theTol)
 {
   myPixelTolerance = theTol;
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::SetWindowSize(const Standard_Integer theWidth,
-                                          const Standard_Integer theHeight)
+void SelectMgr_BaseFrustum::SetWindowSize(const int theWidth,
+                                          const int theHeight)
 {
   myBuilder->SetWindowSize(theWidth, theHeight);
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::WindowSize(Standard_Integer& theWidth,
-                                       Standard_Integer& theHeight) const
+void SelectMgr_BaseFrustum::WindowSize(int& theWidth,
+                                       int& theHeight) const
 {
   myBuilder->WindowSize(theWidth, theHeight);
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::SetBuilder(const Handle(SelectMgr_FrustumBuilder)& theBuilder)
+void SelectMgr_BaseFrustum::SetBuilder(const occ::handle<SelectMgr_FrustumBuilder>& theBuilder)
 {
   myBuilder.Nullify();
   myBuilder = theBuilder;
@@ -90,16 +90,16 @@ void SelectMgr_BaseFrustum::SetBuilder(const Handle(SelectMgr_FrustumBuilder)& t
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_BaseFrustum::IsBoundaryIntersectSphere(
+bool SelectMgr_BaseFrustum::IsBoundaryIntersectSphere(
   const gp_Pnt&             theCenter,
-  const Standard_Real       theRadius,
+  const double       theRadius,
   const gp_Dir&             thePlaneNormal,
-  const TColgp_Array1OfPnt& theBoundaries,
-  Standard_Boolean&         theBoundaryInside) const
+  const NCollection_Array1<gp_Pnt>& theBoundaries,
+  bool&         theBoundaryInside) const
 {
-  for (Standard_Integer anIdx = theBoundaries.Lower(); anIdx < theBoundaries.Upper(); ++anIdx)
+  for (int anIdx = theBoundaries.Lower(); anIdx < theBoundaries.Upper(); ++anIdx)
   {
-    const Standard_Integer aNextIdx =
+    const int aNextIdx =
       ((anIdx + 1) == theBoundaries.Upper()) ? theBoundaries.Lower() : (anIdx + 1);
     const gp_Pnt aPnt1 = theBoundaries.Value(anIdx);
     const gp_Pnt aPnt2 = theBoundaries.Value(aNextIdx);
@@ -116,27 +116,27 @@ Standard_Boolean SelectMgr_BaseFrustum::IsBoundaryIntersectSphere(
     if (aPntProj1.Distance(theCenter) < theRadius
         || aPntProj2.Distance(theCenter) < theRadius) // polygon intersects the sphere
     {
-      theBoundaryInside = Standard_True;
-      return Standard_True;
+      theBoundaryInside = true;
+      return true;
     }
 
     gp_Dir        aRayDir(gp_Vec(aPntProj1, aPntProj2));
-    Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+    double aTimeEnter = 0.0, aTimeLeave = 0.0;
     if (RaySphereIntersection(theCenter, theRadius, aPntProj1, aRayDir, aTimeEnter, aTimeLeave))
     {
       if ((aTimeEnter > 0 && aTimeEnter < aPntProj1.Distance(aPntProj2))
           || (aTimeLeave > 0 && aTimeLeave < aPntProj1.Distance(aPntProj2)))
       {
-        return Standard_True; // polygon crosses  the sphere
+        return true; // polygon crosses  the sphere
       }
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void SelectMgr_BaseFrustum::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_BaseFrustum)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_BaseIntersector)

@@ -26,36 +26,33 @@ class StepDimTol_GeometricToleranceWithDatumReference;
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 
-class StepDimTol_GeoTolAndGeoTolWthDatRef;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeoTolAndGeoTolWthDatRef, StepDimTol_GeometricTolerance)
-
 class StepDimTol_GeoTolAndGeoTolWthDatRef : public StepDimTol_GeometricTolerance
 {
 
 public:
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthDatRef();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theName,
-                            const Handle(TCollection_HAsciiString)& theDescription,
-                            const Handle(Standard_Transient)&       theMagnitude,
-                            const Handle(StepRepr_ShapeAspect)&     theTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
+                            const occ::handle<TCollection_HAsciiString>& theDescription,
+                            const occ::handle<Standard_Transient>&       theMagnitude,
+                            const occ::handle<StepRepr_ShapeAspect>&     theTolerancedShapeAspect,
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
                             const StepDimTol_GeometricToleranceType                        theType);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&    aName,
-                            const Handle(TCollection_HAsciiString)&    aDescription,
-                            const Handle(Standard_Transient)&          aMagnitude,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
+                            const occ::handle<TCollection_HAsciiString>&    aDescription,
+                            const occ::handle<Standard_Transient>&          aMagnitude,
                             const StepDimTol_GeometricToleranceTarget& aTolerancedShapeAspect,
-                            const Handle(StepDimTol_GeometricToleranceWithDatumReference)& aGTWDR,
+                            const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
                             const StepDimTol_GeometricToleranceType                        theType);
 
   inline void SetGeometricToleranceWithDatumReference(
-    const Handle(StepDimTol_GeometricToleranceWithDatumReference)& theGTWDR)
+    const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR)
   {
     myGeometricToleranceWithDatumReference = theGTWDR;
   }
 
-  inline Handle(StepDimTol_GeometricToleranceWithDatumReference)
+  inline occ::handle<StepDimTol_GeometricToleranceWithDatumReference>
     GetGeometricToleranceWithDatumReference() const
   {
     return myGeometricToleranceWithDatumReference;
@@ -71,7 +68,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRef, StepDimTol_GeometricTolerance)
 
 private:
-  Handle(StepDimTol_GeometricToleranceWithDatumReference) myGeometricToleranceWithDatumReference;
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> myGeometricToleranceWithDatumReference;
   StepDimTol_GeometricToleranceType                       myToleranceType;
 };
 #endif // _StepDimTol_GeoTolAndGeoTolWthDatRef_HeaderFile

@@ -18,9 +18,10 @@
 #define TColgp_HSequenceOfPnt2d_HeaderFile
 
 #include <gp_Pnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColgp_HSequenceOfPnt2d, TColgp_SequenceOfPnt2d)
+DEFINE_HSEQUENCE(TColgp_HSequenceOfPnt2d, NCollection_Sequence<gp_Pnt2d>)
 
 #endif

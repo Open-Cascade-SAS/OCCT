@@ -32,9 +32,14 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_FilletDriver, TFunction_Driver)
 
@@ -46,33 +51,33 @@ DNaming_FilletDriver::DNaming_FilletDriver() {}
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_FilletDriver::Validate(Handle(TFunction_Logbook)&) const {}
+void DNaming_FilletDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute
 // purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_FilletDriver::MustExecute(const Handle(TFunction_Logbook)&) const
+bool DNaming_FilletDriver::MustExecute(const occ::handle<TFunction_Logbook>&) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Execute
 // purpose  : Execute the function and push in <log> the impacted labels
 //=======================================================================
-Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog) const
+int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 {
-  Handle(TFunction_Function) aFunction;
+  occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
     return -1;
 
-  Handle(TFunction_Function) aPrevFun = DNaming::GetPrevFunction(aFunction);
+  occ::handle<TFunction_Function> aPrevFun = DNaming::GetPrevFunction(aFunction);
   if (aPrevFun.IsNull())
     return -1;
   const TDF_Label&           aLab = RESPOSITION(aPrevFun);
-  Handle(TNaming_NamedShape) aContextNS;
+  occ::handle<TNaming_NamedShape> aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty())
   {
@@ -83,7 +88,7 @@ Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog
     return -1;
   }
 
-  const Standard_Real      aRadius = DNaming::GetReal(aFunction, FILLET_RADIUS)->Get();
+  const double      aRadius = DNaming::GetReal(aFunction, FILLET_RADIUS)->Get();
   const ChFi3d_FilletShape aSurfaceType =
     (ChFi3d_FilletShape)DNaming::GetInteger(aFunction, FILLET_SURFTYPE)->Get();
 
@@ -96,8 +101,8 @@ Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog
     return -1;
   }
 
-  Handle(TDataStd_UAttribute) aPathObj = DNaming::GetObjectArg(aFunction, FILLET_PATH);
-  Handle(TNaming_NamedShape)  aPathNS  = DNaming::GetObjectValue(aPathObj);
+  occ::handle<TDataStd_UAttribute> aPathObj = DNaming::GetObjectArg(aFunction, FILLET_PATH);
+  occ::handle<TNaming_NamedShape>  aPathNS  = DNaming::GetObjectValue(aPathObj);
   if (aPathNS.IsNull() || aPathNS->IsEmpty())
   {
 #ifdef OCCT_DEBUG
@@ -119,7 +124,7 @@ Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog
   }
 
   TopExp_Explorer     expl;
-  TopTools_MapOfShape View;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
 
   BRepFilletAPI_MakeFillet aMkFillet(aCONTEXT, aSurfaceType);
 
@@ -153,9 +158,9 @@ Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog
     aFunction->SetFailure(ALGO_FAILED);
     return -1;
   }
-  TopTools_ListOfShape aLarg;
+  NCollection_List<TopoDS_Shape> aLarg;
   aLarg.Append(aCONTEXT);
-  if (!BRepAlgo::IsValid(aLarg, aMkFillet.Shape(), Standard_False, Standard_False))
+  if (!BRepAlgo::IsValid(aLarg, aMkFillet.Shape(), false, false))
   {
     aFunction->SetFailure(RESULT_NOT_VALID);
     return -1;
@@ -164,7 +169,7 @@ Standard_Integer DNaming_FilletDriver::Execute(Handle(TFunction_Logbook)& theLog
   // Naming
   LoadNamingDS(RESPOSITION(aFunction), aMkFillet, aCONTEXT);
 
-  theLog->SetValid(RESPOSITION(aFunction), Standard_True);
+  theLog->SetValid(RESPOSITION(aFunction), true);
   aFunction->SetFailure(DONE);
   return 0;
 }
@@ -192,14 +197,14 @@ void DNaming_FilletDriver::LoadNamingDS(const TDF_Label&          theResultLabel
   else
     aBuilder.Modify(theContext, aResult);
 
-  TopTools_DataMapOfShapeShape SubShapes;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> SubShapes;
   for (TopExp_Explorer Exp(aResult, TopAbs_FACE); Exp.More(); Exp.Next())
   {
     SubShapes.Bind(Exp.Current(), Exp.Current());
   }
 
   // New faces generated from edges
-  TNaming_Builder anEdgeBuilder(theResultLabel.FindChild(1, Standard_True));
+  TNaming_Builder anEdgeBuilder(theResultLabel.FindChild(1, true));
   DNaming::LoadAndOrientGeneratedShapes(theMkFillet,
                                         theContext,
                                         TopAbs_EDGE,
@@ -207,7 +212,7 @@ void DNaming_FilletDriver::LoadNamingDS(const TDF_Label&          theResultLabel
                                         SubShapes);
 
   // Faces of the initial shape modified by theMkFillet
-  TNaming_Builder aFacesBuilder(theResultLabel.FindChild(2, Standard_True));
+  TNaming_Builder aFacesBuilder(theResultLabel.FindChild(2, true));
   DNaming::LoadAndOrientModifiedShapes(theMkFillet,
                                        theContext,
                                        TopAbs_FACE,
@@ -215,7 +220,7 @@ void DNaming_FilletDriver::LoadNamingDS(const TDF_Label&          theResultLabel
                                        SubShapes);
 
   // New faces generated from vertices (if exist)
-  TNaming_Builder aVFacesBuilder(theResultLabel.FindChild(3, Standard_True));
+  TNaming_Builder aVFacesBuilder(theResultLabel.FindChild(3, true));
   DNaming::LoadAndOrientGeneratedShapes(theMkFillet,
                                         theContext,
                                         TopAbs_VERTEX,
@@ -223,6 +228,6 @@ void DNaming_FilletDriver::LoadNamingDS(const TDF_Label&          theResultLabel
                                         SubShapes);
 
   // Deleted faces of the initial shape
-  TNaming_Builder aDelBuilder(theResultLabel.FindChild(4, Standard_True));
+  TNaming_Builder aDelBuilder(theResultLabel.FindChild(4, true));
   DNaming::LoadDeletedShapes(theMkFillet, theContext, TopAbs_FACE, aDelBuilder);
 }

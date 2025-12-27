@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 
@@ -37,68 +37,68 @@ public:
   //! performs the resolution of the equation above.
   //! The solutions must be contained in [InfBound, SupBound].
   //! InfBound and SupBound can be set by default to 0 and 2*PI.
-  Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real A,
-                                                  const Standard_Real B,
-                                                  const Standard_Real C,
-                                                  const Standard_Real D,
-                                                  const Standard_Real E,
-                                                  const Standard_Real InfBound,
-                                                  const Standard_Real SupBound);
+  Standard_EXPORT math_TrigonometricFunctionRoots(const double A,
+                                                  const double B,
+                                                  const double C,
+                                                  const double D,
+                                                  const double E,
+                                                  const double InfBound,
+                                                  const double SupBound);
 
   //! Given the two coefficients d and e, it performs
   //! the resolution of d*sin(x) + e = 0.
   //! The solutions must be contained in [InfBound, SupBound].
   //! InfBound and SupBound can be set by default to 0 and 2*PI.
-  Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real D,
-                                                  const Standard_Real E,
-                                                  const Standard_Real InfBound,
-                                                  const Standard_Real SupBound);
+  Standard_EXPORT math_TrigonometricFunctionRoots(const double D,
+                                                  const double E,
+                                                  const double InfBound,
+                                                  const double SupBound);
 
   //! Given the three coefficients c, d and e, it performs
   //! the resolution of c*std::cos(x) + d*sin(x) + e = 0.
   //! The solutions must be contained in [InfBound, SupBound].
   //! InfBound and SupBound can be set by default to 0 and 2*PI.
-  Standard_EXPORT math_TrigonometricFunctionRoots(const Standard_Real C,
-                                                  const Standard_Real D,
-                                                  const Standard_Real E,
-                                                  const Standard_Real InfBound,
-                                                  const Standard_Real SupBound);
+  Standard_EXPORT math_TrigonometricFunctionRoots(const double C,
+                                                  const double D,
+                                                  const double E,
+                                                  const double InfBound,
+                                                  const double SupBound);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns true if there is an infinity of roots, otherwise returns false.
-  Standard_Boolean InfiniteRoots() const;
+  bool InfiniteRoots() const;
 
   //! Returns the solution of range Index.
   //! An exception is raised if NotDone.
   //! An exception is raised if Index>NbSolutions.
   //! An exception is raised if there is an infinity of solutions.
-  Standard_Real Value(const Standard_Integer Index) const;
+  double Value(const int Index) const;
 
   //! Returns the number of solutions found.
   //! An exception is raised if NotDone.
   //! An exception is raised if there is an infinity of solutions.
-  Standard_Integer NbSolutions() const;
+  int NbSolutions() const;
 
   //! Prints information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
   //! is used by the constructors above.
-  Standard_EXPORT void Perform(const Standard_Real A,
-                               const Standard_Real B,
-                               const Standard_Real C,
-                               const Standard_Real D,
-                               const Standard_Real E,
-                               const Standard_Real InfBound,
-                               const Standard_Real SupBound);
+  Standard_EXPORT void Perform(const double A,
+                               const double B,
+                               const double C,
+                               const double D,
+                               const double E,
+                               const double InfBound,
+                               const double SupBound);
 
 private:
-  Standard_Integer     NbSol;
-  TColStd_Array1OfReal Sol;
-  Standard_Boolean     InfiniteStatus;
-  Standard_Boolean     Done;
+  int     NbSol;
+  NCollection_Array1<double> Sol;
+  bool     InfiniteStatus;
+  bool     Done;
 };
 
 #include <math_TrigonometricFunctionRoots.lxx>

@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PointStyle, Standard_Transient)
 
 StepVisual_PointStyle::StepVisual_PointStyle() {}
 
-void StepVisual_PointStyle::Init(const Handle(TCollection_HAsciiString)& aName,
+void StepVisual_PointStyle::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                  const StepVisual_MarkerSelect&          aMarker,
                                  const StepBasic_SizeSelect&             aMarkerSize,
-                                 const Handle(StepVisual_Colour)&        aMarkerColour)
+                                 const occ::handle<StepVisual_Colour>&        aMarkerColour)
 {
   // --- classe own fields ---
   name         = aName;
@@ -31,12 +31,12 @@ void StepVisual_PointStyle::Init(const Handle(TCollection_HAsciiString)& aName,
   markerColour = aMarkerColour;
 }
 
-void StepVisual_PointStyle::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_PointStyle::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_PointStyle::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_PointStyle::Name() const
 {
   return name;
 }
@@ -61,12 +61,12 @@ StepBasic_SizeSelect StepVisual_PointStyle::MarkerSize() const
   return markerSize;
 }
 
-void StepVisual_PointStyle::SetMarkerColour(const Handle(StepVisual_Colour)& aMarkerColour)
+void StepVisual_PointStyle::SetMarkerColour(const occ::handle<StepVisual_Colour>& aMarkerColour)
 {
   markerColour = aMarkerColour;
 }
 
-Handle(StepVisual_Colour) StepVisual_PointStyle::MarkerColour() const
+occ::handle<StepVisual_Colour> StepVisual_PointStyle::MarkerColour() const
 {
   return markerColour;
 }

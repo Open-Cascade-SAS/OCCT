@@ -21,7 +21,8 @@
 #include <Extrema_ExtCC2d.hxx>
 #include <Extrema_ExtElC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
-#include <Extrema_SequenceOfPOnCurv2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
@@ -30,11 +31,11 @@
 #include <StdFail_NotDone.hxx>
 
 Extrema_ExtCC2d::Extrema_ExtCC2d()
-    : myIsFindSingleSolution(Standard_False),
-      myDone(Standard_False),
-      myIsPar(Standard_False),
+    : myIsFindSingleSolution(false),
+      myDone(false),
+      myIsPar(false),
       mynbext(0),
-      inverse(Standard_False),
+      inverse(false),
       myC(nullptr),
       myv1(0.0),
       myv2(0.0),
@@ -49,9 +50,9 @@ Extrema_ExtCC2d::Extrema_ExtCC2d()
 
 Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
                                  const Adaptor2d_Curve2d& C2,
-                                 const Standard_Real      TolC1,
-                                 const Standard_Real      TolC2)
-    : myIsFindSingleSolution(Standard_False)
+                                 const double      TolC1,
+                                 const double      TolC2)
+    : myIsFindSingleSolution(false)
 {
   Initialize(C2,
              Extrema_Curve2dTool::FirstParameter(C2),
@@ -63,23 +64,23 @@ Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
 
 Extrema_ExtCC2d::Extrema_ExtCC2d(const Adaptor2d_Curve2d& C1,
                                  const Adaptor2d_Curve2d& C2,
-                                 const Standard_Real      U1,
-                                 const Standard_Real      U2,
-                                 const Standard_Real      V1,
-                                 const Standard_Real      V2,
-                                 const Standard_Real      TolC1,
-                                 const Standard_Real      TolC2)
-    : myIsFindSingleSolution(Standard_False)
+                                 const double      U1,
+                                 const double      U2,
+                                 const double      V1,
+                                 const double      V2,
+                                 const double      TolC1,
+                                 const double      TolC2)
+    : myIsFindSingleSolution(false)
 {
   Initialize(C2, V1, V2, TolC1, TolC2);
   Perform(C1, U1, U2);
 }
 
 void Extrema_ExtCC2d::Initialize(const Adaptor2d_Curve2d& C2,
-                                 const Standard_Real      V1,
-                                 const Standard_Real      V2,
-                                 const Standard_Real      TolC1,
-                                 const Standard_Real      TolC2)
+                                 const double      V1,
+                                 const double      V2,
+                                 const double      TolC1,
+                                 const double      TolC2)
 {
   myC     = &C2;
   myv1    = V1;
@@ -89,18 +90,18 @@ void Extrema_ExtCC2d::Initialize(const Adaptor2d_Curve2d& C2,
 }
 
 void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
-                              const Standard_Real      U1,
-                              const Standard_Real      U2)
+                              const double      U1,
+                              const double      U2)
 {
   mypoints.Clear();
   mySqDist.Clear();
   GeomAbs_CurveType type1 = Extrema_Curve2dTool::GetType(C1),
                     type2 = Extrema_Curve2dTool::GetType(*myC);
-  Standard_Real U11, U12, U21, U22, Tol = std::min(mytolc1, mytolc2);
+  double U11, U12, U21, U22, Tol = std::min(mytolc1, mytolc2);
   //  Extrema_POnCurv2d P1, P2;
   mynbext = 0;
-  inverse = Standard_False;
-  myIsPar = Standard_False;
+  inverse = false;
+  myIsPar = false;
 
   U11 = U1;
   U12 = U2;
@@ -124,7 +125,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       switch (type2)
       {
         case GeomAbs_Line: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
                                                                Extrema_Curve2dTool::Circle(C1),
                                                                Tol);
@@ -160,7 +161,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
           aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
           aParamSolver->Perform();
-          Standard_Real Period2 = 0.;
+          double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
           Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
@@ -178,14 +179,14 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       switch (type2)
       {
         case GeomAbs_Line: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
                                                                Extrema_Curve2dTool::Ellipse(C1));
           Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 0.);
         }
         break;
         case GeomAbs_Circle: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
                                                                Extrema_Curve2dTool::Ellipse(C1));
           Results(*aXtream, U11, U12, U21, U22, 2 * M_PI, 2 * M_PI);
@@ -220,7 +221,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
           aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
           aParamSolver->Perform();
-          Standard_Real Period2 = 0.;
+          double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
           Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
@@ -238,21 +239,21 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       switch (type2)
       {
         case GeomAbs_Line: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
                                                                Extrema_Curve2dTool::Parabola(C1));
           Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Circle: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
                                                                Extrema_Curve2dTool::Parabola(C1));
           Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
-          // inverse = Standard_True;
+          // inverse = true;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(*myC),
           // Extrema_Curve2dTool::Parabola(C1));
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
@@ -271,7 +272,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
         }
         break;
         case GeomAbs_Hyperbola: {
-          // inverse = Standard_True;
+          // inverse = true;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Hyperbola(*myC),
           // Extrema_Curve2dTool::Parabola(C1));
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
@@ -284,7 +285,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
           aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
           aParamSolver->Perform();
-          Standard_Real Period2 = 0.;
+          double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
@@ -302,21 +303,21 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       switch (type2)
       {
         case GeomAbs_Line: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Line(*myC),
                                                                Extrema_Curve2dTool::Hyperbola(C1));
           Results(*aXtream, U11, U12, U21, U22, 0., 0.);
         }
         break;
         case GeomAbs_Circle: {
-          inverse = Standard_True;
+          inverse = true;
           aXtream = opencascade::make_shared<Extrema_ExtElC2d>(Extrema_Curve2dTool::Circle(*myC),
                                                                Extrema_Curve2dTool::Hyperbola(C1));
           Results(*aXtream, U11, U12, U21, U22, 0., 2 * M_PI);
         }
         break;
         case GeomAbs_Ellipse: {
-          // inverse = Standard_True;
+          // inverse = true;
           // Extrema_ExtElC2d Xtrem(Extrema_Curve2dTool::Ellipse(*myC),
           // Extrema_Curve2dTool::Hyperbola(C1));
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
@@ -347,7 +348,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
           aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
           aParamSolver->Perform();
-          Standard_Real Period2 = 0.;
+          double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
@@ -401,7 +402,7 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
           aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
           aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
           aParamSolver->Perform();
-          Standard_Real Period2 = 0.;
+          double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
             Period2 = Extrema_Curve2dTool::Period(*myC);
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
@@ -418,10 +419,10 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
       aParamSolver = opencascade::make_shared<Extrema_ECC2d>(C1, *myC);
       aParamSolver->SetSingleSolutionFlag(GetSingleSolutionFlag());
       aParamSolver->Perform();
-      Standard_Real Period1 = 0.;
+      double Period1 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(C1))
         Period1 = Extrema_Curve2dTool::Period(C1);
-      Standard_Real Period2 = 0.;
+      double Period2 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(*myC))
         Period2 = Extrema_Curve2dTool::Period(*myC);
       Results(*aParamSolver, U11, U12, U21, U22, Period1, Period2);
@@ -430,12 +431,12 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1,
   };
 }
 
-Standard_Boolean Extrema_ExtCC2d::IsDone() const
+bool Extrema_ExtCC2d::IsDone() const
 {
   return myDone;
 }
 
-Standard_Real Extrema_ExtCC2d::SquareDistance(const Standard_Integer N) const
+double Extrema_ExtCC2d::SquareDistance(const int N) const
 {
   if (!myDone)
     throw StdFail_NotDone();
@@ -444,14 +445,14 @@ Standard_Real Extrema_ExtCC2d::SquareDistance(const Standard_Integer N) const
   return mySqDist.Value(N);
 }
 
-Standard_Integer Extrema_ExtCC2d::NbExt() const
+int Extrema_ExtCC2d::NbExt() const
 {
   if (!myDone)
     throw StdFail_NotDone();
   return mynbext;
 }
 
-void Extrema_ExtCC2d::Points(const Standard_Integer N,
+void Extrema_ExtCC2d::Points(const int N,
                              Extrema_POnCurv2d&     P1,
                              Extrema_POnCurv2d&     P2) const
 {
@@ -463,10 +464,10 @@ void Extrema_ExtCC2d::Points(const Standard_Integer N,
   P2 = mypoints.Value(2 * N);
 }
 
-void Extrema_ExtCC2d::TrimmedSquareDistances(Standard_Real& dist11,
-                                             Standard_Real& dist12,
-                                             Standard_Real& dist21,
-                                             Standard_Real& dist22,
+void Extrema_ExtCC2d::TrimmedSquareDistances(double& dist11,
+                                             double& dist12,
+                                             double& dist21,
+                                             double& dist22,
                                              gp_Pnt2d&      P11,
                                              gp_Pnt2d&      P12,
                                              gp_Pnt2d&      P21,
@@ -483,15 +484,15 @@ void Extrema_ExtCC2d::TrimmedSquareDistances(Standard_Real& dist11,
 }
 
 void Extrema_ExtCC2d::Results(const Extrema_ExtElC2d& AlgExt,
-                              const Standard_Real     Ut11,
-                              const Standard_Real     Ut12,
-                              const Standard_Real     Ut21,
-                              const Standard_Real     Ut22,
-                              const Standard_Real     Period1,
-                              const Standard_Real     Period2)
+                              const double     Ut11,
+                              const double     Ut12,
+                              const double     Ut21,
+                              const double     Ut22,
+                              const double     Period1,
+                              const double     Period2)
 {
-  Standard_Integer  i, NbExt;
-  Standard_Real     Val, U, U2;
+  int  i, NbExt;
+  double     Val, U, U2;
   Extrema_POnCurv2d P1, P2;
 
   myDone  = AlgExt.IsDone();
@@ -555,15 +556,15 @@ void Extrema_ExtCC2d::Results(const Extrema_ExtElC2d& AlgExt,
 }
 
 void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
-                              const Standard_Real  Ut11,
-                              const Standard_Real  Ut12,
-                              const Standard_Real  Ut21,
-                              const Standard_Real  Ut22,
-                              const Standard_Real  Period1,
-                              const Standard_Real  Period2)
+                              const double  Ut11,
+                              const double  Ut12,
+                              const double  Ut21,
+                              const double  Ut22,
+                              const double  Period1,
+                              const double  Period2)
 {
-  Standard_Integer  i, NbExt;
-  Standard_Real     Val, U, U2;
+  int  i, NbExt;
+  double     Val, U, U2;
   Extrema_POnCurv2d P1, P2;
 
   myDone = AlgExt.IsDone();
@@ -602,7 +603,7 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
   }
 }
 
-Standard_Boolean Extrema_ExtCC2d::IsParallel() const
+bool Extrema_ExtCC2d::IsParallel() const
 {
   if (!myDone)
     throw StdFail_NotDone();
@@ -611,14 +612,14 @@ Standard_Boolean Extrema_ExtCC2d::IsParallel() const
 
 //=================================================================================================
 
-void Extrema_ExtCC2d::SetSingleSolutionFlag(const Standard_Boolean theFlag)
+void Extrema_ExtCC2d::SetSingleSolutionFlag(const bool theFlag)
 {
   myIsFindSingleSolution = theFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean Extrema_ExtCC2d::GetSingleSolutionFlag() const
+bool Extrema_ExtCC2d::GetSingleSolutionFlag() const
 {
   return myIsFindSingleSolution;
 }

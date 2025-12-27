@@ -24,8 +24,6 @@
 #include <StepKinematics_KinematicPair.hxx>
 #include <StepGeom_PointOnSurface.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_RollingSurfacePairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity RollingSurfacePairValue
 class StepKinematics_RollingSurfacePairValue : public StepKinematics_PairValue
 {
@@ -34,26 +32,26 @@ public:
   Standard_EXPORT StepKinematics_RollingSurfacePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface,
-                            const Standard_Real                         theActualRotation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
+                            const double                         theActualRotation);
 
   //! Returns field ActualPointOnSurface
-  Standard_EXPORT Handle(StepGeom_PointOnSurface) ActualPointOnSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_PointOnSurface> ActualPointOnSurface() const;
   //! Sets field ActualPointOnSurface
   Standard_EXPORT void SetActualPointOnSurface(
-    const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface);
+    const occ::handle<StepGeom_PointOnSurface>& theActualPointOnSurface);
 
   //! Returns field ActualRotation
-  Standard_EXPORT Standard_Real ActualRotation() const;
+  Standard_EXPORT double ActualRotation() const;
   //! Sets field ActualRotation
-  Standard_EXPORT void SetActualRotation(const Standard_Real theActualRotation);
+  Standard_EXPORT void SetActualRotation(const double theActualRotation);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_RollingSurfacePairValue, StepKinematics_PairValue)
 
 private:
-  Handle(StepGeom_PointOnSurface) myActualPointOnSurface;
-  Standard_Real                   myActualRotation;
+  occ::handle<StepGeom_PointOnSurface> myActualPointOnSurface;
+  double                   myActualRotation;
 };
 #endif // _StepKinematics_RollingSurfacePairValue_HeaderFile_

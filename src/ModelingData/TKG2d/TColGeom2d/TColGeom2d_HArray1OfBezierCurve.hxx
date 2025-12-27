@@ -18,9 +18,10 @@
 #define TColGeom2d_HArray1OfBezierCurve_HeaderFile
 
 #include <Geom2d_BezierCurve.hxx>
-#include <TColGeom2d_Array1OfBezierCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColGeom2d_HArray1OfBezierCurve, TColGeom2d_Array1OfBezierCurve)
+DEFINE_HARRAY1(TColGeom2d_HArray1OfBezierCurve, NCollection_Array1<occ::handle<Geom2d_BezierCurve>>)
 
 #endif

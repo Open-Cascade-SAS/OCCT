@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignGeneralOrgItem.hxx>
@@ -24,8 +24,8 @@
 
 StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem() {}
 
-Standard_Integer StepAP214_AutoDesignGeneralOrgItem::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepAP214_AutoDesignGeneralOrgItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -48,46 +48,46 @@ Standard_Integer StepAP214_AutoDesignGeneralOrgItem::CaseNum(
   return 0;
 }
 
-Handle(StepBasic_Product) StepAP214_AutoDesignGeneralOrgItem::Product() const
+occ::handle<StepBasic_Product> StepAP214_AutoDesignGeneralOrgItem::Product() const
 {
   return GetCasted(StepBasic_Product, Value());
 }
 
-Handle(StepBasic_ProductDefinition) StepAP214_AutoDesignGeneralOrgItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignGeneralOrgItem::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP214_AutoDesignGeneralOrgItem::
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_AutoDesignGeneralOrgItem::
   ProductDefinitionFormation() const
 {
   return GetCasted(StepBasic_ProductDefinitionFormation, Value());
 }
 
-Handle(StepBasic_ProductDefinitionRelationship) StepAP214_AutoDesignGeneralOrgItem::
+occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_AutoDesignGeneralOrgItem::
   ProductDefinitionRelationship() const
 {
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) StepAP214_AutoDesignGeneralOrgItem::
+occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> StepAP214_AutoDesignGeneralOrgItem::
   ProductDefinitionWithAssociatedDocuments() const
 {
   return GetCasted(StepBasic_ProductDefinitionWithAssociatedDocuments, Value());
 }
 
-Handle(StepRepr_Representation) StepAP214_AutoDesignGeneralOrgItem::Representation() const
+occ::handle<StepRepr_Representation> StepAP214_AutoDesignGeneralOrgItem::Representation() const
 {
   return GetCasted(StepRepr_Representation, Value());
 }
 
-Handle(StepRepr_ExternallyDefinedRepresentation) StepAP214_AutoDesignGeneralOrgItem::
+occ::handle<StepRepr_ExternallyDefinedRepresentation> StepAP214_AutoDesignGeneralOrgItem::
   ExternallyDefinedRepresentation() const
 {
   return GetCasted(StepRepr_ExternallyDefinedRepresentation, Value());
 }
 
-Handle(StepAP214_AutoDesignDocumentReference) StepAP214_AutoDesignGeneralOrgItem::
+occ::handle<StepAP214_AutoDesignDocumentReference> StepAP214_AutoDesignGeneralOrgItem::
   AutoDesignDocumentReference() const
 {
   return GetCasted(StepAP214_AutoDesignDocumentReference, Value());

@@ -27,7 +27,7 @@ StepAP203_ClassifiedItem::StepAP203_ClassifiedItem() {}
 
 //=================================================================================================
 
-Standard_Integer StepAP203_ClassifiedItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP203_ClassifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,15 +40,15 @@ Standard_Integer StepAP203_ClassifiedItem::CaseNum(const Handle(Standard_Transie
 
 //=================================================================================================
 
-Handle(StepBasic_ProductDefinitionFormation) StepAP203_ClassifiedItem::ProductDefinitionFormation()
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ClassifiedItem::ProductDefinitionFormation()
   const
 {
-  return Handle(StepBasic_ProductDefinitionFormation)::DownCast(Value());
+  return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepRepr_AssemblyComponentUsage) StepAP203_ClassifiedItem::AssemblyComponentUsage() const
+occ::handle<StepRepr_AssemblyComponentUsage> StepAP203_ClassifiedItem::AssemblyComponentUsage() const
 {
-  return Handle(StepRepr_AssemblyComponentUsage)::DownCast(Value());
+  return occ::down_cast<StepRepr_AssemblyComponentUsage>(Value());
 }

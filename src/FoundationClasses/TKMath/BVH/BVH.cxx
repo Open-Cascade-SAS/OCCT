@@ -25,135 +25,135 @@ IMPLEMENT_STANDARD_RTTIEXT(BVH_ObjectTransient, Standard_Transient)
 
 // Specific instantiations of struct templates to avoid compilation warnings
 
-template class NCollection_Vec2<Standard_Real>;
-template class NCollection_Vec3<Standard_Real>;
-template class NCollection_Vec4<Standard_Real>;
-template class NCollection_Mat3<Standard_Real>;
-template class NCollection_Mat4<Standard_Real>;
+template class NCollection_Vec2<double>;
+template class NCollection_Vec3<double>;
+template class NCollection_Vec4<double>;
+template class NCollection_Mat3<double>;
+template class NCollection_Mat4<double>;
 
-template class BVH_Box<Standard_Real, 2>;
-template class BVH_Box<Standard_Real, 3>;
-template class BVH_Box<Standard_Real, 4>;
+template class BVH_Box<double, 2>;
+template class BVH_Box<double, 3>;
+template class BVH_Box<double, 4>;
 
-template class BVH_Box<Standard_ShortReal, 2>;
-template class BVH_Box<Standard_ShortReal, 3>;
-template class BVH_Box<Standard_ShortReal, 4>;
+template class BVH_Box<float, 2>;
+template class BVH_Box<float, 3>;
+template class BVH_Box<float, 4>;
 
-template class BVH_Set<Standard_Real, 2>;
-template class BVH_Set<Standard_Real, 3>;
-template class BVH_Set<Standard_Real, 4>;
+template class BVH_Set<double, 2>;
+template class BVH_Set<double, 3>;
+template class BVH_Set<double, 4>;
 
-template class BVH_Set<Standard_ShortReal, 2>;
-template class BVH_Set<Standard_ShortReal, 3>;
-template class BVH_Set<Standard_ShortReal, 4>;
+template class BVH_Set<float, 2>;
+template class BVH_Set<float, 3>;
+template class BVH_Set<float, 4>;
 
-template class BVH_Object<Standard_Real, 2>;
-template class BVH_Object<Standard_Real, 3>;
-template class BVH_Object<Standard_Real, 4>;
+template class BVH_Object<double, 2>;
+template class BVH_Object<double, 3>;
+template class BVH_Object<double, 4>;
 
-template class BVH_Object<Standard_ShortReal, 2>;
-template class BVH_Object<Standard_ShortReal, 3>;
-template class BVH_Object<Standard_ShortReal, 4>;
+template class BVH_Object<float, 2>;
+template class BVH_Object<float, 3>;
+template class BVH_Object<float, 4>;
 
-template class BVH_ObjectSet<Standard_Real, 2>;
-template class BVH_ObjectSet<Standard_Real, 3>;
-template class BVH_ObjectSet<Standard_Real, 4>;
+template class BVH_ObjectSet<double, 2>;
+template class BVH_ObjectSet<double, 3>;
+template class BVH_ObjectSet<double, 4>;
 
-template class BVH_ObjectSet<Standard_ShortReal, 2>;
-template class BVH_ObjectSet<Standard_ShortReal, 3>;
-template class BVH_ObjectSet<Standard_ShortReal, 4>;
+template class BVH_ObjectSet<float, 2>;
+template class BVH_ObjectSet<float, 3>;
+template class BVH_ObjectSet<float, 4>;
 
-template class BVH_Geometry<Standard_Real, 2>;
-template class BVH_Geometry<Standard_Real, 3>;
-template class BVH_Geometry<Standard_Real, 4>;
+template class BVH_Geometry<double, 2>;
+template class BVH_Geometry<double, 3>;
+template class BVH_Geometry<double, 4>;
 
-template class BVH_Geometry<Standard_ShortReal, 2>;
-template class BVH_Geometry<Standard_ShortReal, 3>;
-template class BVH_Geometry<Standard_ShortReal, 4>;
+template class BVH_Geometry<float, 2>;
+template class BVH_Geometry<float, 3>;
+template class BVH_Geometry<float, 4>;
 
-template class BVH_Tree<Standard_Real, 2>;
-template class BVH_Tree<Standard_Real, 3>;
-template class BVH_Tree<Standard_Real, 4>;
+template class BVH_Tree<double, 2>;
+template class BVH_Tree<double, 3>;
+template class BVH_Tree<double, 4>;
 
-template class BVH_Tree<Standard_ShortReal, 2>;
-template class BVH_Tree<Standard_ShortReal, 3>;
-template class BVH_Tree<Standard_ShortReal, 4>;
+template class BVH_Tree<float, 2>;
+template class BVH_Tree<float, 3>;
+template class BVH_Tree<float, 4>;
 
-template class BVH_Builder<Standard_Real, 2>;
-template class BVH_Builder<Standard_Real, 3>;
-template class BVH_Builder<Standard_Real, 4>;
+template class BVH_Builder<double, 2>;
+template class BVH_Builder<double, 3>;
+template class BVH_Builder<double, 4>;
 
-template class BVH_Builder<Standard_ShortReal, 2>;
-template class BVH_Builder<Standard_ShortReal, 3>;
-template class BVH_Builder<Standard_ShortReal, 4>;
+template class BVH_Builder<float, 2>;
+template class BVH_Builder<float, 3>;
+template class BVH_Builder<float, 4>;
 
-template class BVH_BinnedBuilder<Standard_Real, 2>;
-template class BVH_BinnedBuilder<Standard_Real, 3>;
-template class BVH_BinnedBuilder<Standard_Real, 4>;
+template class BVH_BinnedBuilder<double, 2>;
+template class BVH_BinnedBuilder<double, 3>;
+template class BVH_BinnedBuilder<double, 4>;
 
-template class BVH_BinnedBuilder<Standard_ShortReal, 2>;
-template class BVH_BinnedBuilder<Standard_ShortReal, 3>;
-template class BVH_BinnedBuilder<Standard_ShortReal, 4>;
+template class BVH_BinnedBuilder<float, 2>;
+template class BVH_BinnedBuilder<float, 3>;
+template class BVH_BinnedBuilder<float, 4>;
 
-template class BVH_QuickSorter<Standard_Real, 3>;
-template class BVH_QuickSorter<Standard_Real, 4>;
+template class BVH_QuickSorter<double, 3>;
+template class BVH_QuickSorter<double, 4>;
 
-template class BVH_QuickSorter<Standard_ShortReal, 3>;
-template class BVH_QuickSorter<Standard_ShortReal, 4>;
+template class BVH_QuickSorter<float, 3>;
+template class BVH_QuickSorter<float, 4>;
 
-template class BVH_RadixSorter<Standard_Real, 2>;
-template class BVH_RadixSorter<Standard_Real, 3>;
-template class BVH_RadixSorter<Standard_Real, 4>;
+template class BVH_RadixSorter<double, 2>;
+template class BVH_RadixSorter<double, 3>;
+template class BVH_RadixSorter<double, 4>;
 
-template class BVH_RadixSorter<Standard_ShortReal, 2>;
-template class BVH_RadixSorter<Standard_ShortReal, 3>;
-template class BVH_RadixSorter<Standard_ShortReal, 4>;
+template class BVH_RadixSorter<float, 2>;
+template class BVH_RadixSorter<float, 3>;
+template class BVH_RadixSorter<float, 4>;
 
-template class BVH_LinearBuilder<Standard_Real, 2>;
-template class BVH_LinearBuilder<Standard_Real, 3>;
-template class BVH_LinearBuilder<Standard_Real, 4>;
+template class BVH_LinearBuilder<double, 2>;
+template class BVH_LinearBuilder<double, 3>;
+template class BVH_LinearBuilder<double, 4>;
 
-template class BVH_LinearBuilder<Standard_ShortReal, 2>;
-template class BVH_LinearBuilder<Standard_ShortReal, 3>;
-template class BVH_LinearBuilder<Standard_ShortReal, 4>;
+template class BVH_LinearBuilder<float, 2>;
+template class BVH_LinearBuilder<float, 3>;
+template class BVH_LinearBuilder<float, 4>;
 
-template class BVH_SweepPlaneBuilder<Standard_Real, 2>;
-template class BVH_SweepPlaneBuilder<Standard_Real, 3>;
-template class BVH_SweepPlaneBuilder<Standard_Real, 4>;
+template class BVH_SweepPlaneBuilder<double, 2>;
+template class BVH_SweepPlaneBuilder<double, 3>;
+template class BVH_SweepPlaneBuilder<double, 4>;
 
-template class BVH_SweepPlaneBuilder<Standard_ShortReal, 2>;
-template class BVH_SweepPlaneBuilder<Standard_ShortReal, 3>;
-template class BVH_SweepPlaneBuilder<Standard_ShortReal, 4>;
+template class BVH_SweepPlaneBuilder<float, 2>;
+template class BVH_SweepPlaneBuilder<float, 3>;
+template class BVH_SweepPlaneBuilder<float, 4>;
 
-template class BVH_SpatialMedianBuilder<Standard_Real, 2>;
-template class BVH_SpatialMedianBuilder<Standard_Real, 3>;
-template class BVH_SpatialMedianBuilder<Standard_Real, 4>;
+template class BVH_SpatialMedianBuilder<double, 2>;
+template class BVH_SpatialMedianBuilder<double, 3>;
+template class BVH_SpatialMedianBuilder<double, 4>;
 
-template class BVH_SpatialMedianBuilder<Standard_ShortReal, 2>;
-template class BVH_SpatialMedianBuilder<Standard_ShortReal, 3>;
-template class BVH_SpatialMedianBuilder<Standard_ShortReal, 4>;
+template class BVH_SpatialMedianBuilder<float, 2>;
+template class BVH_SpatialMedianBuilder<float, 3>;
+template class BVH_SpatialMedianBuilder<float, 4>;
 
-template class BVH_PrimitiveSet<Standard_Real, 2>;
-template class BVH_PrimitiveSet<Standard_Real, 3>;
-template class BVH_PrimitiveSet<Standard_Real, 4>;
+template class BVH_PrimitiveSet<double, 2>;
+template class BVH_PrimitiveSet<double, 3>;
+template class BVH_PrimitiveSet<double, 4>;
 
-template class BVH_PrimitiveSet<Standard_ShortReal, 2>;
-template class BVH_PrimitiveSet<Standard_ShortReal, 3>;
-template class BVH_PrimitiveSet<Standard_ShortReal, 4>;
+template class BVH_PrimitiveSet<float, 2>;
+template class BVH_PrimitiveSet<float, 3>;
+template class BVH_PrimitiveSet<float, 4>;
 
-template class BVH_Triangulation<Standard_Real, 2>;
-template class BVH_Triangulation<Standard_Real, 3>;
-template class BVH_Triangulation<Standard_Real, 4>;
+template class BVH_Triangulation<double, 2>;
+template class BVH_Triangulation<double, 3>;
+template class BVH_Triangulation<double, 4>;
 
-template class BVH_Triangulation<Standard_ShortReal, 2>;
-template class BVH_Triangulation<Standard_ShortReal, 3>;
-template class BVH_Triangulation<Standard_ShortReal, 4>;
+template class BVH_Triangulation<float, 2>;
+template class BVH_Triangulation<float, 3>;
+template class BVH_Triangulation<float, 4>;
 
-template class BVH_DistanceField<Standard_Real, 3>;
-template class BVH_DistanceField<Standard_Real, 4>;
+template class BVH_DistanceField<double, 3>;
+template class BVH_DistanceField<double, 4>;
 
-template class BVH_DistanceField<Standard_ShortReal, 3>;
-template class BVH_DistanceField<Standard_ShortReal, 4>;
+template class BVH_DistanceField<float, 3>;
+template class BVH_DistanceField<float, 4>;
 
-template class BVH_Transform<Standard_Real, 4>;
-template class BVH_Transform<Standard_ShortReal, 4>;
+template class BVH_Transform<double, 4>;
+template class BVH_Transform<float, 4>;

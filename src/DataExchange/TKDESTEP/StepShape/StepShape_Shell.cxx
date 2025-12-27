@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_OpenShell.hxx>
@@ -19,7 +19,7 @@
 
 StepShape_Shell::StepShape_Shell() {}
 
-Standard_Integer StepShape_Shell::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepShape_Shell::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -30,12 +30,12 @@ Standard_Integer StepShape_Shell::CaseNum(const Handle(Standard_Transient)& ent)
   return 0;
 }
 
-Handle(StepShape_OpenShell) StepShape_Shell::OpenShell() const
+occ::handle<StepShape_OpenShell> StepShape_Shell::OpenShell() const
 {
   return GetCasted(StepShape_OpenShell, Value());
 }
 
-Handle(StepShape_ClosedShell) StepShape_Shell::ClosedShell() const
+occ::handle<StepShape_ClosedShell> StepShape_Shell::ClosedShell() const
 {
   return GetCasted(StepShape_ClosedShell, Value());
 }

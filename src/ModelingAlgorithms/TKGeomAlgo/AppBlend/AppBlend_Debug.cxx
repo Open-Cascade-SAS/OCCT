@@ -20,26 +20,26 @@
 // Functions to change the type of approx.
 //****************************************************
 
-static Standard_Boolean AppBlend_ContextSplineApprox = Standard_False;
+static bool AppBlend_ContextSplineApprox = false;
 
-Standard_EXPORT void AppBlend_SetContextSplineApprox(const Standard_Boolean b)
+Standard_EXPORT void AppBlend_SetContextSplineApprox(const bool b)
 {
   AppBlend_ContextSplineApprox = b;
 }
 
-Standard_EXPORT Standard_Boolean AppBlend_GetContextSplineApprox()
+Standard_EXPORT bool AppBlend_GetContextSplineApprox()
 {
   return AppBlend_ContextSplineApprox;
 }
 
-static Standard_Boolean AppBlend_ContextApproxWithNoTgt = Standard_False;
+static bool AppBlend_ContextApproxWithNoTgt = false;
 
-Standard_EXPORT void AppBlend_SetContextApproxWithNoTgt(const Standard_Boolean b)
+Standard_EXPORT void AppBlend_SetContextApproxWithNoTgt(const bool b)
 {
   AppBlend_ContextApproxWithNoTgt = b;
 }
 
-Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt()
+Standard_EXPORT bool AppBlend_GetContextApproxWithNoTgt()
 {
   return AppBlend_ContextApproxWithNoTgt;
 }

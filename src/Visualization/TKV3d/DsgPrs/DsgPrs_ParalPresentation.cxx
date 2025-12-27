@@ -29,26 +29,26 @@
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                   const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
                                    const TCollection_ExtendedString& aText,
                                    const gp_Pnt&                     AttachmentPoint1,
                                    const gp_Pnt&                     AttachmentPoint2,
                                    const gp_Dir&                     aDirection,
                                    const gp_Pnt&                     OffsetPoint)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Lin        L1(AttachmentPoint1, aDirection);
   gp_Lin        L2(AttachmentPoint2, aDirection);
   gp_Pnt        Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
   gp_Pnt        Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
   gp_Lin        L3    = gce_MakeLin(Proj1, Proj2);
-  Standard_Real parmin, parmax, parcur;
+  double parmin, parmax, parcur;
   parmin             = ElCLib::Parameter(L3, Proj1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, Proj2);
-  Standard_Real dist = std::abs(parmin - parcur);
+  double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -56,23 +56,23 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
-  Standard_Boolean outside = Standard_False;
+  bool outside = false;
   if (parcur < parmin)
   {
     parmin  = parcur;
-    outside = Standard_True;
+    outside = true;
   }
   if (parcur > parmax)
   {
     parmax  = parcur;
-    outside = Standard_True;
+    outside = true;
   }
 
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);
 
   // processing of side : 1st group
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(6);
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
 
@@ -80,7 +80,7 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
-    outside = Standard_True;
+    outside = true;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
     arrdir.Reverse();
@@ -124,8 +124,8 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
 // function : DsgPrs_ParalPresentation::Add
 // purpose  : it is possible to choose the symbol of extremities of the face (arrow, point...)
 //==========================================================================
-void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                   const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
                                    const TCollection_ExtendedString& aText,
                                    const gp_Pnt&                     AttachmentPoint1,
                                    const gp_Pnt&                     AttachmentPoint2,
@@ -133,7 +133,7 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
                                    const gp_Pnt&                     OffsetPoint,
                                    const DsgPrs_ArrowSide            ArrowPrs)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin        L1(AttachmentPoint1, aDirection);
@@ -141,11 +141,11 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   gp_Pnt        Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
   gp_Pnt        Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
   gp_Lin        L3    = gce_MakeLin(Proj1, Proj2);
-  Standard_Real parmin, parmax, parcur;
+  double parmin, parmax, parcur;
   parmin             = ElCLib::Parameter(L3, Proj1);
   parmax             = parmin;
   parcur             = ElCLib::Parameter(L3, Proj2);
-  Standard_Real dist = std::abs(parmin - parcur);
+  double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
   if (parcur > parmax)
@@ -153,28 +153,28 @@ void DsgPrs_ParalPresentation::Add(const Handle(Prs3d_Presentation)& aPresentati
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
-  Standard_Boolean outside = Standard_False;
+  bool outside = false;
   if (parcur < parmin)
   {
     parmin  = parcur;
-    outside = Standard_True;
+    outside = true;
   }
   if (parcur > parmax)
   {
     parmax  = parcur;
-    outside = Standard_True;
+    outside = true;
   }
 
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);
 
   // processing of face
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(6);
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
-    outside = Standard_True;
+    outside = true;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
     arrdir.Reverse();

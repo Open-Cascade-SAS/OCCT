@@ -37,7 +37,7 @@ TDF_ChildIDIterator::TDF_ChildIDIterator() {}
 
 TDF_ChildIDIterator::TDF_ChildIDIterator(const TDF_Label&       aLabel,
                                          const Standard_GUID&   anID,
-                                         const Standard_Boolean allLevels)
+                                         const bool allLevels)
     : myID(anID),
       myItr(aLabel, allLevels)
 {
@@ -48,7 +48,7 @@ TDF_ChildIDIterator::TDF_ChildIDIterator(const TDF_Label&       aLabel,
 
 void TDF_ChildIDIterator::Initialize(const TDF_Label&       aLabel,
                                      const Standard_GUID&   anID,
-                                     const Standard_Boolean allLevels)
+                                     const bool allLevels)
 {
   myID = anID;
   myItr.Initialize(aLabel, allLevels);

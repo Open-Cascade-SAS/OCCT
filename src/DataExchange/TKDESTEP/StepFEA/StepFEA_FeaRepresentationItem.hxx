@@ -21,9 +21,6 @@
 
 #include <StepRepr_RepresentationItem.hxx>
 
-class StepFEA_FeaRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaRepresentationItem, StepRepr_RepresentationItem)
-
 //! Representation of STEP entity FeaRepresentationItem
 class StepFEA_FeaRepresentationItem : public StepRepr_RepresentationItem
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaRepresentationItem, StepRepr_RepresentationItem)
 
-protected:
-private:
 };
 
 #endif // _StepFEA_FeaRepresentationItem_HeaderFile

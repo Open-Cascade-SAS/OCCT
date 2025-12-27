@@ -27,8 +27,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedFunction, Expr_GeneralFunction)
 
 Expr_NamedFunction::Expr_NamedFunction(const TCollection_AsciiString&        name,
-                                       const Handle(Expr_GeneralExpression)& exp,
-                                       const Expr_Array1OfNamedUnknown&      vars)
+                                       const occ::handle<Expr_GeneralExpression>& exp,
+                                       const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&      vars)
     : myVariables(vars.Lower(), vars.Upper())
 {
   myVariables = vars;
@@ -46,18 +46,18 @@ TCollection_AsciiString Expr_NamedFunction::GetName() const
   return myName;
 }
 
-Standard_Integer Expr_NamedFunction::NbOfVariables() const
+int Expr_NamedFunction::NbOfVariables() const
 {
   return myVariables.Length();
 }
 
-Handle(Expr_NamedUnknown) Expr_NamedFunction::Variable(const Standard_Integer index) const
+occ::handle<Expr_NamedUnknown> Expr_NamedFunction::Variable(const int index) const
 {
   return myVariables(index);
 }
 
-Standard_Real Expr_NamedFunction::Evaluate(const Expr_Array1OfNamedUnknown& vars,
-                                           const TColStd_Array1OfReal&      values) const
+double Expr_NamedFunction::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                           const NCollection_Array1<double>&      values) const
 {
   if (vars.Length() != values.Length())
   {
@@ -66,57 +66,57 @@ Standard_Real Expr_NamedFunction::Evaluate(const Expr_Array1OfNamedUnknown& vars
   return myExp->Evaluate(vars, values);
 }
 
-Handle(Expr_GeneralFunction) Expr_NamedFunction::Copy() const
+occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Copy() const
 {
   return new Expr_NamedFunction(myName, Expr::CopyShare(Expression()), myVariables);
 }
 
-Handle(Expr_GeneralFunction) Expr_NamedFunction::Derivative(
-  const Handle(Expr_NamedUnknown)& var) const
+occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Derivative(
+  const occ::handle<Expr_NamedUnknown>& var) const
 {
-  Handle(Expr_NamedFunction) me = this;
+  occ::handle<Expr_NamedFunction> me = this;
   return new Expr_FunctionDerivative(me, var, 1);
 }
 
-Handle(Expr_GeneralFunction) Expr_NamedFunction::Derivative(const Handle(Expr_NamedUnknown)& var,
-                                                            const Standard_Integer deg) const
+occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Derivative(const occ::handle<Expr_NamedUnknown>& var,
+                                                            const int deg) const
 {
-  Handle(Expr_NamedFunction) me = this;
+  occ::handle<Expr_NamedFunction> me = this;
   return new Expr_FunctionDerivative(me, var, deg);
 }
 
-Standard_Boolean Expr_NamedFunction::IsIdentical(const Handle(Expr_GeneralFunction)& func) const
+bool Expr_NamedFunction::IsIdentical(const occ::handle<Expr_GeneralFunction>& func) const
 {
   if (!func->IsKind(STANDARD_TYPE(Expr_NamedFunction)))
   {
-    return Standard_False;
+    return false;
   }
-  if (myName != Handle(Expr_NamedFunction)::DownCast(func)->GetName())
+  if (myName != occ::down_cast<Expr_NamedFunction>(func)->GetName())
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Integer nbvars = NbOfVariables();
+  int nbvars = NbOfVariables();
   if (nbvars != func->NbOfVariables())
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Expr_NamedUnknown) thisvar;
-  for (Standard_Integer i = 1; i <= nbvars; i++)
+  occ::handle<Expr_NamedUnknown> thisvar;
+  for (int i = 1; i <= nbvars; i++)
   {
     thisvar = Variable(i);
     if (!thisvar->IsIdentical(func->Variable(i)))
     {
-      return Standard_False;
+      return false;
     }
   }
-  if (!Expression()->IsIdentical(Handle(Expr_NamedFunction)::DownCast(func)->Expression()))
+  if (!Expression()->IsIdentical(occ::down_cast<Expr_NamedFunction>(func)->Expression()))
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Expr_NamedFunction::IsLinearOnVariable(const Standard_Integer) const
+bool Expr_NamedFunction::IsLinearOnVariable(const int) const
 {
   // bad implementation, should be improved
   return myExp->IsLinear();
@@ -127,12 +127,12 @@ TCollection_AsciiString Expr_NamedFunction::GetStringName() const
   return myName;
 }
 
-Handle(Expr_GeneralExpression) Expr_NamedFunction::Expression() const
+occ::handle<Expr_GeneralExpression> Expr_NamedFunction::Expression() const
 {
   return myExp;
 }
 
-void Expr_NamedFunction::SetExpression(const Handle(Expr_GeneralExpression)& anexp)
+void Expr_NamedFunction::SetExpression(const occ::handle<Expr_GeneralExpression>& anexp)
 {
   myExp = anexp;
 }

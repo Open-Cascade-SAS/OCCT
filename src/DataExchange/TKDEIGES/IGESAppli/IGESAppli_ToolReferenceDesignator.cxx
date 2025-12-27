@@ -34,13 +34,13 @@
 IGESAppli_ToolReferenceDesignator::IGESAppli_ToolReferenceDesignator() {}
 
 void IGESAppli_ToolReferenceDesignator::ReadOwnParams(
-  const Handle(IGESAppli_ReferenceDesignator)& ent,
-  const Handle(IGESData_IGESReaderData)& /* IR */,
+  const occ::handle<IGESAppli_ReferenceDesignator>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
   IGESData_ParamReader& PR) const
 {
-  Standard_Integer                 tempNbPropertyValues;
-  Handle(TCollection_HAsciiString) tempReferenceDesignator;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int                 tempNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> tempReferenceDesignator;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
@@ -51,7 +51,7 @@ void IGESAppli_ToolReferenceDesignator::ReadOwnParams(
 }
 
 void IGESAppli_ToolReferenceDesignator::WriteOwnParams(
-  const Handle(IGESAppli_ReferenceDesignator)& ent,
+  const occ::handle<IGESAppli_ReferenceDesignator>& ent,
   IGESData_IGESWriter&                         IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -59,41 +59,41 @@ void IGESAppli_ToolReferenceDesignator::WriteOwnParams(
 }
 
 void IGESAppli_ToolReferenceDesignator::OwnShared(
-  const Handle(IGESAppli_ReferenceDesignator)& /* ent */,
+  const occ::handle<IGESAppli_ReferenceDesignator>& /* ent */,
   Interface_EntityIterator& /* iter */) const
 {
 }
 
 void IGESAppli_ToolReferenceDesignator::OwnCopy(
-  const Handle(IGESAppli_ReferenceDesignator)& another,
-  const Handle(IGESAppli_ReferenceDesignator)& ent,
+  const occ::handle<IGESAppli_ReferenceDesignator>& another,
+  const occ::handle<IGESAppli_ReferenceDesignator>& ent,
   Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 aNbPropertyValues;
-  Handle(TCollection_HAsciiString) aReferenceDesignator =
+  int                 aNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> aReferenceDesignator =
     new TCollection_HAsciiString(another->RefDesignatorText());
   aNbPropertyValues = another->NbPropertyValues();
   ent->Init(aNbPropertyValues, aReferenceDesignator);
 }
 
-Standard_Boolean IGESAppli_ToolReferenceDesignator::OwnCorrect(
-  const Handle(IGESAppli_ReferenceDesignator)& ent) const
+bool IGESAppli_ToolReferenceDesignator::OwnCorrect(
+  const occ::handle<IGESAppli_ReferenceDesignator>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 1);
+  bool res = (ent->NbPropertyValues() != 1);
   if (res)
     ent->Init(1, ent->RefDesignatorText());
   //         nbpropertyvalues=1
   if (ent->SubordinateStatus() != 0)
   {
-    Handle(IGESData_LevelListEntity) nulevel;
+    occ::handle<IGESData_LevelListEntity> nulevel;
     ent->InitLevel(nulevel, 0);
-    res = Standard_True;
+    res = true;
   }
   return res; // + RAZ level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolReferenceDesignator::DirChecker(
-  const Handle(IGESAppli_ReferenceDesignator)& /* ent */) const
+  const occ::handle<IGESAppli_ReferenceDesignator>& /* ent */) const
 {
   // UNFINISHED
   IGESData_DirChecker DC(406, 7); // Form no = 7 & Type = 406
@@ -105,9 +105,9 @@ IGESData_DirChecker IGESAppli_ToolReferenceDesignator::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolReferenceDesignator::OwnCheck(const Handle(IGESAppli_ReferenceDesignator)& ent,
+void IGESAppli_ToolReferenceDesignator::OwnCheck(const occ::handle<IGESAppli_ReferenceDesignator>& ent,
                                                  const Interface_ShareTool&,
-                                                 Handle(Interface_Check)& ach) const
+                                                 occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
     // the level is ignored if this property is subordinate
@@ -119,10 +119,10 @@ void IGESAppli_ToolReferenceDesignator::OwnCheck(const Handle(IGESAppli_Referenc
   // the level is ignored if this property is subordinate -- queried
 }
 
-void IGESAppli_ToolReferenceDesignator::OwnDump(const Handle(IGESAppli_ReferenceDesignator)& ent,
+void IGESAppli_ToolReferenceDesignator::OwnDump(const occ::handle<IGESAppli_ReferenceDesignator>& ent,
                                                 const IGESData_IGESDumper& /* dumper */,
                                                 Standard_OStream& S,
-                                                const Standard_Integer /* level */) const
+                                                const int /* level */) const
 {
   S << "IGESAppli_ReferenceDesignator\n";
   S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";

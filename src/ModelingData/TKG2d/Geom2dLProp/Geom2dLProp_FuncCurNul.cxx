@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-Geom2dLProp_FuncCurNul::Geom2dLProp_FuncCurNul(const Handle(Geom2d_Curve)& C)
+Geom2dLProp_FuncCurNul::Geom2dLProp_FuncCurNul(const occ::handle<Geom2d_Curve>& C)
     : theCurve(C)
 {
 }
@@ -30,17 +30,17 @@ Geom2dLProp_FuncCurNul::Geom2dLProp_FuncCurNul(const Handle(Geom2d_Curve)& C)
 // function : Value
 // purpose : F = (V1^V2.Z)/||V1||*||V2||
 //=============================================================================
-Standard_Boolean Geom2dLProp_FuncCurNul::Value(const Standard_Real X, Standard_Real& F)
+bool Geom2dLProp_FuncCurNul::Value(const double X, double& F)
 {
-  Standard_Real D;
+  double D;
   return Values(X, F, D);
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom2dLProp_FuncCurNul::Derivative(const Standard_Real X, Standard_Real& D)
+bool Geom2dLProp_FuncCurNul::Derivative(const double X, double& D)
 {
-  Standard_Real F;
+  double F;
   return Values(X, F, D);
 }
 
@@ -48,40 +48,40 @@ Standard_Boolean Geom2dLProp_FuncCurNul::Derivative(const Standard_Real X, Stand
 // function : Values
 // purpose : F = (V1^V2.Z)/||V1||*||V2||
 //=============================================================================
-Standard_Boolean Geom2dLProp_FuncCurNul::Values(const Standard_Real X,
-                                                Standard_Real&      F,
-                                                Standard_Real&      D)
+bool Geom2dLProp_FuncCurNul::Values(const double X,
+                                                double&      F,
+                                                double&      D)
 {
   gp_Pnt2d P1;
   gp_Vec2d V1, V2, V3;
   Geom2dLProp_Curve2dTool::D3(theCurve, X, P1, V1, V2, V3);
-  Standard_Real CP1  = V1.Crossed(V2);
-  Standard_Real CP2  = V1.Crossed(V3);
-  Standard_Real V1V2 = V1.Dot(V2);
-  Standard_Real V2V3 = V2.Dot(V3);
-  Standard_Real NV1  = V1.Magnitude();
-  Standard_Real NV2  = V2.Magnitude();
+  double CP1  = V1.Crossed(V2);
+  double CP2  = V1.Crossed(V3);
+  double V1V2 = V1.Dot(V2);
+  double V2V3 = V2.Dot(V3);
+  double NV1  = V1.Magnitude();
+  double NV2  = V2.Magnitude();
 
   F = 0.;
   D = 0.;
 
   /*
     if (std::abs(CP1) < 1.e-4) {
-      return Standard_True;
+      return true;
     } else */
 
   if (NV2 < 1.e-4)
   {
-    return Standard_True;
+    return true;
   }
   else if (NV1 * NV2 < gp::Resolution())
   {
-    return Standard_False;
+    return false;
   }
   else
   {
     F = CP1 / (NV1 * NV2);
     D = (CP2 - CP1 * V1V2 / (NV1 * NV1) - CP1 * V2V3 / (NV2 * NV2)) / (NV1 * NV2);
   }
-  return Standard_True;
+  return true;
 }

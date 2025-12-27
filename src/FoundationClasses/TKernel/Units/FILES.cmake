@@ -19,7 +19,7 @@ set(OCCT_Units_FILES
   Units_NoSuchType.hxx
   Units_NoSuchUnit.hxx
   Units_Operators.hxx
-  Units_QtsSequence.hxx
+
   Units_QuantitiesSequence.hxx
   Units_Quantity.cxx
   Units_Quantity.hxx
@@ -31,7 +31,7 @@ set(OCCT_Units_FILES
   Units_ShiftedToken.hxx
   Units_ShiftedUnit.cxx
   Units_ShiftedUnit.hxx
-  Units_TksSequence.hxx
+
   Units_Token.cxx
   Units_Token.hxx
   Units_Token.lxx
@@ -50,5 +50,5 @@ set(OCCT_Units_FILES
   Units_UnitsSequence.hxx
   Units_UnitsSystem.cxx
   Units_UnitsSystem.hxx
-  Units_UtsSequence.hxx
+
 )

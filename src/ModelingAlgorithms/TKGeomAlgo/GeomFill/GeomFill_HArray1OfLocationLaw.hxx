@@ -17,9 +17,10 @@
 #ifndef GeomFill_HArray1OfLocationLaw_HeaderFile
 #define GeomFill_HArray1OfLocationLaw_HeaderFile
 
-#include <GeomFill_Array1OfLocationLaw.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(GeomFill_HArray1OfLocationLaw, GeomFill_Array1OfLocationLaw)
+DEFINE_HARRAY1(GeomFill_HArray1OfLocationLaw, NCollection_Array1<occ::handle<GeomFill_LocationLaw>>)
 
 #endif

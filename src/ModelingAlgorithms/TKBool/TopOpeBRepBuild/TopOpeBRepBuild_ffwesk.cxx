@@ -24,16 +24,16 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT void debfctwesmess(const Standard_Integer i, const TCollection_AsciiString& s = "");
-Standard_EXPORT void debffwesON(const Standard_Integer i);
+Standard_EXPORT void debfctwesmess(const int i, const TCollection_AsciiString& s = "");
+Standard_EXPORT void debffwesON(const int i);
 
-Standard_EXPORT void debffwesk(const Standard_Integer i)
+Standard_EXPORT void debffwesk(const int i)
 {
   std::cout << "++ debffwesk " << i << std::endl;
 }
 #endif
 
-Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
+bool TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
 #define M_IN(st) (st == TopAbs_IN)
 #define M_OUT(st) (st == TopAbs_OUT)
@@ -44,11 +44,11 @@ Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const T
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
-                                             const TopTools_ListOfShape&  LS2,
+void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape>&  LS1,
+                                             const NCollection_List<TopoDS_Shape>&  LS2,
                                              const TopOpeBRepBuild_GTopo& G1,
                                              TopOpeBRepBuild_WireEdgeSet& WES,
-                                             const Standard_Integer       Kfill)
+                                             const int       Kfill)
 {
   if (LS1.IsEmpty())
     return;
@@ -60,14 +60,14 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
   const TopoDS_Shape& F1 = LS1.First();
   myFaceReference        = TopoDS::Face(F1);
 #ifdef OCCT_DEBUG
-  Standard_Integer iF1 =
+  int iF1 =
 #endif
     BDS.Shape(F1);
-  Standard_Integer   iref = BDS.SameDomainRef(F1);
+  int   iref = BDS.SameDomainRef(F1);
   TopAbs_Orientation oref = BDS.Shape(iref).Orientation();
 
 #ifdef OCCT_DEBUG
-  Standard_Boolean tSPS = GtraceSPS(F1, iF1);
+  bool tSPS = GtraceSPS(F1, iF1);
   if (tSPS)
     std::cout << "\n%%%%%%%%%%%%% K = " << Kfill << " %%%%%%%%%%%%% ";
   if (tSPS)
@@ -78,8 +78,8 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
 
   TopAbs_State                       TB;
   TopOpeBRepBuild_GTopo              G;
-  TopTools_ListIteratorOfListOfShape it;
-  Standard_Boolean                   gistoreverse1;
+  NCollection_List<TopoDS_Shape>::Iterator it;
+  bool                   gistoreverse1;
 
   G             = G1;
   gistoreverse1 = G.IsToReverse1();
@@ -107,8 +107,8 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S       = it.Value();
-    Standard_Integer    iS      = myDataStructure->Shape(S);
-    Standard_Boolean    tomerge = !IsMerged(S, TB);
+    int    iS      = myDataStructure->Shape(S);
+    bool    tomerge = !IsMerged(S, TB);
     if (!tomerge)
       continue;
 
@@ -123,20 +123,20 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:35 2002 Begin
     //     const TopoDS_Shape& Fref = WES.Face();
     //     const TopoDS_Shape& F = S;
-    //     Standard_Boolean samegeom = ::TopOpeBRepBuild_FUN_aresamegeom(Fref,F);
-    //     Standard_Boolean r = gistoreverse1;
+    //     bool samegeom = ::TopOpeBRepBuild_FUN_aresamegeom(Fref,F);
+    //     bool r = gistoreverse1;
     //     if ( !samegeom ) { r = !r; G.SetReverse(r); }
 
-    //     Standard_Boolean rev = Standard_False;
+    //     bool rev = false;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:36 2002 End
     TopAbs_Orientation  oS   = BDS.Shape(iS).Orientation();
     TopOpeBRepDS_Config conf = BDS.SameDomainOri(S);
-    Standard_Boolean    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
-    Standard_Boolean    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
-    Standard_Boolean    b    = b1 || b2;
+    bool    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
+    bool    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
+    bool    b    = b1 || b2;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:01 2002 Begin
     //     if (b) {
-    //       rev = Standard_True;
+    //       rev = true;
     //       G.SetReverse(rev);
     //     }
     if (b)
@@ -195,28 +195,28 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape&  LS1,
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S       = it.Value();
-    Standard_Integer    iS      = myDataStructure->Shape(S);
-    Standard_Boolean    tomerge = !IsMerged(S, TB);
+    int    iS      = myDataStructure->Shape(S);
+    bool    tomerge = !IsMerged(S, TB);
     if (!tomerge)
       continue;
 
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:38:33 2002 Begin
     //     const TopoDS_Shape& Fref = WES.Face();
     //     const TopoDS_Shape& F = S;
-    //     Standard_Boolean samegeom = ::TopOpeBRepBuild_FUN_aresamegeom(Fref,F);
-    //     Standard_Boolean r = gistoreverse1;
+    //     bool samegeom = ::TopOpeBRepBuild_FUN_aresamegeom(Fref,F);
+    //     bool r = gistoreverse1;
     //     if ( !samegeom ) { r = !r; G.SetReverse(r); }
 
-    //     Standard_Boolean rev = Standard_False;
+    //     bool rev = false;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:38:30 2002 End
     TopAbs_Orientation  oS   = BDS.Shape(iS).Orientation();
     TopOpeBRepDS_Config conf = BDS.SameDomainOri(S);
-    Standard_Boolean    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
-    Standard_Boolean    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
-    Standard_Boolean    b    = b1 || b2;
+    bool    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
+    bool    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
+    bool    b    = b1 || b2;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:39:04 2002 Begin
     //     if (b) {
-    //       rev = Standard_True;
+    //       rev = true;
     //       G.SetReverse(rev);
     //     }
     if (b)

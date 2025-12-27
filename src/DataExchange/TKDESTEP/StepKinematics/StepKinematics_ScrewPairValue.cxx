@@ -25,9 +25,9 @@ StepKinematics_ScrewPairValue::StepKinematics_ScrewPairValue() {}
 //=================================================================================================
 
 void StepKinematics_ScrewPairValue::Init(
-  const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-  const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-  const Standard_Real                         theActualRotation)
+  const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+  const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+  const double                         theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -36,14 +36,14 @@ void StepKinematics_ScrewPairValue::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_ScrewPairValue::ActualRotation() const
+double StepKinematics_ScrewPairValue::ActualRotation() const
 {
   return myActualRotation;
 }
 
 //=================================================================================================
 
-void StepKinematics_ScrewPairValue::SetActualRotation(const Standard_Real theActualRotation)
+void StepKinematics_ScrewPairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

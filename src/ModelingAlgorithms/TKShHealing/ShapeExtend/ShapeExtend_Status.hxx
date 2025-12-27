@@ -34,7 +34,7 @@
 //! The class that uses statuses provides a method(s) which
 //! answers whether the flag corresponding to a given
 //! enumerative value is (are) set:
-//! Standard_Boolean Status(const ShapeExtend_Status test);
+//! bool Status(const ShapeExtend_Status test);
 //! Note that status can have several flags set simultaneously.
 //! Status(ShapeExtend_OK) gives True when no flags are set.
 //! Nothing done, everything OK

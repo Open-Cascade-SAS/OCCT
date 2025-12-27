@@ -35,7 +35,7 @@ StepBasic_RoleSelect::StepBasic_RoleSelect() {}
 
 //=================================================================================================
 
-Standard_Integer StepBasic_RoleSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepBasic_RoleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -66,78 +66,78 @@ Standard_Integer StepBasic_RoleSelect::CaseNum(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Handle(StepBasic_ActionAssignment) StepBasic_RoleSelect::ActionAssignment() const
+occ::handle<StepBasic_ActionAssignment> StepBasic_RoleSelect::ActionAssignment() const
 {
-  return Handle(StepBasic_ActionAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_ActionAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ActionRequestAssignment) StepBasic_RoleSelect::ActionRequestAssignment() const
+occ::handle<StepBasic_ActionRequestAssignment> StepBasic_RoleSelect::ActionRequestAssignment() const
 {
-  return Handle(StepBasic_ActionRequestAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_ActionRequestAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalAssignment) StepBasic_RoleSelect::ApprovalAssignment() const
+occ::handle<StepBasic_ApprovalAssignment> StepBasic_RoleSelect::ApprovalAssignment() const
 {
-  return Handle(StepBasic_ApprovalAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_ApprovalAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ApprovalDateTime) StepBasic_RoleSelect::ApprovalDateTime() const
+occ::handle<StepBasic_ApprovalDateTime> StepBasic_RoleSelect::ApprovalDateTime() const
 {
-  return Handle(StepBasic_ApprovalDateTime)::DownCast(Value());
+  return occ::down_cast<StepBasic_ApprovalDateTime>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_CertificationAssignment) StepBasic_RoleSelect::CertificationAssignment() const
+occ::handle<StepBasic_CertificationAssignment> StepBasic_RoleSelect::CertificationAssignment() const
 {
-  return Handle(StepBasic_CertificationAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_CertificationAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_ContractAssignment) StepBasic_RoleSelect::ContractAssignment() const
+occ::handle<StepBasic_ContractAssignment> StepBasic_RoleSelect::ContractAssignment() const
 {
-  return Handle(StepBasic_ContractAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_ContractAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DocumentReference) StepBasic_RoleSelect::DocumentReference() const
+occ::handle<StepBasic_DocumentReference> StepBasic_RoleSelect::DocumentReference() const
 {
-  return Handle(StepBasic_DocumentReference)::DownCast(Value());
+  return occ::down_cast<StepBasic_DocumentReference>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_EffectivityAssignment) StepBasic_RoleSelect::EffectivityAssignment() const
+occ::handle<StepBasic_EffectivityAssignment> StepBasic_RoleSelect::EffectivityAssignment() const
 {
-  return Handle(StepBasic_EffectivityAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_EffectivityAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_GroupAssignment) StepBasic_RoleSelect::GroupAssignment() const
+occ::handle<StepBasic_GroupAssignment> StepBasic_RoleSelect::GroupAssignment() const
 {
-  return Handle(StepBasic_GroupAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_GroupAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_NameAssignment) StepBasic_RoleSelect::NameAssignment() const
+occ::handle<StepBasic_NameAssignment> StepBasic_RoleSelect::NameAssignment() const
 {
-  return Handle(StepBasic_NameAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_NameAssignment>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepBasic_SecurityClassificationAssignment) StepBasic_RoleSelect::
+occ::handle<StepBasic_SecurityClassificationAssignment> StepBasic_RoleSelect::
   SecurityClassificationAssignment() const
 {
-  return Handle(StepBasic_SecurityClassificationAssignment)::DownCast(Value());
+  return occ::down_cast<StepBasic_SecurityClassificationAssignment>(Value());
 }

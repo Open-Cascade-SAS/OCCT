@@ -28,11 +28,11 @@ StepShape_AngularLocation::StepShape_AngularLocation() {}
 //=================================================================================================
 
 void StepShape_AngularLocation::Init(
-  const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Name,
-  const Standard_Boolean                  hasShapeAspectRelationship_Description,
-  const Handle(TCollection_HAsciiString)& aShapeAspectRelationship_Description,
-  const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatingShapeAspect,
-  const Handle(StepRepr_ShapeAspect)&     aShapeAspectRelationship_RelatedShapeAspect,
+  const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Name,
+  const bool                  hasShapeAspectRelationship_Description,
+  const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Description,
+  const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatingShapeAspect,
+  const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatedShapeAspect,
   const StepShape_AngleRelator            aAngleSelection)
 {
   StepShape_DimensionalLocation::Init(aShapeAspectRelationship_Name,

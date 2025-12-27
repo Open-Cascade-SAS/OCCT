@@ -18,18 +18,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ColourSpecification, StepVisual_Colour)
 
 StepVisual_ColourSpecification::StepVisual_ColourSpecification() {}
 
-void StepVisual_ColourSpecification::Init(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_ColourSpecification::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {
   // --- classe own fields ---
   name = aName;
 }
 
-void StepVisual_ColourSpecification::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepVisual_ColourSpecification::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_ColourSpecification::Name() const
+occ::handle<TCollection_HAsciiString> StepVisual_ColourSpecification::Name() const
 {
   return name;
 }

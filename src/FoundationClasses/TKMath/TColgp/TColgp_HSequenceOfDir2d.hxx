@@ -18,9 +18,10 @@
 #define TColgp_HSequenceOfDir2d_HeaderFile
 
 #include <gp_Dir2d.hxx>
-#include <TColgp_SequenceOfDir2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(TColgp_HSequenceOfDir2d, TColgp_SequenceOfDir2d)
+DEFINE_HSEQUENCE(TColgp_HSequenceOfDir2d, NCollection_Sequence<gp_Dir2d>)
 
 #endif

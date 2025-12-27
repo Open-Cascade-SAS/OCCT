@@ -41,13 +41,13 @@ public:
 
   //! Returns the created entity.
   //! @return The created value.
-  inline const Handle(StepGeom_CartesianTransformationOperator3d)& Value() const
+  inline const occ::handle<StepGeom_CartesianTransformationOperator3d>& Value() const
   {
     return myTrsfOp;
   }
 
 private:
-  Handle(StepGeom_CartesianTransformationOperator3d) myTrsfOp;
+  occ::handle<StepGeom_CartesianTransformationOperator3d> myTrsfOp;
 };
 
 #endif // _GeomToStep_MakeCartesianTransformationOperator_HeaderFile

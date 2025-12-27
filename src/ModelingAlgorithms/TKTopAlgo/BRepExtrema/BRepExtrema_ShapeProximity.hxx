@@ -51,73 +51,73 @@ class BRepExtrema_ShapeProximity
 public:
   //! Creates empty proximity tool.
   Standard_EXPORT BRepExtrema_ShapeProximity(
-    const Standard_Real theTolerance = Precision::Infinite());
+    const double theTolerance = Precision::Infinite());
 
   //! Creates proximity tool for the given two shapes.
   Standard_EXPORT BRepExtrema_ShapeProximity(
     const TopoDS_Shape& theShape1,
     const TopoDS_Shape& theShape2,
-    const Standard_Real theTolerance = Precision::Infinite());
+    const double theTolerance = Precision::Infinite());
 
 public:
   //! Returns tolerance value for overlap test (distance between shapes).
-  Standard_Real Tolerance() const { return myTolerance; }
+  double Tolerance() const { return myTolerance; }
 
   //! Sets tolerance value for overlap test (distance between shapes).
-  void SetTolerance(const Standard_Real theTolerance) { myTolerance = theTolerance; }
+  void SetTolerance(const double theTolerance) { myTolerance = theTolerance; }
 
   //! Returns proximity value calculated for the whole input shapes.
-  Standard_Real Proximity() const { return Tolerance(); }
+  double Proximity() const { return Tolerance(); }
 
   //! Loads 1st shape into proximity tool.
-  Standard_EXPORT Standard_Boolean LoadShape1(const TopoDS_Shape& theShape1);
+  Standard_EXPORT bool LoadShape1(const TopoDS_Shape& theShape1);
 
   //! Loads 2nd shape into proximity tool.
-  Standard_EXPORT Standard_Boolean LoadShape2(const TopoDS_Shape& theShape2);
+  Standard_EXPORT bool LoadShape2(const TopoDS_Shape& theShape2);
 
   //! Set number of sample points on the 1st shape used to compute the proximity value.
   //! In case of 0, all triangulation nodes will be used.
-  void SetNbSamples1(const Standard_Integer theNbSamples) { myNbSamples1 = theNbSamples; }
+  void SetNbSamples1(const int theNbSamples) { myNbSamples1 = theNbSamples; }
 
   //! Set number of sample points on the 2nd shape used to compute the proximity value.
   //! In case of 0, all triangulation nodes will be used.
-  void SetNbSamples2(const Standard_Integer theNbSamples) { myNbSamples2 = theNbSamples; }
+  void SetNbSamples2(const int theNbSamples) { myNbSamples2 = theNbSamples; }
 
   //! Performs search of overlapped faces.
   Standard_EXPORT void Perform();
 
   //! True if the search is completed.
-  Standard_Boolean IsDone() const { return myOverlapTool.IsDone() || myProxValTool.IsDone(); }
+  bool IsDone() const { return myOverlapTool.IsDone() || myProxValTool.IsDone(); }
 
   //! Returns set of IDs of overlapped faces of 1st shape (started from 0).
-  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes1() const
+  const NCollection_DataMap<int, TColStd_PackedMapOfInteger>& OverlapSubShapes1() const
   {
     return myOverlapTool.OverlapSubShapes1();
   }
 
   //! Returns set of IDs of overlapped faces of 2nd shape (started from 0).
-  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes2() const
+  const NCollection_DataMap<int, TColStd_PackedMapOfInteger>& OverlapSubShapes2() const
   {
     return myOverlapTool.OverlapSubShapes2();
   }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape1(const Standard_Integer theID) const
+  const TopoDS_Shape& GetSubShape1(const int theID) const
   {
     return myShapeList1.Value(theID);
   }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape2(const Standard_Integer theID) const
+  const TopoDS_Shape& GetSubShape2(const int theID) const
   {
     return myShapeList2.Value(theID);
   }
 
   //! Returns set of all the face triangles of the 1st shape.
-  const Handle(BRepExtrema_TriangleSet)& ElementSet1() const { return myElementSet1; }
+  const occ::handle<BRepExtrema_TriangleSet>& ElementSet1() const { return myElementSet1; }
 
   //! Returns set of all the face triangles of the 2nd shape.
-  const Handle(BRepExtrema_TriangleSet)& ElementSet2() const { return myElementSet2; }
+  const occ::handle<BRepExtrema_TriangleSet>& ElementSet2() const { return myElementSet2; }
 
   //! Returns the point on the 1st shape, which could be used as a reference point
   //! for the value of the proximity.
@@ -137,29 +137,29 @@ public:
 
 private:
   //! Maximum overlapping distance.
-  Standard_Real myTolerance;
+  double myTolerance;
 
   //! Is the 1st shape initialized?
-  Standard_Boolean myIsInitS1;
+  bool myIsInitS1;
   //! Is the 2nd shape initialized?
-  Standard_Boolean myIsInitS2;
+  bool myIsInitS2;
 
   //! List of subshapes of the 1st shape.
-  BRepExtrema_ShapeList myShapeList1;
+  NCollection_Vector<TopoDS_Shape> myShapeList1;
   //! List of subshapes of the 2nd shape.
-  BRepExtrema_ShapeList myShapeList2;
+  NCollection_Vector<TopoDS_Shape> myShapeList2;
 
   //! Set of all the face triangles of the 1st shape.
-  Handle(BRepExtrema_TriangleSet) myElementSet1;
+  occ::handle<BRepExtrema_TriangleSet> myElementSet1;
   //! Set of all the face triangles of the 2nd shape.
-  Handle(BRepExtrema_TriangleSet) myElementSet2;
+  occ::handle<BRepExtrema_TriangleSet> myElementSet2;
 
   //! Number of sample points on the 1st shape used to compute the proximity value
   //! (if zero (default), all triangulation nodes will be used).
-  Standard_Integer myNbSamples1;
+  int myNbSamples1;
   //! Number of sample points on the 2nd shape used to compute the proximity value
   //! (if zero (default), all triangulation nodes will be used).
-  Standard_Integer myNbSamples2;
+  int myNbSamples2;
 
   //! Reference point of the proximity value on the 1st shape.
   gp_Pnt myProxPoint1;

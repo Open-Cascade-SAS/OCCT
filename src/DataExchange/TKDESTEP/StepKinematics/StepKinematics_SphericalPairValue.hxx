@@ -24,8 +24,6 @@
 #include <StepKinematics_KinematicPair.hxx>
 #include <StepKinematics_SpatialRotation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_SphericalPairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity SphericalPairValue
 class StepKinematics_SphericalPairValue : public StepKinematics_PairValue
 {
@@ -34,8 +32,8 @@ public:
   Standard_EXPORT StepKinematics_SphericalPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
                             const StepKinematics_SpatialRotation&       theInputOrientation);
 
   //! Returns field InputOrientation

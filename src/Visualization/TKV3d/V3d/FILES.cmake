@@ -13,7 +13,7 @@ set(OCCT_V3d_FILES
   V3d_DirectionalLight.hxx
   V3d_ImageDumpOptions.hxx
   V3d_Light.hxx
-  V3d_ListOfLight.hxx
+
   V3d_ListOfView.hxx
   V3d_Plane.cxx
   V3d_Plane.hxx
@@ -29,10 +29,9 @@ set(OCCT_V3d_FILES
   V3d_Trihedron.cxx
   V3d_Trihedron.hxx
   V3d_TypeOfAxe.hxx
-  V3d_TypeOfBackfacingModel.hxx
-  V3d_TypeOfLight.hxx
+
   V3d_TypeOfOrientation.hxx
-  V3d_TypeOfShadingModel.hxx
+
   V3d_TypeOfView.hxx
   V3d_TypeOfVisualization.hxx
   V3d_UnMapped.hxx

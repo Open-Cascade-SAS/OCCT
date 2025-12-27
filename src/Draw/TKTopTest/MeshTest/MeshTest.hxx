@@ -35,8 +35,6 @@ public:
   //! Defines plugin commands
   Standard_EXPORT static void PluginCommands(Draw_Interpretor& DI);
 
-protected:
-private:
 };
 
 #endif // _MeshTest_HeaderFile

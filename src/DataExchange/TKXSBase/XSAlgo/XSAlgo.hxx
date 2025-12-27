@@ -33,10 +33,10 @@ public:
   Standard_EXPORT static void Init();
 
   //! Sets default AlgoContainer
-  Standard_EXPORT static void SetAlgoContainer(const Handle(XSAlgo_AlgoContainer)& aContainer);
+  Standard_EXPORT static void SetAlgoContainer(const occ::handle<XSAlgo_AlgoContainer>& aContainer);
 
   //! Returns default AlgoContainer
-  Standard_EXPORT static Handle(XSAlgo_AlgoContainer) AlgoContainer();
+  Standard_EXPORT static occ::handle<XSAlgo_AlgoContainer> AlgoContainer();
 };
 
 #endif // _XSAlgo_HeaderFile

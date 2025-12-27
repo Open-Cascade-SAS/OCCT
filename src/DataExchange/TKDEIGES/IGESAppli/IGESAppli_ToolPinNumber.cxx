@@ -33,13 +33,13 @@
 
 IGESAppli_ToolPinNumber::IGESAppli_ToolPinNumber() {}
 
-void IGESAppli_ToolPinNumber::ReadOwnParams(const Handle(IGESAppli_PinNumber)& ent,
-                                            const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESAppli_ToolPinNumber::ReadOwnParams(const occ::handle<IGESAppli_PinNumber>& ent,
+                                            const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                             IGESData_ParamReader& PR) const
 {
-  Standard_Integer                 tempNbPropertyValues;
-  Handle(TCollection_HAsciiString) tempPinNumber;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int                 tempNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> tempPinNumber;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
@@ -49,42 +49,42 @@ void IGESAppli_ToolPinNumber::ReadOwnParams(const Handle(IGESAppli_PinNumber)& e
   ent->Init(tempNbPropertyValues, tempPinNumber);
 }
 
-void IGESAppli_ToolPinNumber::WriteOwnParams(const Handle(IGESAppli_PinNumber)& ent,
+void IGESAppli_ToolPinNumber::WriteOwnParams(const occ::handle<IGESAppli_PinNumber>& ent,
                                              IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->PinNumberVal());
 }
 
-void IGESAppli_ToolPinNumber::OwnShared(const Handle(IGESAppli_PinNumber)& /* ent */,
+void IGESAppli_ToolPinNumber::OwnShared(const occ::handle<IGESAppli_PinNumber>& /* ent */,
                                         Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESAppli_ToolPinNumber::OwnCopy(const Handle(IGESAppli_PinNumber)& another,
-                                      const Handle(IGESAppli_PinNumber)& ent,
+void IGESAppli_ToolPinNumber::OwnCopy(const occ::handle<IGESAppli_PinNumber>& another,
+                                      const occ::handle<IGESAppli_PinNumber>& ent,
                                       Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer                 aNbPropertyValues;
-  Handle(TCollection_HAsciiString) aPinNumber =
+  int                 aNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> aPinNumber =
     new TCollection_HAsciiString(another->PinNumberVal());
   aNbPropertyValues = another->NbPropertyValues();
   ent->Init(aNbPropertyValues, aPinNumber);
 }
 
-Standard_Boolean IGESAppli_ToolPinNumber::OwnCorrect(const Handle(IGESAppli_PinNumber)& ent) const
+bool IGESAppli_ToolPinNumber::OwnCorrect(const occ::handle<IGESAppli_PinNumber>& ent) const
 {
-  Standard_Boolean res = (ent->SubordinateStatus() != 0);
+  bool res = (ent->SubordinateStatus() != 0);
   if (res)
   {
-    Handle(IGESData_LevelListEntity) nulevel;
+    occ::handle<IGESData_LevelListEntity> nulevel;
     ent->InitLevel(nulevel, 0);
   }
   return res; // RAZ level according to subordinate
 }
 
 IGESData_DirChecker IGESAppli_ToolPinNumber::DirChecker(
-  const Handle(IGESAppli_PinNumber)& /* ent */) const
+  const occ::handle<IGESAppli_PinNumber>& /* ent */) const
 {
   IGESData_DirChecker DC(406, 8); // Form no = 8 & Type = 406
   DC.Structure(IGESData_DefVoid);
@@ -95,9 +95,9 @@ IGESData_DirChecker IGESAppli_ToolPinNumber::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolPinNumber::OwnCheck(const Handle(IGESAppli_PinNumber)& ent,
+void IGESAppli_ToolPinNumber::OwnCheck(const occ::handle<IGESAppli_PinNumber>& ent,
                                        const Interface_ShareTool&,
-                                       Handle(Interface_Check)& ach) const
+                                       occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
@@ -108,10 +108,10 @@ void IGESAppli_ToolPinNumber::OwnCheck(const Handle(IGESAppli_PinNumber)& ent,
   // Level to be ignored if the property is subordinate -- queried
 }
 
-void IGESAppli_ToolPinNumber::OwnDump(const Handle(IGESAppli_PinNumber)& ent,
+void IGESAppli_ToolPinNumber::OwnDump(const occ::handle<IGESAppli_PinNumber>& ent,
                                       const IGESData_IGESDumper& /* dumper */,
                                       Standard_OStream& S,
-                                      const Standard_Integer /* level */) const
+                                      const int /* level */) const
 {
   S << "IGESAppli_PinNumber\n";
   S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";

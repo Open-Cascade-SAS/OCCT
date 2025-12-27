@@ -21,9 +21,6 @@
 #include <StepVisual_AnnotationOccurrence.hxx>
 #include <StepVisual_HArray1OfAnnotationPlaneElement.hxx>
 
-class StepVisual_AnnotationPlane;
-DEFINE_STANDARD_HANDLE(StepVisual_AnnotationPlane, StepVisual_AnnotationOccurrence)
-
 class StepVisual_AnnotationPlane : public StepVisual_AnnotationOccurrence
 {
 public:
@@ -31,34 +28,34 @@ public:
   Standard_EXPORT StepVisual_AnnotationPlane();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                        theName,
-    const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-    const Handle(Standard_Transient)&                              theItem,
-    const Handle(StepVisual_HArray1OfAnnotationPlaneElement)&      theElements);
+    const occ::handle<TCollection_HAsciiString>&                        theName,
+    const occ::handle<StepVisual_HArray1OfPresentationStyleAssignment>& theStyles,
+    const occ::handle<Standard_Transient>&                              theItem,
+    const occ::handle<StepVisual_HArray1OfAnnotationPlaneElement>&      theElements);
 
   //! Returns field Elements
-  inline Handle(StepVisual_HArray1OfAnnotationPlaneElement) Elements() const { return myElements; }
+  inline occ::handle<StepVisual_HArray1OfAnnotationPlaneElement> Elements() const { return myElements; }
 
   //! Set field Elements
-  inline void SetElements(const Handle(StepVisual_HArray1OfAnnotationPlaneElement)& theElements)
+  inline void SetElements(const occ::handle<StepVisual_HArray1OfAnnotationPlaneElement>& theElements)
   {
     myElements = theElements;
   }
 
   //! Returns number of Elements
-  inline Standard_Integer NbElements() const
+  inline int NbElements() const
   {
     return (myElements.IsNull() ? 0 : myElements->Length());
   }
 
   //! Returns Elements with the given number
-  inline StepVisual_AnnotationPlaneElement ElementsValue(const Standard_Integer theNum) const
+  inline StepVisual_AnnotationPlaneElement ElementsValue(const int theNum) const
   {
     return myElements->Value(theNum);
   }
 
   //! Sets Elements with given number
-  inline void SetElementsValue(const Standard_Integer                   theNum,
+  inline void SetElementsValue(const int                   theNum,
                                const StepVisual_AnnotationPlaneElement& theItem)
   {
     myElements->SetValue(theNum, theItem);
@@ -67,6 +64,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationPlane, StepVisual_AnnotationOccurrence)
 
 private:
-  Handle(StepVisual_HArray1OfAnnotationPlaneElement) myElements;
+  occ::handle<StepVisual_HArray1OfAnnotationPlaneElement> myElements;
 };
 #endif // _StepVisual_AnnotationPlane_HeaderFile

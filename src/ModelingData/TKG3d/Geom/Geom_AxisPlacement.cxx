@@ -52,7 +52,7 @@ void Geom_AxisPlacement::SetLocation(const Pnt& P)
   axis.SetLocation(P);
 }
 
-Standard_Real Geom_AxisPlacement::Angle(const Handle(Geom_AxisPlacement)& Other) const
+double Geom_AxisPlacement::Angle(const occ::handle<Geom_AxisPlacement>& Other) const
 {
   return axis.Angle(Other->Axis());
 }

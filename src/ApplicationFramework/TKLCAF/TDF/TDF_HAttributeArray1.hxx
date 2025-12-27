@@ -17,9 +17,10 @@
 #define TDF_HAttributeArray1_HeaderFile
 
 #include <TDF_Attribute.hxx>
-#include <TDF_AttributeArray1.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TDF_HAttributeArray1, TDF_AttributeArray1)
+DEFINE_HARRAY1(TDF_HAttributeArray1, NCollection_Array1<occ::handle<TDF_Attribute>>)
 
 #endif

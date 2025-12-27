@@ -23,9 +23,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_VersionedActionRequest;
 
-class StepBasic_ActionRequestAssignment;
-DEFINE_STANDARD_HANDLE(StepBasic_ActionRequestAssignment, Standard_Transient)
-
 //! Representation of STEP entity ActionRequestAssignment
 class StepBasic_ActionRequestAssignment : public Standard_Transient
 {
@@ -35,20 +32,19 @@ public:
   Standard_EXPORT StepBasic_ActionRequestAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepBasic_VersionedActionRequest)& aAssignedActionRequest);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_VersionedActionRequest>& aAssignedActionRequest);
 
   //! Returns field AssignedActionRequest
-  Standard_EXPORT Handle(StepBasic_VersionedActionRequest) AssignedActionRequest() const;
+  Standard_EXPORT occ::handle<StepBasic_VersionedActionRequest> AssignedActionRequest() const;
 
   //! Set field AssignedActionRequest
   Standard_EXPORT void SetAssignedActionRequest(
-    const Handle(StepBasic_VersionedActionRequest)& AssignedActionRequest);
+    const occ::handle<StepBasic_VersionedActionRequest>& AssignedActionRequest);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ActionRequestAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(StepBasic_VersionedActionRequest) theAssignedActionRequest;
+  occ::handle<StepBasic_VersionedActionRequest> theAssignedActionRequest;
 };
 
 #endif // _StepBasic_ActionRequestAssignment_HeaderFile

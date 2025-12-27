@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_Point, Geom_Geometry)
 
 typedef Geom_Point Point;
 
-Standard_Real Geom_Point::Distance(const Handle(Geom_Point)& Other) const
+double Geom_Point::Distance(const occ::handle<Geom_Point>& Other) const
 {
 
   gp_Pnt P1 = this->Pnt();
@@ -30,7 +30,7 @@ Standard_Real Geom_Point::Distance(const Handle(Geom_Point)& Other) const
   return P1.Distance(P2);
 }
 
-Standard_Real Geom_Point::SquareDistance(const Handle(Geom_Point)& Other) const
+double Geom_Point::SquareDistance(const occ::handle<Geom_Point>& Other) const
 {
 
   gp_Pnt P1 = this->Pnt();

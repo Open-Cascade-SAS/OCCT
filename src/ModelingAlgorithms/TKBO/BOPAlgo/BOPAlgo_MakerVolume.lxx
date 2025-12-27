@@ -16,18 +16,18 @@
 
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume()
     : BOPAlgo_Builder(),
-      myIntersect(Standard_True),
-      myAvoidInternalShapes(Standard_False)
+      myIntersect(true),
+      myAvoidInternalShapes(false)
 {
 }
 
 //=================================================================================================
 
 inline BOPAlgo_MakerVolume::BOPAlgo_MakerVolume(
-  const Handle(NCollection_BaseAllocator)& theAllocator)
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Builder(theAllocator),
-      myIntersect(Standard_True),
-      myAvoidInternalShapes(Standard_False)
+      myIntersect(true),
+      myAvoidInternalShapes(false)
 {
 }
 
@@ -45,23 +45,23 @@ inline BOPAlgo_MakerVolume::~BOPAlgo_MakerVolume()
 inline void BOPAlgo_MakerVolume::Clear()
 {
   BOPAlgo_Builder::Clear();
-  myIntersect = Standard_True;
+  myIntersect = true;
   myBBox      = Bnd_Box();
   mySBox.Nullify();
   myFaces.Clear();
-  myAvoidInternalShapes = Standard_False;
+  myAvoidInternalShapes = false;
 }
 
 //=================================================================================================
 
-inline void BOPAlgo_MakerVolume::SetIntersect(const Standard_Boolean bIntersect)
+inline void BOPAlgo_MakerVolume::SetIntersect(const bool bIntersect)
 {
   myIntersect = bIntersect;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPAlgo_MakerVolume::IsIntersect() const
+inline bool BOPAlgo_MakerVolume::IsIntersect() const
 {
   return myIntersect;
 }
@@ -75,7 +75,7 @@ inline const TopoDS_Solid& BOPAlgo_MakerVolume::Box() const
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& BOPAlgo_MakerVolume::Faces() const
+inline const NCollection_List<TopoDS_Shape>& BOPAlgo_MakerVolume::Faces() const
 {
   return myFaces;
 }

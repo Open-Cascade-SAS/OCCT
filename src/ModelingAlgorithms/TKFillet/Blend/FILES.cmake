@@ -19,7 +19,7 @@ set(OCCT_Blend_FILES
   Blend_Point.lxx
   Blend_RstRstFunction.cxx
   Blend_RstRstFunction.hxx
-  Blend_SequenceOfPoint.hxx
+
   Blend_Status.hxx
   Blend_SurfCurvFuncInv.cxx
   Blend_SurfCurvFuncInv.hxx

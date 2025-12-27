@@ -30,13 +30,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of variables of the function
-  Standard_EXPORT virtual Standard_Integer NbVariables() const = 0;
+  Standard_EXPORT virtual int NbVariables() const = 0;
 
   //! Computes the values of the Functions <F> for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! otherwise false.
-  Standard_EXPORT virtual Standard_Boolean Value(const math_Vector& X, Standard_Real& F) = 0;
+  Standard_EXPORT virtual bool Value(const math_Vector& X, double& F) = 0;
 
   //! return the state of the function corresponding to the latestt
   //! call of any methods associated to the function. This
@@ -52,11 +52,9 @@ public:
   //! responsibility of the programmer to decide if he needs
   //! to save the current state of the function and to return
   //! an Integer that allows retrieval of the state.
-  Standard_EXPORT virtual Standard_Integer GetStateNumber();
+  Standard_EXPORT virtual int GetStateNumber();
   Standard_EXPORT virtual ~math_MultipleVarFunction();
 
-protected:
-private:
 };
 
 #endif // _math_MultipleVarFunction_HeaderFile

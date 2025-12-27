@@ -20,7 +20,7 @@
 
 //==================================================================================================
 
-StepTidy_DirectionReducer::StepTidy_DirectionReducer(const Handle(XSControl_WorkSession)& theWS)
+StepTidy_DirectionReducer::StepTidy_DirectionReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Direction, StepTidy_DirectionHasher>(theWS)
 {
   registerReplacer(STANDARD_TYPE(StepGeom_Axis1Placement), replaceAxis1Placement);
@@ -31,11 +31,11 @@ StepTidy_DirectionReducer::StepTidy_DirectionReducer(const Handle(XSControl_Work
 //==================================================================================================
 
 bool StepTidy_DirectionReducer::replaceAxis1Placement(
-  const Handle(StepGeom_Direction)& theOldEntity,
-  const Handle(StepGeom_Direction)& theNewEntity,
-  Handle(Standard_Transient)        theSharing)
+  const occ::handle<StepGeom_Direction>& theOldEntity,
+  const occ::handle<StepGeom_Direction>& theNewEntity,
+  occ::handle<Standard_Transient>        theSharing)
 {
-  Handle(StepGeom_Axis1Placement) aSharing = Handle(StepGeom_Axis1Placement)::DownCast(theSharing);
+  occ::handle<StepGeom_Axis1Placement> aSharing = occ::down_cast<StepGeom_Axis1Placement>(theSharing);
   if (aSharing->Axis() == theOldEntity)
   {
     aSharing->SetAxis(theNewEntity);
@@ -47,12 +47,12 @@ bool StepTidy_DirectionReducer::replaceAxis1Placement(
 //==================================================================================================
 
 bool StepTidy_DirectionReducer::replaceAxis2Placement3d(
-  const Handle(StepGeom_Direction)& theOldEntity,
-  const Handle(StepGeom_Direction)& theNewEntity,
-  Handle(Standard_Transient)        theSharing)
+  const occ::handle<StepGeom_Direction>& theOldEntity,
+  const occ::handle<StepGeom_Direction>& theNewEntity,
+  occ::handle<Standard_Transient>        theSharing)
 {
-  Handle(StepGeom_Axis2Placement3d) aSharing =
-    Handle(StepGeom_Axis2Placement3d)::DownCast(theSharing);
+  occ::handle<StepGeom_Axis2Placement3d> aSharing =
+    occ::down_cast<StepGeom_Axis2Placement3d>(theSharing);
   if (aSharing->Axis() == theOldEntity)
   {
     aSharing->SetAxis(theNewEntity);
@@ -68,11 +68,11 @@ bool StepTidy_DirectionReducer::replaceAxis2Placement3d(
 
 //==================================================================================================
 
-bool StepTidy_DirectionReducer::replaceVector(const Handle(StepGeom_Direction)& theOldEntity,
-                                              const Handle(StepGeom_Direction)& theNewEntity,
-                                              Handle(Standard_Transient)        theSharing)
+bool StepTidy_DirectionReducer::replaceVector(const occ::handle<StepGeom_Direction>& theOldEntity,
+                                              const occ::handle<StepGeom_Direction>& theNewEntity,
+                                              occ::handle<Standard_Transient>        theSharing)
 {
-  Handle(StepGeom_Vector) aSharing = Handle(StepGeom_Vector)::DownCast(theSharing);
+  occ::handle<StepGeom_Vector> aSharing = occ::down_cast<StepGeom_Vector>(theSharing);
   if (aSharing->Orientation() == theOldEntity)
   {
     aSharing->SetOrientation(theNewEntity);

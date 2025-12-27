@@ -24,9 +24,6 @@ class StepRepr_NextAssemblyUsageOccurrence;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;
 
-class StepRepr_SpecifiedHigherUsageOccurrence;
-DEFINE_STANDARD_HANDLE(StepRepr_SpecifiedHigherUsageOccurrence, StepRepr_AssemblyComponentUsage)
-
 //! Representation of STEP entity SpecifiedHigherUsageOccurrence
 class StepRepr_SpecifiedHigherUsageOccurrence : public StepRepr_AssemblyComponentUsage
 {
@@ -37,52 +34,51 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
-    const Handle(StepBasic_ProductDefinition)&
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+    const bool                  hasProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
+    const occ::handle<StepBasic_ProductDefinition>&
       aProductDefinitionRelationship_RelatingProductDefinition,
-    const Handle(StepBasic_ProductDefinition)&
+    const occ::handle<StepBasic_ProductDefinition>&
                                             aProductDefinitionRelationship_RelatedProductDefinition,
-    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(StepRepr_AssemblyComponentUsage)&      aUpperUsage,
-    const Handle(StepRepr_NextAssemblyUsageOccurrence)& aNextUsage);
+    const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<StepRepr_AssemblyComponentUsage>&      aUpperUsage,
+    const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& aNextUsage);
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Id,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Name,
-    const Standard_Boolean                  hasProductDefinitionRelationship_Description,
-    const Handle(TCollection_HAsciiString)& aProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
+    const bool                  hasProductDefinitionRelationship_Description,
+    const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
     const StepBasic_ProductDefinitionOrReference&
       aProductDefinitionRelationship_RelatingProductDefinition,
     const StepBasic_ProductDefinitionOrReference&
                                             aProductDefinitionRelationship_RelatedProductDefinition,
-    const Standard_Boolean                  hasAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(TCollection_HAsciiString)& aAssemblyComponentUsage_ReferenceDesignator,
-    const Handle(StepRepr_AssemblyComponentUsage)&      aUpperUsage,
-    const Handle(StepRepr_NextAssemblyUsageOccurrence)& aNextUsage);
+    const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
+    const occ::handle<StepRepr_AssemblyComponentUsage>&      aUpperUsage,
+    const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& aNextUsage);
 
   //! Returns field UpperUsage
-  Standard_EXPORT Handle(StepRepr_AssemblyComponentUsage) UpperUsage() const;
+  Standard_EXPORT occ::handle<StepRepr_AssemblyComponentUsage> UpperUsage() const;
 
   //! Set field UpperUsage
-  Standard_EXPORT void SetUpperUsage(const Handle(StepRepr_AssemblyComponentUsage)& UpperUsage);
+  Standard_EXPORT void SetUpperUsage(const occ::handle<StepRepr_AssemblyComponentUsage>& UpperUsage);
 
   //! Returns field NextUsage
-  Standard_EXPORT Handle(StepRepr_NextAssemblyUsageOccurrence) NextUsage() const;
+  Standard_EXPORT occ::handle<StepRepr_NextAssemblyUsageOccurrence> NextUsage() const;
 
   //! Set field NextUsage
-  Standard_EXPORT void SetNextUsage(const Handle(StepRepr_NextAssemblyUsageOccurrence)& NextUsage);
+  Standard_EXPORT void SetNextUsage(const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& NextUsage);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_SpecifiedHigherUsageOccurrence, StepRepr_AssemblyComponentUsage)
 
-protected:
 private:
-  Handle(StepRepr_AssemblyComponentUsage)      theUpperUsage;
-  Handle(StepRepr_NextAssemblyUsageOccurrence) theNextUsage;
+  occ::handle<StepRepr_AssemblyComponentUsage>      theUpperUsage;
+  occ::handle<StepRepr_NextAssemblyUsageOccurrence> theNextUsage;
 };
 
 #endif // _StepRepr_SpecifiedHigherUsageOccurrence_HeaderFile

@@ -26,9 +26,6 @@ class gp_Pnt2d;
 class gp_Pnt;
 class gp_Dir;
 
-class IGESGeom_CircularArc;
-DEFINE_STANDARD_HANDLE(IGESGeom_CircularArc, IGESData_IGESEntity)
-
 //! defines IGESCircularArc, Type <100> Form <0>
 //! in package IGESGeom
 //! A circular arc is a connected portion of a parent circle
@@ -48,7 +45,7 @@ public:
   //! - aCenter : Center of the circle of which the arc forms a part
   //! - aStart  : Starting point of the circular arc
   //! - anEnd   : Ending point of the circular arc
-  Standard_EXPORT void Init(const Standard_Real aZT,
+  Standard_EXPORT void Init(const double aZT,
                             const gp_XY&        aCenter,
                             const gp_XY&        aStart,
                             const gp_XY&        anEnd);
@@ -68,7 +65,7 @@ public:
 
   //! returns the parallel displacement of the plane containing the
   //! arc from the XT, YT plane
-  Standard_EXPORT Standard_Real ZPlane() const;
+  Standard_EXPORT double ZPlane() const;
 
   //! returns the end point of the arc
   Standard_EXPORT gp_Pnt2d EndPoint() const;
@@ -77,10 +74,10 @@ public:
   Standard_EXPORT gp_Pnt TransformedEndPoint() const;
 
   //! returns the radius of the circle of which arc forms a part
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   //! returns the angle subtended by the arc at the center in radians
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
   //! Z-Axis of circle (i.e. [0,0,1])
   Standard_EXPORT gp_Dir Axis() const;
@@ -89,13 +86,12 @@ public:
   Standard_EXPORT gp_Dir TransformedAxis() const;
 
   //! True if StartPoint = EndPoint
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_CircularArc, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Real theZT;
+  double theZT;
   gp_XY         theCenter;
   gp_XY         theStart;
   gp_XY         theEnd;

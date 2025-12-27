@@ -17,7 +17,23 @@
 #ifndef AdvApp2Var_EvaluatorFunc2Var_HeaderFile
 #define AdvApp2Var_EvaluatorFunc2Var_HeaderFile
 
-#include <Standard_PrimitiveTypes.hxx>
+#include <stddef.h>
+
+#include <stdlib.h>
+
+#include <Standard_Macro.hxx>
+
+#include <Standard_Boolean.hxx>
+
+#include <Standard_Integer.hxx>
+
+#include <Standard_Real.hxx>
+
+#include <Standard_Character.hxx>
+
+#include <Standard_ExtCharacter.hxx>
+
+#include <Standard_CString.hxx>
 
 // History - the C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data
@@ -31,30 +47,30 @@ public:
   virtual ~AdvApp2Var_EvaluatorFunc2Var() {}
 
   //! Function evaluation method to be defined by descendant
-  virtual void Evaluate(Standard_Integer* theDimension,
-                        Standard_Real*    theUStartEnd,  //!< First and last parameters in U
-                        Standard_Real*    theVStartEnd,  //!< First and last parameters in V
-                        Standard_Integer* theFavorIso,   //!< Choice of constante, 1 for U, 2 for V
-                        Standard_Real*    theConstParam, //!< Value of constant parameter
-                        Standard_Integer* theNbParams,   //!< Number of parameters N
-                        Standard_Real*    theParameters, //!< Values of parameters,
-                        Standard_Integer* theUOrder,     //!< Derivative Request in U
-                        Standard_Integer* theVOrder,     //!< Derivative Request in V
-                        Standard_Real*    theResult,     //!< Result[Dimension,N]
-                        Standard_Integer* theErrorCode) const = 0;
+  virtual void Evaluate(int* theDimension,
+                        double*    theUStartEnd,  //!< First and last parameters in U
+                        double*    theVStartEnd,  //!< First and last parameters in V
+                        int* theFavorIso,   //!< Choice of constante, 1 for U, 2 for V
+                        double*    theConstParam, //!< Value of constant parameter
+                        int* theNbParams,   //!< Number of parameters N
+                        double*    theParameters, //!< Values of parameters,
+                        int* theUOrder,     //!< Derivative Request in U
+                        int* theVOrder,     //!< Derivative Request in V
+                        double*    theResult,     //!< Result[Dimension,N]
+                        int* theErrorCode) const = 0;
 
   //! Shortcut for function-call style usage
-  void operator()(Standard_Integer* theDimension,
-                  Standard_Real*    theUStartEnd,
-                  Standard_Real*    theVStartEnd,
-                  Standard_Integer* theFavorIso,
-                  Standard_Real*    theConstParam,
-                  Standard_Integer* theNbParams,
-                  Standard_Real*    theParameters,
-                  Standard_Integer* theUOrder,
-                  Standard_Integer* theVOrder,
-                  Standard_Real*    theResult,
-                  Standard_Integer* theErrorCode) const
+  void operator()(int* theDimension,
+                  double*    theUStartEnd,
+                  double*    theVStartEnd,
+                  int* theFavorIso,
+                  double*    theConstParam,
+                  int* theNbParams,
+                  double*    theParameters,
+                  int* theUOrder,
+                  int* theVOrder,
+                  double*    theResult,
+                  int* theErrorCode) const
   {
     Evaluate(theDimension,
              theUStartEnd,

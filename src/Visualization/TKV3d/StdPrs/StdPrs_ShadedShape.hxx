@@ -35,25 +35,25 @@ public:
   //! @param theVolumeType defines the way how to interpret input shapes - as Closed volumes (to
   //! activate back-face culling and capping plane algorithms), as Open volumes (shells or solids
   //! with holes) or to perform Autodetection (would split input shape into two groups)
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                                   const TopoDS_Shape&               theShape,
-                                  const Handle(Prs3d_Drawer)&       theDrawer,
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer,
                                   const StdPrs_Volume theVolume = StdPrs_Volume_Autodetection,
-                                  const Handle(Graphic3d_Group)& theGroup = NULL);
+                                  const occ::handle<Graphic3d_Group>& theGroup = NULL);
 
   //! Shades <theShape> with texture coordinates.
   //! @param theVolumeType defines the way how to interpret input shapes - as Closed volumes (to
   //! activate back-face culling and capping plane algorithms), as Open volumes (shells or solids
   //! with holes) or to perform Autodetection (would split input shape into two groups)
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                                   const TopoDS_Shape&               theShape,
-                                  const Handle(Prs3d_Drawer)&       theDrawer,
-                                  const Standard_Boolean            theHasTexels,
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                  const bool            theHasTexels,
                                   const gp_Pnt2d&                   theUVOrigin,
                                   const gp_Pnt2d&                   theUVRepeat,
                                   const gp_Pnt2d&                   theUVScale,
                                   const StdPrs_Volume theVolume = StdPrs_Volume_Autodetection,
-                                  const Handle(Graphic3d_Group)& theGroup = NULL);
+                                  const occ::handle<Graphic3d_Group>& theGroup = NULL);
 
   //! Searches closed and unclosed subshapes in shape structure and puts them
   //! into two compounds for separate processing of closed and unclosed sub-shapes
@@ -61,26 +61,26 @@ public:
                                             const BRep_Builder&    theBuilder,
                                             TopoDS_Compound&       theClosed,
                                             TopoDS_Compound&       theOpened,
-                                            const Standard_Boolean theIgnore1DSubShape);
+                                            const bool theIgnore1DSubShape);
 
   //! Computes wireframe presentation for free wires and vertices
-  Standard_EXPORT static void AddWireframeForFreeElements(const Handle(Prs3d_Presentation)& thePrs,
+  Standard_EXPORT static void AddWireframeForFreeElements(const occ::handle<Prs3d_Presentation>& thePrs,
                                                           const TopoDS_Shape&         theShape,
-                                                          const Handle(Prs3d_Drawer)& theDrawer);
+                                                          const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! Computes special wireframe presentation for faces without triangulation.
   Standard_EXPORT static void AddWireframeForFacesWithoutTriangles(
-    const Handle(Prs3d_Presentation)& thePrs,
+    const occ::handle<Prs3d_Presentation>& thePrs,
     const TopoDS_Shape&               theShape,
-    const Handle(Prs3d_Drawer)&       theDrawer);
+    const occ::handle<Prs3d_Drawer>&       theDrawer);
 
 public:
   //! Create primitive array with triangles for specified shape.
   //! @param[in] theShape  the shape with precomputed triangulation
-  static Handle(Graphic3d_ArrayOfTriangles) FillTriangles(const TopoDS_Shape& theShape)
+  static occ::handle<Graphic3d_ArrayOfTriangles> FillTriangles(const TopoDS_Shape& theShape)
   {
     gp_Pnt2d aDummy;
-    return FillTriangles(theShape, Standard_False, aDummy, aDummy, aDummy);
+    return FillTriangles(theShape, false, aDummy, aDummy, aDummy);
   }
 
   //! Create primitive array of triangles for specified shape.
@@ -90,9 +90,9 @@ public:
   //! @param theUVRepeat  repeat parameters  for UV coordinates
   //! @param theUVScale   scale coefficients for UV coordinates
   //! @return triangles array or NULL if specified face does not have computed triangulation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) FillTriangles(
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> FillTriangles(
     const TopoDS_Shape&    theShape,
-    const Standard_Boolean theHasTexels,
+    const bool theHasTexels,
     const gp_Pnt2d&        theUVOrigin,
     const gp_Pnt2d&        theUVRepeat,
     const gp_Pnt2d&        theUVScale);
@@ -101,7 +101,7 @@ public:
   //! @param theShape segments array or NULL if specified face does not have computed triangulation
   //! @param theUpperContinuity the most edge continuity class to be included to result (edges with
   //! more continuity will be ignored)
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) FillFaceBoundaries(
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfSegments> FillFaceBoundaries(
     const TopoDS_Shape& theShape,
     GeomAbs_Shape       theUpperContinuity = GeomAbs_CN);
 };

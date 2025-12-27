@@ -23,9 +23,6 @@
 #include <IFSelect_Selection.hxx>
 class IFSelect_SelectionIterator;
 
-class IFSelect_SelectControl;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectControl, IFSelect_Selection)
-
 //! A SelectControl kind Selection works with two input Selections
 //! in a dissymmetric way : the Main Input which gives an input
 //! list of Entities, to be processed, and the Second Input which
@@ -44,32 +41,31 @@ class IFSelect_SelectControl : public IFSelect_Selection
 
 public:
   //! Returns the Main Input Selection
-  Standard_EXPORT Handle(IFSelect_Selection) MainInput() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> MainInput() const;
 
   //! Returns True if a Control Input is defined
   //! Thus, Result can be computed differently if there is a
   //! Control Input or if there is none
-  Standard_EXPORT Standard_Boolean HasSecondInput() const;
+  Standard_EXPORT bool HasSecondInput() const;
 
   //! Returns the Control Input Selection, or a Null Handle
-  Standard_EXPORT Handle(IFSelect_Selection) SecondInput() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> SecondInput() const;
 
   //! Sets a Selection to be the Main Input
-  Standard_EXPORT void SetMainInput(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetMainInput(const occ::handle<IFSelect_Selection>& sel);
 
   //! Sets a Selection to be the Control Input
-  Standard_EXPORT void SetSecondInput(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetSecondInput(const occ::handle<IFSelect_Selection>& sel);
 
   //! Puts in an Iterator the Selections from which "me" depends
   //! That is to say, the list of Input Selections
-  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectControl, IFSelect_Selection)
 
-protected:
 private:
-  Handle(IFSelect_Selection) themain;
-  Handle(IFSelect_Selection) thesecond;
+  occ::handle<IFSelect_Selection> themain;
+  occ::handle<IFSelect_Selection> thesecond;
 };
 
 #endif // _IFSelect_SelectControl_HeaderFile

@@ -89,7 +89,7 @@ public:
 
     //! Method is executed in the context of thread,
     //! so this method defines the main calculations.
-    virtual void Perform(int) Standard_OVERRIDE
+    virtual void Perform(int) override
     {
       for (OSD_Parallel::UniversalIterator anIter = myRange.It(); anIter != myRange.End();
            anIter                                 = myRange.It())
@@ -138,10 +138,10 @@ public:
 void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
                                UniversalIterator&      theEnd,
                                const FunctorInterface& theFunctor,
-                               Standard_Integer        theNbItems)
+                               int        theNbItems)
 {
-  const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-  const Standard_Integer        aNbThreads =
+  const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+  const int        aNbThreads =
     theNbItems != -1 ? std::min(theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
   OSD_Parallel_Threads::UniversalLauncher aLauncher(*aThreadPool, aNbThreads);
   aLauncher.Perform(theBegin, theEnd, theFunctor);
@@ -154,7 +154,7 @@ void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
 void OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
                                    UniversalIterator&      theEnd,
                                    const FunctorInterface& theFunctor,
-                                   Standard_Integer        theNbItems)
+                                   int        theNbItems)
 {
   forEachOcct(theBegin, theEnd, theFunctor, theNbItems);
 }

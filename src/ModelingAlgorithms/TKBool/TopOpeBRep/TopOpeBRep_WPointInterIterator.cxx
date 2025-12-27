@@ -52,7 +52,7 @@ void TopOpeBRep_WPointInterIterator::Init()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_WPointInterIterator::More() const
+bool TopOpeBRep_WPointInterIterator::More() const
 {
   return (myWPointIndex <= myWPointNb);
 }

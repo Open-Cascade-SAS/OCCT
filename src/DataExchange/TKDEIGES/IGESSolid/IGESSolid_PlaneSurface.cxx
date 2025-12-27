@@ -25,9 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_PlaneSurface, IGESData_IGESEntity)
 
 IGESSolid_PlaneSurface::IGESSolid_PlaneSurface() {}
 
-void IGESSolid_PlaneSurface::Init(const Handle(IGESGeom_Point)&     aLocation,
-                                  const Handle(IGESGeom_Direction)& aNormal,
-                                  const Handle(IGESGeom_Direction)& Refdir)
+void IGESSolid_PlaneSurface::Init(const occ::handle<IGESGeom_Point>&     aLocation,
+                                  const occ::handle<IGESGeom_Direction>& aNormal,
+                                  const occ::handle<IGESGeom_Direction>& Refdir)
 {
   theLocationPoint = aLocation;
   theNormal        = aNormal;
@@ -35,22 +35,22 @@ void IGESSolid_PlaneSurface::Init(const Handle(IGESGeom_Point)&     aLocation,
   InitTypeAndForm(190, (theRefDir.IsNull() ? 0 : 1));
 }
 
-Handle(IGESGeom_Point) IGESSolid_PlaneSurface::LocationPoint() const
+occ::handle<IGESGeom_Point> IGESSolid_PlaneSurface::LocationPoint() const
 {
   return theLocationPoint;
 }
 
-Handle(IGESGeom_Direction) IGESSolid_PlaneSurface::Normal() const
+occ::handle<IGESGeom_Direction> IGESSolid_PlaneSurface::Normal() const
 {
   return theNormal;
 }
 
-Handle(IGESGeom_Direction) IGESSolid_PlaneSurface::ReferenceDir() const
+occ::handle<IGESGeom_Direction> IGESSolid_PlaneSurface::ReferenceDir() const
 {
   return theRefDir;
 }
 
-Standard_Boolean IGESSolid_PlaneSurface::IsParametrised() const
+bool IGESSolid_PlaneSurface::IsParametrised() const
 {
   return (!theRefDir.IsNull());
 }

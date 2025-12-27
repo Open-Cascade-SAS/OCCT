@@ -24,10 +24,10 @@
 RWStepVisual_RWContextDependentInvisibility::RWStepVisual_RWContextDependentInvisibility() {}
 
 void RWStepVisual_RWContextDependentInvisibility::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepVisual_ContextDependentInvisibility)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepVisual_ContextDependentInvisibility>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,16 +37,16 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
 
   // --- inherited field : invisibleItems ---
 
-  Handle(StepVisual_HArray1OfInvisibleItem) aInvisibleItems;
+  occ::handle<StepVisual_HArray1OfInvisibleItem> aInvisibleItems;
   StepVisual_InvisibleItem                  aInvisibleItemsItem;
-  Standard_Integer                          nsub1;
+  int                          nsub1;
   if (data->ReadSubList(num, 1, "invisible_items", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
+    int nb1 = data->NbParams(nsub1);
     aInvisibleItems      = new StepVisual_HArray1OfInvisibleItem(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1, i1, "invisible_items", ach, aInvisibleItemsItem))
         aInvisibleItems->SetValue(i1, aInvisibleItemsItem);
     }
@@ -55,7 +55,7 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
   // --- own field : presentationContext ---
 
   StepVisual_InvisibilityContext aPresentationContext;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "presentation_context", ach, aPresentationContext);
 
   //--- Initialisation of the read entity ---
@@ -65,13 +65,13 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
 
 void RWStepVisual_RWContextDependentInvisibility::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepVisual_ContextDependentInvisibility)& ent) const
+  const occ::handle<StepVisual_ContextDependentInvisibility>& ent) const
 {
 
   // --- inherited field invisibleItems ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbInvisibleItems(); i1++)
+  for (int i1 = 1; i1 <= ent->NbInvisibleItems(); i1++)
   {
     SW.Send(ent->InvisibleItemsValue(i1).Value());
   }
@@ -83,12 +83,12 @@ void RWStepVisual_RWContextDependentInvisibility::WriteStep(
 }
 
 void RWStepVisual_RWContextDependentInvisibility::Share(
-  const Handle(StepVisual_ContextDependentInvisibility)& ent,
+  const occ::handle<StepVisual_ContextDependentInvisibility>& ent,
   Interface_EntityIterator&                              iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbInvisibleItems();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbInvisibleItems();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->InvisibleItemsValue(is1).Value());
   }

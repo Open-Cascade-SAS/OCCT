@@ -22,17 +22,17 @@
 
 TopOpeBRepDS_Surface::TopOpeBRepDS_Surface()
     : myTolerance(0.0),
-      myKeep(Standard_False)
+      myKeep(false)
 {
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const Handle(Geom_Surface)& theSurface,
-                                           const Standard_Real         theTolerance)
+TopOpeBRepDS_Surface::TopOpeBRepDS_Surface(const occ::handle<Geom_Surface>& theSurface,
+                                           const double         theTolerance)
     : mySurface(theSurface),
       myTolerance(theTolerance),
-      myKeep(Standard_False)
+      myKeep(false)
 {
 }
 

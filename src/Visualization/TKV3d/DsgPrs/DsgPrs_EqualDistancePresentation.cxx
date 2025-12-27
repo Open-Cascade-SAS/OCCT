@@ -37,22 +37,22 @@
 //=================================================================================
 // function  : Add
 //=================================================================================
-void DsgPrs_EqualDistancePresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                           const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_EqualDistancePresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                           const occ::handle<Prs3d_Drawer>&       aDrawer,
                                            const gp_Pnt&                     Point1,
                                            const gp_Pnt&                     Point2,
                                            const gp_Pnt&                     Point3,
                                            const gp_Pnt&                     Point4,
-                                           const Handle(Geom_Plane)&         Plane)
+                                           const occ::handle<Geom_Plane>&         Plane)
 {
-  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   // Line between two middles
   gp_Pnt Middle12((Point1.XYZ() + Point2.XYZ()) * 0.5),
     Middle34((Point3.XYZ() + Point4.XYZ()) * 0.5);
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(Middle12);
   aPrims->AddVertex(Middle34);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
@@ -63,8 +63,8 @@ void DsgPrs_EqualDistancePresentation::Add(const Handle(Prs3d_Presentation)& aPr
   // ota -- begin --
   // Two small lines in the middle of this line
   gp_Pnt        Middle((Middle12.XYZ() + Middle34.XYZ()) * 0.5), aTextPos;
-  Standard_Real Dist = Middle12.Distance(Middle34);
-  Standard_Real SmallDist;
+  double Dist = Middle12.Distance(Middle34);
+  double SmallDist;
   gp_Dir        LineDir, OrtDir;
   gp_Vec        LineVec, OrtVec;
 
@@ -86,12 +86,12 @@ void DsgPrs_EqualDistancePresentation::Add(const Handle(Prs3d_Presentation)& aPr
 
     if (Vec1.SquareMagnitude() > Precision::Confusion() * Precision::Confusion())
     {
-      Standard_Real Angle  = gp_Vec(Middle, Point1).Angle(gp_Vec(Middle, Point3));
+      double Angle  = gp_Vec(Middle, Point1).Angle(gp_Vec(Middle, Point3));
       gp_Pnt        MidPnt = Point1.Rotated(Plane->Pln().Axis(), Angle * 0.5);
       OrtDir               = gce_MakeDir(Middle, MidPnt);
       LineDir              = OrtDir ^ Plane->Pln().Axis().Direction();
 
-      Standard_Real Distance = Point1.Distance(Point2);
+      double Distance = Point1.Distance(Point2);
       SmallDist              = Distance * 0.05; // 1/20.0
       if (SmallDist <= Precision::Confusion())
         SmallDist = Distance;
@@ -119,8 +119,8 @@ void DsgPrs_EqualDistancePresentation::Add(const Handle(Prs3d_Presentation)& aPr
 // purpose   : is used for presentation of interval between two lines or two points,
 //            or between one line and one point.
 //==================================================================================
-void DsgPrs_EqualDistancePresentation::AddInterval(const Handle(Prs3d_Presentation)& aPresentation,
-                                                   const Handle(Prs3d_Drawer)&       aDrawer,
+void DsgPrs_EqualDistancePresentation::AddInterval(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
                                                    const gp_Pnt&                     aPoint1,
                                                    const gp_Pnt&                     aPoint2,
                                                    const gp_Dir&                     aDirection,
@@ -129,7 +129,7 @@ void DsgPrs_EqualDistancePresentation::AddInterval(const Handle(Prs3d_Presentati
                                                    gp_Pnt&                           aProj1,
                                                    gp_Pnt&                           aProj2)
 {
-  const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  const occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1(aPoint1, aDirection);
@@ -137,7 +137,7 @@ void DsgPrs_EqualDistancePresentation::AddInterval(const Handle(Prs3d_Presentati
   aProj1 = ElCLib::Value(ElCLib::Parameter(L1, aPosition), L1);
   aProj2 = ElCLib::Value(ElCLib::Parameter(L2, aPosition), L2);
 
-  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);
+  occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(4);
   aPrims->AddVertex(aPoint1);
   aPrims->AddVertex(aProj1);
   aPrims->AddVertex(aProj2);
@@ -156,8 +156,8 @@ void DsgPrs_EqualDistancePresentation::AddInterval(const Handle(Prs3d_Presentati
 //            of the arcs can have a zero radius (being a point really)
 //========================================================================
 void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
-  const Handle(Prs3d_Presentation)& aPresentation,
-  const Handle(Prs3d_Drawer)&       aDrawer,
+  const occ::handle<Prs3d_Presentation>& aPresentation,
+  const occ::handle<Prs3d_Drawer>&       aDrawer,
   const gp_Circ&                    aCirc1,
   const gp_Circ&                    aCirc2,
   const gp_Pnt&                     aPoint1,
@@ -166,10 +166,10 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
   const gp_Pnt&                     aPoint4,
   const DsgPrs_ArrowSide            anArrowSide)
 {
-  const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
+  const occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Standard_Real aPar11, aPar12, aPar21, aPar22;
+  double aPar11, aPar12, aPar21, aPar22;
   if (aCirc1.Radius() > Precision::Confusion())
   {
     aPar11 = ElCLib::Parameter(aCirc1, aPoint1);
@@ -191,18 +191,18 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
     aPar22 = M_PI;
   }
 
-  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPoint2);
   aPrims->AddVertex(aPoint4);
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Standard_Integer i, aNodeNb;
-  Standard_Real    aDelta, aCurPar;
+  int i, aNodeNb;
+  double    aDelta, aCurPar;
   if (aPar12 < aPar11)
     aPar12 += 2. * M_PI;
   if (std::abs(aPar12 - aPar11) > Precision::Confusion())
   {
-    aNodeNb = Standard_Integer(std::max(std::abs(aPar12 - aPar11) * 50. / M_PI + 0.5, 4.));
+    aNodeNb = int(std::max(std::abs(aPar12 - aPar11) * 50. / M_PI + 0.5, 4.));
     aDelta  = (aPar12 - aPar11) / aNodeNb;
     aCurPar = aPar11;
 
@@ -216,7 +216,7 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
     aPar22 += 2. * M_PI;
   if (std::abs(aPar22 - aPar21) > Precision::Confusion())
   {
-    aNodeNb = Standard_Integer(std::max(std::abs(aPar22 - aPar21) * 50. / M_PI + 0.5, 4.));
+    aNodeNb = int(std::max(std::abs(aPar22 - aPar21) * 50. / M_PI + 0.5, 4.));
     aDelta  = (aPar22 - aPar21) / aNodeNb;
     aCurPar = aPar21;
 

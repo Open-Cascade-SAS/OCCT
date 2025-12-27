@@ -29,28 +29,28 @@ class StepToTopoDS_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the value of "MyPrecision"
-  Standard_Real Precision() const;
+  double Precision() const;
 
   //! Sets the value of "MyPrecision"
-  void SetPrecision(const Standard_Real preci);
+  void SetPrecision(const double preci);
 
   //! Returns the value of "MaxTol"
-  Standard_Real MaxTol() const;
+  double MaxTol() const;
 
   //! Sets the value of MaxTol
-  void SetMaxTol(const Standard_Real maxpreci);
+  void SetMaxTol(const double maxpreci);
 
 protected:
   Standard_EXPORT StepToTopoDS_Root();
 
-  Standard_Boolean done;
+  bool done;
 
 private:
-  Standard_Real myPrecision;
-  Standard_Real myMaxTol;
+  double myPrecision;
+  double myMaxTol;
 };
 
 #include <StepToTopoDS_Root.lxx>

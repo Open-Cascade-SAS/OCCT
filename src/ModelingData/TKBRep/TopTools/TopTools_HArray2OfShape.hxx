@@ -18,9 +18,10 @@
 #define TopTools_HArray2OfShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_Array2OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 
-DEFINE_HARRAY2(TopTools_HArray2OfShape, TopTools_Array2OfShape)
+DEFINE_HARRAY2(TopTools_HArray2OfShape, NCollection_Array2<TopoDS_Shape>)
 
 #endif

@@ -23,7 +23,7 @@
 #include <math_Matrix.hxx>
 #include <Standard_DimensionError.hxx>
 
-static const Standard_Real BBMatrix[] = {
+static const double BBMatrix[] = {
 
   0.3333333333333333333333333,
   0.1666666666666666666666667,
@@ -6252,11 +6252,11 @@ static const Standard_Real BBMatrix[] = {
 
 };
 
-void MMatrix(const Standard_Integer classe, math_Matrix& M)
+void MMatrix(const int classe, math_Matrix& M)
 {
   if (classe > 24)
     throw Standard_DimensionError("MMatrix: classe > 24");
-  Standard_Integer i, j, k = 0, Som = 0;
+  int i, j, k = 0, Som = 0;
   for (i = 2; i < classe; i++)
   {
     Som += (i) * (i);

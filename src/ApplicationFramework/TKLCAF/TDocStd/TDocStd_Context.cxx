@@ -19,18 +19,18 @@
 //=================================================================================================
 
 TDocStd_Context::TDocStd_Context()
-    : modifiedRef(Standard_False)
+    : modifiedRef(false)
 {
 }
 
 //=================================================================================================
 
-void TDocStd_Context::SetModifiedReferences(const Standard_Boolean Mod)
+void TDocStd_Context::SetModifiedReferences(const bool Mod)
 {
   modifiedRef = Mod;
 }
 
-Standard_Boolean TDocStd_Context::ModifiedReferences() const
+bool TDocStd_Context::ModifiedReferences() const
 {
   return modifiedRef;
 }

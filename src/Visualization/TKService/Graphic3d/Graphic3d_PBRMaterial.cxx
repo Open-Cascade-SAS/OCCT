@@ -20,19 +20,19 @@
 
 //=================================================================================================
 
-Standard_ShortReal Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_Color& theSpecular,
-                                                                const Standard_Real   theShiness)
+float Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_Color& theSpecular,
+                                                                const double   theShiness)
 {
-  Standard_Real aRoughnessFactor = 1.0 - theShiness;
-  // Standard_Real aSpecIntens = theSpecular.Light() * theSpecular;
-  const Standard_Real aSpecIntens =
+  double aRoughnessFactor = 1.0 - theShiness;
+  // double aSpecIntens = theSpecular.Light() * theSpecular;
+  const double aSpecIntens =
     theSpecular.Red() * 0.2125 + theSpecular.Green() * 0.7154 + theSpecular.Blue() * 0.0721;
   if (aSpecIntens < 0.1)
   {
     // low specular intensity should produce a rough material even if shininess is high
     aRoughnessFactor *= (1.0 - aSpecIntens);
   }
-  return (Standard_ShortReal)aRoughnessFactor;
+  return (float)aRoughnessFactor;
 }
 
 //=================================================================================================
@@ -55,7 +55,7 @@ Graphic3d_PBRMaterial::Graphic3d_PBRMaterial(const Graphic3d_BSDF& theBSDF)
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::SetMetallic(Standard_ShortReal theMetallic)
+void Graphic3d_PBRMaterial::SetMetallic(float theMetallic)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
     theMetallic < 0.f || theMetallic > 1.f,
@@ -64,14 +64,14 @@ void Graphic3d_PBRMaterial::SetMetallic(Standard_ShortReal theMetallic)
 
 //=================================================================================================
 
-Standard_ShortReal Graphic3d_PBRMaterial::Roughness(Standard_ShortReal theNormalizedRoughness)
+float Graphic3d_PBRMaterial::Roughness(float theNormalizedRoughness)
 {
   return theNormalizedRoughness * (1.f - MinRoughness()) + MinRoughness();
 }
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::SetRoughness(Standard_ShortReal theRoughness)
+void Graphic3d_PBRMaterial::SetRoughness(float theRoughness)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
     theRoughness < 0.f || theRoughness > 1.f,
@@ -80,7 +80,7 @@ void Graphic3d_PBRMaterial::SetRoughness(Standard_ShortReal theRoughness)
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::SetIOR(Standard_ShortReal theIOR)
+void Graphic3d_PBRMaterial::SetIOR(float theIOR)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
     theIOR < 1.f || theIOR > 3.f,
@@ -104,7 +104,7 @@ void Graphic3d_PBRMaterial::SetColor(const Quantity_Color& theColor)
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::SetAlpha(Standard_ShortReal theAlpha)
+void Graphic3d_PBRMaterial::SetAlpha(float theAlpha)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
     theAlpha < 0.f || theAlpha > 1.f,
@@ -113,7 +113,7 @@ void Graphic3d_PBRMaterial::SetAlpha(Standard_ShortReal theAlpha)
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::SetEmission(const Graphic3d_Vec3& theEmission)
+void Graphic3d_PBRMaterial::SetEmission(const NCollection_Vec3<float>& theEmission)
 {
   Graphic3d_MaterialDefinitionError_Raise_if(
     theEmission.r() < 0.f || theEmission.g() < 0.f || theEmission.b() < 0.f,
@@ -127,7 +127,7 @@ void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
 {
   SetEmission(theBSDF.Le);
 
-  if (theBSDF.Absorption != Graphic3d_Vec4(0.f))
+  if (theBSDF.Absorption != NCollection_Vec4<float>(0.f))
   {
     SetMetallic(0.f);
     SetColor(Quantity_Color(theBSDF.Absorption.rgb()));
@@ -141,7 +141,7 @@ void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
   }
 
   if (theBSDF.FresnelBase.FresnelType() == Graphic3d_FM_CONSTANT
-      && theBSDF.Kt != Graphic3d_Vec3(0.f))
+      && theBSDF.Kt != NCollection_Vec3<float>(0.f))
   {
     SetIOR(1.f);
     SetRoughness(1.f);
@@ -173,7 +173,7 @@ void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::GenerateEnvLUT(const Handle(Image_PixMap)& theLUT,
+void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theLUT,
                                            unsigned int                theNbIntegralSamples)
 {
   if (theLUT->Format() != Image_Format_RGF)
@@ -184,23 +184,23 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const Handle(Image_PixMap)& theLUT,
 
   for (unsigned int y = 0; y < theLUT->SizeY(); ++y)
   {
-    Standard_ShortReal aRoughness = Roughness(y / Standard_ShortReal(theLUT->SizeY() - 1));
+    float aRoughness = Roughness(y / float(theLUT->SizeY() - 1));
 
     for (unsigned int x = 0; x < theLUT->SizeX(); ++x)
     {
-      Standard_ShortReal aCosV   = x / Standard_ShortReal(theLUT->SizeX() - 1);
-      Graphic3d_Vec3     aView   = lutGenView(aCosV);
-      Graphic3d_Vec2     aResult = Graphic3d_Vec2(0.f);
+      float aCosV   = x / float(theLUT->SizeX() - 1);
+      NCollection_Vec3<float>     aView   = lutGenView(aCosV);
+      NCollection_Vec2<float>     aResult = NCollection_Vec2<float>(0.f);
       for (unsigned int i = 0; i < theNbIntegralSamples; ++i)
       {
-        Graphic3d_Vec2 aHammersleyPoint = lutGenHammersley(i, theNbIntegralSamples);
-        Graphic3d_Vec3 aHalf            = lutGenImportanceSample(aHammersleyPoint, aRoughness);
-        Graphic3d_Vec3 aLight           = lutGenReflect(aView, aHalf);
+        NCollection_Vec2<float> aHammersleyPoint = lutGenHammersley(i, theNbIntegralSamples);
+        NCollection_Vec3<float> aHalf            = lutGenImportanceSample(aHammersleyPoint, aRoughness);
+        NCollection_Vec3<float> aLight           = lutGenReflect(aView, aHalf);
         if (aLight.z() >= 0.f)
         {
-          Standard_ShortReal aCosVH          = aView.Dot(aHalf);
-          Standard_ShortReal aGeometryFactor = lutGenGeometryFactor(aLight.z(), aCosV, aRoughness);
-          Standard_ShortReal anIntermediateResult = 1.f - aCosVH;
+          float aCosVH          = aView.Dot(aHalf);
+          float aGeometryFactor = lutGenGeometryFactor(aLight.z(), aCosV, aRoughness);
+          float anIntermediateResult = 1.f - aCosVH;
           anIntermediateResult *= anIntermediateResult;
           anIntermediateResult *= anIntermediateResult;
           anIntermediateResult *= 1.f - aCosVH;
@@ -210,30 +210,30 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const Handle(Image_PixMap)& theLUT,
         }
       }
 
-      aResult = aResult / Standard_ShortReal(theNbIntegralSamples);
-      theLUT->ChangeValue<Graphic3d_Vec2>(theLUT->SizeY() - 1 - y, x) = aResult;
+      aResult = aResult / float(theNbIntegralSamples);
+      theLUT->ChangeValue<NCollection_Vec2<float>>(theLUT->SizeY() - 1 - y, x) = aResult;
     }
   }
 }
 
 //=================================================================================================
 
-Standard_ShortReal Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(Standard_ShortReal theProbability,
-                                                                  Standard_ShortReal theRoughness)
+float Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(float theProbability,
+                                                                  float theRoughness)
 {
   return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f
-         / Standard_ShortReal(M_PI);
+         / float(M_PI);
 }
 
 //=================================================================================================
 
-Standard_ShortReal Graphic3d_PBRMaterial::lutGenGeometryFactor(Standard_ShortReal theCosL,
-                                                               Standard_ShortReal theCosV,
-                                                               Standard_ShortReal theRoughness)
+float Graphic3d_PBRMaterial::lutGenGeometryFactor(float theCosL,
+                                                               float theCosV,
+                                                               float theRoughness)
 {
-  Standard_ShortReal aK = theRoughness * theRoughness * 0.5f;
+  float aK = theRoughness * theRoughness * 0.5f;
 
-  Standard_ShortReal aGeometryFactor = theCosL;
+  float aGeometryFactor = theCosL;
   aGeometryFactor /= theCosL * (1.f - aK) + aK;
   aGeometryFactor /= theCosV * (1.f - aK) + aK;
 
@@ -242,32 +242,32 @@ Standard_ShortReal Graphic3d_PBRMaterial::lutGenGeometryFactor(Standard_ShortRea
 
 //=================================================================================================
 
-Graphic3d_Vec2 Graphic3d_PBRMaterial::lutGenHammersley(unsigned int theNumber,
+NCollection_Vec2<float> Graphic3d_PBRMaterial::lutGenHammersley(unsigned int theNumber,
                                                        unsigned int theCount)
 {
-  Standard_ShortReal aPhi2 = 0.f;
+  float aPhi2 = 0.f;
   for (unsigned int i = 0; i < sizeof(unsigned int) * 8; ++i)
   {
     if ((theNumber >> i) == 0)
     {
       break;
     }
-    aPhi2 += ((theNumber >> i) & 1) / Standard_ShortReal(1 << (i + 1));
+    aPhi2 += ((theNumber >> i) & 1) / float(1 << (i + 1));
   }
 
-  return Graphic3d_Vec2(theNumber / Standard_ShortReal(theCount), aPhi2);
+  return NCollection_Vec2<float>(theNumber / float(theCount), aPhi2);
 }
 
 //=================================================================================================
 
-Standard_ShortReal Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
-  Standard_ShortReal theHammersleyPointComponent,
-  Standard_ShortReal theRoughness)
+float Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
+  float theHammersleyPointComponent,
+  float theRoughness)
 {
-  Standard_ShortReal aQuadRoughness = theRoughness * theRoughness;
+  float aQuadRoughness = theRoughness * theRoughness;
   aQuadRoughness *= aQuadRoughness;
 
-  Standard_ShortReal aTmp = 1.f + (aQuadRoughness - 1.f) * theHammersleyPointComponent;
+  float aTmp = 1.f + (aQuadRoughness - 1.f) * theHammersleyPointComponent;
 
   if (aTmp != 0.f)
   {
@@ -281,37 +281,37 @@ Standard_ShortReal Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
 
 //=================================================================================================
 
-Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenImportanceSample(
-  const Graphic3d_Vec2& theHammerslayPoint,
-  Standard_ShortReal    theRoughness)
+NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenImportanceSample(
+  const NCollection_Vec2<float>& theHammerslayPoint,
+  float    theRoughness)
 {
-  Standard_ShortReal aPhi = 2.f * Standard_ShortReal(M_PI) * theHammerslayPoint.y();
+  float aPhi = 2.f * float(M_PI) * theHammerslayPoint.y();
 
-  Standard_ShortReal aCosTheta =
+  float aCosTheta =
     lutGenImportanceSampleCosTheta(theHammerslayPoint.x(), theRoughness);
-  Standard_ShortReal aSinTheta = sqrtf(1.f - aCosTheta * aCosTheta);
+  float aSinTheta = sqrtf(1.f - aCosTheta * aCosTheta);
 
-  return Graphic3d_Vec3(aSinTheta * cosf(aPhi), aSinTheta * sinf(aPhi), aCosTheta);
+  return NCollection_Vec3<float>(aSinTheta * cosf(aPhi), aSinTheta * sinf(aPhi), aCosTheta);
 }
 
 //=================================================================================================
 
-Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenView(Standard_ShortReal theCosV)
+NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenView(float theCosV)
 {
-  return Graphic3d_Vec3(0.f, sqrtf(1.f - theCosV * theCosV), theCosV);
+  return NCollection_Vec3<float>(0.f, sqrtf(1.f - theCosV * theCosV), theCosV);
 }
 
 //=================================================================================================
 
-Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenReflect(const Graphic3d_Vec3& theVector,
-                                                    const Graphic3d_Vec3& theAxis)
+NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenReflect(const NCollection_Vec3<float>& theVector,
+                                                    const NCollection_Vec3<float>& theAxis)
 {
   return theAxis * theAxis.Dot(theVector) * 2.f - theVector;
 }
 
 //=================================================================================================
 
-void Graphic3d_PBRMaterial::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_PBRMaterial::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Graphic3d_PBRMaterial)
 

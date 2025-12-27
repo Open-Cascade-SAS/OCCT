@@ -28,9 +28,6 @@
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
 
-class StepGeom_BSplineSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_BSplineSurface, StepGeom_BoundedSurface)
-
 class StepGeom_BSplineSurface : public StepGeom_BoundedSurface
 {
 
@@ -38,35 +35,35 @@ public:
   //! Returns a BSplineSurface
   Standard_EXPORT StepGeom_BSplineSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Standard_Integer                          aUDegree,
-                            const Standard_Integer                          aVDegree,
-                            const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aUDegree,
+                            const int                          aVDegree,
+                            const occ::handle<StepGeom_HArray2OfCartesianPoint>& aControlPointsList,
                             const StepGeom_BSplineSurfaceForm               aSurfaceForm,
                             const StepData_Logical                          aUClosed,
                             const StepData_Logical                          aVClosed,
                             const StepData_Logical                          aSelfIntersect);
 
-  Standard_EXPORT void SetUDegree(const Standard_Integer aUDegree);
+  Standard_EXPORT void SetUDegree(const int aUDegree);
 
-  Standard_EXPORT Standard_Integer UDegree() const;
+  Standard_EXPORT int UDegree() const;
 
-  Standard_EXPORT void SetVDegree(const Standard_Integer aVDegree);
+  Standard_EXPORT void SetVDegree(const int aVDegree);
 
-  Standard_EXPORT Standard_Integer VDegree() const;
+  Standard_EXPORT int VDegree() const;
 
   Standard_EXPORT void SetControlPointsList(
-    const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList);
+    const occ::handle<StepGeom_HArray2OfCartesianPoint>& aControlPointsList);
 
-  Standard_EXPORT Handle(StepGeom_HArray2OfCartesianPoint) ControlPointsList() const;
+  Standard_EXPORT occ::handle<StepGeom_HArray2OfCartesianPoint> ControlPointsList() const;
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) ControlPointsListValue(
-    const Standard_Integer num1,
-    const Standard_Integer num2) const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ControlPointsListValue(
+    const int num1,
+    const int num2) const;
 
-  Standard_EXPORT Standard_Integer NbControlPointsListI() const;
+  Standard_EXPORT int NbControlPointsListI() const;
 
-  Standard_EXPORT Standard_Integer NbControlPointsListJ() const;
+  Standard_EXPORT int NbControlPointsListJ() const;
 
   Standard_EXPORT void SetSurfaceForm(const StepGeom_BSplineSurfaceForm aSurfaceForm);
 
@@ -86,11 +83,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineSurface, StepGeom_BoundedSurface)
 
-protected:
 private:
-  Standard_Integer                         uDegree;
-  Standard_Integer                         vDegree;
-  Handle(StepGeom_HArray2OfCartesianPoint) controlPointsList;
+  int                         uDegree;
+  int                         vDegree;
+  occ::handle<StepGeom_HArray2OfCartesianPoint> controlPointsList;
   StepGeom_BSplineSurfaceForm              surfaceForm;
   StepData_Logical                         uClosed;
   StepData_Logical                         vClosed;

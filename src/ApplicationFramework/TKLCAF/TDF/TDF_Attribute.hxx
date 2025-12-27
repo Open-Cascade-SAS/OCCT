@@ -36,9 +36,6 @@ class TDF_RelocationTable;
 class TDF_DataSet;
 class TDF_IDFilter;
 
-class TDF_Attribute;
-DEFINE_STANDARD_HANDLE(TDF_Attribute, Standard_Transient)
-
 //! A class each application has to implement. It is
 //! used to contain the application data.
 //! This abstract class, alongwith Label,
@@ -151,59 +148,59 @@ public:
 
   //! Returns the transaction index in which the
   //! attribute has been created or modified.
-  Standard_Integer Transaction() const;
+  int Transaction() const;
 
   //! Returns the upper transaction index until which
   //! the attribute is/was valid. This number may
   //! vary. A removed attribute validity range is
   //! reduced to its transaction index.
-  Standard_EXPORT Standard_Integer UntilTransaction() const;
+  Standard_EXPORT int UntilTransaction() const;
 
   //! Returns true if the attribute is valid; i.e. not a
   //! backuped or removed one.
-  Standard_Boolean IsValid() const;
+  bool IsValid() const;
 
   //! Returns true if the attribute has no backup
-  Standard_Boolean IsNew() const;
+  bool IsNew() const;
 
   //! Returns true if the attribute forgotten status is
   //! set.
   //!
   //! ShortCut Methods concerning associated attributes
   //! =================================================
-  Standard_Boolean IsForgotten() const;
+  bool IsForgotten() const;
 
   //! Returns true if it exists an associated attribute
   //! of <me> with <anID> as ID.
-  Standard_EXPORT Standard_Boolean IsAttribute(const Standard_GUID& anID) const;
+  Standard_EXPORT bool IsAttribute(const Standard_GUID& anID) const;
 
   //! Finds an associated attribute of <me>, according
   //! to <anID>. the returned <anAttribute> is a valid
   //! one. The method returns True if found, False
   //! otherwise. A removed attribute cannot be found using
   //! this method.
-  Standard_EXPORT Standard_Boolean FindAttribute(const Standard_GUID&   anID,
-                                                 Handle(TDF_Attribute)& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&   anID,
+                                                 occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
-  Standard_Boolean FindAttribute(const Standard_GUID& theID, Handle(T)& theAttr) const
+  bool FindAttribute(const Standard_GUID& theID, occ::handle<T>& theAttr) const
   {
-    Handle(TDF_Attribute) anAttr = theAttr;
-    return FindAttribute(theID, anAttr) && !(theAttr = Handle(T)::DownCast(anAttr)).IsNull();
+    occ::handle<TDF_Attribute> anAttr = theAttr;
+    return FindAttribute(theID, anAttr) && !(theAttr = occ::down_cast<T>(anAttr)).IsNull();
   }
 
   //! Adds an Attribute <other> to the label of <me>.
   //! Raises if there is already one of the same GUID
   //! than <other>.
-  Standard_EXPORT void AddAttribute(const Handle(TDF_Attribute)& other) const;
+  Standard_EXPORT void AddAttribute(const occ::handle<TDF_Attribute>& other) const;
 
   //! Forgets the Attribute of GUID <aguid> associated
   //! to the label of <me>. Be careful that if <me> is
   //! the attribute of <guid>, <me> will have a null label
   //! after this call. If the attribute doesn't exist
   //! returns False. Otherwise returns True.
-  Standard_EXPORT Standard_Boolean ForgetAttribute(const Standard_GUID& aguid) const;
+  Standard_EXPORT bool ForgetAttribute(const Standard_GUID& aguid) const;
 
   //! Forgets all the attributes attached to the label
   //! of <me>. Does it on the sub-labels if
@@ -212,7 +209,7 @@ public:
   //! mechanisms. Be careful that if <me> will have a
   //! null label after this call
   Standard_EXPORT void ForgetAllAttributes(
-    const Standard_Boolean clearChildren = Standard_True) const;
+    const bool clearChildren = true) const;
 
   //! Something to do after adding an Attribute to a label.
   Standard_EXPORT virtual void AfterAddition();
@@ -236,8 +233,8 @@ public:
   //! further (false). If <forceIt> is set to true, the
   //! method MUST perform and return true. Does nothing
   //! by default and returns true.
-  Standard_EXPORT virtual Standard_Boolean AfterRetrieval(
-    const Standard_Boolean forceIt = Standard_False);
+  Standard_EXPORT virtual bool AfterRetrieval(
+    const bool forceIt = false);
 
   //! Something to do before applying <anAttDelta>. The
   //! returned status says if AfterUndo has been
@@ -245,9 +242,9 @@ public:
   //! called once again further (false). If <forceIt> is
   //! set to true, the method MUST perform and return
   //! true. Does nothing by default and returns true.
-  Standard_EXPORT virtual Standard_Boolean BeforeUndo(
-    const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False);
+  Standard_EXPORT virtual bool BeforeUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false);
 
   //! Something to do after applying <anAttDelta>. The
   //! returned status says if AfterUndo has been
@@ -255,9 +252,9 @@ public:
   //! called once again further (false). If <forceIt> is
   //! set to true, the method MUST perform and return
   //! true. Does nothing by default and returns true.
-  Standard_EXPORT virtual Standard_Boolean AfterUndo(
-    const Handle(TDF_AttributeDelta)& anAttDelta,
-    const Standard_Boolean            forceIt = Standard_False);
+  Standard_EXPORT virtual bool AfterUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false);
 
   //! A callback.
   //! By default does nothing.
@@ -279,45 +276,45 @@ public:
   //! Returns true if the attribute backup status is
   //! set. This status is set/unset by the
   //! Backup() method.
-  Standard_Boolean IsBackuped() const;
+  bool IsBackuped() const;
 
   //! Copies the attribute contents into a new other
   //! attribute. It is used by Backup().
-  Standard_EXPORT virtual Handle(TDF_Attribute) BackupCopy() const;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> BackupCopy() const;
 
   //! Restores the backuped contents from <anAttribute>
   //! into this one. It is used when aborting a
   //! transaction.
-  Standard_EXPORT virtual void Restore(const Handle(TDF_Attribute)& anAttribute) = 0;
+  Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& anAttribute) = 0;
 
   //! Makes an AttributeDelta because <me>
   //! appeared. The only known use of a redefinition of
   //! this method is to return a null handle (no delta).
-  Standard_EXPORT virtual Handle(TDF_DeltaOnAddition) DeltaOnAddition() const;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnAddition> DeltaOnAddition() const;
 
   //! Makes an AttributeDelta because <me> has been
   //! forgotten.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnForget) DeltaOnForget() const;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnForget> DeltaOnForget() const;
 
   //! Makes an AttributeDelta because <me> has been
   //! resumed.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnResume) DeltaOnResume() const;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnResume> DeltaOnResume() const;
 
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
-    const Handle(TDF_Attribute)& anOldAttribute) const;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnModification> DeltaOnModification(
+    const occ::handle<TDF_Attribute>& anOldAttribute) const;
 
   //! Applies a DeltaOnModification to <me>.
-  Standard_EXPORT virtual void DeltaOnModification(const Handle(TDF_DeltaOnModification)& aDelta);
+  Standard_EXPORT virtual void DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& aDelta);
 
   //! Makes a DeltaOnRemoval on <me> because <me> has
   //! disappeared from the DS.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnRemoval) DeltaOnRemoval() const;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnRemoval> DeltaOnRemoval() const;
 
   //! Returns an new empty attribute from the good end
   //! type. It is used by the copy algorithm.
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const = 0;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const = 0;
 
   //! This method is different from the "Copy" one,
   //! because it is used when copying an attribute from
@@ -332,8 +329,8 @@ public:
   //! It is possible to use <aRelocationTable> to
   //! get/set the relocation value of a source
   //! attribute.
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)&       intoAttribute,
-                                     const Handle(TDF_RelocationTable)& aRelocationTable) const = 0;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
+                                     const occ::handle<TDF_RelocationTable>& aRelocationTable) const = 0;
 
   //! Adds the first level referenced attributes and labels
   //! to <aDataSet>.
@@ -342,7 +339,7 @@ public:
   //! DataSet.
   //!
   //! If there is none, do not implement the method.
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& aDataSet) const;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const;
 
   //! Dumps the minimum information about <me> on
   //! <aStream>.
@@ -357,7 +354,7 @@ public:
   //! field.
   Standard_EXPORT virtual void ExtendedDump(Standard_OStream&        anOS,
                                             const TDF_IDFilter&      aFilter,
-                                            TDF_AttributeIndexedMap& aMap) const;
+                                            NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const;
 
   //! Forgets the attribute. <aTransaction> is the
   //! current transaction in which the forget is done. A
@@ -371,11 +368,11 @@ public:
   //! one, but a soon DEAD one.
   //!
   //! Should be private.
-  Standard_EXPORT void Forget(const Standard_Integer aTransaction);
+  Standard_EXPORT void Forget(const int aTransaction);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   friend class TDF_Data;
   friend class TDF_Label;
@@ -391,23 +388,23 @@ protected:
 
 private:
   //! Set the "Valid" status with <aStatus>.
-  void Validate(const Standard_Boolean aStatus);
+  void Validate(const bool aStatus);
 
   //! Resumes the attribute (undos Forget action).
   Standard_EXPORT void Resume();
 
   //! Set the "backuped" status with <aStatus>.
-  void Backup(const Standard_Boolean aStatus);
+  void Backup(const bool aStatus);
 
   //! Removes the last backup attribute, if it exists.
   Standard_EXPORT void RemoveBackup();
 
   TDF_LabelNodePtr      myLabelNode;
-  Standard_Integer      myTransaction;
-  Standard_Integer      mySavedTransaction;
-  Standard_Integer      myFlags;
-  Handle(TDF_Attribute) myNext;
-  Handle(TDF_Attribute) myBackup;
+  int      myTransaction;
+  int      mySavedTransaction;
+  int      myFlags;
+  occ::handle<TDF_Attribute> myNext;
+  occ::handle<TDF_Attribute> myBackup;
 };
 
 #include <TDF_Attribute.lxx>

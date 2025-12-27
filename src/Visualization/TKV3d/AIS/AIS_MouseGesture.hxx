@@ -45,7 +45,5 @@ enum AIS_MouseGesture
 };
 
 //! Map defining mouse gestures.
-typedef NCollection_DataMap<unsigned int, AIS_MouseGesture>    AIS_MouseGestureMap;
-typedef NCollection_DataMap<unsigned int, AIS_SelectionScheme> AIS_MouseSelectionSchemeMap;
 
 #endif // _AIS_MouseGesture_HeaderFile

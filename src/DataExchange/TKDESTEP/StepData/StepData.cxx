@@ -13,7 +13,7 @@
 
 #include <StepData.hxx>
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Statics.hxx>
 #include <StepData_DefaultGeneral.hxx>
 #include <StepData_FileProtocol.hxx>
@@ -26,14 +26,14 @@ StaticHandleA(StepData_Protocol, theheader);
 
 void StepData::Init() {}
 
-Handle(StepData_Protocol) StepData::Protocol()
+occ::handle<StepData_Protocol> StepData::Protocol()
 {
   InitHandleVoid(StepData_Protocol, proto); // svv #2
                                             //  UseHandle(StepData_Protocol,proto);
   return proto;
 }
 
-void StepData::AddHeaderProtocol(const Handle(StepData_Protocol)& header)
+void StepData::AddHeaderProtocol(const occ::handle<StepData_Protocol>& header)
 {
   InitHandle(StepData_Protocol, theheader);
   if (theheader.IsNull())
@@ -51,7 +51,7 @@ void StepData::AddHeaderProtocol(const Handle(StepData_Protocol)& header)
   }
 }
 
-Handle(StepData_Protocol) StepData::HeaderProtocol()
+occ::handle<StepData_Protocol> StepData::HeaderProtocol()
 {
   UseHandle(StepData_Protocol, theheader);
   return theheader;

@@ -36,19 +36,17 @@ public:
 
   Standard_HIDDEN RWStepGeom_RWBezierCurve();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepGeom_BezierCurve)&    ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<StepGeom_BezierCurve>&    ent) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
-                                 const Handle(StepGeom_BezierCurve)& ent) const;
+                                 const occ::handle<StepGeom_BezierCurve>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepGeom_BezierCurve)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepGeom_BezierCurve>& ent,
                              Interface_EntityIterator&           iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepGeom_RWBezierCurve_HeaderFile

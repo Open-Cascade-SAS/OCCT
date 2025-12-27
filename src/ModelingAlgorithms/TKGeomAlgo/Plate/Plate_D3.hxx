@@ -40,7 +40,6 @@ public:
   friend class Plate_GtoCConstraint;
   friend class Plate_FreeGtoCConstraint;
 
-protected:
 private:
   gp_XYZ Duuu;
   gp_XYZ Duuv;

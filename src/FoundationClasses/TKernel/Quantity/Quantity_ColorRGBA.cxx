@@ -45,7 +45,7 @@ static constexpr int          RGB_COMPONENT_LAST_INDEX = 2; // Last RGB componen
 //! @param theColorInteger the integer representing a color
 //! @param theColorComponentBase the base of the numeral system used to represent a color
 //! @return a color component taken from the integer
-static Standard_ShortReal takeColorComponentFromInteger(ColorInteger&      theColorInteger,
+static float takeColorComponentFromInteger(ColorInteger&      theColorInteger,
                                                         const ColorInteger theColorComponentBase)
 {
   Standard_ASSERT_RETURN(theColorComponentBase >= 2,
@@ -53,7 +53,7 @@ static Standard_ShortReal takeColorComponentFromInteger(ColorInteger&      theCo
                          0.0f);
   const ColorInteger       aColorComponentMaxValue  = theColorComponentBase - 1;
   const ColorInteger       aColorComponentAsInteger = theColorInteger % theColorComponentBase;
-  const Standard_ShortReal aColorComponent =
+  const float aColorComponent =
     aColorComponentAsInteger * 1.0f / aColorComponentMaxValue;
   theColorInteger /= theColorComponentBase;
   return aColorComponent;
@@ -78,14 +78,14 @@ static bool convertIntegerToColorRGBA(ColorInteger        theColorInteger,
   NCollection_Vec4<float> aColor(1.0f);
   if (hasAlphaComponent)
   {
-    const Standard_ShortReal anAlphaComponent =
+    const float anAlphaComponent =
       takeColorComponentFromInteger(theColorInteger, theColorComponentBase);
     aColor.a() = anAlphaComponent;
   }
-  for (Standard_Integer aColorComponentIndex = RGB_COMPONENT_LAST_INDEX; aColorComponentIndex >= 0;
+  for (int aColorComponentIndex = RGB_COMPONENT_LAST_INDEX; aColorComponentIndex >= 0;
        --aColorComponentIndex)
   {
-    const Standard_ShortReal aColorComponent =
+    const float aColorComponent =
       takeColorComponentFromInteger(theColorInteger, theColorComponentBase);
     aColor[aColorComponentIndex] = Quantity_Color::Convert_sRGB_To_LinearRGB(aColorComponent);
   }
@@ -181,7 +181,7 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
   {
     case HexColorLength_ShortRGBA:
       hasAlphaComponent = true;
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case HexColorLength_ShortRGB:
       isShort = true;
       break;
@@ -215,7 +215,7 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
 
 //=================================================================================================
 
-void Quantity_ColorRGBA::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void Quantity_ColorRGBA::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream,
                                    "RGBA",
                                    4,
@@ -226,12 +226,12 @@ void Quantity_ColorRGBA::DumpJson(Standard_OStream& theOStream, Standard_Integer
 
 //=================================================================================================
 
-Standard_Boolean Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream,
-                                                  Standard_Integer&       theStreamPos)
+bool Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream,
+                                                  int&       theStreamPos)
 {
-  Standard_Integer aPos = theStreamPos;
+  int aPos = theStreamPos;
 
-  Standard_Real aRed, aGreen, aBlue, anAlpha;
+  double aRed, aGreen, aBlue, anAlpha;
   OCCT_INIT_VECTOR_CLASS(Standard_Dump::Text(theSStream),
                          "RGBA",
                          aPos,
@@ -241,9 +241,9 @@ Standard_Boolean Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSSt
                          &aBlue,
                          &anAlpha)
 
-  SetValues((Standard_ShortReal)aRed,
-            (Standard_ShortReal)aGreen,
-            (Standard_ShortReal)aBlue,
-            (Standard_ShortReal)anAlpha);
-  return Standard_True;
+  SetValues((float)aRed,
+            (float)aGreen,
+            (float)aBlue,
+            (float)anAlpha);
+  return true;
 }

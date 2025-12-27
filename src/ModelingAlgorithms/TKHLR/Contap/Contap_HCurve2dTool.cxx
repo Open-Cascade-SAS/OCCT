@@ -18,11 +18,11 @@
 #include <Geom2d_BezierCurve.hxx>
 
 //============================================================
-Standard_Integer Contap_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2d)& C,
-                                                const Standard_Real              U0,
-                                                const Standard_Real              U1)
+int Contap_HCurve2dTool::NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
+                                                const double              U0,
+                                                const double              U1)
 {
-  Standard_Real nbs = 10.0;
+  double nbs = 10.0;
   switch (C->GetType())
   {
     case GeomAbs_Line:
@@ -44,5 +44,5 @@ Standard_Integer Contap_HCurve2dTool::NbSamples(const Handle(Adaptor2d_Curve2d)&
   }
   if (nbs > 50.)
     nbs = 50.;
-  return ((Standard_Integer)nbs);
+  return ((int)nbs);
 }

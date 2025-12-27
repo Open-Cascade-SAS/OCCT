@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 class IGESGeom_TransformationMatrix;
 
-class IGESSolid_SolidAssembly;
-DEFINE_STANDARD_HANDLE(IGESSolid_SolidAssembly, IGESData_IGESEntity)
-
 //! defines SolidAssembly, Type <184> Form <0>
 //! in package IGESSolid
 //! Solid assembly is a collection of items which possess a
@@ -49,34 +46,33 @@ public:
   //! item
   //! raises exception if the length of allItems & allMatrices
   //! do not match
-  Standard_EXPORT void Init(const Handle(IGESData_HArray1OfIGESEntity)&           allItems,
-                            const Handle(IGESGeom_HArray1OfTransformationMatrix)& allMatrices);
+  Standard_EXPORT void Init(const occ::handle<IGESData_HArray1OfIGESEntity>&           allItems,
+                            const occ::handle<IGESGeom_HArray1OfTransformationMatrix>& allMatrices);
 
   //! Tells if at least one item is a Brep, from FormNumber
-  Standard_EXPORT Standard_Boolean HasBrep() const;
+  Standard_EXPORT bool HasBrep() const;
 
   //! Sets or Unsets the status "HasBrep" from FormNumber
   //! Default is False
-  Standard_EXPORT void SetBrep(const Standard_Boolean hasbrep);
+  Standard_EXPORT void SetBrep(const bool hasbrep);
 
   //! returns the number of items in the collection
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   //! returns the Index'th item
   //! raises exception if Index <= 0 or Index > NbItems()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Item(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Item(const int Index) const;
 
   //! returns the transformation matrix of the Index'th item
   //! raises exception if Index <= 0 or Index > NbItems()
-  Standard_EXPORT Handle(IGESGeom_TransformationMatrix) TransfMatrix(
-    const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESGeom_TransformationMatrix> TransfMatrix(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidAssembly, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_HArray1OfIGESEntity)           theItems;
-  Handle(IGESGeom_HArray1OfTransformationMatrix) theMatrices;
+  occ::handle<IGESData_HArray1OfIGESEntity>           theItems;
+  occ::handle<IGESGeom_HArray1OfTransformationMatrix> theMatrices;
 };
 
 #endif // _IGESSolid_SolidAssembly_HeaderFile

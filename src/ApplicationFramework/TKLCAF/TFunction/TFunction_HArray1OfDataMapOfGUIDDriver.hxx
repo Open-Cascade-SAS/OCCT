@@ -17,9 +17,12 @@
 #ifndef TFunction_HArray1OfDataMapOfGUIDDriver_HeaderFile
 #define TFunction_HArray1OfDataMapOfGUIDDriver_HeaderFile
 
-#include <TFunction_Array1OfDataMapOfGUIDDriver.hxx>
+#include <TFunction_Driver.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TFunction_HArray1OfDataMapOfGUIDDriver, TFunction_Array1OfDataMapOfGUIDDriver)
+DEFINE_HARRAY1(TFunction_HArray1OfDataMapOfGUIDDriver, NCollection_Array1<NCollection_DataMap<Standard_GUID, occ::handle<TFunction_Driver>>>)
 
 #endif

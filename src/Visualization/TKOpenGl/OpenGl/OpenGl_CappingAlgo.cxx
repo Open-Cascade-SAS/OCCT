@@ -27,7 +27,7 @@ namespace
 //! Auxiliary sentry object managing stencil test.
 struct StencilTestSentry
 {
-  StencilTestSentry(const Handle(OpenGl_Context)& theCtx)
+  StencilTestSentry(const occ::handle<OpenGl_Context>& theCtx)
       : myCtx(theCtx.get()),
         myDepthFuncPrev(0)
   {
@@ -64,10 +64,10 @@ private:
 //! Render infinite capping plane.
 //! @param theWorkspace [in] the GL workspace, context state.
 //! @param thePlane [in] the graphical plane, for which the capping surface is rendered.
-static void renderPlane(const Handle(OpenGl_Workspace)&            theWorkspace,
-                        const Handle(OpenGl_CappingPlaneResource)& thePlane)
+static void renderPlane(const occ::handle<OpenGl_Workspace>&            theWorkspace,
+                        const occ::handle<OpenGl_CappingPlaneResource>& thePlane)
 {
-  const Handle(OpenGl_Context)& aContext       = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext       = theWorkspace->GetGlContext();
   const bool                    wasCullAllowed = theWorkspace->SetAllowFaceCulling(true);
 
   // set identity model matrix
@@ -85,19 +85,19 @@ static void renderPlane(const Handle(OpenGl_Workspace)&            theWorkspace,
 
 //! Render capping for specific structure.
 static void renderCappingForStructure(StencilTestSentry&                         theStencilSentry,
-                                      const Handle(OpenGl_Workspace)&            theWorkspace,
+                                      const occ::handle<OpenGl_Workspace>&            theWorkspace,
                                       const OpenGl_Structure&                    theStructure,
-                                      const Handle(Graphic3d_ClipPlane)&         theClipChain,
-                                      const Standard_Integer                     theSubPlaneIndex,
-                                      const Handle(OpenGl_CappingPlaneResource)& thePlane)
+                                      const occ::handle<Graphic3d_ClipPlane>&         theClipChain,
+                                      const int                     theSubPlaneIndex,
+                                      const occ::handle<OpenGl_CappingPlaneResource>& thePlane)
 {
-  const Standard_Integer aPrevFilter = theWorkspace->RenderFilter();
-  const Standard_Integer anAnyFilter =
+  const int aPrevFilter = theWorkspace->RenderFilter();
+  const int anAnyFilter =
     aPrevFilter
-    & ~(Standard_Integer)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
 
-  const Handle(OpenGl_Context)&      aContext     = theWorkspace->GetGlContext();
-  const Handle(Graphic3d_ClipPlane)& aRenderPlane = thePlane->Plane();
+  const occ::handle<OpenGl_Context>&      aContext     = theWorkspace->GetGlContext();
+  const occ::handle<Graphic3d_ClipPlane>& aRenderPlane = thePlane->Plane();
   for (OpenGl_Structure::GroupIterator aGroupIter(theStructure.Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
@@ -115,7 +115,7 @@ static void renderCappingForStructure(StencilTestSentry&                        
       aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->GlAspects() : NULL;
     thePlane->Update(aContext,
                      anObjAspectFace != NULL ? anObjAspectFace->Aspect()
-                                             : Handle(Graphic3d_Aspects)());
+                                             : occ::handle<Graphic3d_Aspects>());
     theWorkspace->SetAspects(thePlane->AspectFace());
     theWorkspace->SetRenderFilter(aPrevFilter);
     if (!theWorkspace->ShouldRender(&thePlane->Primitives(), aGroupIter.Value()))
@@ -210,10 +210,10 @@ static void renderCappingForStructure(StencilTestSentry&                        
 
 //=================================================================================================
 
-void OpenGl_CappingAlgo::RenderCapping(const Handle(OpenGl_Workspace)& theWorkspace,
+void OpenGl_CappingAlgo::RenderCapping(const occ::handle<OpenGl_Workspace>& theWorkspace,
                                        const OpenGl_Structure&         theStructure)
 {
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
   if (!aContext->Clipping().IsCappingOn())
   {
     // do not perform algorithm if there is nothing to render
@@ -224,7 +224,7 @@ void OpenGl_CappingAlgo::RenderCapping(const Handle(OpenGl_Workspace)& theWorksp
   const OpenGl_Aspects* aFaceAsp = theWorkspace->Aspects();
 
   // only filled primitives should be rendered
-  const Standard_Integer aPrevFilter = theWorkspace->RenderFilter();
+  const int aPrevFilter = theWorkspace->RenderFilter();
   theWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_FillModeOnly);
   StencilTestSentry aStencilSentry(aContext);
 
@@ -233,19 +233,19 @@ void OpenGl_CappingAlgo::RenderCapping(const Handle(OpenGl_Workspace)& theWorksp
        aCappingIt.Next())
   {
     // get plane being rendered
-    const Handle(Graphic3d_ClipPlane)& aClipChain = aCappingIt.Value();
+    const occ::handle<Graphic3d_ClipPlane>& aClipChain = aCappingIt.Value();
     if (!aClipChain->IsCapping() || aCappingIt.IsDisabled())
     {
       continue;
     }
 
-    Standard_Integer aSubPlaneIndex = 1;
+    int aSubPlaneIndex = 1;
     for (const Graphic3d_ClipPlane* aSubPlaneIter = aClipChain.get(); aSubPlaneIter != NULL;
          aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
     {
       // get resource for the plane
       const TCollection_AsciiString&      aResId = aSubPlaneIter->GetId();
-      Handle(OpenGl_CappingPlaneResource) aPlaneRes;
+      occ::handle<OpenGl_CappingPlaneResource> aPlaneRes;
       if (!aContext->GetResource(aResId, aPlaneRes))
       {
         // share and register for release once the resource is no longer used
@@ -262,7 +262,7 @@ void OpenGl_CappingAlgo::RenderCapping(const Handle(OpenGl_Workspace)& theWorksp
 
       // set delayed resource release
       aPlaneRes.Nullify();
-      aContext->ReleaseResource(aResId, Standard_True);
+      aContext->ReleaseResource(aResId, true);
     }
   }
 

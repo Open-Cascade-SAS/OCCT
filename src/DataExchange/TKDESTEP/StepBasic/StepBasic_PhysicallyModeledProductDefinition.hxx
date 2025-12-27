@@ -22,9 +22,6 @@
 
 #include <StepBasic_ProductDefinition.hxx>
 
-class StepBasic_PhysicallyModeledProductDefinition;
-DEFINE_STANDARD_HANDLE(StepBasic_PhysicallyModeledProductDefinition, StepBasic_ProductDefinition)
-
 class StepBasic_PhysicallyModeledProductDefinition : public StepBasic_ProductDefinition
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PhysicallyModeledProductDefinition, StepBasic_ProductDefinition)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_PhysicallyModeledProductDefinition_HeaderFile

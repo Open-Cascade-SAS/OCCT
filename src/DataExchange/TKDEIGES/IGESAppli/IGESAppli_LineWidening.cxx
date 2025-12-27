@@ -24,12 +24,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LineWidening, IGESData_IGESEntity)
 
 IGESAppli_LineWidening::IGESAppli_LineWidening() {}
 
-void IGESAppli_LineWidening::Init(const Standard_Integer nbPropVal,
-                                  const Standard_Real    aWidth,
-                                  const Standard_Integer aCornering,
-                                  const Standard_Integer aExtnFlag,
-                                  const Standard_Integer aJustifFlag,
-                                  const Standard_Real    aExtnVal)
+void IGESAppli_LineWidening::Init(const int nbPropVal,
+                                  const double    aWidth,
+                                  const int aCornering,
+                                  const int aExtnFlag,
+                                  const int aJustifFlag,
+                                  const double    aExtnVal)
 {
   theNbPropertyValues  = nbPropVal;
   theWidth             = aWidth;
@@ -40,32 +40,32 @@ void IGESAppli_LineWidening::Init(const Standard_Integer nbPropVal,
   InitTypeAndForm(406, 5);
 }
 
-Standard_Integer IGESAppli_LineWidening::NbPropertyValues() const
+int IGESAppli_LineWidening::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Real IGESAppli_LineWidening::WidthOfMetalization() const
+double IGESAppli_LineWidening::WidthOfMetalization() const
 {
   return theWidth;
 }
 
-Standard_Integer IGESAppli_LineWidening::CorneringCode() const
+int IGESAppli_LineWidening::CorneringCode() const
 {
   return theCorneringCode;
 }
 
-Standard_Integer IGESAppli_LineWidening::ExtensionFlag() const
+int IGESAppli_LineWidening::ExtensionFlag() const
 {
   return theExtensionFlag;
 }
 
-Standard_Integer IGESAppli_LineWidening::JustificationFlag() const
+int IGESAppli_LineWidening::JustificationFlag() const
 {
   return theJustificationFlag;
 }
 
-Standard_Real IGESAppli_LineWidening::ExtensionValue() const
+double IGESAppli_LineWidening::ExtensionValue() const
 {
   return theExtensionValue;
 }

@@ -35,14 +35,12 @@ public:
   //! presentation object, aPresentation.
   //! The display attributes of the shaded plane are
   //! defined by the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     aPt1,
                                   const gp_Pnt&                     aPt2,
                                   const gp_Pnt&                     aPt3);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_ShadedPlanePresentation_HeaderFile

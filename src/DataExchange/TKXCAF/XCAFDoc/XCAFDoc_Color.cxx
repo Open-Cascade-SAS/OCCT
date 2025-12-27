@@ -40,9 +40,9 @@ const Standard_GUID& XCAFDoc_Color::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_Color& C)
+occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_Color& C)
 {
-  Handle(XCAFDoc_Color) A;
+  occ::handle<XCAFDoc_Color> A;
   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A))
   {
     A = new XCAFDoc_Color();
@@ -54,9 +54,9 @@ Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_Colo
 
 //=================================================================================================
 
-Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_ColorRGBA& C)
+occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_ColorRGBA& C)
 {
-  Handle(XCAFDoc_Color) A;
+  occ::handle<XCAFDoc_Color> A;
   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A))
   {
     A = new XCAFDoc_Color();
@@ -68,9 +68,9 @@ Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_Colo
 
 //=================================================================================================
 
-Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_NameOfColor C)
+occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_NameOfColor C)
 {
-  Handle(XCAFDoc_Color) A;
+  occ::handle<XCAFDoc_Color> A;
   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A))
   {
     A = new XCAFDoc_Color();
@@ -82,13 +82,13 @@ Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label& L, const Quantity_Name
 
 //=================================================================================================
 
-Handle(XCAFDoc_Color) XCAFDoc_Color::Set(const TDF_Label&    L,
-                                         const Standard_Real R,
-                                         const Standard_Real G,
-                                         const Standard_Real B,
-                                         const Standard_Real alpha)
+occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label&    L,
+                                         const double R,
+                                         const double G,
+                                         const double B,
+                                         const double alpha)
 {
-  Handle(XCAFDoc_Color) A;
+  occ::handle<XCAFDoc_Color> A;
   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A))
   {
     A = new XCAFDoc_Color();
@@ -124,16 +124,16 @@ void XCAFDoc_Color::Set(const Quantity_NameOfColor C)
 
 //=================================================================================================
 
-void XCAFDoc_Color::Set(const Standard_Real R,
-                        const Standard_Real G,
-                        const Standard_Real B,
-                        const Standard_Real alpha)
+void XCAFDoc_Color::Set(const double R,
+                        const double G,
+                        const double B,
+                        const double alpha)
 {
   Backup();
   Quantity_Color aColor;
   aColor.SetValues(R, G, B, Quantity_TOC_RGB);
   myColor.SetRGB(aColor);
-  myColor.SetAlpha((Standard_ShortReal)alpha);
+  myColor.SetAlpha((float)alpha);
 }
 
 //=================================================================================================
@@ -159,14 +159,14 @@ Quantity_NameOfColor XCAFDoc_Color::GetNOC() const
 
 //=================================================================================================
 
-void XCAFDoc_Color::GetRGB(Standard_Real& R, Standard_Real& G, Standard_Real& B) const
+void XCAFDoc_Color::GetRGB(double& R, double& G, double& B) const
 {
   myColor.GetRGB().Values(R, G, B, Quantity_TOC_RGB);
 }
 
 //=================================================================================================
 
-Standard_ShortReal XCAFDoc_Color::GetAlpha() const
+float XCAFDoc_Color::GetAlpha() const
 {
   return myColor.Alpha();
 }
@@ -180,29 +180,29 @@ const Standard_GUID& XCAFDoc_Color::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_Color::Restore(const Handle(TDF_Attribute)& With)
+void XCAFDoc_Color::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myColor = Handle(XCAFDoc_Color)::DownCast(With)->GetColorRGBA();
+  myColor = occ::down_cast<XCAFDoc_Color>(With)->GetColorRGBA();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_Color::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_Color::NewEmpty() const
 {
   return new XCAFDoc_Color();
 }
 
 //=================================================================================================
 
-void XCAFDoc_Color::Paste(const Handle(TDF_Attribute)& Into,
-                          const Handle(TDF_RelocationTable)& /* RT */) const
+void XCAFDoc_Color::Paste(const occ::handle<TDF_Attribute>& Into,
+                          const occ::handle<TDF_RelocationTable>& /* RT */) const
 {
-  Handle(XCAFDoc_Color)::DownCast(Into)->Set(myColor);
+  occ::down_cast<XCAFDoc_Color>(Into)->Set(myColor);
 }
 
 //=================================================================================================
 
-void XCAFDoc_Color::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Color::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

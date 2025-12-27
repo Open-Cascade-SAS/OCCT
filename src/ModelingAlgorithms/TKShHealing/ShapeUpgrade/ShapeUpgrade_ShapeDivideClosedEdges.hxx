@@ -33,10 +33,8 @@ public:
 
   //! Sets the number of cuts applied to divide closed edges.
   //! The number of resulting faces will be num+1.
-  Standard_EXPORT void SetNbSplitPoints(const Standard_Integer num);
+  Standard_EXPORT void SetNbSplitPoints(const int num);
 
-protected:
-private:
 };
 
 #endif // _ShapeUpgrade_ShapeDivideClosedEdges_HeaderFile

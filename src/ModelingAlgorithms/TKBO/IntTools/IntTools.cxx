@@ -24,19 +24,20 @@
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
-#include <IntTools_Array1OfRoots.hxx>
 #include <IntTools_Root.hxx>
-#include <TColStd_ListOfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <IntTools_Root.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Edge.hxx>
 
 #include <algorithm>
 
 //=================================================================================================
 
-Standard_Integer IntTools::GetRadius(const BRepAdaptor_Curve& C,
-                                     const Standard_Real      t1,
-                                     const Standard_Real      t3,
-                                     Standard_Real&           aR)
+int IntTools::GetRadius(const BRepAdaptor_Curve& C,
+                                     const double      t1,
+                                     const double      t3,
+                                     double&           aR)
 {
   GeomAbs_CurveType aType = C.GetType();
   if (aType == GeomAbs_Line)
@@ -51,7 +52,7 @@ Standard_Integer IntTools::GetRadius(const BRepAdaptor_Curve& C,
     return 0;
   }
 
-  Standard_Real t2;
+  double t2;
   gp_Pnt        P1, P2, P3;
 
   t2 = 0.5 * (t1 + t3);
@@ -86,18 +87,18 @@ Standard_Integer IntTools::GetRadius(const BRepAdaptor_Curve& C,
 
 //=================================================================================================
 
-Standard_Integer IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
-                                       const Standard_Real    Tmax,
-                                       const Standard_Real    Tmin,
-                                       const Standard_Integer Discret,
-                                       const Standard_Real    Deflection,
-                                       TColStd_Array1OfReal&  anArgs)
+int IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
+                                       const double    Tmax,
+                                       const double    Tmin,
+                                       const int Discret,
+                                       const double    Deflection,
+                                       NCollection_Array1<double>&  anArgs)
 {
 
-  TColStd_ListOfReal aPars;
-  Standard_Real      dt, tCurrent, tNext, aR, anAbsDeflection;
-  Standard_Integer   ip, i, j, aNbDeflectionPoints;
-  Standard_Boolean   aRFlag;
+  NCollection_List<double> aPars;
+  double      dt, tCurrent, tNext, aR, anAbsDeflection;
+  int   ip, i, j, aNbDeflectionPoints;
+  bool   aRFlag;
 
   GeomAbs_CurveType aCurveType;
   aCurveType = C.GetType();
@@ -153,9 +154,9 @@ Standard_Integer IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
   }
 
   aPars.Append(Tmax);
-  const Standard_Integer aDiscretBis = aPars.Extent();
+  const int aDiscretBis = aPars.Extent();
   anArgs.Resize(0, aDiscretBis - 1, false);
-  TColStd_ListIteratorOfListOfReal anIt(aPars);
+  NCollection_List<double>::Iterator anIt(aPars);
   for (i = 0; anIt.More(); anIt.Next(), i++)
   {
     anArgs.SetValue(i, anIt.Value());
@@ -165,9 +166,9 @@ Standard_Integer IntTools::PrepareArgs(BRepAdaptor_Curve&     C,
 
 //=================================================================================================
 
-Standard_Real IntTools::Length(const TopoDS_Edge& anEdge)
+double IntTools::Length(const TopoDS_Edge& anEdge)
 {
-  Standard_Real aLength = 0;
+  double aLength = 0;
 
   if (!BRep_Tool::Degenerated(anEdge) && BRep_Tool::IsGeometric(anEdge))
   {
@@ -181,10 +182,10 @@ Standard_Real IntTools::Length(const TopoDS_Edge& anEdge)
 
 //=================================================================================================
 
-void IntTools::RemoveIdenticalRoots(IntTools_SequenceOfRoots& aSR, const Standard_Real anEpsT)
+void IntTools::RemoveIdenticalRoots(NCollection_Sequence<IntTools_Root>& aSR, const double anEpsT)
 {
-  Standard_Integer aNbRoots, j, k;
-  Standard_Real    anEpsT2 = 0.5 * anEpsT;
+  int aNbRoots, j, k;
+  double    anEpsT2 = 0.5 * anEpsT;
   aNbRoots                 = aSR.Length();
   for (j = 1; j <= aNbRoots; j++)
   {
@@ -214,14 +215,14 @@ bool IntTools_RootComparator(const IntTools_Root& theLeft, const IntTools_Root& 
 
 //=================================================================================================
 
-void IntTools::SortRoots(IntTools_SequenceOfRoots& mySequenceOfRoots,
-                         const Standard_Real /*myEpsT*/)
+void IntTools::SortRoots(NCollection_Sequence<IntTools_Root>& mySequenceOfRoots,
+                         const double /*myEpsT*/)
 {
-  Standard_Integer j, aNbRoots;
+  int j, aNbRoots;
 
   aNbRoots = mySequenceOfRoots.Length();
 
-  IntTools_Array1OfRoots anArray1OfRoots(1, aNbRoots);
+  NCollection_Array1<IntTools_Root> anArray1OfRoots(1, aNbRoots);
   for (j = 1; j <= aNbRoots; j++)
   {
     anArray1OfRoots(j) = mySequenceOfRoots(j);
@@ -238,11 +239,11 @@ void IntTools::SortRoots(IntTools_SequenceOfRoots& mySequenceOfRoots,
 
 //=================================================================================================
 
-void IntTools::FindRootStates(IntTools_SequenceOfRoots& mySequenceOfRoots,
-                              const Standard_Real       myEpsNull)
+void IntTools::FindRootStates(NCollection_Sequence<IntTools_Root>& mySequenceOfRoots,
+                              const double       myEpsNull)
 {
-  Standard_Integer aType, j, aNbRoots;
-  Standard_Real    t1, t2, f1, f2, absf2;
+  int aType, j, aNbRoots;
+  double    t1, t2, f1, f2, absf2;
 
   aNbRoots = mySequenceOfRoots.Length();
 
@@ -317,11 +318,11 @@ void IntTools::FindRootStates(IntTools_SequenceOfRoots& mySequenceOfRoots,
 
 //=================================================================================================
 
-Standard_Integer IntTools::Parameter(const gp_Pnt&             aP,
-                                     const Handle(Geom_Curve)& aCurve,
-                                     Standard_Real&            aParameter)
+int IntTools::Parameter(const gp_Pnt&             aP,
+                                     const occ::handle<Geom_Curve>& aCurve,
+                                     double&            aParameter)
 {
-  Standard_Real     aFirst, aLast;
+  double     aFirst, aLast;
   GeomAbs_CurveType aCurveType;
 
   aFirst = aCurve->FirstParameter();
@@ -367,7 +368,7 @@ Standard_Integer IntTools::Parameter(const gp_Pnt&             aP,
       GeomAPI_ProjectPointOnCurve aProjector;
 
       aProjector.Init(aP, aCurve, aFirst, aLast);
-      Standard_Integer aNbPoints = aProjector.NbPoints();
+      int aNbPoints = aProjector.NbPoints();
       if (aNbPoints)
       {
         aParameter = aProjector.LowerDistanceParameter();

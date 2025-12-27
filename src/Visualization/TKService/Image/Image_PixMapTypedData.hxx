@@ -25,13 +25,13 @@ public:
   Image_PixMapTypedData() {}
 
   //! Initializer.
-  bool Init(const Handle(NCollection_BaseAllocator)& theAlloc,
-            Standard_Size                            theSizeX,
-            Standard_Size                            theSizeY,
-            Standard_Size                            theSizeRowBytes = 0,
-            Standard_Byte*                           theDataPtr      = 0)
+  bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
+            size_t                            theSizeX,
+            size_t                            theSizeY,
+            size_t                            theSizeRowBytes = 0,
+            uint8_t*                           theDataPtr      = 0)
   {
-    const Standard_Size aSizeBPP = sizeof(PixelType_t);
+    const size_t aSizeBPP = sizeof(PixelType_t);
     return Image_PixMapData::Init(theAlloc,
                                   aSizeBPP,
                                   theSizeX,
@@ -43,9 +43,9 @@ public:
   //! Reset all values to specified one.
   void Init(const PixelType_t& theValue)
   {
-    for (Standard_Size aRowIter = 0; aRowIter < SizeY; ++aRowIter)
+    for (size_t aRowIter = 0; aRowIter < SizeY; ++aRowIter)
     {
-      for (Standard_Size aColIter = 0; aColIter < SizeX; ++aColIter)
+      for (size_t aColIter = 0; aColIter < SizeX; ++aColIter)
       {
         ChangeValue(aRowIter, aColIter) = theValue;
       }
@@ -53,25 +53,25 @@ public:
   }
 
   //! @return data pointer to requested row (first column).
-  const PixelType_t* Row(Standard_Size theRow) const
+  const PixelType_t* Row(size_t theRow) const
   {
     return (const PixelType_t*)Image_PixMapData::Row(theRow);
   }
 
   //! @return data pointer to requested row (first column).
-  PixelType_t* ChangeRow(Standard_Size theRow)
+  PixelType_t* ChangeRow(size_t theRow)
   {
     return (PixelType_t*)Image_PixMapData::ChangeRow(theRow);
   }
 
   //! @return data pointer to requested position.
-  const PixelType_t& Value(Standard_Size theRow, Standard_Size theCol) const
+  const PixelType_t& Value(size_t theRow, size_t theCol) const
   {
     return *(const PixelType_t*)Image_PixMapData::Value(theRow, theCol);
   }
 
   //! @return data pointer to requested position.
-  PixelType_t& ChangeValue(Standard_Size theRow, Standard_Size theCol)
+  PixelType_t& ChangeValue(size_t theRow, size_t theCol)
   {
     return *(PixelType_t*)Image_PixMapData::ChangeValue(theRow, theCol);
   }

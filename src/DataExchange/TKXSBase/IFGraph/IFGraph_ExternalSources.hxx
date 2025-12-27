@@ -38,7 +38,7 @@ public:
   Standard_EXPORT IFGraph_ExternalSources(const Interface_Graph& agraph);
 
   //! adds an entity and its shared ones to the list
-  Standard_EXPORT void GetFromEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent);
 
   //! adds a list of entities (as an iterator) with shared ones
   Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter);
@@ -47,14 +47,13 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Evaluates external sources of a set of entities
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
   //! Returns True if no External Source are found
   //! It means that we have a "root" set
   //! (performs an Evaluation as necessary)
-  Standard_EXPORT Standard_Boolean IsEmpty();
+  Standard_EXPORT bool IsEmpty();
 
-protected:
 private:
   Interface_Graph thegraph;
 };

@@ -16,9 +16,10 @@
 #ifndef _StepVisual_HArray1OfDraughtingCalloutElement_HeaderFile
 #define _StepVisual_HArray1OfDraughtingCalloutElement_HeaderFile
 
-#include <StepVisual_Array1OfDraughtingCalloutElement.hxx>
+#include <StepVisual_DraughtingCalloutElement.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
 DEFINE_HARRAY1(StepVisual_HArray1OfDraughtingCalloutElement,
-               StepVisual_Array1OfDraughtingCalloutElement)
+               NCollection_Array1<StepVisual_DraughtingCalloutElement>)
 #endif // _StepVisual_HArray1OfDraughtingCalloutElement_HeaderFile

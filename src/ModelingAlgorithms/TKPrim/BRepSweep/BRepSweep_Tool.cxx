@@ -27,14 +27,14 @@ BRepSweep_Tool::BRepSweep_Tool(const TopoDS_Shape& aShape)
 
 //=================================================================================================
 
-Standard_Integer BRepSweep_Tool::NbShapes() const
+int BRepSweep_Tool::NbShapes() const
 {
   return myMap.Extent();
 }
 
 //=================================================================================================
 
-Standard_Integer BRepSweep_Tool::Index(const TopoDS_Shape& aShape) const
+int BRepSweep_Tool::Index(const TopoDS_Shape& aShape) const
 {
   if (!myMap.Contains(aShape))
     return 0;
@@ -43,7 +43,7 @@ Standard_Integer BRepSweep_Tool::Index(const TopoDS_Shape& aShape) const
 
 //=================================================================================================
 
-TopoDS_Shape BRepSweep_Tool::Shape(const Standard_Integer anIndex) const
+TopoDS_Shape BRepSweep_Tool::Shape(const int anIndex) const
 {
   return myMap.FindKey(anIndex);
 }

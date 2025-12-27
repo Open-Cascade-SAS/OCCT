@@ -30,7 +30,7 @@ class StepTidy_DirectionReducer
 public:
   //! Constructor. Stores the work session and registers replacer functions.
   //! @param theWS the work session.
-  Standard_EXPORT StepTidy_DirectionReducer(const Handle(XSControl_WorkSession)& theWS);
+  Standard_EXPORT StepTidy_DirectionReducer(const occ::handle<XSControl_WorkSession>& theWS);
 
 private:
   //! Replaces the old direction with the new one in the StepGeom_Axis1Placement entity.
@@ -38,27 +38,27 @@ private:
   //! @param theNewEntity the new direction.
   //! @param theSharing the StepGeom_Axis1Placement entity to update.
   //! @return true if the direction was replaced, false otherwise.
-  static bool replaceAxis1Placement(const Handle(StepGeom_Direction)& theOldEntity,
-                                    const Handle(StepGeom_Direction)& theNewEntity,
-                                    Handle(Standard_Transient)        theSharing);
+  static bool replaceAxis1Placement(const occ::handle<StepGeom_Direction>& theOldEntity,
+                                    const occ::handle<StepGeom_Direction>& theNewEntity,
+                                    occ::handle<Standard_Transient>        theSharing);
 
   //! Replaces the old direction with the new one in the StepGeom_Axis2Placement3d entity.
   //! @param theOldEntity the old direction.
   //! @param theNewEntity the new direction.
   //! @param theSharing the StepGeom_Axis2Placement3d entity to update.
   //! @return true if the direction was replaced, false otherwise.
-  static bool replaceAxis2Placement3d(const Handle(StepGeom_Direction)& theOldEntity,
-                                      const Handle(StepGeom_Direction)& theNewEntity,
-                                      Handle(Standard_Transient)        theSharing);
+  static bool replaceAxis2Placement3d(const occ::handle<StepGeom_Direction>& theOldEntity,
+                                      const occ::handle<StepGeom_Direction>& theNewEntity,
+                                      occ::handle<Standard_Transient>        theSharing);
 
   //! Replaces the old direction with the new one in the StepGeom_Vector entity.
   //! @param theOldEntity the old direction.
   //! @param theNewEntity the new direction.
   //! @param theSharing the StepGeom_Vector entity to update.
   //! @return true if the direction was replaced, false otherwise.
-  static bool replaceVector(const Handle(StepGeom_Direction)& theOldEntity,
-                            const Handle(StepGeom_Direction)& theNewEntity,
-                            Handle(Standard_Transient)        theSharing);
+  static bool replaceVector(const occ::handle<StepGeom_Direction>& theOldEntity,
+                            const occ::handle<StepGeom_Direction>& theNewEntity,
+                            occ::handle<Standard_Transient>        theSharing);
 };
 
 #endif // _StepTidy_DirectionReducer_HeaderFile

@@ -26,9 +26,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class IFSelect_SelectionIterator;
 
-class IFSelect_SelectDeduct;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectDeduct, IFSelect_Selection)
-
 //! A SelectDeduct determines a list of Entities from an Input
 //! Selection, by a computation : Output list is not obliged to be
 //! a sub-list of Input list
@@ -46,17 +43,17 @@ class IFSelect_SelectDeduct : public IFSelect_Selection
 
 public:
   //! Defines or Changes the Input Selection
-  Standard_EXPORT void SetInput(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void SetInput(const occ::handle<IFSelect_Selection>& sel);
 
   //! Returns the Input Selection
-  Standard_EXPORT Handle(IFSelect_Selection) Input() const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> Input() const;
 
   //! Returns True if the Input Selection is defined, False else
-  Standard_EXPORT Standard_Boolean HasInput() const;
+  Standard_EXPORT bool HasInput() const;
 
   //! Tells if an Alternate List has been set, i.e. : the Alternate
   //! Definition is present and set
-  Standard_EXPORT Standard_Boolean HasAlternate() const;
+  Standard_EXPORT bool HasAlternate() const;
 
   //! Returns the Alternate Definition
   //! It is returned modifiable, hence an already defined
@@ -64,7 +61,7 @@ public:
   //! But if it was not yet defined, it is created the first time
   //!
   //! It is exploited by InputResult
-  Standard_EXPORT Handle(IFSelect_SelectPointed)& Alternate();
+  Standard_EXPORT occ::handle<IFSelect_SelectPointed>& Alternate();
 
   //! Returns the Result determined by Input Selection, as Unique
   //! if Input Selection is not defined, returns an empty list.
@@ -75,14 +72,13 @@ public:
 
   //! Puts in an Iterator the Selections from which "me" depends
   //! This list contains one Selection : the InputSelection
-  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const Standard_OVERRIDE;
+  Standard_EXPORT void FillIterator(IFSelect_SelectionIterator& iter) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectDeduct, IFSelect_Selection)
 
-protected:
 private:
-  Handle(IFSelect_Selection)     thesel;
-  Handle(IFSelect_SelectPointed) thealt;
+  occ::handle<IFSelect_Selection>     thesel;
+  occ::handle<IFSelect_SelectPointed> thealt;
 };
 
 #endif // _IFSelect_SelectDeduct_HeaderFile

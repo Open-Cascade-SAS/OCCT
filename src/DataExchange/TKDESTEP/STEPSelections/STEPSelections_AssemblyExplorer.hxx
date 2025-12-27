@@ -21,9 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <STEPSelections_SequenceOfAssemblyComponent.hxx>
+#include <STEPSelections_AssemblyComponent.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Interface_Graph.hxx>
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Integer.hxx>
 class StepShape_ShapeDefinitionRepresentation;
@@ -43,25 +45,24 @@ public:
 
   Standard_EXPORT void Dump(Standard_OStream& os) const;
 
-  Standard_EXPORT Handle(StepShape_ShapeDefinitionRepresentation) FindSDRWithProduct(
-    const Handle(StepBasic_ProductDefinition)& product) const;
+  Standard_EXPORT occ::handle<StepShape_ShapeDefinitionRepresentation> FindSDRWithProduct(
+    const occ::handle<StepBasic_ProductDefinition>& product) const;
 
-  Standard_EXPORT void FillListWithGraph(const Handle(STEPSelections_AssemblyComponent)& cmp);
+  Standard_EXPORT void FillListWithGraph(const occ::handle<STEPSelections_AssemblyComponent>& cmp);
 
-  Standard_EXPORT Handle(Standard_Transient) FindItemWithNAUO(
-    const Handle(StepRepr_NextAssemblyUsageOccurrence)& nauo) const;
+  Standard_EXPORT occ::handle<Standard_Transient> FindItemWithNAUO(
+    const occ::handle<StepRepr_NextAssemblyUsageOccurrence>& nauo) const;
 
   //! Returns the number of root assemblies;
-  Standard_Integer NbAssemblies() const;
+  int NbAssemblies() const;
 
   //! Returns root of assenbly by its rank;
-  Handle(STEPSelections_AssemblyComponent) Root(const Standard_Integer rank = 1) const;
+  occ::handle<STEPSelections_AssemblyComponent> Root(const int rank = 1) const;
 
-protected:
 private:
-  STEPSelections_SequenceOfAssemblyComponent myRoots;
+  NCollection_Sequence<occ::handle<STEPSelections_AssemblyComponent>> myRoots;
   Interface_Graph                            myGraph;
-  TColStd_IndexedDataMapOfTransientTransient myMap;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMap;
 };
 
 #include <STEPSelections_AssemblyExplorer.lxx>

@@ -42,7 +42,7 @@ public:
 
   void Initialize(const math_Vector& p0, const math_Vector& dir);
 
-  virtual Standard_Boolean Value(const Standard_Real x, Standard_Real& fval);
+  virtual bool Value(const double x, double& fval);
 };
 
 DirFunctionTer::DirFunctionTer(math_Vector&              V1,
@@ -64,7 +64,7 @@ void DirFunctionTer::Initialize(const math_Vector& p0, const math_Vector& dir)
   *Dir = dir;
 }
 
-Standard_Boolean DirFunctionTer::Value(const Standard_Real x, Standard_Real& fval)
+bool DirFunctionTer::Value(const double x, double& fval)
 {
 
   *P = *Dir;
@@ -74,13 +74,13 @@ Standard_Boolean DirFunctionTer::Value(const Standard_Real x, Standard_Real& fva
   return F->Value(*P, fval);
 }
 
-static Standard_Boolean MinimizeDirection(math_Vector&    P,
+static bool MinimizeDirection(math_Vector&    P,
                                           math_Vector&    Dir,
-                                          Standard_Real&  Result,
+                                          double&  Result,
                                           DirFunctionTer& F)
 {
 
-  Standard_Real ax, xx, bx;
+  double ax, xx, bx;
 
   F.Initialize(P, Dir);
   math_BracketMinimum Bracket(F, 0.0, 1.0);
@@ -91,22 +91,22 @@ static Standard_Boolean MinimizeDirection(math_Vector&    P,
     Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone())
     {
-      Standard_Real Scale = Sol.Location();
+      double Scale = Sol.Location();
       Result              = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 math_FRPR::math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
-                     const Standard_Real                         theTolerance,
-                     const Standard_Integer                      theNbIterations,
-                     const Standard_Real                         theZEPS)
+                     const double                         theTolerance,
+                     const int                      theNbIterations,
+                     const double                         theZEPS)
 
     : TheLocation(1, theFunction.NbVariables()),
       TheGradient(1, theFunction.NbVariables()),
@@ -114,7 +114,7 @@ math_FRPR::math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
       PreviousMinimum(0.0),
       XTol(theTolerance),
       EPSZ(theZEPS),
-      Done(Standard_False),
+      Done(false),
       Iter(0),
       State(0),
       TheStatus(math_NotBracketed),
@@ -130,10 +130,10 @@ math_FRPR::~math_FRPR() {}
 
 void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint)
 {
-  Standard_Boolean Good;
-  Standard_Integer n = TheLocation.Length();
-  Standard_Integer j, its;
-  Standard_Real    gg, gam, dgg;
+  bool Good;
+  int n = TheLocation.Length();
+  int j, its;
+  double    gg, gam, dgg;
 
   math_Vector g(1, n), h(1, n);
 
@@ -146,7 +146,7 @@ void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
   Good        = F.Values(TheLocation, PreviousMinimum, TheGradient);
   if (!Good)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_FunctionError;
     return;
   }
@@ -159,24 +159,24 @@ void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
   {
     Iter = its;
 
-    Standard_Boolean IsGood = MinimizeDirection(TheLocation, TheGradient, TheMinimum, F_Dir);
+    bool IsGood = MinimizeDirection(TheLocation, TheGradient, TheMinimum, F_Dir);
     if (IsSolutionReached(F))
     {
-      Done      = Standard_True;
+      Done      = true;
       State     = F.GetStateNumber();
       TheStatus = math_OK;
       return;
     }
     if (!IsGood)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_DirectionSearchError;
       return;
     }
     Good = F.Values(TheLocation, PreviousMinimum, TheGradient);
     if (!Good)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -194,7 +194,7 @@ void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
     if (gg == 0.0)
     {
       // Unlikely. If gradient is exactly 0 then we are already done.
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -204,7 +204,7 @@ void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
     TheGradient = g + gam * h;
     h           = TheGradient;
   }
-  Done      = Standard_False;
+  Done      = false;
   TheStatus = math_TooManyIterations;
   return;
 }
@@ -223,6 +223,6 @@ void math_FRPR::Dump(Standard_OStream& o) const
   }
   else
   {
-    o << " Status = not Done because " << (Standard_Integer)TheStatus << "\n";
+    o << " Status = not Done because " << (int)TheStatus << "\n";
   }
 }

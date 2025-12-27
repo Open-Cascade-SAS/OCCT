@@ -63,7 +63,6 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-
 /* Substitute the variable and function names.  */
 #define yyparse         ExprIntrpparse
 #define yylex           ExprIntrplex
@@ -126,9 +125,6 @@ extern void ExprIntrp_EndOfEqual();
 #ifdef _MSC_VER
 #pragma warning(disable:4131 4244 4127 4702)
 #endif
-
-
-
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -227,9 +223,6 @@ enum yysymbol_kind_t
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
-
-
-
 #ifdef short
 # undef short
 #endif
@@ -326,7 +319,6 @@ typedef int yytype_uint16;
 
 #define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
 
-
 /* Stored state numbers (used for stacks). */
 typedef yytype_uint8 yy_state_t;
 
@@ -344,7 +336,6 @@ typedef int yy_state_fast_t;
 #  define YY_(Msgid) Msgid
 # endif
 #endif
-
 
 #ifndef YY_ATTRIBUTE_PURE
 # if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
@@ -399,7 +390,6 @@ typedef int yy_state_fast_t;
 # define YY_IGNORE_USELESS_CAST_BEGIN
 # define YY_IGNORE_USELESS_CAST_END
 #endif
-
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
@@ -546,7 +536,6 @@ union yyalloc
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   279
-
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
@@ -817,7 +806,6 @@ static const yytype_int8 yyr2[] =
        3
 };
 
-
 enum { YYENOMEM = -2 };
 
 #define yyerrok         (yyerrstatus = 0)
@@ -826,7 +814,6 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
-
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
@@ -851,7 +838,6 @@ enum { YYENOMEM = -2 };
    Use YYerror or YYUNDEF. */
 #define YYERRCODE YYUNDEF
 
-
 /* Enable debugging if requested.  */
 #if YYDEBUG
 
@@ -871,7 +857,6 @@ do {                                            \
 #  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 # endif
 
-
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
 do {                                                                      \
   if (yydebug)                                                            \
@@ -882,7 +867,6 @@ do {                                                                      \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
-
 
 /*-----------------------------------.
 | Print this symbol's value on YYO.  |
@@ -904,7 +888,6 @@ yy_symbol_value_print (FILE *yyo,
   YYUSE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
-
 
 /*---------------------------.
 | Print this symbol on YYO.  |
@@ -943,7 +926,6 @@ do {                                                            \
   if (yydebug)                                                  \
     yy_stack_print ((Bottom), (Top));                           \
 } while (0)
-
 
 /*------------------------------------------------.
 | Report that the YYRULE is going to be reduced.  |
@@ -985,7 +967,6 @@ int yydebug;
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
 
-
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
 #ifndef YYINITDEPTH
 # define YYINITDEPTH 200
@@ -1001,11 +982,6 @@ int yydebug;
 #ifndef YYMAXDEPTH
 # define YYMAXDEPTH 10000
 #endif
-
-
-
-
-
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -1025,7 +1001,6 @@ yydestruct (const char *yymsg,
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
-
 /* Lookahead token kind.  */
 int yychar;
 
@@ -1033,9 +1008,6 @@ int yychar;
 YYSTYPE yylval;
 /* Number of syntax errors so far.  */
 int yynerrs;
-
-
-
 
 /*----------.
 | yyparse.  |
@@ -1073,8 +1045,6 @@ yyparse (void)
      action routines.  */
   YYSTYPE yyval;
 
-
-
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
   /* The number of symbols on the RHS of the reduced rule.
@@ -1086,7 +1056,6 @@ yyparse (void)
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
-
 /*------------------------------------------------------------.
 | yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
@@ -1094,7 +1063,6 @@ yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
-
 
 /*--------------------------------------------------------------------.
 | yysetstate -- set current state (the top of the stack) to yystate.  |
@@ -1175,7 +1143,6 @@ yysetstate:
 
   goto yybackup;
 
-
 /*-----------.
 | yybackup.  |
 `-----------*/
@@ -1249,7 +1216,6 @@ yybackup:
   yychar = YYEMPTY;
   goto yynewstate;
 
-
 /*-----------------------------------------------------------.
 | yydefault -- do the default action for the current state.  |
 `-----------------------------------------------------------*/
@@ -1258,7 +1224,6 @@ yydefault:
   if (yyn == 0)
     goto yyerrlab;
   goto yyreduce;
-
 
 /*-----------------------------.
 | yyreduce -- do a reduction.  |
@@ -1276,7 +1241,6 @@ yyreduce:
      unconditionally makes the parser a bit smaller, and it avoids a
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
-
 
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
@@ -1469,8 +1433,6 @@ yyreduce:
                                              {ExprIntrp_EndOfEqual();}
     break;
 
-
-
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1503,7 +1465,6 @@ yyreduce:
   }
 
   goto yynewstate;
-
 
 /*--------------------------------------.
 | yyerrlab -- here on detecting error.  |
@@ -1542,7 +1503,6 @@ yyerrlab:
      token.  */
   goto yyerrlab1;
 
-
 /*---------------------------------------------------.
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
@@ -1559,7 +1519,6 @@ yyerrorlab:
   YY_STACK_PRINT (yyss, yyssp);
   yystate = *yyssp;
   goto yyerrlab1;
-
 
 /*-------------------------------------------------------------.
 | yyerrlab1 -- common code for both syntax error and YYERROR.  |
@@ -1586,7 +1545,6 @@ yyerrlab1:
       if (yyssp == yyss)
         YYABORT;
 
-
       yydestruct ("Error: popping",
                   YY_ACCESSING_SYMBOL (yystate), yyvsp);
       YYPOPSTACK (1);
@@ -1598,13 +1556,11 @@ yyerrlab1:
   *++yyvsp = yylval;
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 
-
   /* Shift the error token.  */
   YY_SYMBOL_PRINT ("Shifting", YY_ACCESSING_SYMBOL (yyn), yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
-
 
 /*-------------------------------------.
 | yyacceptlab -- YYACCEPT comes here.  |
@@ -1613,14 +1569,12 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
-
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
-
 
 #if !defined yyoverflow
 /*-------------------------------------------------.
@@ -1631,7 +1585,6 @@ yyexhaustedlab:
   yyresult = 2;
   goto yyreturn;
 #endif
-
 
 /*-------------------------------------------------------.
 | yyreturn -- parsing is finished, clean up and return.  |

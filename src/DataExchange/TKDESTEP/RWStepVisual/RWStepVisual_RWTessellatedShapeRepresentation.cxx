@@ -31,10 +31,10 @@ RWStepVisual_RWTessellatedShapeRepresentation::RWStepVisual_RWTessellatedShapeRe
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                   theData,
-  const Standard_Integer                                   theNum,
-  Handle(Interface_Check)&                                 theCheck,
-  const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                   theData,
+  const int                                   theNum,
+  occ::handle<Interface_Check>&                                 theCheck,
+  const occ::handle<StepVisual_TessellatedShapeRepresentation>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_shape_representation"))
@@ -44,19 +44,19 @@ void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
 
   // Inherited fields of Representation
 
-  Handle(TCollection_HAsciiString) aRepresentation_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentation_Name;
   theData->ReadString(theNum, 1, "representation.name", theCheck, aRepresentation_Name);
 
-  Handle(StepRepr_HArray1OfRepresentationItem) aRepresentation_Items;
-  Standard_Integer                             sub2 = 0;
+  occ::handle<StepRepr_HArray1OfRepresentationItem> aRepresentation_Items;
+  int                             sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "representation.items", theCheck, sub2))
   {
-    Standard_Integer nb0  = theData->NbParams(sub2);
+    int nb0  = theData->NbParams(sub2);
     aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem(1, nb0);
-    Standard_Integer num2 = sub2;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub2;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepRepr_RepresentationItem) anIt0;
+      occ::handle<StepRepr_RepresentationItem> anIt0;
       theData->ReadEntity(num2,
                           i0,
                           "representation_item",
@@ -67,7 +67,7 @@ void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
     }
   }
 
-  Handle(StepRepr_RepresentationContext) aRepresentation_ContextOfItems;
+  occ::handle<StepRepr_RepresentationContext> aRepresentation_ContextOfItems;
   theData->ReadEntity(theNum,
                       3,
                       "representation.context_of_items",
@@ -83,7 +83,7 @@ void RWStepVisual_RWTessellatedShapeRepresentation::ReadStep(
 
 void RWStepVisual_RWTessellatedShapeRepresentation::WriteStep(
   StepData_StepWriter&                                     theSW,
-  const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt) const
+  const occ::handle<StepVisual_TessellatedShapeRepresentation>& theEnt) const
 {
 
   // Own fields of Representation
@@ -91,9 +91,9 @@ void RWStepVisual_RWTessellatedShapeRepresentation::WriteStep(
   theSW.Send(theEnt->Name());
 
   theSW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
-    Handle(StepRepr_RepresentationItem) Var0 = theEnt->Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = theEnt->Items()->Value(i1);
     theSW.Send(Var0);
   }
   theSW.CloseSub();
@@ -104,16 +104,16 @@ void RWStepVisual_RWTessellatedShapeRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedShapeRepresentation::Share(
-  const Handle(StepVisual_TessellatedShapeRepresentation)& theEnt,
+  const occ::handle<StepVisual_TessellatedShapeRepresentation>& theEnt,
   Interface_EntityIterator&                                theIter) const
 {
 
   // Inherited fields of Representation
   if (!theEnt->StepRepr_Representation::Items().IsNull())
   {
-    for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
+    for (int i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
     {
-      Handle(StepRepr_RepresentationItem) Var0 =
+      occ::handle<StepRepr_RepresentationItem> Var0 =
         theEnt->StepRepr_Representation::Items()->Value(i1);
       theIter.AddItem(Var0);
     }

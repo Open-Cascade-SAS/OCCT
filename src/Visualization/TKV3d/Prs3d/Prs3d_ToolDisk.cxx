@@ -16,15 +16,16 @@
 #include <Prs3d_ToolDisk.hxx>
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
 //=================================================================================================
 
-Prs3d_ToolDisk::Prs3d_ToolDisk(const Standard_Real    theInnerRadius,
-                               const Standard_Real    theOuterRadius,
-                               const Standard_Integer theNbSlices,
-                               const Standard_Integer theNbStacks)
+Prs3d_ToolDisk::Prs3d_ToolDisk(const double    theInnerRadius,
+                               const double    theOuterRadius,
+                               const int theNbSlices,
+                               const int theNbStacks)
     : myInnerRadius(theInnerRadius),
       myOuterRadius(theOuterRadius),
       myStartAngle(0.0),
@@ -36,22 +37,22 @@ Prs3d_ToolDisk::Prs3d_ToolDisk(const Standard_Real    theInnerRadius,
 
 //=================================================================================================
 
-gp_Pnt Prs3d_ToolDisk::Vertex(const Standard_Real theU, const Standard_Real theV) const
+gp_Pnt Prs3d_ToolDisk::Vertex(const double theU, const double theV) const
 {
-  const Standard_Real aU      = myStartAngle + theU * (myEndAngle - myStartAngle);
-  const Standard_Real aRadius = myInnerRadius + (myOuterRadius - myInnerRadius) * theV;
+  const double aU      = myStartAngle + theU * (myEndAngle - myStartAngle);
+  const double aRadius = myInnerRadius + (myOuterRadius - myInnerRadius) * theV;
   return gp_Pnt(std::cos(aU) * aRadius, std::sin(aU) * aRadius, 0.0);
 }
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolDisk::Create(const Standard_Real    theInnerRadius,
-                                                          const Standard_Real    theOuterRadius,
-                                                          const Standard_Integer theNbSlices,
-                                                          const Standard_Integer theNbStacks,
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolDisk::Create(const double    theInnerRadius,
+                                                          const double    theOuterRadius,
+                                                          const int theNbSlices,
+                                                          const int theNbStacks,
                                                           const gp_Trsf&         theTrsf)
 {
-  Handle(Graphic3d_ArrayOfTriangles) anArray;
+  occ::handle<Graphic3d_ArrayOfTriangles> anArray;
   Prs3d_ToolDisk aTool(theInnerRadius, theOuterRadius, theNbSlices, theNbStacks);
   aTool.FillArray(anArray, theTrsf);
   return anArray;

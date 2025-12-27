@@ -22,11 +22,14 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <IntRes2d_Domain.hxx>
-#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
-#include <IntRes2d_SequenceOfIntersectionSegment.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopOpeBRep_SequenceOfPoint2d.hxx>
+#include <TopOpeBRep_Point2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopOpeBRep_P2Dstatus.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 
@@ -56,76 +59,75 @@ public:
                                 const Bnd_Box&      B1,
                                 const Bnd_Box&      B2);
 
-  Standard_EXPORT void ForceTolerances(const Standard_Real Tol1, const Standard_Real Tol2);
+  Standard_EXPORT void ForceTolerances(const double Tol1, const double Tol2);
 
-  Standard_EXPORT void Dimension(const Standard_Integer D);
+  Standard_EXPORT void Dimension(const int D);
 
   //! set working space dimension D = 1 for E &|| W, 2 for E in F
-  Standard_EXPORT Standard_Integer Dimension() const;
+  Standard_EXPORT int Dimension() const;
 
   Standard_EXPORT void Perform(const TopoDS_Shape&    E1,
                                const TopoDS_Shape&    E2,
-                               const Standard_Boolean ReduceSegments = Standard_True);
+                               const bool ReduceSegments = true);
 
-  Standard_EXPORT Standard_Boolean IsEmpty();
+  Standard_EXPORT bool IsEmpty();
 
   //! true if at least one intersection segment.
-  Standard_EXPORT Standard_Boolean HasSegment() const;
+  Standard_EXPORT bool HasSegment() const;
 
   //! = mySameDomain.
-  Standard_EXPORT Standard_Boolean SameDomain() const;
+  Standard_EXPORT bool SameDomain() const;
 
-  Standard_EXPORT const TopoDS_Shape& Edge(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Shape& Edge(const int Index) const;
 
-  Standard_EXPORT const Geom2dAdaptor_Curve& Curve(const Standard_Integer Index) const;
+  Standard_EXPORT const Geom2dAdaptor_Curve& Curve(const int Index) const;
 
-  Standard_EXPORT const TopoDS_Shape& Face(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Shape& Face(const int Index) const;
 
-  Standard_EXPORT const BRepAdaptor_Surface& Surface(const Standard_Integer Index) const;
+  Standard_EXPORT const BRepAdaptor_Surface& Surface(const int Index) const;
 
-  Standard_EXPORT Standard_Boolean SurfacesSameOriented() const;
+  Standard_EXPORT bool SurfacesSameOriented() const;
 
-  Standard_EXPORT Standard_Boolean FacesSameOriented() const;
+  Standard_EXPORT bool FacesSameOriented() const;
 
-  Standard_EXPORT Standard_Real ToleranceMax() const;
+  Standard_EXPORT double ToleranceMax() const;
 
-  Standard_EXPORT void Tolerances(Standard_Real& tol1, Standard_Real& tol2) const;
+  Standard_EXPORT void Tolerances(double& tol1, double& tol2) const;
 
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
-  Standard_EXPORT Standard_Integer NbSegments() const;
+  Standard_EXPORT int NbSegments() const;
 
   Standard_EXPORT void Dump(const TCollection_AsciiString& str,
-                            const Standard_Integer         ie1 = 0,
-                            const Standard_Integer         ie2 = 0);
+                            const int         ie1 = 0,
+                            const int         ie2 = 0);
 
-  Standard_EXPORT void InitPoint(const Standard_Boolean selectkeep = Standard_True);
+  Standard_EXPORT void InitPoint(const bool selectkeep = true);
 
-  Standard_EXPORT Standard_Boolean MorePoint() const;
+  Standard_EXPORT bool MorePoint() const;
 
   Standard_EXPORT void NextPoint();
 
-  Standard_EXPORT const TopOpeBRep_SequenceOfPoint2d& Points() const;
+  Standard_EXPORT const NCollection_Sequence<TopOpeBRep_Point2d>& Points() const;
 
   Standard_EXPORT const TopOpeBRep_Point2d& Point() const;
 
-  Standard_EXPORT const TopOpeBRep_Point2d& Point(const Standard_Integer I) const;
+  Standard_EXPORT const TopOpeBRep_Point2d& Point(const int I) const;
 
-  Standard_EXPORT virtual Standard_Boolean ReduceSegment(TopOpeBRep_Point2d& P1,
+  Standard_EXPORT virtual bool ReduceSegment(TopOpeBRep_Point2d& P1,
                                                          TopOpeBRep_Point2d& P2,
                                                          TopOpeBRep_Point2d& Pn) const;
 
   Standard_EXPORT TopOpeBRep_P2Dstatus Status1() const;
 
-protected:
 private:
   Standard_EXPORT void Find();
 
   //! process if current edges can be considered as SameDomain
-  Standard_EXPORT Standard_Boolean ComputeSameDomain();
+  Standard_EXPORT bool ComputeSameDomain();
 
   //! set field mySameDomain to B and return B value
-  Standard_EXPORT Standard_Boolean SetSameDomain(const Standard_Boolean B);
+  Standard_EXPORT bool SetSameDomain(const bool B);
 
   Standard_EXPORT void MakePoints2d();
 
@@ -133,30 +135,30 @@ private:
 
   Standard_EXPORT const IntRes2d_IntersectionSegment& Segment1() const;
 
-  Standard_EXPORT Standard_Boolean IsOpposite1() const;
+  Standard_EXPORT bool IsOpposite1() const;
 
   Standard_EXPORT void InitPoint1();
 
-  Standard_EXPORT Standard_Boolean MorePoint1() const;
+  Standard_EXPORT bool MorePoint1() const;
 
   Standard_EXPORT void NextPoint1();
 
   Standard_EXPORT const IntRes2d_IntersectionPoint& Point1() const;
 
-  Standard_EXPORT TopOpeBRepDS_Transition Transition1(const Standard_Integer   Index,
+  Standard_EXPORT TopOpeBRepDS_Transition Transition1(const int   Index,
                                                       const TopAbs_Orientation EO) const;
 
-  Standard_EXPORT Standard_Real Parameter1(const Standard_Integer Index) const;
+  Standard_EXPORT double Parameter1(const int Index) const;
 
-  Standard_EXPORT Standard_Boolean IsVertex1(const Standard_Integer Index);
+  Standard_EXPORT bool IsVertex1(const int Index);
 
-  Standard_EXPORT const TopoDS_Shape& Vertex1(const Standard_Integer Index);
+  Standard_EXPORT const TopoDS_Shape& Vertex1(const int Index);
 
   Standard_EXPORT gp_Pnt Value1() const;
 
-  Standard_EXPORT Standard_Boolean IsPointOfSegment1() const;
+  Standard_EXPORT bool IsPointOfSegment1() const;
 
-  Standard_EXPORT Standard_Integer Index1() const;
+  Standard_EXPORT int Index1() const;
 
   //! geometric configuration of E1,E2 at current intersection point :
   //! UNSHGEOMETRY if the edges do not share geometry.
@@ -166,41 +168,41 @@ private:
 
   TopoDS_Face                            myFace1;
   TopoDS_Face                            myFace2;
-  Handle(BRepAdaptor_Surface)            mySurface1;
-  Handle(BRepAdaptor_Surface)            mySurface2;
+  occ::handle<BRepAdaptor_Surface>            mySurface1;
+  occ::handle<BRepAdaptor_Surface>            mySurface2;
   GeomAbs_SurfaceType                    mySurfaceType1;
   GeomAbs_SurfaceType                    mySurfaceType2;
-  Standard_Boolean                       mySurfacesSameOriented;
-  Standard_Boolean                       myFacesSameOriented;
+  bool                       mySurfacesSameOriented;
+  bool                       myFacesSameOriented;
   IntRes2d_Domain                        myDomain1;
   IntRes2d_Domain                        myDomain2;
   TopoDS_Edge                            myEdge1;
   TopoDS_Edge                            myEdge2;
   Geom2dAdaptor_Curve                    myCurve1;
   Geom2dAdaptor_Curve                    myCurve2;
-  Standard_Real                          myTol1;
-  Standard_Real                          myTol2;
-  Standard_Boolean                       myTolForced;
+  double                          myTol1;
+  double                          myTol2;
+  bool                       myTolForced;
   Geom2dInt_GInter                       myIntersector;
-  IntRes2d_SequenceOfIntersectionPoint   mylpnt;
-  IntRes2d_SequenceOfIntersectionSegment mylseg;
-  Standard_Integer                       myNbPoints;
-  Standard_Integer                       myNbSegments;
-  Standard_Integer                       myTrueNbPoints;
-  Standard_Integer                       myPointIndex;
-  Standard_Integer                       myIsVertexPointIndex;
-  Standard_Integer                       myIsVertexIndex;
-  Standard_Boolean                       myIsVertexValue;
+  NCollection_Sequence<IntRes2d_IntersectionPoint>   mylpnt;
+  NCollection_Sequence<IntRes2d_IntersectionSegment> mylseg;
+  int                       myNbPoints;
+  int                       myNbSegments;
+  int                       myTrueNbPoints;
+  int                       myPointIndex;
+  int                       myIsVertexPointIndex;
+  int                       myIsVertexIndex;
+  bool                       myIsVertexValue;
   TopoDS_Vertex                          myIsVertexVertex;
-  Standard_Integer                       myDimension;
-  Standard_Boolean                       myHasSegment;
-  Standard_Boolean                       mySameDomain;
-  Standard_Boolean                       myf1surf1F_sameoriented;
-  Standard_Boolean                       myf2surf1F_sameoriented;
-  TopOpeBRep_SequenceOfPoint2d           mysp2d;
-  Standard_Integer                       myip2d;
-  Standard_Integer                       mynp2d;
-  Standard_Boolean                       myselectkeep;
+  int                       myDimension;
+  bool                       myHasSegment;
+  bool                       mySameDomain;
+  bool                       myf1surf1F_sameoriented;
+  bool                       myf2surf1F_sameoriented;
+  NCollection_Sequence<TopOpeBRep_Point2d>           mysp2d;
+  int                       myip2d;
+  int                       mynp2d;
+  bool                       myselectkeep;
 };
 
 #endif // _TopOpeBRep_EdgesIntersector_HeaderFile

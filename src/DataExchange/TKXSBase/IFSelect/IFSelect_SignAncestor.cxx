@@ -16,25 +16,25 @@
 
 #include <IFSelect_SignAncestor.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignAncestor, IFSelect_SignType)
 
-IFSelect_SignAncestor::IFSelect_SignAncestor(const Standard_Boolean nopk)
+IFSelect_SignAncestor::IFSelect_SignAncestor(const bool nopk)
     : IFSelect_SignType(nopk)
 {
 }
 
-Standard_Boolean IFSelect_SignAncestor::Matches(const Handle(Standard_Transient)& ent,
-                                                const Handle(Interface_InterfaceModel)& /*model*/,
+bool IFSelect_SignAncestor::Matches(const occ::handle<Standard_Transient>& ent,
+                                                const occ::handle<Interface_InterfaceModel>& /*model*/,
                                                 const TCollection_AsciiString& text,
-                                                const Standard_Boolean /*exact*/) const
+                                                const bool /*exact*/) const
 {
   if (ent.IsNull())
-    return Standard_False;
+    return false;
   DeclareAndCast(Standard_Type, atype, ent);
   if (atype.IsNull())
     atype = ent->DynamicType();

@@ -16,10 +16,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Vrml_IndexedFaceSet, Standard_Transient)
 
-Vrml_IndexedFaceSet::Vrml_IndexedFaceSet(const Handle(TColStd_HArray1OfInteger)& aCoordIndex,
-                                         const Handle(TColStd_HArray1OfInteger)& aMaterialIndex,
-                                         const Handle(TColStd_HArray1OfInteger)& aNormalIndex,
-                                         const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex)
+Vrml_IndexedFaceSet::Vrml_IndexedFaceSet(const occ::handle<TColStd_HArray1OfInteger>& aCoordIndex,
+                                         const occ::handle<TColStd_HArray1OfInteger>& aMaterialIndex,
+                                         const occ::handle<TColStd_HArray1OfInteger>& aNormalIndex,
+                                         const occ::handle<TColStd_HArray1OfInteger>& aTextureCoordIndex)
 {
   myCoordIndex        = aCoordIndex;
   myMaterialIndex     = aMaterialIndex;
@@ -35,51 +35,51 @@ Vrml_IndexedFaceSet::Vrml_IndexedFaceSet()
   myTextureCoordIndex = new TColStd_HArray1OfInteger(1, 1, -1);
 }
 
-void Vrml_IndexedFaceSet::SetCoordIndex(const Handle(TColStd_HArray1OfInteger)& aCoordIndex)
+void Vrml_IndexedFaceSet::SetCoordIndex(const occ::handle<TColStd_HArray1OfInteger>& aCoordIndex)
 {
   myCoordIndex = aCoordIndex;
 }
 
-Handle(TColStd_HArray1OfInteger) Vrml_IndexedFaceSet::CoordIndex() const
+occ::handle<TColStd_HArray1OfInteger> Vrml_IndexedFaceSet::CoordIndex() const
 {
   return myCoordIndex;
 }
 
-void Vrml_IndexedFaceSet::SetMaterialIndex(const Handle(TColStd_HArray1OfInteger)& aMaterialIndex)
+void Vrml_IndexedFaceSet::SetMaterialIndex(const occ::handle<TColStd_HArray1OfInteger>& aMaterialIndex)
 {
   myMaterialIndex = aMaterialIndex;
 }
 
-Handle(TColStd_HArray1OfInteger) Vrml_IndexedFaceSet::MaterialIndex() const
+occ::handle<TColStd_HArray1OfInteger> Vrml_IndexedFaceSet::MaterialIndex() const
 {
   return myMaterialIndex;
 }
 
-void Vrml_IndexedFaceSet::SetNormalIndex(const Handle(TColStd_HArray1OfInteger)& aNormalIndex)
+void Vrml_IndexedFaceSet::SetNormalIndex(const occ::handle<TColStd_HArray1OfInteger>& aNormalIndex)
 {
   myNormalIndex = aNormalIndex;
 }
 
-Handle(TColStd_HArray1OfInteger) Vrml_IndexedFaceSet::NormalIndex() const
+occ::handle<TColStd_HArray1OfInteger> Vrml_IndexedFaceSet::NormalIndex() const
 
 {
   return myNormalIndex;
 }
 
 void Vrml_IndexedFaceSet::SetTextureCoordIndex(
-  const Handle(TColStd_HArray1OfInteger)& aTextureCoordIndex)
+  const occ::handle<TColStd_HArray1OfInteger>& aTextureCoordIndex)
 {
   myTextureCoordIndex = aTextureCoordIndex;
 }
 
-Handle(TColStd_HArray1OfInteger) Vrml_IndexedFaceSet::TextureCoordIndex() const
+occ::handle<TColStd_HArray1OfInteger> Vrml_IndexedFaceSet::TextureCoordIndex() const
 {
   return myTextureCoordIndex;
 }
 
 Standard_OStream& Vrml_IndexedFaceSet::Print(Standard_OStream& anOStream) const
 {
-  Standard_Integer i;
+  int i;
   anOStream << "IndexedFaceSet {\n";
 
   if (myCoordIndex->Length() != 1 || myCoordIndex->Value(myCoordIndex->Lower()) != 0)

@@ -23,13 +23,13 @@
 RWStepBasic_RWConversionBasedUnitAndRatioUnit::RWStepBasic_RWConversionBasedUnitAndRatioUnit() {}
 
 void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
-  const Handle(StepData_StepReaderData)&                   data,
-  const Standard_Integer                                   num0,
-  Handle(Interface_Check)&                                 ach,
-  const Handle(StepBasic_ConversionBasedUnitAndRatioUnit)& ent) const
+  const occ::handle<StepData_StepReaderData>&                   data,
+  const int                                   num0,
+  occ::handle<Interface_Check>&                                 ach,
+  const occ::handle<StepBasic_ConversionBasedUnitAndRatioUnit>& ent) const
 {
 
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of plex component ConversionBasedUnit ---
 
@@ -38,14 +38,14 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- field : conversionFactor ---
 
-  Handle(Standard_Transient) aConversionFactor;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<Standard_Transient> aConversionFactor;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "conversion_factor",
@@ -62,8 +62,8 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
 
   // --- field : dimensions ---
 
-  Handle(StepBasic_DimensionalExponents) aDimensions;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num,
                    1,
                    "dimensions",
@@ -85,7 +85,7 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::ReadStep(
 
 void RWStepBasic_RWConversionBasedUnitAndRatioUnit::WriteStep(
   StepData_StepWriter&                                     SW,
-  const Handle(StepBasic_ConversionBasedUnitAndRatioUnit)& ent) const
+  const occ::handle<StepBasic_ConversionBasedUnitAndRatioUnit>& ent) const
 {
 
   // --- Instance of plex component ConversionBasedUnit ---
@@ -111,7 +111,7 @@ void RWStepBasic_RWConversionBasedUnitAndRatioUnit::WriteStep(
 }
 
 void RWStepBasic_RWConversionBasedUnitAndRatioUnit::Share(
-  const Handle(StepBasic_ConversionBasedUnitAndRatioUnit)& ent,
+  const occ::handle<StepBasic_ConversionBasedUnitAndRatioUnit>& ent,
   Interface_EntityIterator&                                iter) const
 {
 

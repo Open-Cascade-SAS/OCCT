@@ -26,14 +26,14 @@ StepKinematics_ScrewPair::StepKinematics_ScrewPair() {}
 //=================================================================================================
 
 void StepKinematics_ScrewPair::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Real                          thePitch)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const double                          thePitch)
 {
   StepKinematics_LowOrderKinematicPairWithMotionCoupling::Init(
     theRepresentationItem_Name,
@@ -49,14 +49,14 @@ void StepKinematics_ScrewPair::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_ScrewPair::Pitch() const
+double StepKinematics_ScrewPair::Pitch() const
 {
   return myPitch;
 }
 
 //=================================================================================================
 
-void StepKinematics_ScrewPair::SetPitch(const Standard_Real thePitch)
+void StepKinematics_ScrewPair::SetPitch(const double thePitch)
 {
   myPitch = thePitch;
 }

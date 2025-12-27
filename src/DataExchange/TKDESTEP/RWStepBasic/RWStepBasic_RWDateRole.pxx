@@ -35,16 +35,14 @@ public:
 
   Standard_HIDDEN RWStepBasic_RWDateRole();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepBasic_DateRole)&      ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<StepBasic_DateRole>&      ent) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&              SW,
-                                 const Handle(StepBasic_DateRole)& ent) const;
+                                 const occ::handle<StepBasic_DateRole>& ent) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepBasic_RWDateRole_HeaderFile

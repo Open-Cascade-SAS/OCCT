@@ -24,9 +24,6 @@
 class StepData_StepWriter;
 class IFSelect_ContextWrite;
 
-class StepSelect_FileModifier;
-DEFINE_STANDARD_HANDLE(StepSelect_FileModifier, IFSelect_GeneralModifier)
-
 class StepSelect_FileModifier : public IFSelect_GeneralModifier
 {
 
@@ -49,7 +46,6 @@ protected:
   //! unchanges (because it works on the model already produced)
   Standard_EXPORT StepSelect_FileModifier();
 
-private:
 };
 
 #endif // _StepSelect_FileModifier_HeaderFile

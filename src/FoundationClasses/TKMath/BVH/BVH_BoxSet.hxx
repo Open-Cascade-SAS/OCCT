@@ -30,7 +30,7 @@
 //! \tparam NumType Numeric data type
 //! \tparam Dimension Vector dimension
 //! \tparam DataType Type of elements on which the boxes are built
-template <class NumType, int Dimension, class DataType = Standard_Integer>
+template <class NumType, int Dimension, class DataType = int>
 class BVH_BoxSet : public BVH_PrimitiveSet<NumType, Dimension>
 {
 public: //! @name Constructors
@@ -48,7 +48,7 @@ public: //! @name Constructors
 
 public: //! @name Setting expected size of the BVH
   //! Sets the expected size of BVH tree
-  virtual void SetSize(const Standard_Size theSize)
+  virtual void SetSize(const size_t theSize)
   {
     myElements.reserve(theSize);
     myBoxes.reserve(theSize);
@@ -60,7 +60,7 @@ public: //! @name Adding elements in BVH
   {
     myElements.push_back(theElement);
     myBoxes.push_back(theBox);
-    BVH_Object<NumType, Dimension>::myIsDirty = Standard_True;
+    BVH_Object<NumType, Dimension>::myIsDirty = true;
   }
 
 public: //! @name BVH construction
@@ -73,7 +73,7 @@ public: //! @name Clearing the elements and boxes
   {
     myElements.clear();
     myBoxes.clear();
-    BVH_Object<NumType, Dimension>::myIsDirty = Standard_True;
+    BVH_Object<NumType, Dimension>::myIsDirty = true;
   }
 
 public: //! @name Necessary overrides for BVH construction
@@ -81,34 +81,34 @@ public: //! @name Necessary overrides for BVH construction
   using BVH_PrimitiveSet<NumType, Dimension>::Box;
 
   //! Returns the bounding box with the given index.
-  virtual BVH_Box<NumType, Dimension> Box(const Standard_Integer theIndex) const Standard_OVERRIDE
+  virtual BVH_Box<NumType, Dimension> Box(const int theIndex) const override
   {
     return myBoxes[theIndex];
   }
 
   //! Returns centroid position along specified axis.
-  virtual Standard_Real Center(const Standard_Integer theIndex,
-                               const Standard_Integer theAxis) const Standard_OVERRIDE
+  virtual double Center(const int theIndex,
+                               const int theAxis) const override
   {
     return Box(theIndex).Center(theAxis);
   }
 
   //! Returns the number of boxes.
-  virtual Standard_Integer Size() const Standard_OVERRIDE
+  virtual int Size() const override
   {
-    return static_cast<Standard_Integer>(myBoxes.size());
+    return static_cast<int>(myBoxes.size());
   }
 
   //! Swaps indices of two specified boxes.
-  virtual void Swap(const Standard_Integer theIndex1,
-                    const Standard_Integer theIndex2) Standard_OVERRIDE
+  virtual void Swap(const int theIndex1,
+                    const int theIndex2) override
   {
     std::swap(myElements[theIndex1], myElements[theIndex2]);
     std::swap(myBoxes[theIndex1], myBoxes[theIndex2]);
   }
 
   //! Returns the Element with the index theIndex.
-  virtual DataType Element(const Standard_Integer theIndex) const { return myElements[theIndex]; }
+  virtual DataType Element(const int theIndex) const { return myElements[theIndex]; }
 
 protected:                                             //! @name Fields
   std::vector<DataType>                    myElements; //!< Elements

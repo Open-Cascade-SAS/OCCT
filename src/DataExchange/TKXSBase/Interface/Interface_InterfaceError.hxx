@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
-class Interface_InterfaceError;
-DEFINE_STANDARD_HANDLE(Interface_InterfaceError, Standard_Failure)
-
 #if !defined No_Exception && !defined No_Interface_InterfaceError
   #define Interface_InterfaceError_Raise_if(CONDITION, MESSAGE)                                    \
     if (CONDITION)                                                                                 \

@@ -31,8 +31,8 @@ public:
   }
 
   //! Constructs a link between two vertices.
-  BRepMesh_Edge(const Standard_Integer         theFirstNode,
-                const Standard_Integer         theLastNode,
+  BRepMesh_Edge(const int         theFirstNode,
+                const int         theLastNode,
                 const BRepMesh_DegreeOfFreedom theMovability)
       : BRepMesh_OrientedEdge(theFirstNode, theLastNode),
         myMovability(theMovability)
@@ -49,7 +49,7 @@ public:
   //! Checks if the given edge and this one have the same orientation.
   //! @param theOther edge to be checked against this one.
   //! \return TRUE if edges have the same orientation, FALSE if not.
-  Standard_Boolean IsSameOrientation(const BRepMesh_Edge& theOther) const
+  bool IsSameOrientation(const BRepMesh_Edge& theOther) const
   {
     return BRepMesh_OrientedEdge::IsEqual(theOther);
   }
@@ -57,17 +57,17 @@ public:
   //! Checks for equality with another edge.
   //! @param theOther edge to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  Standard_Boolean IsEqual(const BRepMesh_Edge& theOther) const
+  bool IsEqual(const BRepMesh_Edge& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
-      return Standard_False;
+      return false;
 
     return IsSameOrientation(theOther)
            || (FirstNode() == theOther.LastNode() && LastNode() == theOther.FirstNode());
   }
 
   //! Alias for IsEqual.
-  Standard_Boolean operator==(const BRepMesh_Edge& Other) const { return IsEqual(Other); }
+  bool operator==(const BRepMesh_Edge& Other) const { return IsEqual(Other); }
 
 private:
   BRepMesh_DegreeOfFreedom myMovability;

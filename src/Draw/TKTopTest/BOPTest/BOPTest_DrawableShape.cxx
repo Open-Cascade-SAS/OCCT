@@ -31,7 +31,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
@@ -43,10 +44,10 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
                                              const Draw_Color&      ConnCol,
                                              const Draw_Color&      EdgeCol,
                                              const Draw_Color&      IsosCol,
-                                             const Standard_Real    size,
-                                             const Standard_Integer nbisos,
-                                             const Standard_Integer discret,
-                                             const Standard_CString Text,
+                                             const double    size,
+                                             const int nbisos,
+                                             const int discret,
+                                             const char* Text,
                                              const Draw_Color&      TextColor)
     : DBRep_DrawableShape(aShape, FreeCol, ConnCol, EdgeCol, IsosCol, size, nbisos, discret)
 {
@@ -57,7 +58,7 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
 //=================================================================================================
 
 BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
-                                             const Standard_CString Text,
+                                             const char* Text,
                                              const Draw_Color&      TextColor)
     : DBRep_DrawableShape(aShape,
                           Draw_vert,
@@ -77,12 +78,12 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
 gp_Pnt BOPTest_DrawableShape::Pnt() const
 {
   gp_Pnt          P(0, 0, 0);
-  Standard_Real   u, v, u1, u2, v1, v2, p;
+  double   u, v, u1, u2, v1, v2, p;
   TopExp_Explorer ex;
 
   TopoDS_Shape     S      = Shape();
   TopAbs_ShapeEnum T      = S.ShapeType();
-  Standard_Real    facpar = 0.;
+  double    facpar = 0.;
 
   while (T == TopAbs_COMPOUND)
   {
@@ -117,7 +118,7 @@ gp_Pnt BOPTest_DrawableShape::Pnt() const
     break;
 
     case TopAbs_WIRE: {
-      TopTools_IndexedMapOfShape aME;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aME;
       TopExp::MapShapes(S, TopAbs_EDGE, aME);
       const TopoDS_Edge& anEdge = TopoDS::Edge(aME(1));
       BRepAdaptor_Curve  CU(anEdge);
@@ -143,7 +144,7 @@ gp_Pnt BOPTest_DrawableShape::Pnt() const
 
     case TopAbs_SHELL:
     case TopAbs_SOLID: {
-      TopTools_IndexedMapOfShape aMF;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMF;
       TopExp::MapShapes(S, TopAbs_FACE, aMF);
       const TopoDS_Face& aF = TopoDS::Face(aMF(1));
 

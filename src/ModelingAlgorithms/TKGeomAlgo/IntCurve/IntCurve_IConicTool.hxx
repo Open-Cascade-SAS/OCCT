@@ -52,15 +52,15 @@ public:
 
   Standard_EXPORT IntCurve_IConicTool(const gp_Hypr2d& H);
 
-  Standard_EXPORT gp_Pnt2d Value(const Standard_Real X) const;
+  Standard_EXPORT gp_Pnt2d Value(const double X) const;
 
-  Standard_EXPORT void D1(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T) const;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& T) const;
 
-  Standard_EXPORT void D2(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N) const;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& T, gp_Vec2d& N) const;
 
   //! Computes the value of the signed distance between
   //! the point P and the implicit curve.
-  Standard_EXPORT Standard_Real Distance(const gp_Pnt2d& P) const;
+  Standard_EXPORT double Distance(const gp_Pnt2d& P) const;
 
   //! Computes the Gradient of the Signed Distance
   //! between a point and the implicit curve, at the
@@ -70,12 +70,12 @@ public:
   //! Returns the parameter U of the point on the implicit curve corresponding to the point P.
   //! The correspondence between P and the point P(U) on the
   //! implicit curve must be coherent with the way of determination of the signed distance.
-  Standard_EXPORT Standard_Real FindParameter(const gp_Pnt2d& P) const;
+  Standard_EXPORT double FindParameter(const gp_Pnt2d& P) const;
 
 private:
-  Standard_Real     prm1;
-  Standard_Real     prm2;
-  Standard_Real     prm3;
+  double     prm1;
+  double     prm2;
+  double     prm3;
   gp_Ax22d          Axis;
   GeomAbs_CurveType type;
   gp_Trsf2d         Abs_To_Object;

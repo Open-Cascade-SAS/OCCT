@@ -28,20 +28,20 @@ RWStepAP242_RWDraughtingModelItemAssociation::RWStepAP242_RWDraughtingModelItemA
 //=================================================================================================
 
 void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepAP242_DraughtingModelItemAssociation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                  num,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepAP242_DraughtingModelItemAssociation>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "geometric_item_specific_usage"))
     return;
 
   // Inherited fields of ItemIdentifiedRepresentationUsage
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "item_identified_representation_usage.name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "item_identified_representation_usage.description", ach, aDescription);
@@ -50,7 +50,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
   StepAP242_ItemIdentifiedRepresentationUsageDefinition aDefinition;
   data->ReadEntity(num, 3, "item_identified_representation_usage.definition", ach, aDefinition);
 
-  Handle(StepRepr_Representation) aRepresentation;
+  occ::handle<StepRepr_Representation> aRepresentation;
   data->ReadEntity(num,
                    4,
                    "item_identified_representation_usage.used_representation",
@@ -58,9 +58,9 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
                    STANDARD_TYPE(StepRepr_Representation),
                    aRepresentation);
 
-  Handle(StepRepr_HArray1OfRepresentationItem) anItems;
-  Handle(StepRepr_RepresentationItem)          anEnt;
-  Standard_Integer                             nbSub;
+  occ::handle<StepRepr_HArray1OfRepresentationItem> anItems;
+  occ::handle<StepRepr_RepresentationItem>          anEnt;
+  int                             nbSub;
   Interface_ParamType                          aType = data->ParamType(num, 5);
   if (aType == Interface_ParamIdent)
   {
@@ -79,9 +79,9 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
                              ach,
                              nbSub))
   {
-    Standard_Integer nbElements = data->NbParams(nbSub);
+    int nbElements = data->NbParams(nbSub);
     anItems                     = new StepRepr_HArray1OfRepresentationItem(1, nbElements);
-    for (Standard_Integer i = 1; i <= nbElements; i++)
+    for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub,
                            i,
@@ -101,7 +101,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::ReadStep(
 
 void RWStepAP242_RWDraughtingModelItemAssociation::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepAP242_DraughtingModelItemAssociation)& ent) const
+  const occ::handle<StepAP242_DraughtingModelItemAssociation>& ent) const
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
   SW.Send(ent->Name());
@@ -117,7 +117,7 @@ void RWStepAP242_RWDraughtingModelItemAssociation::WriteStep(
   else
   {
     SW.OpenSub();
-    for (Standard_Integer i = 1; i <= ent->NbIdentifiedItem(); i++)
+    for (int i = 1; i <= ent->NbIdentifiedItem(); i++)
     {
       SW.Send(ent->IdentifiedItemValue(i));
     }
@@ -128,13 +128,13 @@ void RWStepAP242_RWDraughtingModelItemAssociation::WriteStep(
 //=================================================================================================
 
 void RWStepAP242_RWDraughtingModelItemAssociation::Share(
-  const Handle(StepAP242_DraughtingModelItemAssociation)& ent,
+  const occ::handle<StepAP242_DraughtingModelItemAssociation>& ent,
   Interface_EntityIterator&                               iter) const
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
 
   iter.AddItem(ent->Definition().Value());
-  Standard_Integer i, nb = ent->NbIdentifiedItem();
+  int i, nb = ent->NbIdentifiedItem();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->IdentifiedItemValue(i));
 }

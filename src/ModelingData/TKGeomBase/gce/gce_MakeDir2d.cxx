@@ -64,7 +64,7 @@ gce_MakeDir2d::gce_MakeDir2d(const gp_Vec2d& V)
   }
 }
 
-gce_MakeDir2d::gce_MakeDir2d(const Standard_Real Xv, const Standard_Real Yv)
+gce_MakeDir2d::gce_MakeDir2d(const double Xv, const double Yv)
 {
   if (Xv * Xv + Yv * Yv <= gp::Resolution())
   {

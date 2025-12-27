@@ -27,9 +27,6 @@ class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
 class StepRepr_RepresentationItem;
 
-class StepRepr_Representation;
-DEFINE_STANDARD_HANDLE(StepRepr_Representation, Standard_Transient)
-
 class StepRepr_Representation : public Standard_Transient
 {
 
@@ -37,34 +34,33 @@ public:
   //! Returns a Representation
   Standard_EXPORT StepRepr_Representation();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             aName,
-                            const Handle(StepRepr_HArray1OfRepresentationItem)& aItems,
-                            const Handle(StepRepr_RepresentationContext)&       aContextOfItems);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&             aName,
+                            const occ::handle<StepRepr_HArray1OfRepresentationItem>& aItems,
+                            const occ::handle<StepRepr_RepresentationContext>&       aContextOfItems);
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetItems(const Handle(StepRepr_HArray1OfRepresentationItem)& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<StepRepr_HArray1OfRepresentationItem>& aItems);
 
-  Standard_EXPORT Handle(StepRepr_HArray1OfRepresentationItem) Items() const;
+  Standard_EXPORT occ::handle<StepRepr_HArray1OfRepresentationItem> Items() const;
 
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) ItemsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationItem> ItemsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   Standard_EXPORT void SetContextOfItems(
-    const Handle(StepRepr_RepresentationContext)& aContextOfItems);
+    const occ::handle<StepRepr_RepresentationContext>& aContextOfItems);
 
-  Standard_EXPORT Handle(StepRepr_RepresentationContext) ContextOfItems() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationContext> ContextOfItems() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_Representation, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)             name;
-  Handle(StepRepr_HArray1OfRepresentationItem) items;
-  Handle(StepRepr_RepresentationContext)       contextOfItems;
+  occ::handle<TCollection_HAsciiString>             name;
+  occ::handle<StepRepr_HArray1OfRepresentationItem> items;
+  occ::handle<StepRepr_RepresentationContext>       contextOfItems;
 };
 
 #endif // _StepRepr_Representation_HeaderFile

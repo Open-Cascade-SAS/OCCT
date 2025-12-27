@@ -18,7 +18,7 @@
 #include <Standard_DomainError.hxx>
 #include <IntPatch_Line.hxx>
 
-inline Standard_Boolean IntPatch_ImpImpIntersection::IsDone() const
+inline bool IntPatch_ImpImpIntersection::IsDone() const
 {
   return (GetStatus() != IntStatus_Fail);
 }
@@ -28,7 +28,7 @@ inline IntPatch_ImpImpIntersection::IntStatus IntPatch_ImpImpIntersection::GetSt
   return myDone;
 }
 
-inline Standard_Boolean IntPatch_ImpImpIntersection::IsEmpty() const
+inline bool IntPatch_ImpImpIntersection::IsEmpty() const
 {
   if (!IsDone())
   {
@@ -37,7 +37,7 @@ inline Standard_Boolean IntPatch_ImpImpIntersection::IsEmpty() const
   return empt;
 }
 
-inline Standard_Boolean IntPatch_ImpImpIntersection::TangentFaces() const
+inline bool IntPatch_ImpImpIntersection::TangentFaces() const
 {
   if (!IsDone())
   {
@@ -46,7 +46,7 @@ inline Standard_Boolean IntPatch_ImpImpIntersection::TangentFaces() const
   return tgte;
 }
 
-inline Standard_Boolean IntPatch_ImpImpIntersection::OppositeFaces() const
+inline bool IntPatch_ImpImpIntersection::OppositeFaces() const
 {
   if (!IsDone())
   {
@@ -59,7 +59,7 @@ inline Standard_Boolean IntPatch_ImpImpIntersection::OppositeFaces() const
   return oppo;
 }
 
-inline Standard_Integer IntPatch_ImpImpIntersection::NbPnts() const
+inline int IntPatch_ImpImpIntersection::NbPnts() const
 {
   if (!IsDone())
   {
@@ -68,7 +68,7 @@ inline Standard_Integer IntPatch_ImpImpIntersection::NbPnts() const
   return spnt.Length();
 }
 
-inline const IntPatch_Point& IntPatch_ImpImpIntersection::Point(const Standard_Integer Index) const
+inline const IntPatch_Point& IntPatch_ImpImpIntersection::Point(const int Index) const
 {
   if (!IsDone())
   {
@@ -77,7 +77,7 @@ inline const IntPatch_Point& IntPatch_ImpImpIntersection::Point(const Standard_I
   return spnt(Index);
 }
 
-inline Standard_Integer IntPatch_ImpImpIntersection::NbLines() const
+inline int IntPatch_ImpImpIntersection::NbLines() const
 {
   if (!IsDone())
   {
@@ -86,8 +86,8 @@ inline Standard_Integer IntPatch_ImpImpIntersection::NbLines() const
   return slin.Length();
 }
 
-inline const Handle(IntPatch_Line)& IntPatch_ImpImpIntersection::Line(
-  const Standard_Integer Index) const
+inline const occ::handle<IntPatch_Line>& IntPatch_ImpImpIntersection::Line(
+  const int Index) const
 {
   if (!IsDone())
   {

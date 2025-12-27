@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Modifier, IFSelect_GeneralModifier)
 
-IFSelect_Modifier::IFSelect_Modifier(const Standard_Boolean grf)
+IFSelect_Modifier::IFSelect_Modifier(const bool grf)
     : IFSelect_GeneralModifier(grf)
 {
 }

@@ -29,13 +29,12 @@ set(OCCT_AIS_FILES
   AIS_ColoredDrawer.hxx
   AIS_ColoredShape.cxx
   AIS_ColoredShape.hxx
-  AIS_DataMapOfShapeDrawer.hxx
+
   AIS_ColorScale.cxx
   AIS_ColorScale.hxx
   AIS_ConnectedInteractive.cxx
   AIS_ConnectedInteractive.hxx
-  AIS_DataMapIteratorOfDataMapOfIOStatus.hxx
-  AIS_DataMapOfIOStatus.hxx
+
   AIS_DisplayMode.hxx
   AIS_DisplayStatus.hxx
   AIS_DragAction.hxx
@@ -54,8 +53,7 @@ set(OCCT_AIS_FILES
   AIS_LightSource.hxx
   AIS_Line.cxx
   AIS_Line.hxx
-  AIS_ListIteratorOfListOfInteractive.hxx
-  AIS_ListOfInteractive.hxx
+
   AIS_Manipulator.hxx
   AIS_Manipulator.cxx
   AIS_ManipulatorMode.hxx
@@ -67,8 +65,7 @@ set(OCCT_AIS_FILES
   AIS_MultipleConnectedInteractive.cxx
   AIS_MultipleConnectedInteractive.hxx
   AIS_NavigationMode.hxx
-  AIS_NArray1OfEntityOwner.hxx
-  AIS_NListOfEntityOwner.hxx
+
   AIS_Plane.cxx
   AIS_Plane.hxx
   AIS_PlaneTrihedron.cxx
@@ -114,29 +111,7 @@ set(OCCT_AIS_FILES
   AIS_ViewCube.cxx
   AIS_ViewCube.hxx
   AIS_WalkDelta.hxx
-  AIS_AngleDimension.hxx
-  AIS_Chamf2dDimension.hxx
-  AIS_Chamf3dDimension.hxx
-  AIS_ConcentricRelation.hxx
-  AIS_DiameterDimension.hxx
-  AIS_Dimension.hxx
-  AIS_DimensionOwner.hxx
-  AIS_EllipseRadiusDimension.hxx
-  AIS_EqualDistanceRelation.hxx
-  AIS_EqualRadiusRelation.hxx
-  AIS_FixRelation.hxx
-  AIS_IdenticRelation.hxx
-  AIS_LengthDimension.hxx
-  AIS_MaxRadiusDimension.hxx
-  AIS_MidPointRelation.hxx
-  AIS_MinRadiusDimension.hxx
-  AIS_OffsetDimension.hxx
-  AIS_ParallelRelation.hxx
-  AIS_PerpendicularRelation.hxx
-  AIS_RadiusDimension.hxx
-  AIS_Relation.hxx
-  AIS_SymmetricRelation.hxx
-  AIS_TangentRelation.hxx
+
   AIS_XRTrackedDevice.cxx
   AIS_XRTrackedDevice.hxx
 )

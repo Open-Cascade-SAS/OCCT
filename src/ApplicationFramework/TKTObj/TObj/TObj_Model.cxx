@@ -53,7 +53,7 @@ TObj_Model::TObj_Model()
 
 //=================================================================================================
 
-const Handle(TObj_Application) TObj_Model::GetApplication()
+const occ::handle<TObj_Application> TObj_Model::GetApplication()
 {
   return TObj_Application::GetInstance();
 }
@@ -67,7 +67,7 @@ TObj_Model::~TObj_Model()
 
 //=================================================================================================
 
-void TObj_Model::CloseDocument(const Handle(TDocStd_Document)& theDoc)
+void TObj_Model::CloseDocument(const occ::handle<TDocStd_Document>& theDoc)
 {
   // prevent Abort of the following modifs at document destruction if
   // a transaction is open: see theDoc->myUndoTransaction.~()
@@ -75,10 +75,10 @@ void TObj_Model::CloseDocument(const Handle(TDocStd_Document)& theDoc)
     theDoc->AbortCommand();
 
   // Application
-  const Handle(TObj_Application) anApplication = GetApplication();
+  const occ::handle<TObj_Application> anApplication = GetApplication();
 
   // just all other attributes
-  theDoc->Main().Root().ForgetAllAttributes(Standard_True);
+  theDoc->Main().Root().ForgetAllAttributes(true);
   anApplication->Close(theDoc);
 }
 
@@ -87,33 +87,33 @@ void TObj_Model::CloseDocument(const Handle(TDocStd_Document)& theDoc)
 // purpose  : Loads the model from the file
 //=======================================================================
 
-Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
+bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
 {
   // Return status
-  Standard_Boolean aStatus = Standard_True;
+  bool aStatus = true;
 
   // Document
-  Handle(TDocStd_Document) aDoc;
+  occ::handle<TDocStd_Document> aDoc;
 
   // Application
-  const Handle(TObj_Application) anApplication = GetApplication();
+  const occ::handle<TObj_Application> anApplication = GetApplication();
 
   // Current model
-  const Handle(TObj_Model) me = this;
+  const occ::handle<TObj_Model> me = this;
   TObj_Assistant::SetCurrentModel(me);
   TObj_Assistant::ClearTypeMap();
 
-  Standard_Boolean isFileEmpty = checkDocumentEmpty(theFile);
+  bool isFileEmpty = checkDocumentEmpty(theFile);
   if (isFileEmpty)
   {
     // theFile is empty, create new TDocStd_Document for this model
     aStatus = anApplication->CreateNewDocument(aDoc, GetFormat());
 
-    if (aStatus == Standard_True)
+    if (aStatus == true)
     {
       // Put model in a new attribute on root label
       TDF_Label           aLabel = aDoc->Main();
-      Handle(TObj_TModel) anAtr  = new TObj_TModel;
+      occ::handle<TObj_TModel> anAtr  = new TObj_TModel;
       aLabel.AddAttribute(anAtr);
       anAtr->Set(me);
       // Record that label in the model object, and initialise the new model
@@ -126,12 +126,12 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
     Messenger()->Send(Message_Msg("TObj_M_LoadDocument") << theFile, Message_Info);
     aStatus = anApplication->LoadDocument(theFile, aDoc);
 
-    if (aStatus == Standard_True)
+    if (aStatus == true)
     {
       // Check for validity of the model read:
       // if it had wrong type, it has not been not properly restored
       TDF_Label        aLabel  = GetLabel();
-      Standard_Boolean isValid = !aLabel.IsNull() && !aDoc.IsNull();
+      bool isValid = !aLabel.IsNull() && !aDoc.IsNull();
       {
         try
         {
@@ -139,7 +139,7 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
         }
         catch (Standard_Failure const&)
         {
-          isValid = Standard_False;
+          isValid = false;
         }
       }
       if (!isValid)
@@ -148,7 +148,7 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
           CloseDocument(aDoc);
         myLabel.Nullify();
         Messenger()->Send(Message_Msg("TObj_M_WrongFile") << theFile, Message_Alarm);
-        aStatus = Standard_False;
+        aStatus = false;
       }
     }
     else
@@ -161,9 +161,9 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
     }
   }
   //    initialise the new model
-  if (aStatus == Standard_True)
+  if (aStatus == true)
   {
-    Standard_Boolean isInitOk = Standard_False;
+    bool isInitOk = false;
     {
       try
       {
@@ -185,7 +185,7 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
       if (!aDoc.IsNull())
         CloseDocument(aDoc);
       myLabel.Nullify();
-      aStatus = Standard_False;
+      aStatus = false;
     }
   }
   TObj_Assistant::UnSetCurrentModel();
@@ -199,14 +199,14 @@ Standard_Boolean TObj_Model::Load(const TCollection_ExtendedString& theFile)
 //           it initializes the model by empty data.
 //=======================================================================
 
-Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
+bool TObj_Model::Load(Standard_IStream& theIStream)
 {
-  Handle(TDocStd_Document)       aDoc;
-  Standard_Boolean               aStatus = Standard_True, isFileLoaded = Standard_False;
-  const Handle(TObj_Application) anApplication = GetApplication();
+  occ::handle<TDocStd_Document>       aDoc;
+  bool               aStatus = true, isFileLoaded = false;
+  const occ::handle<TObj_Application> anApplication = GetApplication();
 
   // Current model
-  const Handle(TObj_Model) me = this;
+  const occ::handle<TObj_Model> me = this;
   TObj_Assistant::SetCurrentModel(me);
   TObj_Assistant::ClearTypeMap();
 
@@ -218,14 +218,14 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
     // Check for validity of the model read:
     // if it had wrong type, it has not been not properly restored
     TDF_Label        aLabel  = GetLabel();
-    Standard_Boolean isValid = (!aLabel.IsNull() && !aDoc.IsNull());
+    bool isValid = (!aLabel.IsNull() && !aDoc.IsNull());
     try
     {
       isValid = (isValid && aLabel.Data() == aDoc->GetData());
     }
     catch (Standard_Failure const&)
     {
-      isValid = Standard_False;
+      isValid = false;
     }
     if (!isValid)
     {
@@ -233,7 +233,7 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
         CloseDocument(aDoc);
       myLabel.Nullify();
       Messenger()->Send(Message_Msg("TObj_M_WrongFile"), Message_Alarm);
-      aStatus = Standard_False;
+      aStatus = false;
     }
     isFileLoaded = isValid;
   }
@@ -250,7 +250,7 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
     {
       // Put model in a new attribute on root label
       TDF_Label           aLabel = aDoc->Main();
-      Handle(TObj_TModel) anAtr  = new TObj_TModel;
+      occ::handle<TObj_TModel> anAtr  = new TObj_TModel;
       aLabel.AddAttribute(anAtr);
       anAtr->Set(me);
       // Record that label in the model object, and initialise the new model
@@ -261,7 +261,7 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
   // Initialise the new model
   if (aStatus)
   {
-    Standard_Boolean isInitOk = Standard_False;
+    bool isInitOk = false;
     try
     {
       isInitOk = initNewModel(!isFileLoaded);
@@ -281,7 +281,7 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
       if (!aDoc.IsNull())
         CloseDocument(aDoc);
       myLabel.Nullify();
-      aStatus = Standard_False;
+      aStatus = false;
     }
   }
 
@@ -296,17 +296,17 @@ Standard_Boolean TObj_Model::Load(Standard_IStream& theIStream)
 //           or null if the model was not saved yet
 //=======================================================================
 
-Handle(TCollection_HExtendedString) TObj_Model::GetFile() const
+occ::handle<TCollection_HExtendedString> TObj_Model::GetFile() const
 {
-  Handle(TDocStd_Document) aDoc = GetDocument();
+  occ::handle<TDocStd_Document> aDoc = GetDocument();
   if (aDoc.IsNull() || !aDoc->IsStored())
   {
-    return Handle(TCollection_HExtendedString)();
+    return occ::handle<TCollection_HExtendedString>();
   }
 
   TCollection_ExtendedString aPath(aDoc->GetPath());
   return !aPath.IsEmpty() ? new TCollection_HExtendedString(aPath)
-                          : Handle(TCollection_HExtendedString)();
+                          : occ::handle<TCollection_HExtendedString>();
 }
 
 //=======================================================================
@@ -314,15 +314,15 @@ Handle(TCollection_HExtendedString) TObj_Model::GetFile() const
 // purpose  : Save the model to the same file
 //=======================================================================
 
-Standard_Boolean TObj_Model::Save()
+bool TObj_Model::Save()
 {
-  Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
+  occ::handle<TDocStd_Document> aDoc = TDocStd_Document::Get(GetLabel());
   if (aDoc.IsNull())
-    return Standard_False;
+    return false;
 
   if (!aDoc->GetPath().IsEmpty())
     return SaveAs(aDoc->GetPath());
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -330,13 +330,13 @@ Standard_Boolean TObj_Model::Save()
 // purpose  : Save the model to a file
 //=======================================================================
 
-Standard_Boolean TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
+bool TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
 {
   TObj_Assistant::ClearTypeMap();
   // OCAF document
-  Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
+  occ::handle<TDocStd_Document> aDoc = TDocStd_Document::Get(GetLabel());
   if (aDoc.IsNull())
-    return Standard_False;
+    return false;
 
   // checking that file is present on disk is not needed because could try to save as new
   // document to existent file
@@ -345,19 +345,19 @@ Standard_Boolean TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
   if (aF == NULL)
   {
     Messenger()->Send(Message_Msg("TObj_M_NoWriteAccess") << theFile, Message_Alarm);
-    return Standard_False;
+    return false;
   }
   else
     fclose(aF);
 
   // store transaction mode
-  Standard_Boolean aTrMode = aDoc->ModificationMode();
-  aDoc->SetModificationMode(Standard_False);
+  bool aTrMode = aDoc->ModificationMode();
+  aDoc->SetModificationMode(false);
   // store all trancienmt fields of object in OCAF document if any
-  Handle(TObj_ObjectIterator) anIterator;
+  occ::handle<TObj_ObjectIterator> anIterator;
   for (anIterator = GetObjects(); anIterator->More(); anIterator->Next())
   {
-    Handle(TObj_Object) anOCAFObj = anIterator->Value();
+    occ::handle<TObj_Object> anOCAFObj = anIterator->Value();
     if (anOCAFObj.IsNull())
       continue;
     anOCAFObj->BeforeStoring();
@@ -366,10 +366,10 @@ Standard_Boolean TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
   aDoc->SetModificationMode(aTrMode);
 
   // Application
-  const Handle(TObj_Application) anApplication = GetApplication();
+  const occ::handle<TObj_Application> anApplication = GetApplication();
 
   // call Application->SaveAs()
-  Standard_Boolean aStatus = anApplication->SaveDocument(aDoc, theFile);
+  bool aStatus = anApplication->SaveDocument(aDoc, theFile);
 
   TObj_Assistant::ClearTypeMap();
   return aStatus;
@@ -380,22 +380,22 @@ Standard_Boolean TObj_Model::SaveAs(const TCollection_ExtendedString& theFile)
 // purpose  : Save the model to a stream
 //=======================================================================
 
-Standard_Boolean TObj_Model::SaveAs(Standard_OStream& theOStream)
+bool TObj_Model::SaveAs(Standard_OStream& theOStream)
 {
   TObj_Assistant::ClearTypeMap();
   // OCAF document
-  Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
+  occ::handle<TDocStd_Document> aDoc = TDocStd_Document::Get(GetLabel());
   if (aDoc.IsNull())
-    return Standard_False;
+    return false;
 
   // store transaction mode
-  Standard_Boolean aTrMode = aDoc->ModificationMode();
-  aDoc->SetModificationMode(Standard_False);
+  bool aTrMode = aDoc->ModificationMode();
+  aDoc->SetModificationMode(false);
   // store all trancienmt fields of object in OCAF document if any
-  Handle(TObj_ObjectIterator) anIterator;
+  occ::handle<TObj_ObjectIterator> anIterator;
   for (anIterator = GetObjects(); anIterator->More(); anIterator->Next())
   {
-    Handle(TObj_Object) anOCAFObj = anIterator->Value();
+    occ::handle<TObj_Object> anOCAFObj = anIterator->Value();
     if (anOCAFObj.IsNull())
       continue;
     anOCAFObj->BeforeStoring();
@@ -404,7 +404,7 @@ Standard_Boolean TObj_Model::SaveAs(Standard_OStream& theOStream)
   aDoc->SetModificationMode(aTrMode);
 
   // call Application->SaveAs()
-  Standard_Boolean aStatus = GetApplication()->SaveDocument(aDoc, theOStream);
+  bool aStatus = GetApplication()->SaveDocument(aDoc, theOStream);
   TObj_Assistant::ClearTypeMap();
   return aStatus;
 }
@@ -414,20 +414,20 @@ Standard_Boolean TObj_Model::SaveAs(Standard_OStream& theOStream)
 // purpose  : Close the model and free related OCAF document
 //=======================================================================
 
-Standard_Boolean TObj_Model::Close()
+bool TObj_Model::Close()
 {
   // OCAF document
   TDF_Label aLabel = GetLabel();
   if (aLabel.IsNull())
-    return Standard_False;
-  Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(aLabel);
+    return false;
+  occ::handle<TDocStd_Document> aDoc = TDocStd_Document::Get(aLabel);
   if (aDoc.IsNull())
-    return Standard_False;
+    return false;
 
   CloseDocument(aDoc);
 
   myLabel.Nullify();
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -436,18 +436,18 @@ Standard_Boolean TObj_Model::Close()
 //           returns NULL handle if label is NULL
 //=======================================================================
 
-Handle(TObj_Model) TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
+occ::handle<TObj_Model> TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
 {
-  Handle(TObj_Model) aModel;
+  occ::handle<TObj_Model> aModel;
   if (theLabel.IsNull())
     return aModel;
 
-  Handle(TDocStd_Document) aDoc;
-  Handle(TDF_Data)         aData  = theLabel.Data();
+  occ::handle<TDocStd_Document> aDoc;
+  occ::handle<TDF_Data>         aData  = theLabel.Data();
   TDF_Label                aRootL = aData->Root();
   if (aRootL.IsNull())
     return aModel;
-  Handle(TDocStd_Owner) aDocOwnerAtt;
+  occ::handle<TDocStd_Owner> aDocOwnerAtt;
   if (aRootL.FindAttribute(TDocStd_Owner::GetID(), aDocOwnerAtt))
     aDoc = aDocOwnerAtt->GetDocument();
 
@@ -455,7 +455,7 @@ Handle(TObj_Model) TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
     return aModel;
 
   TDF_Label           aLabel = aDoc->Main();
-  Handle(TObj_TModel) anAttr;
+  occ::handle<TObj_TModel> anAttr;
   if (aLabel.FindAttribute(TObj_TModel::GetID(), anAttr))
     aModel = anAttr->Model();
 
@@ -464,17 +464,17 @@ Handle(TObj_Model) TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-Handle(TObj_ObjectIterator) TObj_Model::GetObjects() const
+occ::handle<TObj_ObjectIterator> TObj_Model::GetObjects() const
 {
-  Handle(TObj_Model) me = this;
+  occ::handle<TObj_Model> me = this;
   return new TObj_ModelIterator(me);
 }
 
 //=================================================================================================
 
-Handle(TObj_ObjectIterator) TObj_Model::GetChildren() const
+occ::handle<TObj_ObjectIterator> TObj_Model::GetChildren() const
 {
-  Handle(TObj_Partition) aMainPartition = GetMainPartition();
+  occ::handle<TObj_Partition> aMainPartition = GetMainPartition();
   if (aMainPartition.IsNull())
     return 0;
   return aMainPartition->GetChildren();
@@ -482,13 +482,13 @@ Handle(TObj_ObjectIterator) TObj_Model::GetChildren() const
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_Model::FindObject(const Handle(TCollection_HExtendedString)& theName,
-                                           const Handle(TObj_TNameContainer)& theDictionary) const
+occ::handle<TObj_Object> TObj_Model::FindObject(const occ::handle<TCollection_HExtendedString>& theName,
+                                           const occ::handle<TObj_TNameContainer>& theDictionary) const
 {
-  Handle(TObj_TNameContainer) aDictionary = theDictionary;
+  occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
     aDictionary = GetDictionary();
-  Handle(TObj_Object) aResult;
+  occ::handle<TObj_Object> aResult;
   // Check is object with given name is present in model
   if (IsRegisteredName(theName, aDictionary))
   {
@@ -501,55 +501,55 @@ Handle(TObj_Object) TObj_Model::FindObject(const Handle(TCollection_HExtendedStr
 
 //=================================================================================================
 
-Handle(TObj_Object) TObj_Model::GetRoot() const
+occ::handle<TObj_Object> TObj_Model::GetRoot() const
 {
   return getPartition(GetLabel());
 }
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Model::GetMainPartition() const
+occ::handle<TObj_Partition> TObj_Model::GetMainPartition() const
 {
   return getPartition(GetLabel());
 }
 
 //=================================================================================================
 
-void TObj_Model::SetNewName(const Handle(TObj_Object)& theObject)
+void TObj_Model::SetNewName(const occ::handle<TObj_Object>& theObject)
 {
-  Handle(TObj_Partition) aPartition = TObj_Partition::GetPartition(theObject);
+  occ::handle<TObj_Partition> aPartition = TObj_Partition::GetPartition(theObject);
 
   // sets name if partition is found
   if (aPartition.IsNull())
     return;
 
-  Handle(TCollection_HExtendedString) name = aPartition->GetNewName();
+  occ::handle<TCollection_HExtendedString> name = aPartition->GetNewName();
   if (!name.IsNull())
     theObject->SetName(name);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Model::IsRegisteredName(
-  const Handle(TCollection_HExtendedString)& theName,
-  const Handle(TObj_TNameContainer)&         theDictionary) const
+bool TObj_Model::IsRegisteredName(
+  const occ::handle<TCollection_HExtendedString>& theName,
+  const occ::handle<TObj_TNameContainer>&         theDictionary) const
 {
-  Handle(TObj_TNameContainer) aDictionary = theDictionary;
+  occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
     aDictionary = GetDictionary();
 
   if (aDictionary.IsNull())
-    return Standard_False;
+    return false;
   return aDictionary->IsRegistered(theName);
 }
 
 //=================================================================================================
 
-void TObj_Model::RegisterName(const Handle(TCollection_HExtendedString)& theName,
+void TObj_Model::RegisterName(const occ::handle<TCollection_HExtendedString>& theName,
                               const TDF_Label&                           theLabel,
-                              const Handle(TObj_TNameContainer)&         theDictionary) const
+                              const occ::handle<TObj_TNameContainer>&         theDictionary) const
 {
-  Handle(TObj_TNameContainer) aDictionary = theDictionary;
+  occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
     aDictionary = GetDictionary();
 
@@ -559,10 +559,10 @@ void TObj_Model::RegisterName(const Handle(TCollection_HExtendedString)& theName
 
 //=================================================================================================
 
-void TObj_Model::UnRegisterName(const Handle(TCollection_HExtendedString)& theName,
-                                const Handle(TObj_TNameContainer)&         theDictionary) const
+void TObj_Model::UnRegisterName(const occ::handle<TCollection_HExtendedString>& theName,
+                                const occ::handle<TObj_TNameContainer>&         theDictionary) const
 {
-  Handle(TObj_TNameContainer) aDictionary = theDictionary;
+  occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
     aDictionary = GetDictionary();
 
@@ -572,9 +572,9 @@ void TObj_Model::UnRegisterName(const Handle(TCollection_HExtendedString)& theNa
 
 //=================================================================================================
 
-Handle(TObj_TNameContainer) TObj_Model::GetDictionary() const
+occ::handle<TObj_TNameContainer> TObj_Model::GetDictionary() const
 {
-  Handle(TObj_TNameContainer) A;
+  occ::handle<TObj_TNameContainer> A;
   TDF_Label                   aLabel = GetLabel();
   if (!aLabel.IsNull())
     aLabel.FindAttribute(TObj_TNameContainer::GetID(), A);
@@ -583,13 +583,13 @@ Handle(TObj_TNameContainer) TObj_Model::GetDictionary() const
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Model::getPartition(const TDF_Label&       theLabel,
-                                                const Standard_Boolean theHidden) const
+occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label&       theLabel,
+                                                const bool theHidden) const
 {
-  Handle(TObj_Partition) aPartition;
+  occ::handle<TObj_Partition> aPartition;
   if (theLabel.IsNull())
     return aPartition;
-  Handle(TObj_TObject) A;
+  occ::handle<TObj_TObject> A;
 
   if (!theLabel.FindAttribute(TObj_TObject::GetID(), A))
   {
@@ -599,29 +599,29 @@ Handle(TObj_Partition) TObj_Model::getPartition(const TDF_Label&       theLabel,
       aPartition = TObj_Partition::Create(theLabel);
   }
   else
-    aPartition = Handle(TObj_Partition)::DownCast(A->Get());
+    aPartition = occ::down_cast<TObj_Partition>(A->Get());
 
   return aPartition;
 }
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Model::getPartition(const TDF_Label&                  theLabel,
-                                                const Standard_Integer            theIndex,
+occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label&                  theLabel,
+                                                const int            theIndex,
                                                 const TCollection_ExtendedString& theName,
-                                                const Standard_Boolean            theHidden) const
+                                                const bool            theHidden) const
 {
-  Handle(TObj_Partition) aPartition;
+  occ::handle<TObj_Partition> aPartition;
   if (theLabel.IsNull())
     return aPartition;
 
-  TDF_Label        aLabel = theLabel.FindChild(theIndex, Standard_False);
-  Standard_Boolean isNew  = Standard_False;
+  TDF_Label        aLabel = theLabel.FindChild(theIndex, false);
+  bool isNew  = false;
   // defining is partition new
   if (aLabel.IsNull())
   {
-    aLabel = theLabel.FindChild(theIndex, Standard_True);
-    isNew  = Standard_True;
+    aLabel = theLabel.FindChild(theIndex, true);
+    isNew  = true;
   }
   // obtaining the partition
   aPartition = getPartition(aLabel, theHidden);
@@ -634,16 +634,16 @@ Handle(TObj_Partition) TObj_Model::getPartition(const TDF_Label&                
 
 //=================================================================================================
 
-Handle(TObj_Partition) TObj_Model::getPartition(const Standard_Integer            theIndex,
+occ::handle<TObj_Partition> TObj_Model::getPartition(const int            theIndex,
                                                 const TCollection_ExtendedString& theName,
-                                                const Standard_Boolean            theHidden) const
+                                                const bool            theHidden) const
 {
   return getPartition(GetMainPartition()->GetChildLabel(), theIndex, theName, theHidden);
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_Model::initNewModel(const Standard_Boolean IsNew)
+bool TObj_Model::initNewModel(const bool IsNew)
 {
   // set names map
   TObj_TNameContainer::Set(GetLabel());
@@ -652,10 +652,10 @@ Standard_Boolean TObj_Model::initNewModel(const Standard_Boolean IsNew)
   if (!IsNew)
   {
     // Register names of model in names map.
-    Handle(TObj_ObjectIterator) anIterator;
+    occ::handle<TObj_ObjectIterator> anIterator;
     for (anIterator = GetObjects(); anIterator->More(); anIterator->Next())
     {
-      Handle(TObj_Object) anOCAFObj = anIterator->Value();
+      occ::handle<TObj_Object> anOCAFObj = anIterator->Value();
       if (anOCAFObj.IsNull())
         continue;
       anOCAFObj->AfterRetrieval();
@@ -666,32 +666,32 @@ Standard_Boolean TObj_Model::initNewModel(const Standard_Boolean IsNew)
     if (isToCheck())
     {
       // check model consistency
-      Handle(TObj_CheckModel) aCheck = GetChecker();
+      occ::handle<TObj_CheckModel> aCheck = GetChecker();
       aCheck->Perform();
       aCheck->SendMessages();
       // tell that the model has been modified
-      SetModified(Standard_True);
+      SetModified(true);
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void TObj_Model::updateBackReferences(const Handle(TObj_Object)& theObject)
+void TObj_Model::updateBackReferences(const occ::handle<TObj_Object>& theObject)
 {
   // recursive update back references
   if (theObject.IsNull())
     return;
-  Handle(TObj_ObjectIterator) aChildren = theObject->GetChildren();
+  occ::handle<TObj_ObjectIterator> aChildren = theObject->GetChildren();
   for (; aChildren->More(); aChildren->Next())
   {
-    Handle(TObj_Object) aChild = aChildren->Value();
+    occ::handle<TObj_Object> aChild = aChildren->Value();
     updateBackReferences(aChild);
   }
   // update back references of reference objects
-  Handle(TObj_LabelIterator) anIter =
-    Handle(TObj_LabelIterator)::DownCast(theObject->GetReferences());
+  occ::handle<TObj_LabelIterator> anIter =
+    occ::down_cast<TObj_LabelIterator>(theObject->GetReferences());
 
   if (anIter.IsNull()) // to avoid exception
     return;
@@ -702,16 +702,16 @@ void TObj_Model::updateBackReferences(const Handle(TObj_Object)& theObject)
   // we do not modify document, all modifications are made in transient fields)
   for (; anIter->More(); anIter->Next())
   {
-    Handle(TObj_Object) anObject = anIter->Value();
+    occ::handle<TObj_Object> anObject = anIter->Value();
     if (!anObject.IsNull())
-      anObject->RemoveBackReference(theObject, Standard_False);
+      anObject->RemoveBackReference(theObject, false);
   }
   // and at last create back references
-  anIter = Handle(TObj_LabelIterator)::DownCast(theObject->GetReferences());
+  anIter = occ::down_cast<TObj_LabelIterator>(theObject->GetReferences());
   if (!anIter.IsNull())
     for (; anIter->More(); anIter->Next())
     {
-      Handle(TObj_Object) anObject = anIter->Value();
+      occ::handle<TObj_Object> anObject = anIter->Value();
       if (!anObject.IsNull())
         anObject->AddBackReference(theObject);
     }
@@ -719,9 +719,9 @@ void TObj_Model::updateBackReferences(const Handle(TObj_Object)& theObject)
 
 //=================================================================================================
 
-Handle(TDocStd_Document) TObj_Model::GetDocument() const
+occ::handle<TDocStd_Document> TObj_Model::GetDocument() const
 {
-  Handle(TDocStd_Document) D;
+  occ::handle<TDocStd_Document> D;
   TDF_Label                aLabel = GetLabel();
   if (!aLabel.IsNull())
     D = TDocStd_Document::Get(aLabel);
@@ -730,7 +730,7 @@ Handle(TDocStd_Document) TObj_Model::GetDocument() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Model::HasOpenCommand() const
+bool TObj_Model::HasOpenCommand() const
 {
   return GetDocument()->HasOpenCommand();
 }
@@ -761,10 +761,10 @@ void TObj_Model::AbortCommand() const
 // purpose  : Status of modification
 //=======================================================================
 
-Standard_Boolean TObj_Model::IsModified() const
+bool TObj_Model::IsModified() const
 {
-  Handle(TDocStd_Document) aDoc = GetDocument();
-  return aDoc.IsNull() ? Standard_False : aDoc->IsChanged();
+  occ::handle<TDocStd_Document> aDoc = GetDocument();
+  return aDoc.IsNull() ? false : aDoc->IsChanged();
 }
 
 //=======================================================================
@@ -772,12 +772,12 @@ Standard_Boolean TObj_Model::IsModified() const
 // purpose  : Status of modification
 //=======================================================================
 
-void TObj_Model::SetModified(const Standard_Boolean theModified)
+void TObj_Model::SetModified(const bool theModified)
 {
-  Handle(TDocStd_Document) aDoc = GetDocument();
+  occ::handle<TDocStd_Document> aDoc = GetDocument();
   if (!aDoc.IsNull())
   {
-    Standard_Integer aSavedTime = aDoc->GetData()->Time();
+    int aSavedTime = aDoc->GetData()->Time();
     if (theModified)
       --aSavedTime;
     aDoc->SetSavedTime(aSavedTime);
@@ -789,28 +789,28 @@ void TObj_Model::SetModified(const Standard_Boolean theModified)
 // purpose  : Check whether the document contains the Ocaf data
 //=======================================================================
 
-Standard_Boolean TObj_Model::checkDocumentEmpty(const TCollection_ExtendedString& theFile)
+bool TObj_Model::checkDocumentEmpty(const TCollection_ExtendedString& theFile)
 {
   if (theFile.IsEmpty())
-    return Standard_True;
+    return true;
 
   OSD_Path aPath(theFile);
   OSD_File osdfile(aPath);
   if (!osdfile.Exists())
-    return Standard_True;
+    return true;
 
   FILE* f = OSD_OpenFile(theFile, "r");
   if (f)
   {
-    Standard_Boolean isZeroLengh = Standard_False;
+    bool isZeroLengh = false;
     fseek(f, 0, SEEK_END);
     if (ftell(f) == 0)
-      isZeroLengh = Standard_True;
+      isZeroLengh = true;
 
     fclose(f);
     return isZeroLengh;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -830,13 +830,13 @@ TCollection_ExtendedString TObj_Model::GetFormat() const
 
 //=================================================================================================
 
-Standard_Integer TObj_Model::GetFormatVersion() const
+int TObj_Model::GetFormatVersion() const
 {
-  TDF_Label aLabel = GetDataLabel().FindChild(DataTag_FormatVersion, Standard_False);
+  TDF_Label aLabel = GetDataLabel().FindChild(DataTag_FormatVersion, false);
   if (aLabel.IsNull())
     return -1;
 
-  Handle(TDataStd_Integer) aNum;
+  occ::handle<TDataStd_Integer> aNum;
   if (!aLabel.FindAttribute(TDataStd_Integer::GetID(), aNum))
     return -1;
   else
@@ -845,9 +845,9 @@ Standard_Integer TObj_Model::GetFormatVersion() const
 
 //=================================================================================================
 
-void TObj_Model::SetFormatVersion(const Standard_Integer theVersion)
+void TObj_Model::SetFormatVersion(const int theVersion)
 {
-  TDF_Label aLabel = GetDataLabel().FindChild(DataTag_FormatVersion, Standard_True);
+  TDF_Label aLabel = GetDataLabel().FindChild(DataTag_FormatVersion, true);
   TDataStd_Integer::Set(aLabel, theVersion);
 }
 
@@ -860,27 +860,27 @@ TDF_Label TObj_Model::GetDataLabel() const
 
 //=================================================================================================
 
-Standard_Boolean TObj_Model::Paste(Handle(TObj_Model)          theModel,
-                                   Handle(TDF_RelocationTable) theRelocTable)
+bool TObj_Model::Paste(occ::handle<TObj_Model>          theModel,
+                                   occ::handle<TDF_RelocationTable> theRelocTable)
 {
   if (theModel.IsNull())
-    return Standard_False;
+    return false;
   // clearing dictionary of objects names
   //  theModel->GetDictionary()->NewEmpty()->Paste(theModel->GetDictionary(),
   //                                               new TDF_RelocationTable);
-  //  theModel->GetLabel().ForgetAllAttributes(Standard_True);
+  //  theModel->GetLabel().ForgetAllAttributes(true);
   TObj_TNameContainer::Set(theModel->GetLabel());
   GetMainPartition()->Clone(theModel->GetLabel(), theRelocTable);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void TObj_Model::CopyReferences(const Handle(TObj_Model)&          theTarget,
-                                const Handle(TDF_RelocationTable)& theRelocTable)
+void TObj_Model::CopyReferences(const occ::handle<TObj_Model>&          theTarget,
+                                const occ::handle<TDF_RelocationTable>& theRelocTable)
 {
-  Handle(TObj_Object) aMyRoot     = GetMainPartition();
-  Handle(TObj_Object) aTargetRoot = theTarget->GetMainPartition();
+  occ::handle<TObj_Object> aMyRoot     = GetMainPartition();
+  occ::handle<TObj_Object> aTargetRoot = theTarget->GetMainPartition();
   aMyRoot->CopyReferences(aTargetRoot, theRelocTable);
 }
 
@@ -890,9 +890,9 @@ void TObj_Model::CopyReferences(const Handle(TObj_Model)&          theTarget,
 //           by default returns TObj
 //=======================================================================
 
-Handle(TCollection_HExtendedString) TObj_Model::GetModelName() const
+occ::handle<TCollection_HExtendedString> TObj_Model::GetModelName() const
 {
-  Handle(TCollection_HExtendedString) aName = new TCollection_HExtendedString("TObj");
+  occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString("TObj");
   return aName;
 }
 
@@ -901,14 +901,14 @@ Handle(TCollection_HExtendedString) TObj_Model::GetModelName() const
 // purpose  : default implementation is empty
 //=======================================================================
 
-Standard_Boolean TObj_Model::Update()
+bool TObj_Model::Update()
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Handle(TObj_CheckModel) TObj_Model::GetChecker() const
+occ::handle<TObj_CheckModel> TObj_Model::GetChecker() const
 {
   return new TObj_CheckModel(this);
 }

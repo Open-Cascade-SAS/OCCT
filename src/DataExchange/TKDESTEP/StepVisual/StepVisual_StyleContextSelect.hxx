@@ -41,19 +41,17 @@ public:
   //! 2 -> RepresentationItem
   //! 3 -> PresentationSet
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a Representation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_Representation) Representation() const;
+  Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a RepresentationItem (Null if another type)
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) RepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationItem> RepresentationItem() const;
 
   //! returns Value as a PresentationSet (Null if another type)
-  Standard_EXPORT Handle(StepVisual_PresentationSet) PresentationSet() const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationSet> PresentationSet() const;
 
-protected:
-private:
 };
 
 #endif // _StepVisual_StyleContextSelect_HeaderFile

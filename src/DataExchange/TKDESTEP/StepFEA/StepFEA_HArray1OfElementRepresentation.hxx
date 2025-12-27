@@ -15,9 +15,10 @@
 #define StepFEA_HArray1OfElementRepresentation_HeaderFile
 
 #include <StepFEA_ElementRepresentation.hxx>
-#include <StepFEA_Array1OfElementRepresentation.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepFEA_HArray1OfElementRepresentation, StepFEA_Array1OfElementRepresentation)
+DEFINE_HARRAY1(StepFEA_HArray1OfElementRepresentation, NCollection_Array1<occ::handle<StepFEA_ElementRepresentation>>)
 
 #endif

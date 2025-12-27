@@ -35,28 +35,28 @@
 #include <vector>
 
 // modified by NIZHNY-MKK  Mon Jun 21 15:13:40 2004
-static Standard_Boolean FaceNormal(const TopoDS_Face&  aF,
-                                   const Standard_Real U,
-                                   const Standard_Real V,
+static bool FaceNormal(const TopoDS_Face&  aF,
+                                   const double U,
+                                   const double V,
                                    gp_Dir&             aDN);
 
-static Standard_Real GetAddToParam(const gp_Lin& L, const Standard_Real P, const Bnd_Box& B);
+static double GetAddToParam(const gp_Lin& L, const double P, const Bnd_Box& B);
 
 // gets transition of line <L> passing through/near the edge <e> of faces <f1>, <f2>. <param> is
 //  a parameter on the edge where the minimum distance between <l> and <e> was found
-static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
+static int GetTransi(const TopoDS_Face&                 f1,
                                   const TopoDS_Face&                 f2,
                                   const TopoDS_Edge&                 e,
-                                  Standard_Real                      param,
+                                  double                      param,
                                   const gp_Lin&                      L,
                                   IntCurveSurface_TransitionOnCurve& trans);
 
-static Standard_Boolean GetNormalOnFaceBound(const TopoDS_Edge& E,
+static bool GetNormalOnFaceBound(const TopoDS_Edge& E,
                                              const TopoDS_Face& F,
-                                             Standard_Real      param,
+                                             double      param,
                                              gp_Dir&            OutDir);
 
-static void Trans(Standard_Real parmin, IntCurveSurface_TransitionOnCurve& tran, int& state);
+static void Trans(double parmin, IntCurveSurface_TransitionOnCurve& tran, int& state);
 
 //=================================================================================================
 
@@ -69,7 +69,7 @@ BRepClass3d_SClassifier::BRepClass3d_SClassifier()
 
 BRepClass3d_SClassifier::BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
                                                  const gp_Pnt&              P,
-                                                 const Standard_Real        Tol)
+                                                 const double        Tol)
 {
   if (S.Reject(P))
   {
@@ -84,7 +84,7 @@ BRepClass3d_SClassifier::BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
 //=================================================================================================
 
 void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aSE,
-                                                   const Standard_Real /*Tol*/)
+                                                   const double /*Tol*/)
 {
 
   // Take a normal to the first extracted face in its random inner point
@@ -105,8 +105,8 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   //
   //------------------------------------------------------------
   // 1
-  Standard_Boolean bFound;
-  Standard_Real    aParam, aU = 0., aV = 0.;
+  bool bFound;
+  double    aParam, aU = 0., aV = 0.;
   gp_Pnt           aPoint;
   gp_Dir           aDN;
 
@@ -125,8 +125,8 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   }
 
   // iteratively try up to 10 probing points from each face
-  const Standard_Integer NB_MAX_POINTS_PER_FACE = 10;
-  for (Standard_Integer itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
+  const int NB_MAX_POINTS_PER_FACE = 10;
+  for (int itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
   {
     for (std::vector<TopoDS_Face>::iterator iFace = aFaces.begin(); iFace != aFaces.end(); ++iFace)
     {
@@ -141,14 +141,14 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
         continue;
 
       gp_Lin        aLin(aPoint, -aDN);
-      Standard_Real parmin = RealLast();
+      double parmin = RealLast();
       for (aSE.InitShell(); aSE.MoreShell(); aSE.NextShell())
       {
-        if (aSE.RejectShell(aLin) == Standard_False)
+        if (aSE.RejectShell(aLin) == false)
         {
           for (aSE.InitFace(); aSE.MoreFace(); aSE.NextFace())
           {
-            if (aSE.RejectFace(aLin) == Standard_False)
+            if (aSE.RejectFace(aLin) == false)
             {
               TopoDS_Shape               aLocalShape   = aSE.CurrentFace();
               TopoDS_Face                CurFace       = TopoDS::Face(aLocalShape);
@@ -159,8 +159,8 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
               {
                 if (Intersector3d.NbPnt())
                 {
-                  Standard_Integer imin = 1;
-                  for (Standard_Integer i = 2; i <= Intersector3d.NbPnt(); i++)
+                  int imin = 1;
+                  for (int i = 2; i <= Intersector3d.NbPnt(); i++)
                     if (Intersector3d.WParameter(i) < Intersector3d.WParameter(imin))
                       imin = i;
                   parmin      = Intersector3d.WParameter(imin);
@@ -198,7 +198,7 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
 
 void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                                       const gp_Pnt&              P,
-                                      const Standard_Real        Tol)
+                                      const double        Tol)
 {
   if (SolidExplorer.Reject(P))
   {
@@ -207,14 +207,14 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     return;
   }
 
-  const BRepClass3d_BndBoxTree&     aTree  = SolidExplorer.GetTree();
-  const TopTools_IndexedMapOfShape& aMapEV = SolidExplorer.GetMapEV();
+  const NCollection_UBTree<int, Bnd_Box>&     aTree  = SolidExplorer.GetTree();
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapEV = SolidExplorer.GetMapEV();
 
   // Vertices/Edges vs Point.
   BRepClass3d_BndBoxTreeSelectorPoint aSelectorPoint(aMapEV);
   aSelectorPoint.SetCurrentPoint(P);
 
-  Standard_Integer SelsVE = 0;
+  int SelsVE = 0;
   SelsVE                  = aTree.Select(aSelectorPoint);
 
   if (SelsVE > 0)
@@ -224,7 +224,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     return;
   }
 
-  TopTools_IndexedDataMapOfShapeListOfShape mapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapEF;
   TopExp::MapShapesAndAncestors(SolidExplorer.GetShape(), TopAbs_EDGE, TopAbs_FACE, mapEF);
 
   BRepClass3d_BndBoxTreeSelectorLine aSelectorLine(aMapEV);
@@ -233,21 +233,21 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
   myState = 0;
 
   gp_Lin        L;
-  Standard_Real Par;
+  double Par;
 
   // We compute the intersection between the line built in the Solid Explorer and the shape.
   //-- --------------------------------------------------------------------------------
   // Calculate intersection with the face closest to the direction of bounding boxes
   // by priority so that to have the smallest possible parmin.
   // Optimization to produce as much as possible rejections with other faces.
-  Standard_Integer iFlag;
+  int iFlag;
 
   // If found line passes through a bound of any face, it means that the line
   // is not found properly and it is necessary to repeat whole procedure.
   // That's why the main loop while is added.
-  Standard_Boolean isFaultyLine = Standard_True;
-  Standard_Integer anIndFace    = 0;
-  Standard_Real    parmin       = 0.0;
+  bool isFaultyLine = true;
+  int anIndFace    = 0;
+  double    parmin       = 0.0;
   while (isFaultyLine)
   {
     if (anIndFace == 0)
@@ -255,7 +255,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     else
       iFlag = SolidExplorer.OtherSegment(P, L, Par);
 
-    Standard_Integer aCurInd = SolidExplorer.GetFaceSegmentIndex();
+    int aCurInd = SolidExplorer.GetFaceSegmentIndex();
 
     if (aCurInd > anIndFace)
       anIndFace = aCurInd;
@@ -282,25 +282,25 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     if (iFlag == 3)
       continue;
 
-    isFaultyLine = Standard_False;
+    isFaultyLine = false;
     parmin       = RealLast();
 
-    Standard_Real NearFaultPar = RealLast(); // Parameter on line.
+    double NearFaultPar = RealLast(); // Parameter on line.
     aSelectorLine.ClearResults();
     aSelectorLine.SetCurrentLine(L, Par);
-    Standard_Integer SelsEVL = 0;
+    int SelsEVL = 0;
     SelsEVL = aTree.Select(aSelectorLine); // SelsEE > 0 => Line/Edges & Line/Vertex intersection
 
     if (SelsEVL > 0)
     {
       // Line and edges / vertices interference.
-      Standard_Integer    VLInterNb = aSelectorLine.GetNbVertParam();
+      int    VLInterNb = aSelectorLine.GetNbVertParam();
       TopoDS_Vertex       NearIntVert;
-      TopTools_MapOfShape LVInts;
-      for (Standard_Integer i = 1; i <= VLInterNb; i++)
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> LVInts;
+      for (int i = 1; i <= VLInterNb; i++)
       {
         // Line and vertex.
-        Standard_Real LP = 0;
+        double LP = 0;
         TopoDS_Vertex V;
         aSelectorLine.GetVertParam(i, V, LP);
 
@@ -309,14 +309,14 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
           NearFaultPar = LP;
       }
 
-      Standard_Real param = 0.0;
+      double param = 0.0;
       TopoDS_Edge   EE;
-      Standard_Real Lpar = RealLast();
-      for (Standard_Integer i = 1; i <= aSelectorLine.GetNbEdgeParam(); i++)
+      double Lpar = RealLast();
+      for (int i = 1; i <= aSelectorLine.GetNbEdgeParam(); i++)
       {
         // Line and edge.
         aSelectorLine.GetEdgeParam(i, EE, param, Lpar);
-        const TopTools_ListOfShape& ffs = mapEF.FindFromKey(EE); // ffs size == 2
+        const NCollection_List<TopoDS_Shape>& ffs = mapEF.FindFromKey(EE); // ffs size == 2
         if (ffs.Extent() != 2)
           continue;
         TopoDS_Face   f1 = TopoDS::Face(ffs.First());
@@ -329,7 +329,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
         }
 
         IntCurveSurface_TransitionOnCurve tran = IntCurveSurface_Tangent;
-        Standard_Integer                  Tst  = GetTransi(f1, f2, EE, param, L, tran);
+        int                  Tst  = GetTransi(f1, f2, EE, param, L, tran);
         if (Tst == 1 && std::abs(Lpar) < std::abs(parmin))
         {
           parmin = Lpar;
@@ -343,12 +343,12 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     for (SolidExplorer.InitShell(); SolidExplorer.MoreShell() && !isFaultyLine;
          SolidExplorer.NextShell())
     {
-      if (SolidExplorer.RejectShell(L) == Standard_False)
+      if (SolidExplorer.RejectShell(L) == false)
       {
         for (SolidExplorer.InitFace(); SolidExplorer.MoreFace() && !isFaultyLine;
              SolidExplorer.NextFace())
         {
-          if (SolidExplorer.RejectFace(L) == Standard_False)
+          if (SolidExplorer.RejectFace(L) == false)
           {
             TopoDS_Shape               aLocalShape   = SolidExplorer.CurrentFace();
             TopoDS_Face                f             = TopoDS::Face(aLocalShape);
@@ -357,23 +357,23 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
             // Prolong segment, since there are cases when
             // the intersector does not find intersection points with the original
             // segment due to rough triangulation of a parameterized surface.
-            Standard_Real addW = std::max(10 * Tol, 0.01 * Par);
-            Standard_Real AddW = addW;
+            double addW = std::max(10 * Tol, 0.01 * Par);
+            double AddW = addW;
 
             Bnd_Box aBoxF = Intersector3d.Bounding();
 
             // The box must be finite in order to correctly prolong the segment to its bounds.
             if (!aBoxF.IsVoid() && !aBoxF.IsWhole())
             {
-              Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+              double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
               aBoxF.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-              Standard_Real boxaddW = GetAddToParam(L, Par, aBoxF);
+              double boxaddW = GetAddToParam(L, Par, aBoxF);
               addW                  = std::max(addW, boxaddW);
             }
 
-            Standard_Real minW = -AddW;
-            Standard_Real maxW = std::min(Par * 10, Par + addW);
+            double minW = -AddW;
+            double maxW = std::min(Par * 10, Par + addW);
             Intersector3d.Perform(L, minW, maxW);
             if (Intersector3d.IsDone())
             {
@@ -382,12 +382,12 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                 if (Intersector3d.IsParallel())
                 {
                   // Check distance between surface and point
-                  BRepAdaptor_Surface aBAS(f, Standard_False);
+                  BRepAdaptor_Surface aBAS(f, false);
                   Extrema_ExtPS aProj(P, aBAS, Precision::PConfusion(), Precision::PConfusion());
                   if (aProj.IsDone() && aProj.NbExt() > 0)
                   {
-                    Standard_Integer i, indmin = 0;
-                    Standard_Real    d = RealLast();
+                    int i, indmin = 0;
+                    double    d = RealLast();
                     for (i = 1; i <= aProj.NbExt(); ++i)
                     {
                       if (aProj.SquareDistance(i) < d)
@@ -401,7 +401,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                       if (d <= Tol * Tol)
                       {
                         const Extrema_POnSurf& aPonS = aProj.Point(indmin);
-                        Standard_Real          anU, anV;
+                        double          anU, anV;
                         aPonS.Parameter(anU, anV);
                         gp_Pnt2d     aP2d(anU, anV);
                         TopAbs_State aSt = Intersector3d.ClassifyUVPoint(aP2d);
@@ -417,7 +417,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                   }
                 }
               }
-              for (Standard_Integer i = 1; i <= Intersector3d.NbPnt(); i++)
+              for (int i = 1; i <= Intersector3d.NbPnt(); i++)
               {
                 if (std::abs(Intersector3d.WParameter(i))
                     < std::abs(parmin) - Precision::PConfusion())
@@ -452,7 +452,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                   // another line and to repeat the whole procedure.
                   else if (aState == TopAbs_ON)
                   {
-                    isFaultyLine = Standard_True;
+                    isFaultyLine = true;
                     break;
                   }
                 }
@@ -483,7 +483,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     if (NearFaultPar != RealLast()
         && std::abs(parmin) >= std::abs(NearFaultPar) - Precision::PConfusion())
     {
-      isFaultyLine = Standard_True;
+      isFaultyLine = true;
     }
   }
 
@@ -512,12 +512,12 @@ TopoDS_Face BRepClass3d_SClassifier::Face() const
   return (myFace);
 }
 
-Standard_Boolean BRepClass3d_SClassifier::Rejected() const
+bool BRepClass3d_SClassifier::Rejected() const
 {
   return (myState == 1);
 }
 
-Standard_Boolean BRepClass3d_SClassifier::IsOnAFace() const
+bool BRepClass3d_SClassifier::IsOnAFace() const
 {
   return (myState == 2);
 }
@@ -532,26 +532,26 @@ void BRepClass3d_SClassifier::ForceOut()
   myState = 4;
 }
 
-Standard_Real GetAddToParam(const gp_Lin& L, const Standard_Real P, const Bnd_Box& B)
+double GetAddToParam(const gp_Lin& L, const double P, const Bnd_Box& B)
 {
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
   B.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  Standard_Real    x[2] = {aXmin, aXmax}, y[2] = {aYmin, aYmax}, z[2] = {aZmin, aZmax};
-  Standard_Integer i = 0, j = 0, k = 0;
-  Standard_Real    Par = P;
+  double    x[2] = {aXmin, aXmax}, y[2] = {aYmin, aYmax}, z[2] = {aZmin, aZmax};
+  int i = 0, j = 0, k = 0;
+  double    Par = P;
   for (i = 0; i < 2; i++)
   {
     for (j = 0; j < 2; j++)
     {
       for (k = 0; k < 2; k++)
       {
-        Standard_Real X = fabs(x[i] - L.Location().X());
-        Standard_Real Y = fabs(y[j] - L.Location().Y());
-        Standard_Real Z = fabs(z[k] - L.Location().Z());
+        double X = fabs(x[i] - L.Location().X());
+        double Y = fabs(y[j] - L.Location().Y());
+        double Z = fabs(z[k] - L.Location().Z());
         if (X < 1.e+20 && Y < 1.e+20 && Z < 1.e+20)
         {
           gp_Pnt        aP(x[i], y[j], z[k]);
-          Standard_Real par = ElCLib::Parameter(L, aP);
+          double par = ElCLib::Parameter(L, aP);
           if (par > Par)
             Par = par;
         }
@@ -565,20 +565,20 @@ Standard_Real GetAddToParam(const gp_Lin& L, const Standard_Real P, const Bnd_Bo
 
 //=================================================================================================
 
-Standard_Boolean FaceNormal(const TopoDS_Face&  aF,
-                            const Standard_Real U,
-                            const Standard_Real V,
+bool FaceNormal(const TopoDS_Face&  aF,
+                            const double U,
+                            const double V,
                             gp_Dir&             aDN)
 {
   gp_Pnt               aPnt;
   gp_Vec               aD1U, aD1V, aN;
-  Handle(Geom_Surface) aS;
+  occ::handle<Geom_Surface> aS;
 
   aS = BRep_Tool::Surface(aF);
   aS->D1(U, V, aPnt, aD1U, aD1V);
   aN = aD1U.Crossed(aD1V);
   if (aN.Magnitude() <= gp::Resolution())
-    return Standard_False;
+    return false;
 
   aN.Normalize();
   aDN.SetXYZ(aN.XYZ());
@@ -586,36 +586,36 @@ Standard_Boolean FaceNormal(const TopoDS_Face&  aF,
   {
     aDN.Reverse();
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Boolean GetNormalOnFaceBound(const TopoDS_Edge&  E,
+static bool GetNormalOnFaceBound(const TopoDS_Edge&  E,
                                              const TopoDS_Face&  F,
-                                             const Standard_Real param,
+                                             const double param,
                                              gp_Dir&             OutDir)
 {
-  Standard_Real f = 0, l = 0;
+  double f = 0, l = 0;
 
   gp_Pnt2d             P2d;
-  Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface(E, F, f, l);
+  occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (c2d.IsNull())
-    return Standard_False;
+    return false;
   if (param < f || param > l)
-    return Standard_False;
+    return false;
   c2d->D0(param, P2d);
   if (!FaceNormal(F, P2d.X(), P2d.Y(), OutDir))
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 //=================================================================================================
 
-static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
+static int GetTransi(const TopoDS_Face&                 f1,
                                   const TopoDS_Face&                 f2,
                                   const TopoDS_Edge&                 e,
-                                  const Standard_Real                param,
+                                  const double                param,
                                   const gp_Lin&                      L,
                                   IntCurveSurface_TransitionOnCurve& trans)
 {
@@ -641,7 +641,7 @@ static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
 
   if (nf1.IsParallel(nf2, Precision::Angular()))
   {
-    Standard_Real angD = nf1.Dot(LDir);
+    double angD = nf1.Dot(LDir);
     if (std::abs(angD) < Precision::Angular())
       return -1;
     else if (angD > 0)
@@ -656,8 +656,8 @@ static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
   gp_Dir ProjL = N.XYZ() ^ LDir.XYZ() ^ N.XYZ(); //proj LDir on the plane defined by nf1/nf2 directions
   // clang-format on
 
-  Standard_Real fAD = nf1.Dot(ProjL);
-  Standard_Real sAD = nf2.Dot(ProjL);
+  double fAD = nf1.Dot(ProjL);
+  double sAD = nf2.Dot(ProjL);
 
   if (fAD < -Precision::Angular() && sAD < -Precision::Angular())
     trans = IntCurveSurface_In;
@@ -670,7 +670,7 @@ static Standard_Integer GetTransi(const TopoDS_Face&                 f1,
 
 //=================================================================================================
 
-static void Trans(const Standard_Real parmin, IntCurveSurface_TransitionOnCurve& tran, int& state)
+static void Trans(const double parmin, IntCurveSurface_TransitionOnCurve& tran, int& state)
 {
   // if parmin is negative we should reverse transition
   if (parmin < 0)

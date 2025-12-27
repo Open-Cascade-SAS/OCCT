@@ -24,8 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_UniversalPair, StepKinematics_LowOrderKinematicPair)
-
 //! Representation of STEP entity UniversalPair
 class StepKinematics_UniversalPair : public StepKinematics_LowOrderKinematicPair
 {
@@ -35,33 +33,33 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-    const Standard_Boolean                       hasItemDefinedTransformation_Description,
-    const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-    const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-    const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-    const Standard_Boolean                       theLowOrderKinematicPair_TX,
-    const Standard_Boolean                       theLowOrderKinematicPair_TY,
-    const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-    const Standard_Boolean                       theLowOrderKinematicPair_RX,
-    const Standard_Boolean                       theLowOrderKinematicPair_RY,
-    const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-    const Standard_Boolean                       hasInputSkewAngle,
-    const Standard_Real                          theInputSkewAngle);
+    const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+    const bool                       hasItemDefinedTransformation_Description,
+    const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+    const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+    const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+    const bool                       theLowOrderKinematicPair_TX,
+    const bool                       theLowOrderKinematicPair_TY,
+    const bool                       theLowOrderKinematicPair_TZ,
+    const bool                       theLowOrderKinematicPair_RX,
+    const bool                       theLowOrderKinematicPair_RY,
+    const bool                       theLowOrderKinematicPair_RZ,
+    const bool                       hasInputSkewAngle,
+    const double                          theInputSkewAngle);
 
   //! Returns field InputSkewAngle
-  Standard_EXPORT Standard_Real InputSkewAngle() const;
+  Standard_EXPORT double InputSkewAngle() const;
   //! Sets field InputSkewAngle
-  Standard_EXPORT void SetInputSkewAngle(const Standard_Real theInputSkewAngle);
+  Standard_EXPORT void SetInputSkewAngle(const double theInputSkewAngle);
   //! Returns True if optional field InputSkewAngle is defined
-  Standard_EXPORT Standard_Boolean HasInputSkewAngle() const;
+  Standard_EXPORT bool HasInputSkewAngle() const;
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_UniversalPair, StepKinematics_LowOrderKinematicPair)
 
 private:
-  Standard_Real    myInputSkewAngle;  //!< optional
-  Standard_Boolean defInputSkewAngle; //!< flag "is InputSkewAngle defined"
+  double    myInputSkewAngle;  //!< optional
+  bool defInputSkewAngle; //!< flag "is InputSkewAngle defined"
 };
 #endif // _StepKinematics_UniversalPair_HeaderFile_

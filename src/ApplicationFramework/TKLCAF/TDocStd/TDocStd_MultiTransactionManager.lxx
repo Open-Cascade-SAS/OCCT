@@ -15,14 +15,14 @@
 
 //=================================================================================================
 
-inline Standard_Integer TDocStd_MultiTransactionManager::GetUndoLimit() const
+inline int TDocStd_MultiTransactionManager::GetUndoLimit() const
 {
   return myUndoLimit;
 }
 
 //=================================================================================================
 
-inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
+inline const NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>>& TDocStd_MultiTransactionManager::
   GetAvailableUndos() const
 {
   return myUndos;
@@ -30,7 +30,7 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
 
 //=================================================================================================
 
-inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager::
+inline const NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>>& TDocStd_MultiTransactionManager::
   GetAvailableRedos() const
 {
   return myRedos;
@@ -38,21 +38,21 @@ inline const TDocStd_SequenceOfApplicationDelta& TDocStd_MultiTransactionManager
 
 //=================================================================================================
 
-inline const TDocStd_SequenceOfDocument& TDocStd_MultiTransactionManager::Documents() const
+inline const NCollection_Sequence<occ::handle<TDocStd_Document>>& TDocStd_MultiTransactionManager::Documents() const
 {
   return myDocuments;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TDocStd_MultiTransactionManager::IsNestedTransactionMode() const
+inline bool TDocStd_MultiTransactionManager::IsNestedTransactionMode() const
 {
   return myIsNestedTransactionMode;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean TDocStd_MultiTransactionManager::HasOpenCommand() const
+inline bool TDocStd_MultiTransactionManager::HasOpenCommand() const
 {
   return myOpenTransaction;
 }
@@ -62,7 +62,7 @@ inline Standard_Boolean TDocStd_MultiTransactionManager::HasOpenCommand() const
 // purpose  : returns True if changes allowed only inside transactions
 //=======================================================================
 
-inline Standard_Boolean TDocStd_MultiTransactionManager::ModificationMode() const
+inline bool TDocStd_MultiTransactionManager::ModificationMode() const
 {
   return myOnlyTransactionModification;
 }

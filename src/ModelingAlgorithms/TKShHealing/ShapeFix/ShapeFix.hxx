@@ -52,33 +52,33 @@ public:
   //! been processed. The passed progress indicator allows user
   //! to consult the current progress stage and abort algorithm
   //! if needed.
-  Standard_EXPORT static Standard_Boolean SameParameter(
+  Standard_EXPORT static bool SameParameter(
     const TopoDS_Shape&                            shape,
-    const Standard_Boolean                         enforce,
-    const Standard_Real                            preci       = 0.0,
+    const bool                         enforce,
+    const double                            preci       = 0.0,
     const Message_ProgressRange&                   theProgress = Message_ProgressRange(),
-    const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg   = 0);
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg   = 0);
 
   //! Runs EncodeRegularity from BRepLib taking into account
   //! shared components of assemblies, so that each component
   //! is processed only once
   Standard_EXPORT static void EncodeRegularity(const TopoDS_Shape& shape,
-                                               const Standard_Real tolang = 1.0e-10);
+                                               const double tolang = 1.0e-10);
 
   //! Removes edges which are less than given tolerance from shape
   //! with help of ShapeFix_Wire::FixSmall()
   Standard_EXPORT static TopoDS_Shape RemoveSmallEdges(TopoDS_Shape&               shape,
-                                                       const Standard_Real         Tolerance,
-                                                       Handle(ShapeBuild_ReShape)& context);
+                                                       const double         Tolerance,
+                                                       occ::handle<ShapeBuild_ReShape>& context);
 
   //! Fix position of the vertices having tolerance more tnan specified one.;
-  Standard_EXPORT static Standard_Boolean FixVertexPosition(
+  Standard_EXPORT static bool FixVertexPosition(
     TopoDS_Shape&                     theshape,
-    const Standard_Real               theTolerance,
-    const Handle(ShapeBuild_ReShape)& thecontext);
+    const double               theTolerance,
+    const occ::handle<ShapeBuild_ReShape>& thecontext);
 
   //! Calculate size of least edge;
-  Standard_EXPORT static Standard_Real LeastEdgeSize(TopoDS_Shape& theshape);
+  Standard_EXPORT static double LeastEdgeSize(TopoDS_Shape& theshape);
 };
 
 #endif // _ShapeFix_HeaderFile

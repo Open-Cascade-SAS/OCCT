@@ -27,28 +27,28 @@ Geom_Transformation::Geom_Transformation(const gp_Trsf& T)
 {
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Copy() const
+occ::handle<Geom_Transformation> Geom_Transformation::Copy() const
 {
 
-  Handle(Geom_Transformation) T;
+  occ::handle<Geom_Transformation> T;
   T = new Geom_Transformation(gpTrsf);
   return T;
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Inverted() const
+occ::handle<Geom_Transformation> Geom_Transformation::Inverted() const
 {
 
   return new Geom_Transformation(gpTrsf.Inverted());
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Multiplied(
-  const Handle(Geom_Transformation)& Other) const
+occ::handle<Geom_Transformation> Geom_Transformation::Multiplied(
+  const occ::handle<Geom_Transformation>& Other) const
 {
 
   return new Geom_Transformation(gpTrsf.Multiplied(Other->Trsf()));
 }
 
-Handle(Geom_Transformation) Geom_Transformation::Powered(const Standard_Integer N) const
+occ::handle<Geom_Transformation> Geom_Transformation::Powered(const int N) const
 {
 
   gp_Trsf T = gpTrsf;
@@ -56,13 +56,13 @@ Handle(Geom_Transformation) Geom_Transformation::Powered(const Standard_Integer 
   return new Geom_Transformation(T);
 }
 
-void Geom_Transformation::PreMultiply(const Handle(Geom_Transformation)& Other)
+void Geom_Transformation::PreMultiply(const occ::handle<Geom_Transformation>& Other)
 {
 
   gpTrsf.PreMultiply(Other->Trsf());
 }
 
-void Geom_Transformation::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Transformation::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &gpTrsf)
 }

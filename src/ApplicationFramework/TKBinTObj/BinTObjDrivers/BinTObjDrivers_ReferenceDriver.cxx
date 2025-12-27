@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ReferenceDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinTObjDrivers_ReferenceDriver::BinTObjDrivers_ReferenceDriver(
-  const Handle(Message_Messenger)& theMessageDriver)
+  const occ::handle<Message_Messenger>& theMessageDriver)
     : BinMDF_ADriver(theMessageDriver, NULL)
 {
 }
@@ -38,7 +38,7 @@ BinTObjDrivers_ReferenceDriver::BinTObjDrivers_ReferenceDriver(
 // purpose  : Creates a new attribute
 //=======================================================================
 
-Handle(TDF_Attribute) BinTObjDrivers_ReferenceDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinTObjDrivers_ReferenceDriver::NewEmpty() const
 {
   return new TObj_TReference;
 }
@@ -49,28 +49,28 @@ Handle(TDF_Attribute) BinTObjDrivers_ReferenceDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                       const Handle(TDF_Attribute)& theTarget,
+bool BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                       const occ::handle<TDF_Attribute>& theTarget,
                                                        BinObjMgt_RRelocationTable&) const
 {
   // master label
   TDF_Label        aMasterLabel;
-  Handle(TDF_Data) aDS = theTarget->Label().Data();
+  occ::handle<TDF_Data> aDS = theTarget->Label().Data();
   if (!theSource.GetLabel(aDS, aMasterLabel))
-    return Standard_False;
+    return false;
 
   // isSameDoc flag
-  Standard_Boolean isSameDoc = Standard_False;
+  bool isSameDoc = false;
   if (!(theSource >> isSameDoc))
-    return Standard_False;
+    return false;
 
   // DS for referred label
   if (!isSameDoc)
   {
     TCollection_AsciiString aName;
     if (!(theSource >> aName))
-      return Standard_False;
-    Handle(TObj_Model) aModel = TObj_Assistant::FindModel(aName.ToCString());
+      return false;
+    occ::handle<TObj_Model> aModel = TObj_Assistant::FindModel(aName.ToCString());
     if (aModel.IsNull())
     {
       TCollection_AsciiString anEntry;
@@ -78,17 +78,17 @@ Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persisten
       myMessageDriver->Send(TCollection_ExtendedString("TObj_TReference retrieval: ")
                               + "wrong model ID " + aName + ", entry " + anEntry,
                             Message_Fail);
-      return Standard_False;
+      return false;
     }
     aDS = aModel->GetLabel().Data();
   }
   // referred label
   TDF_Label aLabel;
   if (!theSource.GetLabel(aDS, aLabel))
-    return Standard_False;
+    return false;
 
   // set reference attribute fields
-  Handle(TObj_TReference) aTarget = Handle(TObj_TReference)::DownCast(theTarget);
+  occ::handle<TObj_TReference> aTarget = occ::down_cast<TObj_TReference>(theTarget);
   aTarget->Set(aLabel, aMasterLabel);
 
   return !aLabel.IsNull() && !aMasterLabel.IsNull();
@@ -102,20 +102,20 @@ Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste(const BinObjMgt_Persisten
 //           as entry in model-container
 //=======================================================================
 
-void BinTObjDrivers_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            BinObjMgt_Persistent&        theTarget,
-                                           BinObjMgt_SRelocationTable&) const
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TObj_TReference) aSource = Handle(TObj_TReference)::DownCast(theSource);
+  occ::handle<TObj_TReference> aSource = occ::down_cast<TObj_TReference>(theSource);
 
-  Handle(TObj_Object) aLObject = aSource->Get();
+  occ::handle<TObj_Object> aLObject = aSource->Get();
   if (aLObject.IsNull())
     return;
 
   // labels
   TDF_Label        aLabel       = aLObject->GetLabel();
   TDF_Label        aMasterLabel = aSource->GetMasterLabel();
-  Standard_Boolean isSameDoc    = (aLabel.Root() == aMasterLabel.Root());
+  bool isSameDoc    = (aLabel.Root() == aMasterLabel.Root());
 
   // store data
   // 1 - the master label;
@@ -125,7 +125,7 @@ void BinTObjDrivers_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSourc
   if (!isSameDoc)
   {
     TCollection_AsciiString aName;
-    Handle(TObj_Model)      aModel = aLObject->GetModel();
+    occ::handle<TObj_Model>      aModel = aLObject->GetModel();
     aName                          = TCollection_AsciiString(aModel->GetModelName()->String());
     theTarget << aName;
   }

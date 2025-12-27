@@ -23,60 +23,60 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_LowOrderKinematicPairWithRange,
 
 StepKinematics_LowOrderKinematicPairWithRange::StepKinematics_LowOrderKinematicPairWithRange()
 {
-  defLowerLimitActualRotationX    = Standard_False;
-  defUpperLimitActualRotationX    = Standard_False;
-  defLowerLimitActualRotationY    = Standard_False;
-  defUpperLimitActualRotationY    = Standard_False;
-  defLowerLimitActualRotationZ    = Standard_False;
-  defUpperLimitActualRotationZ    = Standard_False;
-  defLowerLimitActualTranslationX = Standard_False;
-  defUpperLimitActualTranslationX = Standard_False;
-  defLowerLimitActualTranslationY = Standard_False;
-  defUpperLimitActualTranslationY = Standard_False;
-  defLowerLimitActualTranslationZ = Standard_False;
-  defUpperLimitActualTranslationZ = Standard_False;
+  defLowerLimitActualRotationX    = false;
+  defUpperLimitActualRotationX    = false;
+  defLowerLimitActualRotationY    = false;
+  defUpperLimitActualRotationY    = false;
+  defLowerLimitActualRotationZ    = false;
+  defUpperLimitActualRotationZ    = false;
+  defLowerLimitActualTranslationX = false;
+  defUpperLimitActualTranslationX = false;
+  defLowerLimitActualTranslationY = false;
+  defUpperLimitActualTranslationY = false;
+  defLowerLimitActualTranslationZ = false;
+  defUpperLimitActualTranslationZ = false;
 }
 
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Standard_Boolean                       theLowOrderKinematicPair_TX,
-  const Standard_Boolean                       theLowOrderKinematicPair_TY,
-  const Standard_Boolean                       theLowOrderKinematicPair_TZ,
-  const Standard_Boolean                       theLowOrderKinematicPair_RX,
-  const Standard_Boolean                       theLowOrderKinematicPair_RY,
-  const Standard_Boolean                       theLowOrderKinematicPair_RZ,
-  const Standard_Boolean                       hasLowerLimitActualRotationX,
-  const Standard_Real                          theLowerLimitActualRotationX,
-  const Standard_Boolean                       hasUpperLimitActualRotationX,
-  const Standard_Real                          theUpperLimitActualRotationX,
-  const Standard_Boolean                       hasLowerLimitActualRotationY,
-  const Standard_Real                          theLowerLimitActualRotationY,
-  const Standard_Boolean                       hasUpperLimitActualRotationY,
-  const Standard_Real                          theUpperLimitActualRotationY,
-  const Standard_Boolean                       hasLowerLimitActualRotationZ,
-  const Standard_Real                          theLowerLimitActualRotationZ,
-  const Standard_Boolean                       hasUpperLimitActualRotationZ,
-  const Standard_Real                          theUpperLimitActualRotationZ,
-  const Standard_Boolean                       hasLowerLimitActualTranslationX,
-  const Standard_Real                          theLowerLimitActualTranslationX,
-  const Standard_Boolean                       hasUpperLimitActualTranslationX,
-  const Standard_Real                          theUpperLimitActualTranslationX,
-  const Standard_Boolean                       hasLowerLimitActualTranslationY,
-  const Standard_Real                          theLowerLimitActualTranslationY,
-  const Standard_Boolean                       hasUpperLimitActualTranslationY,
-  const Standard_Real                          theUpperLimitActualTranslationY,
-  const Standard_Boolean                       hasLowerLimitActualTranslationZ,
-  const Standard_Real                          theLowerLimitActualTranslationZ,
-  const Standard_Boolean                       hasUpperLimitActualTranslationZ,
-  const Standard_Real                          theUpperLimitActualTranslationZ)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const bool                       theLowOrderKinematicPair_TX,
+  const bool                       theLowOrderKinematicPair_TY,
+  const bool                       theLowOrderKinematicPair_TZ,
+  const bool                       theLowOrderKinematicPair_RX,
+  const bool                       theLowOrderKinematicPair_RY,
+  const bool                       theLowOrderKinematicPair_RZ,
+  const bool                       hasLowerLimitActualRotationX,
+  const double                          theLowerLimitActualRotationX,
+  const bool                       hasUpperLimitActualRotationX,
+  const double                          theUpperLimitActualRotationX,
+  const bool                       hasLowerLimitActualRotationY,
+  const double                          theLowerLimitActualRotationY,
+  const bool                       hasUpperLimitActualRotationY,
+  const double                          theUpperLimitActualRotationY,
+  const bool                       hasLowerLimitActualRotationZ,
+  const double                          theLowerLimitActualRotationZ,
+  const bool                       hasUpperLimitActualRotationZ,
+  const double                          theUpperLimitActualRotationZ,
+  const bool                       hasLowerLimitActualTranslationX,
+  const double                          theLowerLimitActualTranslationX,
+  const bool                       hasUpperLimitActualTranslationX,
+  const double                          theUpperLimitActualTranslationX,
+  const bool                       hasLowerLimitActualTranslationY,
+  const double                          theLowerLimitActualTranslationY,
+  const bool                       hasUpperLimitActualTranslationY,
+  const double                          theUpperLimitActualTranslationY,
+  const bool                       hasLowerLimitActualTranslationZ,
+  const double                          theLowerLimitActualTranslationZ,
+  const bool                       hasUpperLimitActualTranslationZ,
+  const double                          theUpperLimitActualTranslationZ)
 {
   StepKinematics_LowOrderKinematicPair::Init(theRepresentationItem_Name,
                                              theItemDefinedTransformation_Name,
@@ -191,7 +191,7 @@ void StepKinematics_LowOrderKinematicPairWithRange::Init(
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationX() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationX() const
 {
   return myLowerLimitActualRotationX;
 }
@@ -199,21 +199,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualRotationX(
-  const Standard_Real theLowerLimitActualRotationX)
+  const double theLowerLimitActualRotationX)
 {
   myLowerLimitActualRotationX = theLowerLimitActualRotationX;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationX() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationX() const
 {
   return defLowerLimitActualRotationX;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationX() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationX() const
 {
   return myUpperLimitActualRotationX;
 }
@@ -221,21 +221,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualRotationX(
-  const Standard_Real theUpperLimitActualRotationX)
+  const double theUpperLimitActualRotationX)
 {
   myUpperLimitActualRotationX = theUpperLimitActualRotationX;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationX() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationX() const
 {
   return defUpperLimitActualRotationX;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationY() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationY() const
 {
   return myLowerLimitActualRotationY;
 }
@@ -243,21 +243,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualRotationY(
-  const Standard_Real theLowerLimitActualRotationY)
+  const double theLowerLimitActualRotationY)
 {
   myLowerLimitActualRotationY = theLowerLimitActualRotationY;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationY() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationY() const
 {
   return defLowerLimitActualRotationY;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationY() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationY() const
 {
   return myUpperLimitActualRotationY;
 }
@@ -265,21 +265,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualRotationY(
-  const Standard_Real theUpperLimitActualRotationY)
+  const double theUpperLimitActualRotationY)
 {
   myUpperLimitActualRotationY = theUpperLimitActualRotationY;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationY() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationY() const
 {
   return defUpperLimitActualRotationY;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationZ() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRotationZ() const
 {
   return myLowerLimitActualRotationZ;
 }
@@ -287,21 +287,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualRotationZ(
-  const Standard_Real theLowerLimitActualRotationZ)
+  const double theLowerLimitActualRotationZ)
 {
   myLowerLimitActualRotationZ = theLowerLimitActualRotationZ;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationZ() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualRotationZ() const
 {
   return defLowerLimitActualRotationZ;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationZ() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRotationZ() const
 {
   return myUpperLimitActualRotationZ;
 }
@@ -309,21 +309,21 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualRot
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualRotationZ(
-  const Standard_Real theUpperLimitActualRotationZ)
+  const double theUpperLimitActualRotationZ)
 {
   myUpperLimitActualRotationZ = theUpperLimitActualRotationZ;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationZ() const
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualRotationZ() const
 {
   return defUpperLimitActualRotationZ;
 }
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationX() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationX() const
 {
   return myLowerLimitActualTranslationX;
 }
@@ -331,14 +331,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualTranslationX(
-  const Standard_Real theLowerLimitActualTranslationX)
+  const double theLowerLimitActualTranslationX)
 {
   myLowerLimitActualTranslationX = theLowerLimitActualTranslationX;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationX()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationX()
   const
 {
   return defLowerLimitActualTranslationX;
@@ -346,7 +346,7 @@ Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitAct
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationX() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationX() const
 {
   return myUpperLimitActualTranslationX;
 }
@@ -354,14 +354,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualTranslationX(
-  const Standard_Real theUpperLimitActualTranslationX)
+  const double theUpperLimitActualTranslationX)
 {
   myUpperLimitActualTranslationX = theUpperLimitActualTranslationX;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationX()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationX()
   const
 {
   return defUpperLimitActualTranslationX;
@@ -369,7 +369,7 @@ Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitAct
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationY() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationY() const
 {
   return myLowerLimitActualTranslationY;
 }
@@ -377,14 +377,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualTranslationY(
-  const Standard_Real theLowerLimitActualTranslationY)
+  const double theLowerLimitActualTranslationY)
 {
   myLowerLimitActualTranslationY = theLowerLimitActualTranslationY;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationY()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationY()
   const
 {
   return defLowerLimitActualTranslationY;
@@ -392,7 +392,7 @@ Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitAct
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationY() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationY() const
 {
   return myUpperLimitActualTranslationY;
 }
@@ -400,14 +400,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualTranslationY(
-  const Standard_Real theUpperLimitActualTranslationY)
+  const double theUpperLimitActualTranslationY)
 {
   myUpperLimitActualTranslationY = theUpperLimitActualTranslationY;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationY()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationY()
   const
 {
   return defUpperLimitActualTranslationY;
@@ -415,7 +415,7 @@ Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitAct
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationZ() const
+double StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTranslationZ() const
 {
   return myLowerLimitActualTranslationZ;
 }
@@ -423,14 +423,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::LowerLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetLowerLimitActualTranslationZ(
-  const Standard_Real theLowerLimitActualTranslationZ)
+  const double theLowerLimitActualTranslationZ)
 {
   myLowerLimitActualTranslationZ = theLowerLimitActualTranslationZ;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationZ()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitActualTranslationZ()
   const
 {
   return defLowerLimitActualTranslationZ;
@@ -438,7 +438,7 @@ Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasLowerLimitAct
 
 //=================================================================================================
 
-Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationZ() const
+double StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTranslationZ() const
 {
   return myUpperLimitActualTranslationZ;
 }
@@ -446,14 +446,14 @@ Standard_Real StepKinematics_LowOrderKinematicPairWithRange::UpperLimitActualTra
 //=================================================================================================
 
 void StepKinematics_LowOrderKinematicPairWithRange::SetUpperLimitActualTranslationZ(
-  const Standard_Real theUpperLimitActualTranslationZ)
+  const double theUpperLimitActualTranslationZ)
 {
   myUpperLimitActualTranslationZ = theUpperLimitActualTranslationZ;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationZ()
+bool StepKinematics_LowOrderKinematicPairWithRange::HasUpperLimitActualTranslationZ()
   const
 {
   return defUpperLimitActualTranslationZ;

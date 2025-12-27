@@ -21,9 +21,11 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -38,15 +40,15 @@ Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
 //=================================================================================================
 
 Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
-  const Handle(Geom2d_BoundedCurve)& BasisCurve,
+  const occ::handle<Geom2d_BoundedCurve>& BasisCurve,
   const Convert_ParameterisationType Parameterisation)
     : myTol(Precision::Confusion()),
       myType(Parameterisation)
 {
-  Handle(Geom2d_BSplineCurve) Bs = Handle(Geom2d_BSplineCurve)::DownCast(BasisCurve);
+  occ::handle<Geom2d_BSplineCurve> Bs = occ::down_cast<Geom2d_BSplineCurve>(BasisCurve);
   if (!Bs.IsNull())
   {
-    myCurve = Handle(Geom2d_BSplineCurve)::DownCast(BasisCurve->Copy());
+    myCurve = occ::down_cast<Geom2d_BSplineCurve>(BasisCurve->Copy());
   }
   else
   {
@@ -56,16 +58,16 @@ Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
 
 //=================================================================================================
 
-Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::Add(
-  const Handle(Geom2d_BoundedCurve)& NewCurve,
-  const Standard_Real                Tolerance,
-  const Standard_Boolean             After)
+bool Geom2dConvert_CompCurveToBSplineCurve::Add(
+  const occ::handle<Geom2d_BoundedCurve>& NewCurve,
+  const double                Tolerance,
+  const bool             After)
 {
   // conversion
-  Handle(Geom2d_BSplineCurve) Bs = Handle(Geom2d_BSplineCurve)::DownCast(NewCurve);
+  occ::handle<Geom2d_BSplineCurve> Bs = occ::down_cast<Geom2d_BSplineCurve>(NewCurve);
   if (!Bs.IsNull())
   {
-    Bs = Handle(Geom2d_BSplineCurve)::DownCast(NewCurve->Copy());
+    Bs = occ::down_cast<Geom2d_BSplineCurve>(NewCurve->Copy());
   }
   else
   {
@@ -74,27 +76,27 @@ Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::Add(
   if (myCurve.IsNull())
   {
     myCurve = Bs;
-    return Standard_True;
+    return true;
   }
 
   myTol                      = Tolerance;
-  const Standard_Real aSqTol = Tolerance * Tolerance;
+  const double aSqTol = Tolerance * Tolerance;
 
-  Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
-  Standard_Real    d1 = myCurve->Pole(1).SquareDistance(Bs->Pole(1));
-  Standard_Real    d2 = myCurve->Pole(1).SquareDistance(Bs->Pole(LBs));
+  int LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
+  double    d1 = myCurve->Pole(1).SquareDistance(Bs->Pole(1));
+  double    d2 = myCurve->Pole(1).SquareDistance(Bs->Pole(LBs));
 
-  Standard_Boolean isBeforeReversed =
+  bool isBeforeReversed =
     (myCurve->Pole(1).SquareDistance(Bs->Pole(1)) < aSqTol) && (d1 < d2);
-  Standard_Boolean isBefore =
+  bool isBefore =
     (myCurve->Pole(1).SquareDistance(Bs->Pole(LBs)) < aSqTol) || isBeforeReversed;
 
   d1 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(1));
   d2 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs));
 
-  Standard_Boolean isAfterReversed =
+  bool isAfterReversed =
     (myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs)) < aSqTol) && (d2 < d1);
-  Standard_Boolean isAfter =
+  bool isAfter =
     (myCurve->Pole(LCb).SquareDistance(Bs->Pole(1)) < aSqTol) || isAfterReversed;
 
   // myCurve and NewCurve together form a closed curve
@@ -102,11 +104,11 @@ Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::Add(
   {
     if (After)
     {
-      isBefore = Standard_False;
+      isBefore = false;
     }
     else
     {
-      isAfter = Standard_False;
+      isAfter = false;
     }
   }
   if (isAfter)
@@ -115,8 +117,8 @@ Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::Add(
     {
       Bs->Reverse();
     }
-    Add(myCurve, Bs, Standard_True);
-    return Standard_True;
+    Add(myCurve, Bs, true);
+    return true;
   }
   else if (isBefore)
   {
@@ -124,21 +126,21 @@ Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::Add(
     {
       Bs->Reverse();
     }
-    Add(Bs, myCurve, Standard_False);
-    return Standard_True;
+    Add(Bs, myCurve, false);
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void Geom2dConvert_CompCurveToBSplineCurve::Add(Handle(Geom2d_BSplineCurve)& FirstCurve,
-                                                Handle(Geom2d_BSplineCurve)& SecondCurve,
-                                                const Standard_Boolean       After)
+void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>& FirstCurve,
+                                                occ::handle<Geom2d_BSplineCurve>& SecondCurve,
+                                                const bool       After)
 {
   // Harmonisation des degres.
-  Standard_Integer Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
+  int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
     FirstCurve->IncreaseDegree(Deg);
@@ -149,15 +151,15 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(Handle(Geom2d_BSplineCurve)& Fir
   }
 
   // Declarationd
-  Standard_Real           L1, L2, U_de_raccord;
-  Standard_Integer        ii, jj;
-  Standard_Real           Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
-  Standard_Integer        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
-  Standard_Integer        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
-  TColStd_Array1OfReal    Noeuds(1, NbK1 + NbK2 - 1);
-  TColgp_Array1OfPnt2d    Poles(1, NbP1 + NbP2 - 1);
-  TColStd_Array1OfReal    Poids(1, NbP1 + NbP2 - 1);
-  TColStd_Array1OfInteger Mults(1, NbK1 + NbK2 - 1);
+  double           L1, L2, U_de_raccord;
+  int        ii, jj;
+  double           Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
+  int        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
+  int        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
+  NCollection_Array1<double>    Noeuds(1, NbK1 + NbK2 - 1);
+  NCollection_Array1<gp_Pnt2d>    Poles(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<double>    Poids(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<int> Mults(1, NbK1 + NbK2 - 1);
 
   // Ratio de reparametrisation (C1 si possible)
   L1 = FirstCurve->DN(FirstCurve->LastParameter(), 1).Magnitude();
@@ -227,8 +229,8 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(Handle(Geom2d_BSplineCurve)& Fir
   myCurve = new (Geom2d_BSplineCurve)(Poles, Poids, Noeuds, Mults, Deg);
 
   // Reduction eventuelle de la multiplicite
-  Standard_Boolean Ok = Standard_True;
-  Standard_Integer M  = Mults(NbK1);
+  bool Ok = true;
+  int M  = Mults(NbK1);
   while ((M > 0) && Ok)
   {
     M--;
@@ -238,7 +240,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(Handle(Geom2d_BSplineCurve)& Fir
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) Geom2dConvert_CompCurveToBSplineCurve::BSplineCurve() const
+occ::handle<Geom2d_BSplineCurve> Geom2dConvert_CompCurveToBSplineCurve::BSplineCurve() const
 {
   return myCurve;
 }

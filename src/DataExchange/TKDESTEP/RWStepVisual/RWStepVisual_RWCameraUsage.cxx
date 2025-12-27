@@ -21,10 +21,10 @@
 
 RWStepVisual_RWCameraUsage::RWStepVisual_RWCameraUsage() {}
 
-void RWStepVisual_RWCameraUsage::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepVisual_CameraUsage)&  ent) const
+void RWStepVisual_RWCameraUsage::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepVisual_CameraUsage>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWCameraUsage::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : mappingOrigin ---
 
-  Handle(StepRepr_RepresentationItem) aMappingOrigin;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepRepr_RepresentationItem> aMappingOrigin;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "mapping_origin",
@@ -45,8 +45,8 @@ void RWStepVisual_RWCameraUsage::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- inherited field : mappedRepresentation ---
 
-  Handle(StepRepr_Representation) aMappedRepresentation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepRepr_Representation> aMappedRepresentation;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "mapped_representation",
@@ -60,7 +60,7 @@ void RWStepVisual_RWCameraUsage::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWStepVisual_RWCameraUsage::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepVisual_CameraUsage)& ent) const
+                                           const occ::handle<StepVisual_CameraUsage>& ent) const
 {
 
   // --- inherited field mappingOrigin ---
@@ -72,7 +72,7 @@ void RWStepVisual_RWCameraUsage::WriteStep(StepData_StepWriter&                 
   SW.Send(ent->MappedRepresentation());
 }
 
-void RWStepVisual_RWCameraUsage::Share(const Handle(StepVisual_CameraUsage)& ent,
+void RWStepVisual_RWCameraUsage::Share(const occ::handle<StepVisual_CameraUsage>& ent,
                                        Interface_EntityIterator&             iter) const
 {
 

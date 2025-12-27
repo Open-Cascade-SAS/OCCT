@@ -16,13 +16,16 @@
 
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_PointOnHatching.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 //=================================================================================================
 
 HatchGen_Domain::HatchGen_Domain()
-    : myHasFirstPoint(Standard_False),
-      myHasSecondPoint(Standard_False)
+    : myHasFirstPoint(false),
+      myHasSecondPoint(false)
 {
 }
 
@@ -30,34 +33,34 @@ HatchGen_Domain::HatchGen_Domain()
 
 HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P1,
                                  const HatchGen_PointOnHatching& P2)
-    : myHasFirstPoint(Standard_True),
+    : myHasFirstPoint(true),
       myFirstPoint(P1),
-      myHasSecondPoint(Standard_True),
+      myHasSecondPoint(true),
       mySecondPoint(P2)
 {
 }
 
 //=================================================================================================
 
-HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P, const Standard_Boolean First)
+HatchGen_Domain::HatchGen_Domain(const HatchGen_PointOnHatching& P, const bool First)
 {
   if (First)
   {
-    myHasFirstPoint  = Standard_True;
-    myHasSecondPoint = Standard_False;
+    myHasFirstPoint  = true;
+    myHasSecondPoint = false;
     myFirstPoint     = P;
   }
   else
   {
-    myHasFirstPoint  = Standard_False;
-    myHasSecondPoint = Standard_True;
+    myHasFirstPoint  = false;
+    myHasSecondPoint = true;
     mySecondPoint    = P;
   }
 }
 
 //=================================================================================================
 
-void HatchGen_Domain::Dump(const Standard_Integer Index) const
+void HatchGen_Domain::Dump(const int Index) const
 {
   std::cout << "=== Domain ";
   if (Index > 0)

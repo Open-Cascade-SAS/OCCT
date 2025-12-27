@@ -20,9 +20,9 @@
 
 //=================================================================================================
 
-void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_Surface)& S,
-                                const Standard_Real              U,
-                                const Standard_Real              V,
+void LProp3d_SurfaceTool::Value(const occ::handle<Adaptor3d_Surface>& S,
+                                const double              U,
+                                const double              V,
                                 gp_Pnt&                          P)
 {
   P = S->Value(U, V);
@@ -30,9 +30,9 @@ void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_Surface)& S,
 
 //=================================================================================================
 
-void LProp3d_SurfaceTool::D1(const Handle(Adaptor3d_Surface)& S,
-                             const Standard_Real              U,
-                             const Standard_Real              V,
+void LProp3d_SurfaceTool::D1(const occ::handle<Adaptor3d_Surface>& S,
+                             const double              U,
+                             const double              V,
                              gp_Pnt&                          P,
                              gp_Vec&                          D1U,
                              gp_Vec&                          D1V)
@@ -42,9 +42,9 @@ void LProp3d_SurfaceTool::D1(const Handle(Adaptor3d_Surface)& S,
 
 //=================================================================================================
 
-void LProp3d_SurfaceTool::D2(const Handle(Adaptor3d_Surface)& S,
-                             const Standard_Real              U,
-                             const Standard_Real              V,
+void LProp3d_SurfaceTool::D2(const occ::handle<Adaptor3d_Surface>& S,
+                             const double              U,
+                             const double              V,
                              gp_Pnt&                          P,
                              gp_Vec&                          D1U,
                              gp_Vec&                          D1V,
@@ -57,18 +57,18 @@ void LProp3d_SurfaceTool::D2(const Handle(Adaptor3d_Surface)& S,
 
 //=================================================================================================
 
-gp_Vec LProp3d_SurfaceTool::DN(const Handle(Adaptor3d_Surface)& S,
-                               const Standard_Real              U,
-                               const Standard_Real              V,
-                               const Standard_Integer           IU,
-                               const Standard_Integer           IV)
+gp_Vec LProp3d_SurfaceTool::DN(const occ::handle<Adaptor3d_Surface>& S,
+                               const double              U,
+                               const double              V,
+                               const int           IU,
+                               const int           IV)
 {
   return S->DN(U, V, IU, IV);
 }
 
 //=================================================================================================
 
-Standard_Integer LProp3d_SurfaceTool::Continuity(const Handle(Adaptor3d_Surface)& S)
+int LProp3d_SurfaceTool::Continuity(const occ::handle<Adaptor3d_Surface>& S)
 {
   GeomAbs_Shape s = (GeomAbs_Shape)std::min(S->UContinuity(), S->VContinuity());
   switch (s)
@@ -93,11 +93,11 @@ Standard_Integer LProp3d_SurfaceTool::Continuity(const Handle(Adaptor3d_Surface)
 
 //=================================================================================================
 
-void LProp3d_SurfaceTool::Bounds(const Handle(Adaptor3d_Surface)& S,
-                                 Standard_Real&                   U1,
-                                 Standard_Real&                   V1,
-                                 Standard_Real&                   U2,
-                                 Standard_Real&                   V2)
+void LProp3d_SurfaceTool::Bounds(const occ::handle<Adaptor3d_Surface>& S,
+                                 double&                   U1,
+                                 double&                   V1,
+                                 double&                   U2,
+                                 double&                   V2)
 {
   U1 = S->FirstUParameter();
   V1 = S->FirstVParameter();

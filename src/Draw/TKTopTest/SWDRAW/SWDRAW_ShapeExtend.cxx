@@ -20,9 +20,9 @@
 #include <SWDRAW_ShapeExtend.hxx>
 #include <TopoDS_Shape.hxx>
 
-static Standard_Integer sortcompound(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int sortcompound(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Standard_CString arg1 = argv[1];
+  const char* arg1 = argv[1];
   if (argc < 2)
   {
     di << "Give shape name. As is, just displays shape type\n";
@@ -43,7 +43,7 @@ static Standard_Integer sortcompound(Draw_Interpretor& di, Standard_Integer argc
     ShapeExtend_Explorer sbx;
     for (int i = 0; i < 2; i++)
     {
-      Standard_Boolean viaCompound = (i != 0);
+      bool viaCompound = (i != 0);
       TopAbs_ShapeEnum ts          = sbx.ShapeType(Shape, viaCompound);
       // std::cout<<"   Type "<<(i ? " (via Compound) : " : "(True) : ");
       if (!viaCompound)
@@ -113,20 +113,20 @@ static Standard_Integer sortcompound(Draw_Interpretor& di, Standard_Integer argc
     default:
       break;
   }
-  Standard_Boolean modexp = Standard_False;
-  Standard_Boolean modcom = Standard_False;
+  bool modexp = false;
+  bool modcom = false;
   if (argc > 4)
   {
     switch (argv[4][0])
     {
       case 'e':
-        modexp = Standard_True;
+        modexp = true;
         break;
       case 'c':
-        modcom = Standard_True;
+        modcom = true;
         break;
       case 'x':
-        modexp = modcom = Standard_True;
+        modexp = modcom = true;
         break;
       default:
         break;
@@ -147,14 +147,14 @@ static Standard_Integer sortcompound(Draw_Interpretor& di, Standard_Integer argc
 
 void SWDRAW_ShapeExtend::InitCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Integer initactor = 0;
+  static int initactor = 0;
   if (initactor)
   {
     return;
   }
   initactor = 1;
 
-  Standard_CString g = SWDRAW::GroupName();
+  const char* g = SWDRAW::GroupName();
   theCommands.Add("sortcompound",
                   "shape_entree shape_result type=v-e-w-f-s-so [mode=n-e-c-x]",
                   __FILE__,

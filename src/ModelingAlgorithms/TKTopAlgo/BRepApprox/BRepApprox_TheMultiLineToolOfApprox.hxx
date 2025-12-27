@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 class BRepApprox_TheMultiLineOfApprox;
 class ApproxInt_SvSurfaces;
@@ -32,96 +33,94 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of multipoints of the TheMultiLine.
-  static Standard_Integer FirstPoint(const BRepApprox_TheMultiLineOfApprox& ML);
+  static int FirstPoint(const BRepApprox_TheMultiLineOfApprox& ML);
 
   //! Returns the number of multipoints of the TheMultiLine.
-  static Standard_Integer LastPoint(const BRepApprox_TheMultiLineOfApprox& ML);
+  static int LastPoint(const BRepApprox_TheMultiLineOfApprox& ML);
 
   //! Returns the number of 2d points of a TheMultiLine.
-  static Standard_Integer NbP2d(const BRepApprox_TheMultiLineOfApprox& ML);
+  static int NbP2d(const BRepApprox_TheMultiLineOfApprox& ML);
 
   //! Returns the number of 3d points of a TheMultiLine.
-  static Standard_Integer NbP3d(const BRepApprox_TheMultiLineOfApprox& ML);
+  static int NbP3d(const BRepApprox_TheMultiLineOfApprox& ML);
 
   //! returns the 3d points of the multipoint <MPointIndex>
   //! when only 3d points exist.
   static void Value(const BRepApprox_TheMultiLineOfApprox& ML,
-                    const Standard_Integer                 MPointIndex,
-                    TColgp_Array1OfPnt&                    tabPt);
+                    const int                 MPointIndex,
+                    NCollection_Array1<gp_Pnt>&                    tabPt);
 
   //! returns the 2d points of the multipoint <MPointIndex>
   //! when only 2d points exist.
   static void Value(const BRepApprox_TheMultiLineOfApprox& ML,
-                    const Standard_Integer                 MPointIndex,
-                    TColgp_Array1OfPnt2d&                  tabPt2d);
+                    const int                 MPointIndex,
+                    NCollection_Array1<gp_Pnt2d>&                  tabPt2d);
 
   //! returns the 3d and 2d points of the multipoint
   //! <MPointIndex>.
   static void Value(const BRepApprox_TheMultiLineOfApprox& ML,
-                    const Standard_Integer                 MPointIndex,
-                    TColgp_Array1OfPnt&                    tabPt,
-                    TColgp_Array1OfPnt2d&                  tabPt2d);
+                    const int                 MPointIndex,
+                    NCollection_Array1<gp_Pnt>&                    tabPt,
+                    NCollection_Array1<gp_Pnt2d>&                  tabPt2d);
 
   //! returns the 3d points of the multipoint <MPointIndex>
   //! when only 3d points exist.
-  static Standard_Boolean Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
-                                   const Standard_Integer                 MPointIndex,
-                                   TColgp_Array1OfVec&                    tabV);
+  static bool Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
+                                   const int                 MPointIndex,
+                                   NCollection_Array1<gp_Vec>&                    tabV);
 
   //! returns the 2d tangency points of the multipoint
   //! <MPointIndex> only when 2d points exist.
-  static Standard_Boolean Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
-                                   const Standard_Integer                 MPointIndex,
-                                   TColgp_Array1OfVec2d&                  tabV2d);
+  static bool Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
+                                   const int                 MPointIndex,
+                                   NCollection_Array1<gp_Vec2d>&                  tabV2d);
 
   //! returns the 3d and 2d points of the multipoint
   //! <MPointIndex>.
-  static Standard_Boolean Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
-                                   const Standard_Integer                 MPointIndex,
-                                   TColgp_Array1OfVec&                    tabV,
-                                   TColgp_Array1OfVec2d&                  tabV2d);
+  static bool Tangency(const BRepApprox_TheMultiLineOfApprox& ML,
+                                   const int                 MPointIndex,
+                                   NCollection_Array1<gp_Vec>&                    tabV,
+                                   NCollection_Array1<gp_Vec2d>&                  tabV2d);
 
   //! returns the 3d curvature of the multipoint <MPointIndex>
   //! when only 3d points exist.
-  static Standard_Boolean Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
-                                    const Standard_Integer                 MPointIndex,
-                                    TColgp_Array1OfVec&                    tabV);
+  static bool Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
+                                    const int                 MPointIndex,
+                                    NCollection_Array1<gp_Vec>&                    tabV);
 
   //! returns the 2d curvature points of the multipoint
   //! <MPointIndex> only when 2d points exist.
-  static Standard_Boolean Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
-                                    const Standard_Integer                 MPointIndex,
-                                    TColgp_Array1OfVec2d&                  tabV2d);
+  static bool Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
+                                    const int                 MPointIndex,
+                                    NCollection_Array1<gp_Vec2d>&                  tabV2d);
 
   //! returns the 3d and 2d curvature of the multipoint
   //! <MPointIndex>.
-  static Standard_Boolean Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
-                                    const Standard_Integer                 MPointIndex,
-                                    TColgp_Array1OfVec&                    tabV,
-                                    TColgp_Array1OfVec2d&                  tabV2d);
+  static bool Curvature(const BRepApprox_TheMultiLineOfApprox& ML,
+                                    const int                 MPointIndex,
+                                    NCollection_Array1<gp_Vec>&                    tabV,
+                                    NCollection_Array1<gp_Vec2d>&                  tabV2d);
 
   //! Is called if WhatStatus returned "PointsAdded".
   static BRepApprox_TheMultiLineOfApprox MakeMLBetween(const BRepApprox_TheMultiLineOfApprox& ML,
-                                                       const Standard_Integer                 I1,
-                                                       const Standard_Integer                 I2,
-                                                       const Standard_Integer NbPMin);
+                                                       const int                 I1,
+                                                       const int                 I2,
+                                                       const int NbPMin);
 
   //! Is called when the Bezier curve contains a loop
-  static Standard_Boolean MakeMLOneMorePoint(const BRepApprox_TheMultiLineOfApprox& ML,
-                                             const Standard_Integer                 I1,
-                                             const Standard_Integer                 I2,
-                                             const Standard_Integer                 indbad,
+  static bool MakeMLOneMorePoint(const BRepApprox_TheMultiLineOfApprox& ML,
+                                             const int                 I1,
+                                             const int                 I2,
+                                             const int                 indbad,
                                              BRepApprox_TheMultiLineOfApprox&       OtherLine);
 
   static Approx_Status WhatStatus(const BRepApprox_TheMultiLineOfApprox& ML,
-                                  const Standard_Integer                 I1,
-                                  const Standard_Integer                 I2);
+                                  const int                 I1,
+                                  const int                 I2);
 
   //! Dump of the current multi-line.
   static void Dump(const BRepApprox_TheMultiLineOfApprox& ML);
 
-protected:
-private:
 };
 
 #define TheMultiLine BRepApprox_TheMultiLineOfApprox

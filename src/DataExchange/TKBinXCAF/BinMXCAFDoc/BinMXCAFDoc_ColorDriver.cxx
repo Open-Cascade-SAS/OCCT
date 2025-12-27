@@ -24,31 +24,31 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_ColorDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMXCAFDoc_ColorDriver::BinMXCAFDoc_ColorDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMXCAFDoc_ColorDriver::BinMXCAFDoc_ColorDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_Color)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_ColorDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_ColorDriver::NewEmpty() const
 {
   return new XCAFDoc_Color();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                const Handle(TDF_Attribute)& theTarget,
+bool BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
                                                 BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Color) anAtt = Handle(XCAFDoc_Color)::DownCast(theTarget);
-  Standard_Real         R, G, B;
-  Standard_ShortReal    alpha;
-  Standard_Boolean      isOk = theSource >> R >> G >> B;
+  occ::handle<XCAFDoc_Color> anAtt = occ::down_cast<XCAFDoc_Color>(theTarget);
+  double         R, G, B;
+  float    alpha;
+  bool      isOk = theSource >> R >> G >> B;
   if (isOk)
   {
-    Standard_Boolean isRGBA = theSource >> alpha;
+    bool isRGBA = theSource >> alpha;
     if (!isRGBA)
       alpha = 1.0;
     anAtt->Set(R, G, B, alpha);
@@ -58,13 +58,13 @@ Standard_Boolean BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&  the
 
 //=================================================================================================
 
-void BinMXCAFDoc_ColorDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMXCAFDoc_ColorDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     BinObjMgt_Persistent&        theTarget,
-                                    BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_Color) anAtt = Handle(XCAFDoc_Color)::DownCast(theSource);
-  Standard_Real         R, G, B;
-  Standard_ShortReal    alpha;
+  occ::handle<XCAFDoc_Color> anAtt = occ::down_cast<XCAFDoc_Color>(theSource);
+  double         R, G, B;
+  float    alpha;
   anAtt->GetRGB(R, G, B);
   alpha = anAtt->GetAlpha();
   theTarget << R << G << B << alpha;

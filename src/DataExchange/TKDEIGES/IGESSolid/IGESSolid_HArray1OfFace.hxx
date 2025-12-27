@@ -17,9 +17,10 @@
 #ifndef IGESSolid_HArray1OfFace_HeaderFile
 #define IGESSolid_HArray1OfFace_HeaderFile
 
-#include <IGESSolid_Array1OfFace.hxx>
+#include <IGESSolid_Face.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(IGESSolid_HArray1OfFace, IGESSolid_Array1OfFace)
+DEFINE_HARRAY1(IGESSolid_HArray1OfFace, NCollection_Array1<occ::handle<IGESSolid_Face>>)
 
 #endif

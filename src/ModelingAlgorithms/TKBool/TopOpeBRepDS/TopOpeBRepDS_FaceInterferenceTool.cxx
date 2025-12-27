@@ -26,11 +26,13 @@
 #include <TopOpeBRepDS_FaceInterferenceTool.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-static Standard_Boolean STATIC_TOREVERSE = Standard_False; // xpu150498
+static bool STATIC_TOREVERSE = false; // xpu150498
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
 
@@ -41,31 +43,31 @@ static void FUN_RaiseError()
 }
 
 //------------------------------------------------------
-Standard_EXPORT Standard_Boolean FUN_Parameters(const gp_Pnt&       Pnt,
+Standard_EXPORT bool FUN_Parameters(const gp_Pnt&       Pnt,
                                                 const TopoDS_Shape& F,
-                                                Standard_Real&      u,
-                                                Standard_Real&      v)
+                                                double&      u,
+                                                double&      v)
 {
   BRepAdaptor_Surface Surf(TopoDS::Face(F));
   // Get 2d coord of the projection of <Pnt> on surface of <F>.
-  Standard_Real uvtol = Surf.Tolerance();
-  Standard_Real fu = Surf.FirstUParameter(), lu = Surf.LastUParameter();
-  Standard_Real fv = Surf.FirstVParameter(), lv = Surf.LastVParameter();
+  double uvtol = Surf.Tolerance();
+  double fu = Surf.FirstUParameter(), lu = Surf.LastUParameter();
+  double fv = Surf.FirstVParameter(), lv = Surf.LastVParameter();
   Extrema_ExtPS extps(Pnt, Surf, fu, lu, fv, lv, uvtol, uvtol);
   if (!extps.IsDone())
   {
-    return Standard_False;
+    return false;
   }
   if (extps.NbExt() == 0)
   {
-    return Standard_False;
+    return false;
   }
   extps.Point(1).Parameter(u, v);
 
   // xpu281098 : CTS21216 (FIR, f4,e7on)
-  Standard_Real    d2   = extps.SquareDistance(1);
-  Standard_Real    tolF = BRep_Tool::Tolerance(TopoDS::Face(F));
-  Standard_Boolean ok   = (d2 < tolF * tolF * 1.e6); // NYINYI
+  double    d2   = extps.SquareDistance(1);
+  double    tolF = BRep_Tool::Tolerance(TopoDS::Face(F));
+  bool ok   = (d2 < tolF * tolF * 1.e6); // NYINYI
   return ok;
 }
 
@@ -77,9 +79,9 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F, const gp_Pnt2d& 
 }
 
 //------------------------------------------------------
-static Standard_Boolean FUN_sphere(const TopoDS_Shape& F)
+static bool FUN_sphere(const TopoDS_Shape& F)
 {
-  Handle(Geom_Surface) su = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
+  occ::handle<Geom_Surface> su = TopOpeBRepTool_ShapeTool::BASISSURFACE(TopoDS::Face(F));
   GeomAdaptor_Surface  GAS(su);
   return (GAS.GetType() == GeomAbs_Sphere);
 }
@@ -90,28 +92,28 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
                                          gp_Dir&             Norm,
                                          gp_Dir&             D1,
                                          gp_Dir&             D2,
-                                         Standard_Real&      Cur1,
-                                         Standard_Real&      Cur2)
+                                         double&      Cur1,
+                                         double&      Cur2)
 {
   BRepAdaptor_Surface surf(TopoDS::Face(F));
-  Standard_Real       uu = uv.X(), vv = uv.Y();
+  double       uu = uv.X(), vv = uv.Y();
 
-  Standard_Boolean sphere = FUN_sphere(F);
-  Standard_Boolean plane  = FUN_tool_plane(F);
+  bool sphere = FUN_sphere(F);
+  bool plane  = FUN_tool_plane(F);
 
   // Getting the principle directions,the normal and the curvatures
   BRepLProp_SLProps props(surf, uu, vv, 2, Precision::Confusion());
-  Standard_Boolean  curdef = props.IsCurvatureDefined();
+  bool  curdef = props.IsCurvatureDefined();
   if (!curdef)
     throw Standard_ProgramError("TopOpeBRepDS_FaceInterferenceTool::Init");
-  Standard_Boolean umbilic = props.IsUmbilic();
+  bool umbilic = props.IsUmbilic();
   if (umbilic)
   {
     Cur1 = Cur2 = props.MeanCurvature();
 
     // xpu030998 : cto901A3
-    Standard_Real    toll    = 1.e-8;
-    Standard_Boolean ooplane = (std::abs(Cur1) < toll) && (std::abs(Cur2) < toll);
+    double    toll    = 1.e-8;
+    bool ooplane = (std::abs(Cur1) < toll) && (std::abs(Cur2) < toll);
     plane                    = plane || ooplane;
 
     if (plane)
@@ -127,8 +129,8 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
       throw Standard_Failure("FUN_ComputeGeomData");
 
     D1                 = Norm;
-    Standard_Real    x = D1.X(), y = D1.Y(), z = D1.Z(), tol = Precision::Confusion();
-    Standard_Boolean nullx = (std::abs(x) < tol), nully = (std::abs(y) < tol),
+    double    x = D1.X(), y = D1.Y(), z = D1.Z(), tol = Precision::Confusion();
+    bool nullx = (std::abs(x) < tol), nully = (std::abs(y) < tol),
                      nullz = (std::abs(z) < tol);
     if (nullx && nully)
       D2 = gp_Dir(gp_Dir::D::X);
@@ -153,8 +155,8 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
 TopOpeBRepDS_FaceInterferenceTool::TopOpeBRepDS_FaceInterferenceTool(
   const TopOpeBRepDS_PDataStructure& PBDS)
     : myPBDS(PBDS),
-      myrefdef(Standard_False),
-      myOnEdDef(Standard_False)
+      myrefdef(false),
+      myOnEdDef(false)
 {
 }
 
@@ -164,31 +166,31 @@ TopOpeBRepDS_FaceInterferenceTool::TopOpeBRepDS_FaceInterferenceTool(
 //=======================================================================
 void TopOpeBRepDS_FaceInterferenceTool::Init(const TopoDS_Shape&                      FFI,
                                              const TopoDS_Shape&                      EE,
-                                             const Standard_Boolean                   EEisnew,
-                                             const Handle(TopOpeBRepDS_Interference)& Iin)
+                                             const bool                   EEisnew,
+                                             const occ::handle<TopOpeBRepDS_Interference>& Iin)
 {
-  Handle(TopOpeBRepDS_ShapeShapeInterference) I(
-    Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin));
+  occ::handle<TopOpeBRepDS_ShapeShapeInterference> I(
+    occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(Iin));
   if (I.IsNull())
     return;
   const TopoDS_Face& FI = TopoDS::Face(FFI);
   const TopoDS_Edge& E  = TopoDS::Edge(EE);
 
   //   xpu150498
-  STATIC_TOREVERSE = Standard_False;
+  STATIC_TOREVERSE = false;
   if (EEisnew)
   {
-    Standard_Integer    G  = I->Geometry();
+    int    G  = I->Geometry();
     const TopoDS_Edge&  EG = TopoDS::Edge(myPBDS->Shape(G));
     TopOpeBRepDS_Config cf;
-    Standard_Boolean    cfok = FDS_Config3d(E, EG, cf);
+    bool    cfok = FDS_Config3d(E, EG, cf);
     if (!cfok)
     {
       FUN_RaiseError();
       return;
     }
     if (cf == TopOpeBRepDS_DIFFORIENTED)
-      STATIC_TOREVERSE = Standard_True;
+      STATIC_TOREVERSE = true;
   } // xpu150498
 
   myFaceOrientation = FI.Orientation();
@@ -200,13 +202,13 @@ void TopOpeBRepDS_FaceInterferenceTool::Init(const TopoDS_Shape&                
   // initialize : isLine,myParOnEd,myPntOnEd,myTole,Tgt.
 
   TopAbs_Orientation oEinFI;
-  Standard_Boolean   edonfa = FUN_tool_orientEinFFORWARD(E, FI, oEinFI);
+  bool   edonfa = FUN_tool_orientEinFFORWARD(E, FI, oEinFI);
   //  isLine = FUN_tool_line(E);
-  isLine = Standard_False;
+  isLine = false;
 
   if (!myOnEdDef)
   {
-    Standard_Boolean ok = FUN_tool_findPinE(E, myPntOnEd, myParOnEd);
+    bool ok = FUN_tool_findPinE(E, myPntOnEd, myParOnEd);
     if (!ok)
     {
       FUN_RaiseError();
@@ -216,8 +218,8 @@ void TopOpeBRepDS_FaceInterferenceTool::Init(const TopoDS_Shape&                
 
   myTole = Precision::Angular();
   gp_Pnt2d         uv;
-  Standard_Boolean ok = Standard_False;
-  Standard_Real    d  = 0.;
+  bool ok = false;
+  double    d  = 0.;
   if (edonfa)
     ok = FUN_tool_paronEF(E, myParOnEd, FI, uv);
   else
@@ -245,11 +247,11 @@ void TopOpeBRepDS_FaceInterferenceTool::Init(const TopoDS_Shape&                
   else
   {
     gp_Dir        D1, D2;
-    Standard_Real Cur1, Cur2;
+    double Cur1, Cur2;
     FUN_ComputeGeomData(FI, uv, Norm, D1, D2, Cur1, Cur2);
     myTool.Reset(Tgt, Norm, D1, D2, Cur1, Cur2);
   }
-  myrefdef = Standard_True;
+  myrefdef = true;
 }
 
 //=================================================================================================
@@ -257,11 +259,11 @@ void TopOpeBRepDS_FaceInterferenceTool::Init(const TopoDS_Shape&                
 void TopOpeBRepDS_FaceInterferenceTool::Add(const TopoDS_Shape&                      FFI,
                                             const TopoDS_Shape&                      FFT,
                                             const TopoDS_Shape&                      EE,
-                                            const Standard_Boolean                   EEisnew,
-                                            const Handle(TopOpeBRepDS_Interference)& Iin)
+                                            const bool                   EEisnew,
+                                            const occ::handle<TopOpeBRepDS_Interference>& Iin)
 {
-  Handle(TopOpeBRepDS_ShapeShapeInterference) I(
-    Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin));
+  occ::handle<TopOpeBRepDS_ShapeShapeInterference> I(
+    occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(Iin));
   if (I.IsNull())
     return;
   const TopoDS_Face& FI = TopoDS::Face(FFI);
@@ -281,26 +283,26 @@ void TopOpeBRepDS_FaceInterferenceTool::Add(const TopoDS_Shape&                 
     return;
   }
   TopOpeBRepDS_Kind GT, ST;
-  Standard_Integer  G, S;
+  int  G, S;
   FDS_data(I, GT, G, ST, S);
   const TopoDS_Edge& EG = TopoDS::Edge(myPBDS->Shape(G));
   FDS_HasSameDomain3d(*myPBDS, EG);
-  Standard_Boolean same = !STATIC_TOREVERSE; // xpu150498
+  bool same = !STATIC_TOREVERSE; // xpu150498
 
   TopAbs_Orientation oriloc = I->Transition().Orientation(TopAbs_IN);
   // xpu150498 : CTS20205 : sp(e5) = sp(e4 of rank=1) and c3d(e5) c3d(e4) are diff oriented
   //            As transitions on face<iFI> are given relative to the geometry of e5,
   //            we have to complement them.
   //             cto 016 E1
-  Standard_Boolean rev = !same && (M_FORWARD(oriloc) || M_REVERSED(oriloc)); // xpu150498
+  bool rev = !same && (M_FORWARD(oriloc) || M_REVERSED(oriloc)); // xpu150498
   if (rev)
     oriloc = TopAbs::Complement(oriloc); // xpu150498
 
   TopAbs_Orientation oritan;
   TopAbs_Orientation oriEFT;
-  Standard_Boolean   egofft = FUN_tool_orientEinFFORWARD(EG, FT, oriEFT);
+  bool   egofft = FUN_tool_orientEinFFORWARD(EG, FT, oriEFT);
   TopAbs_Orientation oriEFI;
-  Standard_Boolean   egoffi = FUN_tool_orientEinFFORWARD(EG, FI, oriEFI);
+  bool   egoffi = FUN_tool_orientEinFFORWARD(EG, FI, oriEFI);
   if (egofft)
   {
     oritan = oriEFT;
@@ -320,12 +322,12 @@ void TopOpeBRepDS_FaceInterferenceTool::Add(const TopoDS_Shape&                 
   }
 
   gp_Pnt2d         uv;
-  Standard_Boolean ok = Standard_False;
+  bool ok = false;
   if (egofft)
     ok = FUN_tool_paronEF(E, myParOnEd, FT, uv);
   if (!ok)
   {
-    Standard_Real d;
+    double d;
     ok = FUN_tool_projPonF(myPntOnEd, FT, uv, d);
   }
   if (!ok)
@@ -344,7 +346,7 @@ void TopOpeBRepDS_FaceInterferenceTool::Add(const TopoDS_Shape&                 
   else
   {
     gp_Dir        D1, D2;
-    Standard_Real Cur1, Cur2;
+    double Cur1, Cur2;
     FUN_ComputeGeomData(FT, uv, Norm, D1, D2, Cur1, Cur2);
     //    if (Fori == TopAbs_REVERSED) Norm.Reverse();
     myTool.Compare(myTole, Norm, D1, D2, Cur1, Cur2, oriloc, oritan);
@@ -354,15 +356,15 @@ void TopOpeBRepDS_FaceInterferenceTool::Add(const TopoDS_Shape&                 
 //=================================================================================================
 
 void TopOpeBRepDS_FaceInterferenceTool::Add
-  //(const TopoDS_Shape& F,const TopOpeBRepDS_Curve& C,const Handle(TopOpeBRepDS_Interference)& I)
-  (const TopoDS_Shape&, const TopOpeBRepDS_Curve&, const Handle(TopOpeBRepDS_Interference)&)
+  //(const TopoDS_Shape& F,const TopOpeBRepDS_Curve& C,const occ::handle<TopOpeBRepDS_Interference>& I)
+  (const TopoDS_Shape&, const TopOpeBRepDS_Curve&, const occ::handle<TopOpeBRepDS_Interference>&)
 {
   // NYI
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_FaceInterferenceTool::Transition(const Handle(TopOpeBRepDS_Interference)& I) const
+void TopOpeBRepDS_FaceInterferenceTool::Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   TopOpeBRepDS_Transition& T = I->ChangeTransition();
 
@@ -382,7 +384,7 @@ void TopOpeBRepDS_FaceInterferenceTool::Transition(const Handle(TopOpeBRepDS_Int
     T.Set(stb, sta);
     // xpu150498
     TopAbs_Orientation o   = T.Orientation(TopAbs_IN);
-    Standard_Boolean   rev = STATIC_TOREVERSE && (M_FORWARD(o) || M_REVERSED(o));
+    bool   rev = STATIC_TOREVERSE && (M_FORWARD(o) || M_REVERSED(o));
     if (rev)
       o = TopAbs::Complement(o);
     T.Set(o);
@@ -392,16 +394,16 @@ void TopOpeBRepDS_FaceInterferenceTool::Transition(const Handle(TopOpeBRepDS_Int
 
 //=================================================================================================
 
-void TopOpeBRepDS_FaceInterferenceTool::SetEdgePntPar(const gp_Pnt& P, const Standard_Real p)
+void TopOpeBRepDS_FaceInterferenceTool::SetEdgePntPar(const gp_Pnt& P, const double p)
 {
   myPntOnEd = P;
   myParOnEd = p;
-  myOnEdDef = Standard_True;
+  myOnEdDef = true;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_FaceInterferenceTool::GetEdgePntPar(gp_Pnt& P, Standard_Real& p) const
+void TopOpeBRepDS_FaceInterferenceTool::GetEdgePntPar(gp_Pnt& P, double& p) const
 {
   if (!myOnEdDef)
     throw Standard_ProgramError("GetEdgePntPar");
@@ -411,7 +413,7 @@ void TopOpeBRepDS_FaceInterferenceTool::GetEdgePntPar(gp_Pnt& P, Standard_Real& 
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_FaceInterferenceTool::IsEdgePntParDef() const
+bool TopOpeBRepDS_FaceInterferenceTool::IsEdgePntParDef() const
 {
   return myOnEdDef;
 }

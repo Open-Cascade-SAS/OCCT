@@ -30,7 +30,7 @@ set(OCCT_BOPAlgo_FILES
   BOPAlgo_CheckResult.cxx
   BOPAlgo_CheckResult.hxx
   BOPAlgo_CheckStatus.hxx
-  BOPAlgo_ListOfCheckResult.hxx
+
   BOPAlgo_MakeConnected.cxx
   BOPAlgo_MakeConnected.hxx
   BOPAlgo_MakePeriodic.cxx

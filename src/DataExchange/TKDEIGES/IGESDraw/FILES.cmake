@@ -4,8 +4,7 @@ set(OCCT_IGESDraw_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESDraw_FILES
   IGESDraw.cxx
   IGESDraw.hxx
-  IGESDraw_Array1OfConnectPoint.hxx
-  IGESDraw_Array1OfViewKindEntity.hxx
+
   IGESDraw_CircArraySubfigure.cxx
   IGESDraw_CircArraySubfigure.hxx
   IGESDraw_ConnectPoint.cxx

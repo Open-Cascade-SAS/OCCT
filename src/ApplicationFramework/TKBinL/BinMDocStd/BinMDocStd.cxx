@@ -21,8 +21,8 @@
 
 //=================================================================================================
 
-void BinMDocStd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
-                            const Handle(Message_Messenger)&   theMsgDriver)
+void BinMDocStd::AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTable,
+                            const occ::handle<Message_Messenger>&   theMsgDriver)
 {
   theDriverTable->AddDriver(new BinMDocStd_XLinkDriver(theMsgDriver));
 }

@@ -37,11 +37,11 @@ public:
   Standard_EXPORT StdObjMgt_Persistent();
 
   //! Derived class instance create function.
-  typedef Handle(StdObjMgt_Persistent) (*Instantiator)();
+  typedef occ::handle<StdObjMgt_Persistent> (*Instantiator)();
 
   //! Create a derived class instance.
   template <class Persistent>
-  static Handle(StdObjMgt_Persistent) Instantiate()
+  static occ::handle<StdObjMgt_Persistent> Instantiate()
   {
     return new Persistent;
   }
@@ -52,28 +52,28 @@ public:
   //! Write persistent data to a file.
   virtual void Write(StdObjMgt_WriteData& theWriteData) const = 0;
 
-  typedef NCollection_Sequence<Handle(StdObjMgt_Persistent)> SequenceOfPersistent;
+  typedef NCollection_Sequence<occ::handle<StdObjMgt_Persistent>> SequenceOfPersistent;
 
   //! Gets persistent child objects
   virtual void PChildren(SequenceOfPersistent&) const = 0;
 
   //! Returns persistent type name
-  virtual Standard_CString PName() const = 0;
+  virtual const char* PName() const = 0;
 
   //! Import transient document from the persistent data
   //! (to be overridden by document class;
   //! does nothing by default for other classes).
-  Standard_EXPORT virtual void ImportDocument(const Handle(TDocStd_Document)& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(const occ::handle<TDocStd_Document>& theDocument) const;
 
   //! Create an empty transient attribute
   //! (to be overridden by attribute classes;
   //! does nothing and returns a null handle by default for other classes).
-  Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> CreateAttribute();
 
   //! Get transient attribute for the persistent data
   //! (to be overridden by attribute classes;
   //! returns a null handle by default for non-attribute classes).
-  Standard_EXPORT virtual Handle(TDF_Attribute) GetAttribute() const;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> GetAttribute() const;
 
   //! Import transient attribute from the persistent data
   //! (to be overridden by attribute classes;
@@ -83,33 +83,33 @@ public:
   //! Get referenced ASCII string
   //! (to be overridden by ASCII string class;
   //! returns a null handle by default for other classes).
-  Standard_EXPORT virtual Handle(TCollection_HAsciiString) AsciiString() const;
+  Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> AsciiString() const;
 
   //! Get referenced extended string
   //! (to be overridden by extended string class;
   //! returns a null handle by default for other classes).
-  Standard_EXPORT virtual Handle(TCollection_HExtendedString) ExtString() const;
+  Standard_EXPORT virtual occ::handle<TCollection_HExtendedString> ExtString() const;
 
   //! Get a label expressed by referenced extended string
   //! (to be overridden by extended string class;
   //! returns a null label by default for other classes).
-  Standard_EXPORT virtual TDF_Label Label(const Handle(TDF_Data)& theDF) const;
+  Standard_EXPORT virtual TDF_Label Label(const occ::handle<TDF_Data>& theDF) const;
 
   //! Returns the assigned persistent type number
-  Standard_Integer TypeNum() const { return myTypeNum; }
+  int TypeNum() const { return myTypeNum; }
 
   //! Assigns a persistent type number to the object
-  void TypeNum(Standard_Integer theTypeNum) { myTypeNum = theTypeNum; }
+  void TypeNum(int theTypeNum) { myTypeNum = theTypeNum; }
 
   //! Returns the object reference number
-  Standard_Integer RefNum() const { return myRefNum; }
+  int RefNum() const { return myRefNum; }
 
   //! Sets an object reference number
-  void RefNum(Standard_Integer theRefNum) { myRefNum = theRefNum; }
+  void RefNum(int theRefNum) { myRefNum = theRefNum; }
 
 private:
-  Standard_Integer myTypeNum;
-  Standard_Integer myRefNum;
+  int myTypeNum;
+  int myRefNum;
 };
 
 #endif // _StdObjMgt_Persistent_HeaderFile

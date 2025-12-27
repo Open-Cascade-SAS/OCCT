@@ -13,17 +13,17 @@
 
 #include <Vrml_Switch.hxx>
 
-Vrml_Switch::Vrml_Switch(const Standard_Integer aWhichChild)
+Vrml_Switch::Vrml_Switch(const int aWhichChild)
 {
   myWhichChild = aWhichChild;
 }
 
-void Vrml_Switch::SetWhichChild(const Standard_Integer aWhichChild)
+void Vrml_Switch::SetWhichChild(const int aWhichChild)
 {
   myWhichChild = aWhichChild;
 }
 
-Standard_Integer Vrml_Switch::WhichChild() const
+int Vrml_Switch::WhichChild() const
 {
   return myWhichChild;
 }

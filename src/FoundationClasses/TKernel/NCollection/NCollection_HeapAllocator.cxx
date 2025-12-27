@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(NCollection_HeapAllocator, NCollection_BaseAllocator)
 
 //=================================================================================================
 
-void* NCollection_HeapAllocator::Allocate(const Standard_Size theSize)
+void* NCollection_HeapAllocator::Allocate(const size_t theSize)
 {
   // the size is rounded up to word size.
-  const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
+  const size_t aRoundSize = (theSize + 3) & ~0x3;
   void*               aResult    = malloc(aRoundSize);
   if (aResult == NULL)
   {
@@ -44,8 +44,8 @@ void NCollection_HeapAllocator::Free(void* anAddress)
 
 //=================================================================================================
 
-const Handle(NCollection_HeapAllocator)& NCollection_HeapAllocator::GlobalHeapAllocator()
+const occ::handle<NCollection_HeapAllocator>& NCollection_HeapAllocator::GlobalHeapAllocator()
 {
-  static Handle(NCollection_HeapAllocator) pAllocator = new NCollection_HeapAllocator;
+  static occ::handle<NCollection_HeapAllocator> pAllocator = new NCollection_HeapAllocator;
   return pAllocator;
 }

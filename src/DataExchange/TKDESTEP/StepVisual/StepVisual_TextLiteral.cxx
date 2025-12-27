@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextLiteral, StepGeom_GeometricRepresentat
 
 StepVisual_TextLiteral::StepVisual_TextLiteral() {}
 
-void StepVisual_TextLiteral::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(TCollection_HAsciiString)& aLiteral,
+void StepVisual_TextLiteral::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<TCollection_HAsciiString>& aLiteral,
                                   const StepGeom_Axis2Placement&          aPlacement,
-                                  const Handle(TCollection_HAsciiString)& aAlignment,
+                                  const occ::handle<TCollection_HAsciiString>& aAlignment,
                                   const StepVisual_TextPath               aPath,
                                   const StepVisual_FontSelect&            aFont)
 {
@@ -35,12 +35,12 @@ void StepVisual_TextLiteral::Init(const Handle(TCollection_HAsciiString)& aName,
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepVisual_TextLiteral::SetLiteral(const Handle(TCollection_HAsciiString)& aLiteral)
+void StepVisual_TextLiteral::SetLiteral(const occ::handle<TCollection_HAsciiString>& aLiteral)
 {
   literal = aLiteral;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_TextLiteral::Literal() const
+occ::handle<TCollection_HAsciiString> StepVisual_TextLiteral::Literal() const
 {
   return literal;
 }
@@ -55,12 +55,12 @@ StepGeom_Axis2Placement StepVisual_TextLiteral::Placement() const
   return placement;
 }
 
-void StepVisual_TextLiteral::SetAlignment(const Handle(TCollection_HAsciiString)& aAlignment)
+void StepVisual_TextLiteral::SetAlignment(const occ::handle<TCollection_HAsciiString>& aAlignment)
 {
   alignment = aAlignment;
 }
 
-Handle(TCollection_HAsciiString) StepVisual_TextLiteral::Alignment() const
+occ::handle<TCollection_HAsciiString> StepVisual_TextLiteral::Alignment() const
 {
   return alignment;
 }

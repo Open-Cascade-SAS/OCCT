@@ -33,12 +33,12 @@ void IGESGeom_Line::Init(const gp_XYZ& aStart, const gp_XYZ& anEnd)
   InitTypeAndForm(110, 0);
 }
 
-Standard_Integer IGESGeom_Line::Infinite() const
+int IGESGeom_Line::Infinite() const
 {
   return FormNumber();
 }
 
-void IGESGeom_Line::SetInfinite(const Standard_Integer status)
+void IGESGeom_Line::SetInfinite(const int status)
 {
   if (status >= 0 && status <= 2)
     InitTypeAndForm(110, status);

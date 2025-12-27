@@ -28,15 +28,15 @@ StepKinematics_LinearFlexibleAndPlanarCurvePair::StepKinematics_LinearFlexibleAn
 //=================================================================================================
 
 void StepKinematics_LinearFlexibleAndPlanarCurvePair::Init(
-  const Handle(TCollection_HAsciiString)&      theRepresentationItem_Name,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Name,
-  const Standard_Boolean                       hasItemDefinedTransformation_Description,
-  const Handle(TCollection_HAsciiString)&      theItemDefinedTransformation_Description,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem1,
-  const Handle(StepRepr_RepresentationItem)&   theItemDefinedTransformation_TransformItem2,
-  const Handle(StepKinematics_KinematicJoint)& theKinematicPair_Joint,
-  const Handle(StepGeom_Curve)&                thePairCurve,
-  const Standard_Boolean                       theOrientation)
+  const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
+  const bool                       hasItemDefinedTransformation_Description,
+  const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
+  const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
+  const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
+  const occ::handle<StepGeom_Curve>&                thePairCurve,
+  const bool                       theOrientation)
 {
   StepKinematics_HighOrderKinematicPair::Init(theRepresentationItem_Name,
                                               theItemDefinedTransformation_Name,
@@ -53,7 +53,7 @@ void StepKinematics_LinearFlexibleAndPlanarCurvePair::Init(
 
 //=================================================================================================
 
-Handle(StepGeom_Curve) StepKinematics_LinearFlexibleAndPlanarCurvePair::PairCurve() const
+occ::handle<StepGeom_Curve> StepKinematics_LinearFlexibleAndPlanarCurvePair::PairCurve() const
 {
   return myPairCurve;
 }
@@ -61,14 +61,14 @@ Handle(StepGeom_Curve) StepKinematics_LinearFlexibleAndPlanarCurvePair::PairCurv
 //=================================================================================================
 
 void StepKinematics_LinearFlexibleAndPlanarCurvePair::SetPairCurve(
-  const Handle(StepGeom_Curve)& thePairCurve)
+  const occ::handle<StepGeom_Curve>& thePairCurve)
 {
   myPairCurve = thePairCurve;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepKinematics_LinearFlexibleAndPlanarCurvePair::Orientation() const
+bool StepKinematics_LinearFlexibleAndPlanarCurvePair::Orientation() const
 {
   return myOrientation;
 }
@@ -76,7 +76,7 @@ Standard_Boolean StepKinematics_LinearFlexibleAndPlanarCurvePair::Orientation() 
 //=================================================================================================
 
 void StepKinematics_LinearFlexibleAndPlanarCurvePair::SetOrientation(
-  const Standard_Boolean theOrientation)
+  const bool theOrientation)
 {
   myOrientation = theOrientation;
 }

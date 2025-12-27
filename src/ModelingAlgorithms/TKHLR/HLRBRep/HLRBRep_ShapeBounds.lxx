@@ -29,42 +29,42 @@ inline HLRBRep_ShapeBounds::HLRBRep_ShapeBounds()
 
 //=================================================================================================
 
-inline void HLRBRep_ShapeBounds::Shape(const Handle(HLRTopoBRep_OutLiner)& S)
+inline void HLRBRep_ShapeBounds::Shape(const occ::handle<HLRTopoBRep_OutLiner>& S)
 {
   myShape = S;
 }
 
 //=================================================================================================
 
-inline const Handle(HLRTopoBRep_OutLiner)& HLRBRep_ShapeBounds::Shape() const
+inline const occ::handle<HLRTopoBRep_OutLiner>& HLRBRep_ShapeBounds::Shape() const
 {
   return myShape;
 }
 
 //=================================================================================================
 
-inline void HLRBRep_ShapeBounds::ShapeData(const Handle(Standard_Transient)& SD)
+inline void HLRBRep_ShapeBounds::ShapeData(const occ::handle<Standard_Transient>& SD)
 {
   myShapeData = SD;
 }
 
 //=================================================================================================
 
-inline const Handle(Standard_Transient)& HLRBRep_ShapeBounds::ShapeData() const
+inline const occ::handle<Standard_Transient>& HLRBRep_ShapeBounds::ShapeData() const
 {
   return myShapeData;
 }
 
 //=================================================================================================
 
-inline void HLRBRep_ShapeBounds::NbOfIso(const Standard_Integer nbIso)
+inline void HLRBRep_ShapeBounds::NbOfIso(const int nbIso)
 {
   myNbIso = nbIso;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_ShapeBounds::NbOfIso() const
+inline int HLRBRep_ShapeBounds::NbOfIso() const
 {
   return myNbIso;
 }

@@ -33,37 +33,36 @@ public:
   Standard_EXPORT Contap_TheSegmentOfTheSearch();
 
   //! Defines the concerned arc.
-  void SetValue(const Handle(Adaptor2d_Curve2d)& A);
+  void SetValue(const occ::handle<Adaptor2d_Curve2d>& A);
 
   //! Defines the first point or the last point,
   //! depending on the value of the boolean First.
   Standard_EXPORT void SetLimitPoint(const Contap_ThePathPointOfTheSearch& V,
-                                     const Standard_Boolean                First);
+                                     const bool                First);
 
   //! Returns the geometric curve on the surface 's domain
   //! which is solution.
-  const Handle(Adaptor2d_Curve2d)& Curve() const;
+  const occ::handle<Adaptor2d_Curve2d>& Curve() const;
 
   //! Returns True if there is a vertex (ThePathPoint) defining
   //! the lowest valid parameter on the arc.
-  Standard_Boolean HasFirstPoint() const;
+  bool HasFirstPoint() const;
 
   //! Returns the first point.
   const Contap_ThePathPointOfTheSearch& FirstPoint() const;
 
   //! Returns True if there is a vertex (ThePathPoint) defining
   //! the greatest valid parameter on the arc.
-  Standard_Boolean HasLastPoint() const;
+  bool HasLastPoint() const;
 
   //! Returns the last point.
   const Contap_ThePathPointOfTheSearch& LastPoint() const;
 
-protected:
 private:
-  Handle(Adaptor2d_Curve2d)      arc;
-  Standard_Boolean               hasfp;
+  occ::handle<Adaptor2d_Curve2d>      arc;
+  bool               hasfp;
   Contap_ThePathPointOfTheSearch thefp;
-  Standard_Boolean               haslp;
+  bool               haslp;
   Contap_ThePathPointOfTheSearch thelp;
 };
 
@@ -71,19 +70,19 @@ private:
 // Inline implementations
 //=================================================================================================
 
-inline void Contap_TheSegmentOfTheSearch::SetValue(const Handle(Adaptor2d_Curve2d)& A)
+inline void Contap_TheSegmentOfTheSearch::SetValue(const occ::handle<Adaptor2d_Curve2d>& A)
 {
-  hasfp = Standard_False;
-  haslp = Standard_False;
+  hasfp = false;
+  haslp = false;
   arc   = A;
 }
 
-inline const Handle(Adaptor2d_Curve2d)& Contap_TheSegmentOfTheSearch::Curve() const
+inline const occ::handle<Adaptor2d_Curve2d>& Contap_TheSegmentOfTheSearch::Curve() const
 {
   return arc;
 }
 
-inline Standard_Boolean Contap_TheSegmentOfTheSearch::HasFirstPoint() const
+inline bool Contap_TheSegmentOfTheSearch::HasFirstPoint() const
 {
   return hasfp;
 }
@@ -97,7 +96,7 @@ inline const Contap_ThePathPointOfTheSearch& Contap_TheSegmentOfTheSearch::First
   return thefp;
 }
 
-inline Standard_Boolean Contap_TheSegmentOfTheSearch::HasLastPoint() const
+inline bool Contap_TheSegmentOfTheSearch::HasLastPoint() const
 {
   return haslp;
 }

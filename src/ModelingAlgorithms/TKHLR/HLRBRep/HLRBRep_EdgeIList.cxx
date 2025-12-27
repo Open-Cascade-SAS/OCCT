@@ -26,12 +26,12 @@
 // function : AddInterference
 // purpose  : insert an interference in a sorted list
 //=======================================================================
-void HLRBRep_EdgeIList::AddInterference(HLRAlgo_InterferenceList&           IL,
+void HLRBRep_EdgeIList::AddInterference(NCollection_List<HLRAlgo_Interference>&           IL,
                                         const HLRAlgo_Interference&         I,
                                         const HLRBRep_EdgeInterferenceTool& T)
 {
-  HLRAlgo_ListIteratorOfInterferenceList It(IL);
-  Standard_Real                          p = T.ParameterOfInterference(I);
+  NCollection_List<HLRAlgo_Interference>::Iterator It(IL);
+  double                          p = T.ParameterOfInterference(I);
   while (It.More())
   {
     if (p < T.ParameterOfInterference(It.Value()))
@@ -47,13 +47,13 @@ void HLRBRep_EdgeIList::AddInterference(HLRAlgo_InterferenceList&           IL,
 //=================================================================================================
 
 #ifdef OCCT_DEBUG_SI
-static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
+static bool SimilarInterference(const HLRAlgo_Interference& I1,
                                             const HLRAlgo_Interference& I2)
 {
-  Standard_Real      p1, p2;
-  Standard_Real      eps = 1.e-7;
+  double      p1, p2;
+  double      eps = 1.e-7;
   TopAbs_Orientation or1, or2;
-  // Standard_Integer l1, l2; //levels
+  // int l1, l2; //levels
 
   p1 = I1.Intersection().Parameter();
   // l1 = I1.Intersection().Level();
@@ -63,22 +63,22 @@ static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
   // l2 = I2.Intersection().Level();
   or2 = I2.Transition();
 
-  Standard_Boolean IsSimilar = std::abs(p1 - p2) <= eps && or1 == or2;
+  bool IsSimilar = std::abs(p1 - p2) <= eps && or1 == or2;
   return IsSimilar;
 }
 #endif
-void HLRBRep_EdgeIList::ProcessComplex(HLRAlgo_InterferenceList&           IL,
+void HLRBRep_EdgeIList::ProcessComplex(NCollection_List<HLRAlgo_Interference>&           IL,
                                        const HLRBRep_EdgeInterferenceTool& T)
 {
   TopCnx_EdgeFaceTransition              transTool;
   gp_Dir                                 TgtE, NormE, TgtI, NormI;
-  const Standard_Real                    TolAng = 0.0001;
-  Standard_Real                          CurvE, CurvI;
-  HLRAlgo_ListIteratorOfInterferenceList It1(IL);
+  const double                    TolAng = 0.0001;
+  double                          CurvE, CurvI;
+  NCollection_List<HLRAlgo_Interference>::Iterator It1(IL);
 
   while (It1.More())
   {
-    HLRAlgo_ListIteratorOfInterferenceList It2(It1);
+    NCollection_List<HLRAlgo_Interference>::Iterator It2(It1);
     It2.Next();
     if (It2.More())
     {
@@ -129,12 +129,12 @@ void HLRBRep_EdgeIList::ProcessComplex(HLRAlgo_InterferenceList&           IL,
   /*
     //Removing "coinciding" interference
 
-    Standard_Real p1, p2;
-    Standard_Real eps = 1.e-7;
-    HLRAlgo_InterferenceList ILNew;
+    double p1, p2;
+    double eps = 1.e-7;
+    NCollection_List<HLRAlgo_Interference> ILNew;
     HLRAlgo_Interference I1, I2;
     TopAbs_Orientation or1, or2;
-    Standard_Integer l1, l2; //levels
+    int l1, l2; //levels
     It1.Initialize(IL);
 
     if(It1.More()) {
@@ -144,7 +144,7 @@ void HLRBRep_EdgeIList::ProcessComplex(HLRAlgo_InterferenceList&           IL,
       or1 = I1.Transition();
 
       ILNew.Append(I1);
-      HLRAlgo_ListIteratorOfInterferenceList It2(ILNew);
+      NCollection_List<HLRAlgo_Interference>::Iterator It2(ILNew);
 
       It1.Next();
 

@@ -19,18 +19,18 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_CircularGrid, Aspect_Grid)
 
-Aspect_CircularGrid::Aspect_CircularGrid(const Standard_Real    aRadiusStep,
-                                         const Standard_Integer aDivisionNumber,
-                                         const Standard_Real    anXOrigin,
-                                         const Standard_Real    anYOrigin,
-                                         const Standard_Real    aRotationAngle)
+Aspect_CircularGrid::Aspect_CircularGrid(const double    aRadiusStep,
+                                         const int aDivisionNumber,
+                                         const double    anXOrigin,
+                                         const double    anYOrigin,
+                                         const double    aRotationAngle)
     : Aspect_Grid(anXOrigin, anYOrigin, aRotationAngle),
       myRadiusStep(aRadiusStep),
       myDivisionNumber(aDivisionNumber)
 {
 }
 
-void Aspect_CircularGrid::SetRadiusStep(const Standard_Real aRadiusStep)
+void Aspect_CircularGrid::SetRadiusStep(const double aRadiusStep)
 {
   Standard_NegativeValue_Raise_if(aRadiusStep < 0., "invalid radius step");
   Standard_NullValue_Raise_if(aRadiusStep == 0., "invalid radius step");
@@ -39,7 +39,7 @@ void Aspect_CircularGrid::SetRadiusStep(const Standard_Real aRadiusStep)
   UpdateDisplay();
 }
 
-void Aspect_CircularGrid::SetDivisionNumber(const Standard_Integer aNumber)
+void Aspect_CircularGrid::SetDivisionNumber(const int aNumber)
 {
   Standard_NegativeValue_Raise_if(aNumber < 0., "invalid division number");
   Standard_NullValue_Raise_if(aNumber == 0., "invalid division number");
@@ -48,11 +48,11 @@ void Aspect_CircularGrid::SetDivisionNumber(const Standard_Integer aNumber)
   UpdateDisplay();
 }
 
-void Aspect_CircularGrid::SetGridValues(const Standard_Real    theXOrigin,
-                                        const Standard_Real    theYOrigin,
-                                        const Standard_Real    theRadiusStep,
-                                        const Standard_Integer theDivisionNumber,
-                                        const Standard_Real    theRotationAngle)
+void Aspect_CircularGrid::SetGridValues(const double    theXOrigin,
+                                        const double    theYOrigin,
+                                        const double    theRadiusStep,
+                                        const int theDivisionNumber,
+                                        const double    theRotationAngle)
 {
   myXOrigin = theXOrigin;
   myYOrigin = theYOrigin;
@@ -67,28 +67,28 @@ void Aspect_CircularGrid::SetGridValues(const Standard_Real    theXOrigin,
   UpdateDisplay();
 }
 
-void Aspect_CircularGrid::Compute(const Standard_Real X,
-                                  const Standard_Real Y,
-                                  Standard_Real&      gridX,
-                                  Standard_Real&      gridY) const
+void Aspect_CircularGrid::Compute(const double X,
+                                  const double Y,
+                                  double&      gridX,
+                                  double&      gridY) const
 {
 
-  Standard_Real    xo      = XOrigin();
-  Standard_Real    yo      = YOrigin();
-  Standard_Real    d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
-  Standard_Integer n       = (Standard_Integer)(d / myRadiusStep + 0.5);
-  Standard_Real    radius  = Standard_Real(n) * myRadiusStep;
-  Standard_Real    cosinus = (X - xo) / d;
-  Standard_Real    a       = std::acos(cosinus);
-  Standard_Real    ra      = RotationAngle();
+  double    xo      = XOrigin();
+  double    yo      = YOrigin();
+  double    d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
+  int n       = (int)(d / myRadiusStep + 0.5);
+  double    radius  = double(n) * myRadiusStep;
+  double    cosinus = (X - xo) / d;
+  double    a       = std::acos(cosinus);
+  double    ra      = RotationAngle();
   if (Y < yo)
     a = 2 * M_PI - a;
-  n = (Standard_Integer)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
+  n = (int)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
-  Standard_Real    cs = 0, sn = 0;
-  Standard_Boolean done = Standard_False;
-  Standard_Integer nmax = 2 * myDivisionNumber;
-  Standard_Integer nquad, qmax;
+  double    cs = 0, sn = 0;
+  bool done = false;
+  int nmax = 2 * myDivisionNumber;
+  int nquad, qmax;
 
   if (ra == 0.)
   {
@@ -96,7 +96,7 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
     qmax  = nmax / nquad;
     if ((n == 0) || (!(nmax % nquad) && !(n % qmax)))
     {
-      Standard_Integer q = n / qmax;
+      int q = n / qmax;
       switch (q)
       {
         default:
@@ -117,7 +117,7 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
           sn = -1.;
           break;
       }
-      done = Standard_True;
+      done = true;
     }
     else
     {
@@ -125,7 +125,7 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
       qmax  = nmax / nquad;
       if (!(nmax % nquad) && !(n % qmax))
       {
-        Standard_Integer q = n / qmax;
+        int q = n / qmax;
         switch (q)
         {
           default:
@@ -138,14 +138,14 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
             sn = 0.;
             break;
         }
-        done = Standard_True;
+        done = true;
       }
     }
   }
 
   if (!done)
   {
-    Standard_Real ang = ra + Standard_Real(n) * myAlpha;
+    double ang = ra + double(n) * myAlpha;
     cs                = std::cos(ang);
     sn                = std::sin(ang);
   }
@@ -153,26 +153,26 @@ void Aspect_CircularGrid::Compute(const Standard_Real X,
   gridY = yo + sn * radius;
 }
 
-Standard_Real Aspect_CircularGrid::RadiusStep() const
+double Aspect_CircularGrid::RadiusStep() const
 {
   return myRadiusStep;
 }
 
-Standard_Integer Aspect_CircularGrid::DivisionNumber() const
+int Aspect_CircularGrid::DivisionNumber() const
 {
   return myDivisionNumber;
 }
 
 void Aspect_CircularGrid::Init()
 {
-  myAlpha = M_PI / Standard_Real(myDivisionNumber);
+  myAlpha = M_PI / double(myDivisionNumber);
   myA1    = std::cos(myAlpha);
   myB1    = std::sin(myAlpha);
 }
 
 //=================================================================================================
 
-void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

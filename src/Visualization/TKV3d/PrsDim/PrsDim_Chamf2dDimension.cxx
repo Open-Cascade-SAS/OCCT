@@ -44,8 +44,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf2dDimension, PrsDim_Relation)
 //=================================================================================================
 
 PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                                 const Handle(Geom_Plane)&         aPlane,
-                                                 const Standard_Real               aVal,
+                                                 const occ::handle<Geom_Plane>&         aPlane,
+                                                 const double               aVal,
                                                  const TCollection_ExtendedString& aText)
     : PrsDim_Relation()
 {
@@ -54,7 +54,7 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
   myVal               = aVal;
   myText              = aText;
   mySymbolPrs         = DsgPrs_AS_LASTAR;
-  myAutomaticPosition = Standard_True;
+  myAutomaticPosition = true;
 
   myArrowSize = myVal / 100.;
 }
@@ -62,12 +62,12 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
 //=================================================================================================
 
 PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                                 const Handle(Geom_Plane)&         aPlane,
-                                                 const Standard_Real               aVal,
+                                                 const occ::handle<Geom_Plane>&         aPlane,
+                                                 const double               aVal,
                                                  const TCollection_ExtendedString& aText,
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
-                                                 const Standard_Real               anArrowSize)
+                                                 const double               anArrowSize)
     : PrsDim_Relation()
 {
   myFShape    = aFShape;
@@ -77,22 +77,22 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
   myPosition  = aPosition;
   mySymbolPrs = aSymbolPrs;
   SetArrowSize(anArrowSize);
-  myAutomaticPosition = Standard_False;
+  myAutomaticPosition = false;
 }
 
 //=================================================================================================
 
-void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                      const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Standard_Integer)
+void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                      const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const int)
 {
-  Handle(Geom_Curve) gcurv;
+  occ::handle<Geom_Curve> gcurv;
   gp_Pnt             pfirst, plast;
   const TopoDS_Edge& thechamfedge = TopoDS::Edge(myFShape);
   if (!PrsDim::ComputeGeometry(thechamfedge, gcurv, pfirst, plast))
     return;
 
-  Handle(Geom_Line) glin = Handle(Geom_Line)::DownCast(gcurv);
+  occ::handle<Geom_Line> glin = occ::down_cast<Geom_Line>(gcurv);
   gp_Dir            dir1(glin->Position().Direction());
   gp_Dir            norm1 = myPlane->Pln().Axis().Direction();
   myDir                   = norm1.Crossed(dir1);
@@ -106,7 +106,7 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
   /*TopoDS_Edge nextedge = TopoDS::Edge(mySShape);
 
   gp_Pnt pfirstnext,plastnext;
-  Handle(Geom_Line) glinnext;
+  occ::handle<Geom_Line> glinnext;
   if (!PrsDim::ComputeGeometry(nextedge,glinnext,pfirstnext,plastnext) )
     return;
 
@@ -142,10 +142,10 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
   {
 
     myPntAttach.SetXYZ((pfirst.XYZ() + plast.XYZ()) / 2);
-    Handle(Geom_Line) dimLin    = new Geom_Line(myPntAttach, myDir);
-    Standard_Real     parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
+    occ::handle<Geom_Line> dimLin    = new Geom_Line(myPntAttach, myDir);
+    double     parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
     curpos                      = ElCLib::Value(parcurpos, dimLin->Lin());
-    // static Standard_Real minlength = 0.005;
+    // static double minlength = 0.005;
     // taille minimale de la dimension
 
     if (curpos.Distance(myPntAttach) < 5.)
@@ -157,8 +157,8 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
     myPosition = curpos;
   }
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
 
   //-------------------------------------------------
   // Calcul de la boite englobante du component pour
@@ -167,7 +167,7 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
 
   if (!myArrowSizeIsDefined)
   {
-    Standard_Real arrsize = myArrowSize;
+    double arrsize = myArrowSize;
     if ((myVal / 4) < arrsize)
       arrsize = myVal / 4;
     if (arrsize > 30.)
@@ -189,17 +189,17 @@ void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void PrsDim_Chamf2dDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                               const Standard_Integer)
+void PrsDim_Chamf2dDimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                               const int)
 {
-  Handle(SelectMgr_EntityOwner)     own = new SelectMgr_EntityOwner(this, 7);
-  Handle(Select3D_SensitiveSegment) seg =
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg =
     new Select3D_SensitiveSegment(own, myPntAttach, myPosition);
   aSelection->Add(seg);
 
   // Text
-  Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
-  Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
+  double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
                                                                 myPosition.X(),
                                                                 myPosition.Y(),
                                                                 myPosition.Z(),

@@ -25,11 +25,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_AlertExtended, Message_Alert)
 
 //=================================================================================================
 
-Handle(Message_Alert) Message_AlertExtended::AddAlert(const Handle(Message_Report)&    theReport,
-                                                      const Handle(Message_Attribute)& theAttribute,
+occ::handle<Message_Alert> Message_AlertExtended::AddAlert(const occ::handle<Message_Report>&    theReport,
+                                                      const occ::handle<Message_Attribute>& theAttribute,
                                                       const Message_Gravity            theGravity)
 {
-  Handle(Message_AlertExtended) anAlert = new Message_AlertExtended();
+  occ::handle<Message_AlertExtended> anAlert = new Message_AlertExtended();
   anAlert->SetAttribute(theAttribute);
   theReport->AddAlert(theGravity, anAlert);
   return anAlert;
@@ -37,7 +37,7 @@ Handle(Message_Alert) Message_AlertExtended::AddAlert(const Handle(Message_Repor
 
 //=================================================================================================
 
-Standard_CString Message_AlertExtended::GetMessageKey() const
+const char* Message_AlertExtended::GetMessageKey() const
 {
   if (myAttribute.IsNull())
   {
@@ -48,8 +48,8 @@ Standard_CString Message_AlertExtended::GetMessageKey() const
 
 //=================================================================================================
 
-Handle(Message_CompositeAlerts) Message_AlertExtended::CompositeAlerts(
-  const Standard_Boolean theToCreate)
+occ::handle<Message_CompositeAlerts> Message_AlertExtended::CompositeAlerts(
+  const bool theToCreate)
 {
   if (myCompositAlerts.IsNull() && theToCreate)
   {
@@ -60,11 +60,11 @@ Handle(Message_CompositeAlerts) Message_AlertExtended::CompositeAlerts(
 
 //=================================================================================================
 
-Standard_Boolean Message_AlertExtended::SupportsMerge() const
+bool Message_AlertExtended::SupportsMerge() const
 {
   if (myCompositAlerts.IsNull())
   {
-    return Standard_True;
+    return true;
   }
 
   // hierarchical alerts can not be merged
@@ -72,24 +72,24 @@ Standard_Boolean Message_AlertExtended::SupportsMerge() const
   {
     if (!myCompositAlerts->Alerts((Message_Gravity)aGravIter).IsEmpty())
     {
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Message_AlertExtended::Merge(const Handle(Message_Alert)& /*theTarget*/)
+bool Message_AlertExtended::Merge(const occ::handle<Message_Alert>& /*theTarget*/)
 {
   // by default, merge trivially
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void Message_AlertExtended::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Message_AlertExtended::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

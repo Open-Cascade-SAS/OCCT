@@ -7,10 +7,7 @@ set(OCCT_TNaming_FILES
   TNaming_Builder.hxx
   TNaming_CopyShape.cxx
   TNaming_CopyShape.hxx
-  TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx
-  TNaming_DataMapIteratorOfDataMapOfShapeShapesSet.hxx
-  TNaming_DataMapOfShapePtrRefShape.hxx
-  TNaming_DataMapOfShapeShapesSet.hxx
+
   TNaming_DeltaOnModification.cxx
   TNaming_DeltaOnModification.hxx
   TNaming_DeltaOnRemoval.cxx
@@ -22,16 +19,10 @@ set(OCCT_TNaming_FILES
   TNaming_Iterator.lxx
   TNaming_IteratorOnShapesSet.hxx
   TNaming_IteratorOnShapesSet.lxx
-  TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape.hxx
-  TNaming_ListIteratorOfListOfMapOfShape.hxx
-  TNaming_ListIteratorOfListOfNamedShape.hxx
-  TNaming_ListOfIndexedDataMapOfShapeListOfShape.hxx
-  TNaming_ListOfMapOfShape.hxx
-  TNaming_ListOfNamedShape.hxx
+
   TNaming_Localizer.cxx
   TNaming_Localizer.hxx
-  TNaming_MapIteratorOfMapOfNamedShape.hxx
-  TNaming_MapOfNamedShape.hxx
+
   TNaming_Name.cxx
   TNaming_Name.hxx
   TNaming_NamedShape.cxx
@@ -42,7 +33,7 @@ set(OCCT_TNaming_FILES
   TNaming_Naming.hxx
   TNaming_NamingTool.cxx
   TNaming_NamingTool.hxx
-  TNaming_NCollections.hxx
+
   TNaming_NewShapeIterator.hxx
   TNaming_NewShapeIterator.lxx
   TNaming_OldShapeIterator.hxx

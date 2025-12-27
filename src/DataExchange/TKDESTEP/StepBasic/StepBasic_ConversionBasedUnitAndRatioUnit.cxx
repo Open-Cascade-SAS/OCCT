@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndRatioUnit, StepBasic_
 StepBasic_ConversionBasedUnitAndRatioUnit::StepBasic_ConversionBasedUnitAndRatioUnit() {}
 
 void StepBasic_ConversionBasedUnitAndRatioUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -36,12 +36,12 @@ void StepBasic_ConversionBasedUnitAndRatioUnit::Init(
 }
 
 void StepBasic_ConversionBasedUnitAndRatioUnit::SetRatioUnit(
-  const Handle(StepBasic_RatioUnit)& aRatioUnit)
+  const occ::handle<StepBasic_RatioUnit>& aRatioUnit)
 {
   ratioUnit = aRatioUnit;
 }
 
-Handle(StepBasic_RatioUnit) StepBasic_ConversionBasedUnitAndRatioUnit::RatioUnit() const
+occ::handle<StepBasic_RatioUnit> StepBasic_ConversionBasedUnitAndRatioUnit::RatioUnit() const
 {
   return ratioUnit;
 }

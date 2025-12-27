@@ -26,7 +26,7 @@ class StepTidy_VectorReducer : public StepTidy_EntityReducer<StepGeom_Vector, St
 public:
   //! Constructor. Stores the work session and registers replacer functions.
   //! @param theWS the work session.
-  Standard_EXPORT StepTidy_VectorReducer(const Handle(XSControl_WorkSession)& theWS);
+  Standard_EXPORT StepTidy_VectorReducer(const occ::handle<XSControl_WorkSession>& theWS);
 
 private:
   //! Replaces the old vector with the new one in the StepGeom_Line entity.
@@ -34,9 +34,9 @@ private:
   //! @param theNewEntity the new vector to replace the old one.
   //! @param theSharing the StepGeom_Line entity to update.
   //! @return true if the vector was replaced, false otherwise.
-  static bool replaceLine(const Handle(StepGeom_Vector)& theOldEntity,
-                          const Handle(StepGeom_Vector)& theNewEntity,
-                          Handle(Standard_Transient)     theSharing);
+  static bool replaceLine(const occ::handle<StepGeom_Vector>& theOldEntity,
+                          const occ::handle<StepGeom_Vector>& theNewEntity,
+                          occ::handle<Standard_Transient>     theSharing);
 };
 
 #endif // _StepTidy_VectorReducer_HeaderFile

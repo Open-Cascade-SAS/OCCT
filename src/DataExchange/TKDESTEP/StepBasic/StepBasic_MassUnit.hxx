@@ -21,9 +21,6 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-class StepBasic_MassUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_MassUnit, StepBasic_NamedUnit)
-
 //! Representation of STEP entity MassUnit
 class StepBasic_MassUnit : public StepBasic_NamedUnit
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MassUnit, StepBasic_NamedUnit)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_MassUnit_HeaderFile

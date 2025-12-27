@@ -31,22 +31,22 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolDiameterDimension::IGESDimen_ToolDiameterDimension() {}
 
-void IGESDimen_ToolDiameterDimension::ReadOwnParams(const Handle(IGESDimen_DiameterDimension)& ent,
-                                                    const Handle(IGESData_IGESReaderData)&     IR,
+void IGESDimen_ToolDiameterDimension::ReadOwnParams(const occ::handle<IGESDimen_DiameterDimension>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
                                                     IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  Handle(IGESDimen_GeneralNote) note;
-  Handle(IGESDimen_LeaderArrow) firstLeader;
-  Handle(IGESDimen_LeaderArrow) secondLeader;
+  occ::handle<IGESDimen_GeneralNote> note;
+  occ::handle<IGESDimen_LeaderArrow> firstLeader;
+  occ::handle<IGESDimen_LeaderArrow> secondLeader;
   gp_XY                         center;
 
   PR.ReadEntity(IR,
@@ -65,7 +65,7 @@ void IGESDimen_ToolDiameterDimension::ReadOwnParams(const Handle(IGESDimen_Diame
                 PR.Current(),
                 "Second Leader Entity",
                 // clang-format off
-		 STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+		 STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader, true); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadXY(PR.CurrentList(1, 2), "Arc Center Co-ords", center); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
@@ -74,7 +74,7 @@ void IGESDimen_ToolDiameterDimension::ReadOwnParams(const Handle(IGESDimen_Diame
   ent->Init(note, firstLeader, secondLeader, center);
 }
 
-void IGESDimen_ToolDiameterDimension::WriteOwnParams(const Handle(IGESDimen_DiameterDimension)& ent,
+void IGESDimen_ToolDiameterDimension::WriteOwnParams(const occ::handle<IGESDimen_DiameterDimension>& ent,
                                                      IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
@@ -84,7 +84,7 @@ void IGESDimen_ToolDiameterDimension::WriteOwnParams(const Handle(IGESDimen_Diam
   IW.Send(ent->Center().Y());
 }
 
-void IGESDimen_ToolDiameterDimension::OwnShared(const Handle(IGESDimen_DiameterDimension)& ent,
+void IGESDimen_ToolDiameterDimension::OwnShared(const occ::handle<IGESDimen_DiameterDimension>& ent,
                                                 Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
@@ -92,8 +92,8 @@ void IGESDimen_ToolDiameterDimension::OwnShared(const Handle(IGESDimen_DiameterD
   iter.GetOneItem(ent->SecondLeader());
 }
 
-void IGESDimen_ToolDiameterDimension::OwnCopy(const Handle(IGESDimen_DiameterDimension)& another,
-                                              const Handle(IGESDimen_DiameterDimension)& ent,
+void IGESDimen_ToolDiameterDimension::OwnCopy(const occ::handle<IGESDimen_DiameterDimension>& another,
+                                              const occ::handle<IGESDimen_DiameterDimension>& ent,
                                               Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
@@ -105,7 +105,7 @@ void IGESDimen_ToolDiameterDimension::OwnCopy(const Handle(IGESDimen_DiameterDim
 }
 
 IGESData_DirChecker IGESDimen_ToolDiameterDimension::DirChecker(
-  const Handle(IGESDimen_DiameterDimension)& /* ent */) const
+  const occ::handle<IGESDimen_DiameterDimension>& /* ent */) const
 {
   IGESData_DirChecker DC(206, 0);
   DC.Structure(IGESData_DefVoid);
@@ -116,18 +116,18 @@ IGESData_DirChecker IGESDimen_ToolDiameterDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDiameterDimension::OwnCheck(const Handle(IGESDimen_DiameterDimension)& /* ent */,
+void IGESDimen_ToolDiameterDimension::OwnCheck(const occ::handle<IGESDimen_DiameterDimension>& /* ent */,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& /* ach */) const
+                                               occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDimen_ToolDiameterDimension::OwnDump(const Handle(IGESDimen_DiameterDimension)& ent,
+void IGESDimen_ToolDiameterDimension::OwnDump(const occ::handle<IGESDimen_DiameterDimension>& ent,
                                               const IGESData_IGESDumper&                 dumper,
                                               Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+                                              const int level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDimen_DiameterDimension\n"
     << "General Note Entity : ";

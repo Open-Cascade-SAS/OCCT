@@ -26,19 +26,19 @@
 #include <BOPAlgo_Tools.hxx>
 #include <BRepLib.hxx>
 
-static Standard_Integer attachpcurve(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer edgestowire(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer edgestofaces(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor&, Standard_Integer, const char**);
+static int attachpcurve(Draw_Interpretor&, int, const char**);
+static int edgestowire(Draw_Interpretor&, int, const char**);
+static int edgestofaces(Draw_Interpretor&, int, const char**);
+static int BuildPcurvesOnPlane(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::UtilityCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
   // Commands
@@ -61,8 +61,8 @@ void BOPTest::UtilityCommands(Draw_Interpretor& theCommands)
 // function : BOPCommands
 // purpose  : Attaches p-curve of the given edge to the given face.
 //=======================================================================
-static Standard_Integer attachpcurve(Draw_Interpretor& theDI,
-                                     Standard_Integer  theNArg,
+static int attachpcurve(Draw_Interpretor& theDI,
+                                     int  theNArg,
                                      const char**      theArgVal)
 {
   if (theNArg != 4)
@@ -113,8 +113,8 @@ static Standard_Integer attachpcurve(Draw_Interpretor& theDI,
   TopoDS_Face aFace = TopoDS::Face(aShFace);
 
   // Try to copy PCurve from old edge to the new one.
-  Handle(IntTools_Context) aCtx = new IntTools_Context;
-  const Standard_Integer   iRet =
+  occ::handle<IntTools_Context> aCtx = new IntTools_Context;
+  const int   iRet =
     BOPTools_AlgoTools2D::AttachExistingPCurve(aEOld, aENew, aFace, aCtx);
 
   if (iRet)
@@ -133,8 +133,8 @@ static Standard_Integer attachpcurve(Draw_Interpretor& theDI,
 // function : edgestowire
 // purpose  : Orients the edges to make wire
 //=======================================================================
-static Standard_Integer edgestowire(Draw_Interpretor& theDI,
-                                    Standard_Integer  theNArg,
+static int edgestowire(Draw_Interpretor& theDI,
+                                    int  theNArg,
                                     const char**      theArgVal)
 {
   if (theNArg != 3)
@@ -159,8 +159,8 @@ static Standard_Integer edgestowire(Draw_Interpretor& theDI,
 // function : edgestofaces
 // purpose  : Creates planar faces from linear edges
 //=======================================================================
-static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
-                                     Standard_Integer  theNArg,
+static int edgestofaces(Draw_Interpretor& theDI,
+                                     int  theNArg,
                                      const char**      theArgVal)
 {
   if (theNArg < 3)
@@ -179,10 +179,10 @@ static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
     return 1;
   }
   //
-  Standard_Real    anAngTol = 1.e-8;
-  Standard_Boolean bShared  = Standard_False;
+  double    anAngTol = 1.e-8;
+  bool bShared  = false;
   //
-  for (Standard_Integer i = 3; i < theNArg; ++i)
+  for (int i = 3; i < theNArg; ++i)
   {
     if (!strcmp(theArgVal[i], "-a") && (i + 1 < theNArg))
     {
@@ -195,7 +195,7 @@ static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
   }
   //
   TopoDS_Shape     aWires;
-  Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+  int iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
   if (iErr)
   {
     theDI << "Unable to build wires from given edges\n";
@@ -203,7 +203,7 @@ static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
   }
   //
   TopoDS_Shape     aFaces;
-  Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+  bool bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
   if (!bDone)
   {
     theDI << "Unable to build faces from wires\n";
@@ -218,8 +218,8 @@ static Standard_Integer edgestofaces(Draw_Interpretor& theDI,
 // function : BuildPcurvesOnPlane
 // purpose  : Build and store pcurves of edges on planes
 //=======================================================================
-static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor& theDI,
-                                            Standard_Integer  theNArg,
+static int BuildPcurvesOnPlane(Draw_Interpretor& theDI,
+                                            int  theNArg,
                                             const char**      theArgVal)
 {
   if (theNArg != 2)
@@ -239,10 +239,10 @@ static Standard_Integer BuildPcurvesOnPlane(Draw_Interpretor& theDI,
   for (; exp.More(); exp.Next())
   {
     const TopoDS_Face&  aF = TopoDS::Face(exp.Current());
-    BRepAdaptor_Surface aS(aF, Standard_False);
+    BRepAdaptor_Surface aS(aF, false);
     if (aS.GetType() == GeomAbs_Plane)
     {
-      TopTools_ListOfShape aLE;
+      NCollection_List<TopoDS_Shape> aLE;
       TopExp_Explorer      exp1(aF, TopAbs_EDGE);
       for (; exp1.More(); exp1.Next())
         aLE.Append(exp1.Current());

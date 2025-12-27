@@ -19,12 +19,12 @@
 // Version	Date		Purpose
 //		0.0	Dec  1 1997	Creation
 
-inline Standard_Boolean TDF_ChildIDIterator::More() const
+inline bool TDF_ChildIDIterator::More() const
 {
   return !myAtt.IsNull();
 }
 
-inline Handle(TDF_Attribute) TDF_ChildIDIterator::Value() const
+inline occ::handle<TDF_Attribute> TDF_ChildIDIterator::Value() const
 {
   return myAtt;
 }

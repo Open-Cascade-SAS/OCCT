@@ -19,7 +19,7 @@
 // Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
-inline Standard_Boolean TDocStd_XLinkIterator::More() const
+inline bool TDocStd_XLinkIterator::More() const
 {
   return (myValue != NULL);
 }

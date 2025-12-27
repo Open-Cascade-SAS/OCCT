@@ -21,10 +21,10 @@
 
 RWStepGeom_RWVector::RWStepGeom_RWVector() {}
 
-void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                   const Standard_Integer                 num,
-                                   Handle(Interface_Check)&               ach,
-                                   const Handle(StepGeom_Vector)&         ent) const
+void RWStepGeom_RWVector::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                   const int                 num,
+                                   occ::handle<Interface_Check>&               ach,
+                                   const occ::handle<StepGeom_Vector>&         ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,20 +34,20 @@ void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : orientation ---
 
-  Handle(StepGeom_Direction) aOrientation;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Direction> aOrientation;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "orientation", ach, STANDARD_TYPE(StepGeom_Direction), aOrientation);
 
   // --- own field : magnitude ---
 
-  Standard_Real aMagnitude;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  double aMagnitude;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadReal(num, 3, "magnitude", ach, aMagnitude);
 
   //--- Initialisation of the read entity ---
@@ -56,7 +56,7 @@ void RWStepGeom_RWVector::ReadStep(const Handle(StepData_StepReaderData)& data,
 }
 
 void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
-                                    const Handle(StepGeom_Vector)& ent) const
+                                    const occ::handle<StepGeom_Vector>& ent) const
 {
 
   // --- inherited field name ---
@@ -72,16 +72,16 @@ void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
   SW.Send(ent->Magnitude());
 }
 
-void RWStepGeom_RWVector::Share(const Handle(StepGeom_Vector)& ent,
+void RWStepGeom_RWVector::Share(const occ::handle<StepGeom_Vector>& ent,
                                 Interface_EntityIterator&      iter) const
 {
 
   iter.GetOneItem(ent->Orientation());
 }
 
-void RWStepGeom_RWVector::Check(const Handle(StepGeom_Vector)& ent,
+void RWStepGeom_RWVector::Check(const occ::handle<StepGeom_Vector>& ent,
                                 const Interface_ShareTool&,
-                                Handle(Interface_Check)& ach) const
+                                occ::handle<Interface_Check>& ach) const
 {
   if (std::abs(ent->Magnitude()) < RealEpsilon())
   {

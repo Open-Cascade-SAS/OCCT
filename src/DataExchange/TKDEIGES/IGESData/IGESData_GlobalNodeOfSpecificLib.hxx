@@ -27,9 +27,6 @@ class IGESData_IGESEntity;
 class IGESData_SpecificLib;
 class IGESData_NodeOfSpecificLib;
 
-class IGESData_GlobalNodeOfSpecificLib;
-DEFINE_STANDARD_HANDLE(IGESData_GlobalNodeOfSpecificLib, Standard_Transient)
-
 class IGESData_GlobalNodeOfSpecificLib : public Standard_Transient
 {
 
@@ -41,25 +38,25 @@ public:
   //! nothing if already in the list, THAT IS, Same Type (exact
   //! match) and Same State (that is, IsEqual is not required)
   //! Once added, stores its attached Protocol in correspondence
-  Standard_EXPORT void Add(const Handle(IGESData_SpecificModule)& amodule,
-                           const Handle(IGESData_Protocol)&       aprotocol);
+  Standard_EXPORT void Add(const occ::handle<IGESData_SpecificModule>& amodule,
+                           const occ::handle<IGESData_Protocol>&       aprotocol);
 
   //! Returns the Module stored in a given GlobalNode
-  Standard_EXPORT const Handle(IGESData_SpecificModule)& Module() const;
+  Standard_EXPORT const occ::handle<IGESData_SpecificModule>& Module() const;
 
   //! Returns the attached Protocol stored in a given GlobalNode
-  Standard_EXPORT const Handle(IGESData_Protocol)& Protocol() const;
+  Standard_EXPORT const occ::handle<IGESData_Protocol>& Protocol() const;
 
   //! Returns the Next GlobalNode. If none is defined, returned
   //! value is a Null Handle
-  Standard_EXPORT const Handle(IGESData_GlobalNodeOfSpecificLib)& Next() const;
+  Standard_EXPORT const occ::handle<IGESData_GlobalNodeOfSpecificLib>& Next() const;
 
   DEFINE_STANDARD_RTTI_INLINE(IGESData_GlobalNodeOfSpecificLib, Standard_Transient)
 
 private:
-  Handle(IGESData_SpecificModule)          themod;
-  Handle(IGESData_Protocol)                theprot;
-  Handle(IGESData_GlobalNodeOfSpecificLib) thenext;
+  occ::handle<IGESData_SpecificModule>          themod;
+  occ::handle<IGESData_Protocol>                theprot;
+  occ::handle<IGESData_GlobalNodeOfSpecificLib> thenext;
 };
 
 #endif // _IGESData_GlobalNodeOfSpecificLib_HeaderFile

@@ -23,9 +23,11 @@
 
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Standard_Boolean.hxx>
-#include <HatchGen_PointsOnHatching.hxx>
+#include <HatchGen_PointOnHatching.hxx>
+#include <NCollection_Sequence.hxx>
 #include <HatchGen_ErrorStatus.hxx>
-#include <HatchGen_Domains.hxx>
+#include <HatchGen_Domain.hxx>
+#include <NCollection_Sequence.hxx>
 
 class gp_Pnt2d;
 
@@ -52,24 +54,24 @@ public:
 
   //! Sets the flag about the trimming computations to the
   //! given value.
-  Standard_EXPORT void TrimDone(const Standard_Boolean Flag);
+  Standard_EXPORT void TrimDone(const bool Flag);
 
   //! Returns the flag about the trimming computations.
-  Standard_EXPORT Standard_Boolean TrimDone() const;
+  Standard_EXPORT bool TrimDone() const;
 
   //! Sets the flag about the trimming failure to the
   //! given value.
-  Standard_EXPORT void TrimFailed(const Standard_Boolean Flag);
+  Standard_EXPORT void TrimFailed(const bool Flag);
 
   //! Returns the flag about the trimming failure.
-  Standard_EXPORT Standard_Boolean TrimFailed() const;
+  Standard_EXPORT bool TrimFailed() const;
 
   //! Sets the flag about the domains computation to the
   //! given value.
-  Standard_EXPORT void IsDone(const Standard_Boolean Flag);
+  Standard_EXPORT void IsDone(const bool Flag);
 
   //! Returns the flag about the domains computation.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Sets the error status.
   Standard_EXPORT void Status(const HatchGen_ErrorStatus theStatus);
@@ -79,29 +81,29 @@ public:
 
   //! Adds an intersection point to the hatching.
   Standard_EXPORT void AddPoint(const HatchGen_PointOnHatching& Point,
-                                const Standard_Real             Confusion);
+                                const double             Confusion);
 
   //! Returns the number of intersection points
   //! of the hatching.
-  Standard_EXPORT Standard_Integer NbPoints() const;
+  Standard_EXPORT int NbPoints() const;
 
   //! Returns the Index-th intersection point of the
   //! hatching.
   //! The exception OutOfRange is raised if
   //! Index < 1 or Index > NbPoints.
-  Standard_EXPORT const HatchGen_PointOnHatching& Point(const Standard_Integer Index) const;
+  Standard_EXPORT const HatchGen_PointOnHatching& Point(const int Index) const;
 
   //! Returns the Index-th intersection point of the
   //! hatching.
   //! The exception OutOfRange is raised if
   //! Index < 1 or Index > NbPoints.
-  Standard_EXPORT HatchGen_PointOnHatching& ChangePoint(const Standard_Integer Index);
+  Standard_EXPORT HatchGen_PointOnHatching& ChangePoint(const int Index);
 
   //! Removes the Index-th intersection point of the
   //! hatching.
   //! The exception OutOfRange is raised if
   //! Index < 1 or Index > NbPoints.
-  Standard_EXPORT void RemPoint(const Standard_Integer Index);
+  Standard_EXPORT void RemPoint(const int Index);
 
   //! Removes all the intersection points of the hatching.
   Standard_EXPORT void ClrPoints();
@@ -110,17 +112,17 @@ public:
   Standard_EXPORT void AddDomain(const HatchGen_Domain& Domain);
 
   //! Returns the number of domains of the hatching.
-  Standard_EXPORT Standard_Integer NbDomains() const;
+  Standard_EXPORT int NbDomains() const;
 
   //! Returns the Index-th domain of the hatching.
   //! The exception OutOfRange is raised if
   //! Index < 1 or Index > NbDomains.
-  Standard_EXPORT const HatchGen_Domain& Domain(const Standard_Integer Index) const;
+  Standard_EXPORT const HatchGen_Domain& Domain(const int Index) const;
 
   //! Removes the Index-th domain of the hatching.
   //! The exception OutOfRange is raised if
   //! Index < 1 or Index > NbDomains.
-  Standard_EXPORT void RemDomain(const Standard_Integer Index);
+  Standard_EXPORT void RemDomain(const int Index);
 
   //! Removes all the domains of the hatching.
   Standard_EXPORT void ClrDomains();
@@ -129,15 +131,14 @@ public:
   //! This point will be used for the classification.
   Standard_EXPORT gp_Pnt2d ClassificationPoint() const;
 
-protected:
 private:
   Geom2dAdaptor_Curve       myCurve;
-  Standard_Boolean          myTrimDone;
-  Standard_Boolean          myTrimFailed;
-  HatchGen_PointsOnHatching myPoints;
-  Standard_Boolean          myIsDone;
+  bool          myTrimDone;
+  bool          myTrimFailed;
+  NCollection_Sequence<HatchGen_PointOnHatching> myPoints;
+  bool          myIsDone;
   HatchGen_ErrorStatus      myStatus;
-  HatchGen_Domains          myDomains;
+  NCollection_Sequence<HatchGen_Domain>          myDomains;
 };
 
 #endif // _Geom2dHatch_Hatching_HeaderFile

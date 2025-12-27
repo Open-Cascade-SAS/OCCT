@@ -21,14 +21,14 @@
 
 //=================================================================================================
 
-void StdSelect::SetDrawerForBRepOwner(const Handle(SelectMgr_Selection)& /*Sel*/,
-                                      const Handle(Prs3d_Drawer)& /*Drwr*/)
+void StdSelect::SetDrawerForBRepOwner(const occ::handle<SelectMgr_Selection>& /*Sel*/,
+                                      const occ::handle<Prs3d_Drawer>& /*Drwr*/)
 {
-  //  Handle(StdSelect_BRepOwner) BROWN;
+  //  occ::handle<StdSelect_BRepOwner> BROWN;
 
   //   for(Sel->Init();Sel->More();Sel->Next()){
   //     BROWN =
-  //     Handle(StdSelect_BRepOwner)::DownCast(Sel->Sensitive()->BaseSensitive()->OwnerId());
+  //     occ::down_cast<StdSelect_BRepOwner>(Sel->Sensitive()->BaseSensitive()->OwnerId());
   //     if(!BROWN.IsNull())
   //       BROWN->SetDrawer(Drwr);
   //   }

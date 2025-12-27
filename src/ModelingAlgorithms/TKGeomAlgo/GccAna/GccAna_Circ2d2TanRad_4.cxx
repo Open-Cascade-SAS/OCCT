@@ -26,7 +26,7 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <Precision.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 // circular tangent to two lines of given radius
 //===============================================
@@ -41,8 +41,8 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                            const GccEnt_QualifiedLin& Qualified2,
-                                           const Standard_Real        Radius,
-                                           const Standard_Real)
+                                           const double        Radius,
+                                           const double)
     : qualifier1(1, 4),
       qualifier2(1, 4),
       TheSame1(1, 4),
@@ -57,12 +57,12 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
 {
 
   gp_Dir2d             dirx(gp_Dir2d::D::X);
-  TColStd_Array1OfReal cote1(1, 2);
-  TColStd_Array1OfReal cote2(1, 2);
-  Standard_Integer     nbrcote1 = 0;
-  Standard_Integer     nbrcote2 = 0;
+  NCollection_Array1<double> cote1(1, 2);
+  NCollection_Array1<double> cote2(1, 2);
+  int     nbrcote1 = 0;
+  int     nbrcote2 = 0;
   NbrSol                        = 0;
-  WellDone                      = Standard_False;
+  WellDone                      = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsOutside() || Qualified2.IsUnqualified()))
   {
@@ -71,14 +71,14 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
   }
   gp_Lin2d      L1     = Qualified1.Qualified();
   gp_Lin2d      L2     = Qualified2.Qualified();
-  Standard_Real x1dir  = (L1.Direction()).X();
-  Standard_Real y1dir  = (L1.Direction()).Y();
-  Standard_Real lx1loc = (L1.Location()).X();
-  Standard_Real ly1loc = (L1.Location()).Y();
-  Standard_Real x2dir  = (L2.Direction()).X();
-  Standard_Real y2dir  = (L2.Direction()).Y();
-  Standard_Real lx2loc = (L2.Location()).X();
-  Standard_Real ly2loc = (L2.Location()).Y();
+  double x1dir  = (L1.Direction()).X();
+  double y1dir  = (L1.Direction()).Y();
+  double lx1loc = (L1.Location()).X();
+  double ly1loc = (L1.Location()).Y();
+  double x2dir  = (L2.Direction()).X();
+  double y2dir  = (L2.Direction()).Y();
+  double lx2loc = (L2.Location()).X();
+  double ly2loc = (L2.Location()).Y();
   gp_Pnt2d      origin1(lx1loc, ly1loc);
   gp_Pnt2d      origin2(lx2loc, ly2loc);
   gp_Dir2d      normL1(x1dir, y1dir);
@@ -91,7 +91,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
   {
     if (L1.Direction().IsParallel(L2.Direction(), Precision::Angular()))
     {
-      WellDone = Standard_True;
+      WellDone = true;
     }
     else
     {
@@ -173,9 +173,9 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
         cote2(1) = 1.0;
         cote2(2) = -1.0;
       }
-      for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+      for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
       {
-        for (Standard_Integer jcote2 = 1; jcote2 <= nbrcote2; jcote2++)
+        for (int jcote2 = 1; jcote2 <= nbrcote2; jcote2++)
         {
           gp_Lin2d                 linint1(gp_Pnt2d(lx1loc - cote1(jcote1) * y1dir * Radius,
                                     ly1loc + cote1(jcote1) * x1dir * Radius),
@@ -188,7 +188,7 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
           {
             if (!Intp.IsEmpty())
             {
-              for (Standard_Integer i = 1; i <= Intp.NbPoints(); i++)
+              for (int i = 1; i <= Intp.NbPoints(); i++)
               {
                 NbrSol++;
                 gp_Pnt2d Center(Intp.Point(i).Value());
@@ -228,13 +228,13 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
                   gp_Pnt2d(Center.XY() + cote2(jcote2) * Radius * gp_XY(y2dir, -x2dir));
               }
             }
-            WellDone = Standard_True;
+            WellDone = true;
           }
         }
       }
     }
   }
-  for (Standard_Integer i = 1; i <= NbrSol; i++)
+  for (int i = 1; i <= NbrSol; i++)
   {
     par1sol(i) = ElCLib::Parameter(cirsol(i), pnttg1sol(i));
     pararg1(i) = ElCLib::Parameter(L1, pnttg1sol(i));

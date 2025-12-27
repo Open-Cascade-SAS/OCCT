@@ -21,10 +21,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinition, Standard_Transient)
 StepBasic_ProductDefinition::StepBasic_ProductDefinition() {}
 
 void StepBasic_ProductDefinition::Init(
-  const Handle(TCollection_HAsciiString)&             aId,
-  const Handle(TCollection_HAsciiString)&             aDescription,
-  const Handle(StepBasic_ProductDefinitionFormation)& aFormation,
-  const Handle(StepBasic_ProductDefinitionContext)&   aFrameOfReference)
+  const occ::handle<TCollection_HAsciiString>&             aId,
+  const occ::handle<TCollection_HAsciiString>&             aDescription,
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation,
+  const occ::handle<StepBasic_ProductDefinitionContext>&   aFrameOfReference)
 {
   // --- classe own fields ---
   id               = aId;
@@ -33,45 +33,45 @@ void StepBasic_ProductDefinition::Init(
   frameOfReference = aFrameOfReference;
 }
 
-void StepBasic_ProductDefinition::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_ProductDefinition::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   id = aId;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinition::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinition::Id() const
 {
   return id;
 }
 
 void StepBasic_ProductDefinition::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ProductDefinition::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinition::Description() const
 {
   return description;
 }
 
 void StepBasic_ProductDefinition::SetFormation(
-  const Handle(StepBasic_ProductDefinitionFormation)& aFormation)
+  const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation)
 {
   formation = aFormation;
 }
 
-Handle(StepBasic_ProductDefinitionFormation) StepBasic_ProductDefinition::Formation() const
+occ::handle<StepBasic_ProductDefinitionFormation> StepBasic_ProductDefinition::Formation() const
 {
   return formation;
 }
 
 void StepBasic_ProductDefinition::SetFrameOfReference(
-  const Handle(StepBasic_ProductDefinitionContext)& aFrameOfReference)
+  const occ::handle<StepBasic_ProductDefinitionContext>& aFrameOfReference)
 {
   frameOfReference = aFrameOfReference;
 }
 
-Handle(StepBasic_ProductDefinitionContext) StepBasic_ProductDefinition::FrameOfReference() const
+occ::handle<StepBasic_ProductDefinitionContext> StepBasic_ProductDefinition::FrameOfReference() const
 {
   return frameOfReference;
 }

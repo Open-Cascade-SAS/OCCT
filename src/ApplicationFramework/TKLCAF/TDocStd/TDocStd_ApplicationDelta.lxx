@@ -15,7 +15,7 @@
 
 //=================================================================================================
 
-inline TDocStd_SequenceOfDocument& TDocStd_ApplicationDelta::GetDocuments()
+inline NCollection_Sequence<occ::handle<TDocStd_Document>>& TDocStd_ApplicationDelta::GetDocuments()
 {
   return myDocuments;
 }

@@ -40,7 +40,7 @@ void BRepExtrema_ExtCF::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
     return; // protect against non-geometric type (e.g. triangulation)
   BRepAdaptor_Curve aC(E);
   myHS = new BRepAdaptor_Surface(Surf);
-  Standard_Real aTolC, aTolS;
+  double aTolC, aTolS;
   //
   aTolS = std::min(BRep_Tool::Tolerance(F), Precision::Confusion());
   aTolS = std::min(Surf.UResolution(aTolS), Surf.VResolution(aTolS));
@@ -50,7 +50,7 @@ void BRepExtrema_ExtCF::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
   aTolC = aC.Resolution(aTolC);
   aTolC = std::max(aTolC, Precision::PConfusion());
   //
-  Standard_Real U1, U2, V1, V2;
+  double U1, U2, V1, V2;
   BRepTools::UVBounds(F, U1, U2, V1, V2);
   myExtCS.Initialize(*myHS, U1, U2, V1, V2, aTolC, aTolS);
 }
@@ -66,11 +66,11 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
   if (myHS.IsNull())
     return; // protect against non-geometric type (e.g. triangulation)
 
-  Standard_Real U1, U2;
+  double U1, U2;
   BRep_Tool::Range(E, U1, U2);
 
   BRepAdaptor_Curve         Curv(E);
-  Handle(BRepAdaptor_Curve) HC = new BRepAdaptor_Curve(Curv);
+  occ::handle<BRepAdaptor_Curve> HC = new BRepAdaptor_Curve(Curv);
   myExtCS.Perform(*HC, U1, U2);
 
   if (!myExtCS.IsDone())
@@ -81,18 +81,18 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
   else
   {
     // Exploration of points and classification
-    const Standard_Real     Tol = BRep_Tool::Tolerance(F2);
+    const double     Tol = BRep_Tool::Tolerance(F2);
     BRepTopAdaptor_FClass2d classifier(F2, Tol);
 
     // If the underlying surface of the face is periodic
     // Extrema should return the point within the period,
     // so there is no point to adjust it in classifier.
-    Standard_Boolean isAdjustPeriodic = Standard_False;
+    bool isAdjustPeriodic = false;
 
     Extrema_POnCurv P1;
     Extrema_POnSurf P2;
 
-    for (Standard_Integer i = 1; i <= myExtCS.NbExt(); i++)
+    for (int i = 1; i <= myExtCS.NbExt(); i++)
     {
       myExtCS.Points(i, P1, P2);
       P2.Parameter(U1, U2);

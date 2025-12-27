@@ -38,33 +38,33 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
 
   gp_Vec pvect(TgSecond.Crossed(TgFirst));
 
-  Standard_Real NTgSecond                = TgSecond.Magnitude();
-  Standard_Real NTgFirst                 = TgFirst.Magnitude();
-  Standard_Real NTgSecondNTgFirstAngular = NTgSecond * NTgFirst * Precision::Angular();
+  double NTgSecond                = TgSecond.Magnitude();
+  double NTgFirst                 = TgFirst.Magnitude();
+  double NTgSecondNTgFirstAngular = NTgSecond * NTgFirst * Precision::Angular();
 
   if (NTgFirst <= Precision::Confusion())
   {
-    TFirst.SetValue(Standard_True, IntSurf_Undecided);
-    TSecond.SetValue(Standard_True, IntSurf_Undecided);
+    TFirst.SetValue(true, IntSurf_Undecided);
+    TSecond.SetValue(true, IntSurf_Undecided);
   }
   else if ((NTgSecond <= Precision::Confusion()) || (pvect.Magnitude() <= NTgSecondNTgFirstAngular))
   {
-    TFirst.SetValue(Standard_True, IntSurf_Unknown, TgFirst.Dot(TgSecond) < 0.0);
-    TSecond.SetValue(Standard_True, IntSurf_Unknown, TgFirst.Dot(TgSecond) < 0.0);
+    TFirst.SetValue(true, IntSurf_Unknown, TgFirst.Dot(TgSecond) < 0.0);
+    TSecond.SetValue(true, IntSurf_Unknown, TgFirst.Dot(TgSecond) < 0.0);
   }
   else
   {
-    Standard_Real yu = pvect.Dot(Normale);
+    double yu = pvect.Dot(Normale);
     yu /= NTgSecond * NTgFirst;
     if (yu > 0.0001)
     {
-      TFirst.SetValue(Standard_False, IntSurf_In);
-      TSecond.SetValue(Standard_False, IntSurf_Out);
+      TFirst.SetValue(false, IntSurf_In);
+      TSecond.SetValue(false, IntSurf_Out);
     }
     else if (yu < -0.0001)
     {
-      TFirst.SetValue(Standard_False, IntSurf_Out);
-      TSecond.SetValue(Standard_False, IntSurf_In);
+      TFirst.SetValue(false, IntSurf_Out);
+      TSecond.SetValue(false, IntSurf_In);
     }
     else
     {
@@ -77,21 +77,21 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
       yu = pvect.Dot(Normale);
 
       if (yu>0.0000001) {
-	TFirst.SetValue(Standard_False,IntSurf_In);
-	TSecond.SetValue(Standard_False,IntSurf_Out);
+	TFirst.SetValue(false,IntSurf_In);
+	TSecond.SetValue(false,IntSurf_Out);
       }
       else if(yu<-0.0000001) {
-	TFirst.SetValue(Standard_False,IntSurf_Out);
-	TSecond.SetValue(Standard_False,IntSurf_In);
+	TFirst.SetValue(false,IntSurf_Out);
+	TSecond.SetValue(false,IntSurf_In);
       }
       else { 
-	TFirst.SetValue(Standard_True,IntSurf_Undecided);
-	TSecond.SetValue(Standard_True,IntSurf_Undecided);
+	TFirst.SetValue(true,IntSurf_Undecided);
+	TSecond.SetValue(true,IntSurf_Undecided);
       }
 
 #else
-      TFirst.SetValue(Standard_True, IntSurf_Undecided);
-      TSecond.SetValue(Standard_True, IntSurf_Undecided);
+      TFirst.SetValue(true, IntSurf_Undecided);
+      TSecond.SetValue(true, IntSurf_Undecided);
 
 #endif
     }
@@ -100,9 +100,9 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
 
 //=================================================================================================
 
-void IntSurf::SetPeriod(const Handle(Adaptor3d_Surface)& theFirstSurf,
-                        const Handle(Adaptor3d_Surface)& theSecondSurf,
-                        Standard_Real                    theArrOfPeriod[4])
+void IntSurf::SetPeriod(const occ::handle<Adaptor3d_Surface>& theFirstSurf,
+                        const occ::handle<Adaptor3d_Surface>& theSecondSurf,
+                        double                    theArrOfPeriod[4])
 {
   theArrOfPeriod[0] = theFirstSurf->IsUPeriodic() ? theFirstSurf->UPeriod() : 0.0;
   theArrOfPeriod[1] = theFirstSurf->IsVPeriodic() ? theFirstSurf->VPeriod() : 0.0;

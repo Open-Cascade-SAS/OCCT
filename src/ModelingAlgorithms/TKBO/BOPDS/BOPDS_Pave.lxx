@@ -22,35 +22,35 @@ inline BOPDS_Pave::BOPDS_Pave()
 
 //=================================================================================================
 
-inline void BOPDS_Pave::SetIndex(const Standard_Integer theIndex)
+inline void BOPDS_Pave::SetIndex(const int theIndex)
 {
   myIndex = theIndex;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_Pave::Index() const
+inline int BOPDS_Pave::Index() const
 {
   return myIndex;
 }
 
 //=================================================================================================
 
-inline void BOPDS_Pave::SetParameter(const Standard_Real theParameter)
+inline void BOPDS_Pave::SetParameter(const double theParameter)
 {
   myParameter = theParameter;
 }
 
 //=================================================================================================
 
-inline Standard_Real BOPDS_Pave::Parameter() const
+inline double BOPDS_Pave::Parameter() const
 {
   return myParameter;
 }
 
 //=================================================================================================
 
-inline void BOPDS_Pave::Contents(Standard_Integer& theIndex, Standard_Real& theParameter) const
+inline void BOPDS_Pave::Contents(int& theIndex, double& theParameter) const
 {
   theIndex     = myIndex;
   theParameter = myParameter;
@@ -58,16 +58,16 @@ inline void BOPDS_Pave::Contents(Standard_Integer& theIndex, Standard_Real& theP
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_Pave::IsLess(const BOPDS_Pave& theOther) const
+inline bool BOPDS_Pave::IsLess(const BOPDS_Pave& theOther) const
 {
   return myParameter < theOther.myParameter;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther) const
+inline bool BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther) const
 {
-  Standard_Boolean bFlag;
+  bool bFlag;
   //
   bFlag = ((myIndex == theOther.myIndex) && (myParameter == theOther.myParameter));
   return bFlag;

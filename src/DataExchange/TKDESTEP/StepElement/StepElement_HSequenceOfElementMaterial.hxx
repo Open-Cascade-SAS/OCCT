@@ -14,9 +14,10 @@
 #ifndef StepElement_HSequenceOfElementMaterial_HeaderFile
 #define StepElement_HSequenceOfElementMaterial_HeaderFile
 
-#include <StepElement_SequenceOfElementMaterial.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
-DEFINE_HSEQUENCE(StepElement_HSequenceOfElementMaterial, StepElement_SequenceOfElementMaterial)
+DEFINE_HSEQUENCE(StepElement_HSequenceOfElementMaterial, NCollection_Sequence<occ::handle<StepElement_ElementMaterial>>)
 
 #endif

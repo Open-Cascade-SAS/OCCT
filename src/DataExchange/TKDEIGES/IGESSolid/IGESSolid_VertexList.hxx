@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 class gp_Pnt;
 
-class IGESSolid_VertexList;
-DEFINE_STANDARD_HANDLE(IGESSolid_VertexList, IGESData_IGESEntity)
-
 //! defines VertexList, Type <502> Form Number <1>
 //! in package IGESSolid
 //! A vertex is a point in R3. A vertex is the bound of an
@@ -42,20 +39,19 @@ public:
   //! This method is used to set the fields of the class
   //! VertexList
   //! - vertices : the vertices in the list
-  Standard_EXPORT void Init(const Handle(TColgp_HArray1OfXYZ)& vertices);
+  Standard_EXPORT void Init(const occ::handle<TColgp_HArray1OfXYZ>& vertices);
 
   //! return the number of vertices in the list
-  Standard_EXPORT Standard_Integer NbVertices() const;
+  Standard_EXPORT int NbVertices() const;
 
   //! returns the num'th vertex in the list
   //! raises exception if num <= 0 or num > NbVertices()
-  Standard_EXPORT gp_Pnt Vertex(const Standard_Integer num) const;
+  Standard_EXPORT gp_Pnt Vertex(const int num) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_VertexList, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TColgp_HArray1OfXYZ) theVertices;
+  occ::handle<TColgp_HArray1OfXYZ> theVertices;
 };
 
 #endif // _IGESSolid_VertexList_HeaderFile

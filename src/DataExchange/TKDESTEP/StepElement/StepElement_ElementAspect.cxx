@@ -27,14 +27,14 @@ StepElement_ElementAspect::StepElement_ElementAspect() {}
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::CaseNum(const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_ElementAspect::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::CaseMem(const Handle(StepData_SelectMember)& ent) const
+int StepElement_ElementAspect::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -64,7 +64,7 @@ Standard_Integer StepElement_ElementAspect::CaseMem(const Handle(StepData_Select
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_ElementAspect::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_ElementAspect::NewMember() const
 {
   return new StepElement_ElementAspectMember;
 }
@@ -73,29 +73,29 @@ Handle(StepData_SelectMember) StepElement_ElementAspect::NewMember() const
 
 void StepElement_ElementAspect::SetElementVolume(const StepElement_ElementVolume val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("ELEMENT_VOLUME");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("ELEMENT_VOLUME");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
 
 StepElement_ElementVolume StepElement_ElementAspect::ElementVolume() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return StepElement_Volume;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("ELEMENT_VOLUME");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("ELEMENT_VOLUME");
   if (name->IsDifferent(nameitem))
     return StepElement_Volume;
-  Standard_Integer          numit = SelMem->Enum();
+  int          numit = SelMem->Enum();
   StepElement_ElementVolume val;
   switch (numit)
   {
@@ -111,241 +111,241 @@ StepElement_ElementVolume StepElement_ElementAspect::ElementVolume() const
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetVolume3dFace(const Standard_Integer val)
+void StepElement_ElementAspect::SetVolume3dFace(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("VOLUME_3D_FACE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("VOLUME_3D_FACE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Volume3dFace() const
+int StepElement_ElementAspect::Volume3dFace() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("VOLUME_3D_FACE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("VOLUME_3D_FACE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetVolume2dFace(const Standard_Integer val)
+void StepElement_ElementAspect::SetVolume2dFace(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("VOLUME_2D_FACE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("VOLUME_2D_FACE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Volume2dFace() const
+int StepElement_ElementAspect::Volume2dFace() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("VOLUME_2D_FACE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("VOLUME_2D_FACE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetVolume3dEdge(const Standard_Integer val)
+void StepElement_ElementAspect::SetVolume3dEdge(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("VOLUME_3D_EDGE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("VOLUME_3D_EDGE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Volume3dEdge() const
+int StepElement_ElementAspect::Volume3dEdge() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("VOLUME_3D_EDGE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("VOLUME_3D_EDGE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetVolume2dEdge(const Standard_Integer val)
+void StepElement_ElementAspect::SetVolume2dEdge(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("VOLUME_2D_EDGE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("VOLUME_2D_EDGE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Volume2dEdge() const
+int StepElement_ElementAspect::Volume2dEdge() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("VOLUME_2D_EDGE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("VOLUME_2D_EDGE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetSurface3dFace(const Standard_Integer val)
+void StepElement_ElementAspect::SetSurface3dFace(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("SURFACE_3D_FACE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("SURFACE_3D_FACE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Surface3dFace() const
+int StepElement_ElementAspect::Surface3dFace() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("SURFACE_3D_FACE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("SURFACE_3D_FACE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetSurface2dFace(const Standard_Integer val)
+void StepElement_ElementAspect::SetSurface2dFace(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("SURFACE_2D_FACE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("SURFACE_2D_FACE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Surface2dFace() const
+int StepElement_ElementAspect::Surface2dFace() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("SURFACE_2D_FACE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("SURFACE_2D_FACE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetSurface3dEdge(const Standard_Integer val)
+void StepElement_ElementAspect::SetSurface3dEdge(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("SURFACE_3D_EDGE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("SURFACE_3D_EDGE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Surface3dEdge() const
+int StepElement_ElementAspect::Surface3dEdge() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("SURFACE_3D_EDGE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("SURFACE_3D_EDGE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
 //=================================================================================================
 
-void StepElement_ElementAspect::SetSurface2dEdge(const Standard_Integer val)
+void StepElement_ElementAspect::SetSurface2dEdge(const int val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("SURFACE_2D_EDGE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("SURFACE_2D_EDGE");
   SelMem->SetName(name->ToCString());
   SelMem->SetInteger(val);
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_ElementAspect::Surface2dEdge() const
+int StepElement_ElementAspect::Surface2dEdge() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("SURFACE_2D_EDGE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("SURFACE_2D_EDGE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Integer val = SelMem->Integer();
+  int val = SelMem->Integer();
   return val;
 }
 
@@ -353,29 +353,29 @@ Standard_Integer StepElement_ElementAspect::Surface2dEdge() const
 
 void StepElement_ElementAspect::SetCurveEdge(const StepElement_CurveEdge val)
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("CURVE_EDGE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("CURVE_EDGE");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
 
 StepElement_CurveEdge StepElement_ElementAspect::CurveEdge() const
 {
-  Handle(StepElement_ElementAspectMember) SelMem =
-    Handle(StepElement_ElementAspectMember)::DownCast(Value());
+  occ::handle<StepElement_ElementAspectMember> SelMem =
+    occ::down_cast<StepElement_ElementAspectMember>(Value());
   if (SelMem.IsNull())
     return StepElement_ElementEdge;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("CURVE_EDGE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("CURVE_EDGE");
   if (name->IsDifferent(nameitem))
     return StepElement_ElementEdge;
-  Standard_Integer      numit = SelMem->Enum();
+  int      numit = SelMem->Enum();
   StepElement_CurveEdge val;
   switch (numit)
   {

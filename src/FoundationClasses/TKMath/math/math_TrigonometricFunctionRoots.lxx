@@ -18,12 +18,12 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean math_TrigonometricFunctionRoots::InfiniteRoots() const
+inline bool math_TrigonometricFunctionRoots::InfiniteRoots() const
 {
   return InfiniteStatus;
 }
 
-inline Standard_Boolean math_TrigonometricFunctionRoots::IsDone() const
+inline bool math_TrigonometricFunctionRoots::IsDone() const
 {
   return Done;
 }
@@ -34,7 +34,7 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_Trigonometri
   return o;
 }
 
-inline Standard_Real math_TrigonometricFunctionRoots::Value(const Standard_Integer Index) const
+inline double math_TrigonometricFunctionRoots::Value(const int Index) const
 {
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
   StdFail_NotDone_Raise_if(!Done, " ");
@@ -42,7 +42,7 @@ inline Standard_Real math_TrigonometricFunctionRoots::Value(const Standard_Integ
   return Sol(Index);
 }
 
-inline Standard_Integer math_TrigonometricFunctionRoots::NbSolutions() const
+inline int math_TrigonometricFunctionRoots::NbSolutions() const
 {
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
   StdFail_NotDone_Raise_if(!Done, " ");

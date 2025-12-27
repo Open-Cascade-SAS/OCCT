@@ -14,7 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_BissecNewton::IsSolutionReached(math_FunctionWithDerivative&)
+inline bool math_BissecNewton::IsSolutionReached(math_FunctionWithDerivative&)
 {
   return std::abs(dx) <= XTol;
 }
@@ -25,24 +25,24 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_BissecNewton
   return o;
 }
 
-inline Standard_Boolean math_BissecNewton::IsDone() const
+inline bool math_BissecNewton::IsDone() const
 {
   return Done;
 }
 
-inline Standard_Real math_BissecNewton::Root() const
+inline double math_BissecNewton::Root() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return x;
 }
 
-inline Standard_Real math_BissecNewton::Derivative() const
+inline double math_BissecNewton::Derivative() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return df;
 }
 
-inline Standard_Real math_BissecNewton::Value() const
+inline double math_BissecNewton::Value() const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   return f;

@@ -34,12 +34,12 @@ TEST(BRepAdaptor_CompCurve_Test, OCC5696_EdgeMethod)
   BRepAdaptor_CompCurve aCurve(aWire);
 
   // Get curve parameters
-  Standard_Real aFirst = aCurve.FirstParameter();
-  Standard_Real aLast  = aCurve.LastParameter();
-  Standard_Real aPar   = (aFirst + aLast) / 2.0;
+  double aFirst = aCurve.FirstParameter();
+  double aLast  = aCurve.LastParameter();
+  double aPar   = (aFirst + aLast) / 2.0;
 
   // Test the Edge() method
-  Standard_Real aParEdge = 0.0;
+  double aParEdge = 0.0;
   TopoDS_Edge   anEdgeFound;
 
   // The original test was checking that this method doesn't throw an exception

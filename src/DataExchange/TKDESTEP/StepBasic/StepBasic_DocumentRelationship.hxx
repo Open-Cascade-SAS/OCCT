@@ -24,44 +24,40 @@
 class TCollection_HAsciiString;
 class StepBasic_Document;
 
-class StepBasic_DocumentRelationship;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentRelationship, Standard_Transient)
-
 class StepBasic_DocumentRelationship : public Standard_Transient
 {
 
 public:
   Standard_EXPORT StepBasic_DocumentRelationship();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(TCollection_HAsciiString)& aDescription,
-                            const Handle(StepBasic_Document)&       aRelating,
-                            const Handle(StepBasic_Document)&       aRelated);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<TCollection_HAsciiString>& aDescription,
+                            const occ::handle<StepBasic_Document>&       aRelating,
+                            const occ::handle<StepBasic_Document>&       aRelated);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(StepBasic_Document) RelatingDocument() const;
+  Standard_EXPORT occ::handle<StepBasic_Document> RelatingDocument() const;
 
-  Standard_EXPORT void SetRelatingDocument(const Handle(StepBasic_Document)& aRelating);
+  Standard_EXPORT void SetRelatingDocument(const occ::handle<StepBasic_Document>& aRelating);
 
-  Standard_EXPORT Handle(StepBasic_Document) RelatedDocument() const;
+  Standard_EXPORT occ::handle<StepBasic_Document> RelatedDocument() const;
 
-  Standard_EXPORT void SetRelatedDocument(const Handle(StepBasic_Document)& aRelated);
+  Standard_EXPORT void SetRelatedDocument(const occ::handle<StepBasic_Document>& aRelated);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentRelationship, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theName;
-  Handle(TCollection_HAsciiString) theDescription;
-  Handle(StepBasic_Document)       theRelating;
-  Handle(StepBasic_Document)       theRelated;
+  occ::handle<TCollection_HAsciiString> theName;
+  occ::handle<TCollection_HAsciiString> theDescription;
+  occ::handle<StepBasic_Document>       theRelating;
+  occ::handle<StepBasic_Document>       theRelated;
 };
 
 #endif // _StepBasic_DocumentRelationship_HeaderFile

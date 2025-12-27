@@ -110,7 +110,7 @@ void DrawDim_Distance::DrawOn(Draw_Display& dis) const
     // translate the point until the second face
     BRepAdaptor_Surface surf2(myPlane2);
     surf2.D0(0, 0, SAttach);
-    Standard_Real r = V.Dot(gp_Vec(FAttach, SAttach));
+    double r = V.Dot(gp_Vec(FAttach, SAttach));
     V *= r;
   }
 

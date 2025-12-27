@@ -21,7 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <AdvApprox_Cutting.hxx>
 #include <Standard_Boolean.hxx>
 
@@ -33,9 +33,9 @@ class AdvApprox_PrefAndRec : public AdvApprox_Cutting
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApprox_PrefAndRec(const TColStd_Array1OfReal& RecomendedCut,
-                                       const TColStd_Array1OfReal& PrefferedCut,
-                                       const Standard_Real         Weight = 5);
+  Standard_EXPORT AdvApprox_PrefAndRec(const NCollection_Array1<double>& RecomendedCut,
+                                       const NCollection_Array1<double>& PrefferedCut,
+                                       const double         Weight = 5);
 
   //! cuting value is
   //! - the recommended point nerest of (a+b)/2
@@ -43,16 +43,15 @@ public:
   //! -  the preferential point nearest of (a+b) / 2
   //! if pi is in ](r*a+b)/(r+1) , (a+r*b)/(r+1)[ where r = Weight
   //! -  or (a+b)/2 else.
-  Standard_EXPORT virtual Standard_Boolean Value(const Standard_Real a,
-                                                 const Standard_Real b,
-                                                 Standard_Real&      cuttingvalue) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Value(const double a,
+                                                 const double b,
+                                                 double&      cuttingvalue) const
+    override;
 
-protected:
 private:
-  TColStd_Array1OfReal myRecCutting;
-  TColStd_Array1OfReal myPrefCutting;
-  Standard_Real        myWeight;
+  NCollection_Array1<double> myRecCutting;
+  NCollection_Array1<double> myPrefCutting;
+  double        myWeight;
 };
 
 #endif // _AdvApprox_PrefAndRec_HeaderFile

@@ -23,8 +23,11 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 class BOPAlgo_PaveFiller;
 
 //! The algorithm is to build solids from set of shapes.
@@ -113,67 +116,67 @@ public:
   virtual ~BOPAlgo_MakerVolume();
 
   //! Empty constructor.
-  BOPAlgo_MakerVolume(const Handle(NCollection_BaseAllocator)& theAllocator);
+  BOPAlgo_MakerVolume(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   //! Clears the data.
-  virtual void Clear() Standard_OVERRIDE;
+  virtual void Clear() override;
 
   //! Sets the flag myIntersect:
   //! if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
   //! if <bIntersect> is FALSE no intersection will be done.
-  void SetIntersect(const Standard_Boolean bIntersect);
+  void SetIntersect(const bool bIntersect);
 
   //! Returns the flag <myIntersect>.
-  Standard_Boolean IsIntersect() const;
+  bool IsIntersect() const;
 
   //! Returns the solid box <mySBox>.
   const TopoDS_Solid& Box() const;
 
   //! Returns the processed faces <myFaces>.
-  const TopTools_ListOfShape& Faces() const;
+  const NCollection_List<TopoDS_Shape>& Faces() const;
 
   //! Defines the preventing of addition of internal for solid parts into the result.
   //! By default the internal parts are added into result.
-  void SetAvoidInternalShapes(const Standard_Boolean theAvoidInternal)
+  void SetAvoidInternalShapes(const bool theAvoidInternal)
   {
     myAvoidInternalShapes = theAvoidInternal;
   }
 
   //! Returns the AvoidInternalShapes flag
-  Standard_Boolean IsAvoidInternalShapes() const { return myAvoidInternalShapes; }
+  bool IsAvoidInternalShapes() const { return myAvoidInternalShapes; }
 
   //! Performs the operation.
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected:
   //! Checks the data.
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Performs the operation.
   Standard_EXPORT virtual void PerformInternal1(
     const BOPAlgo_PaveFiller&    thePF,
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Collects all faces.
   Standard_EXPORT void CollectFaces();
 
   //! Makes solid box.
-  Standard_EXPORT void MakeBox(TopTools_MapOfShape& theBoxFaces);
+  Standard_EXPORT void MakeBox(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces);
 
   //! Builds solids.
-  Standard_EXPORT void BuildSolids(TopTools_ListOfShape&        theLSR,
+  Standard_EXPORT void BuildSolids(NCollection_List<TopoDS_Shape>&        theLSR,
                                    const Message_ProgressRange& theRange);
 
   //! Removes the covering box.
-  Standard_EXPORT void RemoveBox(TopTools_ListOfShape&      theLSR,
-                                 const TopTools_MapOfShape& theBoxFaces);
+  Standard_EXPORT void RemoveBox(NCollection_List<TopoDS_Shape>&      theLSR,
+                                 const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces);
 
   //! Fills the solids with internal shapes.
-  Standard_EXPORT void FillInternalShapes(const TopTools_ListOfShape& theLSR);
+  Standard_EXPORT void FillInternalShapes(const NCollection_List<TopoDS_Shape>& theLSR);
 
   //! Builds the result.
-  Standard_EXPORT void BuildShape(const TopTools_ListOfShape& theLSR);
+  Standard_EXPORT void BuildShape(const NCollection_List<TopoDS_Shape>& theLSR);
 
 protected:
   //! List of operations to be supported by the Progress Indicator.
@@ -191,16 +194,15 @@ protected:
   };
 
   //! Analyze progress steps
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected:
-  Standard_Boolean     myIntersect;
+  bool     myIntersect;
   Bnd_Box              myBBox;
   TopoDS_Solid         mySBox;
-  TopTools_ListOfShape myFaces;
-  Standard_Boolean     myAvoidInternalShapes;
+  NCollection_List<TopoDS_Shape> myFaces;
+  bool     myAvoidInternalShapes;
 
-private:
 };
 
 #include <BOPAlgo_MakerVolume.lxx>

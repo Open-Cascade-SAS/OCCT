@@ -20,9 +20,6 @@
 
 #include <StepFEA_FeaModel.hxx>
 
-class StepFEA_FeaModel3d;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaModel3d, StepFEA_FeaModel)
-
 //! Representation of STEP entity FeaModel3d
 class StepFEA_FeaModel3d : public StepFEA_FeaModel
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel3d, StepFEA_FeaModel)
 
-protected:
-private:
 };
 
 #endif // _StepFEA_FeaModel3d_HeaderFile

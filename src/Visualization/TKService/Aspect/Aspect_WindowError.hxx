@@ -21,9 +21,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class Aspect_WindowError;
-DEFINE_STANDARD_HANDLE(Aspect_WindowError, Standard_OutOfRange)
-
 #if !defined No_Exception && !defined No_Aspect_WindowError
   #define Aspect_WindowError_Raise_if(CONDITION, MESSAGE)                                          \
     if (CONDITION)                                                                                 \

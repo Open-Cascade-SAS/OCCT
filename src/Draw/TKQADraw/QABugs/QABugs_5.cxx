@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static Standard_Integer OCC6001(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int OCC6001(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 4)
   {
@@ -40,8 +40,8 @@ static Standard_Integer OCC6001(Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
   const char*             name = argv[1];
-  Handle(Adaptor3d_Curve) hcurve;
-  Handle(Geom_Curve)      curve = DrawTrSurf::GetCurve(argv[2]);
+  occ::handle<Adaptor3d_Curve> hcurve;
+  occ::handle<Geom_Curve>      curve = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
     hcurve = new GeomAdaptor_Curve(curve);
   else
@@ -55,8 +55,8 @@ static Standard_Integer OCC6001(Draw_Interpretor& di, Standard_Integer argc, con
     BRepAdaptor_CompCurve comp_curve(TopoDS::Wire(wire));
     hcurve = new BRepAdaptor_CompCurve(comp_curve);
   }
-  Handle(Geom_Surface)        surf  = DrawTrSurf::GetSurface(argv[3]);
-  Handle(GeomAdaptor_Surface) hsurf = new GeomAdaptor_Surface(surf);
+  occ::handle<Geom_Surface>        surf  = DrawTrSurf::GetSurface(argv[3]);
+  occ::handle<GeomAdaptor_Surface> hsurf = new GeomAdaptor_Surface(surf);
   IntCurveSurface_HInter      inter;
   inter.Perform(hcurve, hsurf);
   int nb = inter.NbPoints();

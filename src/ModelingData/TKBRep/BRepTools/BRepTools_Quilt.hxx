@@ -20,7 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Shape;
@@ -76,7 +78,7 @@ public:
 
   //! Returns True if <S> has been copied (<S> is a
   //! vertex, an edge or a face)
-  Standard_EXPORT Standard_Boolean IsCopied(const TopoDS_Shape& S) const;
+  Standard_EXPORT bool IsCopied(const TopoDS_Shape& S) const;
 
   //! Returns the shape substituted to <S> in the Quilt.
   Standard_EXPORT const TopoDS_Shape& Copy(const TopoDS_Shape& S) const;
@@ -86,10 +88,9 @@ public:
   //! or not closed.
   Standard_EXPORT TopoDS_Shape Shells() const;
 
-protected:
 private:
-  TopTools_IndexedDataMapOfShapeShape myBounds;
-  Standard_Boolean                    hasCopy;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myBounds;
+  bool                    hasCopy;
 };
 
 #endif // _BRepTools_Quilt_HeaderFile

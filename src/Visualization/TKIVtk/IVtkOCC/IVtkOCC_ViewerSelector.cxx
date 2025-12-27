@@ -16,7 +16,8 @@
 #include <IVtkOCC_ViewerSelector.hxx>
 
 #include <Select3D_SensitiveBox.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Graphic3d_Camera.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
@@ -26,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
     : SelectMgr_ViewerSelector(),
       myPixTol(2),
-      myToUpdateTol(Standard_True)
+      myToUpdateTol(true)
 {
 }
 
@@ -36,12 +37,12 @@ IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector() {}
 
 //=================================================================================================
 
-Handle(Graphic3d_Camera) IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
+occ::handle<Graphic3d_Camera> IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
   const IVtk_IView::Handle& theView)
 {
-  Handle(Graphic3d_Camera) aCamera = new Graphic3d_Camera();
+  occ::handle<Graphic3d_Camera> aCamera = new Graphic3d_Camera();
   aCamera->SetZeroToOneDepth(true);
-  Standard_Boolean isOrthographic = !theView->IsPerspective();
+  bool isOrthographic = !theView->IsPerspective();
   aCamera->SetProjectionType(isOrthographic ? Graphic3d_Camera::Projection_Orthographic
                                             : Graphic3d_Camera::Projection_Perspective);
   if (isOrthographic)
@@ -52,7 +53,7 @@ Handle(Graphic3d_Camera) IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
   {
     aCamera->SetFOVy(theView->GetViewAngle());
   }
-  Standard_Real aZNear = 0.0, aZFar = 0.0;
+  double aZNear = 0.0, aZFar = 0.0;
   theView->GetClippingRange(aZNear, aZFar);
   aCamera->SetZRange(aZNear, aZFar);
   aCamera->SetAspect(theView->GetAspectRatio());
@@ -81,11 +82,11 @@ Handle(Graphic3d_Camera) IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
 // Method:  Pick
 // Purpose: Implements point picking
 //============================================================================
-void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXPix,
-                                  const Standard_Integer    theYPix,
+void IVtkOCC_ViewerSelector::Pick(const int    theXPix,
+                                  const int    theYPix,
                                   const IVtk_IView::Handle& theView)
 {
-  gp_Pnt2d aMousePos(static_cast<Standard_Real>(theXPix), static_cast<Standard_Real>(theYPix));
+  gp_Pnt2d aMousePos(static_cast<double>(theXPix), static_cast<double>(theYPix));
   mySelectingVolumeMgr.InitPointSelectingVolume(aMousePos);
 
   if (myToUpdateTol)
@@ -96,16 +97,16 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXPix,
     // screen's origin...
     mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
 
-    myToUpdateTol = Standard_False;
+    myToUpdateTol = false;
   }
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 
-  Standard_Integer aWidth = 0, aHeight = 0;
+  int aWidth = 0, aHeight = 0;
   theView->GetWindowSize(aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize(aWidth, aHeight);
-  Standard_Real aX = RealLast(), aY = RealLast();
-  Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
+  double aX = RealLast(), aY = RealLast();
+  double aVpWidth = RealLast(), aVpHeight = RealLast();
   theView->GetViewport(aX, aY, aVpWidth, aVpHeight);
   mySelectingVolumeMgr.SetViewport(aX, aY, aVpWidth, aVpHeight);
 
@@ -116,14 +117,14 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXPix,
 
 //=================================================================================================
 
-void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,
-                                  const Standard_Integer    theYMin,
-                                  const Standard_Integer    theXMax,
-                                  const Standard_Integer    theYMax,
+void IVtkOCC_ViewerSelector::Pick(const int    theXMin,
+                                  const int    theYMin,
+                                  const int    theXMax,
+                                  const int    theYMax,
                                   const IVtk_IView::Handle& theView)
 {
-  gp_Pnt2d aMinMousePos(static_cast<Standard_Real>(theXMin), static_cast<Standard_Real>(theYMin));
-  gp_Pnt2d aMaxMousePos(static_cast<Standard_Real>(theXMax), static_cast<Standard_Real>(theYMax));
+  gp_Pnt2d aMinMousePos(static_cast<double>(theXMin), static_cast<double>(theYMin));
+  gp_Pnt2d aMaxMousePos(static_cast<double>(theXMax), static_cast<double>(theYMax));
   mySelectingVolumeMgr.InitBoxSelectingVolume(aMinMousePos, aMaxMousePos);
 
   if (myToUpdateTol)
@@ -134,12 +135,12 @@ void IVtkOCC_ViewerSelector::Pick(const Standard_Integer    theXMin,
     // screen's origin...
     mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
 
-    myToUpdateTol = Standard_False;
+    myToUpdateTol = false;
   }
 
-  Standard_Integer aWidth = 0, aHeight = 0;
-  Standard_Real    aX = RealLast(), aY = RealLast();
-  Standard_Real    aVpWidth = RealLast(), aVpHeight = RealLast();
+  int aWidth = 0, aHeight = 0;
+  double    aX = RealLast(), aY = RealLast();
+  double    aVpWidth = RealLast(), aVpHeight = RealLast();
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 
@@ -160,9 +161,9 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
                                   const int                 theNbPoints,
                                   const IVtk_IView::Handle& theView)
 {
-  // Build TColgp_Array1OfPnt2d from input array of doubles
-  TColgp_Array1OfPnt2d aPolyline(1, theNbPoints);
-  for (Standard_Integer anIt = 0; anIt < theNbPoints; anIt++)
+  // Build NCollection_Array1<gp_Pnt2d> from input array of doubles
+  NCollection_Array1<gp_Pnt2d> aPolyline(1, theNbPoints);
+  for (int anIt = 0; anIt < theNbPoints; anIt++)
   {
     gp_XY aDispPnt = thePoly[anIt][2] != 0 ? gp_XY(thePoly[anIt][0] / thePoly[anIt][2],
                                                    thePoly[anIt][1] / thePoly[anIt][2])
@@ -179,12 +180,12 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
     // screen's origin...
     mySelectingVolumeMgr.SetPixelTolerance(myPixTol);
 
-    myToUpdateTol = Standard_False;
+    myToUpdateTol = false;
   }
 
-  Standard_Integer aWidth = 0, aHeight = 0;
-  Standard_Real    aX = RealLast(), aY = RealLast();
-  Standard_Real    aVpWidth = RealLast(), aVpHeight = RealLast();
+  int aWidth = 0, aHeight = 0;
+  double    aX = RealLast(), aY = RealLast();
+  double    aVpWidth = RealLast(), aVpHeight = RealLast();
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 
@@ -203,9 +204,9 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
 // Method:  Activate
 // Purpose: Activates the given selection
 //============================================================================
-void IVtkOCC_ViewerSelector::Activate(const Handle(SelectMgr_Selection)& theSelection)
+void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -224,9 +225,9 @@ void IVtkOCC_ViewerSelector::Activate(const Handle(SelectMgr_Selection)& theSele
 // Method:  Deactivate
 // Purpose: Deactivate the given selection
 //============================================================================
-void IVtkOCC_ViewerSelector::Deactivate(const Handle(SelectMgr_Selection)& theSelection)
+void IVtkOCC_ViewerSelector::Deactivate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter(
+  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

@@ -13,14 +13,14 @@
 
 //=================================================================================================
 
-inline void IGESControl_Reader::SetReadVisible(const Standard_Boolean ReadRoot)
+inline void IGESControl_Reader::SetReadVisible(const bool ReadRoot)
 {
   theReadOnlyVisible = ReadRoot;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean IGESControl_Reader::GetReadVisible() const
+inline bool IGESControl_Reader::GetReadVisible() const
 {
   return theReadOnlyVisible;
 }

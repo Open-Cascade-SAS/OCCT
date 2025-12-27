@@ -70,10 +70,10 @@ public: //! @name Setting/getting arguments
   const TopoDS_Shape& Shape2() const { return myTools.First(); }
 
   //! Sets the Tool arguments
-  void SetTools(const TopTools_ListOfShape& theLS) { myTools = theLS; }
+  void SetTools(const NCollection_List<TopoDS_Shape>& theLS) { myTools = theLS; }
 
   //! Returns the Tools arguments
-  const TopTools_ListOfShape& Tools() const { return myTools; }
+  const NCollection_List<TopoDS_Shape>& Tools() const { return myTools; }
 
 public: //! @name Setting/Getting the type of Boolean operation
   //! Sets the type of Boolean operation
@@ -85,7 +85,7 @@ public: //! @name Setting/Getting the type of Boolean operation
 public: //! @name Performing the operation
   //! Performs the Boolean operation.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 protected: //! @name Constructors
   //! Constructor to perform Boolean operation on only two arguments.
@@ -103,7 +103,7 @@ protected: //! @name Constructors
                                                const BOPAlgo_Operation   theOperation);
 
 protected:                          //! @name Fields
-  TopTools_ListOfShape myTools;     //!< Tool arguments of operation
+  NCollection_List<TopoDS_Shape> myTools;     //!< Tool arguments of operation
   BOPAlgo_Operation    myOperation; //!< Type of Boolean Operation
 };
 

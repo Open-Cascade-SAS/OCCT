@@ -28,7 +28,7 @@ GeomFill_Line::GeomFill_Line()
 
 //=================================================================================================
 
-GeomFill_Line::GeomFill_Line(const Standard_Integer NbPoints)
+GeomFill_Line::GeomFill_Line(const int NbPoints)
     : myNbPoints(NbPoints)
 {
 }

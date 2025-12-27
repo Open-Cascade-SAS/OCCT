@@ -62,7 +62,6 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
   TCollection_AsciiString myName;
   gp_Vec                  myBboxSize;

@@ -20,10 +20,6 @@
 
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 
-class StepAP242_DraughtingModelItemAssociation;
-DEFINE_STANDARD_HANDLE(StepAP242_DraughtingModelItemAssociation,
-                       StepAP242_ItemIdentifiedRepresentationUsage)
-
 //! Added for Dimensional Tolerances
 class StepAP242_DraughtingModelItemAssociation : public StepAP242_ItemIdentifiedRepresentationUsage
 {

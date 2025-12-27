@@ -23,7 +23,7 @@
 struct StepTidy_PlaneHasher
 {
   // Hashes the axis Planes.
-  std::size_t operator()(const Handle(StepGeom_Plane)& thePlane) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_Plane>& thePlane) const noexcept
   {
     const size_t aHash = StepTidy_Axis2Placement3dHasher{}(thePlane->Position());
     if (thePlane->Name().IsNull())
@@ -39,8 +39,8 @@ struct StepTidy_PlaneHasher
   }
 
   // Compares two axis Planes.
-  bool operator()(const Handle(StepGeom_Plane)& thePlane1,
-                  const Handle(StepGeom_Plane)& thePlane2) const noexcept
+  bool operator()(const occ::handle<StepGeom_Plane>& thePlane1,
+                  const occ::handle<StepGeom_Plane>& thePlane2) const noexcept
   {
     // Compare names.
     if (thePlane1->Name().IsNull() != thePlane2->Name().IsNull())

@@ -23,9 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESDimen_DimensionTolerance;
-DEFINE_STANDARD_HANDLE(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
-
 //! defines Dimension Tolerance, Type <406>, Form <29>
 //! in package IGESDimen
 //! Provides tolerance information for a dimension which
@@ -68,56 +65,55 @@ public:
   //! 1 = Display values as mixed fractions
   //! 2 = Display values as fractions
   //! - aPrecision    : Precision Value
-  Standard_EXPORT void Init(const Standard_Integer nbPropVal,
-                            const Standard_Integer aSecTolFlag,
-                            const Standard_Integer aTolType,
-                            const Standard_Integer aTolPlaceFlag,
-                            const Standard_Real    anUpperTol,
-                            const Standard_Real    aLowerTol,
-                            const Standard_Boolean aSignFlag,
-                            const Standard_Integer aFracFlag,
-                            const Standard_Integer aPrecision);
+  Standard_EXPORT void Init(const int nbPropVal,
+                            const int aSecTolFlag,
+                            const int aTolType,
+                            const int aTolPlaceFlag,
+                            const double    anUpperTol,
+                            const double    aLowerTol,
+                            const bool aSignFlag,
+                            const int aFracFlag,
+                            const int aPrecision);
 
   //! returns the number of property values, always = 8
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the Secondary Tolerance Flag
-  Standard_EXPORT Standard_Integer SecondaryToleranceFlag() const;
+  Standard_EXPORT int SecondaryToleranceFlag() const;
 
   //! returns the Tolerance Type
-  Standard_EXPORT Standard_Integer ToleranceType() const;
+  Standard_EXPORT int ToleranceType() const;
 
   //! returns the Tolerance Placement Flag, default = 2
-  Standard_EXPORT Standard_Integer TolerancePlacementFlag() const;
+  Standard_EXPORT int TolerancePlacementFlag() const;
 
   //! returns the Upper or Bilateral Tolerance Value
-  Standard_EXPORT Standard_Real UpperTolerance() const;
+  Standard_EXPORT double UpperTolerance() const;
 
   //! returns the Lower Tolerance Value
-  Standard_EXPORT Standard_Real LowerTolerance() const;
+  Standard_EXPORT double LowerTolerance() const;
 
   //! returns the Sign Suppression Flag
-  Standard_EXPORT Standard_Boolean SignSuppressionFlag() const;
+  Standard_EXPORT bool SignSuppressionFlag() const;
 
   //! returns the Fraction Flag
-  Standard_EXPORT Standard_Integer FractionFlag() const;
+  Standard_EXPORT int FractionFlag() const;
 
   //! returns the Precision for Value Display
-  Standard_EXPORT Standard_Integer Precision() const;
+  Standard_EXPORT int Precision() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Integer theSecondaryToleranceFlag;
-  Standard_Integer theToleranceType;
-  Standard_Integer theTolerancePlacementFlag;
-  Standard_Real    theUpperTolerance;
-  Standard_Real    theLowerTolerance;
-  Standard_Boolean theSignSuppressionFlag;
-  Standard_Integer theFractionFlag;
-  Standard_Integer thePrecision;
+  int theNbPropertyValues;
+  int theSecondaryToleranceFlag;
+  int theToleranceType;
+  int theTolerancePlacementFlag;
+  double    theUpperTolerance;
+  double    theLowerTolerance;
+  bool theSignSuppressionFlag;
+  int theFractionFlag;
+  int thePrecision;
 };
 
 #endif // _IGESDimen_DimensionTolerance_HeaderFile

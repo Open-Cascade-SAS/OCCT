@@ -37,21 +37,19 @@ public:
   Standard_HIDDEN RWStepDimTol_RWStraightnessTolerance();
 
   //! Reads StraightnessTolerance
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)&          data,
-                                const Standard_Integer                          num,
-                                Handle(Interface_Check)&                        ach,
-                                const Handle(StepDimTol_StraightnessTolerance)& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&          data,
+                                const int                          num,
+                                occ::handle<Interface_Check>&                        ach,
+                                const occ::handle<StepDimTol_StraightnessTolerance>& ent) const;
 
   //! Writes StraightnessTolerance
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                            SW,
-                                 const Handle(StepDimTol_StraightnessTolerance)& ent) const;
+                                 const occ::handle<StepDimTol_StraightnessTolerance>& ent) const;
 
   //! Fills data for graph (shared items)
-  Standard_HIDDEN void Share(const Handle(StepDimTol_StraightnessTolerance)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepDimTol_StraightnessTolerance>& ent,
                              Interface_EntityIterator&                       iter) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepDimTol_RWStraightnessTolerance_HeaderFile

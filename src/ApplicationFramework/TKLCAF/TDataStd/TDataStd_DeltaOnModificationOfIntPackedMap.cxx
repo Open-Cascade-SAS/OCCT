@@ -29,13 +29,13 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntPackedMap, TDF_Delta
 //=================================================================================================
 
 TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPackedMap(
-  const Handle(TDataStd_IntPackedMap)& OldAtt)
+  const occ::handle<TDataStd_IntPackedMap>& OldAtt)
     : TDF_DeltaOnModification(OldAtt)
 {
-  Handle(TDataStd_IntPackedMap) CurrAtt;
+  occ::handle<TDataStd_IntPackedMap> CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
   {
-    Handle(TColStd_HPackedMapOfInteger) aMap1, aMap2;
+    occ::handle<TColStd_HPackedMapOfInteger> aMap1, aMap2;
     aMap1 = OldAtt->GetHMap();
     aMap2 = CurrAtt->GetHMap();
 #ifdef OCCT_DEBUG_disable
@@ -82,8 +82,8 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
 void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 {
 
-  Handle(TDF_Attribute)         aTDFAttribute = Attribute();
-  Handle(TDataStd_IntPackedMap) aBackAtt = Handle(TDataStd_IntPackedMap)::DownCast(aTDFAttribute);
+  occ::handle<TDF_Attribute>         aTDFAttribute = Attribute();
+  occ::handle<TDataStd_IntPackedMap> aBackAtt = occ::down_cast<TDataStd_IntPackedMap>(aTDFAttribute);
   if (aBackAtt.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -92,7 +92,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
     return;
   }
 
-  Handle(TDataStd_IntPackedMap) aCurAtt;
+  occ::handle<TDataStd_IntPackedMap> aCurAtt;
   if (!Label().FindAttribute(aBackAtt->ID(), aCurAtt))
   {
 
@@ -109,7 +109,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   else
     aCurAtt->Backup();
 
-  Handle(TColStd_HPackedMapOfInteger) IntMap = aCurAtt->GetHMap();
+  occ::handle<TColStd_HPackedMapOfInteger> IntMap = aCurAtt->GetHMap();
   if (IntMap.IsNull())
     return;
 
@@ -129,9 +129,9 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 
 #ifdef OCCT_DEBUG_disable
   std::cout << " << Map Dump after Delta Apply >>" << std::endl;
-  Handle(TColStd_HPackedMapOfInteger)     aIntMap = aCurAtt->GetHMap();
+  occ::handle<TColStd_HPackedMapOfInteger>     aIntMap = aCurAtt->GetHMap();
   TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());
-  for (Standard_Integer i = 1; it.More() && i <= MAXUP; it.Next(), i++)
+  for (int i = 1; it.More() && i <= MAXUP; it.Next(), i++)
     std::cout << it.Key() << "  ";
   std::cout << std::endl;
 #endif

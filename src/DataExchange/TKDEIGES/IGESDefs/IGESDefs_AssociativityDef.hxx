@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfInteger;
 
-class IGESDefs_AssociativityDef;
-DEFINE_STANDARD_HANDLE(IGESDefs_AssociativityDef, IGESData_IGESEntity)
-
 //! defines IGES Associativity Definition Entity, Type <302>
 //! Form <5001 - 9999> in package IGESDefs.
 //! This class permits the preprocessor to define an
@@ -46,53 +43,52 @@ public:
   //! - numItems     : Number of Items per Class
   //! - items        : Items in each class
   //! raises exception if lengths of the arrays are not the same.
-  Standard_EXPORT void Init(const Handle(TColStd_HArray1OfInteger)&            requirements,
-                            const Handle(TColStd_HArray1OfInteger)&            orders,
-                            const Handle(TColStd_HArray1OfInteger)&            numItems,
-                            const Handle(IGESBasic_HArray1OfHArray1OfInteger)& items);
+  Standard_EXPORT void Init(const occ::handle<TColStd_HArray1OfInteger>&            requirements,
+                            const occ::handle<TColStd_HArray1OfInteger>&            orders,
+                            const occ::handle<TColStd_HArray1OfInteger>&            numItems,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& items);
 
-  Standard_EXPORT void SetFormNumber(const Standard_Integer form);
+  Standard_EXPORT void SetFormNumber(const int form);
 
   //! returns the Number of class definitions
-  Standard_EXPORT Standard_Integer NbClassDefs() const;
+  Standard_EXPORT int NbClassDefs() const;
 
   //! returns 1 if the theBackPointerReqs(ClassNum) = 1
   //! returns 0 if the theBackPointerReqs(ClassNum) = 2
   //! raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
-  Standard_EXPORT Standard_Boolean IsBackPointerReq(const Standard_Integer ClassNum) const;
+  Standard_EXPORT bool IsBackPointerReq(const int ClassNum) const;
 
   //! returns 1 or 2
   //! raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
-  Standard_EXPORT Standard_Integer BackPointerReq(const Standard_Integer ClassNum) const;
+  Standard_EXPORT int BackPointerReq(const int ClassNum) const;
 
   //! returns 1 if theClassOrders(ClassNum) = 1 (ordered class)
   //! returns 0 if theClassOrders(ClassNum) = 2 (unordered class)
   //! raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
-  Standard_EXPORT Standard_Boolean IsOrdered(const Standard_Integer ClassNum) const;
+  Standard_EXPORT bool IsOrdered(const int ClassNum) const;
 
   //! returns 1 or 2
   //! raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
-  Standard_EXPORT Standard_Integer ClassOrder(const Standard_Integer ClassNum) const;
+  Standard_EXPORT int ClassOrder(const int ClassNum) const;
 
   //! returns no. of items per class entry
   //! raises exception if ClassNum <= 0 or ClassNum > NbClassDefs()
-  Standard_EXPORT Standard_Integer NbItemsPerClass(const Standard_Integer ClassNum) const;
+  Standard_EXPORT int NbItemsPerClass(const int ClassNum) const;
 
   //! returns ItemNum'th Item of ClassNum'th Class
   //! raises exception if
   //! ClassNum <= 0 or ClassNum > NbClassDefs()
   //! ItemNum <= 0 or ItemNum > NbItemsPerClass(ClassNum)
-  Standard_EXPORT Standard_Integer Item(const Standard_Integer ClassNum,
-                                        const Standard_Integer ItemNum) const;
+  Standard_EXPORT int Item(const int ClassNum,
+                                        const int ItemNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_AssociativityDef, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger)            theBackPointerReqs;
-  Handle(TColStd_HArray1OfInteger)            theClassOrders;
-  Handle(TColStd_HArray1OfInteger)            theNbItemsPerClass;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) theItems;
+  occ::handle<TColStd_HArray1OfInteger>            theBackPointerReqs;
+  occ::handle<TColStd_HArray1OfInteger>            theClassOrders;
+  occ::handle<TColStd_HArray1OfInteger>            theNbItemsPerClass;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> theItems;
 };
 
 #endif // _IGESDefs_AssociativityDef_HeaderFile

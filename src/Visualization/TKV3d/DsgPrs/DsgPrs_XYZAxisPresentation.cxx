@@ -27,18 +27,18 @@
 
 //=================================================================================================
 
-void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Prs3d_LineAspect)&   aLineAspect,
+void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Prs3d_LineAspect>&   aLineAspect,
                                      const gp_Dir&                     aDir,
-                                     const Standard_Real               aVal,
-                                     const Standard_CString            theText,
+                                     const double               aVal,
+                                     const char*            theText,
                                      const gp_Pnt&                     aPfirst,
                                      const gp_Pnt&                     aPlast)
 {
-  Handle(Graphic3d_Group) G = aPresentation->CurrentGroup();
+  occ::handle<Graphic3d_Group> G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPfirst);
   aPrims->AddVertex(aPlast);
   G->AddPrimitiveArray(aPrims);
@@ -47,27 +47,27 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 
   if (*theText != '\0')
   {
-    Handle(Graphic3d_Text) aText = new Graphic3d_Text(1.0f / 81.0f);
+    occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(1.0f / 81.0f);
     aText->SetText(theText);
     aText->SetPosition(aPlast);
     aPresentation->CurrentGroup()->AddText(aText);
   }
 }
 
-void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                     const Handle(Prs3d_LineAspect)&   aLineAspect,
-                                     const Handle(Prs3d_ArrowAspect)&  anArrowAspect,
-                                     const Handle(Prs3d_TextAspect)&   aTextAspect,
+void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                     const occ::handle<Prs3d_LineAspect>&   aLineAspect,
+                                     const occ::handle<Prs3d_ArrowAspect>&  anArrowAspect,
+                                     const occ::handle<Prs3d_TextAspect>&   aTextAspect,
                                      const gp_Dir&                     aDir,
-                                     const Standard_Real               aVal,
-                                     const Standard_CString            theText,
+                                     const double               aVal,
+                                     const char*            theText,
                                      const gp_Pnt&                     aPfirst,
                                      const gp_Pnt&                     aPlast)
 {
-  Handle(Graphic3d_Group) G = aPresentation->CurrentGroup();
+  occ::handle<Graphic3d_Group> G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());
 
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPfirst);
   aPrims->AddVertex(aPlast);
   G->AddPrimitiveArray(aPrims);
@@ -83,7 +83,7 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 
   if (*theText != '\0')
   {
-    Handle(Graphic3d_Text) aText = new Graphic3d_Text(1.0f / 81.0f);
+    occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(1.0f / 81.0f);
     aText->SetText(theText);
     aText->SetPosition(aPlast);
     aPresentation->CurrentGroup()->AddText(aText);

@@ -25,16 +25,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Document, Standard_Transient)
 
 StepBasic_Document::StepBasic_Document()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_Document::Init(const Handle(TCollection_HAsciiString)& aId,
-                              const Handle(TCollection_HAsciiString)& aName,
-                              const Standard_Boolean                  hasDescription,
-                              const Handle(TCollection_HAsciiString)& aDescription,
-                              const Handle(StepBasic_DocumentType)&   aKind)
+void StepBasic_Document::Init(const occ::handle<TCollection_HAsciiString>& aId,
+                              const occ::handle<TCollection_HAsciiString>& aName,
+                              const bool                  hasDescription,
+                              const occ::handle<TCollection_HAsciiString>& aDescription,
+                              const occ::handle<StepBasic_DocumentType>&   aKind)
 {
 
   theId = aId;
@@ -54,63 +54,63 @@ void StepBasic_Document::Init(const Handle(TCollection_HAsciiString)& aId,
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_Document::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepBasic_Document::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_Document::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_Document::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_Document::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_Document::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Document::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_Document::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepBasic_Document::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_Document::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_Document::HasDescription() const
+bool StepBasic_Document::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_DocumentType) StepBasic_Document::Kind() const
+occ::handle<StepBasic_DocumentType> StepBasic_Document::Kind() const
 {
   return theKind;
 }
 
 //=================================================================================================
 
-void StepBasic_Document::SetKind(const Handle(StepBasic_DocumentType)& aKind)
+void StepBasic_Document::SetKind(const occ::handle<StepBasic_DocumentType>& aKind)
 {
   theKind = aKind;
 }

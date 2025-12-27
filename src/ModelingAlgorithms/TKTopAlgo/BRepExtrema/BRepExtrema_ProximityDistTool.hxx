@@ -17,7 +17,8 @@
 #define _BRepExtrema_ProximityDistTool_HeaderFile
 
 #include <BRepExtrema_ElementFilter.hxx>
-#include <BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <BRepExtrema_TriangleSet.hxx>
 #include <BVH_Distance.hxx>
 #include <BVH_Tools.hxx>
@@ -34,10 +35,10 @@
 //! Please note that algorithm results are approximate and depend greatly
 //! on the quality of input tessellation(s).
 class BRepExtrema_ProximityDistTool
-    : public BVH_Distance<Standard_Real, 3, BVH_Vec3d, BRepExtrema_TriangleSet>
+    : public BVH_Distance<double, 3, BVH_Vec3d, BRepExtrema_TriangleSet>
 {
 public:
-  typedef typename BVH_Tools<Standard_Real, 3>::BVH_PrjStateInTriangle BVH_PrjState;
+  typedef typename BVH_Tools<double, 3>::BVH_PrjStateInTriangle BVH_PrjState;
 
   enum ProxPnt_Status
   {
@@ -59,10 +60,10 @@ public:
     {
     }
 
-    PrjState(const Standard_Integer theTrgIdx,
+    PrjState(const int theTrgIdx,
              const BVH_PrjState     thePrjState,
-             const Standard_Integer theNumberOfFirstNode,
-             const Standard_Integer theNumberOfLastNode)
+             const int theNumberOfFirstNode,
+             const int theNumberOfLastNode)
         : myTrgIdx(theTrgIdx),
           myPrjState(thePrjState),
           myNumberOfFirstNode(theNumberOfFirstNode),
@@ -70,20 +71,20 @@ public:
     {
     }
 
-    Standard_Integer GetTrgIdx() const { return myTrgIdx; }
+    int GetTrgIdx() const { return myTrgIdx; }
 
     BVH_PrjState GetPrjState() const { return myPrjState; }
 
-    Standard_Integer GetNumberOfFirstNode() const { return myNumberOfFirstNode; }
+    int GetNumberOfFirstNode() const { return myNumberOfFirstNode; }
 
-    Standard_Integer GetNumberOfLastNode() const { return myNumberOfLastNode; }
+    int GetNumberOfLastNode() const { return myNumberOfLastNode; }
 
   private:
-    Standard_Integer myTrgIdx;   //!< Index of triangle on which the projection is located
+    int myTrgIdx;   //!< Index of triangle on which the projection is located
     BVH_PrjState     myPrjState; //!< Position of a projection on the triangle (vertex, edge, inner)
                                  // clang-format off
-    Standard_Integer myNumberOfFirstNode; //!< The 1st vtx of the triangle edge on which the projection is located
-    Standard_Integer myNumberOfLastNode; //!< The 2nd vtx of the triangle edge on which the projection is located
+    int myNumberOfFirstNode; //!< The 1st vtx of the triangle edge on which the projection is located
+    int myNumberOfLastNode; //!< The 2nd vtx of the triangle edge on which the projection is located
                                  // clang-format on
   };
 
@@ -93,22 +94,22 @@ public:
 
   //! Creates new tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityDistTool(
-    const Handle(BRepExtrema_TriangleSet)&    theSet1,
-    const Standard_Integer                    theNbSamples1,
+    const occ::handle<BRepExtrema_TriangleSet>&    theSet1,
+    const int                    theNbSamples1,
     const BVH_Array3d&                        theAddVertices1,
     const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
-    const Handle(BRepExtrema_TriangleSet)&    theSet2,
-    const BRepExtrema_ShapeList&              theShapeList1,
-    const BRepExtrema_ShapeList&              theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&    theSet2,
+    const NCollection_Vector<TopoDS_Shape>&              theShapeList1,
+    const NCollection_Vector<TopoDS_Shape>&              theShapeList2);
 
 public:
   //! Loads the given element sets into the tool.
-  Standard_EXPORT void LoadTriangleSets(const Handle(BRepExtrema_TriangleSet)& theSet1,
-                                        const Handle(BRepExtrema_TriangleSet)& theSet2);
+  Standard_EXPORT void LoadTriangleSets(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+                                        const occ::handle<BRepExtrema_TriangleSet>& theSet2);
 
   //! Loads the given list of subshapes into the tool.
-  Standard_EXPORT void LoadShapeLists(const BRepExtrema_ShapeList& theShapeList1,
-                                      const BRepExtrema_ShapeList& theShapeList2);
+  Standard_EXPORT void LoadShapeLists(const NCollection_Vector<TopoDS_Shape>& theShapeList1,
+                                      const NCollection_Vector<TopoDS_Shape>& theShapeList2);
 
   //! Loads given additional vertices and their statuses.
   void LoadAdditionalPointsFirstSet(const BVH_Array3d&                        theAddVertices1,
@@ -119,26 +120,26 @@ public:
 
 public: //! @name Reject/Accept implementations
   //! Defines the rules for node rejection by bounding box.
-  Standard_EXPORT virtual Standard_Boolean RejectNode(const BVH_Vec3d& theCornerMin,
+  Standard_EXPORT virtual bool RejectNode(const BVH_Vec3d& theCornerMin,
                                                       const BVH_Vec3d& theCornerMax,
-                                                      Standard_Real&   theMetric) const
-    Standard_OVERRIDE;
+                                                      double&   theMetric) const
+    override;
 
   //! Defines the rules for leaf acceptance.
-  Standard_EXPORT virtual Standard_Boolean Accept(const Standard_Integer theSgmIdx,
-                                                  const Standard_Real&) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Accept(const int theSgmIdx,
+                                                  const double&) override;
 
 public:
   //! Returns true if the node is on the boarder.
-  Standard_EXPORT static Standard_Boolean IsNodeOnBorder(const Standard_Integer theNodeIdx,
-                                                         const Handle(Poly_Triangulation)& theTr);
+  Standard_EXPORT static bool IsNodeOnBorder(const int theNodeIdx,
+                                                         const occ::handle<Poly_Triangulation>& theTr);
 
   //! Returns true if the edge is on the boarder.
-  Standard_EXPORT static Standard_Boolean IsEdgeOnBorder(
-    const Standard_Integer            theTrgIdx,
-    const Standard_Integer            theFirstEdgeNodeIdx,
-    const Standard_Integer            theSecondEdgeNodeIdx,
-    const Handle(Poly_Triangulation)& theTr);
+  Standard_EXPORT static bool IsEdgeOnBorder(
+    const int            theTrgIdx,
+    const int            theFirstEdgeNodeIdx,
+    const int            theSecondEdgeNodeIdx,
+    const occ::handle<Poly_Triangulation>& theTr);
 
 public:
   //! Returns points on triangles sets, which provide the proximity distance.
@@ -156,18 +157,18 @@ public:
   }
 
   //! Returns the computed distance
-  Standard_Real ProximityDistance() const { return myProxDist; }
+  double ProximityDistance() const { return myProxDist; }
 
 protected:
   //! Computes the distance between object and BVH tree.
-  Standard_EXPORT Standard_Real ComputeDistance();
+  Standard_EXPORT double ComputeDistance();
 
   //! Defines the status of proximity points.
   Standard_EXPORT void DefineStatusProxPnt();
 
 private:
   //! Goes through vertices from the 1st set.
-  void goThroughtSet1(const BVH_Array3d& aVertices1, const Standard_Boolean theIsAdditionalSet);
+  void goThroughtSet1(const BVH_Array3d& aVertices1, const bool theIsAdditionalSet);
 
   //! Defines the status of proximity point from 1st BVH.
   void defineStatusProxPnt1();
@@ -177,13 +178,13 @@ private:
 
 protected:
   // clang-format off
-  Standard_Real myMinDistance; //!< Minimal distance from point to BVH, could be not equal to myDistance
+  double myMinDistance; //!< Minimal distance from point to BVH, could be not equal to myDistance
   // clang-format on
   BVH_Vec3d myMinDistPoint; //!< Point on BVH providing the minimal distance
 
   BVH_Vec3d myExtremaPoint; //!< Point on BVH providing the extrema
 
-  Standard_Real myProxDist; //!< Proximity distance
+  double myProxDist; //!< Proximity distance
 
   //! Proximity points
   BVH_Vec3d myPnt1, myPnt2;
@@ -193,26 +194,26 @@ protected:
 
 private:
   //! Set of all mesh elements (triangles) of the 1st shape.
-  Handle(BRepExtrema_TriangleSet) mySet1;
+  occ::handle<BRepExtrema_TriangleSet> mySet1;
   //! Set of all mesh elements (triangles) of the 2nd shape.
-  Handle(BRepExtrema_TriangleSet) mySet2;
+  occ::handle<BRepExtrema_TriangleSet> mySet2;
 
   //! List of subshapes of the 1st shape.
-  BRepExtrema_ShapeList myShapeList1;
+  NCollection_Vector<TopoDS_Shape> myShapeList1;
   //! List of subshapes of the 2nd shape.
-  BRepExtrema_ShapeList myShapeList2;
+  NCollection_Vector<TopoDS_Shape> myShapeList2;
 
-  Standard_Integer myNbSamples1; //!< Number of samples points on the first shape
+  int myNbSamples1; //!< Number of samples points on the first shape
 
   //! Is vertex corresponding to proximity point of 1st shape from additional set
-  Standard_Integer myIsProxVtx1FromAddSet;
+  int myIsProxVtx1FromAddSet;
   BVH_Array3d      myAddVertices1; //!< Additional vertices on the 1st shape
                                    // clang-format off
   NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape
                                    // clang-format on
 
   //! Vertex index from 1st BVH corresponding to proximity point of 1st shape
-  Standard_Integer myProxVtxIdx1;
+  int myProxVtxIdx1;
 
   //! Information of projection point state from 2nd BVH providing proximity point of 2nd shape
   PrjState myProxPrjState;

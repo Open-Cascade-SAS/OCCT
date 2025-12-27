@@ -30,9 +30,9 @@ BRepMesh_EdgeTessellationExtractor::BRepMesh_EdgeTessellationExtractor(
   const IMeshData::IEdgeHandle& theEdge,
   const IMeshData::IFaceHandle& theFace)
 {
-  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace->GetFace(), myLoc);
+  occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(theFace->GetFace(), myLoc);
 
-  Handle(Poly_PolygonOnTriangulation) aPolygon =
+  occ::handle<Poly_PolygonOnTriangulation> aPolygon =
     BRep_Tool::PolygonOnTriangulation(theEdge->GetEdge(), aTriangulation, myLoc);
 
   myTriangulation = aTriangulation.get();
@@ -46,20 +46,20 @@ BRepMesh_EdgeTessellationExtractor::~BRepMesh_EdgeTessellationExtractor() {}
 
 //=================================================================================================
 
-Standard_Integer BRepMesh_EdgeTessellationExtractor::PointsNb() const
+int BRepMesh_EdgeTessellationExtractor::PointsNb() const
 {
   return myIndices->Size();
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepMesh_EdgeTessellationExtractor::Value(const Standard_Integer theIndex,
+bool BRepMesh_EdgeTessellationExtractor::Value(const int theIndex,
                                                            gp_Pnt&                thePoint,
-                                                           Standard_Real& theParameter) const
+                                                           double& theParameter) const
 {
   const gp_Pnt aRefPnt = myTriangulation->Node(myIndices->Value(theIndex));
   thePoint             = BRepMesh_ShapeTool::UseLocation(aRefPnt, myLoc);
 
   theParameter = myProvider.Parameter(theIndex, thePoint);
-  return Standard_True;
+  return true;
 }

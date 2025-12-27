@@ -27,23 +27,23 @@
 
 Contap_TheIWLineOfTheIWalking::Contap_TheIWLineOfTheIWalking(const IntSurf_Allocator& theAllocator)
     : line(new IntSurf_LineOn2S(theAllocator)),
-      closed(Standard_False),
-      hasFirst(Standard_False),
-      hasLast(Standard_False),
+      closed(false),
+      hasFirst(false),
+      hasLast(false),
       firstIndex(-1),
       lastIndex(-1),
       indextg(-1),
-      istgtbeg(Standard_False),
-      istgtend(Standard_False)
+      istgtbeg(false),
+      istgtend(false)
 {
 }
 
 void Contap_TheIWLineOfTheIWalking::Reverse()
 {
   line->Reverse();
-  Standard_Integer N        = line->NbPoints();
-  Standard_Integer NbCouple = couple.Length();
-  for (Standard_Integer i = 1; i <= NbCouple; i++)
+  int N        = line->NbPoints();
+  int NbCouple = couple.Length();
+  for (int i = 1; i <= NbCouple; i++)
   {
     couple(i) = IntSurf_Couple(N - couple(i).First() + 1, couple(i).Second());
   }

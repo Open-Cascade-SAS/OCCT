@@ -17,9 +17,10 @@
 #ifndef TColGeom_HArray1OfBSplineCurve_HeaderFile
 #define TColGeom_HArray1OfBSplineCurve_HeaderFile
 
-#include <TColGeom_Array1OfBSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(TColGeom_HArray1OfBSplineCurve, TColGeom_Array1OfBSplineCurve)
+DEFINE_HARRAY1(TColGeom_HArray1OfBSplineCurve, NCollection_Array1<occ::handle<Geom_BSplineCurve>>)
 
 #endif

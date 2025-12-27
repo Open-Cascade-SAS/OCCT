@@ -26,9 +26,6 @@ class gp_Pnt2d;
 class gp_Dir2d;
 class gp_Trsf2d;
 
-class Geom2d_AxisPlacement;
-DEFINE_STANDARD_HANDLE(Geom2d_AxisPlacement, Geom2d_Geometry)
-
 //! Describes an axis in 2D space.
 //! An axis is defined by:
 //! - its origin, also termed the "Location point" of the axis,
@@ -58,7 +55,7 @@ public:
   //! Note:
   //! - Reverse assigns the result to this axis, while
   //! - Reversed creates a new one.
-  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_AxisPlacement) Reversed() const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_AxisPlacement> Reversed() const;
 
   //! Changes the complete definition of the axis placement.
   Standard_EXPORT void SetAxis(const gp_Ax2d& A);
@@ -72,7 +69,7 @@ public:
   //! Computes the angle between the "Direction" of
   //! two axis placement in radians.
   //! The result is comprised between -Pi and Pi.
-  Standard_EXPORT Standard_Real Angle(const Handle(Geom2d_AxisPlacement)& Other) const;
+  Standard_EXPORT double Angle(const occ::handle<Geom2d_AxisPlacement>& Other) const;
 
   //! Converts this axis into a gp_Ax2d axis.
   Standard_EXPORT gp_Ax2d Ax2d() const;
@@ -86,14 +83,13 @@ public:
   Standard_EXPORT gp_Pnt2d Location() const;
 
   //! Applies the transformation T to this axis.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) Standard_OVERRIDE;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 
   //! Creates a new object which is a copy of this axis.
-  Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_AxisPlacement, Geom2d_Geometry)
 
-protected:
 private:
   gp_Ax2d axis;
 };

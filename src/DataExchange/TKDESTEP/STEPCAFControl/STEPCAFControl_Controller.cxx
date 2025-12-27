@@ -27,24 +27,24 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_Controller, STEPControl_Controller)
 
 STEPCAFControl_Controller::STEPCAFControl_Controller()
 {
-  Handle(STEPCAFControl_ActorWrite) ActWrite = new STEPCAFControl_ActorWrite;
+  occ::handle<STEPCAFControl_ActorWrite> ActWrite = new STEPCAFControl_ActorWrite;
   myAdaptorWrite                             = ActWrite;
 }
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_Controller::Init()
+bool STEPCAFControl_Controller::Init()
 {
   static std::mutex           aMutex;
   std::lock_guard<std::mutex> aLock(aMutex);
   {
-    static Standard_Boolean inic = Standard_False;
+    static bool inic = false;
     if (inic)
-      return Standard_True;
-    inic = Standard_True;
+      return true;
+    inic = true;
   }
   // self-registering
-  Handle(STEPCAFControl_Controller) STEPCTL = new STEPCAFControl_Controller;
+  occ::handle<STEPCAFControl_Controller> STEPCTL = new STEPCAFControl_Controller;
   // do XSAlgo::Init, cause it does not called before.
   XSAlgo::Init();
   // do something to avoid warnings...
@@ -70,5 +70,5 @@ Standard_Boolean STEPCAFControl_Controller::Init()
   Interface_Static::Init("stepcaf", "read.stepcaf.subshapes.name", '&', "eval On");  // 1
   Interface_Static::SetIVal("read.stepcaf.subshapes.name", 0); // Disabled by default
 
-  return Standard_True;
+  return true;
 }

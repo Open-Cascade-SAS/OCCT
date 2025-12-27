@@ -17,9 +17,10 @@
 #ifndef StepVisual_HArray1OfInvisibleItem_HeaderFile
 #define StepVisual_HArray1OfInvisibleItem_HeaderFile
 
-#include <StepVisual_Array1OfInvisibleItem.hxx>
+#include <StepVisual_InvisibleItem.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 
-DEFINE_HARRAY1(StepVisual_HArray1OfInvisibleItem, StepVisual_Array1OfInvisibleItem)
+DEFINE_HARRAY1(StepVisual_HArray1OfInvisibleItem, NCollection_Array1<StepVisual_InvisibleItem>)
 
 #endif

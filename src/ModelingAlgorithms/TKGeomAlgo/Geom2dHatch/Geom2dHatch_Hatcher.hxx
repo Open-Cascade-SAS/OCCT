@@ -22,7 +22,9 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Intersector.hxx>
 #include <Geom2dHatch_Elements.hxx>
-#include <Geom2dHatch_Hatchings.hxx>
+#include <Standard_Integer.hxx>
+#include <Geom2dHatch_Hatching.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <HatchGen_ErrorStatus.hxx>
 
@@ -41,10 +43,10 @@ public:
 
   //! Returns an empty hatcher.
   Standard_EXPORT Geom2dHatch_Hatcher(const Geom2dHatch_Intersector& Intersector,
-                                      const Standard_Real            Confusion2d,
-                                      const Standard_Real            Confusion3d,
-                                      const Standard_Boolean         KeepPnt = Standard_False,
-                                      const Standard_Boolean         KeepSeg = Standard_False);
+                                      const double            Confusion2d,
+                                      const double            Confusion3d,
+                                      const bool         KeepPnt = false,
+                                      const bool         KeepSeg = false);
 
   //! Sets the associated intersector.
   Standard_EXPORT void Intersector(const Geom2dHatch_Intersector& Intersector);
@@ -56,46 +58,46 @@ public:
   Geom2dHatch_Intersector& ChangeIntersector();
 
   //! Sets the confusion tolerance.
-  Standard_EXPORT void Confusion2d(const Standard_Real Confusion);
+  Standard_EXPORT void Confusion2d(const double Confusion);
 
   //! Returns the 2d confusion tolerance, i.e. the value under
   //! which two points are considered identical in the
   //! parametric space of the hatching.
-  Standard_Real Confusion2d() const;
+  double Confusion2d() const;
 
   //! Sets the confusion tolerance.
-  Standard_EXPORT void Confusion3d(const Standard_Real Confusion);
+  Standard_EXPORT void Confusion3d(const double Confusion);
 
   //! Returns the 3d confusion tolerance, i.e. the value under
   //! which two points are considered identical in the
   //! 3d space of the hatching.
-  Standard_Real Confusion3d() const;
+  double Confusion3d() const;
 
   //! Sets the above flag.
-  Standard_EXPORT void KeepPoints(const Standard_Boolean Keep);
+  Standard_EXPORT void KeepPoints(const bool Keep);
 
   //! Returns the flag about the points consideration.
-  Standard_Boolean KeepPoints() const;
+  bool KeepPoints() const;
 
   //! Sets the above flag.
-  Standard_EXPORT void KeepSegments(const Standard_Boolean Keep);
+  Standard_EXPORT void KeepSegments(const bool Keep);
 
   //! Returns the flag about the segments consideration.
-  Standard_Boolean KeepSegments() const;
+  bool KeepSegments() const;
 
   //! Removes all the hatchings and all the elements.
   void Clear();
 
   //! Returns the curve associated to the IndE-th element.
-  const Geom2dAdaptor_Curve& ElementCurve(const Standard_Integer IndE) const;
+  const Geom2dAdaptor_Curve& ElementCurve(const int IndE) const;
 
   //! Adds an element to the hatcher and returns its index.
-  Standard_EXPORT Standard_Integer
+  Standard_EXPORT int
     AddElement(const Geom2dAdaptor_Curve& Curve,
                const TopAbs_Orientation   Orientation = TopAbs_FORWARD);
 
   //! Adds an element to the hatcher and returns its index.
-  Standard_Integer AddElement(const Handle(Geom2d_Curve)& Curve,
+  int AddElement(const occ::handle<Geom2d_Curve>& Curve,
                               const TopAbs_Orientation    Orientation = TopAbs_FORWARD)
   {
     Geom2dAdaptor_Curve aGAC(Curve);
@@ -103,31 +105,31 @@ public:
   }
 
   //! Removes the IndE-th element from the hatcher.
-  Standard_EXPORT void RemElement(const Standard_Integer IndE);
+  Standard_EXPORT void RemElement(const int IndE);
 
   //! Removes all the elements from the hatcher.
   Standard_EXPORT void ClrElements();
 
   //! Returns the curve associated to the IndH-th hatching.
-  const Geom2dAdaptor_Curve& HatchingCurve(const Standard_Integer IndH) const;
+  const Geom2dAdaptor_Curve& HatchingCurve(const int IndH) const;
 
   //! Adds a hatching to the hatcher and returns its index.
-  Standard_EXPORT Standard_Integer AddHatching(const Geom2dAdaptor_Curve& Curve);
+  Standard_EXPORT int AddHatching(const Geom2dAdaptor_Curve& Curve);
 
   //! Removes the IndH-th hatching from the hatcher.
-  Standard_EXPORT void RemHatching(const Standard_Integer IndH);
+  Standard_EXPORT void RemHatching(const int IndH);
 
   //! Removes all the hatchings from the hatcher.
   Standard_EXPORT void ClrHatchings();
 
   //! Returns the number of intersection points of
   //! the IndH-th hatching.
-  Standard_Integer NbPoints(const Standard_Integer IndH) const;
+  int NbPoints(const int IndH) const;
 
   //! Returns the IndP-th intersection point of the
   //! IndH-th hatching.
-  const HatchGen_PointOnHatching& Point(const Standard_Integer IndH,
-                                        const Standard_Integer IndP) const;
+  const HatchGen_PointOnHatching& Point(const int IndH,
+                                        const int IndP) const;
 
   //! Trims all the hatchings of the hatcher by all the
   //! elements of the hatcher.
@@ -135,74 +137,74 @@ public:
 
   //! Adds a hatching to the hatcher and trims it by
   //! the elements already given and returns its index.
-  Standard_EXPORT Standard_Integer Trim(const Geom2dAdaptor_Curve& Curve);
+  Standard_EXPORT int Trim(const Geom2dAdaptor_Curve& Curve);
 
   //! Trims the IndH-th hatching by the elements
   //! already given.
-  Standard_EXPORT void Trim(const Standard_Integer IndH);
+  Standard_EXPORT void Trim(const int IndH);
 
   //! Computes the domains of all the hatchings.
   Standard_EXPORT void ComputeDomains();
 
   //! Computes the domains of the IndH-th hatching.
-  Standard_EXPORT void ComputeDomains(const Standard_Integer IndH);
+  Standard_EXPORT void ComputeDomains(const int IndH);
 
   //! Returns the fact that the intersections were computed
   //! for the IndH-th hatching.
-  Standard_Boolean TrimDone(const Standard_Integer IndH) const;
+  bool TrimDone(const int IndH) const;
 
   //! Returns the fact that the intersections failed
   //! for the IndH-th hatching.
-  Standard_Boolean TrimFailed(const Standard_Integer IndH) const;
+  bool TrimFailed(const int IndH) const;
 
   //! Returns the fact that the domains were computed
   //! for all the hatchings.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the fact that the domains were computed
   //! for the IndH-th hatching.
-  Standard_Boolean IsDone(const Standard_Integer IndH) const;
+  bool IsDone(const int IndH) const;
 
   //! Returns the status about the IndH-th hatching.
-  HatchGen_ErrorStatus Status(const Standard_Integer IndH) const;
+  HatchGen_ErrorStatus Status(const int IndH) const;
 
   //! Returns the number of domains of the IndH-th hatching.
   //! Only ONE "INFINITE" domain means that the hatching is
   //! fully included in the contour defined by the elements.
-  Standard_Integer NbDomains(const Standard_Integer IndH) const;
+  int NbDomains(const int IndH) const;
 
   //! Returns the IDom-th domain of the IndH-th hatching.
-  Standard_EXPORT const HatchGen_Domain& Domain(const Standard_Integer IndH,
-                                                const Standard_Integer IDom) const;
+  Standard_EXPORT const HatchGen_Domain& Domain(const int IndH,
+                                                const int IDom) const;
 
   //! Dump the hatcher.
   Standard_EXPORT void Dump() const;
 
 protected:
   //! Returns the IndE-th element.
-  Geom2dHatch_Element& Element(const Standard_Integer IndE);
+  Geom2dHatch_Element& Element(const int IndE);
 
   //! Returns the IndH-th hatching.
-  Geom2dHatch_Hatching& Hatching(const Standard_Integer IndH);
+  Geom2dHatch_Hatching& Hatching(const int IndH);
 
 private:
   //! Trims the IndH-th hatching of the hatcher by the
   //! IndE-th element.
-  Standard_EXPORT Standard_Boolean Trim(const Standard_Integer IndH, const Standard_Integer IndE);
+  Standard_EXPORT bool Trim(const int IndH, const int IndE);
 
   //! Sets the global transition (the before and after
   //! states and segment extremities flags) of the point.
-  Standard_EXPORT Standard_Boolean GlobalTransition(HatchGen_PointOnHatching& Point);
+  Standard_EXPORT bool GlobalTransition(HatchGen_PointOnHatching& Point);
 
   Geom2dHatch_Intersector myIntersector;
-  Standard_Real           myConfusion2d;
-  Standard_Real           myConfusion3d;
-  Standard_Boolean        myKeepPoints;
-  Standard_Boolean        myKeepSegments;
-  Standard_Integer        myNbElements;
+  double           myConfusion2d;
+  double           myConfusion3d;
+  bool        myKeepPoints;
+  bool        myKeepSegments;
+  int        myNbElements;
   Geom2dHatch_Elements    myElements;
-  Standard_Integer        myNbHatchings;
-  Geom2dHatch_Hatchings   myHatchings;
+  int        myNbHatchings;
+  NCollection_DataMap<int, Geom2dHatch_Hatching>   myHatchings;
 };
 
 #include <Geom2dHatch_Hatcher.lxx>

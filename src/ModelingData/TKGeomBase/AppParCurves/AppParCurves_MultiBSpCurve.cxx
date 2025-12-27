@@ -21,15 +21,17 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-static Standard_Integer ComputeDegree(const TColStd_Array1OfInteger& mults,
-                                      const Standard_Integer         nbPoles)
+static int ComputeDegree(const NCollection_Array1<int>& mults,
+                                      const int         nbPoles)
 {
-  Standard_Integer i, sum = 0;
+  int i, sum = 0;
   for (i = mults.Lower(); i <= mults.Upper(); i++)
   {
     sum += mults(i);
@@ -46,7 +48,7 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve()
 
 //=================================================================================================
 
-AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const Standard_Integer NbPol)
+AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const int NbPol)
     : AppParCurves_MultiCurve(NbPol),
       myDegree(0)
 {
@@ -54,9 +56,9 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const Standard_Integer Nb
 
 //=================================================================================================
 
-AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_Array1OfMultiPoint& tabMU,
-                                                       const TColStd_Array1OfReal&            Knots,
-                                                       const TColStd_Array1OfInteger&         Mults)
+AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const NCollection_Array1<AppParCurves_MultiPoint>& tabMU,
+                                                       const NCollection_Array1<double>&            Knots,
+                                                       const NCollection_Array1<int>&         Mults)
     : AppParCurves_MultiCurve(tabMU)
 {
   myknots                 = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
@@ -69,8 +71,8 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_Array1
 //=================================================================================================
 
 AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve& SC,
-                                                       const TColStd_Array1OfReal&    Knots,
-                                                       const TColStd_Array1OfInteger& Mults)
+                                                       const NCollection_Array1<double>&    Knots,
+                                                       const NCollection_Array1<int>& Mults)
     : AppParCurves_MultiCurve(SC)
 {
   myknots                 = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
@@ -82,7 +84,7 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_MultiC
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::SetKnots(const TColStd_Array1OfReal& theKnots)
+void AppParCurves_MultiBSpCurve::SetKnots(const NCollection_Array1<double>& theKnots)
 {
   myknots                 = new TColStd_HArray1OfReal(theKnots.Lower(), theKnots.Upper());
   myknots->ChangeArray1() = theKnots;
@@ -90,7 +92,7 @@ void AppParCurves_MultiBSpCurve::SetKnots(const TColStd_Array1OfReal& theKnots)
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::SetMultiplicities(const TColStd_Array1OfInteger& theMults)
+void AppParCurves_MultiBSpCurve::SetMultiplicities(const NCollection_Array1<int>& theMults)
 {
   mymults                 = new TColStd_HArray1OfInteger(theMults.Lower(), theMults.Upper());
   mymults->ChangeArray1() = theMults;
@@ -99,29 +101,29 @@ void AppParCurves_MultiBSpCurve::SetMultiplicities(const TColStd_Array1OfInteger
 
 //=================================================================================================
 
-const TColStd_Array1OfReal& AppParCurves_MultiBSpCurve::Knots() const
+const NCollection_Array1<double>& AppParCurves_MultiBSpCurve::Knots() const
 {
   return myknots->Array1();
 }
 
 //=================================================================================================
 
-const TColStd_Array1OfInteger& AppParCurves_MultiBSpCurve::Multiplicities() const
+const NCollection_Array1<int>& AppParCurves_MultiBSpCurve::Multiplicities() const
 {
   return mymults->Array1();
 }
 
 //=================================================================================================
 
-Standard_Integer AppParCurves_MultiBSpCurve::Degree() const
+int AppParCurves_MultiBSpCurve::Degree() const
 {
   return myDegree;
 }
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
-                                       const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::Value(const int CuIndex,
+                                       const double    U,
                                        gp_Pnt&                Pt) const
 {
 
@@ -130,13 +132,13 @@ void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D0(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -146,8 +148,8 @@ void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
-                                       const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::Value(const int CuIndex,
+                                       const double    U,
                                        gp_Pnt2d&              Pt) const
 {
 
@@ -156,13 +158,13 @@ void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt2d> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D0(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -172,8 +174,8 @@ void AppParCurves_MultiBSpCurve::Value(const Standard_Integer CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
-                                    const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::D1(const int CuIndex,
+                                    const double    U,
                                     gp_Pnt&                Pt,
                                     gp_Vec&                V1) const
 {
@@ -182,13 +184,13 @@ void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D1(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -199,8 +201,8 @@ void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D2(const Standard_Integer CuIndex,
-                                    const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::D2(const int CuIndex,
+                                    const double    U,
                                     gp_Pnt&                Pt,
                                     gp_Vec&                V1,
                                     gp_Vec&                V2) const
@@ -210,13 +212,13 @@ void AppParCurves_MultiBSpCurve::D2(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D2(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -228,8 +230,8 @@ void AppParCurves_MultiBSpCurve::D2(const Standard_Integer CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
-                                    const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::D1(const int CuIndex,
+                                    const double    U,
                                     gp_Pnt2d&              Pt,
                                     gp_Vec2d&              V1) const
 {
@@ -238,13 +240,13 @@ void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt2d> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D1(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -255,8 +257,8 @@ void AppParCurves_MultiBSpCurve::D1(const Standard_Integer CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D2(const Standard_Integer CuIndex,
-                                    const Standard_Real    U,
+void AppParCurves_MultiBSpCurve::D2(const int CuIndex,
+                                    const double    U,
                                     gp_Pnt2d&              Pt,
                                     gp_Vec2d&              V1,
                                     gp_Vec2d&              V2) const
@@ -266,13 +268,13 @@ void AppParCurves_MultiBSpCurve::D2(const Standard_Integer CuIndex,
     throw Standard_OutOfRange();
   }
 
-  TColgp_Array1OfPnt2d TabPoles(1, tabPoint->Length());
+  NCollection_Array1<gp_Pnt2d> TabPoles(1, tabPoint->Length());
   Curve(CuIndex, TabPoles);
 
   BSplCLib::D2(U,
                0,
                myDegree,
-               Standard_False,
+               false,
                TabPoles,
                BSplCLib::NoWeights(),
                myknots->Array1(),
@@ -289,10 +291,10 @@ void AppParCurves_MultiBSpCurve::Dump(Standard_OStream& o) const
   o << "AppParCurves_MultiBSpCurve dump:" << std::endl;
   o << " It contains " << NbCurves() << " BSpline curves " << std::endl;
   o << " The poles are: " << std::endl;
-  /*  for (Standard_Integer i = 1; i <= NbCurves(); i++) {
+  /*  for (int i = 1; i <= NbCurves(); i++) {
       o << " Curve No. " << i << std::endl;
       if (Dimension(i) == 3) {
-        for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
+        for (int j = 1; j <= tabPoint->Length(); j++) {
       o << " Pole No. " << j << ": " << std::endl;
       o << " Pole x = " << (tabPoint->Value(j)->Point(i)).X() << std::endl;
       o << " Pole y = " << (tabPoint->Value(j)->Point(i)).Y() << std::endl;
@@ -300,7 +302,7 @@ void AppParCurves_MultiBSpCurve::Dump(Standard_OStream& o) const
         }
       }
       else {
-        for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
+        for (int j = 1; j <= tabPoint->Length(); j++) {
       o << " Pole No. " << j << ": " << std::endl;
       o << " Pole x = " << (tabPoint->Value(j)->Point2d(i)).X() << std::endl;
       o << " Pole y = " << (tabPoint->Value(j)->Point2d(i)).Y() << std::endl;

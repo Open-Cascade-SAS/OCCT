@@ -13,22 +13,22 @@
 
 #include <StepData_FieldListN.hxx>
 
-StepData_FieldListN::StepData_FieldListN(const Standard_Integer nb)
+StepData_FieldListN::StepData_FieldListN(const int nb)
     : thefields((nb == 0 ? 0 : 1), nb)
 {
 }
 
-Standard_Integer StepData_FieldListN::NbFields() const
+int StepData_FieldListN::NbFields() const
 {
   return thefields.Upper();
 }
 
-const StepData_Field& StepData_FieldListN::Field(const Standard_Integer num) const
+const StepData_Field& StepData_FieldListN::Field(const int num) const
 {
   return thefields.Value(num);
 }
 
-StepData_Field& StepData_FieldListN::CField(const Standard_Integer num)
+StepData_Field& StepData_FieldListN::CField(const int num)
 {
   return thefields.ChangeValue(num);
 }

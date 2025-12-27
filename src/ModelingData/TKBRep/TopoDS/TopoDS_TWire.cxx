@@ -29,7 +29,7 @@ TopAbs_ShapeEnum TopoDS_TWire::ShapeType() const
 
 //=================================================================================================
 
-Handle(TopoDS_TShape) TopoDS_TWire::EmptyCopy() const
+occ::handle<TopoDS_TShape> TopoDS_TWire::EmptyCopy() const
 {
-  return Handle(TopoDS_TWire)(new TopoDS_TWire());
+  return occ::handle<TopoDS_TWire>(new TopoDS_TWire());
 }

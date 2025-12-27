@@ -58,7 +58,7 @@ gp_Ax22d gp_Ax22d::Mirrored(const gp_Ax2d& A1) const noexcept
   return Temp;
 }
 
-void gp_Ax22d::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void gp_Ax22d::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_VECTOR_CLASS(theOStream, "Location", 2, point.X(), point.Y())
 

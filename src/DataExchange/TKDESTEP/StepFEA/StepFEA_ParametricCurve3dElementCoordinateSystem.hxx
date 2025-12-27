@@ -23,10 +23,6 @@
 class StepFEA_ParametricCurve3dElementCoordinateDirection;
 class TCollection_HAsciiString;
 
-class StepFEA_ParametricCurve3dElementCoordinateSystem;
-DEFINE_STANDARD_HANDLE(StepFEA_ParametricCurve3dElementCoordinateSystem,
-                       StepFEA_FeaRepresentationItem)
-
 //! Representation of STEP entity ParametricCurve3dElementCoordinateSystem
 class StepFEA_ParametricCurve3dElementCoordinateSystem : public StepFEA_FeaRepresentationItem
 {
@@ -37,22 +33,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                            aRepresentationItem_Name,
-    const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)& aDirection);
+    const occ::handle<TCollection_HAsciiString>&                            aRepresentationItem_Name,
+    const occ::handle<StepFEA_ParametricCurve3dElementCoordinateDirection>& aDirection);
 
   //! Returns field Direction
-  Standard_EXPORT Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) Direction() const;
+  Standard_EXPORT occ::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> Direction() const;
 
   //! Set field Direction
   Standard_EXPORT void SetDirection(
-    const Handle(StepFEA_ParametricCurve3dElementCoordinateDirection)& Direction);
+    const occ::handle<StepFEA_ParametricCurve3dElementCoordinateDirection>& Direction);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ParametricCurve3dElementCoordinateSystem,
                           StepFEA_FeaRepresentationItem)
 
-protected:
 private:
-  Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) theDirection;
+  occ::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> theDirection;
 };
 
 #endif // _StepFEA_ParametricCurve3dElementCoordinateSystem_HeaderFile

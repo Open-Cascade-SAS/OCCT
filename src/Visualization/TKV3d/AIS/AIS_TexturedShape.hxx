@@ -64,10 +64,10 @@ public: //! @name main methods
   //! Please note that the data should be in Bottom-Up order, the flag of Image_PixMap::IsTopDown()
   //! will be ignored by graphic driver. Setting texture source using this method resets the source
   //! by filename (if was set previously).
-  Standard_EXPORT virtual void SetTexturePixMap(const Handle(Image_PixMap)& theTexturePixMap);
+  Standard_EXPORT virtual void SetTexturePixMap(const occ::handle<Image_PixMap>& theTexturePixMap);
 
   //! @return flag to control texture mapping (for presentation mode 3)
-  Standard_Boolean TextureMapState() const { return myToMapTexture; }
+  bool TextureMapState() const { return myToMapTexture; }
 
   //! Enables texture mapping
   Standard_EXPORT void SetTextureMapOn();
@@ -76,10 +76,10 @@ public: //! @name main methods
   Standard_EXPORT void SetTextureMapOff();
 
   //! @return path to the texture file
-  Standard_CString TextureFile() const { return myTextureFile.ToCString(); }
+  const char* TextureFile() const { return myTextureFile.ToCString(); }
 
   //! @return the source pixmap for texture map
-  const Handle(Image_PixMap)& TexturePixMap() const { return myTexturePixMap; }
+  const occ::handle<Image_PixMap>& TexturePixMap() const { return myTexturePixMap; }
 
 public: //! @name methods to alter texture mapping properties
   //! Use this method to display the textured shape without recomputing the whole presentation.
@@ -93,24 +93,24 @@ public: //! @name methods to alter texture mapping properties
   //! }
   //! else
   //! {
-  //!   myAISContext->SetDisplayMode (myShape, 3, Standard_False);
-  //!   myAISContext->Display        (myShape, Standard_True);
+  //!   myAISContext->SetDisplayMode (myShape, 3, false);
+  //!   myAISContext->Display        (myShape, true);
   //! }
   //! @endcode
   Standard_EXPORT void UpdateAttributes();
 
   //! Sets the color.
-  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
 
   //! Removes settings for the color.
-  Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetColor() override;
 
   //! Sets the material aspect.
   Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theAspect)
-    Standard_OVERRIDE;
+    override;
 
   //! Removes settings for material aspect.
-  Standard_EXPORT virtual void UnsetMaterial() Standard_OVERRIDE;
+  Standard_EXPORT virtual void UnsetMaterial() override;
 
   //! Enables texture modulation
   Standard_EXPORT void EnableTextureModulate();
@@ -119,98 +119,96 @@ public: //! @name methods to alter texture mapping properties
   Standard_EXPORT void DisableTextureModulate();
 
   //! @return texture repeat flag
-  Standard_Boolean TextureRepeat() const { return myToRepeat; }
+  bool TextureRepeat() const { return myToRepeat; }
 
   //! @return texture repeat U value
-  Standard_Real URepeat() const { return myUVRepeat.X(); }
+  double URepeat() const { return myUVRepeat.X(); }
 
   //! @return texture repeat V value
-  Standard_Real VRepeat() const { return myUVRepeat.Y(); }
+  double VRepeat() const { return myUVRepeat.Y(); }
 
   //! Sets the number of occurrences of the texture on each face. The texture itself is
   //! parameterized in (0,1) by (0,1). Each face of the shape to be textured is parameterized in UV
   //! space (Umin,Umax) by (Vmin,Vmax). If RepeatYN is set to false, texture coordinates are clamped
   //! in the range (0,1)x(0,1) of the face.
-  Standard_EXPORT void SetTextureRepeat(const Standard_Boolean theToRepeat,
-                                        const Standard_Real    theURepeat = 1.0,
-                                        const Standard_Real    theVRepeat = 1.0);
+  Standard_EXPORT void SetTextureRepeat(const bool theToRepeat,
+                                        const double    theURepeat = 1.0,
+                                        const double    theVRepeat = 1.0);
 
   //! @return true if texture UV origin has been modified
-  Standard_Boolean TextureOrigin() const { return myIsCustomOrigin; }
+  bool TextureOrigin() const { return myIsCustomOrigin; }
 
   //! @return texture origin U position (0.0 by default)
-  Standard_Real TextureUOrigin() const { return myUVOrigin.X(); }
+  double TextureUOrigin() const { return myUVOrigin.X(); }
 
   //! @return texture origin V position (0.0 by default)
-  Standard_Real TextureVOrigin() const { return myUVOrigin.Y(); }
+  double TextureVOrigin() const { return myUVOrigin.Y(); }
 
   //! Use this method to change the origin of the texture. The texel (0,0) will be mapped to the
   //! surface (UOrigin,VOrigin)
-  Standard_EXPORT void SetTextureOrigin(const Standard_Boolean theToSetTextureOrigin,
-                                        const Standard_Real    theUOrigin = 0.0,
-                                        const Standard_Real    theVOrigin = 0.0);
+  Standard_EXPORT void SetTextureOrigin(const bool theToSetTextureOrigin,
+                                        const double    theUOrigin = 0.0,
+                                        const double    theVOrigin = 0.0);
 
   //! @return true if scale factor should be applied to texture mapping
-  Standard_Boolean TextureScale() const { return myToScale; }
+  bool TextureScale() const { return myToScale; }
 
   //! @return scale factor for U coordinate (1.0 by default)
-  Standard_Real TextureScaleU() const { return myUVScale.X(); }
+  double TextureScaleU() const { return myUVScale.X(); }
 
   //! @return scale factor for V coordinate (1.0 by default)
-  Standard_Real TextureScaleV() const { return myUVScale.Y(); }
+  double TextureScaleV() const { return myUVScale.Y(); }
 
   //! Use this method to scale the texture (percent of the face).
   //! You can specify a scale factor for both U and V.
   //! Example: if you set ScaleU and ScaleV to 0.5 and you enable texture repeat,
   //!          the texture will appear twice on the face in each direction.
-  Standard_EXPORT void SetTextureScale(const Standard_Boolean theToSetTextureScale,
-                                       const Standard_Real    theScaleU = 1.0,
-                                       const Standard_Real    theScaleV = 1.0);
+  Standard_EXPORT void SetTextureScale(const bool theToSetTextureScale,
+                                       const double    theScaleU = 1.0,
+                                       const double    theScaleV = 1.0);
 
   //! @return true if displaying of triangles is requested
-  Standard_Boolean ShowTriangles() const { return myToShowTriangles; }
+  bool ShowTriangles() const { return myToShowTriangles; }
 
   //! Use this method to show the triangulation of the shape (for debugging etc.).
-  Standard_EXPORT void ShowTriangles(const Standard_Boolean theToShowTriangles);
+  Standard_EXPORT void ShowTriangles(const bool theToShowTriangles);
 
   //! @return true if texture color modulation is turned on
-  Standard_Boolean TextureModulate() const { return myModulate; }
+  bool TextureModulate() const { return myModulate; }
 
   //! Return true if specified display mode is supported (extends AIS_Shape with Display Mode 3).
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode >= 0 && theMode <= 3;
   }
 
 protected: //! @name overridden methods
   //! Compute presentation with texture mapping support.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT void updateAttributes(const Handle(Prs3d_Presentation)& thePrs);
+  Standard_EXPORT void updateAttributes(const occ::handle<Prs3d_Presentation>& thePrs);
 
 protected: //! @name presentation fields
-  Handle(Graphic3d_Texture2D)        myTexture;
-  Handle(Graphic3d_AspectFillArea3d) myAspect;
+  occ::handle<Graphic3d_Texture2D>        myTexture;
+  occ::handle<Graphic3d_AspectFillArea3d> myAspect;
 
 protected: //! @name texture source fields
-  Handle(Image_PixMap)      myTexturePixMap;
+  occ::handle<Image_PixMap>      myTexturePixMap;
   TCollection_AsciiString   myTextureFile;
   Graphic3d_NameOfTexture2D myPredefTexture;
 
 protected: //! @name texture mapping properties
-  Standard_Boolean myToMapTexture;
-  Standard_Boolean myModulate;
-  Standard_Boolean myIsCustomOrigin;
-  Standard_Boolean myToRepeat;
-  Standard_Boolean myToScale;
-  Standard_Boolean myToShowTriangles;
+  bool myToMapTexture;
+  bool myModulate;
+  bool myIsCustomOrigin;
+  bool myToRepeat;
+  bool myToScale;
+  bool myToShowTriangles;
 
 public:
   DEFINE_STANDARD_RTTIEXT(AIS_TexturedShape, AIS_Shape)
 };
-
-DEFINE_STANDARD_HANDLE(AIS_TexturedShape, AIS_Shape)
 
 #endif // _AIS_TexturedShape_HeaderFile

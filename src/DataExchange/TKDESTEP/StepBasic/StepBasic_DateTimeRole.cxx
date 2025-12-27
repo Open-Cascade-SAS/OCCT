@@ -18,18 +18,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DateTimeRole, Standard_Transient)
 
 StepBasic_DateTimeRole::StepBasic_DateTimeRole() {}
 
-void StepBasic_DateTimeRole::Init(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_DateTimeRole::Init(const occ::handle<TCollection_HAsciiString>& aName)
 {
   // --- classe own fields ---
   name = aName;
 }
 
-void StepBasic_DateTimeRole::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_DateTimeRole::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_DateTimeRole::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_DateTimeRole::Name() const
 {
   return name;
 }

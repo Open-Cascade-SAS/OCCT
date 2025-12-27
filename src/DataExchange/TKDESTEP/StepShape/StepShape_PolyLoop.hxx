@@ -26,9 +26,6 @@
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;
 
-class StepShape_PolyLoop;
-DEFINE_STANDARD_HANDLE(StepShape_PolyLoop, StepShape_Loop)
-
 class StepShape_PolyLoop : public StepShape_Loop
 {
 
@@ -36,22 +33,21 @@ public:
   //! Returns a PolyLoop
   Standard_EXPORT StepShape_PolyLoop();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const occ::handle<StepGeom_HArray1OfCartesianPoint>& aPolygon);
 
-  Standard_EXPORT void SetPolygon(const Handle(StepGeom_HArray1OfCartesianPoint)& aPolygon);
+  Standard_EXPORT void SetPolygon(const occ::handle<StepGeom_HArray1OfCartesianPoint>& aPolygon);
 
-  Standard_EXPORT Handle(StepGeom_HArray1OfCartesianPoint) Polygon() const;
+  Standard_EXPORT occ::handle<StepGeom_HArray1OfCartesianPoint> Polygon() const;
 
-  Standard_EXPORT Handle(StepGeom_CartesianPoint) PolygonValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> PolygonValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbPolygon() const;
+  Standard_EXPORT int NbPolygon() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_PolyLoop, StepShape_Loop)
 
-protected:
 private:
-  Handle(StepGeom_HArray1OfCartesianPoint) polygon;
+  occ::handle<StepGeom_HArray1OfCartesianPoint> polygon;
 };
 
 #endif // _StepShape_PolyLoop_HeaderFile

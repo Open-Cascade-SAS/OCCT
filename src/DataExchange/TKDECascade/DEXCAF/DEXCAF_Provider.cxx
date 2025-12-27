@@ -39,7 +39,7 @@ DEXCAF_Provider::DEXCAF_Provider() {}
 
 //=================================================================================================
 
-DEXCAF_Provider::DEXCAF_Provider(const Handle(DE_ConfigurationNode)& theNode)
+DEXCAF_Provider::DEXCAF_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
@@ -47,8 +47,8 @@ DEXCAF_Provider::DEXCAF_Provider(const Handle(DE_ConfigurationNode)& theNode)
 //=================================================================================================
 
 bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
-                           Handle(XSControl_WorkSession)&  theWS,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
                            const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
@@ -58,8 +58,8 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DEXCAF_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
-                            Handle(XSControl_WorkSession)&  theWS,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
                             const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
@@ -69,7 +69,7 @@ bool DEXCAF_Provider::Write(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
-                           const Handle(TDocStd_Document)& theDocument,
+                           const occ::handle<TDocStd_Document>& theDocument,
                            const Message_ProgressRange&    theProgress)
 {
   if (theDocument.IsNull())
@@ -84,9 +84,9 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
                         << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  Handle(DEXCAF_ConfigurationNode) aNode = Handle(DEXCAF_ConfigurationNode)::DownCast(GetNode());
-  Handle(TDocStd_Document)         aDocument;
-  Handle(TDocStd_Application)      anApp = new TDocStd_Application();
+  occ::handle<DEXCAF_ConfigurationNode> aNode = occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
+  occ::handle<TDocStd_Document>         aDocument;
+  occ::handle<TDocStd_Application>      anApp = new TDocStd_Application();
   BinDrivers::DefineFormat(anApp);
   BinLDrivers::DefineFormat(anApp);
   BinTObjDrivers::DefineFormat(anApp);
@@ -97,15 +97,15 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
   XmlLDrivers::DefineFormat(anApp);
   XmlTObjDrivers::DefineFormat(anApp);
   XmlXCAFDrivers::DefineFormat(anApp);
-  Handle(PCDM_ReaderFilter) aFilter =
+  occ::handle<PCDM_ReaderFilter> aFilter =
     new PCDM_ReaderFilter(aNode->InternalParameters.ReadAppendMode);
-  for (TColStd_ListOfAsciiString::Iterator anIt(aNode->InternalParameters.ReadSkipValues);
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(aNode->InternalParameters.ReadSkipValues);
        anIt.More();
        anIt.Next())
   {
     aFilter->AddSkipped(anIt.Value());
   }
-  for (TColStd_ListOfAsciiString::Iterator anIt(aNode->InternalParameters.ReadValues); anIt.More();
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(aNode->InternalParameters.ReadValues); anIt.More();
        anIt.Next())
   {
     if (anIt.Value().StartsWith("0"))
@@ -131,13 +131,13 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&  thePath,
 //=================================================================================================
 
 bool DEXCAF_Provider::Write(const TCollection_AsciiString&  thePath,
-                            const Handle(TDocStd_Document)& theDocument,
+                            const occ::handle<TDocStd_Document>& theDocument,
                             const Message_ProgressRange&    theProgress)
 {
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
   BinXCAFDrivers::DefineFormat(anApp);
 
-  Handle(DEXCAF_ConfigurationNode) aNode = Handle(DEXCAF_ConfigurationNode)::DownCast(GetNode());
+  occ::handle<DEXCAF_ConfigurationNode> aNode = occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
   if (aNode->GlobalParameters.LengthUnit != 1.0)
   {
     Message::SendWarning()
@@ -206,7 +206,7 @@ bool DEXCAF_Provider::Write(const TCollection_AsciiString&  thePath,
 
 bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
                            TopoDS_Shape&                  theShape,
-                           Handle(XSControl_WorkSession)& theWS,
+                           occ::handle<XSControl_WorkSession>& theWS,
                            const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
@@ -217,7 +217,7 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
 
 bool DEXCAF_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
-                            Handle(XSControl_WorkSession)& theWS,
+                            occ::handle<XSControl_WorkSession>& theWS,
                             const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
@@ -236,13 +236,13 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
                         << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  Handle(TDocStd_Document)    aDocument;
-  Handle(TDocStd_Application) anApp = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aDocument;
+  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
   BinXCAFDrivers::DefineFormat(anApp);
   anApp->NewDocument("BinXCAF", aDocument);
   Read(thePath, aDocument, theProgress);
-  TDF_LabelSequence         aLabels;
-  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  NCollection_Sequence<TDF_Label>         aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aSTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   aSTool->GetFreeShapes(aLabels);
   if (aLabels.Length() <= 0)
   {
@@ -260,7 +260,7 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
     TopoDS_Compound aComp;
     BRep_Builder    aBuilder;
     aBuilder.MakeCompound(aComp);
-    for (Standard_Integer anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
+    for (int anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
     {
       TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
       aBuilder.Add(aComp, aS);
@@ -276,8 +276,8 @@ bool DEXCAF_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
                             const Message_ProgressRange&   theProgress)
 {
-  Handle(TDocStd_Document)  aDoc    = new TDocStd_Document("BinXCAF");
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  occ::handle<TDocStd_Document>  aDoc    = new TDocStd_Document("BinXCAF");
+  occ::handle<XCAFDoc_ShapeTool> aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShTool->AddShape(theShape);
   return Write(thePath, aDoc, theProgress);
 }

@@ -17,20 +17,20 @@
 #ifndef _ChFiKPart_ComputeData_ChAsymPlnCon_HeaderFile
 #define _ChFiKPart_ComputeData_ChAsymPlnCon_HeaderFile
 
-Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
+bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
+                                      const occ::handle<ChFiDS_SurfData>& Data,
                                       const gp_Pln&                  Pln,
                                       const gp_Cone&                 Con,
-                                      const Standard_Real            fu,
-                                      const Standard_Real            lu,
+                                      const double            fu,
+                                      const double            lu,
                                       const TopAbs_Orientation       Or1,
                                       const TopAbs_Orientation       Or2,
-                                      const Standard_Real            Dis,
-                                      const Standard_Real            Angle,
+                                      const double            Dis,
+                                      const double            Angle,
                                       const gp_Circ&                 Spine,
-                                      const Standard_Real            First,
+                                      const double            First,
                                       const TopAbs_Orientation       Ofpl,
-                                      const Standard_Boolean         plandab,
-                                      const Standard_Boolean         DisOnP);
+                                      const bool         plandab,
+                                      const bool         DisOnP);
 
 #endif

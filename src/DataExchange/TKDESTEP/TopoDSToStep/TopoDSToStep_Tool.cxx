@@ -21,30 +21,30 @@
 
 //=================================================================================================
 
-TopoDSToStep_Tool::TopoDSToStep_Tool(const Handle(StepData_StepModel)& theModel)
-    : myFacetedContext(Standard_False),
+TopoDSToStep_Tool::TopoDSToStep_Tool(const occ::handle<StepData_StepModel>& theModel)
+    : myFacetedContext(false),
       myLowestTol(0.),
-      myReversedSurface(Standard_False)
+      myReversedSurface(false)
 {
   myPCurveMode = theModel->InternalParameters.WriteSurfaceCurMode;
 }
 
 //=================================================================================================
 
-TopoDSToStep_Tool::TopoDSToStep_Tool(const MoniTool_DataMapOfShapeTransient& M,
-                                     const Standard_Boolean                  FacetedContext,
-                                     Standard_Integer                        theSurfCurveMode)
+TopoDSToStep_Tool::TopoDSToStep_Tool(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                                     const bool                  FacetedContext,
+                                     int                        theSurfCurveMode)
     : myLowestTol(0.),
-      myReversedSurface(Standard_False)
+      myReversedSurface(false)
 {
   Init(M, FacetedContext, theSurfCurveMode);
 }
 
 //=================================================================================================
 
-void TopoDSToStep_Tool::Init(const MoniTool_DataMapOfShapeTransient& M,
-                             const Standard_Boolean                  FacetedContext,
-                             Standard_Integer                        theSurfCurveMode)
+void TopoDSToStep_Tool::Init(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                             const bool                  FacetedContext,
+                             int                        theSurfCurveMode)
 {
   myDataMap        = M;
   myFacetedContext = FacetedContext;
@@ -53,7 +53,7 @@ void TopoDSToStep_Tool::Init(const MoniTool_DataMapOfShapeTransient& M,
 
 //=================================================================================================
 
-Standard_Boolean TopoDSToStep_Tool::IsBound(const TopoDS_Shape& S)
+bool TopoDSToStep_Tool::IsBound(const TopoDS_Shape& S)
 {
   return myDataMap.IsBound(S);
 }
@@ -61,21 +61,21 @@ Standard_Boolean TopoDSToStep_Tool::IsBound(const TopoDS_Shape& S)
 //=================================================================================================
 
 void TopoDSToStep_Tool::Bind(const TopoDS_Shape&                                    S,
-                             const Handle(StepShape_TopologicalRepresentationItem)& T)
+                             const occ::handle<StepShape_TopologicalRepresentationItem>& T)
 {
   myDataMap.Bind(S, T);
 }
 
 //=================================================================================================
 
-Handle(StepShape_TopologicalRepresentationItem) TopoDSToStep_Tool::Find(const TopoDS_Shape& S)
+occ::handle<StepShape_TopologicalRepresentationItem> TopoDSToStep_Tool::Find(const TopoDS_Shape& S)
 {
-  return Handle(StepShape_TopologicalRepresentationItem)::DownCast(myDataMap.Find(S));
+  return occ::down_cast<StepShape_TopologicalRepresentationItem>(myDataMap.Find(S));
 }
 
 //=================================================================================================
 
-Standard_Boolean TopoDSToStep_Tool::Faceted() const
+bool TopoDSToStep_Tool::Faceted() const
 {
   return myFacetedContext;
 }
@@ -132,7 +132,7 @@ void TopoDSToStep_Tool::SetCurrentFace(const TopoDS_Face& F)
     }
   }
 #endif
-  Standard_Real FaceTol = BRep_Tool::Tolerance(F);
+  double FaceTol = BRep_Tool::Tolerance(F);
   if (FaceTol > myLowestTol)
     myLowestTol = FaceTol;
   myCurrentFace = F;
@@ -197,7 +197,7 @@ void TopoDSToStep_Tool::SetCurrentEdge(const TopoDS_Edge& E)
     }
   }
 #endif
-  Standard_Real EdgeTol = BRep_Tool::Tolerance(E);
+  double EdgeTol = BRep_Tool::Tolerance(E);
   if (EdgeTol > myLowestTol)
     myLowestTol = EdgeTol;
   myCurrentEdge = E;
@@ -214,7 +214,7 @@ const TopoDS_Edge& TopoDSToStep_Tool::CurrentEdge() const
 
 void TopoDSToStep_Tool::SetCurrentVertex(const TopoDS_Vertex& V)
 {
-  Standard_Real VertexTol = BRep_Tool::Tolerance(V);
+  double VertexTol = BRep_Tool::Tolerance(V);
   if (VertexTol > myLowestTol)
     myLowestTol = VertexTol;
   myCurrentVertex = V;
@@ -229,35 +229,35 @@ const TopoDS_Vertex& TopoDSToStep_Tool::CurrentVertex() const
 
 //=================================================================================================
 
-Standard_Real TopoDSToStep_Tool::Lowest3DTolerance() const
+double TopoDSToStep_Tool::Lowest3DTolerance() const
 {
   return myLowestTol;
 }
 
 //=================================================================================================
 
-void TopoDSToStep_Tool::SetSurfaceReversed(const Standard_Boolean B)
+void TopoDSToStep_Tool::SetSurfaceReversed(const bool B)
 {
   myReversedSurface = B;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopoDSToStep_Tool::SurfaceReversed() const
+bool TopoDSToStep_Tool::SurfaceReversed() const
 {
   return myReversedSurface;
 }
 
 //=================================================================================================
 
-const MoniTool_DataMapOfShapeTransient& TopoDSToStep_Tool::Map() const
+const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& TopoDSToStep_Tool::Map() const
 {
   return myDataMap;
 }
 
 //=================================================================================================
 
-Standard_Integer TopoDSToStep_Tool::PCurveMode() const
+int TopoDSToStep_Tool::PCurveMode() const
 {
   return myPCurveMode;
 }

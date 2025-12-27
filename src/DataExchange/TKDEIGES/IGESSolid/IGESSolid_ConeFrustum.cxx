@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ConeFrustum, IGESData_IGESEntity)
 
 IGESSolid_ConeFrustum::IGESSolid_ConeFrustum() {}
 
-void IGESSolid_ConeFrustum::Init(const Standard_Real Ht,
-                                 const Standard_Real R1,
-                                 const Standard_Real R2,
+void IGESSolid_ConeFrustum::Init(const double Ht,
+                                 const double R1,
+                                 const double R2,
                                  const gp_XYZ&       Center,
                                  const gp_XYZ&       anAxis)
 {
@@ -40,17 +40,17 @@ void IGESSolid_ConeFrustum::Init(const Standard_Real Ht,
   InitTypeAndForm(156, 0);
 }
 
-Standard_Real IGESSolid_ConeFrustum::Height() const
+double IGESSolid_ConeFrustum::Height() const
 {
   return theHeight;
 }
 
-Standard_Real IGESSolid_ConeFrustum::LargerRadius() const
+double IGESSolid_ConeFrustum::LargerRadius() const
 {
   return theR1;
 }
 
-Standard_Real IGESSolid_ConeFrustum::SmallerRadius() const
+double IGESSolid_ConeFrustum::SmallerRadius() const
 {
   return theR2;
 }

@@ -25,10 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder, Standard_Transient)
 
 //=================================================================================================
 
-MeshVS_PrsBuilder::MeshVS_PrsBuilder(const Handle(MeshVS_Mesh)&       Parent,
+MeshVS_PrsBuilder::MeshVS_PrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
                                      const MeshVS_DisplayModeFlags&   Flags,
-                                     const Handle(MeshVS_DataSource)& DS,
-                                     const Standard_Integer           Id,
+                                     const occ::handle<MeshVS_DataSource>& DS,
+                                     const int           Id,
                                      const MeshVS_BuilderPriority&    Priority)
 {
   if (Id < 0 && !Parent.IsNull())
@@ -41,39 +41,39 @@ MeshVS_PrsBuilder::MeshVS_PrsBuilder(const Handle(MeshVS_Mesh)&       Parent,
   myDrawer     = 0;
 
   myFlags       = Flags;
-  myIsExcluding = Standard_False;
+  myIsExcluding = false;
 
   myPriority = Priority;
 }
 
 //=================================================================================================
 
-void MeshVS_PrsBuilder::CustomBuild(const Handle(Prs3d_Presentation)&,
+void MeshVS_PrsBuilder::CustomBuild(const occ::handle<Prs3d_Presentation>&,
                                     const TColStd_PackedMapOfInteger&,
                                     TColStd_PackedMapOfInteger&,
-                                    const Standard_Integer) const
+                                    const int) const
 {
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) MeshVS_PrsBuilder::CustomSensitiveEntity(
-  const Handle(SelectMgr_EntityOwner)&,
-  const Standard_Integer) const
+occ::handle<Select3D_SensitiveEntity> MeshVS_PrsBuilder::CustomSensitiveEntity(
+  const occ::handle<SelectMgr_EntityOwner>&,
+  const int) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Handle(MeshVS_DataSource) MeshVS_PrsBuilder::DataSource() const
+occ::handle<MeshVS_DataSource> MeshVS_PrsBuilder::DataSource() const
 {
   return myDataSource;
 }
 
 //=================================================================================================
 
-Handle(MeshVS_DataSource) MeshVS_PrsBuilder::GetDataSource() const
+occ::handle<MeshVS_DataSource> MeshVS_PrsBuilder::GetDataSource() const
 {
   if (myDataSource.IsNull())
     return myParentMesh->GetDataSource();
@@ -83,56 +83,56 @@ Handle(MeshVS_DataSource) MeshVS_PrsBuilder::GetDataSource() const
 
 //=================================================================================================
 
-void MeshVS_PrsBuilder::SetDataSource(const Handle(MeshVS_DataSource)& DS)
+void MeshVS_PrsBuilder::SetDataSource(const occ::handle<MeshVS_DataSource>& DS)
 {
   myDataSource = DS;
 }
 
 //=================================================================================================
 
-Standard_Integer MeshVS_PrsBuilder::GetFlags() const
+int MeshVS_PrsBuilder::GetFlags() const
 {
   return myFlags;
 }
 
 //=================================================================================================
 
-Standard_Integer MeshVS_PrsBuilder::GetId() const
+int MeshVS_PrsBuilder::GetId() const
 {
   return myId;
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_PrsBuilder::TestFlags(const Standard_Integer DisplayMode) const
+bool MeshVS_PrsBuilder::TestFlags(const int DisplayMode) const
 {
   return ((DisplayMode & GetFlags()) > 0);
 }
 
 //=================================================================================================
 
-void MeshVS_PrsBuilder::SetExcluding(const Standard_Boolean state)
+void MeshVS_PrsBuilder::SetExcluding(const bool state)
 {
   myIsExcluding = state;
 }
 
 //=================================================================================================
 
-Standard_Boolean MeshVS_PrsBuilder::IsExcludingOn() const
+bool MeshVS_PrsBuilder::IsExcludingOn() const
 {
   return myIsExcluding;
 }
 
 //=================================================================================================
 
-Standard_Integer MeshVS_PrsBuilder::GetPriority() const
+int MeshVS_PrsBuilder::GetPriority() const
 {
   return myPriority;
 }
 
 //=================================================================================================
 
-Handle(MeshVS_Drawer) MeshVS_PrsBuilder::GetDrawer() const
+occ::handle<MeshVS_Drawer> MeshVS_PrsBuilder::GetDrawer() const
 {
   if (myDrawer.IsNull())
     return myParentMesh->GetDrawer();
@@ -142,14 +142,14 @@ Handle(MeshVS_Drawer) MeshVS_PrsBuilder::GetDrawer() const
 
 //=================================================================================================
 
-void MeshVS_PrsBuilder::SetDrawer(const Handle(MeshVS_Drawer)& Dr)
+void MeshVS_PrsBuilder::SetDrawer(const occ::handle<MeshVS_Drawer>& Dr)
 {
   myDrawer = Dr;
 }
 
 //=================================================================================================
 
-Handle(MeshVS_Drawer) MeshVS_PrsBuilder::Drawer() const
+occ::handle<MeshVS_Drawer> MeshVS_PrsBuilder::Drawer() const
 {
   return myDrawer;
 }
@@ -160,7 +160,7 @@ Handle(MeshVS_Drawer) MeshVS_PrsBuilder::Drawer() const
 //            MeshVS_Mesh::Compute methodto assign presentation
 //            manager to the builder.
 //================================================================
-void MeshVS_PrsBuilder::SetPresentationManager(const Handle(PrsMgr_PresentationManager)& thePrsMgr)
+void MeshVS_PrsBuilder::SetPresentationManager(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr)
 {
   myPrsMgr = thePrsMgr;
 }
@@ -169,7 +169,7 @@ void MeshVS_PrsBuilder::SetPresentationManager(const Handle(PrsMgr_PresentationM
 // Function : GetPresentationManager
 // Purpose  : Get presentation manager
 //================================================================
-Handle(PrsMgr_PresentationManager) MeshVS_PrsBuilder::GetPresentationManager() const
+occ::handle<PrsMgr_PresentationManager> MeshVS_PrsBuilder::GetPresentationManager() const
 {
   return myPrsMgr;
 }

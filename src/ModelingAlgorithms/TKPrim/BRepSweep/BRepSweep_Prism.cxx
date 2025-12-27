@@ -29,8 +29,8 @@
 
 BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape&    S,
                                  const gp_Vec&          V,
-                                 const Standard_Boolean C,
-                                 const Standard_Boolean Canonize)
+                                 const bool C,
+                                 const bool Canonize)
     : myTranslation(S, NumShape(), Location(V), V, C, Canonize)
 {
   Standard_ConstructionError_Raise_if(V.Magnitude() <= Precision::Confusion(),
@@ -41,9 +41,9 @@ BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape&    S,
 
 BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape&    S,
                                  const gp_Dir&          D,
-                                 const Standard_Boolean Inf,
-                                 const Standard_Boolean C,
-                                 const Standard_Boolean Canonize)
+                                 const bool Inf,
+                                 const bool C,
+                                 const bool Canonize)
     : myTranslation(S, NumShape(Inf), Location(D), D, C, Canonize)
 {
 }
@@ -106,16 +106,16 @@ Sweep_NumShape BRepSweep_Prism::NumShape() const
 
 //=================================================================================================
 
-Sweep_NumShape BRepSweep_Prism::NumShape(const Standard_Boolean Inf) const
+Sweep_NumShape BRepSweep_Prism::NumShape(const bool Inf) const
 {
   Sweep_NumShape N;
   if (Inf)
   {
-    N.Init(0, TopAbs_EDGE, Standard_False, Standard_True, Standard_True);
+    N.Init(0, TopAbs_EDGE, false, true, true);
   }
   else
   {
-    N.Init(1, TopAbs_EDGE, Standard_False, Standard_False, Standard_True);
+    N.Init(1, TopAbs_EDGE, false, false, true);
   }
   return N;
 }
@@ -132,14 +132,14 @@ TopLoc_Location BRepSweep_Prism::Location(const gp_Vec& V) const
 
 //=================================================================================================
 
-Standard_Boolean BRepSweep_Prism::IsUsed(const TopoDS_Shape& aGenS) const
+bool BRepSweep_Prism::IsUsed(const TopoDS_Shape& aGenS) const
 {
   return myTranslation.IsUsed(aGenS);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepSweep_Prism::GenIsUsed(const TopoDS_Shape& aGenS) const
+bool BRepSweep_Prism::GenIsUsed(const TopoDS_Shape& aGenS) const
 {
   return myTranslation.GenIsUsed(aGenS);
 }

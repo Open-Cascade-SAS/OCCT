@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_EdgesBlock, Standard_Transient)
 
 //=================================================================================================
 
-HLRAlgo_EdgesBlock::HLRAlgo_EdgesBlock(const Standard_Integer NbEdges)
+HLRAlgo_EdgesBlock::HLRAlgo_EdgesBlock(const int NbEdges)
     : myEdges(1, NbEdges),
       myFlags(1, NbEdges)
 {

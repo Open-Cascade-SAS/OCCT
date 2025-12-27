@@ -28,42 +28,42 @@ public:
   Standard_EXPORT StepVisual_TriangulatedSurfaceSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   theRepresentationItemName,
-                            const Handle(StepVisual_CoordinatesList)& theTessellatedFaceCoordinates,
-                            const Standard_Integer                    theTessellatedFacePnmax,
-                            const Handle(TColStd_HArray2OfReal)&      theTessellatedFaceNormals,
-                            const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-                            const Handle(TColStd_HArray2OfInteger)&   theTriangles);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItemName,
+                            const occ::handle<StepVisual_CoordinatesList>& theTessellatedFaceCoordinates,
+                            const int                    theTessellatedFacePnmax,
+                            const occ::handle<TColStd_HArray2OfReal>&      theTessellatedFaceNormals,
+                            const occ::handle<TColStd_HArray1OfInteger>&   thePnindex,
+                            const occ::handle<TColStd_HArray2OfInteger>&   theTriangles);
 
   //! Returns field Pnindex
-  const Handle(TColStd_HArray1OfInteger) Pnindex() const { return myPnindex; }
+  const occ::handle<TColStd_HArray1OfInteger> Pnindex() const { return myPnindex; }
 
   //! Sets field Pnindex
-  void SetPnindex(const Handle(TColStd_HArray1OfInteger)& thePnindex) { myPnindex = thePnindex; }
+  void SetPnindex(const occ::handle<TColStd_HArray1OfInteger>& thePnindex) { myPnindex = thePnindex; }
 
   //! Returns number of Pnindex
-  Standard_EXPORT Standard_Integer NbPnindex() const;
+  Standard_EXPORT int NbPnindex() const;
 
   //! Returns value of Pnindex by its num
-  Standard_EXPORT Standard_Integer PnindexValue(const Standard_Integer theNum) const;
+  Standard_EXPORT int PnindexValue(const int theNum) const;
 
   //! Returns field Triangles
-  const Handle(TColStd_HArray2OfInteger) Triangles() const { return myTriangles; }
+  const occ::handle<TColStd_HArray2OfInteger> Triangles() const { return myTriangles; }
 
   //! Sets field Triangles
-  void SetTriangles(const Handle(TColStd_HArray2OfInteger)& theTriangles)
+  void SetTriangles(const occ::handle<TColStd_HArray2OfInteger>& theTriangles)
   {
     myTriangles = theTriangles;
   }
 
   //! Returns number of Triangles
-  Standard_EXPORT Standard_Integer NbTriangles() const;
+  Standard_EXPORT int NbTriangles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TriangulatedSurfaceSet, StepVisual_TessellatedSurfaceSet)
 
 private:
-  Handle(TColStd_HArray1OfInteger) myPnindex;
-  Handle(TColStd_HArray2OfInteger) myTriangles;
+  occ::handle<TColStd_HArray1OfInteger> myPnindex;
+  occ::handle<TColStd_HArray2OfInteger> myTriangles;
 };
 
 #endif // _StepVisual_TriangulatedSurfaceSet_HeaderFile_

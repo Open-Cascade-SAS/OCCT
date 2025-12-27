@@ -27,7 +27,7 @@ StepBasic_GroupAssignment::StepBasic_GroupAssignment() {}
 
 //=================================================================================================
 
-void StepBasic_GroupAssignment::Init(const Handle(StepBasic_Group)& aAssignedGroup)
+void StepBasic_GroupAssignment::Init(const occ::handle<StepBasic_Group>& aAssignedGroup)
 {
 
   theAssignedGroup = aAssignedGroup;
@@ -35,14 +35,14 @@ void StepBasic_GroupAssignment::Init(const Handle(StepBasic_Group)& aAssignedGro
 
 //=================================================================================================
 
-Handle(StepBasic_Group) StepBasic_GroupAssignment::AssignedGroup() const
+occ::handle<StepBasic_Group> StepBasic_GroupAssignment::AssignedGroup() const
 {
   return theAssignedGroup;
 }
 
 //=================================================================================================
 
-void StepBasic_GroupAssignment::SetAssignedGroup(const Handle(StepBasic_Group)& aAssignedGroup)
+void StepBasic_GroupAssignment::SetAssignedGroup(const occ::handle<StepBasic_Group>& aAssignedGroup)
 {
   theAssignedGroup = aAssignedGroup;
 }

@@ -18,9 +18,9 @@ set(OCCT_Expr_FILES
   Expr_ArgSinh.hxx
   Expr_ArgTanh.cxx
   Expr_ArgTanh.hxx
-  Expr_Array1OfGeneralExpression.hxx
+
   Expr_Array1OfNamedUnknown.hxx
-  Expr_Array1OfSingleRelation.hxx
+
   Expr_BinaryExpression.cxx
   Expr_BinaryExpression.hxx
   Expr_BinaryExpression.lxx
@@ -66,7 +66,7 @@ set(OCCT_Expr_FILES
   Expr_LogOf10.hxx
   Expr_LogOfe.cxx
   Expr_LogOfe.hxx
-  Expr_MapOfNamedUnknown.hxx
+
   Expr_NamedConstant.cxx
   Expr_NamedConstant.hxx
   Expr_NamedConstant.lxx
@@ -94,8 +94,7 @@ set(OCCT_Expr_FILES
   Expr_RelationIterator.hxx
   Expr_RUIterator.cxx
   Expr_RUIterator.hxx
-  Expr_SequenceOfGeneralExpression.hxx
-  Expr_SequenceOfGeneralRelation.hxx
+
   Expr_Sign.cxx
   Expr_Sign.hxx
   Expr_Sine.cxx

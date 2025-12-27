@@ -21,6 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 
 class gp_Dir;
+class HLRBRep_Surface;
+class HLRBRep_Curve;
 
 //! The EdgeFaceTool computes the UV coordinates at a
 //! given parameter on a Curve and a Surface. It also
@@ -31,20 +33,18 @@ class HLRBRep_EdgeFaceTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Real CurvatureValue(const Standard_Address F,
-                                                      const Standard_Real    U,
-                                                      const Standard_Real    V,
+  Standard_EXPORT static double CurvatureValue(const HLRBRep_Surface* F,
+                                                      const double    U,
+                                                      const double    V,
                                                       const gp_Dir&          Tg);
 
   //! return True if U and V are found.
-  Standard_EXPORT static Standard_Boolean UVPoint(const Standard_Real    Par,
-                                                  const Standard_Address E,
-                                                  const Standard_Address F,
-                                                  Standard_Real&         U,
-                                                  Standard_Real&         V);
+  Standard_EXPORT static bool UVPoint(const double    Par,
+                                                  const HLRBRep_Curve* E,
+                                                  const HLRBRep_Surface* F,
+                                                  double&         U,
+                                                  double&         V);
 
-protected:
-private:
 };
 
 #endif // _HLRBRep_EdgeFaceTool_HeaderFile

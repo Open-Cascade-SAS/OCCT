@@ -30,10 +30,10 @@ class TObj_Application : public TDocStd_Application
 {
 public:
   //! Returns static instance of the application
-  Standard_EXPORT static Handle(TObj_Application) GetInstance();
+  Standard_EXPORT static occ::handle<TObj_Application> GetInstance();
 
   //! Returns reference to associated messenger handle
-  Handle(Message_Messenger)& Messenger() { return myMessenger; }
+  occ::handle<Message_Messenger>& Messenger() { return myMessenger; }
 
 public:
   /**
@@ -41,27 +41,27 @@ public:
    */
 
   //! Saving the OCAF document to a file
-  Standard_EXPORT virtual Standard_Boolean SaveDocument(
-    const Handle(TDocStd_Document)&   theSourceDoc,
+  Standard_EXPORT virtual bool SaveDocument(
+    const occ::handle<TDocStd_Document>&   theSourceDoc,
     const TCollection_ExtendedString& theTargetFile);
 
   //! Saving the OCAF document to a stream
-  Standard_EXPORT virtual Standard_Boolean SaveDocument(
-    const Handle(TDocStd_Document)& theSourceDoc,
+  Standard_EXPORT virtual bool SaveDocument(
+    const occ::handle<TDocStd_Document>& theSourceDoc,
     Standard_OStream&               theOStream);
 
   //! Loading the OCAF document from a file
-  Standard_EXPORT virtual Standard_Boolean LoadDocument(
+  Standard_EXPORT virtual bool LoadDocument(
     const TCollection_ExtendedString& theSourceFile,
-    Handle(TDocStd_Document)&         theTargetDoc);
+    occ::handle<TDocStd_Document>&         theTargetDoc);
 
   //! Loading the OCAF document from a stream
-  Standard_EXPORT virtual Standard_Boolean LoadDocument(Standard_IStream&         theIStream,
-                                                        Handle(TDocStd_Document)& theTargetDoc);
+  Standard_EXPORT virtual bool LoadDocument(Standard_IStream&         theIStream,
+                                                        occ::handle<TDocStd_Document>& theTargetDoc);
 
   //! Create the OCAF document from scratch
-  virtual Standard_EXPORT Standard_Boolean
-    CreateNewDocument(Handle(TDocStd_Document)&         theDoc,
+  virtual Standard_EXPORT bool
+    CreateNewDocument(occ::handle<TDocStd_Document>&         theDoc,
                       const TCollection_ExtendedString& theFormat);
 
   //! Signal error during Load or Save
@@ -78,13 +78,13 @@ public:
 
   //! Sets the verbose flag, meaning that load/save models should show
   //! CPU and elapsed times
-  void SetVerbose(const Standard_Boolean isVerbose) { myIsVerbose = isVerbose; }
+  void SetVerbose(const bool isVerbose) { myIsVerbose = isVerbose; }
 
   //! Returns the verbose flag
-  Standard_Boolean IsVerbose() const { return myIsVerbose; }
+  bool IsVerbose() const { return myIsVerbose; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
   /**
@@ -92,7 +92,7 @@ public:
    */
 
   //! Return name of resource (i.e. "TObj")
-  virtual Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
+  virtual Standard_EXPORT const char* ResourcesName() override;
 
 protected:
   /**
@@ -114,9 +114,9 @@ private:
    * Fields
    */
 
-  Standard_Boolean          myIsError;   //!< error flag
-  Standard_Boolean          myIsVerbose; //!< verbose flag
-  Handle(Message_Messenger) myMessenger; //!< messenger
+  bool          myIsError;   //!< error flag
+  bool          myIsVerbose; //!< verbose flag
+  occ::handle<Message_Messenger> myMessenger; //!< messenger
 
 public:
   //! CASCADE RTTI
@@ -124,6 +124,4 @@ public:
 };
 
 //! Define handle class
-DEFINE_STANDARD_HANDLE(TObj_Application, TDocStd_Application)
-
 #endif

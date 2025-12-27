@@ -23,43 +23,43 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer, IFSelect_SelectExtract)
 
 XSControl_SelectForTransfer::XSControl_SelectForTransfer() {}
 
-XSControl_SelectForTransfer::XSControl_SelectForTransfer(const Handle(XSControl_TransferReader)& TR)
+XSControl_SelectForTransfer::XSControl_SelectForTransfer(const occ::handle<XSControl_TransferReader>& TR)
 {
   theTR = TR;
 }
 
-void XSControl_SelectForTransfer::SetReader(const Handle(XSControl_TransferReader)& TR)
+void XSControl_SelectForTransfer::SetReader(const occ::handle<XSControl_TransferReader>& TR)
 {
   theTR = TR;
 }
 
-void XSControl_SelectForTransfer::SetActor(const Handle(Transfer_ActorOfTransientProcess)& act)
+void XSControl_SelectForTransfer::SetActor(const occ::handle<Transfer_ActorOfTransientProcess>& act)
 {
   theAC = act;
 }
 
-Handle(Transfer_ActorOfTransientProcess) XSControl_SelectForTransfer::Actor() const
+occ::handle<Transfer_ActorOfTransientProcess> XSControl_SelectForTransfer::Actor() const
 {
   return theAC;
 }
 
-Handle(XSControl_TransferReader) XSControl_SelectForTransfer::Reader() const
+occ::handle<XSControl_TransferReader> XSControl_SelectForTransfer::Reader() const
 {
   return theTR;
 }
 
-Standard_Boolean XSControl_SelectForTransfer::Sort(
-  const Standard_Integer /*rank*/,
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool XSControl_SelectForTransfer::Sort(
+  const int /*rank*/,
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
-  Handle(Transfer_ActorOfTransientProcess) act = theAC;
+  occ::handle<Transfer_ActorOfTransientProcess> act = theAC;
   if (act.IsNull() && !theTR.IsNull())
     act = theTR->Actor();
   // clang-format off
   if (!act.IsNull()) return act->Recognize(ent);//,theTR->TransientProcess());//act->Recognize(ent);
   // clang-format on
-  return Standard_False;
+  return false;
 }
 
 TCollection_AsciiString XSControl_SelectForTransfer::ExtractLabel() const

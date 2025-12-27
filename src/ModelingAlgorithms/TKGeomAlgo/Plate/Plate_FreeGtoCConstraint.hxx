@@ -37,16 +37,16 @@ public:
   Standard_EXPORT Plate_FreeGtoCConstraint(const gp_XY&           point2d,
                                            const Plate_D1&        D1S,
                                            const Plate_D1&        D1T,
-                                           const Standard_Real    IncrementalLoad = 1.0,
-                                           const Standard_Integer orientation     = 0);
+                                           const double    IncrementalLoad = 1.0,
+                                           const int orientation     = 0);
 
   Standard_EXPORT Plate_FreeGtoCConstraint(const gp_XY&           point2d,
                                            const Plate_D1&        D1S,
                                            const Plate_D1&        D1T,
                                            const Plate_D2&        D2S,
                                            const Plate_D2&        D2T,
-                                           const Standard_Real    IncrementalLoad = 1.0,
-                                           const Standard_Integer orientation     = 0);
+                                           const double    IncrementalLoad = 1.0,
+                                           const int orientation     = 0);
 
   Standard_EXPORT Plate_FreeGtoCConstraint(const gp_XY&           point2d,
                                            const Plate_D1&        D1S,
@@ -55,22 +55,21 @@ public:
                                            const Plate_D2&        D2T,
                                            const Plate_D3&        D3S,
                                            const Plate_D3&        D3T,
-                                           const Standard_Real    IncrementalLoad = 1.0,
-                                           const Standard_Integer orientation     = 0);
+                                           const double    IncrementalLoad = 1.0,
+                                           const int orientation     = 0);
 
-  const Standard_Integer& nb_PPC() const;
+  const int& nb_PPC() const;
 
-  const Plate_PinpointConstraint& GetPPC(const Standard_Integer Index) const;
+  const Plate_PinpointConstraint& GetPPC(const int Index) const;
 
-  const Standard_Integer& nb_LSC() const;
+  const int& nb_LSC() const;
 
-  const Plate_LinearScalarConstraint& LSC(const Standard_Integer Index) const;
+  const Plate_LinearScalarConstraint& LSC(const int Index) const;
 
-protected:
 private:
   gp_XY                        pnt2d;
-  Standard_Integer             nb_PPConstraints;
-  Standard_Integer             nb_LSConstraints;
+  int             nb_PPConstraints;
+  int             nb_LSConstraints;
   Plate_PinpointConstraint     myPPC[5];
   Plate_LinearScalarConstraint myLSC[4];
 };

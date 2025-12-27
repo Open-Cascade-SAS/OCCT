@@ -13,28 +13,28 @@
 
 #include <Vrml_PointSet.hxx>
 
-Vrml_PointSet::Vrml_PointSet(const Standard_Integer aStartIndex, const Standard_Integer aNumPoints)
+Vrml_PointSet::Vrml_PointSet(const int aStartIndex, const int aNumPoints)
 {
   myStartIndex = aStartIndex;
   myNumPoints  = aNumPoints;
 }
 
-void Vrml_PointSet::SetStartIndex(const Standard_Integer aStartIndex)
+void Vrml_PointSet::SetStartIndex(const int aStartIndex)
 {
   myStartIndex = aStartIndex;
 }
 
-Standard_Integer Vrml_PointSet::StartIndex() const
+int Vrml_PointSet::StartIndex() const
 {
   return myStartIndex;
 }
 
-void Vrml_PointSet::SetNumPoints(const Standard_Integer aNumPoints)
+void Vrml_PointSet::SetNumPoints(const int aNumPoints)
 {
   myNumPoints = aNumPoints;
 }
 
-Standard_Integer Vrml_PointSet::NumPoints() const
+int Vrml_PointSet::NumPoints() const
 {
   return myNumPoints;
 }

@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
-class StepRepr_CompoundRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepRepr_CompoundRepresentationItem, StepRepr_RepresentationItem)
-
 //! Added for Dimensional Tolerances
 class StepRepr_CompoundRepresentationItem : public StepRepr_RepresentationItem
 {
@@ -34,27 +31,26 @@ class StepRepr_CompoundRepresentationItem : public StepRepr_RepresentationItem
 public:
   Standard_EXPORT StepRepr_CompoundRepresentationItem();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&             aName,
-                            const Handle(StepRepr_HArray1OfRepresentationItem)& item_element);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&             aName,
+                            const occ::handle<StepRepr_HArray1OfRepresentationItem>& item_element);
 
-  Standard_EXPORT Handle(StepRepr_HArray1OfRepresentationItem) ItemElement() const;
+  Standard_EXPORT occ::handle<StepRepr_HArray1OfRepresentationItem> ItemElement() const;
 
-  Standard_EXPORT Standard_Integer NbItemElement() const;
+  Standard_EXPORT int NbItemElement() const;
 
   Standard_EXPORT void SetItemElement(
-    const Handle(StepRepr_HArray1OfRepresentationItem)& item_element);
+    const occ::handle<StepRepr_HArray1OfRepresentationItem>& item_element);
 
-  Standard_EXPORT Handle(StepRepr_RepresentationItem) ItemElementValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationItem> ItemElementValue(
+    const int num) const;
 
-  Standard_EXPORT void SetItemElementValue(const Standard_Integer                     num,
-                                           const Handle(StepRepr_RepresentationItem)& anelement);
+  Standard_EXPORT void SetItemElementValue(const int                     num,
+                                           const occ::handle<StepRepr_RepresentationItem>& anelement);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_CompoundRepresentationItem, StepRepr_RepresentationItem)
 
-protected:
 private:
-  Handle(StepRepr_HArray1OfRepresentationItem) theItemElement;
+  occ::handle<StepRepr_HArray1OfRepresentationItem> theItemElement;
 };
 
 #endif // _StepRepr_CompoundRepresentationItem_HeaderFile

@@ -18,7 +18,7 @@
 
 TEST(Standard_Handle_Test, OCC24533_IsNullAndPointerChecks)
 {
-  Handle(Standard_Transient) aHandle;
+  occ::handle<Standard_Transient> aHandle;
 
   // Test IsNull() for default-constructed handle
   EXPECT_TRUE(aHandle.IsNull());

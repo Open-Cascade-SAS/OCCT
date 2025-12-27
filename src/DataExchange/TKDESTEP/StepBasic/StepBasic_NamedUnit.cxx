@@ -19,18 +19,18 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_NamedUnit, Standard_Transient)
 
 StepBasic_NamedUnit::StepBasic_NamedUnit() {}
 
-void StepBasic_NamedUnit::Init(const Handle(StepBasic_DimensionalExponents)& aDimensions)
+void StepBasic_NamedUnit::Init(const occ::handle<StepBasic_DimensionalExponents>& aDimensions)
 {
   // --- classe own fields ---
   dimensions = aDimensions;
 }
 
-void StepBasic_NamedUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& aDimensions)
+void StepBasic_NamedUnit::SetDimensions(const occ::handle<StepBasic_DimensionalExponents>& aDimensions)
 {
   dimensions = aDimensions;
 }
 
-Handle(StepBasic_DimensionalExponents) StepBasic_NamedUnit::Dimensions() const
+occ::handle<StepBasic_DimensionalExponents> StepBasic_NamedUnit::Dimensions() const
 {
   return dimensions;
 }
