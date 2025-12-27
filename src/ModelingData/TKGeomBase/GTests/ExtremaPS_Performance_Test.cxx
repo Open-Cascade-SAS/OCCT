@@ -20,6 +20,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Cone.hxx>
@@ -215,6 +216,88 @@ TEST(ExtremaPS_Performance, AllSurfaces) {
         Handle(Geom_BezierSurface) surf = MakeDomeBezier();
         RunPerfTest("Bezier (dome)", surf, 0, 1, 0, 1,
                     NUM_POINTS_NUMERICAL, NUM_ITERATIONS_NUMERICAL);
+    }
+
+    std::cout << "\n=== Done ===" << std::endl;
+}
+
+// Generate points along a line (simulating coherent scanning)
+std::vector<gp_Pnt> GenerateCoherentPoints(int count, const gp_Pnt& start,
+                                            const gp_Vec& direction, double step) {
+    std::vector<gp_Pnt> points;
+    points.reserve(count);
+    for (int i = 0; i < count; ++i) {
+        gp_Pnt p = start.Translated(direction.Multiplied(i * step));
+        points.push_back(p);
+    }
+    return points;
+}
+
+void RunCoherentPerfTest(const char* name, const Handle(Geom_Surface)& surf,
+                         double uMin, double uMax, double vMin, double vMax,
+                         int numPoints, int numIterations) {
+    GeomAdaptor_Surface adaptor(surf);
+
+    // Generate points along a line above the surface (coherent trajectory)
+    gp_Pnt start(0.0, 0.0, 10.0);
+    gp_Vec direction(0.1, 0.1, 0.0);  // Diagonal scan with small step
+    auto points = GenerateCoherentPoints(numPoints, start, direction, 0.01);
+
+    const ExtremaPS::Domain2D aDomain(uMin, uMax, vMin, vMax);
+
+    // Old implementation
+    Extrema_ExtPS oldExt;
+    oldExt.Initialize(adaptor, uMin, uMax, vMin, vMax, THE_TOL, THE_TOL);
+    auto oldStart = std::chrono::high_resolution_clock::now();
+    for (int iter = 0; iter < numIterations; ++iter) {
+        for (const auto& p : points) {
+            oldExt.Perform(p);
+        }
+    }
+    auto oldEnd = std::chrono::high_resolution_clock::now();
+    double oldTime = std::chrono::duration<double, std::milli>(oldEnd - oldStart).count() / numIterations;
+
+    // New implementation with trajectory prediction
+    ExtremaPS_Surface newExt(adaptor, aDomain);
+    auto newStart = std::chrono::high_resolution_clock::now();
+    for (int iter = 0; iter < numIterations; ++iter) {
+        for (const auto& p : points) {
+            newExt.Perform(p, THE_TOL);
+        }
+    }
+    auto newEnd = std::chrono::high_resolution_clock::now();
+    double newTime = std::chrono::duration<double, std::milli>(newEnd - newStart).count() / numIterations;
+
+    double speedup = oldTime / newTime;
+    std::cout << std::setw(20) << name << ": "
+              << "Old: " << std::fixed << std::setprecision(1) << std::setw(7) << oldTime << " ms, "
+              << "New: " << std::setw(7) << newTime << " ms, "
+              << "Speedup: " << std::setprecision(2) << speedup << "x"
+              << (speedup > 1.0 ? " FASTER" : " slower")
+              << std::endl;
+}
+
+TEST(ExtremaPS_Performance, CoherentScanning) {
+    std::cout << "\n=== Coherent Scanning Performance (Trajectory Prediction) ===" << std::endl;
+    std::cout << "Testing 1000 sequential points, 100 iterations each" << std::endl;
+
+    // BSpline with coherent scanning
+    {
+        Handle(Geom_BSplineSurface) surf = MakeDomeBSpline();
+        RunCoherentPerfTest("BSpline (coherent)", surf, 0, 1, 0, 1, 1000, 100);
+    }
+
+    // Bezier with coherent scanning
+    {
+        Handle(Geom_BezierSurface) surf = MakeDomeBezier();
+        RunCoherentPerfTest("Bezier (coherent)", surf, 0, 1, 0, 1, 1000, 100);
+    }
+
+    // Sphere with coherent scanning
+    {
+        gp_Sphere sph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+        Handle(Geom_SphericalSurface) surf = new Geom_SphericalSurface(sph);
+        RunCoherentPerfTest("Sphere (coherent)", surf, 0, 2*M_PI, -M_PI/2, M_PI/2, 1000, 100);
     }
 
     std::cout << "\n=== Done ===" << std::endl;

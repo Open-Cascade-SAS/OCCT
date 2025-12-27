@@ -18,6 +18,7 @@
 #include <ExtremaPS.hxx>
 #include <ExtremaPS_DistanceFunction.hxx>
 #include <GeomGridEval.hxx>
+#include <gp_Vec.hxx>
 #include <math_Vector.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
@@ -124,6 +125,14 @@ public:
                                                  ExtremaPS::SearchMode      theMode) const
   {
     myResult.Clear();
+
+    // Try cached solution first if query points are spatially coherent
+    if (tryFromCachedSolution(theSurface, theP, theDomain, theTol, theMode))
+    {
+      return myResult;
+    }
+
+    // Full grid scan + refinement
     scanGrid(theP, theTol, theMode);
     refineCandidates(theSurface, theP, theDomain, theTol, theMode);
     addGridMinFallback(theSurface, theP, theDomain, theTol, theMode);
@@ -131,6 +140,8 @@ public:
     if (!myResult.Extrema.IsEmpty())
     {
       myResult.Status = ExtremaPS::Status::OK;
+      // Cache the best solution for next query
+      updateSolutionCache(theP);
     }
     return myResult;
   }
@@ -589,11 +600,172 @@ private:
   mutable NCollection_Vector<SortEntry>                 mySortedEntries; //!< Sorted candidate indices
   mutable NCollection_Array2<GridPointData>             myGridData;      //!< Pre-computed Fu/Fv/Dist
 
+  //! @brief Try to find extremum starting from cached solution (spatial coherence optimization).
+  //!
+  //! Uses ring buffer of last 3 solutions. When 3+ points are available,
+  //! attempts trajectory prediction (linear extrapolation) for better initial guess.
+  //!
+  //! @return true if cached solution produced a valid result, false to fall back to grid scan
+  bool tryFromCachedSolution(const Adaptor3d_Surface&   theSurface,
+                             const gp_Pnt&              theP,
+                             const ExtremaPS::Domain2D& theDomain,
+                             double                     theTol,
+                             ExtremaPS::SearchMode      theMode) const
+  {
+    if (myCacheCount == 0)
+      return false;
+
+    constexpr double THE_COHERENCE_THRESHOLD_SQ = 100.0; // Distance^2 threshold
+
+    // Get most recent cached solution
+    int aLastIdx = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    const CachedSolution& aLast = myCachedSolutions[aLastIdx];
+
+    double aDistSq = theP.SquareDistance(aLast.QueryPoint);
+    if (aDistSq > THE_COHERENCE_THRESHOLD_SQ)
+      return false;
+
+    // Compute starting point: use trajectory prediction if 3 points available
+    double aStartU = aLast.U;
+    double aStartV = aLast.V;
+
+    if (myCacheCount >= 3)
+    {
+      // Get 3 most recent points (in order: oldest, middle, newest)
+      int aIdx2 = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE; // newest
+      int aIdx1 = (myCacheIndex + THE_CACHE_SIZE - 2) % THE_CACHE_SIZE; // middle
+      int aIdx0 = (myCacheIndex + THE_CACHE_SIZE - 3) % THE_CACHE_SIZE; // oldest
+
+      const CachedSolution& aS0 = myCachedSolutions[aIdx0];
+      const CachedSolution& aS1 = myCachedSolutions[aIdx1];
+      const CachedSolution& aS2 = myCachedSolutions[aIdx2];
+
+      // Check if the 3 query points form a roughly linear trajectory
+      gp_Vec aV01(aS0.QueryPoint, aS1.QueryPoint);
+      gp_Vec aV12(aS1.QueryPoint, aS2.QueryPoint);
+      double aMag01 = aV01.Magnitude();
+      double aMag12 = aV12.Magnitude();
+
+      // Only predict if steps are similar in magnitude (ratio between 0.5 and 2.0)
+      if (aMag01 > 1e-10 && aMag12 > 1e-10)
+      {
+        double aRatio = aMag12 / aMag01;
+        if (aRatio > 0.5 && aRatio < 2.0)
+        {
+          // Compute cosine of angle between consecutive steps
+          double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
+          if (aCos > 0.7) // Roughly same direction (< ~45 degrees)
+          {
+            // Linear extrapolation: predict (U, V) based on previous steps
+            double aDeltaU = aS2.U - aS1.U;
+            double aDeltaV = aS2.V - aS1.V;
+            aStartU = aS2.U + aDeltaU;
+            aStartV = aS2.V + aDeltaV;
+            // Clamp to domain
+            aStartU = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
+            aStartV = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
+          }
+        }
+      }
+    }
+
+    // Try Newton from predicted/cached starting point
+    ExtremaPS_DistanceFunction aFunc(theSurface, theP);
+    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(
+      aFunc, aStartU, aStartV, theDomain.UMin, theDomain.UMax, theDomain.VMin, theDomain.VMax, theTol);
+
+    if (!aNewtonRes.IsDone)
+      return false;
+
+    double aRootU = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
+    double aRootV = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+
+    // Verify the solution is valid (gradient near zero)
+    double aFu, aFv;
+    aFunc.Value(aRootU, aRootV, aFu, aFv);
+    double aFNorm = aFu * aFu + aFv * aFv;
+    if (aFNorm > theTol * theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
+      return false;
+
+    // Valid solution found - add result
+    gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
+    double aSqDist = theP.SquareDistance(aPt);
+
+    // Classify as min or max using second derivative
+    double aDFuu, aDFuv, aDFvv;
+    aFunc.ValueAndJacobian(aRootU, aRootV, aFu, aFv, aDFuu, aDFuv, aDFvv);
+    bool aIsMin = (aDFuu > 0.0 && aDFuu * aDFvv - aDFuv * aDFuv > 0.0);
+
+    // Filter by search mode
+    if (theMode == ExtremaPS::SearchMode::Min && !aIsMin)
+      return false;
+    if (theMode == ExtremaPS::SearchMode::Max && aIsMin)
+      return false;
+
+    ExtremaPS::ExtremumResult anExt;
+    anExt.U              = aRootU;
+    anExt.V              = aRootV;
+    anExt.Point          = aPt;
+    anExt.SquareDistance = aSqDist;
+    anExt.IsMinimum      = aIsMin;
+    myResult.Extrema.Append(anExt);
+    myResult.Status = ExtremaPS::Status::OK;
+
+    // Update cache with new solution
+    addToCache(theP, aRootU, aRootV);
+
+    return true;
+  }
+
+  //! @brief Add a solution to the ring buffer cache.
+  void addToCache(const gp_Pnt& theP, double theU, double theV) const
+  {
+    myCachedSolutions[myCacheIndex].QueryPoint = theP;
+    myCachedSolutions[myCacheIndex].U          = theU;
+    myCachedSolutions[myCacheIndex].V          = theV;
+    myCacheIndex = (myCacheIndex + 1) % THE_CACHE_SIZE;
+    if (myCacheCount < THE_CACHE_SIZE)
+      ++myCacheCount;
+  }
+
+  //! @brief Update the solution cache with the best result.
+  void updateSolutionCache(const gp_Pnt& theP) const
+  {
+    if (myResult.Extrema.IsEmpty())
+      return;
+
+    // Find the minimum distance result
+    double aBestDist = std::numeric_limits<double>::max();
+    int    aBestIdx  = 0;
+    for (int i = 0; i < myResult.Extrema.Length(); ++i)
+    {
+      if (myResult.Extrema.Value(i).SquareDistance < aBestDist)
+      {
+        aBestDist = myResult.Extrema.Value(i).SquareDistance;
+        aBestIdx  = i;
+      }
+    }
+
+    addToCache(theP, myResult.Extrema.Value(aBestIdx).U, myResult.Extrema.Value(aBestIdx).V);
+  }
+
   // Cached global min/max indices from last scanGrid
   mutable int    myMinI = 0, myMinJ = 0;    //!< Grid indices of global minimum
   mutable int    myMaxI = 0, myMaxJ = 0;    //!< Grid indices of global maximum
   mutable double myMinDist = 0.0;           //!< Global minimum squared distance
   mutable double myMaxDist = 0.0;           //!< Global maximum squared distance
+
+  // Cached solutions for spatial coherence optimization (ring buffer of 3)
+  static constexpr int THE_CACHE_SIZE = 3;
+  struct CachedSolution
+  {
+    gp_Pnt QueryPoint;
+    double U = 0.0;
+    double V = 0.0;
+  };
+  mutable CachedSolution myCachedSolutions[THE_CACHE_SIZE]; //!< Ring buffer of cached solutions
+  mutable int            myCacheCount = 0;                  //!< Number of valid entries (0 to 3)
+  mutable int            myCacheIndex = 0;                  //!< Next write index (circular)
 };
 
 #endif // _ExtremaPS_GridEvaluator_HeaderFile
