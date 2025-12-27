@@ -27,7 +27,7 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export CSF_OCCTIncludePath="@CMAKE_BINARY_DIR@/@INSTALL_DIR_INCLUDE@"
     export CSF_OCCTResourcePath="@OCCT_ROOT_DIR@/resources"
     export CSF_OCCTDataPath="@OCCT_ROOT_DIR@/data"
-    export CSF_OCCTSamplesPath="@OCCT_ROOT_DIR@/samples"
+    export CSF_OCCTSamplesPath="@OCCT_ROOT_DIR@/tests/samples"
     export CSF_OCCTTestsPath="@OCCT_ROOT_DIR@/tests"
     export CSF_OCCTDocPath="@OCCT_ROOT_DIR@/doc"
 

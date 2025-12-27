@@ -1,7 +1,0 @@
-/debug
-/release
-*.sln
-*.vcxproj*
-.qmake.stash
-/custom.bat
-/custom.sh

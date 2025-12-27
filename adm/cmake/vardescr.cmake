@@ -50,10 +50,10 @@ OFF - using a reference file with direct include to the origin,
 ON - symbolic link to the origin file are created")
 
 # install variables
-set (INSTALL_DIR_DESCR 
+set (INSTALL_DIR_DESCR
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),
-samples (INSTALL_SAMPLES_DESCR variable) and certain 3rdparties (INSTALL_TBB and
-other similar variables) will be placed during the installation process (building INSTALL project)")
+and certain 3rdparties (INSTALL_TBB and other similar variables) will be placed
+during the installation process (building INSTALL project)")
 
 set (INSTALL_DIR_WITH_VERSION_DESCR
 "Use OCCT version number as suffix for names of directories")
@@ -73,10 +73,8 @@ set (INSTALL_DIR_DOC_DESCR
 "Subdirectory of INSTALL_DIR where documentation will be installed")
 set (INSTALL_DIR_LIB_DESCR 
 "Subdirectory of INSTALL_DIR where libraries (.so on Linux, .lib on Windows) will be installed")
-set (INSTALL_DIR_RESOURCE_DESCR 
+set (INSTALL_DIR_RESOURCE_DESCR
 "Subdirectory of INSTALL_DIR where OCCT resource files will be installed")
-set (INSTALL_DIR_SAMPLES_DESCR 
-"Subdirectory of INSTALL_DIR where samples will be installed")
 set (INSTALL_DIR_TESTS_DESCR 
 "Subdirectory of INSTALL_DIR where test scripts will be installed")
 set (INSTALL_DIR_SCRIPT_DESCR 
@@ -91,7 +89,6 @@ set (${INSTALL_TARGET_VARIABLE}_DESCR
 project) into the installation directory (INSTALL_DIR variable)")
 endmacro()
 
-INSTALL_MESSAGE (INSTALL_SAMPLES          "OCCT samples")
 INSTALL_MESSAGE (INSTALL_TEST_CASES       "non-regression OCCT test scripts")
 INSTALL_MESSAGE (INSTALL_DOC_Overview     "OCCT overview documentation (HTML format)")
 INSTALL_MESSAGE (INSTALL_FFMPEG           "FFmpeg binaries")
@@ -129,19 +126,6 @@ set (BUILD_ADDITIONAL_TOOLKITS_DESCR
 want to build some particular libraries (toolkits) only, then you may uncheck
 all modules in the corresponding BUILD_MODUE_* options and provide the list of
 necessary libraries here. Of course, all dependencies will be resolved automatically")
-
-set (BUILD_SAMPLES_MFC_DESCR
-"Indicates whether OCCT MFC samples should be built together with OCCT.
-These samples show some possibilities of using OCCT and they can be executed
-with script samples.bat from the installation directory (INSTALL_DIR)")
-
-set (BUILD_SAMPLES_QT_DESCR
-"Indicates whether OCCT Qt samples should be built together with OCCT.
-These samples show some possibilities of using OCCT and they can be executed
-with script samples.bat from the installation directory (INSTALL_DIR)")
-
-set (BUILD_MODULE_UwpSample_DESCR
-"Indicates whether OCCT UWP sample should be built together with OCCT.")
 
 set (BUILD_DOC_Overview_DESCR
 "Indicates whether OCCT overview documentation project (Markdown format) should be

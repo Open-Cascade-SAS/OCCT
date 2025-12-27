@@ -241,9 +241,6 @@ if (CMAKE_VERSION VERSION_LESS "3.14")
   OCCT_CHECK_AND_UNSET (BUILD_INCLUDE_SYMLINK)
 endif()
 
-# copy samples to install directory
-set (INSTALL_SAMPLES OFF CACHE BOOL "${INSTALL_SAMPLES_DESCR}")
-
 # install dir of the project
 if (NOT DEFINED INSTALL_DIR)
   # set default install directory for Windows
@@ -368,11 +365,6 @@ endif()
 # the list of being built toolkits
 set (BUILD_ADDITIONAL_TOOLKITS "" CACHE STRING "${BUILD_ADDITIONAL_TOOLKITS_DESCR}")
 separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
-
-if (MSVC)
-  set (BUILD_SAMPLES_MFC OFF CACHE BOOL "${BUILD_SAMPLES_MFC_DESCR}")
-endif()
-set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
 
 # uwp sample
 if (MSVC)
@@ -834,18 +826,6 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_GTEST")
 endif()
 
-# qt for samples
-if (BUILD_SAMPLES_QT)
-  # check qt 3rdparty path
-  add_definitions (-DHAVE_QT)
-  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/qt")
-  message (STATUS "Info: Qt is used by OCCT")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
-endif()
-
 # VCPKG require delayed processing of 3rdparty.
 # That is why we delay the creating project and setting up
 # the platform specific variables.
@@ -934,20 +914,6 @@ if (NOT DEFINED INSTALL_DIR_DATA)
     set (INSTALL_DIR_DATA "share/${OCCT_PROJECT_NAME}" CACHE PATH "${INSTALL_DIR_DATA_DESCR}")
   else()
     set (INSTALL_DIR_DATA "data" CACHE PATH "${INSTALL_DIR_DATA_DESCR}")
-  endif()
-endif()
-
-# OCCT samples
-if (NOT DEFINED INSTALL_DIR_SAMPLES)
-  if (LAYOUT_IS_UNIX)
-    set (INSTALL_DIR_SAMPLES "share/opencascade/samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}")
-    if (INSTALL_DIR_WITH_VERSION)
-      set (INSTALL_DIR_SAMPLES "share/opencascade-${OCC_VERSION_STRING_EXT}/samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}" FORCE)
-    endif()
-  elseif (LAYOUT_IS_VCPKG)
-    set (INSTALL_DIR_SAMPLES "share/${OCCT_PROJECT_NAME}/samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}")
-  else()
-    set (INSTALL_DIR_SAMPLES "samples" CACHE PATH "${INSTALL_DIR_SAMPLES_DESCR}")
   endif()
 endif()
 
@@ -1143,47 +1109,10 @@ CONFIGURE_AND_INSTALL_VERSION_HEADER()
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 
-list (FIND BUILD_TOOLKITS DRAWEXE DRAWEXE_INDEX)
-if (${DRAWEXE_INDEX} GREATER -1)
-  OCCT_INSTALL_FILE_OR_DIR ("data/" "${INSTALL_DIR_DATA}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR_SAMPLES}")
-endif()
-
 if (WIN32)
   set (SCRIPT_EXT bat)
 else()
   set (SCRIPT_EXT sh)
-endif()
-
-# OCCT samples
-# get absolute path from INSTALL_DIR
-set (INSTALL_DIR_ABSOLUTE "${INSTALL_DIR}")
-if(NOT IS_ABSOLUTE "${INSTALL_DIR_ABSOLUTE}")
-  get_filename_component(INSTALL_DIR_ABSOLUTE "${CMAKE_BINARY_DIR}/${INSTALL_DIR}" ABSOLUTE)
-endif()
-
-if (INSTALL_SAMPLES)
-  OCCT_CONFIGURE ("adm/templates/env.samples.${SCRIPT_EXT}.in" "env.samples.${SCRIPT_EXT}")
-  if (WIN32)
-    OCCT_INSTALL_FILE_OR_DIR ("samples/CSharp" "${INSTALL_DIR_SAMPLES}")
-    OCCT_INSTALL_FILE_OR_DIR ("samples/mfc" "${INSTALL_DIR_SAMPLES}")
-
-    if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-      OCCT_INSTALL_FILE_OR_DIR ("samples/xaml" "${INSTALL_DIR_SAMPLES}")
-    endif()
-
-    install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/CSharp" RENAME "env.${SCRIPT_EXT}")
-    install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/mfc/standard" RENAME "env.${SCRIPT_EXT}")
-  endif()
-
-  OCCT_INSTALL_FILE_OR_DIR ("samples/java" "${INSTALL_DIR_SAMPLES}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/ocafsamples" "${INSTALL_DIR_SAMPLES}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt" "${INSTALL_DIR_SAMPLES}")
-
-  install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/FuncDemo" RENAME "env.${SCRIPT_EXT}")
-  install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/IESample" RENAME "env.${SCRIPT_EXT}")
-  install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/OCCTOverview" RENAME "env.${SCRIPT_EXT}")
-  install (FILES "${CMAKE_BINARY_DIR}/env.samples.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SAMPLES}/qt/Tutorial" RENAME "env.${SCRIPT_EXT}")
 endif()
 
 if (INSTALL_TEST_CASES)
@@ -1192,9 +1121,8 @@ endif()
 
 list (FIND BUILD_TOOLKITS DRAWEXE DRAWEXE_INDEX)
 if (${DRAWEXE_INDEX} GREATER -1)
-  # copy data and samples/tcl folders to install script folder
+  # copy data folder and draw script to install folder
   OCCT_INSTALL_FILE_OR_DIR ("data/" "${INSTALL_DIR_DATA}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR_SAMPLES}")
 
   install (FILES "${OCCT_ROOT_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
           PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
@@ -1342,11 +1270,6 @@ endif()
 # write current custom.bat/sh (for build directory)
 OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME}")
 
-if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
-  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.${SCRIPT_EXT}" "${INSTALL_DIR_SCRIPT}")
-  OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
-endif()
-
 if (WIN32)
   # Set custom script path variable for Windows template
   if (LAYOUT_IS_VCPKG)
@@ -1405,24 +1328,6 @@ foreach(RESOURCE ${RESOURCES})
   endif()
 endforeach()
 
-if (BUILD_SAMPLES_QT)
-  FILE_TO_LIST ("adm/SAMPLES_RESOURCES" SAMPLES_RESOURCES)
-  foreach(RESOURCE ${SAMPLES_RESOURCES})
-    OCCT_INSTALL_FILE_OR_DIR ("samples/${RESOURCE}" "${INSTALL_DIR_RESOURCE}/samples")
-    #message("Copy Sample resources: samples/${RESOURCE} into ${INSTALL_DIR_RESOURCE}/samples")
-  endforeach()
-
-  ## Copy sources of OCCTOverview for using in the sample
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/DataExchangeSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/OcafSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/GeometrySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/TopologySamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/TriangulationSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/Viewer2dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/qt/OCCTOverview/code/Viewer3dSamples.cxx" "${INSTALL_DIR_SAMPLES}/OCCTOverview/code")
-endif()
-
-
 # patch installed DrawDefault file if BUILD_SHARED_LIBRARY_NAME_POSTFIX is changed
 if (NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
   OCCT_UPDATE_DRAW_DEFAULT_FILE()
@@ -1475,68 +1380,6 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
 
     OCCT_CONFIGURE ("adm/templates/DRAWEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/src/Draw/DRAWEXE/DRAWEXE.vcxproj.user")
   endif()
-endif()
-
-message (STATUS "Info: \(${CURRENT_TIME}\) OCCT toolkits processed")
-# samples do not support patch usage
-if (BUILD_SAMPLES_MFC OR BUILD_SAMPLES_QT)
-  set (OCCT_ROOT ${OCCT_ROOT_DIR})
-endif()
-
-if (BUILD_SAMPLES_MFC)
-  set (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
-  set (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
-
-  add_subdirectory(samples/mfc/standard/mfcsample)
-  add_subdirectory(samples/mfc/standard/01_Geometry)
-  add_subdirectory(samples/mfc/standard/02_Modeling)
-  add_subdirectory(samples/mfc/standard/03_ImportExport)
-  add_subdirectory(samples/mfc/standard/04_HLR)
-
-  message (STATUS "Info: \(${CURRENT_TIME}\) MFC Sample projects added")
-endif()
-
-OCCT_MODULES_AND_TOOLKITS (SAMPLES "SAMPLES_TOOLKITS" OCCT_SAMPLES)
-
-# Load sample configuration files  
-foreach (OCCT_SAMPLE ${OCCT_SAMPLES})
-  foreach (BUILD_SAMPLE_TOOLKIT ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
-    OCCT_INCLUDE_CMAKE_FILE (samples/${OCCT_SAMPLE}/${BUILD_SAMPLE_TOOLKIT}/PACKAGES)
-    OCCT_INCLUDE_CMAKE_FILE (samples/${OCCT_SAMPLE}/${BUILD_SAMPLE_TOOLKIT}/EXTERNLIB)
-    OCCT_INCLUDE_CMAKE_FILE (samples/${OCCT_SAMPLE}/${BUILD_SAMPLE_TOOLKIT}/FILES)
-    foreach (PACKAGE ${OCCT_${BUILD_SAMPLE_TOOLKIT}_LIST_OF_PACKAGES})
-      OCCT_INCLUDE_CMAKE_FILE (samples/${OCCT_SAMPLE}/${PACKAGE}/FILES)
-    endforeach()
-  endforeach()
-endforeach()
-
-if (BUILD_SAMPLES_QT)
-  if (BUILD_SAMPLES_QT)
-    if (NOT Qt5_FOUND OR "${Qt5Gui_EGL_INCLUDE_DIRS}" STREQUAL "" OR NOT WIN32)
-      list (REMOVE_ITEM qt_SAMPLES_TOOLKITS AndroidQt)
-      message (STATUS "Info: AndroidQt sample excluded due to OS is not Windows or Qt is configured without ANGLE")
-    endif()
-  else()
-    list (REMOVE_ITEM OCCT_SAMPLES qt)
-    message (STATUS "Info: qt samples excluded due to BUILD_SAMPLES_QT is disabled")
-  endif()
-
-  foreach (OCCT_SAMPLE ${OCCT_SAMPLES})
-    list (APPEND BUILD_SAMPLE_TOOLKITS ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
-
-    # collect all the headers to <binary dir>/inc/samples folder
-    string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
-    message (STATUS "Info: \(${CURRENT_TIME}\) ${OCCT_SAMPLE} Sample projects added")
-
-    # include patched toolkit projects or original ones
-    foreach (BUILD_SAMPLE_TOOLKIT ${${OCCT_SAMPLE}_SAMPLES_TOOLKITS})
-      OCCT_ADD_SUBDIRECTORY ("samples/${OCCT_SAMPLE}/${BUILD_SAMPLE_TOOLKIT}")
-    endforeach()
-  endforeach()
-endif()
-
-if (BUILD_MODULE_UwpSample)
-  add_subdirectory(samples/xaml)
 endif()
 
 # Prepare variables for configuration of OpenCASCADE cmake config file
