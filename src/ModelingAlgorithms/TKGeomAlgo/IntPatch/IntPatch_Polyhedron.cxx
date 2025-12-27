@@ -15,11 +15,14 @@
 // commercial license or contractual agreement.
 
 #include <Adaptor3d_Surface.hxx>
+#include <GeomGridEval_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <IntCurveSurface_PolyhedronUtils.pxx>
 #include <IntPatch_HInterTool.hxx>
 #include <IntPatch_Polyhedron.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
 #include <stdio.h>
@@ -28,6 +31,8 @@
 #define LONGUEUR_MINI_EDGE_TRIANGLE 1e-14
 #define DEFLECTION_COEFF 1.1
 #define NBMAXUV 30
+
+namespace PolyUtils = IntCurveSurface_PolyhedronUtils;
 
 //================================================================================
 static Standard_Integer NbPOnU(const Handle(Adaptor3d_Surface)& S)
@@ -90,34 +95,42 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const Handle(Adaptor3d_Surface)& Surfac
   const Standard_Real v0 = Surface->FirstVParameter();
   const Standard_Real v1 = Surface->LastVParameter();
 
-  const Standard_Real U1mU0sNbdeltaU = (u1 - u0) / (Standard_Real)nbdeltaU;
-  const Standard_Real V1mV0sNbdeltaV = (v1 - v0) / (Standard_Real)nbdeltaV;
+  // Build UV parameter arrays
+  TColStd_Array1OfReal aUParams(0, nbdeltaU);
+  TColStd_Array1OfReal aVParams(0, nbdeltaV);
+  const Standard_Real  U1mU0sNbdeltaU = (u1 - u0) / (Standard_Real)nbdeltaU;
+  const Standard_Real  V1mV0sNbdeltaV = (v1 - v0) / (Standard_Real)nbdeltaV;
 
-  gp_Pnt           TP;
-  Standard_Real    U, V;
-  Standard_Integer i1, i2, Index = 1;
-  for (i1 = 0, U = u0; i1 <= nbdeltaU; i1++, U += U1mU0sNbdeltaU)
+  for (Standard_Integer i = 0; i <= nbdeltaU; ++i)
   {
-    for (i2 = 0, V = v0; i2 <= nbdeltaV; i2++, V += V1mV0sNbdeltaV)
+    aUParams.SetValue(i, u0 + i * U1mU0sNbdeltaU);
+  }
+  for (Standard_Integer j = 0; j <= nbdeltaV; ++j)
+  {
+    aVParams.SetValue(j, v0 + j * V1mV0sNbdeltaV);
+  }
+
+  // Use grid evaluator for batch point evaluation
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(*Surface);
+  NCollection_Array2<gp_Pnt> aGridPnts = anEval.EvaluateGrid(aUParams, aVParams);
+
+  // Copy to internal arrays and build bounding box
+  Standard_Integer Index = 1;
+  for (Standard_Integer i1 = 0; i1 <= nbdeltaU; ++i1)
+  {
+    for (Standard_Integer i2 = 0; i2 <= nbdeltaV; ++i2)
     {
-      Surface->D0(U, V, TP);
-      CMyPnts[Index] = TP;
-      CMyU[Index]    = U;
-      CMyV[Index]    = V;
-      TheBnd.Add(TP);
+      CMyPnts[Index] = aGridPnts.Value(i1 + 1, i2 + 1);
+      CMyU[Index]    = aUParams.Value(i1);
+      CMyV[Index]    = aVParams.Value(i2);
+      TheBnd.Add(CMyPnts[Index]);
       Index++;
     }
   }
 
-  Standard_Real          tol         = 0.0;
-  const Standard_Integer nbtriangles = NbTriangles();
-  for (i1 = 1; i1 <= nbtriangles; i1++)
-  {
-    const Standard_Real tol1 = DeflectionOnTriangle(Surface, i1);
-    if (tol1 > tol)
-      tol = tol1;
-  }
-
+  // Compute max deflection using batch evaluation
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   tol *= DEFLECTION_COEFF;
 
   DeflectionOverEstimation(tol);
@@ -153,76 +166,46 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const Handle(Adaptor3d_Surface)& Surfac
   const Standard_Real v0 = Surface->FirstVParameter();
   const Standard_Real v1 = Surface->LastVParameter();
 
-  const Standard_Real U1mU0sNbdeltaU = (u1 - u0) / (Standard_Real)nbdeltaU;
-  const Standard_Real V1mV0sNbdeltaV = (v1 - v0) / (Standard_Real)nbdeltaV;
+  // Build UV parameter arrays
+  TColStd_Array1OfReal aUParams(0, nbdeltaU);
+  TColStd_Array1OfReal aVParams(0, nbdeltaV);
+  const Standard_Real  U1mU0sNbdeltaU = (u1 - u0) / (Standard_Real)nbdeltaU;
+  const Standard_Real  V1mV0sNbdeltaV = (v1 - v0) / (Standard_Real)nbdeltaV;
 
-  gp_Pnt           TP;
-  Standard_Real    U, V;
-  Standard_Integer i1, i2, Index = 1;
-  for (i1 = 0, U = u0; i1 <= nbdeltaU; i1++, U += U1mU0sNbdeltaU)
+  for (Standard_Integer i = 0; i <= nbdeltaU; ++i)
   {
-    for (i2 = 0, V = v0; i2 <= nbdeltaV; i2++, V += V1mV0sNbdeltaV)
+    aUParams.SetValue(i, u0 + i * U1mU0sNbdeltaU);
+  }
+  for (Standard_Integer j = 0; j <= nbdeltaV; ++j)
+  {
+    aVParams.SetValue(j, v0 + j * V1mV0sNbdeltaV);
+  }
+
+  // Use grid evaluator for batch point evaluation
+  GeomGridEval_Surface anEval;
+  anEval.Initialize(*Surface);
+  NCollection_Array2<gp_Pnt> aGridPnts = anEval.EvaluateGrid(aUParams, aVParams);
+
+  // Copy to internal arrays and build bounding box
+  Standard_Integer Index = 1;
+  for (Standard_Integer i1 = 0; i1 <= nbdeltaU; ++i1)
+  {
+    for (Standard_Integer i2 = 0; i2 <= nbdeltaV; ++i2)
     {
-      Surface->D0(U, V, TP);
-      CMyPnts[Index] = TP;
-      CMyU[Index]    = U;
-      CMyV[Index]    = V;
-      TheBnd.Add(TP);
+      CMyPnts[Index] = aGridPnts.Value(i1 + 1, i2 + 1);
+      CMyU[Index]    = aUParams.Value(i1);
+      CMyV[Index]    = aVParams.Value(i2);
+      TheBnd.Add(CMyPnts[Index]);
       Index++;
     }
   }
 
-  Standard_Real          tol         = 0.0;
-  const Standard_Integer nbtriangles = NbTriangles();
-  for (i1 = 1; i1 <= nbtriangles; i1++)
-  {
-    const Standard_Real tol1 = DeflectionOnTriangle(Surface, i1);
-    if (tol1 > tol)
-      tol = tol1;
-  }
-
+  // Compute max deflection using batch evaluation
+  Standard_Real tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
   tol *= DEFLECTION_COEFF;
 
   DeflectionOverEstimation(tol);
   FillBounding();
-}
-
-//=================================================================================================
-
-Standard_Real IntPatch_Polyhedron::DeflectionOnTriangle(const Handle(Adaptor3d_Surface)& Surface,
-                                                        const Standard_Integer Triang) const
-{
-  Standard_Integer i1, i2, i3;
-
-  Triangle(Triang, i1, i2, i3);
-  //-- Calcul de l eqution du plan
-  Standard_Real u1, v1, u2, v2, u3, v3;
-  gp_Pnt        P1, P2, P3;
-  P1 = Point(i1, u1, v1);
-  P2 = Point(i2, u2, v2);
-  P3 = Point(i3, u3, v3);
-  if (P1.SquareDistance(P2) <= LONGUEUR_MINI_EDGE_TRIANGLE)
-    return (0);
-  if (P1.SquareDistance(P3) <= LONGUEUR_MINI_EDGE_TRIANGLE)
-    return (0);
-  if (P2.SquareDistance(P3) <= LONGUEUR_MINI_EDGE_TRIANGLE)
-    return (0);
-  gp_XYZ        XYZ1 = P2.XYZ() - P1.XYZ();
-  gp_XYZ        XYZ2 = P3.XYZ() - P2.XYZ();
-  gp_XYZ        XYZ3 = P1.XYZ() - P3.XYZ();
-  gp_Vec        NormalVector((XYZ1 ^ XYZ2) + (XYZ2 ^ XYZ3) + (XYZ3 ^ XYZ1));
-  Standard_Real aNormLen = NormalVector.Magnitude();
-  if (aNormLen < gp::Resolution())
-  {
-    return 0.;
-  }
-  //
-  NormalVector.Divide(aNormLen);
-  //-- Calcul du point u,v  au centre du triangle
-  Standard_Real u = (u1 + u2 + u3) / 3.0;
-  Standard_Real v = (v1 + v2 + v3) / 3.0;
-  gp_Vec        P1P(P1, Surface->Value(u, v));
-  return (std::abs(P1P.Dot(NormalVector)));
 }
 
 //=================================================================================================

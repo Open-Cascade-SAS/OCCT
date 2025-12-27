@@ -24,6 +24,8 @@
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <array>
+
 // To convert points array into Real ..
 // *********************************
 //=================================================================================================
@@ -701,100 +703,240 @@ void PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
 
 //=======================================================================
 // Auxiliary template functions used for optimized evaluation of polynome
-// and its derivatives for smaller dimensions of the polynome
+// and its derivatives for smaller dimensions of the polynome.
+// Uses local arrays to enable register allocation and avoids memcpy/memset.
 //=======================================================================
 
 namespace
 {
-// recursive template for evaluating value or first derivative
+// Maximum dimension for optimized template dispatch
+constexpr int THE_MAX_OPT_DIM = 15;
+
+// Evaluation of only value using local array (register-friendly).
+// Writes to output only at the end.
 template <int dim>
-inline void eval_step1(double* poly, double par, const double* coef)
+inline void eval_poly0(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  eval_step1<dim - 1>(poly, par, coef);
-  poly[dim] = poly[dim] * par + coef[dim];
-}
+  std::array<double, dim> aLocal;
+  for (int i = 0; i < dim; ++i)
+  {
+    aLocal[i] = theCoeffs[i];
+  }
 
-// recursion end
-template <>
-inline void eval_step1<-1>(double*, double, const double*)
-{
-}
-
-// recursive template for evaluating second derivative
-template <int dim>
-inline void eval_step2(double* poly, double par, const double* coef)
-{
-  eval_step2<dim - 1>(poly, par, coef);
-  poly[dim] = poly[dim] * par + coef[dim] * 2.;
-}
-
-// recursion end
-template <>
-inline void eval_step2<-1>(double*, double, const double*)
-{
-}
-
-// evaluation of only value
-template <int dim>
-inline void eval_poly0(double* aRes, const double* theCoeffs, int Degree, double Par)
-{
-  Standard_Real*       aRes0   = aRes;
-  const Standard_Real* aCoeffs = theCoeffs;
-  memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
-
-  for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
   {
     aCoeffs -= dim;
-    // Calculating the value of the polynomial
-    eval_step1<dim - 1>(aRes0, Par, aCoeffs);
+    for (int i = 0; i < dim; ++i)
+    {
+      aLocal[i] = aLocal[i] * thePar + aCoeffs[i];
+    }
+  }
+
+  for (int i = 0; i < dim; ++i)
+  {
+    theResult[i] = aLocal[i];
   }
 }
 
-// evaluation of value and first derivative
+// Evaluation of value and first derivative using local arrays.
+// Fuses derivative and value loops to read aLocal0 only once per iteration.
 template <int dim>
-inline void eval_poly1(double* aRes, const double* theCoeffs, int Degree, double Par)
+inline void eval_poly1(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  Standard_Real*       aRes0   = aRes;
-  Standard_Real*       aRes1   = aRes + dim;
-  const Standard_Real* aCoeffs = theCoeffs;
+  std::array<double, dim> aLocal0;
+  std::array<double, dim> aLocal1;
 
-  memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
-  memset(aRes1, 0, sizeof(Standard_Real) * dim);
+  for (int i = 0; i < dim; ++i)
+  {
+    aLocal0[i] = theCoeffs[i];
+    aLocal1[i] = 0.0;
+  }
 
-  for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
   {
     aCoeffs -= dim;
-    // Calculating derivatives of the polynomial
-    eval_step1<dim - 1>(aRes1, Par, aRes0);
-    // Calculating the value of the polynomial
-    eval_step1<dim - 1>(aRes0, Par, aCoeffs);
+    for (int i = 0; i < dim; ++i)
+    {
+      const double aVal = aLocal0[i];
+      aLocal1[i]        = aLocal1[i] * thePar + aVal;
+      aLocal0[i]        = aVal * thePar + aCoeffs[i];
+    }
+  }
+
+  for (int i = 0; i < dim; ++i)
+  {
+    theResult[i]       = aLocal0[i];
+    theResult[dim + i] = aLocal1[i];
   }
 }
 
-// evaluation of value and first and second derivatives
+// Evaluation of value and first and second derivatives using local arrays.
+// Fuses all three loops for better cache utilization.
 template <int dim>
-inline void eval_poly2(double* aRes, const double* theCoeffs, int Degree, double Par)
+inline void eval_poly2(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
-  Standard_Real*       aRes0   = aRes;
-  Standard_Real*       aRes1   = aRes + dim;
-  Standard_Real*       aRes2   = aRes + 2 * dim;
-  const Standard_Real* aCoeffs = theCoeffs;
+  std::array<double, dim> aLocal0;
+  std::array<double, dim> aLocal1;
+  std::array<double, dim> aLocal2;
 
-  memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
-  memset(aRes1, 0, sizeof(Standard_Real) * dim);
-  memset(aRes2, 0, sizeof(Standard_Real) * dim);
+  for (int i = 0; i < dim; ++i)
+  {
+    aLocal0[i] = theCoeffs[i];
+    aLocal1[i] = 0.0;
+    aLocal2[i] = 0.0;
+  }
 
-  for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
   {
     aCoeffs -= dim;
-    // Calculating second derivatives of the polynomial
-    eval_step2<dim - 1>(aRes2, Par, aRes1);
-    // Calculating derivatives of the polynomial
-    eval_step1<dim - 1>(aRes1, Par, aRes0);
-    // Calculating the value of the polynomial
-    eval_step1<dim - 1>(aRes0, Par, aCoeffs);
+    for (int i = 0; i < dim; ++i)
+    {
+      const double aD1  = aLocal1[i];
+      const double aVal = aLocal0[i];
+      aLocal2[i]        = aLocal2[i] * thePar + aD1 * 2.0;
+      aLocal1[i]        = aD1 * thePar + aVal;
+      aLocal0[i]        = aVal * thePar + aCoeffs[i];
+    }
+  }
+
+  for (int i = 0; i < dim; ++i)
+  {
+    theResult[i]           = aLocal0[i];
+    theResult[dim + i]     = aLocal1[i];
+    theResult[2 * dim + i] = aLocal2[i];
   }
 }
+
+// Runtime evaluation for dimension > THE_MAX_OPT_DIM (value only)
+inline void eval_poly0_runtime(double*       theResult,
+                               const double* theCoeffs,
+                               int           theDegree,
+                               double        thePar,
+                               int           theDimension)
+{
+  for (int i = 0; i < theDimension; ++i)
+  {
+    theResult[i] = theCoeffs[i];
+  }
+
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
+  {
+    aCoeffs -= theDimension;
+    for (int i = 0; i < theDimension; ++i)
+    {
+      theResult[i] = theResult[i] * thePar + aCoeffs[i];
+    }
+  }
+}
+
+// Runtime evaluation for dimension > THE_MAX_OPT_DIM (value + 1st derivative)
+inline void eval_poly1_runtime(double*       theResult,
+                               const double* theCoeffs,
+                               int           theDegree,
+                               double        thePar,
+                               int           theDimension)
+{
+  double* aRes0 = theResult;
+  double* aRes1 = theResult + theDimension;
+
+  for (int i = 0; i < theDimension; ++i)
+  {
+    aRes0[i] = theCoeffs[i];
+    aRes1[i] = 0.0;
+  }
+
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
+  {
+    aCoeffs -= theDimension;
+    for (int i = 0; i < theDimension; ++i)
+    {
+      const double aVal = aRes0[i];
+      aRes1[i]          = aRes1[i] * thePar + aVal;
+      aRes0[i]          = aVal * thePar + aCoeffs[i];
+    }
+  }
+}
+
+// Runtime evaluation for dimension > THE_MAX_OPT_DIM (value + 1st + 2nd derivatives)
+inline void eval_poly2_runtime(double*       theResult,
+                               const double* theCoeffs,
+                               int           theDegree,
+                               double        thePar,
+                               int           theDimension)
+{
+  double* aRes0 = theResult;
+  double* aRes1 = theResult + theDimension;
+  double* aRes2 = theResult + 2 * theDimension;
+
+  for (int i = 0; i < theDimension; ++i)
+  {
+    aRes0[i] = theCoeffs[i];
+    aRes1[i] = 0.0;
+    aRes2[i] = 0.0;
+  }
+
+  const double* aCoeffs = theCoeffs;
+  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
+  {
+    aCoeffs -= theDimension;
+    for (int i = 0; i < theDimension; ++i)
+    {
+      const double aD1  = aRes1[i];
+      const double aVal = aRes0[i];
+      aRes2[i]          = aRes2[i] * thePar + aD1 * 2.0;
+      aRes1[i]          = aD1 * thePar + aVal;
+      aRes0[i]          = aVal * thePar + aCoeffs[i];
+    }
+  }
+}
+
+// Function pointer type for dispatch tables
+using EvalPolyFunc = void (*)(double*, const double*, int, double);
+
+// Helper to generate dispatch tables at compile time
+template <template <int> class EvalFunc, typename FuncPtr, int... Is>
+constexpr std::array<FuncPtr, sizeof...(Is)> makeDispatchTable(std::integer_sequence<int, Is...>)
+{
+  return {{&EvalFunc<Is + 1>::call...}};
+}
+
+// Wrapper structs to allow template parameter deduction
+template <int Dim>
+struct EvalPoly0Wrapper
+{
+  static void call(double* r, const double* c, int d, double p) { eval_poly0<Dim>(r, c, d, p); }
+};
+
+template <int Dim>
+struct EvalPoly1Wrapper
+{
+  static void call(double* r, const double* c, int d, double p) { eval_poly1<Dim>(r, c, d, p); }
+};
+
+template <int Dim>
+struct EvalPoly2Wrapper
+{
+  static void call(double* r, const double* c, int d, double p) { eval_poly2<Dim>(r, c, d, p); }
+};
+
+// Dispatch tables for dimensions 1..15
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY0_TABLE =
+  makeDispatchTable<EvalPoly0Wrapper, EvalPolyFunc>(
+    std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
+
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY1_TABLE =
+  makeDispatchTable<EvalPoly1Wrapper, EvalPolyFunc>(
+    std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
+
+constexpr std::array<EvalPolyFunc, THE_MAX_OPT_DIM> THE_EVAL_POLY2_TABLE =
+  makeDispatchTable<EvalPoly2Wrapper, EvalPolyFunc>(
+    std::make_integer_sequence<int, THE_MAX_OPT_DIM>{});
+
 } // namespace
 
 //=======================================================================
@@ -828,173 +970,57 @@ void PLib::EvalPolynomial(const Standard_Real    Par,
 {
   const Standard_Real* aCoeffs = &PolynomialCoeff + Degree * Dimension;
   Standard_Real*       aRes    = &Results;
-  Standard_Real*       anOriginal;
-  Standard_Integer     ind = 0;
+
   switch (DerivativeRequest)
   {
     case 1: {
-      switch (Dimension)
+      if (Dimension >= 1 && Dimension <= THE_MAX_OPT_DIM)
       {
-        case 1:
-          eval_poly1<1>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 2:
-          eval_poly1<2>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 3:
-          eval_poly1<3>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 4:
-          eval_poly1<4>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 5:
-          eval_poly1<5>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 6:
-          eval_poly1<6>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 7:
-          eval_poly1<7>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 8:
-          eval_poly1<8>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 9:
-          eval_poly1<9>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 10:
-          eval_poly1<10>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 11:
-          eval_poly1<11>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 12:
-          eval_poly1<12>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 13:
-          eval_poly1<13>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 14:
-          eval_poly1<14>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 15:
-          eval_poly1<15>(aRes, aCoeffs, Degree, Par);
-          break;
-        default: {
-          Standard_Real* aRes0 = aRes;
-          Standard_Real* aRes1 = aRes + Dimension;
-
-          memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * Dimension);
-          memset(aRes1, 0, sizeof(Standard_Real) * Dimension);
-
-          for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
-          {
-            aCoeffs -= Dimension;
-            // Calculating derivatives of the polynomial
-            for (ind = 0; ind < Dimension; ind++)
-              aRes1[ind] = aRes1[ind] * Par + aRes0[ind];
-            // Calculating the value of the polynomial
-            for (ind = 0; ind < Dimension; ind++)
-              aRes0[ind] = aRes0[ind] * Par + aCoeffs[ind];
-          }
-        }
+        THE_EVAL_POLY1_TABLE[Dimension - 1](aRes, aCoeffs, Degree, Par);
+      }
+      else
+      {
+        eval_poly1_runtime(aRes, aCoeffs, Degree, Par, Dimension);
       }
       break;
     }
     case 2: {
-      switch (Dimension)
+      if (Dimension >= 1 && Dimension <= THE_MAX_OPT_DIM)
       {
-        case 1:
-          eval_poly2<1>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 2:
-          eval_poly2<2>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 3:
-          eval_poly2<3>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 4:
-          eval_poly2<4>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 5:
-          eval_poly2<5>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 6:
-          eval_poly2<6>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 7:
-          eval_poly2<7>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 8:
-          eval_poly2<8>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 9:
-          eval_poly2<9>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 10:
-          eval_poly2<10>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 11:
-          eval_poly2<11>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 12:
-          eval_poly2<12>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 13:
-          eval_poly2<13>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 14:
-          eval_poly2<14>(aRes, aCoeffs, Degree, Par);
-          break;
-        case 15:
-          eval_poly2<15>(aRes, aCoeffs, Degree, Par);
-          break;
-        default: {
-          Standard_Real* aRes0 = aRes;
-          Standard_Real* aRes1 = aRes + Dimension;
-          Standard_Real* aRes2 = aRes1 + Dimension;
-
-          // Nullify the results
-          Standard_Integer aSize = 2 * Dimension;
-          memcpy(aRes, aCoeffs, sizeof(Standard_Real) * Dimension);
-          memset(aRes1, 0, sizeof(Standard_Real) * aSize);
-
-          for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
-          {
-            aCoeffs -= Dimension;
-            // Calculating derivatives of the polynomial
-            for (ind = 0; ind < Dimension; ind++)
-              aRes2[ind] = aRes2[ind] * Par + aRes1[ind] * 2.0;
-            for (ind = 0; ind < Dimension; ind++)
-              aRes1[ind] = aRes1[ind] * Par + aRes0[ind];
-            // Calculating the value of the polynomial
-            for (ind = 0; ind < Dimension; ind++)
-              aRes0[ind] = aRes0[ind] * Par + aCoeffs[ind];
-          }
-          break;
-        }
+        THE_EVAL_POLY2_TABLE[Dimension - 1](aRes, aCoeffs, Degree, Par);
+      }
+      else
+      {
+        eval_poly2_runtime(aRes, aCoeffs, Degree, Par, Dimension);
       }
       break;
     }
     default: {
-      // Nullify the results
-      Standard_Integer aResSize = (1 + DerivativeRequest) * Dimension;
-      memset(aRes, 0, sizeof(Standard_Real) * aResSize);
-
-      for (Standard_Integer aDeg = 0; aDeg <= Degree; aDeg++)
+      // General case for DerivativeRequest > 2
+      const int aResSize = (1 + DerivativeRequest) * Dimension;
+      for (int i = 0; i < aResSize; ++i)
       {
-        aRes = &Results + aResSize - Dimension;
+        aRes[i] = 0.0;
+      }
+
+      for (int aDeg = 0; aDeg <= Degree; ++aDeg)
+      {
+        Standard_Real* aPtr = aRes + aResSize - Dimension;
         // Calculating derivatives of the polynomial
-        for (Standard_Integer aDeriv = DerivativeRequest; aDeriv > 0; aDeriv--)
+        for (int aDeriv = DerivativeRequest; aDeriv > 0; --aDeriv)
         {
-          anOriginal = aRes - Dimension; // pointer to the derivative minus 1
-          for (ind = 0; ind < Dimension; ind++)
-            aRes[ind] = aRes[ind] * Par + anOriginal[ind] * aDeriv;
-          aRes = anOriginal;
+          Standard_Real* anOriginal = aPtr - Dimension;
+          for (int ind = 0; ind < Dimension; ++ind)
+          {
+            aPtr[ind] = aPtr[ind] * Par + anOriginal[ind] * aDeriv;
+          }
+          aPtr = anOriginal;
         }
         // Calculating the value of the polynomial
-        for (ind = 0; ind < Dimension; ind++)
-          aRes[ind] = aRes[ind] * Par + aCoeffs[ind];
+        for (int ind = 0; ind < Dimension; ++ind)
+        {
+          aPtr[ind] = aPtr[ind] * Par + aCoeffs[ind];
+        }
         aCoeffs -= Dimension;
       }
     }
@@ -1013,62 +1039,13 @@ void PLib::NoDerivativeEvalPolynomial(const Standard_Real    Par,
   const Standard_Real* aCoeffs = &PolynomialCoeff + DegreeDimension;
   Standard_Real*       aRes    = &Results;
 
-  switch (Dimension)
+  if (Dimension >= 1 && Dimension <= THE_MAX_OPT_DIM)
   {
-    case 1:
-      eval_poly0<1>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 2:
-      eval_poly0<2>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 3:
-      eval_poly0<3>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 4:
-      eval_poly0<4>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 5:
-      eval_poly0<5>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 6:
-      eval_poly0<6>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 7:
-      eval_poly0<7>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 8:
-      eval_poly0<8>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 9:
-      eval_poly0<9>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 10:
-      eval_poly0<10>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 11:
-      eval_poly0<11>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 12:
-      eval_poly0<12>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 13:
-      eval_poly0<13>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 14:
-      eval_poly0<14>(aRes, aCoeffs, Degree, Par);
-      break;
-    case 15:
-      eval_poly0<15>(aRes, aCoeffs, Degree, Par);
-      break;
-    default: {
-      memcpy(aRes, aCoeffs, sizeof(Standard_Real) * Dimension);
-      for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
-      {
-        aCoeffs -= Dimension;
-        for (Standard_Integer ind = 0; ind < Dimension; ind++)
-          aRes[ind] = aRes[ind] * Par + aCoeffs[ind];
-      }
-    }
+    THE_EVAL_POLY0_TABLE[Dimension - 1](aRes, aCoeffs, Degree, Par);
+  }
+  else
+  {
+    eval_poly0_runtime(aRes, aCoeffs, Degree, Par, Dimension);
   }
 }
 

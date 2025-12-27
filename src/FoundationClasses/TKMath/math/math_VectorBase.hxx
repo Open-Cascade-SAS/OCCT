@@ -306,6 +306,19 @@ public:
   //! Is used to redefine the operator <<.
   inline void Dump(Standard_OStream& theO) const;
 
+  //! Returns the underlying array for interoperability with legacy APIs.
+  //! Allows passing math_Vector data to functions expecting NCollection_Array1.
+  const NCollection_Array1<TheItemType>& Array1() const { return Array; }
+
+  //! Resizes the vector to a new size, keeping the same lower bound.
+  //! Existing data within the new range is preserved.
+  //! The method optimizes memory usage:
+  //! - If new size fits in stack buffer (<=32), uses stack allocation
+  //! - If new size requires heap and was already on heap, resizes in place
+  //! - Transitions between stack and heap as needed
+  //! @param theSize new size of the vector
+  inline void Resize(const Standard_Integer theSize);
+
   friend inline Standard_OStream& operator<<(Standard_OStream& theO, const math_VectorBase& theVec)
   {
     theVec.Dump(theO);

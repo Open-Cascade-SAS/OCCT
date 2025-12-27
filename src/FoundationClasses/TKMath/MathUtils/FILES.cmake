@@ -5,6 +5,7 @@ set(OCCT_MathUtils_FILES
   # Types and configuration
   MathUtils_Types.hxx
   MathUtils_Config.hxx
+  MathUtils_Domain.hxx
   # Core utilities
   MathUtils_Core.hxx
   MathUtils_Convergence.hxx

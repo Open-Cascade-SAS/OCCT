@@ -267,6 +267,16 @@ protected:
   BRepPrim_Builder myBuilder;
 
 private:
+  //! Returns true if the geometric height ordering is inverted,
+  //! i.e., MeridianValue(VMax).Y() < MeridianValue(VMin).Y().
+  //! When true, VMin corresponds to geometric top and VMax to geometric bottom.
+  //! This can occur with torus when V range like (90deg, 270deg) is used.
+  bool isHeightInverted() const;
+
+  //! Returns true if the heights at VMin and VMax are equal (within tolerance).
+  //! This indicates the AxisEdge would be degenerate (zero length).
+  bool areHeightsEqual() const;
+
   gp_Ax2           myAxes;
   Standard_Real    myAngle;
   Standard_Real    myVMin;

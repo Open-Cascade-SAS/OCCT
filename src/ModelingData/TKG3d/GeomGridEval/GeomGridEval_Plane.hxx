@@ -17,6 +17,7 @@
 #include <Geom_Plane.hxx>
 #include <GeomGridEval.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -30,8 +31,8 @@
 //! Usage:
 //! @code
 //!   GeomGridEval_Plane anEvaluator(myGeomPlane);
-//!   anEvaluator.SetUVParams(myUParams, myVParams);
-//!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+//!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(myUParams, myVParams);
+//!   NCollection_Array1<gp_Pnt> aPoints = anEvaluator.EvaluatePoints(myUVPairs);
 //! @endcode
 class GeomGridEval_Plane
 {
@@ -51,48 +52,22 @@ public:
   GeomGridEval_Plane(GeomGridEval_Plane&&)                 = delete;
   GeomGridEval_Plane& operator=(GeomGridEval_Plane&&)      = delete;
 
-  //! Set UV parameters from two 1D arrays.
-  //! @param theUParams array of U parameter values
-  //! @param theVParams array of V parameter values
-  void SetUVParams(const TColStd_Array1OfReal& theUParams, const TColStd_Array1OfReal& theVParams)
-  {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
-
-    myUParams.Resize(1, aNbU, false);
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-    }
-
-    myVParams.Resize(1, aNbV, false);
-    for (int j = 1; j <= aNbV; ++j)
-    {
-      myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-    }
-  }
-
   //! Returns the geometry handle.
   const Handle(Geom_Plane)& Geometry() const { return myGeom; }
 
-  //! Returns number of U parameters.
-  int NbUParams() const { return myUParams.Size(); }
-
-  //! Returns number of V parameters.
-  int NbVParams() const { return myVParams.Size(); }
-
-  //! Evaluate all grid points.
-  //! @return 2D array of evaluated points (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array2<gp_Pnt> EvaluateGrid() const
+  //! Evaluate grid points at Cartesian product of U and V parameters.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  //! @return 2D array of evaluated points (1-based indexing)
+  NCollection_Array2<gp_Pnt> EvaluateGrid(const TColStd_Array1OfReal& theUParams,
+                                          const TColStd_Array1OfReal& theVParams) const
   {
-    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<gp_Pnt>();
     }
-
-    const int aNbU = myUParams.Size();
-    const int aNbV = myVParams.Size();
 
     NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
@@ -115,33 +90,34 @@ public:
 
     for (int iU = 1; iU <= aNbU; ++iU)
     {
-      const double u  = myUParams.Value(iU);
+      const double u  = theUParams.Value(theUParams.Lower() + iU - 1);
       const double uX = aLocX + u * aXX;
       const double uY = aLocY + u * aXY;
       const double uZ = aLocZ + u * aXZ;
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v = myVParams.Value(iV);
+        const double v = theVParams.Value(theVParams.Lower() + iV - 1);
         aResult.SetValue(iU, iV, gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ));
       }
     }
     return aResult;
   }
 
-  //! Evaluate all grid points with first partial derivatives.
-  //! For a plane, D1U = XDir (constant), D1V = YDir (constant).
-  //! @return 2D array of SurfD1 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1() const
+  //! Evaluate grid points with first partial derivatives.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  //! @return 2D array of SurfD1 (1-based indexing)
+  NCollection_Array2<GeomGridEval::SurfD1> EvaluateGridD1(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const
   {
-    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD1>();
     }
-
-    const int aNbU = myUParams.Size();
-    const int aNbV = myVParams.Size();
 
     NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
@@ -166,14 +142,14 @@ public:
 
     for (int iU = 1; iU <= aNbU; ++iU)
     {
-      const double u  = myUParams.Value(iU);
+      const double u  = theUParams.Value(theUParams.Lower() + iU - 1);
       const double uX = aLocX + u * aXX;
       const double uY = aLocY + u * aXY;
       const double uZ = aLocZ + u * aXZ;
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v          = myVParams.Value(iV);
+        const double v          = theVParams.Value(theVParams.Lower() + iV - 1);
         aResult.ChangeValue(iU,
                             iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V};
       }
@@ -181,19 +157,20 @@ public:
     return aResult;
   }
 
-  //! Evaluate all grid points with first and second partial derivatives.
-  //! For a plane, all second derivatives are zero.
-  //! @return 2D array of SurfD2 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2() const
+  //! Evaluate grid points with first and second partial derivatives.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  //! @return 2D array of SurfD2 (1-based indexing)
+  NCollection_Array2<GeomGridEval::SurfD2> EvaluateGridD2(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const
   {
-    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD2>();
     }
-
-    const int aNbU = myUParams.Size();
-    const int aNbV = myVParams.Size();
 
     NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
@@ -218,14 +195,14 @@ public:
 
     for (int iU = 1; iU <= aNbU; ++iU)
     {
-      const double u  = myUParams.Value(iU);
+      const double u  = theUParams.Value(theUParams.Lower() + iU - 1);
       const double uX = aLocX + u * aXX;
       const double uY = aLocY + u * aXY;
       const double uZ = aLocZ + u * aXZ;
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v = myVParams.Value(iV);
+        const double v = theVParams.Value(theVParams.Lower() + iV - 1);
         aResult.ChangeValue(
           iU,
           iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ), aD1U, aD1V, aZero, aZero, aZero};
@@ -234,19 +211,20 @@ public:
     return aResult;
   }
 
-  //! Evaluate all grid points with derivatives up to third order.
-  //! For a plane, all derivatives of order >= 2 are zero.
-  //! @return 2D array of SurfD3 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3() const
+  //! Evaluate grid points with derivatives up to third order.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
+  //! @return 2D array of SurfD3 (1-based indexing)
+  NCollection_Array2<GeomGridEval::SurfD3> EvaluateGridD3(
+    const TColStd_Array1OfReal& theUParams,
+    const TColStd_Array1OfReal& theVParams) const
   {
-    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD3>();
     }
-
-    const int aNbU = myUParams.Size();
-    const int aNbV = myVParams.Size();
 
     NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
@@ -271,14 +249,14 @@ public:
 
     for (int iU = 1; iU <= aNbU; ++iU)
     {
-      const double u  = myUParams.Value(iU);
+      const double u  = theUParams.Value(theUParams.Lower() + iU - 1);
       const double uX = aLocX + u * aXX;
       const double uY = aLocY + u * aXY;
       const double uZ = aLocZ + u * aXZ;
 
       for (int iV = 1; iV <= aNbV; ++iV)
       {
-        const double v              = myVParams.Value(iV);
+        const double v              = theVParams.Value(theVParams.Lower() + iV - 1);
         aResult.ChangeValue(iU, iV) = {gp_Pnt(uX + v * aYX, uY + v * aYY, uZ + v * aYZ),
                                        aD1U,
                                        aD1V,
@@ -295,20 +273,22 @@ public:
   }
 
   //! Evaluate partial derivative d^(NU+NV)S/(dU^NU dV^NV) at all grid points.
-  //! For a plane: D1U = XDir, D1V = YDir, all others = 0.
+  //! @param theUParams array of U parameter values
+  //! @param theVParams array of V parameter values
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  NCollection_Array2<gp_Vec> EvaluateGridDN(int theNU, int theNV) const
+  NCollection_Array2<gp_Vec> EvaluateGridDN(const TColStd_Array1OfReal& theUParams,
+                                            const TColStd_Array1OfReal& theVParams,
+                                            int                         theNU,
+                                            int                         theNV) const
   {
-    if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
-        || (theNU + theNV) < 1)
+    const int aNbU = theUParams.Size();
+    const int aNbV = theVParams.Size();
+    if (myGeom.IsNull() || aNbU == 0 || aNbV == 0 || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
     {
       return NCollection_Array2<gp_Vec>();
     }
-
-    const int aNbU = myUParams.Size();
-    const int aNbV = myVParams.Size();
 
     NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
@@ -339,10 +319,236 @@ public:
     return aResult;
   }
 
+  //! Evaluate points at arbitrary UV pairs.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of evaluated points (1-based indexing)
+  NCollection_Array1<gp_Pnt> EvaluatePoints(const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+  {
+    if (myGeom.IsNull() || theUVPairs.IsEmpty())
+    {
+      return NCollection_Array1<gp_Pnt>();
+    }
+
+    const int                  aNbPoints = theUVPairs.Size();
+    NCollection_Array1<gp_Pnt> aResult(1, aNbPoints);
+
+    const gp_Pln& aPln  = myGeom->Pln();
+    const gp_Pnt& aLoc  = aPln.Location();
+    const gp_Dir& aXDir = aPln.Position().XDirection();
+    const gp_Dir& aYDir = aPln.Position().YDirection();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aXX   = aXDir.X();
+    const double aXY   = aXDir.Y();
+    const double aXZ   = aXDir.Z();
+    const double aYX   = aYDir.X();
+    const double aYY   = aYDir.Y();
+    const double aYZ   = aYDir.Z();
+
+    for (int i = 1; i <= aNbPoints; ++i)
+    {
+      const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+      const double    u   = aUV.X();
+      const double    v   = aUV.Y();
+      aResult.SetValue(
+        i,
+        gp_Pnt(aLocX + u * aXX + v * aYX, aLocY + u * aXY + v * aYY, aLocZ + u * aXZ + v * aYZ));
+    }
+    return aResult;
+  }
+
+  //! Evaluate points with first partial derivatives.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD1 (1-based indexing)
+  NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+  {
+    if (myGeom.IsNull() || theUVPairs.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::SurfD1>();
+    }
+
+    const int                                aNbPoints = theUVPairs.Size();
+    NCollection_Array1<GeomGridEval::SurfD1> aResult(1, aNbPoints);
+
+    const gp_Pln& aPln  = myGeom->Pln();
+    const gp_Pnt& aLoc  = aPln.Location();
+    const gp_Dir& aXDir = aPln.Position().XDirection();
+    const gp_Dir& aYDir = aPln.Position().YDirection();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aXX   = aXDir.X();
+    const double aXY   = aXDir.Y();
+    const double aXZ   = aXDir.Z();
+    const double aYX   = aYDir.X();
+    const double aYY   = aYDir.Y();
+    const double aYZ   = aYDir.Z();
+
+    const gp_Vec aD1U(aXX, aXY, aXZ);
+    const gp_Vec aD1V(aYX, aYY, aYZ);
+
+    for (int i = 1; i <= aNbPoints; ++i)
+    {
+      const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+      const double    u   = aUV.X();
+      const double    v   = aUV.Y();
+      aResult.SetValue(
+        i,
+        {gp_Pnt(aLocX + u * aXX + v * aYX, aLocY + u * aXY + v * aYY, aLocZ + u * aXZ + v * aYZ),
+         aD1U,
+         aD1V});
+    }
+    return aResult;
+  }
+
+  //! Evaluate points with first and second partial derivatives.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD2 (1-based indexing)
+  NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+  {
+    if (myGeom.IsNull() || theUVPairs.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::SurfD2>();
+    }
+
+    const int                                aNbPoints = theUVPairs.Size();
+    NCollection_Array1<GeomGridEval::SurfD2> aResult(1, aNbPoints);
+
+    const gp_Pln& aPln  = myGeom->Pln();
+    const gp_Pnt& aLoc  = aPln.Location();
+    const gp_Dir& aXDir = aPln.Position().XDirection();
+    const gp_Dir& aYDir = aPln.Position().YDirection();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aXX   = aXDir.X();
+    const double aXY   = aXDir.Y();
+    const double aXZ   = aXDir.Z();
+    const double aYX   = aYDir.X();
+    const double aYY   = aYDir.Y();
+    const double aYZ   = aYDir.Z();
+
+    const gp_Vec aD1U(aXX, aXY, aXZ);
+    const gp_Vec aD1V(aYX, aYY, aYZ);
+    const gp_Vec aZero(0, 0, 0);
+
+    for (int i = 1; i <= aNbPoints; ++i)
+    {
+      const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+      const double    u   = aUV.X();
+      const double    v   = aUV.Y();
+      aResult.SetValue(
+        i,
+        {gp_Pnt(aLocX + u * aXX + v * aYX, aLocY + u * aXY + v * aYY, aLocZ + u * aXZ + v * aYZ),
+         aD1U,
+         aD1V,
+         aZero,
+         aZero,
+         aZero});
+    }
+    return aResult;
+  }
+
+  //! Evaluate points with derivatives up to third order.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @return 1D array of SurfD3 (1-based indexing)
+  NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
+    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+  {
+    if (myGeom.IsNull() || theUVPairs.IsEmpty())
+    {
+      return NCollection_Array1<GeomGridEval::SurfD3>();
+    }
+
+    const int                                aNbPoints = theUVPairs.Size();
+    NCollection_Array1<GeomGridEval::SurfD3> aResult(1, aNbPoints);
+
+    const gp_Pln& aPln  = myGeom->Pln();
+    const gp_Pnt& aLoc  = aPln.Location();
+    const gp_Dir& aXDir = aPln.Position().XDirection();
+    const gp_Dir& aYDir = aPln.Position().YDirection();
+
+    const double aLocX = aLoc.X();
+    const double aLocY = aLoc.Y();
+    const double aLocZ = aLoc.Z();
+    const double aXX   = aXDir.X();
+    const double aXY   = aXDir.Y();
+    const double aXZ   = aXDir.Z();
+    const double aYX   = aYDir.X();
+    const double aYY   = aYDir.Y();
+    const double aYZ   = aYDir.Z();
+
+    const gp_Vec aD1U(aXX, aXY, aXZ);
+    const gp_Vec aD1V(aYX, aYY, aYZ);
+    const gp_Vec aZero(0, 0, 0);
+
+    for (int i = 1; i <= aNbPoints; ++i)
+    {
+      const gp_Pnt2d& aUV = theUVPairs.Value(theUVPairs.Lower() + i - 1);
+      const double    u   = aUV.X();
+      const double    v   = aUV.Y();
+      aResult.SetValue(
+        i,
+        {gp_Pnt(aLocX + u * aXX + v * aYX, aLocY + u * aXY + v * aYY, aLocZ + u * aXZ + v * aYZ),
+         aD1U,
+         aD1V,
+         aZero,
+         aZero,
+         aZero,
+         aZero,
+         aZero,
+         aZero,
+         aZero});
+    }
+    return aResult;
+  }
+
+  //! Evaluate partial derivative at all UV pairs.
+  //! @param theUVPairs array of UV coordinate pairs
+  //! @param theNU derivative order in U direction
+  //! @param theNV derivative order in V direction
+  //! @return 1D array of derivative vectors (1-based indexing)
+  NCollection_Array1<gp_Vec> EvaluatePointsDN(const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+                                              int                                 theNU,
+                                              int                                 theNV) const
+  {
+    if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+    {
+      return NCollection_Array1<gp_Vec>();
+    }
+
+    const int                  aNbPoints = theUVPairs.Size();
+    NCollection_Array1<gp_Vec> aResult(1, aNbPoints);
+
+    // For a plane, only D1U (1,0) and D1V (0,1) are non-zero
+    gp_Vec aDerivative(0, 0, 0);
+
+    if (theNU == 1 && theNV == 0)
+    {
+      const gp_Dir& aXDir = myGeom->Pln().Position().XDirection();
+      aDerivative         = gp_Vec(aXDir.X(), aXDir.Y(), aXDir.Z());
+    }
+    else if (theNU == 0 && theNV == 1)
+    {
+      const gp_Dir& aYDir = myGeom->Pln().Position().YDirection();
+      aDerivative         = gp_Vec(aYDir.X(), aYDir.Y(), aYDir.Z());
+    }
+
+    for (int i = 1; i <= aNbPoints; ++i)
+    {
+      aResult.SetValue(i, aDerivative);
+    }
+    return aResult;
+  }
+
 private:
-  Handle(Geom_Plane)         myGeom;
-  NCollection_Array1<double> myUParams;
-  NCollection_Array1<double> myVParams;
+  Handle(Geom_Plane) myGeom;
 };
 
 #endif // _GeomGridEval_Plane_HeaderFile

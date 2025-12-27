@@ -1,5 +1,5 @@
 # test for creation of drill shape
-source $env(CSF_OCCTSamplesPath)/tcl/drill.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/drill.tcl
 
 # make a snapshot
 vdump $imagedir/${test_image}.png

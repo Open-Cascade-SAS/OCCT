@@ -590,3 +590,33 @@ void math_VectorBase<TheItemType>::Dump(Standard_OStream& theO) const
     theO << "math_Vector(" << Index << ") = " << Array(Index) << "\n";
   }
 }
+
+template <typename TheItemType>
+void math_VectorBase<TheItemType>::Resize(const Standard_Integer theSize)
+{
+  const Standard_Integer theLower      = Array.Lower();
+  const Standard_Integer theUpper      = theLower + theSize - 1;
+  const Standard_Boolean aNewFitsStack = theSize <= THE_BUFFER_SIZE;
+  const Standard_Boolean aWasOnStack   = !Array.IsDeletable();
+
+  if (aWasOnStack && aNewFitsStack)
+  {
+    // Stack -> Stack: data is already in myBuffer, just update Array bounds
+    Array = NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper);
+  }
+  else if (aNewFitsStack)
+  {
+    // Heap -> Stack: copy data to stack buffer
+    const Standard_Integer aCopyLen = std::min(Array.Length(), theSize);
+    for (Standard_Integer i = 0; i < aCopyLen; ++i)
+    {
+      myBuffer[i] = Array.Value(theLower + i);
+    }
+    Array = NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper);
+  }
+  else
+  {
+    // Stack -> Heap or Heap -> Heap: Array.Resize handles data copy
+    Array.Resize(theLower, theUpper, Standard_True);
+  }
+}

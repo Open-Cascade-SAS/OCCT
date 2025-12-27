@@ -7,7 +7,7 @@ puts ""
 pload MODELING VISUALIZATION
 
 # test for creation of bottle as in tutorial (script is in samples)
-source $env(CSF_OCCTSamplesPath)/tcl/bottle.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/bottle.tcl
 
 vbackground -color WHITE
 vzbufftrihedron -type wireframe -colorLabels BLACK

@@ -19,473 +19,246 @@
 
 //==================================================================================================
 
-void GeomGridEval_Torus::SetUVParams(const TColStd_Array1OfReal& theUParams,
-                                     const TColStd_Array1OfReal& theVParams)
+GeomGridEval_Torus::Data GeomGridEval_Torus::extractData() const
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const gp_Torus& aTorus  = myGeom->Torus();
+  const gp_Pnt&   aCenter = aTorus.Location();
+  const gp_Dir&   aXDir   = aTorus.Position().XDirection();
+  const gp_Dir&   aYDir   = aTorus.Position().YDirection();
+  const gp_Dir&   aZDir   = aTorus.Position().Direction();
 
-  myUParams.Resize(1, aNbU, false);
-  for (int i = 1; i <= aNbU; ++i)
-  {
-    myUParams.SetValue(i, theUParams.Value(theUParams.Lower() + i - 1));
-  }
-
-  myVParams.Resize(1, aNbV, false);
-  for (int j = 1; j <= aNbV; ++j)
-  {
-    myVParams.SetValue(j, theVParams.Value(theVParams.Lower() + j - 1));
-  }
+  return {aCenter.X(),
+          aCenter.Y(),
+          aCenter.Z(),
+          aXDir.X(),
+          aXDir.Y(),
+          aXDir.Z(),
+          aYDir.X(),
+          aYDir.Y(),
+          aYDir.Z(),
+          aZDir.X(),
+          aZDir.Y(),
+          aZDir.Z(),
+          aTorus.MajorRadius(),
+          aTorus.MinorRadius()};
 }
 
 //==================================================================================================
 
-NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid() const
+GeomGridEval_Torus::UContext GeomGridEval_Torus::computeUContext(const Data& theData, double theU)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<gp_Pnt>();
-  }
+  const double cosU = std::cos(theU);
+  const double sinU = std::sin(theU);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
-
-  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
-
-  // Extract torus data
-  const gp_Torus& aTorus       = myGeom->Torus();
-  const gp_Pnt&   aCenter      = aTorus.Location();
-  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir        = aTorus.Position().Direction();
-  const double    aMajorRadius = aTorus.MajorRadius();
-  const double    aMinorRadius = aTorus.MinorRadius();
-
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  // Pre-compute V-dependent values (sin/cos of minor angle)
-  NCollection_Array1<double> aCosV(1, aNbV);
-  NCollection_Array1<double> aSinV(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
-  {
-    const double v = myVParams.Value(iV);
-    aCosV.SetValue(iV, std::cos(v));
-    aSinV.SetValue(iV, std::sin(v));
-  }
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Common term for X and Y components based on U
-    const double aDirUX = cosU * aXX + sinU * aYX;
-    const double aDirUY = cosU * aXY + sinU * aYY;
-    const double aDirUZ = cosU * aXZ + sinU * aYZ;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double cosV = aCosV.Value(iV);
-      const double sinV = aSinV.Value(iV);
-
-      // K = MajorRadius + MinorRadius * cos(v)
-      const double K = aMajorRadius + aMinorRadius * cosV;
-
-      // P = Center + K * (cosU*XDir + sinU*YDir) + MinorRadius * sinV * ZDir
-      aResult.SetValue(iU,
-                       iV,
-                       gp_Pnt(aCX + K * aDirUX + aMinorRadius * sinV * aZX,
-                              aCY + K * aDirUY + aMinorRadius * sinV * aZY,
-                              aCZ + K * aDirUZ + aMinorRadius * sinV * aZZ));
-    }
-  }
-  return aResult;
+  return {cosU,
+          sinU,
+          cosU * theData.XX + sinU * theData.YX,   // dirUX
+          cosU * theData.XY + sinU * theData.YY,   // dirUY
+          cosU * theData.XZ + sinU * theData.YZ,   // dirUZ
+          -sinU * theData.XX + cosU * theData.YX,  // dDirUX
+          -sinU * theData.XY + cosU * theData.YY,  // dDirUY
+          -sinU * theData.XZ + cosU * theData.YZ}; // dDirUZ
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1() const
+gp_Pnt GeomGridEval_Torus::computeD0(const Data& theData, const UContext& theUCtx, double theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD1>();
-  }
+  const double cosV = std::cos(theV);
+  const double sinV = std::sin(theV);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  // K = MajorRadius + MinorRadius * cos(v)
+  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
 
-  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
-
-  const gp_Torus& aTorus       = myGeom->Torus();
-  const gp_Pnt&   aCenter      = aTorus.Location();
-  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir        = aTorus.Position().Direction();
-  const double    aMajorRadius = aTorus.MajorRadius();
-  const double    aMinorRadius = aTorus.MinorRadius();
-
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  NCollection_Array1<double> aCosV(1, aNbV);
-  NCollection_Array1<double> aSinV(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
-  {
-    const double v = myVParams.Value(iV);
-    aCosV.SetValue(iV, std::cos(v));
-    aSinV.SetValue(iV, std::sin(v));
-  }
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Direction vectors for U
-    // DirU = cosU*XDir + sinU*YDir
-    const double dirUX = cosU * aXX + sinU * aYX;
-    const double dirUY = cosU * aXY + sinU * aYY;
-    const double dirUZ = cosU * aXZ + sinU * aYZ;
-
-    // DerivDirU = -sinU*XDir + cosU*YDir
-    const double dDirUX = -sinU * aXX + cosU * aYX;
-    const double dDirUY = -sinU * aXY + cosU * aYY;
-    const double dDirUZ = -sinU * aXZ + cosU * aYZ;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double cosV = aCosV.Value(iV);
-      const double sinV = aSinV.Value(iV);
-
-      const double K = aMajorRadius + aMinorRadius * cosV;
-
-      // P = Center + K * DirU + r * sinV * ZDir
-      const double pX = aCX + K * dirUX + aMinorRadius * sinV * aZX;
-      const double pY = aCY + K * dirUY + aMinorRadius * sinV * aZY;
-      const double pZ = aCZ + K * dirUZ + aMinorRadius * sinV * aZZ;
-
-      // D1U = K * DerivDirU
-      const double dU1 = K * dDirUX;
-      const double dU2 = K * dDirUY;
-      const double dU3 = K * dDirUZ;
-
-      // D1V = -r * sinV * DirU + r * cosV * ZDir
-      const double dV1 = -aMinorRadius * sinV * dirUX + aMinorRadius * cosV * aZX;
-      const double dV2 = -aMinorRadius * sinV * dirUY + aMinorRadius * cosV * aZY;
-      const double dV3 = -aMinorRadius * sinV * dirUZ + aMinorRadius * cosV * aZZ;
-
-      aResult.ChangeValue(iU,
-                          iV) = {gp_Pnt(pX, pY, pZ), gp_Vec(dU1, dU2, dU3), gp_Vec(dV1, dV2, dV3)};
-    }
-  }
-  return aResult;
+  // P = Center + K * DirU + MinorRadius * sinV * ZDir
+  return gp_Pnt(theData.CX + K * theUCtx.dirUX + theData.MinorRadius * sinV * theData.ZX,
+                theData.CY + K * theUCtx.dirUY + theData.MinorRadius * sinV * theData.ZY,
+                theData.CZ + K * theUCtx.dirUZ + theData.MinorRadius * sinV * theData.ZZ);
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2() const
+GeomGridEval::SurfD1 GeomGridEval_Torus::computeD1(const Data&     theData,
+                                                   const UContext& theUCtx,
+                                                   double          theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD2>();
-  }
+  const double cosV = std::cos(theV);
+  const double sinV = std::sin(theV);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
 
-  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
+  // D1U = K * DerivDirU
+  const double dU1 = K * theUCtx.dDirUX;
+  const double dU2 = K * theUCtx.dDirUY;
+  const double dU3 = K * theUCtx.dDirUZ;
 
-  const gp_Torus& aTorus       = myGeom->Torus();
-  const gp_Pnt&   aCenter      = aTorus.Location();
-  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir        = aTorus.Position().Direction();
-  const double    aMajorRadius = aTorus.MajorRadius();
-  const double    aMinorRadius = aTorus.MinorRadius();
+  // D1V = -r * sinV * DirU + r * cosV * ZDir
+  const double dV1 =
+    -theData.MinorRadius * sinV * theUCtx.dirUX + theData.MinorRadius * cosV * theData.ZX;
+  const double dV2 =
+    -theData.MinorRadius * sinV * theUCtx.dirUY + theData.MinorRadius * cosV * theData.ZY;
+  const double dV3 =
+    -theData.MinorRadius * sinV * theUCtx.dirUZ + theData.MinorRadius * cosV * theData.ZZ;
 
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
-
-  NCollection_Array1<double> aCosV(1, aNbV);
-  NCollection_Array1<double> aSinV(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
-  {
-    const double v = myVParams.Value(iV);
-    aCosV.SetValue(iV, std::cos(v));
-    aSinV.SetValue(iV, std::sin(v));
-  }
-
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // DirU = cosU*XDir + sinU*YDir
-    const double dirUX = cosU * aXX + sinU * aYX;
-    const double dirUY = cosU * aXY + sinU * aYY;
-    const double dirUZ = cosU * aXZ + sinU * aYZ;
-
-    // DerivDirU = -sinU*XDir + cosU*YDir
-    const double dDirUX = -sinU * aXX + cosU * aYX;
-    const double dDirUY = -sinU * aXY + cosU * aYY;
-    const double dDirUZ = -sinU * aXZ + cosU * aYZ;
-
-    // Deriv2DirU = -cosU*XDir - sinU*YDir = -DirU
-    const double d2DirUX = -dirUX;
-    const double d2DirUY = -dirUY;
-    const double d2DirUZ = -dirUZ;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double cosV = aCosV.Value(iV);
-      const double sinV = aSinV.Value(iV);
-
-      const double K = aMajorRadius + aMinorRadius * cosV;
-
-      // P
-      const double pX = aCX + K * dirUX + aMinorRadius * sinV * aZX;
-      const double pY = aCY + K * dirUY + aMinorRadius * sinV * aZY;
-      const double pZ = aCZ + K * dirUZ + aMinorRadius * sinV * aZZ;
-
-      // D1U = K * DerivDirU
-      const double dU1 = K * dDirUX;
-      const double dU2 = K * dDirUY;
-      const double dU3 = K * dDirUZ;
-
-      // D1V = -r * sinV * DirU + r * cosV * ZDir
-      const double dV1 = -aMinorRadius * sinV * dirUX + aMinorRadius * cosV * aZX;
-      const double dV2 = -aMinorRadius * sinV * dirUY + aMinorRadius * cosV * aZY;
-      const double dV3 = -aMinorRadius * sinV * dirUZ + aMinorRadius * cosV * aZZ;
-
-      // D2U = K * Deriv2DirU = -K * DirU
-      const double d2U1 = K * d2DirUX;
-      const double d2U2 = K * d2DirUY;
-      const double d2U3 = K * d2DirUZ;
-
-      // D2V = -r * cosV * DirU - r * sinV * ZDir
-      const double d2V1 = -aMinorRadius * cosV * dirUX - aMinorRadius * sinV * aZX;
-      const double d2V2 = -aMinorRadius * cosV * dirUY - aMinorRadius * sinV * aZY;
-      const double d2V3 = -aMinorRadius * cosV * dirUZ - aMinorRadius * sinV * aZZ;
-
-      // D2UV = -r * sinV * DerivDirU
-      const double d2UV1 = -aMinorRadius * sinV * dDirUX;
-      const double d2UV2 = -aMinorRadius * sinV * dDirUY;
-      const double d2UV3 = -aMinorRadius * sinV * dDirUZ;
-
-      aResult.ChangeValue(iU, iV) = {gp_Pnt(pX, pY, pZ),
-                                     gp_Vec(dU1, dU2, dU3),
-                                     gp_Vec(dV1, dV2, dV3),
-                                     gp_Vec(d2U1, d2U2, d2U3),
-                                     gp_Vec(d2V1, d2V2, d2V3),
-                                     gp_Vec(d2UV1, d2UV2, d2UV3)};
-    }
-  }
-  return aResult;
+  return {gp_Pnt(theData.CX + K * theUCtx.dirUX + theData.MinorRadius * sinV * theData.ZX,
+                 theData.CY + K * theUCtx.dirUY + theData.MinorRadius * sinV * theData.ZY,
+                 theData.CZ + K * theUCtx.dirUZ + theData.MinorRadius * sinV * theData.ZZ),
+          gp_Vec(dU1, dU2, dU3),
+          gp_Vec(dV1, dV2, dV3)};
 }
 
 //==================================================================================================
 
-NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3() const
+GeomGridEval::SurfD2 GeomGridEval_Torus::computeD2(const Data&     theData,
+                                                   const UContext& theUCtx,
+                                                   double          theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty())
-  {
-    return NCollection_Array2<GeomGridEval::SurfD3>();
-  }
+  const double cosV = std::cos(theV);
+  const double sinV = std::sin(theV);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
 
-  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+  // D1U = K * DerivDirU
+  const double dU1 = K * theUCtx.dDirUX;
+  const double dU2 = K * theUCtx.dDirUY;
+  const double dU3 = K * theUCtx.dDirUZ;
 
-  const gp_Torus& aTorus       = myGeom->Torus();
-  const gp_Pnt&   aCenter      = aTorus.Location();
-  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir        = aTorus.Position().Direction();
-  const double    aMajorRadius = aTorus.MajorRadius();
-  const double    aMinorRadius = aTorus.MinorRadius();
+  // D1V = -r * sinV * DirU + r * cosV * ZDir
+  const double dV1 =
+    -theData.MinorRadius * sinV * theUCtx.dirUX + theData.MinorRadius * cosV * theData.ZX;
+  const double dV2 =
+    -theData.MinorRadius * sinV * theUCtx.dirUY + theData.MinorRadius * cosV * theData.ZY;
+  const double dV3 =
+    -theData.MinorRadius * sinV * theUCtx.dirUZ + theData.MinorRadius * cosV * theData.ZZ;
 
-  const double aCX = aCenter.X();
-  const double aCY = aCenter.Y();
-  const double aCZ = aCenter.Z();
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
+  // D2U = K * Deriv2DirU = -K * DirU
+  const double d2U1 = -K * theUCtx.dirUX;
+  const double d2U2 = -K * theUCtx.dirUY;
+  const double d2U3 = -K * theUCtx.dirUZ;
 
-  NCollection_Array1<double> aCosV(1, aNbV);
-  NCollection_Array1<double> aSinV(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
-  {
-    const double v = myVParams.Value(iV);
-    aCosV.SetValue(iV, std::cos(v));
-    aSinV.SetValue(iV, std::sin(v));
-  }
+  // D2V = -r * cosV * DirU - r * sinV * ZDir
+  const double d2V1 =
+    -theData.MinorRadius * cosV * theUCtx.dirUX - theData.MinorRadius * sinV * theData.ZX;
+  const double d2V2 =
+    -theData.MinorRadius * cosV * theUCtx.dirUY - theData.MinorRadius * sinV * theData.ZY;
+  const double d2V3 =
+    -theData.MinorRadius * cosV * theUCtx.dirUZ - theData.MinorRadius * sinV * theData.ZZ;
 
-  for (int iU = 1; iU <= aNbU; ++iU)
-  {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
+  // D2UV = -r * sinV * DerivDirU
+  const double d2UV1 = -theData.MinorRadius * sinV * theUCtx.dDirUX;
+  const double d2UV2 = -theData.MinorRadius * sinV * theUCtx.dDirUY;
+  const double d2UV3 = -theData.MinorRadius * sinV * theUCtx.dDirUZ;
 
-    // DirU = cosU*XDir + sinU*YDir
-    const double dirUX = cosU * aXX + sinU * aYX;
-    const double dirUY = cosU * aXY + sinU * aYY;
-    const double dirUZ = cosU * aXZ + sinU * aYZ;
-
-    // DerivDirU = -sinU*XDir + cosU*YDir
-    const double dDirUX = -sinU * aXX + cosU * aYX;
-    const double dDirUY = -sinU * aXY + cosU * aYY;
-    const double dDirUZ = -sinU * aXZ + cosU * aYZ;
-
-    for (int iV = 1; iV <= aNbV; ++iV)
-    {
-      const double cosV = aCosV.Value(iV);
-      const double sinV = aSinV.Value(iV);
-
-      // R1 = r * cosV, R2 = r * sinV
-      const double R1 = aMinorRadius * cosV;
-      const double R2 = aMinorRadius * sinV;
-
-      // K = R + r * cosV
-      const double K = aMajorRadius + R1;
-
-      // A3 = R2 * cosU, A4 = R2 * sinU (for Som3)
-      const double A3 = R2 * cosU;
-      const double A4 = R2 * sinU;
-      // A5 = R1 * cosU, A6 = R1 * sinU (for Vvv, Vuvv)
-      const double A5 = R1 * cosU;
-      const double A6 = R1 * sinU;
-
-      // Som1 = K * DirU (for P and D2U)
-      const double Som1X = K * dirUX;
-      const double Som1Y = K * dirUY;
-      const double Som1Z = K * dirUZ;
-
-      // Som3 = R2 * (cosU*X + sinU*Y) = A3*X + A4*Y
-      const double Som3X = A3 * aXX + A4 * aYX;
-      const double Som3Y = A3 * aXY + A4 * aYY;
-      const double Som3Z = A3 * aXZ + A4 * aYZ;
-
-      // P = Center + Som1 + R2*Z
-      const double pX = aCX + Som1X + R2 * aZX;
-      const double pY = aCY + Som1Y + R2 * aZY;
-      const double pZ = aCZ + Som1Z + R2 * aZZ;
-
-      // D1U = K * DerivDirU
-      const double dU1 = K * dDirUX;
-      const double dU2 = K * dDirUY;
-      const double dU3 = K * dDirUZ;
-
-      // D1V = -Som3 + R1*Z = -r*sinV*DirU + r*cosV*Z
-      const double dV1 = -Som3X + R1 * aZX;
-      const double dV2 = -Som3Y + R1 * aZY;
-      const double dV3 = -Som3Z + R1 * aZZ;
-
-      // D2U = -Som1 = -K * DirU
-      const double d2U1 = -Som1X;
-      const double d2U2 = -Som1Y;
-      const double d2U3 = -Som1Z;
-
-      // D2V = -R1*DirU - R2*Z = -(A5*X + A6*Y) - R2*Z
-      const double d2V1 = -A5 * aXX - A6 * aYX - R2 * aZX;
-      const double d2V2 = -A5 * aXY - A6 * aYY - R2 * aZY;
-      const double d2V3 = -A5 * aXZ - A6 * aYZ - R2 * aZZ;
-
-      // D2UV = r*sinV*(sinU*X - cosU*Y) = A4*X - A3*Y
-      const double d2UV1 = A4 * aXX - A3 * aYX;
-      const double d2UV2 = A4 * aXY - A3 * aYY;
-      const double d2UV3 = A4 * aXZ - A3 * aYZ;
-
-      // D3U = -D1U (Vuuu = Dif1 = -DerivDirU*K)
-      const double d3U1 = -dU1;
-      const double d3U2 = -dU2;
-      const double d3U3 = -dU3;
-
-      // D3V = -D1V (Vvvv = Som3 - R1*Z)
-      const double d3V1 = Som3X - R1 * aZX;
-      const double d3V2 = Som3Y - R1 * aZY;
-      const double d3V3 = Som3Z - R1 * aZZ;
-
-      // D3UUV = Som3 = r*sinV*(cosU*X + sinU*Y)
-      const double d3UUV1 = Som3X;
-      const double d3UUV2 = Som3Y;
-      const double d3UUV3 = Som3Z;
-
-      // D3UVV = r*cosV*(sinU*X - cosU*Y) = A6*X - A5*Y
-      const double d3UVV1 = A6 * aXX - A5 * aYX;
-      const double d3UVV2 = A6 * aXY - A5 * aYY;
-      const double d3UVV3 = A6 * aXZ - A5 * aYZ;
-
-      aResult.ChangeValue(iU, iV) = {gp_Pnt(pX, pY, pZ),
-                                     gp_Vec(dU1, dU2, dU3),
-                                     gp_Vec(dV1, dV2, dV3),
-                                     gp_Vec(d2U1, d2U2, d2U3),
-                                     gp_Vec(d2V1, d2V2, d2V3),
-                                     gp_Vec(d2UV1, d2UV2, d2UV3),
-                                     gp_Vec(d3U1, d3U2, d3U3),
-                                     gp_Vec(d3V1, d3V2, d3V3),
-                                     gp_Vec(d3UUV1, d3UUV2, d3UUV3),
-                                     gp_Vec(d3UVV1, d3UVV2, d3UVV3)};
-    }
-  }
-  return aResult;
+  return {gp_Pnt(theData.CX + K * theUCtx.dirUX + theData.MinorRadius * sinV * theData.ZX,
+                 theData.CY + K * theUCtx.dirUY + theData.MinorRadius * sinV * theData.ZY,
+                 theData.CZ + K * theUCtx.dirUZ + theData.MinorRadius * sinV * theData.ZZ),
+          gp_Vec(dU1, dU2, dU3),
+          gp_Vec(dV1, dV2, dV3),
+          gp_Vec(d2U1, d2U2, d2U3),
+          gp_Vec(d2V1, d2V2, d2V3),
+          gp_Vec(d2UV1, d2UV2, d2UV3)};
 }
 
 //==================================================================================================
 
-NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(int theNU, int theNV) const
+GeomGridEval::SurfD3 GeomGridEval_Torus::computeD3(const Data&     theData,
+                                                   const UContext& theUCtx,
+                                                   double          theV)
 {
-  if (myGeom.IsNull() || myUParams.IsEmpty() || myVParams.IsEmpty() || theNU < 0 || theNV < 0
-      || (theNU + theNV) < 1)
-  {
-    return NCollection_Array2<gp_Vec>();
-  }
+  const double cosV = std::cos(theV);
+  const double sinV = std::sin(theV);
 
-  const int aNbU = myUParams.Size();
-  const int aNbV = myVParams.Size();
+  // R1 = r * cosV, R2 = r * sinV
+  const double R1 = theData.MinorRadius * cosV;
+  const double R2 = theData.MinorRadius * sinV;
 
-  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+  // K = R + r * cosV
+  const double K = theData.MajorRadius + R1;
 
+  // A3 = R2 * cosU, A4 = R2 * sinU (for Som3)
+  const double A3 = R2 * theUCtx.cosU;
+  const double A4 = R2 * theUCtx.sinU;
+  // A5 = R1 * cosU, A6 = R1 * sinU (for Vvv, Vuvv)
+  const double A5 = R1 * theUCtx.cosU;
+  const double A6 = R1 * theUCtx.sinU;
+
+  // Som1 = K * DirU (for P and D2U)
+  const double Som1X = K * theUCtx.dirUX;
+  const double Som1Y = K * theUCtx.dirUY;
+  const double Som1Z = K * theUCtx.dirUZ;
+
+  // Som3 = R2 * (cosU*X + sinU*Y) = A3*X + A4*Y
+  const double Som3X = A3 * theData.XX + A4 * theData.YX;
+  const double Som3Y = A3 * theData.XY + A4 * theData.YY;
+  const double Som3Z = A3 * theData.XZ + A4 * theData.YZ;
+
+  // D1U = K * DerivDirU
+  const double dU1 = K * theUCtx.dDirUX;
+  const double dU2 = K * theUCtx.dDirUY;
+  const double dU3 = K * theUCtx.dDirUZ;
+
+  // D1V = -Som3 + R1*Z = -r*sinV*DirU + r*cosV*Z
+  const double dV1 = -Som3X + R1 * theData.ZX;
+  const double dV2 = -Som3Y + R1 * theData.ZY;
+  const double dV3 = -Som3Z + R1 * theData.ZZ;
+
+  // D2U = -Som1 = -K * DirU
+  const double d2U1 = -Som1X;
+  const double d2U2 = -Som1Y;
+  const double d2U3 = -Som1Z;
+
+  // D2V = -R1*DirU - R2*Z = -(A5*X + A6*Y) - R2*Z
+  const double d2V1 = -A5 * theData.XX - A6 * theData.YX - R2 * theData.ZX;
+  const double d2V2 = -A5 * theData.XY - A6 * theData.YY - R2 * theData.ZY;
+  const double d2V3 = -A5 * theData.XZ - A6 * theData.YZ - R2 * theData.ZZ;
+
+  // D2UV = r*sinV*(sinU*X - cosU*Y) = A4*X - A3*Y
+  const double d2UV1 = A4 * theData.XX - A3 * theData.YX;
+  const double d2UV2 = A4 * theData.XY - A3 * theData.YY;
+  const double d2UV3 = A4 * theData.XZ - A3 * theData.YZ;
+
+  // D3U = -D1U (Vuuu = Dif1 = -DerivDirU*K)
+  const double d3U1 = -dU1;
+  const double d3U2 = -dU2;
+  const double d3U3 = -dU3;
+
+  // D3V = -D1V (Vvvv = Som3 - R1*Z)
+  const double d3V1 = Som3X - R1 * theData.ZX;
+  const double d3V2 = Som3Y - R1 * theData.ZY;
+  const double d3V3 = Som3Z - R1 * theData.ZZ;
+
+  // D3UUV = Som3 = r*sinV*(cosU*X + sinU*Y)
+  const double d3UUV1 = Som3X;
+  const double d3UUV2 = Som3Y;
+  const double d3UUV3 = Som3Z;
+
+  // D3UVV = r*cosV*(sinU*X - cosU*Y) = A6*X - A5*Y
+  const double d3UVV1 = A6 * theData.XX - A5 * theData.YX;
+  const double d3UVV2 = A6 * theData.XY - A5 * theData.YY;
+  const double d3UVV3 = A6 * theData.XZ - A5 * theData.YZ;
+
+  return {gp_Pnt(theData.CX + Som1X + R2 * theData.ZX,
+                 theData.CY + Som1Y + R2 * theData.ZY,
+                 theData.CZ + Som1Z + R2 * theData.ZZ),
+          gp_Vec(dU1, dU2, dU3),
+          gp_Vec(dV1, dV2, dV3),
+          gp_Vec(d2U1, d2U2, d2U3),
+          gp_Vec(d2V1, d2V2, d2V3),
+          gp_Vec(d2UV1, d2UV2, d2UV3),
+          gp_Vec(d3U1, d3U2, d3U3),
+          gp_Vec(d3V1, d3V2, d3V3),
+          gp_Vec(d3UUV1, d3UUV2, d3UUV3),
+          gp_Vec(d3UVV1, d3UVV2, d3UVV3)};
+}
+
+//==================================================================================================
+
+gp_Vec GeomGridEval_Torus::computeDN(const Data&     theData,
+                                     const UContext& theUCtx,
+                                     double          theV,
+                                     int             theNU,
+                                     int             theNV)
+{
   // For torus P(u,v) = C + K(v)*DirU(u) + r*sin(v)*Z
   // where K(v) = R + r*cos(v), DirU(u) = cos(u)*X + sin(u)*Y
   //
@@ -500,156 +273,387 @@ NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(int theNU, int the
   // - d^nu(DirU)/du^nu
   // - d^nv(r*sin(v))/dv^nv = r * d^nv(sin(v))/dv^nv (only contributes when nu == 0)
 
-  // Extract torus data
-  const gp_Torus& aTorus       = myGeom->Torus();
-  const gp_Dir&   aXDir        = aTorus.Position().XDirection();
-  const gp_Dir&   aYDir        = aTorus.Position().YDirection();
-  const gp_Dir&   aZDir        = aTorus.Position().Direction();
-  const double    aMajorRadius = aTorus.MajorRadius();
-  const double    aMinorRadius = aTorus.MinorRadius();
-
-  const double aXX = aXDir.X();
-  const double aXY = aXDir.Y();
-  const double aXZ = aXDir.Z();
-  const double aYX = aYDir.X();
-  const double aYY = aYDir.Y();
-  const double aYZ = aYDir.Z();
-  const double aZX = aZDir.X();
-  const double aZY = aZDir.Y();
-  const double aZZ = aZDir.Z();
+  const double cosV = std::cos(theV);
+  const double sinV = std::sin(theV);
 
   // Phase for U derivatives (period 4)
   const int aPhaseU = theNU % 4;
   // Phase for V derivatives (period 4)
   const int aPhaseV = theNV % 4;
 
-  // Pre-compute V-dependent values
-  NCollection_Array1<double> aCosV(1, aNbV);
-  NCollection_Array1<double> aSinV(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
+  // Compute d^nu(DirU)/du^nu based on phase (using pre-computed cosU, sinU from UContext)
+  double dirDnX, dirDnY, dirDnZ;
+  switch (aPhaseU)
   {
-    const double v = myVParams.Value(iV);
-    aCosV.SetValue(iV, std::cos(v));
-    aSinV.SetValue(iV, std::sin(v));
+    case 0: // cos(u)*X + sin(u)*Y = DirU
+      dirDnX = theUCtx.dirUX;
+      dirDnY = theUCtx.dirUY;
+      dirDnZ = theUCtx.dirUZ;
+      break;
+    case 1: // -sin(u)*X + cos(u)*Y = DerivDirU
+      dirDnX = theUCtx.dDirUX;
+      dirDnY = theUCtx.dDirUY;
+      dirDnZ = theUCtx.dDirUZ;
+      break;
+    case 2: // -cos(u)*X - sin(u)*Y = -DirU
+      dirDnX = -theUCtx.dirUX;
+      dirDnY = -theUCtx.dirUY;
+      dirDnZ = -theUCtx.dirUZ;
+      break;
+    case 3: // sin(u)*X - cos(u)*Y = -DerivDirU
+    default:
+      dirDnX = -theUCtx.dDirUX;
+      dirDnY = -theUCtx.dDirUY;
+      dirDnZ = -theUCtx.dDirUZ;
+      break;
   }
+
+  // Compute d^nv(cos(v))/dv^nv based on phase
+  double dCosV;
+  switch (aPhaseV)
+  {
+    case 0:
+      dCosV = cosV;
+      break;
+    case 1:
+      dCosV = -sinV;
+      break;
+    case 2:
+      dCosV = -cosV;
+      break;
+    case 3:
+    default:
+      dCosV = sinV;
+      break;
+  }
+
+  // Compute d^nv(sin(v))/dv^nv based on phase
+  double dSinV;
+  switch (aPhaseV)
+  {
+    case 0:
+      dSinV = sinV;
+      break;
+    case 1:
+      dSinV = cosV;
+      break;
+    case 2:
+      dSinV = -sinV;
+      break;
+    case 3:
+    default:
+      dSinV = -cosV;
+      break;
+  }
+
+  // For the general derivative D_{nu,nv}:
+  // - If nv == 0: D = K(v) * d^nu(DirU) where K = R + r*cos(v)
+  // - If nv >= 1 and nu == 0: D = d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
+  // - If nv >= 1 and nu >= 1: D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
+
+  double resX, resY, resZ;
+
+  if (theNV == 0)
+  {
+    // Pure U derivative: K(v) * d^nu(DirU)/du^nu
+    const double K = theData.MajorRadius + theData.MinorRadius * cosV;
+    resX           = K * dirDnX;
+    resY           = K * dirDnY;
+    resZ           = K * dirDnZ;
+  }
+  else if (theNU == 0)
+  {
+    // Pure V derivative with nu=0: d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
+    // where d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
+    const double dK = theData.MinorRadius * dCosV;
+    resX            = dK * dirDnX + theData.MinorRadius * dSinV * theData.ZX;
+    resY            = dK * dirDnY + theData.MinorRadius * dSinV * theData.ZY;
+    resZ            = dK * dirDnZ + theData.MinorRadius * dSinV * theData.ZZ;
+  }
+  else
+  {
+    // Mixed derivative with both nu >= 1 and nv >= 1:
+    // D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
+    const double coeff = theData.MinorRadius * dCosV;
+    resX               = coeff * dirDnX;
+    resY               = coeff * dirDnY;
+    resZ               = coeff * dirDnZ;
+  }
+
+  return gp_Vec(resX, resY, resZ);
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<gp_Pnt>();
+  }
+
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
+  const Data                 aData = extractData();
 
   for (int iU = 1; iU <= aNbU; ++iU)
   {
-    const double u    = myUParams.Value(iU);
-    const double cosU = std::cos(u);
-    const double sinU = std::sin(u);
-
-    // Compute d^nu(DirU)/du^nu based on phase
-    double dirDnX, dirDnY, dirDnZ;
-    switch (aPhaseU)
-    {
-      case 0: // cos(u)*X + sin(u)*Y
-        dirDnX = cosU * aXX + sinU * aYX;
-        dirDnY = cosU * aXY + sinU * aYY;
-        dirDnZ = cosU * aXZ + sinU * aYZ;
-        break;
-      case 1: // -sin(u)*X + cos(u)*Y
-        dirDnX = -sinU * aXX + cosU * aYX;
-        dirDnY = -sinU * aXY + cosU * aYY;
-        dirDnZ = -sinU * aXZ + cosU * aYZ;
-        break;
-      case 2: // -cos(u)*X - sin(u)*Y
-        dirDnX = -cosU * aXX - sinU * aYX;
-        dirDnY = -cosU * aXY - sinU * aYY;
-        dirDnZ = -cosU * aXZ - sinU * aYZ;
-        break;
-      case 3: // sin(u)*X - cos(u)*Y
-      default:
-        dirDnX = sinU * aXX - cosU * aYX;
-        dirDnY = sinU * aXY - cosU * aYY;
-        dirDnZ = sinU * aXZ - cosU * aYZ;
-        break;
-    }
+    const double   u     = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, u);
 
     for (int iV = 1; iV <= aNbV; ++iV)
     {
-      const double cosV = aCosV.Value(iV);
-      const double sinV = aSinV.Value(iV);
-
-      // Compute d^nv(cos(v))/dv^nv based on phase
-      double dCosV;
-      switch (aPhaseV)
-      {
-        case 0:
-          dCosV = cosV;
-          break;
-        case 1:
-          dCosV = -sinV;
-          break;
-        case 2:
-          dCosV = -cosV;
-          break;
-        case 3:
-        default:
-          dCosV = sinV;
-          break;
-      }
-
-      // Compute d^nv(sin(v))/dv^nv based on phase
-      double dSinV;
-      switch (aPhaseV)
-      {
-        case 0:
-          dSinV = sinV;
-          break;
-        case 1:
-          dSinV = cosV;
-          break;
-        case 2:
-          dSinV = -sinV;
-          break;
-        case 3:
-        default:
-          dSinV = -cosV;
-          break;
-      }
-
-      // For the general derivative D_{nu,nv}:
-      // - If nv == 0: D = K(v) * d^nu(DirU) where K = R + r*cos(v)
-      //   But NU >= 1, so K is just multiplied
-      // - If nv >= 1 and nu == 0: D = d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
-      //   where d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
-      // - If nv >= 1 and nu >= 1: D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
-      //   (The Z term vanishes because it doesn't depend on U)
-
-      double resX, resY, resZ;
-
-      if (theNV == 0)
-      {
-        // Pure U derivative: K(v) * d^nu(DirU)/du^nu
-        const double K = aMajorRadius + aMinorRadius * cosV;
-        resX           = K * dirDnX;
-        resY           = K * dirDnY;
-        resZ           = K * dirDnZ;
-      }
-      else if (theNU == 0)
-      {
-        // Pure V derivative with nu=0: d^nv(K)/dv^nv * DirU + r * d^nv(sin(v))/dv^nv * Z
-        // where d^nv(K)/dv^nv = r * d^nv(cos(v))/dv^nv
-        // and DirU = dirDnX, dirDnY, dirDnZ when aPhaseU = 0
-        const double dK = aMinorRadius * dCosV;
-        resX            = dK * dirDnX + aMinorRadius * dSinV * aZX;
-        resY            = dK * dirDnY + aMinorRadius * dSinV * aZY;
-        resZ            = dK * dirDnZ + aMinorRadius * dSinV * aZZ;
-      }
-      else
-      {
-        // Mixed derivative with both nu >= 1 and nv >= 1:
-        // D = r * d^nv(cos(v))/dv^nv * d^nu(DirU)/du^nu
-        const double coeff = aMinorRadius * dCosV;
-        resX               = coeff * dirDnX;
-        resY               = coeff * dirDnY;
-        resZ               = coeff * dirDnZ;
-      }
-
-      aResult.SetValue(iU, iV, gp_Vec(resX, resY, resZ));
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD0(aData, aUCtx, v));
     }
   }
+  return aResult;
+}
 
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD1>();
+  }
+
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
+  const Data                               aData = extractData();
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   u     = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, u);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD1(aData, aUCtx, v));
+    }
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD2>();
+  }
+
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
+  const Data                               aData = extractData();
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   u     = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, u);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD2(aData, aUCtx, v));
+    }
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty())
+  {
+    return NCollection_Array2<GeomGridEval::SurfD3>();
+  }
+
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+  const Data                               aData = extractData();
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   u     = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, u);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeD3(aData, aUCtx, v));
+    }
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(
+  const TColStd_Array1OfReal& theUParams,
+  const TColStd_Array1OfReal& theVParams,
+  int                         theNU,
+  int                         theNV) const
+{
+  if (myGeom.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0 || theNV < 0
+      || (theNU + theNV) < 1)
+  {
+    return NCollection_Array2<gp_Vec>();
+  }
+
+  const int aNbU = theUParams.Size();
+  const int aNbV = theVParams.Size();
+
+  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+  const Data                 aData = extractData();
+
+  for (int iU = 1; iU <= aNbU; ++iU)
+  {
+    const double   u     = theUParams.Value(theUParams.Lower() + iU - 1);
+    const UContext aUCtx = computeUContext(aData, u);
+
+    for (int iV = 1; iV <= aNbV; ++iV)
+    {
+      const double v = theVParams.Value(theVParams.Lower() + iV - 1);
+      aResult.SetValue(iU, iV, computeDN(aData, aUCtx, v, theNU, theNV));
+    }
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Pnt> GeomGridEval_Torus::EvaluatePoints(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<gp_Pnt>();
+  }
+
+  const int                  aNbPts = theUVPairs.Size();
+  NCollection_Array1<gp_Pnt> aResult(1, aNbPts);
+  const Data                 aData = extractData();
+
+  for (int iPt = 1; iPt <= aNbPts; ++iPt)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + iPt - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(iPt, computeD0(aData, aUCtx, aUV.Y()));
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluatePointsD1(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD1>();
+  }
+
+  const int                                aNbPts = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD1> aResult(1, aNbPts);
+  const Data                               aData = extractData();
+
+  for (int iPt = 1; iPt <= aNbPts; ++iPt)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + iPt - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(iPt, computeD1(aData, aUCtx, aUV.Y()));
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluatePointsD2(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD2>();
+  }
+
+  const int                                aNbPts = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD2> aResult(1, aNbPts);
+  const Data                               aData = extractData();
+
+  for (int iPt = 1; iPt <= aNbPts; ++iPt)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + iPt - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(iPt, computeD2(aData, aUCtx, aUV.Y()));
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluatePointsD3(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty())
+  {
+    return NCollection_Array1<GeomGridEval::SurfD3>();
+  }
+
+  const int                                aNbPts = theUVPairs.Size();
+  NCollection_Array1<GeomGridEval::SurfD3> aResult(1, aNbPts);
+  const Data                               aData = extractData();
+
+  for (int iPt = 1; iPt <= aNbPts; ++iPt)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + iPt - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(iPt, computeD3(aData, aUCtx, aUV.Y()));
+  }
+  return aResult;
+}
+
+//==================================================================================================
+
+NCollection_Array1<gp_Vec> GeomGridEval_Torus::EvaluatePointsDN(
+  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
+  int                                 theNU,
+  int                                 theNV) const
+{
+  if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
+  {
+    return NCollection_Array1<gp_Vec>();
+  }
+
+  const int                  aNbPts = theUVPairs.Size();
+  NCollection_Array1<gp_Vec> aResult(1, aNbPts);
+  const Data                 aData = extractData();
+
+  for (int iPt = 1; iPt <= aNbPts; ++iPt)
+  {
+    const gp_Pnt2d& aUV   = theUVPairs.Value(theUVPairs.Lower() + iPt - 1);
+    const UContext  aUCtx = computeUContext(aData, aUV.X());
+    aResult.SetValue(iPt, computeDN(aData, aUCtx, aUV.Y(), theNU, theNV));
+  }
   return aResult;
 }

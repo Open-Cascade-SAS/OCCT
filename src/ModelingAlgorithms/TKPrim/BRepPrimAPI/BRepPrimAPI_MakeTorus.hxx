@@ -119,7 +119,8 @@ public:
   //! axis parallel to the Y axis and passing through the center
   //! of the reference circle gives the v parameter on the
   //! reference circle. The X axis gives the origin of the v
-  //! parameter. Near 0, as v increases, the Z coordinate decreases.
+  //! parameter. Near 0, as v increases, the Z coordinate increases
+  //! (following the standard trigonometric convention: Z = r*sin(v)).
   Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2&       Axes,
                                         const Standard_Real R1,
                                         const Standard_Real R2,

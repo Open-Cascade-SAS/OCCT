@@ -388,9 +388,6 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     else()
       file(APPEND ${DOXYGEN_CONFIG_FILE} "IMAGE_PATH = ${OCCT_ROOT_DIR}/dox/resources\n")
     endif()
-
-    # Example paths
-    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXAMPLE_PATH = ${OCCT_ROOT_DIR}/src ${OCCT_ROOT_DIR}/samples\n")
   else()
     # Settings for Reference Manual
     file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_NAME = \"Open CASCADE Technology Reference Manual\"\n")

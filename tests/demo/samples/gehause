@@ -1,5 +1,5 @@
 # test for creation of MBBGehauseRohteil shape
-source $env(CSF_OCCTSamplesPath)/tcl/MBBGehauseRohteil.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/MBBGehauseRohteil.tcl
 
 # check result for validity and make a snapshot
 checkshape result

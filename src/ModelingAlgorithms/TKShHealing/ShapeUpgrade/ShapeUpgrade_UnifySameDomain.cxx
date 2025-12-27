@@ -1557,7 +1557,7 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
   TColGeom_SequenceOfSurface            SurfSeq;
   NCollection_Sequence<TopLoc_Location> LocSeq;
 
-  for (int aCurveIndex = 0;; aCurveIndex++)
+  for (int aCurveIndex = 1;; aCurveIndex++)
   {
     Handle(Geom2d_Curve) aCurve;
     Handle(Geom_Surface) aSurface;

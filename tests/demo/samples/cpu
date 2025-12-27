@@ -1,5 +1,5 @@
 # test for CPU sample
-source $env(CSF_OCCTSamplesPath)/tcl/cpu.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/cpu.tcl
 
 # make a snapshot
 vdump $imagedir/${test_image}.png

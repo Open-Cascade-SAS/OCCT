@@ -1,5 +1,5 @@
 # test for generating funny shape 
-source $env(CSF_OCCTSamplesPath)/tcl/cad.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/cad.tcl
 
 # check shape validity and make a snapshot
 checkshape res

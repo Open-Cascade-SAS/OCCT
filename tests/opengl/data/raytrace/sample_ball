@@ -3,5 +3,5 @@ puts "Visualization - Path Tracing, Ball sample"
 puts "============"
 puts ""
 
-source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_ball.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/pathtrace_ball.tcl
 vdump $imagedir/${casename}_zoom.png

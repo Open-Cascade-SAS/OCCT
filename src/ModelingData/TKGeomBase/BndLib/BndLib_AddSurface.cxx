@@ -461,9 +461,8 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 
       GeomGridEval_Surface anEvaluator;
       anEvaluator.Initialize(S);
-      anEvaluator.SetUVParams(aUParams, aVParams);
 
-      const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid();
+      const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
       for (Standard_Integer i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
       {
         for (Standard_Integer j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
@@ -588,9 +587,8 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
 
   GeomGridEval_Surface anEvaluator;
   anEvaluator.Initialize(S);
-  anEvaluator.SetUVParams(aUParams, aVParams);
 
-  const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid();
+  const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
 
   // Extract main grid points (at even indices in fine grid: 1, 3, 5, ...)
   // Main grid indices in fine grid: iFine = 2*i - 1, jFine = 2*j - 1

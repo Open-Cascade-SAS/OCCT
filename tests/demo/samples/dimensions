@@ -1,4 +1,4 @@
-source $env(CSF_OCCTSamplesPath)/tcl/dimensions.tcl
+source $env(CSF_OCCTResourcePath)/samples/tcl/dimensions.tcl
 vcaps -ffp 1
 vdump $imagedir/${test_image}.png
 
