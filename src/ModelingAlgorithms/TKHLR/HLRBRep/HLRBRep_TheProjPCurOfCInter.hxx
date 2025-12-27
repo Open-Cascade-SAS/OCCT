@@ -42,7 +42,7 @@ public:
   //! In that case, no bounds are given. The research of
   //! the right parameter has to be made on the natural
   //! parametric domain of the curve.
-  Standard_EXPORT static Standard_Real FindParameter(const Standard_Address& C,
+  Standard_EXPORT static Standard_Real FindParameter(const HLRBRep_Curve*& C,
                                                      const gp_Pnt2d&         Pnt,
                                                      const Standard_Real     Tol);
 
@@ -60,7 +60,7 @@ public:
   //! implement a more efficient algorithm. So, it is not
   //! necessary to check that the returned value verifies
   //! LowParameter <= Value <= HighParameter.
-  Standard_EXPORT static Standard_Real FindParameter(const Standard_Address& C,
+  Standard_EXPORT static Standard_Real FindParameter(const HLRBRep_Curve*& C,
                                                      const gp_Pnt2d&         Pnt,
                                                      const Standard_Real     LowParameter,
                                                      const Standard_Real     HighParameter,

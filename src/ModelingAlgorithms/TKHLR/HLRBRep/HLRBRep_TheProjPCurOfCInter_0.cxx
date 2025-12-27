@@ -17,13 +17,14 @@
 #include <HLRBRep_TheProjPCurOfCInter.hxx>
 
 #include <HLRBRep_CurveTool.hxx>
+#include <HLRBRep_Curve.hxx>
 #include <HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter.hxx>
 #include <HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
+Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_Curve*& C,
                                                          const gp_Pnt2d&         P,
                                                          const Standard_Real     LowParameter,
                                                          const Standard_Real     HighParameter,
@@ -35,13 +36,13 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address&
   Extrema_POnCurv2d POnC;
 
   HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter::Locate(P,
-                                                       C,
+                                                       (HLRBRep_Curve*&)C,
                                                        NbPts,
                                                        LowParameter,
                                                        HighParameter,
                                                        POnC);
   defaultparam = POnC.Parameter();
-  HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter Loc(P, C, defaultparam, theEpsX);
+  HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter Loc(P, (HLRBRep_Curve*&)C, defaultparam, theEpsX);
 
   if (Loc.IsDone() == Standard_False)
   {
@@ -63,7 +64,7 @@ Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address&
   return theparam;
 }
 
-Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const Standard_Address& C,
+Standard_Real HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_Curve*& C,
                                                          const gp_Pnt2d&         P,
                                                          const Standard_Real     Tol)
 {

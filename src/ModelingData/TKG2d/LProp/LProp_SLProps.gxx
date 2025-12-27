@@ -73,7 +73,7 @@ LProp_SLProps::LProp_SLProps(const Surface&         S,
                              const Standard_Real    V,
                              const Standard_Integer N,
                              const Standard_Real    Resolution)
-    : mySurf(S),
+    : mySurf((Surface)S),
       myDerOrder(N),
       myCN(4), // (Tool::Continuity(S)),
       myLinTol(Resolution)
@@ -86,7 +86,7 @@ LProp_SLProps::LProp_SLProps(const Surface&         S,
 LProp_SLProps::LProp_SLProps(const Surface&         S,
                              const Standard_Integer N,
                              const Standard_Real    Resolution)
-    : mySurf(S),
+    : mySurf((Surface)S),
       myU(RealLast()),
       myV(RealLast()),
       myDerOrder(N),
@@ -116,7 +116,7 @@ LProp_SLProps::LProp_SLProps(const Standard_Integer N, const Standard_Real Resol
 
 void LProp_SLProps::SetSurface(const Surface& S)
 {
-  mySurf = S;
+  mySurf = (Surface)S;
   myCN   = 4; // =Tool::Continuity(S);
 }
 

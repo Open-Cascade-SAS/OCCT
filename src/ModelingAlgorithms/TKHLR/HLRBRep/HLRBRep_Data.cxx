@@ -29,6 +29,7 @@
 #include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Data.hxx>
+#include <HLRBRep_Surface.hxx>
 #include <HLRBRep_EdgeData.hxx>
 #include <HLRBRep_EdgeFaceTool.hxx>
 #include <HLRBRep_FaceData.hxx>
@@ -766,7 +767,7 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     HLRBRep_FaceData& fd = myFData.ChangeValue(face);
     HLRBRep_Surface&  FS = fd.Geometry();
     iFaceGeom            = &(fd.Geometry());
-    mySLProps.SetSurface(iFaceGeom);
+    mySLProps.SetSurface((const HLRBRep_Surface*&)iFaceGeom);
     FS.Projector(&myProj);
     iFaceType = FS.GetType();
 
@@ -992,7 +993,7 @@ void HLRBRep_Data::InitEdge(const Standard_Integer FI, BRepTopAdaptor_MapOfShape
   iFaceMinMax = &iFaceData->Wires()->MinMax();
   iFaceType   = iFaceGeom->GetType();
   iFaceTest   = !iFaceSimp;
-  mySLProps.SetSurface(iFaceGeom);
+  mySLProps.SetSurface( (const HLRBRep_Surface*&)iFaceGeom);
   myIntersector.Load(iFaceGeom);
 
   HLRBRep_Surface*           p1   = iFaceGeom;

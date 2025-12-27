@@ -22,6 +22,7 @@
 #include <ElCLib.hxx>
 #include <gp_Lin.hxx>
 #include <HLRBRep_CurveTool.hxx>
+#include <HLRBRep_Curve.hxx>
 #include <HLRBRep_EdgeData.hxx>
 #include <HLRBRep_Intersector.hxx>
 #include <HLRBRep_Surface.hxx>
@@ -122,7 +123,7 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
   tol = Precision::Confusion();
   //////////////////////////////////////////
 
-  myIntersector.Perform(myC1, D1, tol, tol);
+  myIntersector.Perform((const HLRBRep_Curve*&)myC1, D1, tol, tol);
 }
 
 //=================================================================================================
@@ -404,7 +405,7 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
     if (!aPasBon)
     {
-      myIntersector.Perform(myC1, D1, myC2, D2, tol, tol);
+      myIntersector.Perform((const HLRBRep_Curve*&)myC1, D1, (const HLRBRep_Curve*&)myC2, D2, tol, tol);
     }
   } while (aPasBon);
 

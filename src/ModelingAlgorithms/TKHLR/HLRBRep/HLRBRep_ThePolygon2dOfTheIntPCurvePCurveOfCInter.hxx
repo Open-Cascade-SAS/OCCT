@@ -28,6 +28,7 @@
 #include <Intf_Polygon2d.hxx>
 class Standard_OutOfRange;
 class HLRBRep_CurveTool;
+class HLRBRep_Curve;
 class IntRes2d_Domain;
 class Bnd_Box2d;
 class gp_Pnt2d;
@@ -38,7 +39,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Compute a polygon on the domain of the curve.
-  Standard_EXPORT HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter(const Standard_Address& Curve,
+  Standard_EXPORT HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter(const HLRBRep_Curve*& Curve,
                                                                    const Standard_Integer  NbPnt,
                                                                    const IntRes2d_Domain&  Domain,
                                                                    const Standard_Real     Tol);
@@ -48,7 +49,7 @@ public:
   //! outside the box <OtherBox>. In this
   //! situation, bounds are computed to build
   //! a polygon inside or near the OtherBox.
-  Standard_EXPORT void ComputeWithBox(const Standard_Address& Curve, const Bnd_Box2d& OtherBox);
+  Standard_EXPORT void ComputeWithBox(const HLRBRep_Curve*& Curve, const Bnd_Box2d& OtherBox);
 
   virtual Standard_Real DeflectionOverEstimation() const Standard_OVERRIDE;
 
@@ -104,8 +105,8 @@ private:
   Standard_Real           Bsup;
 };
 
-#define TheCurve Standard_Address
-#define TheCurve_hxx <Standard_Address.hxx>
+#define TheCurve HLRBRep_Curve*
+#define TheCurve_hxx <HLRBRep_Curve.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_Polygon2dGen HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter

@@ -30,15 +30,6 @@
 
 //=================================================================================================
 
-IntCurve_DistBetweenPCurvesGen::IntCurve_DistBetweenPCurvesGen(const TheCurve& C1,
-                                                               const TheCurve& C2)
-{
-  thecurve1 = (Standard_Address)(&C1);
-  thecurve2 = (Standard_Address)(&C2);
-}
-
-//=================================================================================================
-
 Standard_Integer IntCurve_DistBetweenPCurvesGen::NbVariables(void) const
 {
   return (2);

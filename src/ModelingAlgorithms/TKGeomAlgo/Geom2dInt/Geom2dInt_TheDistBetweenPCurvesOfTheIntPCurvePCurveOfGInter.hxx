@@ -34,9 +34,13 @@ class Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter(
+  Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter(
     const Adaptor2d_Curve2d& curve1,
-    const Adaptor2d_Curve2d& curve2);
+    const Adaptor2d_Curve2d& curve2)
+    {
+      thecurve1 = (Adaptor2d_Curve2d*)(&curve1);
+      thecurve2 = (Adaptor2d_Curve2d*)(&curve2);
+    }
 
   //! returns 2.
   Standard_EXPORT Standard_Integer NbVariables() const;
@@ -64,8 +68,8 @@ public:
 
 protected:
 private:
-  Standard_Address thecurve1;
-  Standard_Address thecurve2;
+  Adaptor2d_Curve2d* thecurve1;
+  Adaptor2d_Curve2d* thecurve2;
 };
 
 #endif // _Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter_HeaderFile

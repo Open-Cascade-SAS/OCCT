@@ -36,8 +36,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter(
-    const Standard_Address& C1,
-    const Standard_Address& C2,
+    const HLRBRep_Curve*& C1,
+    const HLRBRep_Curve*& C2,
     const Standard_Real     Tol);
 
   Standard_EXPORT void Perform(const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly1,

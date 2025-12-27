@@ -17,10 +17,11 @@
 #include <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
 
 #include <HLRBRep_CurveTool.hxx>
+#include <HLRBRep_Curve.hxx>
 #include <math_Matrix.hxx>
 
-#define TheCurve Standard_Address
-#define TheCurve_hxx <Standard_Address.hxx>
+#define TheCurve HLRBRep_Curve*
+#define TheCurve_hxx <HLRBRep_Curve.hxx>
 #define TheCurveTool HLRBRep_CurveTool
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_DistBetweenPCurvesGen HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter

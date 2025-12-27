@@ -47,7 +47,7 @@ public:
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Lin2d&         L,
                                                 const IntRes2d_Domain&  D1,
-                                                const Standard_Address& PCurve,
+                                                const HLRBRep_Curve*& PCurve,
                                                 const IntRes2d_Domain&  D2,
                                                 const Standard_Real     TolConf,
                                                 const Standard_Real     Tol);
@@ -55,7 +55,7 @@ public:
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Circ2d&        C,
                                                 const IntRes2d_Domain&  D1,
-                                                const Standard_Address& PCurve,
+                                                const HLRBRep_Curve*& PCurve,
                                                 const IntRes2d_Domain&  D2,
                                                 const Standard_Real     TolConf,
                                                 const Standard_Real     Tol);
@@ -63,7 +63,7 @@ public:
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Elips2d&       E,
                                                 const IntRes2d_Domain&  D1,
-                                                const Standard_Address& PCurve,
+                                                const HLRBRep_Curve*& PCurve,
                                                 const IntRes2d_Domain&  D2,
                                                 const Standard_Real     TolConf,
                                                 const Standard_Real     Tol);
@@ -71,7 +71,7 @@ public:
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Parab2d&       Prb,
                                                 const IntRes2d_Domain&  D1,
-                                                const Standard_Address& PCurve,
+                                                const HLRBRep_Curve*& PCurve,
                                                 const IntRes2d_Domain&  D2,
                                                 const Standard_Real     TolConf,
                                                 const Standard_Real     Tol);
@@ -80,7 +80,7 @@ public:
   //! and a parametric curve.
   Standard_EXPORT HLRBRep_IntConicCurveOfCInter(const gp_Hypr2d&        H,
                                                 const IntRes2d_Domain&  D1,
-                                                const Standard_Address& PCurve,
+                                                const HLRBRep_Curve*& PCurve,
                                                 const IntRes2d_Domain&  D2,
                                                 const Standard_Real     TolConf,
                                                 const Standard_Real     Tol);
@@ -88,7 +88,7 @@ public:
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform(const gp_Lin2d&         L,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& PCurve,
+                               const HLRBRep_Curve*& PCurve,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -96,7 +96,7 @@ public:
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT void Perform(const gp_Circ2d&        C,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& PCurve,
+                               const HLRBRep_Curve*& PCurve,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -104,7 +104,7 @@ public:
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT void Perform(const gp_Elips2d&       E,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& PCurve,
+                               const HLRBRep_Curve*& PCurve,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -112,7 +112,7 @@ public:
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT void Perform(const gp_Parab2d&       Prb,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& PCurve,
+                               const HLRBRep_Curve*& PCurve,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -121,7 +121,7 @@ public:
   //! and a parametric curve.
   Standard_EXPORT void Perform(const gp_Hypr2d&        H,
                                const IntRes2d_Domain&  D1,
-                               const Standard_Address& PCurve,
+                               const HLRBRep_Curve*& PCurve,
                                const IntRes2d_Domain&  D2,
                                const Standard_Real     TolConf,
                                const Standard_Real     Tol);
@@ -130,7 +130,7 @@ protected:
 private:
   Standard_EXPORT void InternalPerform(const gp_Lin2d&         Lin1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& PCurve,
+                                       const HLRBRep_Curve*& PCurve,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
@@ -138,7 +138,7 @@ private:
 
   Standard_EXPORT void InternalPerform(const gp_Circ2d&        Circ1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& PCurve,
+                                       const HLRBRep_Curve*& PCurve,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
@@ -146,7 +146,7 @@ private:
 
   Standard_EXPORT void InternalPerform(const gp_Elips2d&       Eli1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& PCurve,
+                                       const HLRBRep_Curve*& PCurve,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
@@ -154,7 +154,7 @@ private:
 
   Standard_EXPORT void InternalPerform(const gp_Parab2d&       Prb1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& PCurve,
+                                       const HLRBRep_Curve*& PCurve,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
@@ -162,7 +162,7 @@ private:
 
   Standard_EXPORT void InternalPerform(const gp_Hypr2d&        Hpr1,
                                        const IntRes2d_Domain&  D1,
-                                       const Standard_Address& PCurve,
+                                       const HLRBRep_Curve*& PCurve,
                                        const IntRes2d_Domain&  D2,
                                        const Standard_Real     TolConf,
                                        const Standard_Real     Tol,
