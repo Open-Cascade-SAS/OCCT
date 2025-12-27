@@ -1121,8 +1121,9 @@ endif()
 
 list (FIND BUILD_TOOLKITS DRAWEXE DRAWEXE_INDEX)
 if (${DRAWEXE_INDEX} GREATER -1)
-  # copy data folder and draw script to install folder
+  # copy data folder and tcl samples to install folder
   OCCT_INSTALL_FILE_OR_DIR ("data/" "${INSTALL_DIR_DATA}")
+  OCCT_INSTALL_FILE_OR_DIR ("tests/samples/tcl" "${INSTALL_DIR_DATA}")
 
   install (FILES "${OCCT_ROOT_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR_SCRIPT}"
           PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
