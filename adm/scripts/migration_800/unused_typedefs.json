@@ -1,0 +1,828 @@
+{
+  "typedefs_removed": [
+    {
+      "name": "TNaming_MapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 73,
+      "end_line": 73,
+      "is_ncollection": true
+    },
+    {
+      "name": "TNaming_MapIteratorOfMapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 74,
+      "end_line": 74,
+      "is_ncollection": true
+    },
+    {
+      "name": "TNaming_DataMapOfShapeMapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 75,
+      "end_line": 75,
+      "is_ncollection": true
+    },
+    {
+      "name": "TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape",
+      "file": "ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+      "start_line": 76,
+      "end_line": 77,
+      "is_ncollection": true
+    },
+    {
+      "name": "CDM_DataMapIteratorOfMetaDataLookUpTable",
+      "file": "ApplicationFramework/TKCDF/CDM/CDM_MetaDataLookUpTable.hxx",
+      "start_line": 26,
+      "end_line": 27,
+      "is_ncollection": true
+    },
+    {
+      "name": "TDF_Array1OfAttributeIDelta",
+      "file": "ApplicationFramework/TKLCAF/TDF/TDF_Data.cxx",
+      "start_line": 36,
+      "end_line": 36,
+      "is_ncollection": true
+    },
+    {
+      "name": "TObj_TIntSparseArray_VecOfData",
+      "file": "ApplicationFramework/TKTObj/TObj/TObj_TIntSparseArray.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "TObj_TIntSparseArray_MapOfData",
+      "file": "ApplicationFramework/TKTObj/TObj/TObj_TIntSparseArray.hxx",
+      "start_line": 25,
+      "end_line": 25,
+      "is_ncollection": true
+    },
+    {
+      "name": "DE_ResourceMap",
+      "file": "DataExchange/TKDE/DE/DE_ConfigurationContext.hxx",
+      "start_line": 21,
+      "end_line": 21,
+      "is_ncollection": true
+    },
+    {
+      "name": "DE_ConfigurationVendorMap",
+      "file": "DataExchange/TKDE/DE/DE_Wrapper.hxx",
+      "start_line": 31,
+      "end_line": 32,
+      "is_ncollection": true
+    },
+    {
+      "name": "DE_ConfigurationFormatMap",
+      "file": "DataExchange/TKDE/DE/DE_Wrapper.hxx",
+      "start_line": 33,
+      "end_line": 34,
+      "is_ncollection": true
+    },
+    {
+      "name": "RWGltf_GltfFaceList",
+      "file": "DataExchange/TKDEGLTF/RWGltf/RWGltf_GltfFace.hxx",
+      "start_line": 44,
+      "end_line": 44,
+      "is_ncollection": true
+    },
+    {
+      "name": "StepVisual_VectorOfHSequenceOfInteger",
+      "file": "DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedCurveSet.hxx",
+      "start_line": 28,
+      "end_line": 29,
+      "is_ncollection": true
+    },
+    {
+      "name": "StepVisual_Array1OfTessellatedItem",
+      "file": "DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedGeometricSet.hxx",
+      "start_line": 27,
+      "end_line": 27,
+      "is_ncollection": true
+    },
+    {
+      "name": "RWMesh_NodeAttributeMap",
+      "file": "DataExchange/TKRWMesh/RWMesh/RWMesh_NodeAttributes.hxx",
+      "start_line": 34,
+      "end_line": 35,
+      "is_ncollection": true
+    },
+    {
+      "name": "MoniTool_DataMapIteratorOfDataMapOfTimer",
+      "file": "DataExchange/TKXSBase/MoniTool/MoniTool_DataMapOfTimer.hxx",
+      "start_line": 27,
+      "end_line": 28,
+      "is_ncollection": true
+    },
+    {
+      "name": "DisplayModeFiltersMap",
+      "file": "Draw/TKIVtkDraw/IVtkDraw/IVtkDraw_HighlightAndSelectionPipeline.hxx",
+      "start_line": 37,
+      "end_line": 38,
+      "is_ncollection": true
+    },
+    {
+      "name": "SubShapesFiltersMap",
+      "file": "Draw/TKIVtkDraw/IVtkDraw/IVtkDraw_HighlightAndSelectionPipeline.hxx",
+      "start_line": 39,
+      "end_line": 40,
+      "is_ncollection": true
+    },
+    {
+      "name": "SequenceOfDocNames",
+      "file": "Draw/TKQADraw/QABugs/QABugs_20.cxx",
+      "start_line": 3268,
+      "end_line": 3268,
+      "is_ncollection": true
+    },
+    {
+      "name": "ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName",
+      "file": "Draw/TKViewerTest/ViewerTest/ViewerTest_DoubleMapOfInteractiveAndName.hxx",
+      "start_line": 27,
+      "end_line": 28,
+      "is_ncollection": true
+    },
+    {
+      "name": "Array1OfPnt",
+      "file": "FoundationClasses/TKMath/BSplCLib/BSplCLib.cxx",
+      "start_line": 45,
+      "end_line": 45,
+      "is_ncollection": true
+    },
+    {
+      "name": "Poly_BaseIteratorOfCoherentTriangle",
+      "file": "FoundationClasses/TKMath/Poly/Poly_CoherentTriangulation.hxx",
+      "start_line": 29,
+      "end_line": 29,
+      "is_ncollection": true
+    },
+    {
+      "name": "Poly_BaseIteratorOfCoherentNode",
+      "file": "FoundationClasses/TKMath/Poly/Poly_CoherentTriangulation.hxx",
+      "start_line": 30,
+      "end_line": 30,
+      "is_ncollection": true
+    },
+    {
+      "name": "Poly_BaseIteratorOfCoherentLink",
+      "file": "FoundationClasses/TKMath/Poly/Poly_CoherentTriangulation.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf8Iter",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
+      "start_line": 261,
+      "end_line": 261,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf16Iter",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
+      "start_line": 262,
+      "end_line": 262,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf32Iter",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
+      "start_line": 263,
+      "end_line": 263,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_UtfWideIter",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
+      "start_line": 264,
+      "end_line": 264,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf8String",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+      "start_line": 330,
+      "end_line": 330,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf16String",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+      "start_line": 331,
+      "end_line": 331,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_Utf32String",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+      "start_line": 332,
+      "end_line": 332,
+      "is_ncollection": true
+    },
+    {
+      "name": "NCollection_UtfWideString",
+      "file": "FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+      "start_line": 333,
+      "end_line": 333,
+      "is_ncollection": true
+    },
+    {
+      "name": "BOPAlgo_ListOfEdgeInfo",
+      "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
+      "start_line": 72,
+      "end_line": 72,
+      "is_ncollection": true
+    },
+    {
+      "name": "BOPAlgo_ListIteratorOfListOfEdgeInfo",
+      "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
+      "start_line": 73,
+      "end_line": 73,
+      "is_ncollection": true
+    },
+    {
+      "name": "BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo",
+      "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
+      "start_line": 78,
+      "end_line": 79,
+      "is_ncollection": true
+    },
+    {
+      "name": "TopTools_DataMapOfShapeReal",
+      "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter_1.cxx",
+      "start_line": 915,
+      "end_line": 916,
+      "is_ncollection": true
+    },
+    {
+      "name": "TopTools_DataMapIteratorOfDataMapOfShapeReal",
+      "file": "ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter_1.cxx",
+      "start_line": 917,
+      "end_line": 917,
+      "is_ncollection": true
+    },
+    {
+      "name": "BOPDS_ListIteratorOfListOfPaveBlock",
+      "file": "ModelingAlgorithms/TKBO/BOPDS/BOPDS_ListOfPaveBlock.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "IntPolyh_ArrayOfInteger",
+      "file": "ModelingAlgorithms/TKGeomAlgo/IntPolyh/IntPolyh_MaillageAffinage.cxx",
+      "start_line": 50,
+      "end_line": 50,
+      "is_ncollection": true
+    },
+    {
+      "name": "BRepOffset_DataMapOfShapeMapOfShape",
+      "file": "ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_MakeOffset_1.cxx",
+      "start_line": 71,
+      "end_line": 72,
+      "is_ncollection": true
+    },
+    {
+      "name": "BRepBuilderAPI_BndBoxTree",
+      "file": "ModelingAlgorithms/TKTopAlgo/BRepBuilderAPI/BRepBuilderAPI_BndBoxTreeSelector.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "BRepExtrema_CellFilter",
+      "file": "ModelingAlgorithms/TKTopAlgo/BRepExtrema/BRepExtrema_ProximityValueTool.hxx",
+      "start_line": 68,
+      "end_line": 68,
+      "is_ncollection": true
+    },
+    {
+      "name": "BRepExtrema_ShapeList",
+      "file": "ModelingAlgorithms/TKTopAlgo/BRepExtrema/BRepExtrema_TriangleSet.hxx",
+      "start_line": 28,
+      "end_line": 28,
+      "is_ncollection": true
+    },
+    {
+      "name": "TopoDS_ListIteratorOfListOfShape",
+      "file": "ModelingData/TKBRep/TopoDS/TopoDS_ListOfShape.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "Array2OfInteger",
+      "file": "ModelingData/TKGeomBase/GeomConvert/GeomConvert_1.cxx",
+      "start_line": 64,
+      "end_line": 64,
+      "is_ncollection": true
+    },
+    {
+      "name": "Array1OfPnt",
+      "file": "ModelingData/TKGeomBase/GeomConvert/GeomConvert_1.cxx",
+      "start_line": 66,
+      "end_line": 66,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_ShapePtrList",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_IShape.hxx",
+      "start_line": 44,
+      "end_line": 44,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_ShapeIdList",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 45,
+      "end_line": 45,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_PointIdList",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 46,
+      "end_line": 46,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_SubShapeMap",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 48,
+      "end_line": 48,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_IdTypeMap",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 49,
+      "end_line": 49,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_Pnt2dList",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 51,
+      "end_line": 51,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_SelectionModeList",
+      "file": "Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+      "start_line": 73,
+      "end_line": 73,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_ShapeTypeMap",
+      "file": "Visualization/TKIVtk/IVtkOCC/IVtkOCC_ShapeMesher.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_Polyline",
+      "file": "Visualization/TKIVtk/IVtkOCC/IVtkOCC_ShapeMesher.hxx",
+      "start_line": 32,
+      "end_line": 32,
+      "is_ncollection": true
+    },
+    {
+      "name": "IVtk_PolylineList",
+      "file": "Visualization/TKIVtk/IVtkOCC/IVtkOCC_ShapeMesher.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "is_ncollection": true
+    },
+    {
+      "name": "MeshVS_PolyhedronVerts",
+      "file": "Visualization/TKMeshVS/MeshVS/MeshVS_SensitivePolyhedron.hxx",
+      "start_line": 26,
+      "end_line": 26,
+      "is_ncollection": true
+    },
+    {
+      "name": "MeshVS_PolyhedronVertsIter",
+      "file": "Visualization/TKMeshVS/MeshVS/MeshVS_SensitivePolyhedron.hxx",
+      "start_line": 27,
+      "end_line": 27,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_ColorFormats",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_FrameBuffer.hxx",
+      "start_line": 30,
+      "end_line": 30,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_MapOfHatchStylesAndIds",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_LineAttributes.hxx",
+      "start_line": 24,
+      "end_line": 25,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_MapOfShaderPrograms",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_SetOfShaderPrograms.hxx",
+      "start_line": 78,
+      "end_line": 79,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_ShaderProgramList",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_ShaderManager.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_ShaderList",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_ShaderProgram.hxx",
+      "start_line": 110,
+      "end_line": 110,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_SetterList",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_ShaderProgram.hxx",
+      "start_line": 113,
+      "end_line": 113,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_ListOfStructure",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Structure.hxx",
+      "start_line": 27,
+      "end_line": 27,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2i",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 29,
+      "end_line": 29,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3i",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 30,
+      "end_line": 30,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4i",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 31,
+      "end_line": 31,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2b",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3b",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 34,
+      "end_line": 34,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4b",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 35,
+      "end_line": 35,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2u",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 37,
+      "end_line": 37,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3u",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 38,
+      "end_line": 38,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4u",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 39,
+      "end_line": 39,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2ub",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 41,
+      "end_line": 41,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3ub",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 42,
+      "end_line": 42,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4ub",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 43,
+      "end_line": 43,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 45,
+      "end_line": 45,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 46,
+      "end_line": 46,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 47,
+      "end_line": 47,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec2d",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 49,
+      "end_line": 49,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec3d",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 50,
+      "end_line": 50,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Vec4d",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 51,
+      "end_line": 51,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Mat4",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 53,
+      "end_line": 53,
+      "is_ncollection": true
+    },
+    {
+      "name": "OpenGl_Mat4d",
+      "file": "Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+      "start_line": 54,
+      "end_line": 54,
+      "is_ncollection": true
+    },
+    {
+      "name": "Aspect_TrackedDevicePoseArray",
+      "file": "Visualization/TKService/Aspect/Aspect_TrackedDevicePose.hxx",
+      "start_line": 38,
+      "end_line": 38,
+      "is_ncollection": true
+    },
+    {
+      "name": "Aspect_XRActionMap",
+      "file": "Visualization/TKService/Aspect/Aspect_XRAction.hxx",
+      "start_line": 58,
+      "end_line": 59,
+      "is_ncollection": true
+    },
+    {
+      "name": "Aspect_XRActionSetMap",
+      "file": "Visualization/TKService/Aspect/Aspect_XRActionSet.hxx",
+      "start_line": 55,
+      "end_line": 56,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_Array1OfAttribute",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_Buffer.hxx",
+      "start_line": 83,
+      "end_line": 83,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_CameraLerp",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_Camera.hxx",
+      "start_line": 847,
+      "end_line": 847,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_GraphicDriverFactoryList",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_GraphicDriverFactory.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_IndexedMapOfStructure",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_Layer.hxx",
+      "start_line": 29,
+      "end_line": 29,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_ShaderObjectList",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_ShaderProgram.hxx",
+      "start_line": 27,
+      "end_line": 27,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_ShaderVariableList",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_ShaderProgram.hxx",
+      "start_line": 30,
+      "end_line": 30,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_ShaderAttributeList",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_ShaderProgram.hxx",
+      "start_line": 33,
+      "end_line": 33,
+      "is_ncollection": true
+    },
+    {
+      "name": "Graphic3d_IndexedMapOfView",
+      "file": "Visualization/TKService/Graphic3d/Graphic3d_StructureManager.hxx",
+      "start_line": 35,
+      "end_line": 35,
+      "is_ncollection": true
+    },
+    {
+      "name": "AIS_MouseGestureMap",
+      "file": "Visualization/TKV3d/AIS/AIS_MouseGesture.hxx",
+      "start_line": 48,
+      "end_line": 48,
+      "is_ncollection": true
+    },
+    {
+      "name": "AIS_MouseSelectionSchemeMap",
+      "file": "Visualization/TKV3d/AIS/AIS_MouseGesture.hxx",
+      "start_line": 49,
+      "end_line": 49,
+      "is_ncollection": true
+    },
+    {
+      "name": "PrsMgr_ListOfPresentableObjectsIter",
+      "file": "Visualization/TKV3d/PrsMgr/PrsMgr_ListOfPresentableObjects.hxx",
+      "start_line": 25,
+      "end_line": 26,
+      "is_ncollection": true
+    },
+    {
+      "name": "Select3D_Vec3",
+      "file": "Visualization/TKV3d/Select3D/Select3D_BndBox3d.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "Select3D_EntitySequenceIter",
+      "file": "Visualization/TKV3d/Select3D/Select3D_EntitySequence.hxx",
+      "start_line": 21,
+      "end_line": 22,
+      "is_ncollection": true
+    },
+    {
+      "name": "Select3D_VectorOfHPoly",
+      "file": "Visualization/TKV3d/Select3D/Select3D_InteriorSensitivePointSet.hxx",
+      "start_line": 24,
+      "end_line": 24,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_IndexedMapOfHSensitive",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_SensitiveEntitySet.hxx",
+      "start_line": 25,
+      "end_line": 25,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_MapOfOwners",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_SensitiveEntitySet.hxx",
+      "start_line": 26,
+      "end_line": 26,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_TriangFrustums",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_TriangularFrustumSet.hxx",
+      "start_line": 22,
+      "end_line": 22,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_MapOfObjectSensitives",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
+      "start_line": 46,
+      "end_line": 48,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_MapOfObjectSensitivesIterator",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
+      "start_line": 49,
+      "end_line": 51,
+      "is_ncollection": true
+    },
+    {
+      "name": "SelectMgr_FrustumCache",
+      "file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
+      "start_line": 53,
+      "end_line": 54,
+      "is_ncollection": true
+    },
+    {
+      "name": "V3d_ListOfViewIterator",
+      "file": "Visualization/TKV3d/V3d/V3d_ListOfView.hxx",
+      "start_line": 21,
+      "end_line": 21,
+      "is_ncollection": true
+    }
+  ],
+  "files_modified": [
+    "src/ApplicationFramework/TKCAF/TNaming/TNaming_Naming.cxx",
+    "src/ApplicationFramework/TKCDF/CDM/CDM_MetaDataLookUpTable.hxx",
+    "src/ApplicationFramework/TKLCAF/TDF/TDF_Data.cxx",
+    "src/ApplicationFramework/TKTObj/TObj/TObj_TIntSparseArray.hxx",
+    "src/DataExchange/TKDE/DE/DE_ConfigurationContext.hxx",
+    "src/DataExchange/TKDE/DE/DE_Wrapper.hxx",
+    "src/DataExchange/TKDEGLTF/RWGltf/RWGltf_GltfFace.hxx",
+    "src/DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedCurveSet.hxx",
+    "src/DataExchange/TKDESTEP/StepVisual/StepVisual_TessellatedGeometricSet.hxx",
+    "src/DataExchange/TKRWMesh/RWMesh/RWMesh_NodeAttributes.hxx",
+    "src/DataExchange/TKXSBase/MoniTool/MoniTool_DataMapOfTimer.hxx",
+    "src/Draw/TKIVtkDraw/IVtkDraw/IVtkDraw_HighlightAndSelectionPipeline.hxx",
+    "src/Draw/TKQADraw/QABugs/QABugs_20.cxx",
+    "src/Draw/TKViewerTest/ViewerTest/ViewerTest_DoubleMapOfInteractiveAndName.hxx",
+    "src/FoundationClasses/TKMath/BSplCLib/BSplCLib.cxx",
+    "src/FoundationClasses/TKMath/Poly/Poly_CoherentTriangulation.hxx",
+    "src/FoundationClasses/TKernel/NCollection/NCollection_UtfIterator.hxx",
+    "src/FoundationClasses/TKernel/NCollection/NCollection_UtfString.hxx",
+    "src/ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter.lxx",
+    "src/ModelingAlgorithms/TKBO/BOPAlgo/BOPAlgo_WireSplitter_1.cxx",
+    "src/ModelingAlgorithms/TKBO/BOPDS/BOPDS_ListOfPaveBlock.hxx",
+    "src/ModelingAlgorithms/TKGeomAlgo/IntPolyh/IntPolyh_MaillageAffinage.cxx",
+    "src/ModelingAlgorithms/TKOffset/BRepOffset/BRepOffset_MakeOffset_1.cxx",
+    "src/ModelingAlgorithms/TKTopAlgo/BRepBuilderAPI/BRepBuilderAPI_BndBoxTreeSelector.hxx",
+    "src/ModelingAlgorithms/TKTopAlgo/BRepExtrema/BRepExtrema_ProximityValueTool.hxx",
+    "src/ModelingAlgorithms/TKTopAlgo/BRepExtrema/BRepExtrema_TriangleSet.hxx",
+    "src/ModelingData/TKBRep/TopoDS/TopoDS_ListOfShape.hxx",
+    "src/ModelingData/TKGeomBase/GeomConvert/GeomConvert_1.cxx",
+    "src/Visualization/TKIVtk/IVtk/IVtk_IShape.hxx",
+    "src/Visualization/TKIVtk/IVtk/IVtk_Types.hxx",
+    "src/Visualization/TKIVtk/IVtkOCC/IVtkOCC_ShapeMesher.hxx",
+    "src/Visualization/TKMeshVS/MeshVS/MeshVS_SensitivePolyhedron.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_FrameBuffer.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_LineAttributes.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_SetOfShaderPrograms.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_ShaderManager.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_ShaderProgram.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_Structure.hxx",
+    "src/Visualization/TKOpenGl/OpenGl/OpenGl_Vec.hxx",
+    "src/Visualization/TKService/Aspect/Aspect_TrackedDevicePose.hxx",
+    "src/Visualization/TKService/Aspect/Aspect_XRAction.hxx",
+    "src/Visualization/TKService/Aspect/Aspect_XRActionSet.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_Buffer.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_Camera.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_GraphicDriverFactory.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_Layer.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_ShaderProgram.hxx",
+    "src/Visualization/TKService/Graphic3d/Graphic3d_StructureManager.hxx",
+    "src/Visualization/TKV3d/AIS/AIS_MouseGesture.hxx",
+    "src/Visualization/TKV3d/PrsMgr/PrsMgr_ListOfPresentableObjects.hxx",
+    "src/Visualization/TKV3d/Select3D/Select3D_BndBox3d.hxx",
+    "src/Visualization/TKV3d/Select3D/Select3D_EntitySequence.hxx",
+    "src/Visualization/TKV3d/Select3D/Select3D_InteriorSensitivePointSet.hxx",
+    "src/Visualization/TKV3d/SelectMgr/SelectMgr_SensitiveEntitySet.hxx",
+    "src/Visualization/TKV3d/SelectMgr/SelectMgr_TriangularFrustumSet.hxx",
+    "src/Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector.hxx",
+    "src/Visualization/TKV3d/V3d/V3d_ListOfView.hxx"
+  ],
+  "errors": [],
+  "dry_run": false
+}
