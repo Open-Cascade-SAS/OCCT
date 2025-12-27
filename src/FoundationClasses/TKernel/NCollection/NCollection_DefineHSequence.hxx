@@ -21,41 +21,45 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-//      Declaration of Sequence class managed by Handle
+#include <type_traits>
 
-#define DEFINE_HSEQUENCE(HClassName, _SequenceType_)                                               \
-  class HClassName : public _SequenceType_, public Standard_Transient                              \
+//      Declaration of Sequence class managed by Handle
+//      Uses variadic macro to support template types with commas (e.g., NCollection_Sequence<A, B>)
+
+#define DEFINE_HSEQUENCE(HClassName, ...)                                                          \
+  class HClassName : public __VA_ARGS__, public Standard_Transient                                 \
   {                                                                                                \
+    using SequenceType_ = __VA_ARGS__;                                                             \
+                                                                                                   \
   public:                                                                                          \
     DEFINE_STANDARD_ALLOC                                                                          \
     DEFINE_NCOLLECTION_ALLOC                                                                       \
     HClassName() {}                                                                                \
-    HClassName(const _SequenceType_& theOther)                                                     \
-        : _SequenceType_(theOther)                                                                 \
+    HClassName(const SequenceType_& theOther)                                                      \
+        : SequenceType_(theOther)                                                                  \
     {                                                                                              \
     }                                                                                              \
-    const _SequenceType_& Sequence() const noexcept                                                \
+    const SequenceType_& Sequence() const noexcept                                                 \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
-    void Append(const _SequenceType_::value_type& theItem)                                         \
+    void Append(const typename SequenceType_::value_type& theItem)                                 \
     {                                                                                              \
-      _SequenceType_::Append(theItem);                                                             \
+      SequenceType_::Append(theItem);                                                              \
     }                                                                                              \
-    void Append(_SequenceType_& theSequence)                                                       \
+    void Append(SequenceType_& theSequence)                                                        \
     {                                                                                              \
-      _SequenceType_::Append(theSequence);                                                         \
+      SequenceType_::Append(theSequence);                                                          \
     }                                                                                              \
-    _SequenceType_& ChangeSequence() noexcept                                                      \
+    SequenceType_& ChangeSequence() noexcept                                                       \
     {                                                                                              \
       return *this;                                                                                \
     }                                                                                              \
     template <class T>                                                                             \
     void Append(const Handle(T)& theOther,                                                         \
-                typename opencascade::std::enable_if<                                              \
-                  opencascade::std::is_base_of<HClassName, T>::value>::type* = 0)                  \
+                typename std::enable_if<std::is_base_of<HClassName, T>::value>::type* = 0)         \
     {                                                                                              \
-      _SequenceType_::Append(theOther->ChangeSequence());                                          \
+      SequenceType_::Append(theOther->ChangeSequence());                                           \
     }                                                                                              \
     DEFINE_STANDARD_RTTI_INLINE(HClassName, Standard_Transient)                                    \
   };                                                                                               \

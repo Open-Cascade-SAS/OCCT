@@ -45,7 +45,7 @@
 //! When a deprecated macro is used, a compile-time warning will be issued.
 //! Unlike Standard_DEPRECATED which marks functions/classes, this is for deprecating macros
 //! themselves.
-#if 0 // Disabled until global renames for 8.0.0 are completed.
+#if 1 // Enabled for 8.0.0 deprecation validation.
   #define Standard_MACRO_DEPRECATED(theMsg) Standard_DEPRECATED_WARNING(theMsg)
 #else
   #define Standard_MACRO_DEPRECATED(theMsg)
@@ -97,7 +97,9 @@
 //! Macro for marking variables / functions as possibly unused
 //! so that compiler will not emit redundant "unused" warnings.
 //!
-//! Expands to "__attribute__((unused))" on GCC and CLang.
+//! @deprecated Use C++17 "[[maybe_unused]]" directly instead (guaranteed in C++17).
+//! Note: [[maybe_unused]] has stricter placement rules than __attribute__((unused)),
+//! so manual migration may be needed for some usages.
 #if defined(__GNUC__) || defined(__clang__)
   #define Standard_UNUSED __attribute__((unused))
 #else

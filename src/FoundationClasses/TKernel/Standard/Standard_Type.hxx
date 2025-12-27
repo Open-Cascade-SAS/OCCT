@@ -198,4 +198,71 @@ inline Standard_OStream& operator<<(Standard_OStream&            theStream,
 //! Definition of Handle_Standard_Type as typedef for compatibility
 DEFINE_STANDARD_HANDLE(Standard_Type, Standard_Transient)
 
+//! @brief Modern type checking helpers in occ namespace.
+//!
+//! These templates provide a cleaner syntax for runtime type checking:
+//! @code
+//! // Old pattern:
+//! if (theObject->IsKind(STANDARD_TYPE(Geom_Circle)))
+//!
+//! // New pattern:
+//! if (occ::is_kind<Geom_Circle>(theObject))
+//! @endcode
+namespace occ
+{
+
+//! @brief Check if object is of type T or inherits from T.
+//! @tparam T Target type to check against
+//! @param theObject Pointer to object to check
+//! @return true if theObject is not null and is of type T or derived from T
+template <class T>
+inline bool is_kind(const Standard_Transient* theObject)
+{
+  return theObject != nullptr && theObject->IsKind(T::get_type_descriptor());
+}
+
+//! @brief Check if object is of type T or inherits from T (handle version).
+//! @tparam T Target type to check against
+//! @tparam TBase Base type of the handle (deduced)
+//! @param theObject Handle to object to check
+//! @return true if theObject is not null and is of type T or derived from T
+template <class T, class TBase>
+inline bool is_kind(const handle<TBase>& theObject)
+{
+  return !theObject.IsNull() && theObject->IsKind(T::get_type_descriptor());
+}
+
+//! @brief Check if object is exactly of type T (not a derived type).
+//! @tparam T Target type to check against
+//! @param theObject Pointer to object to check
+//! @return true if theObject is not null and is exactly of type T
+template <class T>
+inline bool is_instance(const Standard_Transient* theObject)
+{
+  return theObject != nullptr && theObject->IsInstance(T::get_type_descriptor());
+}
+
+//! @brief Check if object is exactly of type T (handle version).
+//! @tparam T Target type to check against
+//! @tparam TBase Base type of the handle (deduced)
+//! @param theObject Handle to object to check
+//! @return true if theObject is not null and is exactly of type T
+template <class T, class TBase>
+inline bool is_instance(const handle<TBase>& theObject)
+{
+  return !theObject.IsNull() && theObject->IsInstance(T::get_type_descriptor());
+}
+
+//! @brief Get the type descriptor for type T.
+//! Equivalent to STANDARD_TYPE(T) but with template syntax.
+//! @tparam T Type to get descriptor for
+//! @return Handle to type descriptor
+template <class T>
+inline const handle<Standard_Type>& type_of()
+{
+  return T::get_type_descriptor();
+}
+
+} // namespace occ
+
 #endif // _Standard_Type_HeaderFile

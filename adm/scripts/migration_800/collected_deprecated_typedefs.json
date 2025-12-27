@@ -1,0 +1,479 @@
+{
+  "description": "Deprecated typedef/using declarations from OCCT - for migration of external projects",
+  "typedefs": [
+    {
+      "typedef_name": "PrsMgr_PresentationManager3d",
+      "replacement_type": "PrsMgr_PresentationManager",
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_PresentationManager3d.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Handle_PrsMgr_PresentationManager3d",
+      "replacement_type": "Handle_PrsMgr_PresentationManager",
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_PresentationManager3d.hxx",
+      "is_handle": true,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "PrsMgr_Presentation3d",
+      "replacement_type": "PrsMgr_Presentation",
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_Presentation3d.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Handle_PrsMgr_Presentation3d",
+      "replacement_type": "Handle_PrsMgr_Presentation",
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_Presentation3d.hxx",
+      "is_handle": true,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "PrsMgr_PresentationManager3d",
+      "replacement_type": "PrsMgr_PresentationManager",
+      "header_file": "Visualization/TKV3d/PrsMgr/PrsMgr_PresentableObject.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "SelectBasics_EntityOwner",
+      "replacement_type": "SelectMgr_EntityOwner",
+      "header_file": "Visualization/TKV3d/SelectMgr/SelectMgr_EntityOwner.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "SelectMgr_ViewerSelector3d",
+      "replacement_type": "SelectMgr_ViewerSelector",
+      "header_file": "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector3d.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_ConcentricRelation",
+      "replacement_type": "PrsDim_ConcentricRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_ConcentricRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_OffsetDimension",
+      "replacement_type": "PrsDim_OffsetDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_OffsetDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_MidPointRelation",
+      "replacement_type": "PrsDim_MidPointRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_MidPointRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_EqualDistanceRelation",
+      "replacement_type": "PrsDim_EqualDistanceRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_EqualDistanceRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_Chamf2dDimension",
+      "replacement_type": "PrsDim_Chamf2dDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_Chamf2dDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_ParallelRelation",
+      "replacement_type": "PrsDim_ParallelRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_ParallelRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_MaxRadiusDimension",
+      "replacement_type": "PrsDim_MaxRadiusDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_MaxRadiusDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_RadiusDimension",
+      "replacement_type": "PrsDim_RadiusDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_RadiusDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_DimensionOwner",
+      "replacement_type": "PrsDim_DimensionOwner",
+      "header_file": "Visualization/TKV3d/AIS/AIS_DimensionOwner.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_DiameterDimension",
+      "replacement_type": "PrsDim_DiameterDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_DiameterDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_Relation",
+      "replacement_type": "PrsDim_Relation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_Relation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_EllipseRadiusDimension",
+      "replacement_type": "PrsDim_EllipseRadiusDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_EllipseRadiusDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_TangentRelation",
+      "replacement_type": "PrsDim_TangentRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_TangentRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_IdenticRelation",
+      "replacement_type": "PrsDim_IdenticRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_IdenticRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_EqualRadiusRelation",
+      "replacement_type": "PrsDim_EqualRadiusRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_EqualRadiusRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_PerpendicularRelation",
+      "replacement_type": "PrsDim_PerpendicularRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_PerpendicularRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_Chamf3dDimension",
+      "replacement_type": "PrsDim_Chamf3dDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_Chamf3dDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_LengthDimension",
+      "replacement_type": "PrsDim_LengthDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_LengthDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_MinRadiusDimension",
+      "replacement_type": "PrsDim_MinRadiusDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_MinRadiusDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_SymmetricRelation",
+      "replacement_type": "PrsDim_SymmetricRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_SymmetricRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_Dimension",
+      "replacement_type": "PrsDim_Dimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_Dimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_FixRelation",
+      "replacement_type": "PrsDim_FixRelation",
+      "header_file": "Visualization/TKV3d/AIS/AIS_FixRelation.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "AIS_AngleDimension",
+      "replacement_type": "PrsDim_AngleDimension",
+      "header_file": "Visualization/TKV3d/AIS/AIS_AngleDimension.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "SelectBasics_SensitiveEntity",
+      "replacement_type": "Select3D_SensitiveEntity",
+      "header_file": "Visualization/TKV3d/Select3D/Select3D_SensitiveEntity.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "V3d_TypeOfBackfacingModel",
+      "replacement_type": "Graphic3d_TypeOfBackfacingModel",
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfBackfacingModel.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "V3d_TypeOfLight",
+      "replacement_type": "Graphic3d_TypeOfLightSource",
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfLight.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Handle_V3d_Light",
+      "replacement_type": "Handle_Graphic3d_CLight",
+      "header_file": "Visualization/TKV3d/V3d/V3d_Light.hxx",
+      "is_handle": true,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "V3d_TypeOfShadingModel",
+      "replacement_type": "Graphic3d_TypeOfShadingModel",
+      "header_file": "Visualization/TKV3d/V3d/V3d_TypeOfShadingModel.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Prs3d_ShapeTool",
+      "replacement_type": "StdPrs_ShapeTool",
+      "header_file": "Visualization/TKV3d/Prs3d/Prs3d_ShapeTool.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Graphic3d_Texture2Dmanual",
+      "replacement_type": "Graphic3d_Texture2D",
+      "header_file": "Visualization/TKService/Graphic3d/Graphic3d_Texture2Dmanual.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "OpenGl_TextureBufferArb",
+      "replacement_type": "OpenGl_TextureBuffer",
+      "header_file": "Visualization/TKOpenGl/OpenGl/OpenGl_TextureBufferArb.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Handle_Standard_Transient",
+      "replacement_type": "opencascade::handle<Standard_Transient>",
+      "header_file": "FoundationClasses/TKernel/Standard/Standard_Transient.hxx",
+      "is_handle": true,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "PCDM_BaseDriverPointer",
+      "replacement_type": "occ::handle<Storage_BaseDriver>",
+      "header_file": "ApplicationFramework/TKCDF/PCDM/PCDM_BaseDriverPointer.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "IntTools_CArray1OfReal",
+      "replacement_type": "TColStd_Array1OfReal",
+      "header_file": "ModelingAlgorithms/TKBO/IntTools/IntTools_CArray1OfReal.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "IGESCAFControl_Provider",
+      "replacement_type": "DEIGES_Provider",
+      "header_file": "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "IGESCAFControl_ConfigurationNode",
+      "replacement_type": "DEIGES_ConfigurationNode",
+      "header_file": "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWStl_Provider",
+      "replacement_type": "DESTL_Provider",
+      "header_file": "DataExchange/TKDESTL/RWStl/RWStl_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWStl_ConfigurationNode",
+      "replacement_type": "DESTL_ConfigurationNode",
+      "header_file": "DataExchange/TKDESTL/RWStl/RWStl_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "DEXCAFCascade_ConfigurationNode",
+      "replacement_type": "DEXCAF_ConfigurationNode",
+      "header_file": "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "DEXCAFCascade_Provider",
+      "replacement_type": "DEXCAF_Provider",
+      "header_file": "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "DEBRepCascade_Provider",
+      "replacement_type": "DEBREP_Provider",
+      "header_file": "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "DEBRepCascade_ConfigurationNode",
+      "replacement_type": "DEBREP_ConfigurationNode",
+      "header_file": "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWPly_ConfigurationNode",
+      "replacement_type": "DEPLY_ConfigurationNode",
+      "header_file": "DataExchange/TKDEPLY/RWPly/RWPly_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWPly_Provider",
+      "replacement_type": "DEPLY_Provider",
+      "header_file": "DataExchange/TKDEPLY/RWPly/RWPly_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWObj_Provider",
+      "replacement_type": "DEOBJ_Provider",
+      "header_file": "DataExchange/TKDEOBJ/RWObj/RWObj_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWObj_ConfigurationNode",
+      "replacement_type": "DEOBJ_ConfigurationNode",
+      "header_file": "DataExchange/TKDEOBJ/RWObj/RWObj_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "STEPCAFControl_Provider",
+      "replacement_type": "DESTEP_Provider",
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "STEPCAFControl_ConfigurationNode",
+      "replacement_type": "DESTEP_ConfigurationNode",
+      "header_file": "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "StepData_ConfParameters",
+      "replacement_type": "DESTEP_Parameters",
+      "header_file": "DataExchange/TKDESTEP/StepData/StepData_ConfParameters.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWGltf_ConfigurationNode",
+      "replacement_type": "DEGLTF_ConfigurationNode",
+      "header_file": "DataExchange/TKDEGLTF/RWGltf/RWGltf_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "RWGltf_Provider",
+      "replacement_type": "DEGLTF_Provider",
+      "header_file": "DataExchange/TKDEGLTF/RWGltf/RWGltf_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Vrml_Provider",
+      "replacement_type": "DEVRML_Provider",
+      "header_file": "DataExchange/TKDEVRML/Vrml/Vrml_Provider.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    },
+    {
+      "typedef_name": "Vrml_ConfigurationNode",
+      "replacement_type": "DEVRML_ConfigurationNode",
+      "header_file": "DataExchange/TKDEVRML/Vrml/Vrml_ConfigurationNode.hxx",
+      "is_handle": false,
+      "declaration_type": "typedef"
+    }
+  ],
+  "typedef_only_headers": [
+    "Visualization/TKV3d/PrsMgr/PrsMgr_PresentationManager3d.hxx",
+    "Visualization/TKV3d/PrsMgr/PrsMgr_Presentation3d.hxx",
+    "Visualization/TKV3d/SelectMgr/SelectMgr_ViewerSelector3d.hxx",
+    "Visualization/TKV3d/AIS/AIS_ConcentricRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_OffsetDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_MidPointRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_EqualDistanceRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_Chamf2dDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_ParallelRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_MaxRadiusDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_RadiusDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_DimensionOwner.hxx",
+    "Visualization/TKV3d/AIS/AIS_DiameterDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_Relation.hxx",
+    "Visualization/TKV3d/AIS/AIS_EllipseRadiusDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_TangentRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_IdenticRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_EqualRadiusRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_PerpendicularRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_Chamf3dDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_LengthDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_MinRadiusDimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_SymmetricRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_Dimension.hxx",
+    "Visualization/TKV3d/AIS/AIS_FixRelation.hxx",
+    "Visualization/TKV3d/AIS/AIS_AngleDimension.hxx",
+    "Visualization/TKV3d/V3d/V3d_TypeOfBackfacingModel.hxx",
+    "Visualization/TKV3d/V3d/V3d_TypeOfLight.hxx",
+    "Visualization/TKV3d/V3d/V3d_TypeOfShadingModel.hxx",
+    "Visualization/TKV3d/Prs3d/Prs3d_ShapeTool.hxx",
+    "Visualization/TKService/Graphic3d/Graphic3d_Texture2Dmanual.hxx",
+    "Visualization/TKOpenGl/OpenGl/OpenGl_TextureBufferArb.hxx",
+    "ModelingAlgorithms/TKBO/IntTools/IntTools_CArray1OfReal.hxx",
+    "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_Provider.hxx",
+    "DataExchange/TKDEIGES/IGESCAFControl/IGESCAFControl_ConfigurationNode.hxx",
+    "DataExchange/TKDESTL/RWStl/RWStl_Provider.hxx",
+    "DataExchange/TKDESTL/RWStl/RWStl_ConfigurationNode.hxx",
+    "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_ConfigurationNode.hxx",
+    "DataExchange/TKDECascade/DEXCAFCascade/DEXCAFCascade_Provider.hxx",
+    "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_Provider.hxx",
+    "DataExchange/TKDECascade/DEBRepCascade/DEBRepCascade_ConfigurationNode.hxx",
+    "DataExchange/TKDEPLY/RWPly/RWPly_ConfigurationNode.hxx",
+    "DataExchange/TKDEPLY/RWPly/RWPly_Provider.hxx",
+    "DataExchange/TKDEOBJ/RWObj/RWObj_Provider.hxx",
+    "DataExchange/TKDEOBJ/RWObj/RWObj_ConfigurationNode.hxx",
+    "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_Provider.hxx",
+    "DataExchange/TKDESTEP/STEPCAFControl/STEPCAFControl_ConfigurationNode.hxx",
+    "DataExchange/TKDESTEP/StepData/StepData_ConfParameters.hxx",
+    "DataExchange/TKDEGLTF/RWGltf/RWGltf_ConfigurationNode.hxx",
+    "DataExchange/TKDEGLTF/RWGltf/RWGltf_Provider.hxx",
+    "DataExchange/TKDEVRML/Vrml/Vrml_Provider.hxx",
+    "DataExchange/TKDEVRML/Vrml/Vrml_ConfigurationNode.hxx"
+  ]
+}
